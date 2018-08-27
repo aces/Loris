@@ -1,4 +1,5 @@
-# 1.0 Overview
+# Loris API - v0.0.0-dev
+## 1.0 Overview
 
 This document specifies the Loris REST API.
 
@@ -28,7 +29,7 @@ do not require ETags.
 
 DELETE is not supported on any resource defined in this API.
 
-## 1.1 Authentication
+### 1.1 Authentication
 
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
 no further authentication is required. Requests will be evaluated as requests from that user,
@@ -60,7 +61,7 @@ Otherwise, it will return a 401 Unauthorized response.
 If the token is returned, it should be included in an "Authorization: Bearer token" header
 for any future requests to authenciate the request.
 
-# 2.0 Project API
+## 2.0 Project API
 
 The Project API lives under the /projects portion of the API URL hierarchy. It is used to get
 project specific settings or data. PUT and PATCH are not currently supported for the part of
@@ -117,7 +118,7 @@ by the 3 letter site alias before attempting to pass this regex to a regular exp
 or it will result in false negatives.
 
 
-## 2.1 Single project 
+### 2.1 Single project 
 
 ```
 GET /projects/$ProjectName
@@ -139,7 +140,7 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 }
 ```
 
-### 2.1.1 Single project images  
+#### 2.1.1 Single project images  
 ```
 GET /projects/$ProjectName/images/
 ```
@@ -171,7 +172,7 @@ ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
 We recommend using a format that includes timezone.
 
-### 2.1.2 Single project instruments  
+#### 2.1.2 Single project instruments  
 ```
 GET /projects/$ProjectName/instruments/
 ```
@@ -201,7 +202,7 @@ Will return a JSON object of the form:
 
 Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
 
-### 2.1.3 Single project visits  
+#### 2.1.3 Single project visits  
 ```
 GET /projects/$ProjectName/visits/
 ```
@@ -219,7 +220,7 @@ Will return a JSON object of the form:
 
 Where V1, V2, ... are the visits that may exist for this project
 
-### 2.1.4 Single project candidates  
+#### 2.1.4 Single project candidates  
 ```
 GET /projects/$ProjectName/candidates/
 ```
@@ -237,7 +238,7 @@ will return a JSON object of the form:
 
 where 123456, 342332, etc are the candidates that exist for this project.
 
-## 2.2 Instrument Forms
+### 2.2 Instrument Forms
 
 ```
 GET /projects/$ProjectName/instruments/$InstrumentName
@@ -255,7 +256,7 @@ PUT and PATCH are not supported for instrument forms.
 
 Methods for getting/putting data into specific candidates are specified in section 3.
 
-# 3.0 Candidate API
+## 3.0 Candidate API
 
 The /candidate portion of the API is used for retrieving and modifying candidate data and
 data attached to a specific candidate or visit such as visits or instrument data. Portions
@@ -323,7 +324,7 @@ candidate.
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
 
-## 3.1 Specific Candidate
+### 3.1 Specific Candidate
 
 If a GET request for a candidate is issued such as
 
@@ -352,7 +353,7 @@ It will return a 200 OK on success, a 404 if the candidate does not exist, and
 a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
 true of all of the API hierarchy under /candidates/$CandID.
 
-## 3.2 Getting Candidate visit data
+### 3.2 Getting Candidate visit data
 
 A GET request of the form:
 
@@ -401,7 +402,7 @@ Any of the Stages may not be present in the returned result if the stage has not
 started yet or is not enabled for this project (ie. if useScreening is false in
 Loris, or Approval has not occurred)
 
-## 3.3 Candidate Instruments
+### 3.3 Candidate Instruments
 ```
 GET /candidates/$CandID/$VisitLabel/instruments
 ```
@@ -424,7 +425,7 @@ SHOULD all be retrievable through the `project` portion of the API.
 
 PUT / PATCH / POST are not currently supported for candidate instruments.
 
-### 3.3.1 The Candidate Instrument Data
+#### 3.3.1 The Candidate Instrument Data
 
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
@@ -469,7 +470,7 @@ of PATCH requests SHOULD be used rather than a single PUT request for a client w
 
 A 200 OK will be returned on success, and a 404 Not Found if $InstrumentName is not a valid instrument installed in this Loris instance.
 
-### 3.3.2 Instrument Flags
+#### 3.3.2 Instrument Flags
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
 PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
@@ -502,12 +503,12 @@ The format of the JSON object for these URLS is:
 }
 ```
 
-# 4.0 Imaging Data
+## 4.0 Imaging Data
 
 The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
 namespace, but is defined in a separate section of this document for clarity purposes.
 
-## 4.1 Candidate Images
+### 4.1 Candidate Images
 ```
 GET /candidates/$CandID/$Visit/images
 ```
@@ -530,7 +531,7 @@ the form:
 }
 ```
 
-## 4.2 Session Imaging QC
+### 4.2 Session Imaging QC
 ```
 GET /candidates/$CandID/$Visit/qc/imaging
 PUT /candidates/$CandID/$Visit/qc/imaging
@@ -553,7 +554,7 @@ of the form:
 
 A PUT to the same location will update the QC information. 
 
-## 4.3 Image Level Data
+### 4.3 Image Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename
 ```
@@ -564,7 +565,7 @@ Returns raw file with the appropriate MimeType headers for each Filename retriev
 Only `GET` is currently supported, but future versions of this API may include `PUT`
 support to insert new (or processed) data into LORIS.
 
-### 4.3.1 Image Level QC Data
+#### 4.3.1 Image Level QC Data
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
 PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
@@ -586,7 +587,7 @@ Returns file level QC information. It will return a JSON object of the form:
 
 `PUT` requests to the same URL will update the QC information.
 
-## 4.4 Alternate formats
+### 4.4 Alternate formats
 
 There are occasions where you may want to retrieve a file in a different format
 than it is stored in LORIS. This can be achieved by adding `/format/$FormatType`
@@ -596,14 +597,14 @@ may be added in a future version of this API.
 An attempt to convert an image to an unsupported format may result in a
  `415 Unsupported Media Type` HTTP error.
 
-### 4.4.1 Raw Format
+#### 4.4.1 Raw Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/raw
 ```
 
 This will return the data in raw format (ie. the output of mnc2raw)
 
-### 4.4.2 BrainBrowser Format
+#### 4.4.2 BrainBrowser Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/brainbrowser
 ```
@@ -631,7 +632,7 @@ format that BrainBrowser can load. It will return a JSON object of the format
 }
 ```
 
-### 4.4.3 Thumbnail Format
+#### 4.4.3 Thumbnail Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/thumbnail
 ```
@@ -639,11 +640,11 @@ GET /candidates/$CandID/$VisitLabel/images/$Filename/format/thumbnail
 This will return a JPEG image that can be used as a thumbnail to represent this
 imaging acquisition statically (such as in the LORIS imaging browser.)
 
-## 4.5 Image Headers
+### 4.5 Image Headers
 The LORIS API allows you to extract headers from the images in a RESTful manner.
 The following methods are defined:
 
-### 4.5.1 Header Summary
+#### 4.5.1 Header Summary
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers
 ```
@@ -692,7 +693,7 @@ will return a JSON object of the form:
 All of the dimensions are optional and may not exist for any given
 file (for instance, a 3D image will not have a time dimension.)
 
-### 4.5.2 Complete Headers
+#### 4.5.2 Complete Headers
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
 ```
@@ -715,7 +716,7 @@ The JSON will be of the form:
 }
 ```
 
-### 4.5.3 Specific Header
+#### 4.5.3 Specific Header
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/$HeaderName
 ```
@@ -735,13 +736,13 @@ The JSON object is of the form:
 }
 ```
 
-# 5.0 DICOM Data
+## 5.0 DICOM Data
 
 Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
 portion of the REST API namespace, but is defined in a separate section of this 
 document for clarity purposes.
 
-## 5.1 Candidate DICOMs
+### 5.1 Candidate DICOMs
 ```
 GET /candidates/$CandID/$Visit/dicoms
 ```
@@ -799,7 +800,7 @@ object of the form:
 The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
 scans, respectively.
 
-## 5.2 Tar Level Data
+### 5.2 Tar Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
 ```
