@@ -137,24 +137,28 @@ class Client
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-        // Alter curl structure based on HTTP method
+        // Alter curl structure based on HTTP method.
         if ($method === 'POST') {
             /* POST body */
             if (empty($post_body)) {
-                throw new \Exception("Method selected is POST but body is empty!");
+                throw new \Exception(
+                    "Method selected is POST but body is empty!"
+                );
             }
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
             curl_setopt($ch, CURLOPT_POST, 1);
         } else if ($method === 'HEAD') { // TODO: This isn't actually implemented yet
             curl_setopt($ch, CURLOPT_NOBODY, true); // read: 'no body'
         }
-        // Follow redirects
+        // Follow redirects.
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_VERBOSE, false);
-        // Capture response isntead of printing it
+        // Capture response isntead of printing it.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Connect via HTTP/2 if available.
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
 
-        // For VMs whit expired ssl certificate
+        // For VMs with expired ssl certificate
         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         // Attach optional headers if present
