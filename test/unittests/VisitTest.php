@@ -104,12 +104,12 @@ class VisitTest extends TestCase
                                      );
 
         // insert data to DB
-        foreach ($this->listOfVisit as $v) 
+        foreach ($this->_listOfVisit as $v) 
         {
             $this->DB->insert("visit" , array('VisitName' => $v->getName()));
         }
 
-        foreach ($this->listOfVisitProject as $vp)
+        foreach ($this->_listOfVisitProject as $vp)
         {
             $this->DB->insert("Visit_project_subproject", array('VisitID' => $vp[0], 'ProjectID' => $vp[1], 'SubProjectID' => $vp[2]));
         }
