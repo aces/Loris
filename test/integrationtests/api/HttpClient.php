@@ -39,7 +39,7 @@ class HttpClient extends Client
     private $_auth_token;
 
     /**
- * Create an HTTPClient.  The $url passed to this constructor should
+     * Create an HTTPClient.  The $url passed to this constructor should
      * include both a URL to a LORIS instance as well as the API prefix.
      * E.g. $url = "https://demo.loris.ca/api/v0.0.x/"
      *
@@ -59,9 +59,9 @@ class HttpClient extends Client
      * @return string JWT authorization when successful. Empty string otherwise.
      */
     function getAuthorizationToken(
-        $loris_username = '',
-        $loris_password = ''
-    ) : String {
+        string $loris_username = '',
+        string $loris_password = ''
+    ) : string {
 
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
@@ -72,33 +72,44 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
-        $response = $this->lorisPOST('login/', $post_body);
+        $response = $this->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
 
-        if (empty($response)) {
-            throw new \Exception("No token returned; empty response body");
+        $statuscode = $response->getStatusCode();
+
+        if ($statuscode != 200) {
+            throw new \Exception(
+                $response->getReasonPhrase() . ' : ' .  $response->getBody(),
+                $statuscode
+            );
         }
 
         $json = json_decode($response->getBody());
 
         // If no JWT token returned, login failed.
         if (is_null($json) || !array_key_exists('token', $json)) {
-            throw new \Exception("No token returned");
+            throw new \Exception(
+                $response->getReasonPhrase() . ' : ' .  $response->getBody(),
+                $statuscode
+            );
         }
 
         return $json->token;
     }
 
     /**
-    * Helper function to create a new instance of this class with the
+     * Helper function to create a new instance of this class with the
      * auth_token variable initialized.  This allows authenticated requests and
      * allows the user to forget about managing their session as requests will
      * be sent with session information by default.
      *
      * @param string $token A JWT token encapsulating a valid LORIS session
      *
-     * @return HttpClient A cloned object with _auth_token set
+     * @return HttpClient A cloned object with auth_token set
      */
-    public function withAuthorizationToken(string $token)
+    public function withAuthorizationToken(string $token): HttpClient
     {
         $new = clone $this;
         $new->_auth_token = $token;
@@ -117,9 +128,9 @@ class HttpClient extends Client
      * @return ResponseInterface The HTTP response given by doPost.
      */
     function lorisPOST(
-        String $endpoint,
-        Array $post_body,
-        Array $headers = []
+        string $endpoint,
+        array $post_body,
+        array $headers = []
     ) : ResponseInterface {
         $request = (new Request())
             ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
@@ -132,14 +143,14 @@ class HttpClient extends Client
         if ($this->loggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
-                "Bearer $this->auth_token"
+                "Bearer $this->_auth_token"
             );
         }
         return $this->sendRequest($request);
     }
 
     /**
- * A wrapper for doGET that takes away some of the clutter when making a
+     * A wrapper for doGET that takes away some of the clutter when making a
      * request to LORIS.  Specfically this function will append the necessary url
      * and versioned API prefix.
      *
@@ -159,20 +170,21 @@ class HttpClient extends Client
         if ($this->loggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
-                "Bearer $this->auth_token"
+                "Bearer $this->_auth_token"
             );
         }
         return $this->sendRequest($request);
     }
 
     /**
- * Whether the HTTPClient object has a valid session, represented by
+     * Whether the HTTPClient object has a valid session, represented by
      * auth_token
      *
      * @return bool Whether auth_token is set
      */
-    function loggedIn() : Bool
+    function loggedIn() : bool
     {
         return !empty($this->_auth_token);
     }
 }
+

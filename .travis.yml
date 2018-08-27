@@ -68,18 +68,20 @@ before_script:
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - cp docs/config/config.xml project/config.xml
     - cp docs/config/config.xml test/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/$Demo4022/g' -e 's|%APIURL%|http://localhost:8000|g' project/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/$Demo4022/g' -e 's|%APIURL%|http://localhost:8000|g' test/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/testpass/g' -e 's|%APIURL%|http://localhost:8000|g' project/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/testpass/g' -e 's|%APIURL%|http://localhost:8000|g' test/config.xml
     - mysql LorisTest -e "INSERT INTO users (UserID, Password, Real_name, First_name, Last_name, Degree, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
     - mysql LorisTest -e "INSERT INTO user_psc_rel VALUES ((SELECT ID FROM users WHERE UserID='travis'), 1)"
     # Set the admin account password to a known value for testing. This needs to be done
     # after the config.xml is setup.
     - cd tools
     - echo "testpass" | php ./resetpassword.php admin
+    - echo "testpass" | php ./resetpassword.php travis
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+    - mysql LorisTest -e "UPDATE Config SET Value='Not so !S3cret99 aNy more' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')"
 
     # Set up the testing instrument environment
     - cp test/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc

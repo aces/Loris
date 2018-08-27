@@ -70,6 +70,12 @@ if (preg_match(
     $_REQUEST['subtest']   = $getParams[3];
 
     include_once __DIR__ . "/main.php";
+} elseif (preg_match(
+    '#^api/.*#',
+    $url
+)) {
+    $endpoint = explode('?', $url)[0];
+    include_once __DIR__ . '/' . $endpoint;
 } else {
     include_once __DIR__ . "/index.php";
 }

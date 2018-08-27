@@ -5,7 +5,6 @@
         colors="true">
     <testsuites>
 <!--
-TODO :: Uncomment this
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
@@ -14,14 +13,11 @@ TODO :: Uncomment this
         <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
         </testsuite>
-
 -->
         <testsuite name='LorisApiIntegrationTests'>
             <directory>./integrationtests/api/</directory>
         </testsuite>
-
 <!--
-TODO :: Uncomment this
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
