@@ -348,7 +348,7 @@ class Dashboard extends \NDB_Form
              FROM candidate c
              WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
              AND c.CenterID <> 1",
-            array('Sex' => $sex)
+            array('sex' => $sex)
         );
         return $total;
     }
