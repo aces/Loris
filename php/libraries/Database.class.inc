@@ -71,12 +71,12 @@ class Database
      * NOTE There is no return type declaration for this function as it returns
      * the type `Database` which is not supported by PHPs built in return types.
      *
-     * @param string|null $database     the database to select
-     * @param string|null $username     the username with which to log into
+     * @param string  $database     the database to select
+     * @param string  $username     the username with which to log into
      *                                      the database server
-     * @param string|null $password     the password that matches the username
-     * @param string|null $host         the name of the database server
-     * @param boolean     $trackChanges boolean determining if changes should be
+     * @param string  $password     the password that matches the username
+     * @param string  $host         the name of the database server
+     * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
      * @return object Database
@@ -84,20 +84,20 @@ class Database
      * @access public
      */
     static function &singleton(
-        string $database     = null,
-        string $username     = null,
-        string $password     = null,
-        string $host         = null,
+        string $database     = '',
+        string $username     = '',
+        string $password     = '',
+        string $host         = '',
         bool   $trackChanges = true
     ) {
 
         static $connections = array();
 
         // if no arguments, try to get the first connection or choke
-        if (is_null($database)
-            && is_null($username)
-            && is_null($password)
-            && is_null($host)
+        if (empty($database)
+            && empty($username)
+            && empty($password)
+            && empty($host)
         ) {
             if (!empty($connections)) {
                 reset($connections);
@@ -132,13 +132,13 @@ class Database
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
-     * @param string       $database     the database to select
-     * @param string|null  $username     the username with which to log into
+     * @param string      $database     the database to select
+     * @param string|null $username     the username with which to log into
      *                              the database server
-     * @param string|null  $password     the password that matches the username
-     * @param string|null  $host         the name of the database server
-     * @param boolean      $trackChanges whether to use the trackChanges 
-     *                              machanism on this connection
+     * @param string|null $password     the password that matches the username
+     * @param string|null $host         the name of the database server
+     * @param boolean     $trackChanges whether to use the trackChanges
+     *                              mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
