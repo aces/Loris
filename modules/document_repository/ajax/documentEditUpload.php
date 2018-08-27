@@ -57,7 +57,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
-        $fullPath  = $uploadPath . $fileName;
+        $fullPath   = $uploadPath . $fileName;
 
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
