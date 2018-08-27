@@ -94,15 +94,27 @@ class UploadForm extends React.Component {
       const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
       if (!fileName.match(properName) && !fileName.match(properNameExt)) {
         swal({
-          title: "File improperly named!",
-          text: "File name must match " + pcv +
-          ' or begin with "' + pcvu +
-          '", and have the extension of .tgz, tar.gz or .zip',
+          title: "Filename does not match other fields!",
+          text: "Filename and values in the PSCID, CandID " +
+          "and Visit Label fields of the form do not match. Please " +
+          "verify that the information entered in the " +
+          "fields or the filename are correct.",
           type: "error",
           confirmButtonText: "OK"
         });
-        let errorMessage = {mriFile: "File improperly named!"};
-        let hasError = {mriFile: true};
+        let fieldMsg = "Field does not match the filename!";
+        let errorMessage = {
+          mriFile: "Filename does not match other fields!",
+          candID: fieldMsg,
+          pSCID: fieldMsg,
+          visitLabel: fieldMsg
+        };
+        let hasError = {
+          mriFile: true,
+          candID: true,
+          pSCID: true,
+          visitLabel: true
+        };
         this.setState({errorMessage, hasError});
         return;
       }
