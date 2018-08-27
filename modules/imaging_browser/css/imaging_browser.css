@@ -24,13 +24,13 @@ td.sidenav {
 }
 
 ul {
-    margin: 0px;
+    margin: 0;
     padding-left: 12px;
     list-style-type: none;
 }
 
 dl {
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 8px;
     padding-top: 5px;
 }
@@ -63,12 +63,15 @@ h3 {
 .newdata {
     color: red;
 }
+
 .clickable {
     cursor: pointer;
 }
+
 .mri-righttable {
     display: none;
 }
+
 .panel-title {
     margin-top: 0;
     margin-bottom: 0;
@@ -80,41 +83,48 @@ h3 {
     display: inline-block;
     max-width: 100%;
 }
+
 .views {
     margin-right: 10px;
     margin-top: -2px;
 }
-.mri-second-row-panel{
-   margin-left: 2px;
-   margin-top: 7px;
-   margin-bottom: 0px;
+
+.mri-second-row-panel {
+    margin-left: 2px;
+    margin-top: 7px;
+    margin-bottom: 0;
 
 }
-.mri-third-row-panel{
-   margin-left: 2px;
-   margin-top: 7px;
-   margin-bottom: 7px;
+
+.mri-third-row-panel {
+    margin-left: 2px;
+    margin-top: 7px;
+    margin-bottom: 7px;
 
 }
 
 .feedback-text {
-   color: #000;
+    color: #000;
 }
+
 .visit-level-feedback {
-   margin-top: 9px;
-   margin-bottom: 9px;
+    margin-top: 9px;
+    margin-bottom: 9px;
 }
+
 .btn-volume-viewer {
-  color: #fff;
-  background-color: #778;
-  border-color: #333;
-  margin-bottom: 3px;
+    color: #fff;
+    background-color: #778;
+    border-color: #333;
+    margin-bottom: 3px;
 }
+
 .header-info {
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 13px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
 }
+
 .static-info {
-  color: #064785;
-  text-decoration: none;
+    color: #064785;
+    text-decoration: none;
 }
