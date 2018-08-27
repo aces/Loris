@@ -52,8 +52,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
-        $fileSize = $_FILES['file']['size'];
-        $fileName = $_FILES['file']['name'];
+        $fileSize = $_FILES["file"]["size"];
+        $fileName = $_FILES["file"]["name"];
         $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
@@ -64,7 +64,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         if (intval($category) < 0) {
             http_response_code(400);
             throw new LorisException(
-                "Category parameter must be a positive integer."
+                "'Category' parameter must be a positive integer."
             );
         }
 
