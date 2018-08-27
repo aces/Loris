@@ -25,6 +25,8 @@ namespace LORIS\help_editor;
  */
 class Help_Editor extends \NDB_Menu_Filter
 {
+    public $skipTemplate = true;
+
      /**
        *  Checking user permissions
        *
@@ -129,8 +131,7 @@ class Help_Editor extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/help_editor/js/help_editor.js",
-             $baseURL . "/help_editor/js/columnFormatter.js",
+             $baseURL . "/help_editor/js/help_editor.js"
             )
         );
     }

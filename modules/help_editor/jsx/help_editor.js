@@ -21,7 +21,8 @@ class HelpEditor extends React.Component {
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
+      data: {}
     };
 
     // Bind component instance to custom methods
@@ -77,13 +78,17 @@ class HelpEditor extends React.Component {
       );
     }
 
+    const filterRef = function(f) {
+      this.filter = f;
+    }.bind(this);
+
     return (
       <div>
         <FilterForm
           Module="help_editor"
           name="help_filter"
           id="help_filter"
-          ref="helpFilter"
+          ref={filterRef}
           columns={2}
           formElements={this.state.Data.form}
           onUpdate={this.updateFilter}
