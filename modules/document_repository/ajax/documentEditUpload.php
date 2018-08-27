@@ -52,7 +52,6 @@ if ($userSingleton->hasPermission('document_repository_view')
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
         $fileSize = $_FILES["file"]["size"];
-        $fileName = $_FILES["file"]["name"];
         $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
@@ -61,7 +60,6 @@ if ($userSingleton->hasPermission('document_repository_view')
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
-            http_response_code(400);
             throw new LorisException(
                 "'Category' parameter must be a positive integer."
             );
@@ -71,7 +69,6 @@ if ($userSingleton->hasPermission('document_repository_view')
         // doesn't exist, create an uploads folder for the logged-in user.
         if (!is_writable($fullPath)) {
             if (file_exists($fullPath)) {
-                http_response_code(500);
                 throw new LorisException(
                     "User uploads path in Document Repository is not writable."
                 );
@@ -85,8 +82,9 @@ if ($userSingleton->hasPermission('document_repository_view')
             $_FILES['file']['tmp_name'],
             $fullPath . $fileName
         )) {
-            http_response_code(500);
-            echo('ERROR: Could not upload file. Contact your administrator');
+            throw new LorisException(
+                'ERROR: Could not upload file. Contact your administrator.'
+            );
         } else {
             $success = $DB->insert(
                 'document_repository',
@@ -127,7 +125,6 @@ if ($userSingleton->hasPermission('document_repository_view')
         // $category is a string representation of an ID, and so should be at
         // least equal to zero
         if (intval($category) < 0) {
-            http_response_code(400);
             throw new LorisException(
                 "Category parameter must be a positive integer."
             );
