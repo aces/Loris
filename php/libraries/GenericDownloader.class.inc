@@ -7,7 +7,7 @@
  * PHP Version 7
  *
  *  @category Main
- *  @package  Behavioural
+ *  @package  Main
  *  @author   John Saigle <john.saigle@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
@@ -24,7 +24,7 @@ require_once '../php/libraries/FileDownloader.class.inc';
  * file system.
  *
  *  @category Main
- *  @package  Behavioural
+ *  @package  Main
  *  @author   John Saigle <john.saigle@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
@@ -100,23 +100,34 @@ class GenericDownloader implements FileDownloader
         }
 
         // Get mime type and do the file download.
-        $mimeType = mime_content_type($fullPath);
+        $mimeType = $this->getContentType($fullPath);
+        // TODO: Remove this and use PSR7 handler instead.
         header("Content-type: $mimeType");
         header("Content-Disposition: attachment; filename=$fileName");
+        // TODO: Return StreamInterface instead.
         $fp = fopen($fullPath, 'r');
         fpassthru($fp);
         fclose($fp);
     }
 
     /**
-     * Must be declared due to FileDownloader.
+     * Returns the MIME type given a file
      *
-     * @param int $id The MySQL ID associated with a filename.
+     * @param string $filename The name of the file.
      *
-     * @return string
+     * @return string The MIME type of $filename.
      */
-    public function getFileNameFromDatabase(int $id)
+    function getContentType(string $filePath): string
     {
+        if (!is_file($filePath)) {
+            $pathForPrinting = htmlentities($filePath);
+            throw new LorisException(
+                "Cannot get mimetype of $pathForPrinting because it is not a "
+                . "file!"
+            );
+            return '';
+        }
+        return mime_content_type($fullPath);
     }
 
     /**
