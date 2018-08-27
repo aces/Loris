@@ -4,12 +4,12 @@
 
 ### This resolves issue...
 
-- [] Redmine? #
+- [ ] Redmine? #
 
-- [] Github? #
+- [ ] Github? #
 
 ### To test this change...
 
-- [] 
+- [ ] 
 
 # If this sentence shows up it means I didn't read the instructions!
