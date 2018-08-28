@@ -8,17 +8,6 @@ import formatColumn from './columnFormatter';
  */
 
 /**
- * @doc function
- * @name updateState
- * @param {object} filter to update the state.
- * @description This function is responsible for updating
- * the UnresolvedConflictsPane state from the parent.
- */
-let updateState = function(filter) {
-  this.setState({filter});
-};
-
-/**
  *	This is the React class for Unresolved Conflicts
  */
 class UnresolvedConflictsPane extends React.Component {
@@ -28,7 +17,10 @@ class UnresolvedConflictsPane extends React.Component {
     this.state = {
       Data: this.props.data
     };
-    updateState = updateState.bind(this);
+  }
+
+  updateFilterState(filter) {
+    this.setState({filter});
   }
 
   // Render the HTML
@@ -59,7 +51,7 @@ class UnresolvedConflictsPane extends React.Component {
 }
 UnresolvedConflictsPane.propTypes = {
   url: React.PropTypes.object.isRequired,
-  data: React.PropTypes.object.isRequired
+  data: React.PropTypes.object.isRequired,
 };
 UnresolvedConflictsPane.defaultProps = {
   module: '',
@@ -70,7 +62,7 @@ UnresolvedConflictsPane.defaultProps = {
       resolved: ''
     }
   },
-  data: {}
+  data: {},
 };
 
 /**
@@ -128,7 +120,9 @@ class ConflictResolverApp extends React.Component {
 
   updateFilter(filter) {
     this.setState({filter});
-    updateState(filter);
+    if (this.child !== undefined) {
+      this.child.updateFilterState(filter);
+    }
   }
 
   resetFilters() {
@@ -157,10 +151,10 @@ class ConflictResolverApp extends React.Component {
     tabs.push(
       <UnresolvedConflictsPane
         TabId="UnresolvedConflicts"
-        ref="unresolvedConflictsPane"
         key={1}
         url={this.props.url}
         data={this.state.Data}
+        ref={instance => {this.child = instance}}
       />
     );
     let tabList = [

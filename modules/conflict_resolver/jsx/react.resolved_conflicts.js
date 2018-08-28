@@ -8,17 +8,6 @@ import formatColumn from './resolved_conflicts_columnFormatter';
  */
 
 /**
- * @doc function
- * @name updateState
- * @param {object} filter to update the state.
- * @description This function is responsible for updating
- * the ResolvedConflictsPane state from the parent.
- */
-let updateState = function(filter) {
-  this.setState({filter});
-};
-
-/**
  *	This is the React class for building the instrument
  */
 class ResolvedConflictsPane extends React.Component {
@@ -28,7 +17,10 @@ class ResolvedConflictsPane extends React.Component {
     this.state = {
       Data: this.props.data
     };
-    updateState = updateState.bind(this);
+  }
+
+  updateFilterState(filter) {
+    this.setState({filter});
   }
 
   // Render the HTML
@@ -117,7 +109,9 @@ class ConflictsResolvedApp extends React.Component {
 
   updateFilter(filter) {
     this.setState({filter});
-    updateState(filter);
+    if (this.child !== undefined) {
+      this.child.updateFilterState(filter);
+    }
   }
 
   resetFilters() {
@@ -146,10 +140,10 @@ class ConflictsResolvedApp extends React.Component {
     tabs.push(
       <ResolvedConflictsPane
         TabId="ResolvedConflicts"
-        ref="resolvedConflictsPane"
         key={1}
         url={this.props.url}
         data={this.state.Data}
+        ref={instance => {this.child = instance}}
       />
     );
     let tabList = [
