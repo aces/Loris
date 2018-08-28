@@ -35,7 +35,7 @@ class AddSurvey extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $editor->hasPermission('user_accounts');
+        return $user->hasPermission('user_accounts');
     }
 
     /**
