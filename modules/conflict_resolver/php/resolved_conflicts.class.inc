@@ -129,7 +129,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Adds the form elements required for the filter
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -257,7 +257,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
