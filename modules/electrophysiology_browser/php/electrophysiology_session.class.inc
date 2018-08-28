@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * This class features the code for the menu portion of the LORIS
@@ -25,35 +25,35 @@ namespace LORIS\electrophysiology_browser;
  * @link       https://github.com/aces/Loris
  */
 
-class Electrophysiology_Session extends \NDB_Page
-{
+class Electrophysiology_Session extends \NDB_Form {
 
     public $skipTemplate = true; // stops from looking for a smarty template
 
     /**
      * Determine whether the user has permission to view this page
      *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool whether the user has access
+     * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user) : bool
+    function _hasAccess()
     {
-        $timePoint = \NDB_Factory::singleton()->timepoint(
-            intval($_REQUEST['sessionID'])
-        );
+        $user = &\User::singleton();
+
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
-                || ($user->hasCenter($timePoint->getCenterID())
+            || ((in_array(
+                    $timePoint->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                ))
                 && $user->hasPermission('electrophysiology_browser_view_site')
             )
         );
     }
 
     /**
-     * Get JS Dependencies
+     * Get js Dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array
      */
     function getJSDependencies()
     {
@@ -63,8 +63,7 @@ class Electrophysiology_Session extends \NDB_Page
         $depends = array_merge(
             $depends,
             array(
-                $baseurl
-                . '/electrophysiology_browser/js/electrophysiology_session_view.js',
+                $baseurl . '/electrophysiology_browser/js/eeg_session_view.js',
             )
         );
         return $depends;
