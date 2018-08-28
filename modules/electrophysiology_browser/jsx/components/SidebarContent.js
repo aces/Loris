@@ -61,57 +61,6 @@ const SidebarContent = (props) => {
           Next &#187;
         </a>
       </div>
-      <div style={
-        {
-          color: '#fff',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          padding: '0 0 0 20px',
-          backgroundColor: '#1a487e',
-        }
-      }>
-        Volume Viewer
-      </div>
-      <div style={
-        {
-          padding: '4px 0 0 20px'
-        }
-      }>
-        <button>3D Only</button><button>3D + Overlay</button>
-      </div>
-      <div style={
-        {
-          color: '#fff',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          padding: '0 0 0 20px',
-          backgroundColor: '#1a487e',
-        }
-      }>
-        Links
-      </div>
-      <div>
-        <a href={''} style={styles.sidebarLink}>Download visit</a>
-        <a href={''} style={styles.sidebarLink}>Visit instruments</a>
-      </div>
-      <div style={
-        {
-          color: '#fff',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          padding: '0 0 0 20px',
-          backgroundColor: '#1a487e',
-        }
-      }>
-        Visit Level QC
-      </div>
-      <div style={
-        {
-          padding: '4px 0 0 20px'
-        }
-      }>
-        <button>Visit Leave Feedback</button>
-      </div>
     </div>
   );
 };

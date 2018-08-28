@@ -22,7 +22,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Links') {
     let cellTypes  = cell.split(",");
     let cellLinks  = [];
-    let baseURL = loris.BaseURL + "/electrophysiology_browser/eeg_session/";
+    let baseURL = loris.BaseURL + "/electrophysiology_browser/electrophysiology_session/";
     let backURL = "&backURL=/electrophysiology_browser/";
 
     // display the link for 'all types'

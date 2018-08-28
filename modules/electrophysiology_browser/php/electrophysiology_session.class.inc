@@ -25,7 +25,7 @@ namespace LORIS\electrophysiology_browser;
  * @link       https://github.com/aces/Loris
  */
 
-class EEG_Session extends \NDB_Form {
+class Electrophysiology_Session extends \NDB_Form {
 
     public $skipTemplate = true; // stops from looking for a smarty template
 
