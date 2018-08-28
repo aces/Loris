@@ -158,7 +158,7 @@ class EEGSessionView extends React.Component {
           appState.isLoaded = true;
           appState.patient.info = data.patient;
           let database = [];
-          for (let i=0; i<data.database.length; i++) {
+          for (let i = 0; i < data.database.length; i++) {
             database.push(data.database[i]);
           }
           appState.database = database;
@@ -201,7 +201,7 @@ class EEGSessionView extends React.Component {
 
     if (this.state.isLoaded) {
       let database = [];
-      for (let i=0; i<this.state.database.length; i++) {
+      for (let i = 0; i < this.state.database.length; i++) {
         database.push(
           <div>
             <FilePanel
@@ -211,9 +211,9 @@ class EEGSessionView extends React.Component {
             />
 
             {/*<DetailsPanel*/}
-              {/*id={'data_panel_' + i}*/}
-              {/*title={'DATA DETAILS (' + i + ')'}*/}
-              {/*data={this.state.database[i].file.details}*/}
+            {/*id={'data_panel_' + i}*/}
+            {/*title={'DATA DETAILS (' + i + ')'}*/}
+            {/*data={this.state.database[i].file.details}*/}
             {/*/>*/}
           </div>
         );
@@ -245,7 +245,7 @@ class EEGSessionView extends React.Component {
               ]
             ]}
             freezeColumn='PSCID'
-            Hide={{rowsPerPage:true, downloadCSV:true, defaultColumn:true}}
+            Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
           />
 
           {database}
@@ -256,6 +256,7 @@ class EEGSessionView extends React.Component {
 
   }
 }
+
 EEGSessionView.propTypes = {
   module: React.PropTypes.string.isRequired,
 };
@@ -268,7 +269,7 @@ EEGSessionView.defaultProps = {
  */
 window.onload = function() {
 
-  const sidebar_content = <SidebarContent />;
+  const sidebar_content = <SidebarContent/>;
 
   const eegSidebar = (
     <Sidebar
