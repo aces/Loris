@@ -177,23 +177,51 @@ class FilePanel extends React.Component {
             <div className={'col-sm-6'} style={stylesFile.div.container.download}>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>EEG File</div>
-                <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[0].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
               </div>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Electrode Info</div>
-                <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[1].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
               </div>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Channels Info</div>
-                <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[2].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
               </div>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Events</div>
-                <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[3].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
+              </div>
+              <div className={'form-group row flex-v-center'}>
+                <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>FDT File</div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[5].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
               </div>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>All Files</div>
-                <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[4].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -318,178 +346,6 @@ FilePanel.defaultProps = {
   data: {}
 };
 
-class DetailsPanel extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: this.props.data
-    };
-
-    console.log('Check this');
-    console.log(this.state.data);
-
-  }
-
-  render() {
-
-    const stylesDetails = {
-      panel: {
-        padding: 0
-      },
-      container: {
-        task: {
-          padding: 0
-        },
-        device: {
-          padding: 0
-        }
-      },
-      table: {
-        style: {
-          maxWidth: '100%',
-          minWidth: '300px'
-        },
-        row: {
-          minHeight: '30px',
-          border: '1px solid gray'
-        },
-        header: {
-          width: 'auto',
-          padding:'10px',
-          color: '#074785'
-        },
-        data: {
-          width: '1%',
-          padding:'10px 50px 10px 10px',
-          whiteSpace: 'nowrap'
-        }
-      }
-    };
-
-    return(
-      <Panel id={this.props.id} title={this.props.title} style={stylesDetails.panel}>
-        <div className={'container-fluid'}>
-          <div className={'row'}>
-            <div className={'col-xs-6'} style={stylesDetails.container.task}>
-              <div className='table-responsive' style={{overflowX: 'scroll'}}>
-                <table style={stylesDetails.table.style}>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Task Description</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.task.description}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Instructions</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.instructions}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>EEG Ground</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.eeg.ground}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Trigger Count</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.trigger_count}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>EEG Placement Scheme</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.eeg.placement_scheme}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Record Type</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.record_type}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>CogAtlas ID</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.cog.atlas_id}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>CogPOID</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.cog.poid}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Institution Name</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.institution.name}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Institution Address</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.institution.address}</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-
-            <div className={'col-xs-6'} style={stylesDetails.container.device}>
-              <div className='table-responsive' style={{overflowX: 'scroll'}}>
-                <table style={stylesDetails.table.style}>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Device Serial Number</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.device.serial_number}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Misc Channel Count</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.misc.channel_count}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Manufacturer</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.manufacturer.name}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Manufacturer Model Name</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.manufacturer.model_name}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Cap Manufacturer</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.cap.manufacturer}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Cap Model Name</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.cap.model_name}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Hardware Filters</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.hardware_filters}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Recording Duration</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.recording_duration}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Epoch Length</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.epoch_length}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Device Version</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.device.version}</td>
-                  </tr>
-                  <tr style={stylesDetails.table.row}>
-                    <th scope='row' style={stylesDetails.table.header}>Subject Artifact Description</th>
-                    <td style={stylesDetails.table.data}>{this.state.data.subject_artifact_description}</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </Panel>
-    );
-  }
-
-}
-DetailsPanel.propTypes = {
-  id: React.PropTypes.string,
-  title: React.PropTypes.string,
-  data: React.PropTypes.object
-};
-DetailsPanel.defaultProps = {
-  id: 'data_panel',
-  title: 'DATA DETAILS',
-  data: {
-
-  }
-};
-
 export {
-  FilePanel,
-  DetailsPanel
+  FilePanel
 }

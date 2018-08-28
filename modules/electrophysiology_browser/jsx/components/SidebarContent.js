@@ -5,7 +5,7 @@
 
 const styles = {
   sidebar: {
-    width: 256,
+    width: 150,
     height: 'calc(100vh)',
     backgroundColor: '#1a487e',
     fontWeight: 200,
@@ -39,25 +39,25 @@ const SidebarContent = (props) => {
           color: '#fff',
           fontSize: '24px',
           fontWeight: 'bold',
-          padding: '80px 0 0 20px',
+          padding: '80px 0 0 10px',
           backgroundColor: '#1a487e',
         }
       }>
         Navigation
       </div>
       <div style={styles.content}>
-        <a href='index.html' style={
+        <a id={'nav_previous'} href={props.previous} target={'_self'} style={
           {
             color: '#fff',
             fontSize: '16px',
             display: 'block',
-            padding: '0 0 0 20px',
+            padding: '0 0 0 10px',
             textDecoration: 'none',
           }
         }>
           &#171; Back to list
         </a>
-        <a href='other.html' style={styles.sidebarLink}>
+        <a id={'nav_next'} href={props.next} target={'_self'} style={styles.sidebarLink}>
           Next &#187;
         </a>
       </div>
@@ -66,6 +66,8 @@ const SidebarContent = (props) => {
 };
 
 SidebarContent.propTypes = {
+  previous: React.PropTypes.string,
+  next: React.PropTypes.string
 };
 
 export default SidebarContent;
