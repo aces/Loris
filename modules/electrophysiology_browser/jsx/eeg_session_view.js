@@ -7,7 +7,7 @@
  */
 
 import StaticDataTable from 'jsx/StaticDataTable';
-import {FilePanel, DetailsPanel} from './components/eeg_session_panels';
+import {FilePanel} from './components/eeg_session_panels';
 import Sidebar from './components/Sidebar'
 import SidebarContent from './components/SidebarContent'
 
@@ -23,6 +23,8 @@ class EEGSessionView extends React.Component {
           outputType: ''
         }
       },
+      prevSession: '',
+      nextSession: '',
       patient: {
         info: {
           pscid: '',
@@ -102,7 +104,33 @@ class EEGSessionView extends React.Component {
                 serial_number: '',
               },
               subject_artifact_description: ''
-            }
+            },
+            downloads: [
+              {
+                type: 'physiological_file',
+                file: '',
+              },
+              {
+                type: 'physiological_electrode_file',
+                file: '',
+              },
+              {
+                type: 'physiological_channel_file',
+                file: '',
+              },
+              {
+                type: 'physiological_task_event_file',
+                file: '',
+              },
+              {
+                type: 'all_files',
+                file: '',
+              },
+              {
+                type: 'physiological_fdt_file',
+                file: '',
+              }
+            ]
           },
         }
       ]
@@ -163,8 +191,10 @@ class EEGSessionView extends React.Component {
           }
           appState.database = database;
           this.setState(appState);
-          //console.log(JSON.stringify(appState));
-          //console.log(appState.database);
+          document.getElementById('nav_next').href =
+            window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.nextSession + '&backURL=/electrophysiology_browser/';
+          document.getElementById('nav_previous').href =
+            window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.prevSession + '&backURL=/electrophysiology_browser/';
         });
       }.bind(this),
       error: function(error) {
@@ -206,15 +236,9 @@ class EEGSessionView extends React.Component {
           <div>
             <FilePanel
               id={'filename_panel_' + i}
-              title={'(' + this.state.database[i].file.name + ')'}
+              title={this.state.database[i].file.name}
               data={this.state.database[i].file}
             />
-
-            {/*<DetailsPanel*/}
-            {/*id={'data_panel_' + i}*/}
-            {/*title={'DATA DETAILS (' + i + ')'}*/}
-            {/*data={this.state.database[i].file.details}*/}
-            {/*/>*/}
           </div>
         );
       }
@@ -269,7 +293,9 @@ EEGSessionView.defaultProps = {
  */
 window.onload = function() {
 
-  const sidebar_content = <SidebarContent/>;
+  const sidebar_content = (
+    <SidebarContent previous={'hello'} next={'okay'}/>
+  );
 
   const eegSidebar = (
     <Sidebar
@@ -280,9 +306,9 @@ window.onload = function() {
   );
 
   const eegSidebarDOM = document.createElement('div');
-  eegSidebarDOM.style.top = '0';
-  eegSidebarDOM.style.bottom = '0';
-  eegSidebarDOM.style.left = '0';
+  eegSidebarDOM.style.top =
+    eegSidebarDOM.style.bottom =
+      eegSidebarDOM.style.left = '0';
   eegSidebarDOM.style.display = 'table-cell';
   eegSidebarDOM.style.height = 'calc(100%);';
   eegSidebarDOM.style.position = 'fixed';
@@ -292,7 +318,7 @@ window.onload = function() {
   page.style.verticalAlign = 'top';
   page.style.position = 'relative';
   page.style.width = 'auto';
-  page.style.marginLeft = '256px';
+  page.style.marginLeft = '150px';
   const wrapDOM = document.getElementById('wrap');
   wrapDOM.insertBefore(eegSidebarDOM, page);
 
