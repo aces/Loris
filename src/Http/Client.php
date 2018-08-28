@@ -155,8 +155,11 @@ class Client
         curl_setopt($ch, CURLOPT_VERBOSE, false);
         // Capture response isntead of printing it.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Connect via HTTP/2 if available.
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
+        // Connect via HTTP/2 if available. Some versions of PHP/cURL don't 
+        // know about it so we are using the magic number 3 here.
+        // The usual alias is CURL_HTTP_VERSION_2_0 but Travis has an issue with
+        // it.
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, 3);
 
         // For VMs with expired ssl certificate
         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
