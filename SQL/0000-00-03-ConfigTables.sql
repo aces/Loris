@@ -152,6 +152,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_series_description', 'Series description to be excluded from insertion into the database (typically localizers and scouts)', 1, 1, 'text', ID, 'Series description to exclude from imaging insertion', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ComputeDeepQC', 'Determines whether a call is made from LORIS-MRI to the DeepQC app for automatic QC prediction', 1, 0, 'boolean', ID, 'Compute automatic QC', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MriConfigFile', 'Name of the MRI config file (stored in dicom-archive/.loris_mri/', 1, 0, 'text', ID, 'Name of the MRI config file', 19 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EnvironmentFile', 'Name of the environment file that need to be sourced for the imaging pipeline', 1, 0, 'text', ID, 'Name of the environment file', 20 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
 --
 -- Filling Config table with default values
@@ -248,3 +249,4 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "scout" FROM ConfigSettings cs W
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/issue_tracker" FROM ConfigSettings WHERE Name="issue_tracker_url";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'prod' FROM ConfigSettings cs WHERE cs.Name="mriConfigFile";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'environment' FROM ConfigSettings cs WHERE cs.Name="EnvironmentFile";
