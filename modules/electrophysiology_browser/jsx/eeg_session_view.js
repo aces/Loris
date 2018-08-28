@@ -150,6 +150,7 @@ class EEGSessionView extends React.Component {
       dataType: 'json',
       data: this.state.url.params,
       success: function(data) {
+        console.log(data);
         this.getState((appState) => {
           appState.setup = {
             data
@@ -163,7 +164,7 @@ class EEGSessionView extends React.Component {
           appState.database = database;
           this.setState(appState);
           //console.log(JSON.stringify(appState));
-          console.log(appState.database);
+          //console.log(appState.database);
         });
       }.bind(this),
       error: function(error) {
