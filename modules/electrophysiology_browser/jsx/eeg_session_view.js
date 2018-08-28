@@ -145,7 +145,7 @@ class EEGSessionView extends React.Component {
    */
   fetchData() {
 
-    $.ajax(loris.BaseURL + '/electrophysiology_browser/ajax/get_eeg_session_data.php', {
+    $.ajax(loris.BaseURL + '/electrophysiology_browser/ajax/get_electrophysiology_session_data.php', {
       method: 'GET',
       dataType: 'json',
       data: this.state.url.params,
