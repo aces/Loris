@@ -47,7 +47,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      *
      * @param array $values The values submitted from the form
      *
-     * @return none
+     * @return bool true if successful
      */
     function _process($values)
     {
@@ -171,13 +171,14 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 }
             }
         }
+        return true;
     }
 
     /**
      * Sets up the class variables required to render the query for the
      * conflict resolver
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -268,13 +269,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
              'Site',
             )
         );
-        return true;
     }
 
     /**
      * Sets up the smarty menu filter items for the conflict resolver
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -343,7 +343,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             }
             $this->addSelect('project', 'Project: ', $list_of_projects);
         }
-        return true;
     }
 
     /**
@@ -408,7 +407,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

@@ -46,7 +46,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Sets up the query for the resolved_conflicts submodule
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -123,7 +123,6 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
              'Site',
             )
         );
-        return true;
     }
 
     /**
@@ -199,8 +198,6 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             }
             $this->addSelect('project', 'Project: ', $list_of_projects);
         }
-
-        return true;
     }
 
     /**
