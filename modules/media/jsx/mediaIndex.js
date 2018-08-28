@@ -1,3 +1,4 @@
+import Loader from 'Loader';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
@@ -59,12 +60,7 @@ class MediaIndex extends React.Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 

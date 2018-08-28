@@ -98,9 +98,14 @@ class Create_Timepoint extends \NDB_Form
         }
 
         // cand ID
-        $this->tpl_data['candID'] = $this->identifier;
+        $sanitizedIdentifier      = htmlentities(
+            $this->identifier,
+            ENT_QUOTES,
+            'UTF-8'
+        );
+        $this->tpl_data['candID'] = $sanitizedIdentifier;
 
-        $this->addHidden('candID', $this->identifier);
+        $this->addHidden('candID', $sanitizedIdentifier);
 
         $candidate   =& \Candidate::singleton($this->identifier);
         $subprojList = null;

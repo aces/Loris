@@ -174,14 +174,17 @@ try {
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
-
-    if (isset($caller->feedbackPanel) && $user->hasPermission('bvl_feedback')) {
-        $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
-            $TestName
-        );
-        $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+    if (isset($caller->feedbackPanel)) {
+        if (!isset($user)) {
+            throw new Exception(401);
+        }
+        if ($user->hasPermission('bvl_feedback')) {
+            $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
+                $TestName
+            );
+            $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+        }
     }
-
     if (isset($caller->page)) {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
@@ -216,6 +219,12 @@ try {
         $errorPage = new Smarty_neurodb;
         $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
+        break;
+    case 401:
+        header("HTTP/1.1 401 Unauthorized");
+        $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
+        $tpl_data['workspace'] = $errorPage->fetch('401.tpl');
         break;
     default:
         header("HTTP/1.1 500 Internal Server Error");
