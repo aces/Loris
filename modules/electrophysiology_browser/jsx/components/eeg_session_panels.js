@@ -114,22 +114,25 @@ class FilePanel extends React.Component {
       },
       table: {
         style: {
-          maxWidth: '100%',
-          minWidth: '300px'
+          width: '100%',
+          height: 'auto',
+          tableLayout: 'fixed'
         },
         row: {
           minHeight: '30px',
-          border: '1px solid gray'
+          border: '1px solid gray',
+          height: 'auto'
         },
         header: {
           width: 'auto',
-          padding:'10px',
-          color: '#074785'
+          padding: '10px',
+          color: '#074785',
+          height: 'auto'
         },
         data: {
-          width: '1%',
           padding:'10px 50px 10px 10px',
-          whiteSpace: 'nowrap'
+          height: 'auto',
+          wordWrap: 'break-word'
         }
       }
     };
@@ -231,7 +234,7 @@ class FilePanel extends React.Component {
           <div className={'container-fluid'}>
             <div className={'row'}>
               <div className={'col-xs-6'} style={stylesDetails.container.task}>
-                <div className='table-responsive' style={{overflowX: 'scroll'}}>
+                <div className='table-responsive'>
                   <table style={stylesDetails.table.style}>
                     <tr style={stylesDetails.table.row}>
                       <th scope='row' style={stylesDetails.table.header}>Task Description</th>
@@ -278,7 +281,7 @@ class FilePanel extends React.Component {
               </div>
 
               <div className={'col-xs-6'} style={stylesDetails.container.device}>
-                <div className='table-responsive' style={{overflowX: 'scroll'}}>
+                <div className='table-responsive'>
                   <table style={stylesDetails.table.style}>
                     <tr style={stylesDetails.table.row}>
                       <th scope='row' style={stylesDetails.table.header}>Device Serial Number</th>
