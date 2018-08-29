@@ -55,7 +55,7 @@ const SidebarContent = (props) => {
             textDecoration: 'none',
           }
         }>
-          &#171; Back to list
+          &#171; Previous
         </a>
         <a id={'nav_next'} href={props.next} target={'_self'} style={styles.sidebarLink}>
           Next &#187;
