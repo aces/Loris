@@ -14,7 +14,7 @@ const styles = {
   sidebarLink: {
     color: '#fff',
     fontSize: '16px',
-    display: 'block',
+    display: 'none',
     padding: '10px 0 0 30px',
     textDecoration: 'none',
   },
@@ -50,7 +50,7 @@ const SidebarContent = (props) => {
           {
             color: '#fff',
             fontSize: '16px',
-            display: 'block',
+            display: 'none',
             padding: '0 0 0 10px',
             textDecoration: 'none',
           }
