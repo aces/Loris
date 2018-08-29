@@ -331,11 +331,11 @@ class Data_Team_Helper extends \NDB_Form
      * Get the list of fieldnames in conflict for the given test_name
      * from conflict_unresolved
      *
-     * @param string       $test_name   the value of test name
-     * @param string       $visit_label the value of visit label
-     * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the id or default value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param string     $test_name   the value of test name
+     * @param string     $visit_label the value of visit label
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the id or default value of the site
+     * @param int|null   $project     the id of the project or can be null
      *
      * @return unknown
      */
