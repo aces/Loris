@@ -64,7 +64,6 @@ class GenericDownloader implements FileDownloader
         // Ensure that every following test is conducted on a sanitized
         // (non-malicious) file path.
         $this->sanitizePath($userPath);
-        $fileName = basename($userPath);
         $fullPath = $userPath;
 
         // Ensure the server is configured correctly to allow the apache user
