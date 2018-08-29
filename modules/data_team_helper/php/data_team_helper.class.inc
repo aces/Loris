@@ -331,7 +331,7 @@ class Data_Team_Helper extends \NDB_Form
      * Get the list of fieldnames in conflict for the given test_name
      * from conflict_unresolved
      *
-     * @param unknown_type $test_name   the value of test name
+     * @param string       $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
      * @param int|string   $site        the id or default value of the site
@@ -339,7 +339,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @return unknown
      */
-    function instrumentInConflict($test_name,
+    function instrumentInConflict(string $test_name,
         $visit_label=null,
         $candidate=null,
         $site=null,
