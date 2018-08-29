@@ -181,7 +181,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>All Files</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[4].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[4].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -189,7 +189,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>EEG File</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[0].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[0].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -197,7 +197,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Electrode Info</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[1].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[1].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -205,7 +205,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Channels Info</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[2].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[2].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -213,7 +213,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Events</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[3].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[3].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -221,7 +221,7 @@ class FilePanel extends React.Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>FDT File</div>
                 <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[5].file}>
+                  <a href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[5].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
