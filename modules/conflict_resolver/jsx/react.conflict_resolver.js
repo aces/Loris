@@ -51,7 +51,7 @@ class UnresolvedConflictsPane extends React.Component {
 }
 UnresolvedConflictsPane.propTypes = {
   url: React.PropTypes.object.isRequired,
-  data: React.PropTypes.object.isRequired,
+  data: React.PropTypes.object.isRequired
 };
 UnresolvedConflictsPane.defaultProps = {
   module: '',
@@ -62,7 +62,7 @@ UnresolvedConflictsPane.defaultProps = {
       resolved: ''
     }
   },
-  data: {},
+  data: {}
 };
 
 /**
@@ -154,7 +154,9 @@ class ConflictResolverApp extends React.Component {
         key={1}
         url={this.props.url}
         data={this.state.Data}
-        ref={instance => {this.child = instance}}
+        ref={instance => {
+          this.child = instance;
+        }}
       />
     );
     let tabList = [

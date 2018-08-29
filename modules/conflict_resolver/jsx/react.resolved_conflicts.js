@@ -143,7 +143,9 @@ class ConflictsResolvedApp extends React.Component {
         key={1}
         url={this.props.url}
         data={this.state.Data}
-        ref={instance => {this.child = instance}}
+        ref={instance => {
+          this.child = instance;
+        }}
       />
     );
     let tabList = [
