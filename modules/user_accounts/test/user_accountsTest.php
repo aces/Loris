@@ -166,7 +166,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'user_accounts/my_preferences',
             'UnitTester',
             'Last_name',
-            'NewFirst'
+            'NewLast'
         );
         $this->_verifyUserModification(
             'user_accounts/my_preferences',
