@@ -124,7 +124,7 @@ class FilePanel extends React.Component {
           height: 'auto'
         },
         header: {
-          width: 'auto',
+          width: '190px',
           padding: '10px',
           color: '#074785',
           height: 'auto'
