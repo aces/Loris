@@ -1,6 +1,10 @@
-let FamilyInfo = React.createClass({
-  getInitialState: function() {
-    return {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class FamilyInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       Data: [],
       formData: {},
       familyMembers: [],
@@ -9,22 +13,28 @@ let FamilyInfo = React.createClass({
       isLoaded: false,
       loadedData: 0,
     };
-  },
-  componentDidMount: function() {
+    this.setFormData = this.setFormData.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+    this.deleteFamilyMember = this.deleteFamilyMember.bind(this);
+  }
+
+  componentDidMount() {
     let that = this;
     $.ajax(
-        this.props.dataURL,
+      this.props.dataURL,
       {
         dataType: 'json',
         xhr: function() {
           let xhr = new window.XMLHttpRequest();
           xhr.addEventListener(
-              'progress',
-              function(evt) {
-                that.setState({
-                  loadedData: evt.loaded,
-                });
+            'progress',
+            function(evt) {
+              that.setState({
+                loadedData: evt.loaded,
               });
+            });
           return xhr;
         },
         success: function(data) {
@@ -40,28 +50,31 @@ let FamilyInfo = React.createClass({
           });
         },
       }
-      );
-  },
-  setFormData: function(formElement, value) {
+    );
+  }
+
+  setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData,
     });
-  },
-  onSubmit: function(e) {
+  }
+
+  onSubmit(e) {
     e.preventDefault();
-  },
-  render: function() {
+  }
+
+  render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return (
-            <div className="alert alert-danger text-center">
-              <strong>
-                {this.state.error}
-              </strong>
-            </div>
-          );
+          <div className="alert alert-danger text-center">
+            <strong>
+              {this.state.error}
+            </strong>
+          </div>
+        );
       }
 
       return (
@@ -70,7 +83,7 @@ let FamilyInfo = React.createClass({
           <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
           </span>
         </button>
-        );
+      );
     }
 
     let relationshipOptions = {
@@ -99,23 +112,23 @@ let FamilyInfo = React.createClass({
 
         familyMembersHTML.push(
           <div key={key}>
-              <StaticElement
-                  label="Family Member DCCID"
-                  text={<a href={link}>{candID}</a>}
-              />
-              <StaticElement
-                  label="Relation Type"
-                  text={relationshipOptions[relationship]}
-              />
-              <ButtonElement
-                  label="Delete"
-                  type="button"
-                  onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
-              />
-              <hr />
+            <StaticElement
+              label="Family Member DCCID"
+              text={<a href={link}>{candID}</a>}
+            />
+            <StaticElement
+              label="Relation Type"
+              text={relationshipOptions[relationship]}
+            />
+            <ButtonElement
+              label="Delete"
+              type="button"
+              onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
+            />
+            <hr/>
           </div>
         );
-          // remove from list of candidates because it can only be added once
+        // remove from list of candidates because it can only be added once
         delete candidateList[candID];
       }
     }
@@ -134,57 +147,58 @@ let FamilyInfo = React.createClass({
     }
 
     return (
-        <div className="row">
-          <div className={alertClass} role="alert" ref="alert-message">
-            {alertMessage}
-          </div>
-          <FormElement
-            name="familyInfo"
-            onSubmit={this.handleSubmit}
-            ref="form"
-            class="col-md-6"
-          >
-            <StaticElement
-              label="PSCID"
-              text={this.state.Data.pscid}
-            />
-            <StaticElement
-              label="DCCID"
-              text={this.state.Data.candID}
-            />
-              <hr />
-              {familyMembersHTML}
-            <SelectElement
-              label="Family Member ID (DCCID)"
-              name="FamilyCandID"
-              options={candidateList}
-              onUserInput={this.setFormData}
-              ref="FamilyCandID"
-              disabled={disabled}
-              required={true}
-              value={this.state.formData.FamilyCandID}
-            />
-            <SelectElement
-              label="Relation Type"
-              name="Relationship_type"
-              options={relationshipOptions}
-              onUserInput={this.setFormData}
-              ref="Relationship_type"
-              disabled={disabled}
-              required={true}
-              value={this.state.formData.Relationship_type}
-            />
-            {addButton}
-          </FormElement>
+      <div className="row">
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
         </div>
-      );
-  },
-    /**
-     * Handles form submission
-     *
-     * @param {event} e - Form submission event
-     */
-  handleSubmit: function(e) {
+        <FormElement
+          name="familyInfo"
+          onSubmit={this.handleSubmit}
+          ref="form"
+          class="col-md-6"
+        >
+          <StaticElement
+            label="PSCID"
+            text={this.state.Data.pscid}
+          />
+          <StaticElement
+            label="DCCID"
+            text={this.state.Data.candID}
+          />
+          <hr/>
+          {familyMembersHTML}
+          <SelectElement
+            label="Family Member ID (DCCID)"
+            name="FamilyCandID"
+            options={candidateList}
+            onUserInput={this.setFormData}
+            ref="FamilyCandID"
+            disabled={disabled}
+            required={true}
+            value={this.state.formData.FamilyCandID}
+          />
+          <SelectElement
+            label="Relation Type"
+            name="Relationship_type"
+            options={relationshipOptions}
+            onUserInput={this.setFormData}
+            ref="Relationship_type"
+            disabled={disabled}
+            required={true}
+            value={this.state.formData.Relationship_type}
+          />
+          {addButton}
+        </FormElement>
+      </div>
+    );
+  }
+
+  /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
+  handleSubmit(e) {
     e.preventDefault();
     let myFormData = this.state.formData;
     let self = this;
@@ -226,14 +240,14 @@ let FamilyInfo = React.createClass({
         });
         self.showAlertMessage();
 
-              // Iterates through child components and resets state
-              // to initial state in order to clear the form
+        // Iterates through child components and resets state
+        // to initial state in order to clear the form
         Object.keys(formRefs).map(function(ref) {
           if (formRefs[ref].state && formRefs[ref].state.value) {
             formRefs[ref].state.value = '';
           }
         });
-              // rerender components
+        // rerender components
         self.forceUpdate();
       },
       error: function(err) {
@@ -243,16 +257,17 @@ let FamilyInfo = React.createClass({
             updateResult: 'error',
             errorMessage: errorMessage,
           }
-            );
+        );
         self.showAlertMessage();
       },
 
     });
-  },
-    /**
-     * Display a success/error alert message after form submission
-     */
-  showAlertMessage: function() {
+  }
+
+  /**
+   * Display a success/error alert message after form submission
+   */
+  showAlertMessage() {
     let self = this;
     if (this.refs['alert-message'] === null) {
       return;
@@ -260,21 +275,22 @@ let FamilyInfo = React.createClass({
 
     let alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-        500,
-        function() {
-          self.setState(
-            {
-              updateResult: null,
+      500,
+      function() {
+        self.setState(
+          {
+            updateResult: null,
 
-            }
-          );
-        });
-  },
-  deleteFamilyMember: function(candID, key, candidateList) {
+          }
+        );
+      });
+  }
+
+  deleteFamilyMember(candID, key, candidateList) {
     let familyMembers = this.state.familyMembers;
     delete familyMembers[key];
 
-      // readd to list of possible family members
+    // readd to list of possible family members
     candidateList[candID] = candID;
 
     this.setState({
@@ -322,8 +338,13 @@ let FamilyInfo = React.createClass({
         }
       },
     });
-  },
-
-});
+  }
+}
+FamilyInfo.propTypes = {
+  dataURL: PropTypes.string,
+  tabName: PropTypes.string,
+  candID: PropTypes.string,
+  action: PropTypes.string,
+};
 
 export default FamilyInfo;
