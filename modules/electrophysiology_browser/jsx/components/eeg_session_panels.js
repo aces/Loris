@@ -179,6 +179,14 @@ class FilePanel extends React.Component {
             </div>
             <div className={'col-sm-6'} style={stylesFile.div.container.download}>
               <div className={'form-group row flex-v-center'}>
+                <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>All Files</div>
+                <div className={'col-xs-2'}>
+                  <a href={this.state.data.downloads[4].file}>
+                    <button style={stylesFile.button.download}>Download</button>
+                  </a>
+                </div>
+              </div>
+              <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>EEG File</div>
                 <div className={'col-xs-2'}>
                   <a href={this.state.data.downloads[0].file}>
@@ -214,14 +222,6 @@ class FilePanel extends React.Component {
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>FDT File</div>
                 <div className={'col-xs-2'}>
                   <a href={this.state.data.downloads[5].file}>
-                    <button style={stylesFile.button.download}>Download</button>
-                  </a>
-                </div>
-              </div>
-              <div className={'form-group row flex-v-center'}>
-                <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>All Files</div>
-                <div className={'col-xs-2'}>
-                  <a href={this.state.data.downloads[4].file}>
                     <button style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
