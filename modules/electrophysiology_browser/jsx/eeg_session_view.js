@@ -195,11 +195,11 @@ class EEGSessionView extends React.Component {
             window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.nextSession + '&backURL=/electrophysiology_browser/';
           document.getElementById('nav_previous').href =
             window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.prevSession + '&backURL=/electrophysiology_browser/';
-          if (data.prevSession === '') {
-            document.getElementById('nav_previous').style.display = 'none';
+          if (data.prevSession !== '') {
+            document.getElementById('nav_previous').style.display = 'block';
           }
-          if (data.nextSession === '') {
-            document.getElementById('nav_next').style.display = 'none';
+          if (data.nextSession !== '') {
+            document.getElementById('nav_next').style.display = 'block';
           }
         });
       }.bind(this),
