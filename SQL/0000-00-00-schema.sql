@@ -112,6 +112,9 @@ DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
 
+DROP TABLE IF EXISTS BIDS_mri_scan_type_rel;
+DROP TABLE IF EXISTS BIDS_category;
+
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
@@ -754,6 +757,39 @@ CREATE TABLE `mri_protocol_checks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+-- ********************************
+-- BIDS tables
+-- ********************************
+
+CREATE TABLE `BIDS_category` (
+ `ImagingCategory` varchar(255) NOT NULL PRIMARY KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `BIDS_category` VALUES
+      ('anat'),
+      ('func'),
+      ('dwi'),
+      ('fmap');
+
+CREATE TABLE `BIDS_mri_scan_type_rel` (
+  `MRIScanTypeID` int(10) unsigned NOT NULL,
+  `BIDSCategory`varchar(255) DEFAULT NULL,
+  `BIDSScanTypeSubCategory`varchar(255) DEFAULT NULL,
+  `BIDSScanType` varchar(255) DEFAULT NULL,
+  `BIDSMultiEcho`varchar(255) DEFAULT NULL,
+  PRIMARY KEY  (`MRIScanTypeID`),
+  KEY `FK_BIDS_mri_scan_type_rel_1` (`MRIScanTypeID`),
+  CONSTRAINT `FK_BIDS_mri_scan_type_rel` FOREIGN KEY (`MRIScanTypeID`) REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_BIDS_category` FOREIGN KEY (`BIDSCategory`) REFERENCES `BIDS_category`(`ImagingCategory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- Default schema mri scan types; make the most common ones named in a BIDS compliant manner
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'func', 'rest', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'fMRI';
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'FLAIR', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'flair';
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T1w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't1';
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't2';
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'dwi', NULL, 'dwi', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'dti';
 
 -- ********************************
 -- MRI violations tables
