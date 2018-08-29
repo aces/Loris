@@ -41,13 +41,12 @@ class Next_Stage extends \NDB_Form
     /**
      * Tie the access to a data_entry permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $timePoint =& \TimePoint::singleton($this->identifier);
 
         // check user permissions

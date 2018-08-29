@@ -34,11 +34,12 @@ class Statistics_Site extends \NDB_Menu
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         //TODO: Create a permission specific to statistics
         $accessAllProfiles = $user->hasPermission('access_all_profiles') &&

@@ -38,11 +38,12 @@ class ViewDetails extends \NDB_Form
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 
@@ -56,7 +57,8 @@ class ViewDetails extends \NDB_Form
         $this->DB         = \Database::singleton();
         $this->tarchiveID = $_REQUEST['tarchiveID'] ?? '';
 
-        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
+        $user = \User::singleton();
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
             $tarchiveID = $_REQUEST['tarchiveID'];
             $this->tpl_data['archive']        = $this->_getTarchiveData(
                 $tarchiveID,

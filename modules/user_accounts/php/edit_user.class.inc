@@ -41,13 +41,12 @@ class Edit_User extends \NDB_Form
      * 'user_accounts_multisite' or whose site matches the site of the user they
      * are trying to edit.
      *
+     * @param \User $editor The user who is accessing this page
+     *
      * @return true if user has access, false otherwise.
      */
-    function _hasAccess()
+    function _hasAccess(\User $editor) : bool
     {
-        // create user object
-        $editor = \User::singleton();
-
         if (!$this->isCreatingNewUser()) {
             $user = \User::factory($this->identifier);
         }

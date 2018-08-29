@@ -26,19 +26,17 @@ namespace LORIS\datadict;
 class Datadict extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
-    /**
-     * Overloading this method to allow access to site users (their own site
-     * only) and users w/ multisite privs
-     *
-     * @note   overloaded function
-     * @return bool
-     * @access private
-     */
-    function _hasAccess()
-    {
-        // create user object
-        $user =& \User::singleton();
 
+    /**
+    * Overloading this method to allow access to site users (their own site
+    * only) and users w/ multisite privs
+    *
+    * @param \User $user The user whose access is being checked
+    *
+    * @return bool
+    */
+    function _hasAccess(\User $user) : bool
+    {
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
     }

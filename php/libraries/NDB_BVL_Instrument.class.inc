@@ -240,7 +240,8 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $access = $obj->_hasAccess();
+        $user   = \User::singleton();
+        $access = $obj->_hasAccess($user);
 
         // check that user has access
         if ($access == false) {
@@ -265,13 +266,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * If the user has ANY of the permissions listed in the config.xml file for
      * the instrument, access is granted.
      *
-     * Future improvement: call this function from display() rather than from
-     * factory()?
+     * @param \User $user The user whose access is being checked
      *
      * @return bool
-     * @access private
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         //get config
         $config =& NDB_Config::singleton();
@@ -291,8 +290,6 @@ class NDB_BVL_Instrument extends NDB_Page
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
-            $user =& User::singleton();
-
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
             foreach ($instrumentPermissions["instrument"] as $instrument) {

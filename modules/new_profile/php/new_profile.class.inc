@@ -28,13 +28,12 @@ class New_Profile extends \NDB_Form
     /**
      * Tie the access to a data_entry permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $site_arr      = $user->getData('CenterIDs');
         $userInDCCSite = in_array("1", $site_arr);
         if ($user->hasStudySite() or $userInDCCSite) {

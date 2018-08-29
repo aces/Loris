@@ -250,9 +250,10 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 $_REQUEST['subtest'] = $pagename;
             }
 
-            if ($page->_hasAccess() !== true) {
+            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+            if ($page->_hasAccess($user) !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
-                    $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                    $user
                 ))->process(
                     $request,
                     new \LORIS\Router\NoopResponder(

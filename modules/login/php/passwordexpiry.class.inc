@@ -40,18 +40,6 @@ class PasswordExpiry extends \NDB_Form
     private $_user;
 
     /**
-     * Determine whether the user has permission to view this page. This
-     * is always true, because setup/validate redirects if the user shouldn't
-     * be here.
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * Setup sets up the LorisForm elements for the page, and redirects
      * to the main LORIS page if the PasswordExpiredForUser session variable
      * hasn't been set in SinglePointLogin (which means it shouldn't be on

@@ -29,11 +29,12 @@ class Training extends \NDB_Form
     /**
      * Checks if the user has access to examiner forms (edit_examiner and training)
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return $user->hasPermission('training');
     }
     /**

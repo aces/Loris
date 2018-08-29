@@ -50,12 +50,12 @@ class Instrument_List extends \NDB_Menu_Filter
     /**
     * Checking permissions
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         if (isset($_REQUEST['sessionID'])) {
             //These variable are only for checking the permissions.
             $TimePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
@@ -74,7 +74,6 @@ class Instrument_List extends \NDB_Menu_Filter
                    )
             );
         }
-        // check user permissions
         return false;
     }
 

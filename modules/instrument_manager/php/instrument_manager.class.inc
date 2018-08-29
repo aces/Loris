@@ -28,13 +28,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
     /**
     * Checking permissions
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('superuser');
     }
+
     /**
     * SetupVariables function
     *
