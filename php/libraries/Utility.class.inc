@@ -724,17 +724,15 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
-    static function getTestNameUsingFullName($fullname)
+    static function getTestNameUsingFullName($fullname): string
     {
-        $test_name = '';
-        $db        =& Database::singleton();
-        //print_r($instument);
+        $test_name  = '';
+        $db         =& Database::singleton();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
             array('fname' => $fullname)
         );
         if (is_array($instrument) && count($instrument)) {
-            //$full_name = $names[0]
             list(,$test_name) = each($instrument[0]);
         }
         return $test_name;
