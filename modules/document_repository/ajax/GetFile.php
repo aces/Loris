@@ -19,8 +19,8 @@ if (!$user->hasPermission('document_repository_view')
 ) {
     http_response_code(403);
     throw new LorisException(
-        "ERROR: $user is forbidden from viewing/deleting files in the "
-        . "document repository."
+        "ERROR: {$user->getUsername()} is forbidden from viewing/deleting "
+        . "files in the document repository."
     );
 }
 require_once '../tools/generic_includes.php';
@@ -46,7 +46,7 @@ if (!$downloader->isFileInDatabase($partialPath)) {
 }
 // All generic verification and sanitization occurs here.
 $contentType = $downloader->getContentType($downloadBasePath . $partialPath);
-$stream = $downloader->downloadFile($downloadBasePath . $partialPath);
+$stream      = $downloader->downloadFile($downloadBasePath . $partialPath);
 // TODO Replace this with middlware.
 header("Content-Type", $contentType);
 header("Content-Disposition: attachment; filename=" . basename($partialPath));

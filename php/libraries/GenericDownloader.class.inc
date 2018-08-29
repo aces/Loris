@@ -40,7 +40,7 @@ class GenericDownloader implements FileDownloader
      * @param string $basePath The full path to the directory that will serve
      *                              the files for download.
      *
-     * @return none
+     * @return void
      */
     function __construct(string $basePath)
     {
@@ -57,7 +57,7 @@ class GenericDownloader implements FileDownloader
      *                          raw request data) as sanitization is done
      *                          automatically.
      *
-     * @return none
+     * @return resource
      */
     public function downloadFile(string $userPath)
     {
@@ -131,7 +131,7 @@ class GenericDownloader implements FileDownloader
      *
      * @param string $userPath The full path supplied by the user.
      *
-     * @return none
+     * @return void
      */
     function sanitizePath(string $userPath): void
     {

@@ -31,7 +31,7 @@ interface FileDownloader
      *
      * @param string $fullPath The full path to the resource to download
      *
-     * @return void
+     * @return resource
      */
     function downloadFile(string $fullPath);
 
