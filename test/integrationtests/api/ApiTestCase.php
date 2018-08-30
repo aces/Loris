@@ -2,7 +2,7 @@
 namespace LORIS\integrationtests;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once('HttpClient.php');
+require_once 'HttpClient.php';
 
 use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\Uri;
@@ -15,8 +15,8 @@ class ApiTestCase extends TestCase
     public function __construct()
     {
         parent::__construct();
-        $this->factory  = \NDB_Factory::singleton();
- 
+        $this->factory = \NDB_Factory::singleton();
+
         $config   = $this->factory->Config(CONFIG_XML);
         $dbconfig = $config->getSetting('database');
 
@@ -31,7 +31,7 @@ class ApiTestCase extends TestCase
 
         $this->httpclient = new \LORIS\tests\api\HttpClient(
             new Uri(
-                $this->factory->settings()->getAPIURL() . '/api/v0.0.3-dev/'
+                $this->factory->settings()->getBaseURL() . '/api/v0.0.3-dev/'
             )
         );
     }

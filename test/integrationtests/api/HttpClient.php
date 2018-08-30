@@ -15,7 +15,7 @@ namespace LORIS\tests\api;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-use \LORIS\Http\Client;
+use \LORIS\Http\CurlClient;
 use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Uri;
 use \Zend\Diactoros\Request;
@@ -33,9 +33,9 @@ use \Zend\Diactoros\Request;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class HttpClient extends Client
+class HttpClient extends CurlClient
 {
-    public $loris_base_url;
+    private $_loris_base_url;
     private $_auth_token;
 
     /**
@@ -47,30 +47,35 @@ class HttpClient extends Client
      */
     function __construct(Uri $url)
     {
-        $this->loris_base_url = $url;
+        $this->_loris_base_url = $url;
     }
 
     /**
-     * Login to LORIS.
+     * If present, returns the JSON Web Token. Otherwise, attemp to Authenticate
+     * using the provided username and password and return the response token.
      *
      * @param string $loris_username Front-end username
      * @param string $loris_password Front-end password matching $loris_username
      *
      * @return string JWT authorization when successful. Empty string otherwise.
      */
-    function getAuthorizationToken(
+    function getJWT(
         string $loris_username = '',
         string $loris_password = ''
     ) : string {
+
+        if (!empty($this->_auth_token)) {
+            return $this->_auth_token;
+        }
 
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
         }
 
-        $post_body = [
+        $post_body = array(
                       "username" => $loris_username,
                       "password" => $loris_password,
-                     ];
+                     );
 
         $response = $this->lorisPOST(
             'Login.php?PrintLogin=true',
@@ -109,7 +114,7 @@ class HttpClient extends Client
      *
      * @return HttpClient A cloned object with auth_token set
      */
-    public function withAuthorizationToken(string $token): HttpClient
+    public function withJWT(string $token): HttpClient
     {
         $new = clone $this;
         $new->_auth_token = $token;
@@ -133,14 +138,14 @@ class HttpClient extends Client
         array $headers = []
     ) : ResponseInterface {
         $request = (new Request())
-            ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
+            ->withUri(new Uri((string) $this->_loris_base_url . $endpoint))
             ->withMethod('POST')
             ->withAddedHeader('Content-Type', 'application/json')
             ->withAddedHeader('Accept', 'application/json');
 
         $request->getBody()->write(json_encode($post_body));
 
-        if ($this->loggedIn()) {
+        if (!empty($this->_auth_token)) {
             $request = $request->withAddedHeader(
                 'Authorization',
                 "Bearer $this->_auth_token"
@@ -161,30 +166,19 @@ class HttpClient extends Client
      */
     function lorisGET(string $endpoint, array $headers = []): ResponseInterface
     {
-        $full_url = new Uri((string) $this->loris_base_url . $endpoint);
+        $full_url = new Uri((string) $this->_loris_base_url . $endpoint);
         $request  = (new Request())
             ->withUri($full_url)
             ->withMethod('GET')
             ->withAddedHeader('Accept', 'application/json');
 
-        if ($this->loggedIn()) {
+        if (!empty($this->_auth_token)) {
             $request = $request->withAddedHeader(
                 'Authorization',
                 "Bearer $this->_auth_token"
             );
         }
         return $this->sendRequest($request);
-    }
-
-    /**
-     * Whether the HTTPClient object has a valid session, represented by
-     * auth_token
-     *
-     * @return bool Whether auth_token is set
-     */
-    function loggedIn() : bool
-    {
-        return !empty($this->_auth_token);
     }
 }
 

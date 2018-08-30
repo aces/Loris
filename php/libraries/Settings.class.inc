@@ -65,17 +65,6 @@ class Settings
     }
 
     /**
-     * Returns the API URL for LORIS to use to connect to the API.
-     *
-     * @return string the URL of the targeted API.
-     */
-    public function getAPIUrl()
-    {
-        $api = $this->_config->getSetting('api');
-        return $api['url'];
-    }
-
-    /**
      * Check if sandbox setting is true
      *
      * @return bool true if 'sandbox' config value is equivalent to true

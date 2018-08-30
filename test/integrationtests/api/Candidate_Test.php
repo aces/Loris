@@ -12,12 +12,12 @@ class Canditate_Test extends ApiTestCase
         $config = $this->factory->Config(CONFIG_XML);
 
         $api_credentials = $config->getSetting('api');
-        $token           = $this->httpclient->getAuthorizationToken(
+        $token           = $this->httpclient->getJWT(
             $api_credentials['username'],
             $api_credentials['password']
         );
 
-        $this->httpclient = $this->httpclient->withAuthorizationToken($token);
+        $this->httpclient = $this->httpclient->withJWT($token);
     }
 
     public function setUp()

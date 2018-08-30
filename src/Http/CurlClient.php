@@ -1,6 +1,6 @@
 <?php
 /**
- * File contains the implementation of Client for HTTP exchanges.
+ * File contains the implementation of a curl Client for HTTP exchanges.
  * PHP Version 7
  *
  * @category PSR7
@@ -16,8 +16,6 @@ namespace LORIS\http;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Response;
-// phan has an issue with the line below. Is it used? It is needed?
-//use \Zend\Diactoros\Stream;
 
 /**
  * This class provides an easy-to-use wrapper around the PHP cURL functions for
@@ -40,7 +38,7 @@ use \Zend\Diactoros\Response;
  * @see https://www.php-fig.org/psr/psr-7/
  */
 
-class Client
+class CurlClient
 {
 
     /**
@@ -161,11 +159,8 @@ class Client
         // it.
         curl_setopt($ch, CURLOPT_HTTP_VERSION, 3);
 
-        // For VMs with expired ssl certificate
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
         // For VMs whit expired ssl certificate
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         // Attach optional headers if present
         if (!empty($headers)) {
