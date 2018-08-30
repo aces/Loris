@@ -159,7 +159,7 @@ class CurlClient
         // it.
         curl_setopt($ch, CURLOPT_HTTP_VERSION, 3);
 
-        // For VMs whit expired ssl certificate
+        // For VMs with expired ssl certificate
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         // Attach optional headers if present
