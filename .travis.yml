@@ -32,7 +32,7 @@ install:
     - phpenv rehash
 
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - wget "http://selenium-release.storage.googleapis.com/3.8.1/selenium-server-standalone-3.8.1.jar"
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-61.0.2.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
