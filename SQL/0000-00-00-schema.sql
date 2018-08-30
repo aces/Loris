@@ -13,8 +13,6 @@ DROP TABLE IF EXISTS `data_release`;
 DROP TABLE IF EXISTS `ExternalLinks`;
 DROP TABLE IF EXISTS `ExternalLinkTypes`;
 
-DROP TABLE IF EXISTS `reliability`;
-
 DROP TABLE IF EXISTS `feedback_mri_comments`;
 DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
 DROP TABLE IF EXISTS `feedback_mri_comment_types`;
@@ -624,7 +622,6 @@ CREATE TABLE `files` (
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
   `FileType` varchar(12) default NULL,
-  `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
   `SourcePipeline` varchar(255),
@@ -640,7 +637,6 @@ CREATE TABLE `files` (
   KEY `sessionid` (`SessionID`),
   KEY `outputtype` (`OutputType`),
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
-  KEY `staging_filetype_outputtype` (`PendingStaging`,`FileType`,`OutputType`),
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
@@ -1771,23 +1767,6 @@ CREATE TABLE `genomic_cpg` (
   KEY `cpg_name` (`cpg_name`),
   CONSTRAINT `genomic_cpg_ibfk_1` FOREIGN KEY (`sample_label`) REFERENCES `genomic_sample_candidate_rel` (`sample_label`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_name`) REFERENCES `genomic_cpg_annotation` (`cpg_name`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ********************************
--- reliability
--- ********************************
-
-
-CREATE TABLE `reliability` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `CommentID` varchar(255) DEFAULT NULL,
-  `reliability_center_id` int(11) NOT NULL DEFAULT '1',
-  `Instrument` varchar(255) DEFAULT NULL,
-  `Reliability_score` decimal(4,2) DEFAULT NULL,
-  `invalid` enum('no','yes') DEFAULT 'no',
-  `Manual_Swap` enum('no','yes') DEFAULT 'no',
-  `EARLI_Candidate` enum('no','yes') DEFAULT 'no',
-  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************

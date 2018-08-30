@@ -25,25 +25,25 @@
 */
 
 body {
-  background-color: white;
+    background-color: white;
 }
 
 #brainbrowser-wrapper {
-  width: 100em;
-  margin-left: 0px;
+    width: 100em;
+    margin-left: 0;
 }
 
 #volume-viewer {
-  display: inline;
-  border-radius: 10px;
+    display: inline;
+    border-radius: 10px;
 }
 
 .volume-container {
-  display: inline;
+    display: inline;
 }
 
 canvas.slice-display {
-  margin: 3px 5px;
+    margin: 3px 5px;
 }
 
 /* Not currently used in Loris
@@ -62,135 +62,135 @@ canvas.slice-display {
 } */
 
 .volume-viewer-controls > div {
-  margin-top: 0px;
-  margin-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 .volume-controls {
-  width: auto;
-  min-width: 330px;
-  height: auto;
-  max-height: 600px;
+    width: auto;
+    min-width: 330px;
+    height: auto;
+    max-height: 600px;
 }
 
 .control-heading {
-  font-size: 14px;
-  font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .control-heading:not(:first-child) {
-  margin-top: 12px;
+    margin-top: 12px;
 }
 
 .control-inputs {
-  border: none;
-  padding: 2px;
-  margin-left: 10px;
-  width: 2em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    padding: 2px;
+    margin-left: 10px;
+    width: 2em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
 .coords .control-inputs {
-  margin-right: 0.6em;
-  width: 40px;
-  font-size: 12px;
+    margin-right: 0.6em;
+    width: 40px;
+    font-size: 12px;
 }
 
 .volume-viewer-threshold, .volume-viewer-panel-size, .volume-viewer-blend {
-  width: 90%;
-  margin: auto;
+    width: 90%;
+    margin: auto;
 }
 
 .ui-slider .ui-slider-handle .ui-state-default .ui-corner-all {
-  color: #777777 !important;
-  font-size: 10px;
-  padding: 3px;
-  text-shadow: 0 1px 0 #FFFFFF;
-  text-decoration:none;
-  cursor: pointer;
+    color: #777777 !important;
+    font-size: 10px;
+    padding: 3px;
+    text-shadow: 0 1px 0 #FFFFFF;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .slider {
-  margin-top: 1.5em!important;
-  margin-bottom: 1em!important;
-  cursor: pointer;
+    margin-top: 1.5em !important;
+    margin-bottom: 1em !important;
+    cursor: pointer;
 }
 
 .single-slider {
-  margin-top: 1.5em!important;
-  margin-bottom: 1em!important;
-  cursor: pointer;
+    margin-top: 1.5em !important;
+    margin-bottom: 1em !important;
+    cursor: pointer;
 }
 
 .thresh-inputs {
-  position: relative;
-  height: 1em;
-  cursor: pointer;
+    position: relative;
+    height: 1em;
+    cursor: pointer;
 }
 
 .thresh-input-left {
-  position: absolute;
+    position: absolute;
 }
 
 .thresh-input-right {
-  position: absolute;
-  right: 8px;
+    position: absolute;
+    right: 8px;
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .ui-dialog-titlebar-close {
-  color: #000000;
-  font-weight: bold;
+    color: #000000;
+    font-weight: bold;
 }
 
 .slice-series-button {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 .slice-series-buttons {
-  /*display: inline-block;*/
-  display: block;
+    /*display: inline-block;*/
+    display: block;
 }
 
 #volume-file {
-  margin-top: 12px;
-  margin-bottom: 10px;
+    margin-top: 12px;
+    margin-bottom: 10px;
 }
 
 #volume-file-submit {
-  margin-top: 6px;
+    margin-top: 6px;
 }
 
 #volume-file-hint {
-  margin: 4px;
+    margin: 4px;
 }
 
 #volume-file-hint a {
-  color: orange;
+    color: orange;
 }
+
 .clickable {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 input[type=checkbox].button:checked + label {
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
 #sync-volumes-wrapper > label, #reset-wrapper > label {
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 1.5;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 #reset-wrapper {
-  margin-right: 10px;
+    margin-right: 10px;
 }

@@ -27,6 +27,6 @@
         "psr-4": {
             "LORIS\\": "src/"
         },
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "php/interfaces"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
     }
 }

@@ -26,16 +26,6 @@ namespace LORIS\login;
 class RequestAccount extends \NDB_Form
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * Sets up the form elements on the page.
      *
      * @return void

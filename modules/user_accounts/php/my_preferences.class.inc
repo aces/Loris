@@ -24,20 +24,6 @@ namespace LORIS\user_accounts;
 class My_Preferences extends \NDB_Form
 {
     /**
-     * Controls who's got access to this page, namely those who have the
-     * 'user_accounts' and who either have permission
-     * 'user_accounts_multisite' or whose site matches the site of the user they
-     * are trying to edit.
-     *
-     * @return true if user has access, false otherwise.
-     */
-    function _hasAccess()
-    {
-        // User can always access My Preferences page
-        return true;
-    }
-
-    /**
      * Computes the initial values this page will be filled with.
      *
      * @return array the default values for the initial state of this page.

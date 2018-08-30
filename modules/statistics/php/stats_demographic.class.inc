@@ -34,13 +34,15 @@ class Stats_Demographic extends \NDB_Form
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *

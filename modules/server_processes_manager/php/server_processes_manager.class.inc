@@ -29,13 +29,12 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
     /**
      * Determines whether the current user has access to the page.
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if the user has access, false otherwise
-     * @access private
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return $user->hasPermission('server_processes_manager');
     }
 

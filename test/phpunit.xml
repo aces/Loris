@@ -5,12 +5,14 @@
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
+
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
+
             <directory>../modules/bvl_feedback/test/</directory>
         </testsuite>
 

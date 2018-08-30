@@ -32,12 +32,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Determine whether the user should have access to this submodule
      *
-     * @return boolean true if the user has access
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return ($user->hasPermission('conflict_resolver'));
     }
 
