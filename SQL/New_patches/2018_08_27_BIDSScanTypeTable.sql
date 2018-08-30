@@ -33,7 +33,7 @@ INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSub
 
 -- CCNA EXAMPLE (THOSE LINES WILL BE REMOVED)
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T1w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = '3d_t1w';
-INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'FLAIR', NULL FROM mri_scan_type mst WHERE mst.Scan_type = '2d_flair');
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'FLAIR', NULL FROM mri_scan_type mst WHERE mst.Scan_type = '2d_flair';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2star', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't2_star';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'PD', 'echo-1' FROM mri_scan_type mst WHERE mst.Scan_type = 'dual_pd';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2w', 'echo-2' FROM mri_scan_type mst WHERE mst.Scan_type = 'dual_t2';
