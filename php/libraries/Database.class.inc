@@ -753,10 +753,7 @@ class Database
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
         }
-        if (isset($rows[0])) {
-            return $rows[0];
-        }
-        return null;
+        return $rows[0] ?? null;
     }
 
     /**

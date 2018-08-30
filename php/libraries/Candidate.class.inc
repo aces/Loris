@@ -307,11 +307,11 @@ class Candidate
 
         $row = $db->pselectRow($query, $candidateIDs);
 
-        if ($row === null) {
-            return false;
+        if ($row !== null) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
