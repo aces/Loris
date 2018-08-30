@@ -33,12 +33,6 @@
         <adminpass>%COUCH_PASSWORD%</adminpass>
     </CouchDB>
 
-    <api>
-        <username>%APIUSERNAME%</username>
-        <password>%APIPASSWORD%</password>
-        <url>%APIURL%</url>
-    </api>
-
     <!-- study variables -->
     <study>
         <PSCID>

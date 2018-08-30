@@ -26,14 +26,18 @@
         <name>Example database</name>
     </database>
 
+    <CouchDB>
+        <dbName>%COUCH_DATABASE%</dbName>
+        <hostname>%COUCH_HOSTNAME%</hostname>
+        <port>%COUCH_PORT%</port>
+        <admin>%COUCH_USERNAME%</admin>
+        <adminpass>%COUCH_PASSWORD%</adminpass>
+    </CouchDB>
+
     <api>
         <username>%APIUSERNAME%</username>
         <password>%APIPASSWORD%</password>
-        <url>%APIURL%</url>
     </api>
-
-    <CouchDB>
-    </CouchDB>
 
     <!-- study variables -->
     <study>
