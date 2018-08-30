@@ -12,7 +12,7 @@
     <!-- set to 1 if development environment -->
     <dev>
         <sandbox>0</sandbox>
-        <selenium_url>http://selenium:4444/wd/hub</selenium_url>
+        <selenium_url>http://localhost:4444/wd/hub</selenium_url>
     </dev>
 
     <!-- database settings -->
