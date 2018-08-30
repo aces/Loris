@@ -49,7 +49,7 @@ class Instrument_List extends \NDB_Menu_Filter
     protected $candidate;
 
     /**
-     * Sets the timepoint that is being accessed on this page
+     * Sets the timepoint that is being accessed on this page.
      *
      * @param \TimePoint $timepoint The timepoint object.
      *
@@ -61,7 +61,7 @@ class Instrument_List extends \NDB_Menu_Filter
     }
 
     /**
-     * Sets the candidate is being accessed on this page
+     * Sets the candidate that is being accessed on this page.
      *
      * @param \Candidate $candidate The candidate object.
      *
@@ -127,7 +127,7 @@ class Instrument_List extends \NDB_Menu_Filter
     ) : ResponseInterface {
         $this->candidate = $request->getAttribute("Candidate");
         $this->timePoint = $request->getAttribute("timePoint");
-        if ($this->candidate == null || $this->timePoint === null) {
+        if ($this->candidate === null || $this->timePoint === null) {
             // This shouldn't happen, the module level router verifies that
             // the candidate exists before getting here.
             throw new \LorisException("Timepoint list requires a timepoint.");
