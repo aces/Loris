@@ -3,11 +3,15 @@
  InstrumentConflictsPanel
  */
 
-let PagedRowHeader = React.createClass({
-  propType: {
-    headerRow: React.PropTypes.array.isRequired,
-  },
-  render: function() {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class PagedRowHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return (
       <thead>
       <tr className="info">
@@ -17,26 +21,32 @@ let PagedRowHeader = React.createClass({
       </tr>
       </thead>
     );
-  },
-});
+  }
+}
+PagedRowHeader.propType = {
+  headerRow: PropTypes.array.isRequired,
+};
 
-let PagedTable = React.createClass({
-  propTypes: {
-    tableHeaders: React.PropTypes.array,
-    tableRows: React.PropTypes.array,
-  },
-  getInitialState: function() {
-    return {
+class PagedTable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       pageSize: 10,
       currentPage: 1,
     };
-  },
-  componentWillReceiveProps: function(nextProps) {
+
+    this.getPage = this.getPage.bind(this);
+    this.getNumPages = this.getNumPages.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
     this.setState({
       currentPage: 1,
     });
-  },
-  getPage: function() {
+  }
+
+  getPage() {
     let start = this.state.pageSize * (this.state.currentPage - 1);
     let end = start + this.state.pageSize;
 
@@ -44,14 +54,11 @@ let PagedTable = React.createClass({
       currentPage: this.state.currentPage,
       tableRows: this.props.tableRows.slice(start, end),
       numPages: this.getNumPages(),
-      handleClick: function(pageNum) {
-        return function() {
-          this.handlePageChange(pageNum);
-        }.bind(this);
-      }.bind(this),
+      handleClick: this.handlePageChange,
     };
-  },
-  getNumPages: function() {
+  }
+
+  getNumPages() {
     let numPages = Math.floor(
       this.props.tableRows.length / this.state.pageSize
     );
@@ -59,11 +66,12 @@ let PagedTable = React.createClass({
       numPages++;
     }
     return numPages;
-  },
-  handlePageChange: function(pageNum) {
+  }
+  handlePageChange(pageNum) {
     this.setState({currentPage: pageNum});
-  },
-  render: function() {
+  }
+
+  render() {
     let tableContents = 'There is no data to display';
     let page = this.getPage();
     let rowsToMap = page.tableRows;
@@ -95,21 +103,30 @@ let PagedTable = React.createClass({
         <nav><BVLPager page={page}/></nav>
       </div>
     );
-  },
-});
+  }
+}
 
-let IncompleteCandidatesRow = React.createClass({
-  handleClick: function(event) {
+PagedTable.propTypes = {
+  tableHeaders: PropTypes.array,
+  tableRows: PropTypes.array,
+};
+
+class IncompleteCandidatesRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
     event.preventDefault();
     let link = this.refs.incomplete;
     window.open(link, 'Incomplete Candidate');
-  },
-  propTypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired,
+  }
 
-  },
-  render: function() {
+  render() {
     let row = this.props.row;
     return (
       <tr key={row.id} >
@@ -142,15 +159,22 @@ let IncompleteCandidatesRow = React.createClass({
         </td>
       </tr>
     );
-  },
-});
+  }
+}
+IncompleteCandidatesRow.propTypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-let InstrumentConflictsRow = React.createClass({
-  proptypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired,
-  },
-  render: function() {
+class InstrumentConflictsRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  render() {
     let row = this.props.row;
     let baseURL = this.props.BaseURL;
     return (
@@ -177,20 +201,29 @@ let InstrumentConflictsRow = React.createClass({
         <td>{row.FieldName}</td>
       </tr>
     );
-  },
-});
+  }
+}
+InstrumentConflictsRow.proptypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-let BehaviouralFeedbackRow = React.createClass({
-  handleClick: function(event) {
+class BehaviouralFeedbackRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
     event.preventDefault();
     let link = this.refs.feedback.href;
     window.open(link, 'Behavioural Feedback');
-  },
-  propTypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired,
-  },
-  render: function() {
+  }
+
+  render() {
     let row = this.props.row;
     let bvlLink;
     let bvlLevel;
@@ -236,15 +269,22 @@ let BehaviouralFeedbackRow = React.createClass({
         </td>
       </tr>
     );
-  },
-});
+  }
+}
+BehaviouralFeedbackRow.propTypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-let DefaultPanel = React.createClass({
-  displayName: 'CandidatesPanelTable',
-  propTypes: {
-    title: React.PropTypes.string,
-  },
-  render: function() {
+class DefaultPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayName: 'CandidatesPanelTable',
+    };
+  }
+
+  render() {
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">{this.props.title}</div>
@@ -253,11 +293,19 @@ let DefaultPanel = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
+DefaultPanel.propTypes = {
+  title: PropTypes.string,
+};
 
-let IncompleteCandidates = React.createClass({
-  render: function() {
+class IncompleteCandidates extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
+  render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
     return (
@@ -270,11 +318,11 @@ let IncompleteCandidates = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  },
-});
+  }
+}
 
-let InstrumentConflicts = React.createClass({
-  render: function() {
+class InstrumentConflicts extends Component {
+  render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
     return (
@@ -287,11 +335,11 @@ let InstrumentConflicts = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  },
-});
+  }
+}
 
-let BehaviouralFeedback = React.createClass({
-  render: function() {
+class BehaviouralFeedback extends Component {
+  render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
     return (
@@ -304,11 +352,11 @@ let BehaviouralFeedback = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  },
-});
+  }
+}
 
-let BVLPager = React.createClass({
-  render: function() {
+class BVLPager extends Component {
+  render() {
     let page = this.props.page;
     let pageLinks = [];
 
@@ -375,11 +423,11 @@ let BVLPager = React.createClass({
     return (
       <ul className="pagination pagination-sm">{pageLinks}</ul>
     );
-  },
-});
+  }
+}
 
-let dataTeamGraphics = React.createClass({
-  componentDidMount: function() {
+class dataTeamGraphics extends Component {
+  componentDidMount() {
     c3.generate({
       bindto: '#completedChart',
       data: {
@@ -398,8 +446,8 @@ let dataTeamGraphics = React.createClass({
         },
       },
     });
-  },
-  render: function() {
+  }
+  render() {
     let pscidStatus = (
       this.props.pscid ? ('Candidate ' + this.props.pscid) : 'All Candidates'
     );
@@ -431,8 +479,8 @@ let dataTeamGraphics = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 let GraphicsPanel = React.createFactory(dataTeamGraphics);
 let BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);

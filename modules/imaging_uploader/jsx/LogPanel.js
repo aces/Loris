@@ -1,5 +1,5 @@
 /* global UploadProgress */
-
+import React, {Component} from 'react';
 import Panel from 'Panel';
 
 /**
@@ -13,7 +13,7 @@ import Panel from 'Panel';
  * @since 2017/04/01
  *
  */
-class LogPanel extends React.Component {
+class LogPanel extends Component {
   constructor(props) {
     super(props);
 
@@ -158,20 +158,20 @@ class LogPanel extends React.Component {
     };
 
     return (
-      <Panel id="log_panel" title="Log Viewer">
-        <FormElement name="log_form">
+      <Panel id='log_panel' title='Log Viewer'>
+        <FormElement name='log_form'>
           <SelectElement
-            name="LogType"
-            label="Logs to display"
+            name='LogType'
+            label='Logs to display'
             options={logTypes}
             onUserInput={this.onLogTypeChange}
             value={this.state.logType}
             emptyOption={false}
           />
           <TextareaElement
-            name="UploadLogs"
+            name='UploadLogs'
             disabled={true}
-            id="mri_upload_logs"
+            id='mri_upload_logs'
             value={this.state.logText}
             rows={6}
           />

@@ -5,7 +5,8 @@
  * @version 1.1.0
  *
  */
-
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Panel from 'Panel';
 
 /**
@@ -22,7 +23,7 @@ import Panel from 'Panel';
  * all `candID` fields to `candidateID` automatically before appending them to URL.
  *
  */
-class FilterForm extends React.Component {
+class FilterForm extends Component {
   constructor(props) {
     super(props);
 
@@ -199,12 +200,12 @@ FilterForm.defaultProps = {
   },
 };
 FilterForm.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.object.isRequired,
-  id: React.PropTypes.string,
-  height: React.PropTypes.string,
-  title: React.PropTypes.string,
-  onUpdate: React.PropTypes.func,
+  Module: PropTypes.string.isRequired,
+  filter: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  height: PropTypes.string,
+  title: PropTypes.string,
+  onUpdate: PropTypes.func,
 };
 
 export default FilterForm;

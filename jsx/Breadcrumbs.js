@@ -10,11 +10,13 @@
  *
  */
 
+import React, {Component} from 'react';
+
 /**
  * Breadcrumbs Component.
  * Used for navigation on all Loris pages.
  */
-class Breadcrumbs extends React.Component {
+class Breadcrumbs extends Component {
   constructor(props) {
     super(props);
 
@@ -28,14 +30,14 @@ class Breadcrumbs extends React.Component {
   componentWillMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
-window.addEventListener('resize', this.checkScreenSize);
-}
+      window.addEventListener('resize', this.checkScreenSize);
+    }
   }
 
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
-window.removeEventListener('resize', this.checkScreenSize);
-}
+      window.removeEventListener('resize', this.checkScreenSize);
+    }
   }
 
   checkScreenSize() {

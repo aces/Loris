@@ -6,6 +6,9 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Tabs Component.
  * React wrapper for Bootstrap tabs. Allows to dynamically render tabs
@@ -29,7 +32,7 @@
  * =================================================
  *
  */
-class Tabs extends React.Component {
+class Tabs extends Component {
   constructor(props) {
     super(props);
 
@@ -131,9 +134,9 @@ class Tabs extends React.Component {
   }
 }
 Tabs.propTypes = {
-  tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string,
-  updateURL: React.PropTypes.bool,
+  tabs: PropTypes.array.isRequired,
+  defaultTab: PropTypes.string,
+  updateURL: PropTypes.bool,
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
@@ -146,7 +149,7 @@ Tabs.defaultProps = {
  * Allows to dynamically render vertical tabs corresponding to tab panes.
  */
 
-class VerticalTabs extends React.Component {
+class VerticalTabs extends Component {
   constructor(props) {
     super(props);
 
@@ -250,9 +253,9 @@ class VerticalTabs extends React.Component {
   }
 }
 VerticalTabs.propTypes = {
-  tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string,
-  updateURL: React.PropTypes.bool,
+  tabs: PropTypes.array.isRequired,
+  defaultTab: PropTypes.string,
+  updateURL: PropTypes.bool,
 };
 VerticalTabs.defaultProps = {
   onTabChange: function() {},
@@ -265,7 +268,7 @@ VerticalTabs.defaultProps = {
  * TabPane component.
  * Used to wrap content for every tab.
  */
-class TabPane extends React.Component {
+class TabPane extends Component {
   render() {
     let classList = 'tab-pane';
     let title;
@@ -286,9 +289,9 @@ class TabPane extends React.Component {
   }
 }
 TabPane.propTypes = {
-  TabId: React.PropTypes.string.isRequired,
-  Title: React.PropTypes.string,
-  activeTab: React.PropTypes.string,
+  TabId: PropTypes.string.isRequired,
+  Title: PropTypes.string,
+  activeTab: PropTypes.string,
 };
 
 export {

@@ -1,6 +1,9 @@
 import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * DICOM Archive Page.
  *
@@ -14,7 +17,7 @@ import formatColumn from './columnFormatter';
  * @version 1.0.0
  *
  * */
-class DicomArchive extends React.Component {
+class DicomArchive extends Component {
   constructor(props) {
     super(props);
 
@@ -106,8 +109,8 @@ class DicomArchive extends React.Component {
 }
 
 DicomArchive.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  DataURL: React.PropTypes.string.isRequired,
+  Module: PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
 };
 
 /**

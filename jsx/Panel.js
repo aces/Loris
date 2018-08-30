@@ -6,11 +6,14 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Panel component
  * Wraps children in a collapsible bootstrap panel
  */
-class Panel extends React.Component {
+class Panel extends Component {
   constructor(props) {
     super(props);
 
@@ -68,9 +71,9 @@ class Panel extends React.Component {
 }
 
 Panel.propTypes = {
-  id: React.PropTypes.string,
-  height: React.PropTypes.string,
-  title: React.PropTypes.string,
+  id: PropTypes.string,
+  height: PropTypes.string,
+  title: PropTypes.string,
 };
 Panel.defaultProps = {
   initCollapsed: false,
