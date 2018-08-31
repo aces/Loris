@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS bids_mri_scan_type_rel;
 DROP TABLE IF EXISTS bids_category;
 
 CREATE TABLE `bids_category` (
- `BIDSCategoryID` int(11) NOT NULL AUTO_INCREMENT,
+ `BIDSCategoryID` int(3) NOT NULL AUTO_INCREMENT,
  `ImagingCategory` varchar(10) NOT NULL UNIQUE,
  PRIMARY KEY (`BIDSCategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

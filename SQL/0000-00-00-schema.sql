@@ -762,7 +762,7 @@ CREATE TABLE `mri_protocol_checks` (
 -- ********************************
 
 CREATE TABLE `bids_category` (
- `BIDSCategoryID` int(11) NOT NULL AUTO_INCREMENT,
+ `BIDSCategoryID` int(3) NOT NULL AUTO_INCREMENT,
  `ImagingCategory` varchar(10) NOT NULL UNIQUE,    
  PRIMARY KEY (`BIDSCategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
