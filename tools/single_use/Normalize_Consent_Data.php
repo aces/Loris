@@ -99,8 +99,8 @@ foreach ($consentList as $consentName=>$consentLabel) {
         $consentID  = $entry['ID'];
         $candID     = $entry['CandID'];
         // Check if consent status is not_answered
-        if($status === "not_answered") {
-            array_push($errors, "Deprecated consent status 'not_answered' found for " . $consentName . ":
+        if($status === "not_answered" || $status === "") {
+            array_push($errors, "Deprecated consent status 'not_answered' or empty string found for " . $consentName . ":
                        [ID]     => " . $consentID . "
                        [CandID] => " . $candID . "
                        Please change to a valid status or remove data.");
