@@ -785,7 +785,7 @@ CREATE TABLE `BIDS_mri_scan_type_rel` (
 
 
 -- Default schema mri scan types; make the most common ones named in a BIDS compliant manner
-INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'func', 'rest', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'fMRI';
+INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'func', 'task-rest', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'fMRI';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'FLAIR', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'flair';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T1w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't1';
 INSERT INTO BIDS_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't2';
