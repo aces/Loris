@@ -6,12 +6,22 @@
  *
  */
 
-import StaticDataTable from 'jsx/StaticDataTable';
-import {FilePanel} from './components/eeg_session_panels';
-import Sidebar from './components/Sidebar'
-import SidebarContent from './components/SidebarContent'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-class EEGSessionView extends React.Component {
+import StaticDataTable from 'jsx/StaticDataTable';
+import {FilePanel} from './components/electrophysiology_session_panels';
+import Sidebar from './components/Sidebar';
+import SidebarContent from './components/SidebarContent';
+
+/**
+ * Electrophysiology Session View page
+ *
+ * View session page of the electrophysiology module
+ *
+ * @author Alizée Wickenheiser
+ */
+class ElectrophysiologySessionView extends Component {
   constructor(props) {
     super(props);
 
@@ -20,8 +30,8 @@ class EEGSessionView extends React.Component {
       url: {
         params: {
           sessionID: '',
-          outputType: ''
-        }
+          outputType: '',
+        },
       },
       prevSession: '',
       nextSession: '',
@@ -32,10 +42,10 @@ class EEGSessionView extends React.Component {
           visit_label: '',
           site: '',
           dob: '',
-          gender: '',
+          sex: '',
           output_type: '',
-          subproject: ''
-        }
+          subproject: '',
+        },
       },
       database: [
         {
@@ -44,31 +54,31 @@ class EEGSessionView extends React.Component {
             task: {
               frequency: {
                 sampling: '',
-                powerline: ''
+                powerline: '',
               },
               channel: [
                 {
                   name: '',
-                  value: ''
+                  value: '',
                 },
                 {
                   name: '',
-                  value: ''
+                  value: '',
                 },
                 {
                   name: '',
-                  value: ''
+                  value: '',
                 },
                 {
                   name: '',
-                  value: ''
-                }
+                  value: '',
+                },
               ],
-              reference: ''
+              reference: '',
             },
             details: {
               task: {
-                description: ''
+                description: '',
               },
               instructions: '',
               eeg: {
@@ -90,7 +100,7 @@ class EEGSessionView extends React.Component {
               },
               manufacturer: {
                 name: '',
-                model_name: ''
+                model_name: '',
               },
               cap: {
                 manufacturer: '',
@@ -103,7 +113,7 @@ class EEGSessionView extends React.Component {
                 version: '',
                 serial_number: '',
               },
-              subject_artifact_description: ''
+              subject_artifact_description: '',
             },
             downloads: [
               {
@@ -129,11 +139,11 @@ class EEGSessionView extends React.Component {
               {
                 type: 'physiological_fdt_file',
                 file: '',
-              }
-            ]
+              },
+            ],
           },
-        }
-      ]
+        },
+      ],
     };
 
     // Bind component instance to custom methods
@@ -151,6 +161,9 @@ class EEGSessionView extends React.Component {
 
   /**
    * Post-Render when we can access the DOM.
+   *
+   * @param {object} prevProps
+   * @param {object} prevState
    */
   componentDidUpdate(prevProps, prevState) {
     console.log('componentDidUpdate');
@@ -164,7 +177,7 @@ class EEGSessionView extends React.Component {
     const outputType = url.searchParams.get('outputType');
     this.state.url.params = {
       sessionID: url.searchParams.get('sessionID'),
-      outputType: outputType === null ? 'all_types' : outputType
+      outputType: outputType === null ? 'all_types' : outputType,
     };
   }
 
@@ -172,7 +185,6 @@ class EEGSessionView extends React.Component {
    * Retrieve data from the provided URL and save it in state.
    */
   fetchData() {
-
     $.ajax(loris.BaseURL + '/electrophysiology_browser/ajax/get_electrophysiology_session_data.php', {
       method: 'GET',
       dataType: 'json',
@@ -181,7 +193,7 @@ class EEGSessionView extends React.Component {
         console.log(data);
         this.getState((appState) => {
           appState.setup = {
-            data
+            data,
           };
           appState.isLoaded = true;
           appState.patient.info = data.patient;
@@ -206,12 +218,14 @@ class EEGSessionView extends React.Component {
       error: function(error) {
         console.log('ajax (get) - error!');
         console.log(JSON.stringify(error));
-      }
+      },
     });
   }
 
   /**
    * Retrieve the previous state.
+   *
+   * @param {object} callback
    */
   getState(callback) {
     this.setState((prevState) => {
@@ -219,11 +233,7 @@ class EEGSessionView extends React.Component {
     });
   }
 
-  /**
-   * Render the HTML.
-   */
   render() {
-
     if (!this.state.isLoaded) {
       return (
         <button className='btn-info has-spinner'>
@@ -258,9 +268,9 @@ class EEGSessionView extends React.Component {
               'Visit Label',
               'Site',
               'DOB',
-              'Gender',
+              'Sex',
               'Output Type',
-              'Subproject'
+              'Subproject',
             ]}
             Data={[
               [
@@ -269,10 +279,10 @@ class EEGSessionView extends React.Component {
                 this.state.patient.info.visit_label,
                 this.state.patient.info.site,
                 this.state.patient.info.dob,
-                this.state.patient.info.gender,
+                this.state.patient.info.sex,
                 this.state.patient.info.output_type,
-                this.state.patient.info.subproject
-              ]
+                this.state.patient.info.subproject,
+              ],
             ]}
             freezeColumn='PSCID'
             Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
@@ -283,29 +293,27 @@ class EEGSessionView extends React.Component {
         </div>
       );
     }
-
   }
 }
 
-EEGSessionView.propTypes = {
-  module: React.PropTypes.string.isRequired,
+ElectrophysiologySessionView.propTypes = {
+  module: PropTypes.string.isRequired,
 };
-EEGSessionView.defaultProps = {
-  module: ''
+ElectrophysiologySessionView.defaultProps = {
+  module: '',
 };
 
 /**
  * Render EEGSession on page load.
  */
 window.onload = function() {
-
-  const sidebar_content = (
-    <SidebarContent previous={'hello'} next={'okay'}/>
+  const sidebarContent = (
+    <SidebarContent previous={'previous'} next={'next'}/>
   );
 
   const eegSidebar = (
     <Sidebar
-      content={sidebar_content}
+      content={sidebarContent}
       open={true}
       docked={true}>
     </Sidebar>
@@ -313,8 +321,8 @@ window.onload = function() {
 
   const eegSidebarDOM = document.createElement('div');
   eegSidebarDOM.style.top =
-    eegSidebarDOM.style.bottom =
-      eegSidebarDOM.style.left = '0';
+  eegSidebarDOM.style.bottom =
+  eegSidebarDOM.style.left = '0';
   eegSidebarDOM.style.display = 'table-cell';
   eegSidebarDOM.style.height = 'calc(100%);';
   eegSidebarDOM.style.position = 'fixed';
@@ -329,7 +337,7 @@ window.onload = function() {
   wrapDOM.insertBefore(eegSidebarDOM, page);
 
   const eegSessionView = (
-    <EEGSessionView
+    <ElectrophysiologySessionView
       module={'eegSessionView'}
     />
   );

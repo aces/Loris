@@ -1,7 +1,9 @@
 /**
  * Created by Alizée Wickenheiser on 6/25/18.
- * Les contes de fées sont faits pour être défaits...
  */
+
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 const style = {
   root: {
@@ -20,10 +22,10 @@ const style = {
     top: 0,
     bottom: 0,
     overflowY: 'scroll',
-  }
+  },
 };
 
-class Sidebar extends React.Component {
+class Sidebar extends Component {
   constructor(props) {
     super(props);
 
@@ -82,19 +84,19 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   // styles
-  styles: React.PropTypes.shape({
-    root: React.PropTypes.object,
-    sidebar: React.PropTypes.object,
-    content: React.PropTypes.object,
+  styles: PropTypes.shape({
+    root: PropTypes.object,
+    sidebar: PropTypes.object,
+    content: PropTypes.object,
   }),
 
   // sidebar content to render
-  content: React.PropTypes.node.isRequired,
+  content: PropTypes.node.isRequired,
 
   // Place the sidebar on the right
-  pullRight: React.PropTypes.bool,
+  pullRight: PropTypes.bool,
 
-  sidebar: React.PropTypes.object,
+  sidebar: PropTypes.object,
 };
 
 Sidebar.defaultProps = {
@@ -102,7 +104,7 @@ Sidebar.defaultProps = {
   pullRight: false,
   sidebar: {
     width: 0,
-  }
+  },
 };
 
 export default Sidebar;

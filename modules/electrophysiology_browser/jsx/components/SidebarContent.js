@@ -1,7 +1,8 @@
 /**
  * Created by Alizée Wickenheiser on 6/25/18.
- * Les contes de fées sont faits pour être défaits...
  */
+
+import PropTypes from 'prop-types';
 
 const styles = {
   sidebar: {
@@ -9,7 +10,7 @@ const styles = {
     height: 'calc(100vh)',
     backgroundColor: '#1a487e',
     fontWeight: 200,
-    fontFamily: 'Helvetica, Arial, sans-serif'
+    fontFamily: 'Helvetica, Arial, sans-serif',
   },
   sidebarLink: {
     color: '#fff',
@@ -31,7 +32,6 @@ const styles = {
 };
 
 const SidebarContent = (props) => {
-
   return (
     <div style={styles.sidebar}>
       <div style={
@@ -66,8 +66,8 @@ const SidebarContent = (props) => {
 };
 
 SidebarContent.propTypes = {
-  previous: React.PropTypes.string,
-  next: React.PropTypes.string
+  previous: PropTypes.string,
+  next: PropTypes.string,
 };
 
 export default SidebarContent;

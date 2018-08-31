@@ -1,5 +1,6 @@
 node_modules/*
-modules/*/js/*.js
+modules/*/js/*
+modules/*/js/*/*
 htdocs/js/components/*
 
 # Ignore until ESLint is run
