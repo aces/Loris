@@ -762,8 +762,8 @@ CREATE TABLE `mri_protocol_checks` (
 -- ********************************
 
 CREATE TABLE `bids_category` (
- `BIDSCategoryID` int(3) NOT NULL AUTO_INCREMENT,
- `ImagingCategory` varchar(10) NOT NULL,
+ `BIDSCategoryID` int(11) NOT NULL AUTO_INCREMENT,
+ `ImagingCategory` varchar(10) NOT NULL UNIQUE,    
  PRIMARY KEY (`BIDSCategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -780,7 +780,7 @@ CREATE TABLE `bids_mri_scan_type_rel` (
   `BIDSScanType` varchar(255) DEFAULT NULL,
   `BIDSMultiEcho`varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`MRIScanTypeID`),
-  KEY `FK_bids_mri_scan_type_rel_1` (`MRIScanTypeID`),
+  KEY `FK_bids_mri_scan_type_rel` (`MRIScanTypeID`),
   CONSTRAINT `FK_bids_mri_scan_type_rel` FOREIGN KEY (`MRIScanTypeID`) REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_bids_category` FOREIGN KEY (`BIDSCategory`) REFERENCES `bids_category`(`ImagingCategory`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
