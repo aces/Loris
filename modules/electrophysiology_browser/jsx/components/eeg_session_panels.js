@@ -254,7 +254,7 @@ class FilePanel extends React.Component {
         <Panel id={this.props.id + '_details'} title={'DETAILS ' + this.props.title} style={stylesDetails.panel}>
           <div className={'container-fluid'}>
             <div className={'row'}>
-              <div className={'col-xs-6'} style={stylesDetails.container.task}>
+              <div className={'col-xs-12'} style={stylesDetails.container.task}>
                 <div className='table-responsive'>
                   <table style={stylesDetails.table.style}>
                     <tr style={stylesDetails.table.row}>
@@ -297,13 +297,6 @@ class FilePanel extends React.Component {
                       <th scope='row' style={stylesDetails.table.header}>Institution Address</th>
                       <td style={stylesDetails.table.data}>{this.state.data.details.institution.address}</td>
                     </tr>
-                  </table>
-                </div>
-              </div>
-
-              <div className={'col-xs-6'} style={stylesDetails.container.device}>
-                <div className='table-responsive'>
-                  <table style={stylesDetails.table.style}>
                     <tr style={stylesDetails.table.row}>
                       <th scope='row' style={stylesDetails.table.header}>Device Serial Number</th>
                       <td style={stylesDetails.table.data}>{this.state.data.details.device.serial_number}</td>
@@ -351,6 +344,57 @@ class FilePanel extends React.Component {
                   </table>
                 </div>
               </div>
+
+              {/*<div className={'col-xs-6'} style={stylesDetails.container.device}>*/}
+                {/*<div className='table-responsive'>*/}
+                  {/*<table style={stylesDetails.table.style}>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Device Serial Number</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.device.serial_number}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Misc Channel Count</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.misc.channel_count}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Manufacturer</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.manufacturer.name}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Manufacturer Model Name</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.manufacturer.model_name}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Cap Manufacturer</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.cap.manufacturer}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Cap Model Name</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.cap.model_name}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Hardware Filters</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.hardware_filters}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Recording Duration</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.recording_duration}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Epoch Length</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.epoch_length}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Device Version</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.device.version}</td>*/}
+                    {/*</tr>*/}
+                    {/*<tr style={stylesDetails.table.row}>*/}
+                      {/*<th scope='row' style={stylesDetails.table.header}>Subject Artifact Description</th>*/}
+                      {/*<td style={stylesDetails.table.data}>{this.state.data.details.subject_artifact_description}</td>*/}
+                    {/*</tr>*/}
+                  {/*</table>*/}
+                {/*</div>*/}
+              {/*</div>*/}
 
             </div>
           </div>
