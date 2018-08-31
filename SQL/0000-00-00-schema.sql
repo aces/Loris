@@ -775,7 +775,7 @@ INSERT INTO `bids_category` (ImagingCategory) VALUES
 
 CREATE TABLE `bids_mri_scan_type_rel` (
   `MRIScanTypeID` int(10) unsigned NOT NULL,
-  `BIDSCategory`varchar(255) DEFAULT NULL,
+  `BIDSCategory`varchar(10) DEFAULT NULL,
   `BIDSScanTypeSubCategory`varchar(255) DEFAULT NULL,
   `BIDSScanType` varchar(255) DEFAULT NULL,
   `BIDSMultiEcho`varchar(255) DEFAULT NULL,
