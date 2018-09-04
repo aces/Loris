@@ -228,6 +228,8 @@ CREATE TABLE `users` (
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
+  `active_from` date default NULL,
+  `active_to` date default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
