@@ -1,20 +1,20 @@
 import FilterForm from 'FilterForm';
-import formatColumn from './columnFormatter';
 import Loader from 'Loader';
 import Panel from 'Panel';
+
 /**
  * Examiner Module Page.
  *
  * Serves as an entry-point to the module, rendering the whole react
  * component page on load.
  *
- * Renders Examiner main page consisting of FilterTable and
- * DataTable components.
+ * Renders Examiner main page consisting of FilterForm, FormElement and
+ * StaticDataTable components.
  *
  * @author Victoria Foing, Zaliqa Rosli
  * @version 1.0.0
  *
- * */
+ */
 class Examiner extends React.Component {
 
   constructor(props) {
@@ -22,21 +22,32 @@ class Examiner extends React.Component {
 
     this.state = {
       isLoaded: false,
-      Data: {},
-      formData: {},
-      filter: {},
-      updateResult: null,
-      errorMessage: null,
+      data: {},
+      formData: {
+        addName: null,
+        addRadiologist: null,
+        addSite: null
+      },
+      filter: {}
     };
 
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
-    this.pickElements = this.pickElements.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -44,101 +55,152 @@ class Examiner extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
-   * for easy access by columnFormatter.
+   * Retrieve data from the provided URL and save it in state
    */
   fetchData() {
-    const self=this;
+    const self = this;
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
-      success: function(data) {
+      success: data => {
+        // FIXME: Remove the following line of code as soon as hiddenHeaders is
+        // accepted as a prop by the StaticDataTable component.
         loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         self.setState({
-          Data: data,
+          data: data,
           isLoaded: true
         });
       },
-      error: function(error) {
+      error: error => {
         console.error(error);
       }
     });
   }
 
-  pickElements(json, keys) {
-    var subset = {}
-    keys.forEach(function (key) {
-      if (json.hasOwnProperty(key)) {
-        subset[key] = json[key];
-      }
-    });
-    return subset;
-  }
-
+  /**
+   * Store the value of the element in this.state.formData
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
   setFormData(formElement, value) {
-    let formData = {
-      addName: "",
-      addRadiologist: "",
-      addSite: "",
-    };
+    let formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData
     });
   }
 
+  /**
+   * Set this.state.filter to the input filter object
+   *
+   * @param {object} filter - the filter object
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Reset the filter elements with filter refs to empty values
+   */
   resetFilters() {
-    this.refs.examinerFilter.clearFilter();
+    this.filter.clearFilter();
   }
 
+  /**
+   * Handles the submission of the Add Examiner form
+   *
+   * @param {event} e - event of the form
+   */
   handleSubmit(e) {
-    e.preventDefault();
-    let formData = this.state.Data.form;
+    let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData[key] !== '') {
         formObject.append(key, formData[key]);
       }
     }
+    formObject.append('fire_away', 'Add');
     $.ajax({
       type: 'POST',
-      url: `${loris.BaseURL}/examiner/php/examiner.php`,
+      url: loris.BaseURL + '/examiner/',
       data: formObject,
       cache: false,
       contentType: false,
       processData: false,
       success: data => {
-        this.setState({
-          updateResult: "success",
-        });
-        this.showAlertMessage();
+        swal('Success!', 'Examiner added.', 'success');
         this.fetchData();
       },
       error: error => {
         console.error(error);
-      },
+        let message = error.responseText;
+        swal('Error!', message, 'error');
+      }
     });
   }
 
-  showAlertMessage() {
-    const self = this;
-    if (this.refs["alert-message"] === null) {
-      return;
+  /**
+   * Modify behaviour of specified column cells in the Static Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
+      return null;
     }
-    let alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000,500).delay(3000).slideUp(
-      500,
-      function() {
-        self.setState({
-          updateResult: null
-        });
+    // Create the mapping between rowHeaders and rowData in a row object.
+    let row = {};
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index];
+    });
+
+    switch (column) {
+      case 'Examiner': {
+        let url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
+                  row.ID;
+        return (
+          <td>
+            <a href ={url}>{cell}</a>
+          </td>
+        );
       }
-    );
+      case 'Radiologist': {
+        let radiologist = 'No';
+        if (row.Radiologist === '1') {
+          radiologist = 'Yes';
+        }
+        return (
+          <td>
+            {radiologist}
+          </td>
+        );
+      }
+      case 'Certification':
+        if (row.Certification === null) {
+          return (
+            <td>
+              None
+            </td>
+          );
+        }
+        return (
+          <td>
+            {cell}
+          </td>
+        );
+      default:
+        return (
+          <td>
+            {cell}
+          </td>
+        );
+    }
   }
 
   render() {
@@ -157,9 +219,9 @@ class Examiner extends React.Component {
               Module="examiner"
               name="examiner_filter"
               id="examiner_filter_form"
-              ref="examinerFilter"
+              ref={this.setFilterRef}
               columns={2}
-              formElements={this.pickElements(this.state.Data.form,['examiner','site','radiologist'])}
+              formElements={this.state.data.form}
               onUpdate={this.updateFilter}
               filter={this.state.filter}
             >
@@ -179,7 +241,7 @@ class Examiner extends React.Component {
               id="add-examiner"
               title={
                 <span>
-                  <span className="glyphicon glyphicon-plus"></span> Add Examiner
+                  <span className="glyphicon glyphicon-plus"/> Add Examiner
                 </span>
               }
             >
@@ -187,34 +249,54 @@ class Examiner extends React.Component {
                 Module="examiner"
                 name="add_examiner"
                 id="add_examiner"
-                ref="add_examiner"
+                onSubmit={this.handleSubmit}
+                method="POST"
                 columns={2}
-                formElements={this.pickElements(this.state.Data.form,['addName','addRadiologist','addSite'])}
-                onUserInput={this.setFormData}
               >
-                  <div className="col-md-12">
-                    <ButtonElement
-                      name="fire_away"
-                      label={
-                        <div>
-                          <span className="glyphicon glyphicon-plus"></span> Add
-                        </div>
-                      }
-                      type="submit"
-                      buttonClass="btn btn-sm btn-success pull-right"
-                      onUserInput = {this.handleSubmit}
-                    />
-                  </div>
+                <TextboxElement
+                  name="addName"
+                  label="Name"
+                  value={this.state.formData.addName}
+                  required={true}
+                  onUserInput={this.setFormData}
+                />
+                <CheckboxElement
+                  name="addRadiologist"
+                  label="Radiologist"
+                  id="checkRadiologist"
+                  value={this.state.formData.addRadiologist}
+                  onUserInput={this.setFormData}
+                />
+                <SelectElement
+                  name="addSite"
+                  options={this.state.data.form.site.options}
+                  label="Site"
+                  value={this.state.formData.addSite}
+                  required={true}
+                  onUserInput={this.setFormData}
+                />
+                <div className="col-xs-12 col-sm-12 col-md-12">
+                  <ButtonElement
+                    name="fire_away"
+                    label={
+                      <div>
+                        <span className="glyphicon glyphicon-plus"/> Add
+                      </div>
+                    }
+                    type="submit"
+                    buttonClass="btn btn-sm btn-success pull-right"
+                  />
+                </div>
               </FormElement>
             </Panel>
           </div>
         </div>
         <div id="datatable">
           <StaticDataTable
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
+            Data={this.state.data.Data}
+            Headers={this.state.data.Headers}
             Filter={this.state.filter}
-            getFormattedCell={formatColumn}
+            getFormattedCell={this.formatColumn}
           />
         </div>
       </div>
@@ -230,8 +312,8 @@ Examiner.propTypes = {
 /**
  * Render examiner on page load
  */
-window.onload = function() {
-  var examiner = (
+window.onload = () => {
+  let examiner = (
     <div id="page-examiner">
       <Examiner
         Module="examiner"
@@ -240,5 +322,5 @@ window.onload = function() {
     </div>
   );
 
-  ReactDOM.render(examiner, document.getElementById("lorisworkspace"));
+  ReactDOM.render(examiner, document.getElementById('lorisworkspace'));
 };

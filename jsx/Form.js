@@ -1304,7 +1304,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = 'checkbox-inline';
     let label = null;
 
     // Add required asterix
@@ -1315,19 +1315,14 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'checkbox-inline has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className={this.props.inputClass}>
+        <label htmlFor={this.props.id}>
           <input
             type="checkbox"
-            className="input-sm"
             name={this.props.name}
             id={this.props.id}
             checked={this.props.value}
@@ -1336,7 +1331,9 @@ class CheckboxElement extends React.Component {
             onChange={this.handleChange}
           />
           {errorMessage}
-        </div>
+          {this.props.label}
+          {requiredHTML}
+        </label>
       </div>
     );
   }
@@ -1385,6 +1382,7 @@ class ButtonElement extends React.Component {
         <div className={this.props.columnSize}>
           <button
             type={this.props.type}
+            name={this.props.name}
             className={this.props.buttonClass}
             onClick={this.handleClick}
           >
@@ -1399,6 +1397,7 @@ class ButtonElement extends React.Component {
 ButtonElement.propTypes = {
   label: React.PropTypes.string,
   type: React.PropTypes.string,
+  name: React.PropTypes.string,
   onUserInput: React.PropTypes.func
 };
 
