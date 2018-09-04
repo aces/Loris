@@ -55,14 +55,17 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             $mpath = $base . "modules/$name";
         } else {
             try {
+                // Try and load it using the autoloader, if it was
+                // composer require'd and in the vendor directory.
                 $modulename = "\\LORIS\\$name\\Module";
-                print $modulename;
                 $m = new $modulename();
                 return $m;
             } catch(\Exception $e) {
-                var_dump($e);
+                // It couldn't be autoloaded and didn't exist in the
+                // project or modules directory, it doesn't exist (or
+                // at least isn't installed.)
+                throw new LorisNoSuchModuleException("No such module: $name");
             }
-            throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -131,7 +134,6 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 ]
             )
         );
-        print("ModuleDir: $moduledir");
         $this->name = $name;
         $this->dir  = $moduledir;
     }

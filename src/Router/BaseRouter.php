@@ -96,9 +96,10 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $mr      = new ModuleRouter($module, $this->moduledir);
             $request = $request->withURI($suburi);
             return $mr->handle($request);
-        } catch(\Exception $e) {
-            var_dump($e);
+        } catch(\LorisNoSuchModuleException $e) {
+            // It wasn't a module, so fall back on other routes.
         }
+
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
