@@ -32,16 +32,3 @@ INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSub
 INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T1w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't1';
 INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't2';
 INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'dwi', NULL, 'dwi', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'dti';
-
--- CCNA EXAMPLE (THOSE LINES WILL BE REMOVED)
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T1w', NULL FROM mri_scan_type mst WHERE mst.Scan_type = '3d_t1w';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'FLAIR', NULL FROM mri_scan_type mst WHERE mst.Scan_type = '2d_flair';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2star', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 't2_star';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'PD', 'echo-1' FROM mri_scan_type mst WHERE mst.Scan_type = 'dual_pd';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'anat', NULL, 'T2w', 'echo-2' FROM mri_scan_type mst WHERE mst.Scan_type = 'dual_t2';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'func', 'task-rest', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'resting_state';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'func', 'task-memory', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'fmri_task_memory';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'dwi', NULL, 'dwi', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'dti';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'dwi', NULL, 'B0map', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'b0_map';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'fmap', 'task', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'gre_field_map1';
-INSERT INTO bids_mri_scan_type_rel (MRIScanTypeID, BIDSCategory, BIDSScanTypeSubCategory, BIDSScanType, BIDSMultiEcho) SELECT mst.ID, 'fmap', 'task', 'bold', NULL FROM mri_scan_type mst WHERE mst.Scan_type = 'gre_field_map2';
