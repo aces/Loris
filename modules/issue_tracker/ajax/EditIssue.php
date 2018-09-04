@@ -477,7 +477,7 @@ function getComments($issueID)
  * @param int    $issueID          the issueID
  * @param string $changed_assignee changed assignee
  *
- * @return array
+ * @return void
  * @throws DatabaseException
  */
 function emailUser($issueID, $changed_assignee)

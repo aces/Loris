@@ -12,8 +12,8 @@ function formatDataDictColumn(column, cell, rowData, rowHeaders) {
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
-
-  if (column === 'Description') {
+  const hasEditPermission = loris.userHasPermission('data_dict_edit');
+  if (column === 'Description' && hasEditPermission) {
     var updateDict = function(name) {
       return function(e) {
         e.stopPropagation();

@@ -38,7 +38,7 @@ class Projects extends APIBase
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON as a side-effect)
      */
     public function handleGET()
     {

@@ -36,13 +36,16 @@ insertion pipeline is triggered.
 ## Requirements
 
 For a successful upload:
+- The CandID must exist in the database
+- The PSCID must be valid for the CandID
+- The Visit label must be valid for the CandID
+- The candidate must be active in the database
+- The session must be active in the database
 - The uploaded file is expected to be of one of the following types: 
 `.tgz`, `.tar.gz` or `.zip`.
+- The file should not exceed the max upload size
 - The filename should follow the:
 `PSCID_CandID_VisitLabel_OptionalSuffix` naming convention
-- It is expected that the candidate and timepoint are already created in the 
-database.
-
 
 ## Permissions
 

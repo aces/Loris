@@ -51,7 +51,7 @@ class View_Genomic_File extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

@@ -16,7 +16,7 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
-        echo json_encode(getUploadFields());
+        viewData();
     } else if ($action == "upload") {
         uploadFile();
     } else if ($action == "edit") {
@@ -46,7 +46,7 @@ function editFile()
     $idMediaFile = $req['idMediaFile'];
 
     if (!$idMediaFile) {
-        showError("Error! Invalid media file ID!");
+        showMediaError("Error! Invalid media file ID!");
     }
 
     $updateValues = [
@@ -58,7 +58,7 @@ function editFile()
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
     } catch (DatabaseException $e) {
-        showError("Could not update the file. Please try again!");
+        showMediaError("Could not update the file. Please try again!");
     }
 
 }
@@ -90,12 +90,12 @@ function uploadFile()
     $mediaPath = $config->getSetting('mediaPath');
 
     if (!isset($mediaPath)) {
-        showError("Error! Media path is not set in Loris Settings!");
+        showMediaError("Error! Media path is not set in Loris Settings!");
         exit;
     }
 
     if (!file_exists($mediaPath)) {
-        showError("Error! The upload folder '$mediaPath' does not exist!");
+        showMediaError("Error! The upload folder '$mediaPath' does not exist!");
         exit;
     }
 
@@ -110,7 +110,7 @@ function uploadFile()
 
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
-        showError("Please fill in all required fields!");
+        showMediaError("Please fill in all required fields!");
         return;
     }
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
@@ -118,7 +118,7 @@ function uploadFile()
     $extension = pathinfo($fileName)['extension'];
 
     if (!isset($extension)) {
-        showError("Please make sure your file has a valid extension!");
+        showMediaError("Please make sure your file has a valid extension!");
         return;
     }
 
@@ -136,7 +136,7 @@ function uploadFile()
     );
 
     if (!isset($sessionID) || count($sessionID) < 1) {
-        showError(
+        showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'."
         );
@@ -160,22 +160,31 @@ function uploadFile()
              ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
-        $existingFiles = getFilesList();
-        $idMediaFile   = array_search($fileName, $existingFiles);
         try {
-            // Override db record if file_name already exists
-            if ($idMediaFile) {
-                $db->update('media', $query, ['id' => $idMediaFile]);
-            } else {
-                $db->insert('media', $query);
-            }
+            // Insert or override db record if file_name already exists
+            $db->insertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
-            showError("Could not upload the file. Please try again!");
+            showMediaError("Could not upload the file. Please try again!");
         }
     } else {
-        showError("Could not upload the file. Please try again!");
+        showMediaError("Could not upload the file. Please try again!");
     }
+}
+
+/**
+ * Handles the media view data process
+ *
+ * @return void
+ */
+function viewData()
+{
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_read')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    echo json_encode(getUploadFields());
 }
 
 /**
@@ -323,7 +332,7 @@ function getUploadFields()
  *
  * @return void
  */
-function showError($message)
+function showMediaError($message)
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';

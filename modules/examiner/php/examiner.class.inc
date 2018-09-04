@@ -36,13 +36,14 @@ class Examiner extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         $user = \User::singleton();
-        return $user->hasPermission('examiner_view');
+        return $user->hasPermission('examiner_view')
+            || $user->hasPermission('examiner_multisite');
     }
 
     /**
      * Sets the menu filter class variables.
      *
-     * @return boolean
+     * @return void
      */
     function _setupVariables()
     {
@@ -130,7 +131,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return null
+     * @return void
      */
     function setup()
     {
@@ -206,7 +207,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param array $values add examiner form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -267,6 +268,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         );
 
         header("Location: {$baseurl}/examiner/", true, 303);
+        return true;
     }
 
     /**
