@@ -522,9 +522,9 @@ function getVersionFromLORISRoot($loris_root_dir) : string
 /**
  * Download zipped LORIS release code to $download_path
  *
- * @param string $download_path Path to release code download
+ * @param string $download_path Path to release code download.
  *
- * @return string, the download path if one exists, otherwise the empty string
+ * @return string The download path if one exists, otherwise the empty string.
  */
 function downloadLatestRelease($download_path = '/tmp/loris_') : string
 {
@@ -732,5 +732,5 @@ function usageString() : string
               '--confirm',
               '[--apply-patches]',
              ];
-    return 'Usage: php update.php ' . implode($flags, ' ') . PHP_EOL;
+    return 'Usage: php update.php ' . implode(' ', $flags) . PHP_EOL;
 }
