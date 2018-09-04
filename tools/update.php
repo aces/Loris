@@ -140,17 +140,10 @@ $loris_requirements = [
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
 echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
-if (!isDev()) {
-    echo "[**] Updating LORIS source code "
-        . "($preupdate_version --> $release_version)" . PHP_EOL;
-    if (updateSourceCode($loris_root_dir, $backup_dir)) {
-        echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
-    }
-} else {
-    echo '[-] WARNING: You are using a development version of LORIS. Not '
-        . 'downloading source code files as they should be tracked with'
-        . ' Git.' . PHP_EOL;
-    sleep(2);
+echo "[**] Updating LORIS source code "
+    . "($preupdate_version --> $release_version)" . PHP_EOL;
+if (updateSourceCode($loris_root_dir, $backup_dir)) {
+    echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
 }
 
 // Update apt packages
@@ -353,16 +346,6 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
             }
         }
     }
-    if (isDev()) {
-        echo "[+] Developer instance detected. Including developer patches..."
-            . PHP_EOL;
-
-        // Add all patches in New_patches/. These are only relevant to devs as
-        // all SQL commands needed for a release will be in Release_patches/
-        $dev_patch_dir = $loris_root . 'SQL/New_patches/' . $to_versions[MAJOR]
-            . '.' . $to_versions[MINOR] . '/';
-        $patches       = array_merge($patches, glob($dev_patch_dir . '*.sql'));
-    }
     return $patches;
 }
 
@@ -488,9 +471,6 @@ function installAptPackage($name, $only_upgrade = false) : bool
 function runPackageManagers() : bool
 {
     $cmd = 'composer install';
-    if (!isDev()) {
-        $cmd .= ' --no-dev';
-    }
     if (doExec($cmd) === false) {
         return false;
     }
@@ -608,26 +588,6 @@ function installed($tool) : bool
         return true;
     }
     return false;
-}
-
-/**
- * Returns true or false depending on whether the string 'dev' is in the
- * VERSION file.  This is used to determine whether the current LORIS instance
- * is a development instance or not.
- *
- * @return bool True if VERSION contains 'dev'. False otherwise.
- */
-function isDev() : bool
-{
-    $config         = \NDB_Config::singleton();
-    $paths          = $config->getSetting('paths');
-    $version_string = getVersionFromLORISRoot($paths['base']);
-    // If dev string exists in VERSION file
-    // NOTE this may be broken as of 20.0.0. The string 'dev' doesn't appear
-    // in the version file anymore.
-    // The version file will be generated differently as of the 21 major release
-    // so this function may need to be reworked.
-    return strpos($version_string, 'dev') !== false;
 }
 
 /**
