@@ -124,7 +124,7 @@ $loris_requirements = [
                        "zip",
                        "unzip",
                        "php-json",
-                       "python-software-properties",
+                       "npm",
                        "software-properties-common",
                        "php-ast",
                        "php$php_version",
@@ -142,9 +142,9 @@ echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
 if (!isDev()) {
     echo "[**] Updating LORIS source code "
-        . "($preupdate_version --> $release_version" . PHP_EOL;
+        . "($preupdate_version --> $release_version)" . PHP_EOL;
     if (updateSourceCode($loris_root_dir, $backup_dir)) {
-        echo 'LORIS source code files successfully updated.' . PHP_EOL;
+        echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
     }
 } else {
     echo '[-] WARNING: You are using a development version of LORIS. Not '
@@ -199,7 +199,7 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool
     $backup_dir      .= '_v' . getVersionFromLORISRoot($loris_root_dir);
     $backup_dir      .= '_' . date("j-M-Y") . '/'; // e.g. 10-May-2018
     echo "[*] Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
-    recurse_copy($loris_root_dir, $backup_dir);
+    recurseCopy($loris_root_dir, $backup_dir);
 
     // Get the release code from Github
     $tarball_path = downloadLatestRelease();
@@ -207,7 +207,7 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool
         die('[-] ERROR: Could not download the latest LORIS release.');
     }
     $dst_dir = '/tmp/'; // Parent directory for source code download
-    echo 'Extracting release files...' . PHP_EOL;
+    echo '[*] Extracting release files...' . PHP_EOL;
     $cmd = "unzip -o " . escapeshellarg($tarball_path) . ' -d '
         . escapeshellarg($dst_dir);
     doExec($cmd);
@@ -299,8 +299,8 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
                 . PHP_EOL;
         } else {
             // If major and minor differences are 0, then LORIS is up-to-date.
-            echo "[**] $version_to = $version_from. Patches will not be "
-                . "applied."
+            echo "[**] Major and minor versions are equal. No patches to "
+                . "apply."
                 . PHP_EOL;
             return array();
         }
@@ -346,14 +346,11 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
         echo "[+] Developer instance detected. Including developer patches..."
             . PHP_EOL;
 
-        // TODO: Uncomment below and test after LORIS 20.0-release.  After this
-        // release we will enforece a standard where new patches go into a
-        // directory called New_patches instead of Archive. Makes sense, right?
-        // Add all patches in New_patches/. Everything other needed
-        // command will be in the Release patches which are been added above
-        //$dev_patch_dir = $loris_root . 'SQL/New_patches/' . $to_versions[MAJOR]
-        //    . '.' . $to_versions[MINOR] . '/';
-        //$patches       = array_merge($patches, glob($dev_patch_dir . '*.sql'));
+        // Add all patches in New_patches/. These are only relevant to devs as
+        // all SQL commands needed for a release will be in Release_patches/
+        $dev_patch_dir = $loris_root . 'SQL/New_patches/' . $to_versions[MAJOR]
+            . '.' . $to_versions[MINOR] . '/';
+        $patches       = array_merge($patches, glob($dev_patch_dir . '*.sql'));
     }
     return $patches;
 }
@@ -548,7 +545,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string
     $src_code_url   = $j->{'zipball_url'};
     $download_path .= '.zip';
     if (file_exists($download_path)) {
-        echo "$download_path already exists. Not downloading." . PHP_EOL;
+        echo "[-] $download_path already exists. Not downloading." . PHP_EOL;
         return $download_path;
     }
     $cmd = "wget -qnv -O $download_path $src_code_url";
@@ -614,7 +611,11 @@ function isDev() : bool
     $config         = \NDB_Config::singleton();
     $paths          = $config->getSetting('paths');
     $version_string = getVersionFromLORISRoot($paths['base']);
-    // if dev string exists in VERSION file
+    // If dev string exists in VERSION file
+    // NOTE this may be broken as of 20.0.0. The string 'dev' doesn't appear 
+    // in the version file anymore.
+    // The version file will be generated differently as of the 21 major release
+    // so this function may need to be reworked.
     return strpos($version_string, 'dev') !== false;
 }
 
