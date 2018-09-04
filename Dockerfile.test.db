@@ -12,8 +12,9 @@ COPY docs/instruments/instrument_sql/bmi.sql  /bmi.sql
 COPY docs/instruments/instrument_sql/medical_history.sql  /medical_history.sql
 COPY docs/instruments/instrument_sql/mri_parameter_form.sql  /mri_parameter_form.sql
 COPY docs/instruments/instrument_sql/radiology_review.sql  /radiology_review.sql
-COPY test/RBdata_meta_prerequesites.sql /RBdata_meta_prerequesites.sql
+COPY test/RBdata_consent_info_history.sql  /RBdata_consent_info_history.sql  
 COPY test/RBfiles/*.sql /RBfiles/
+COPY test/RBdata_meta_prerequesites.sql /RBdata_meta_prerequesites.sql
 RUN echo "Use LorisTest;" | cat - \
     0000-00-00-schema.sql \
     0000-00-01-Permission.sql \

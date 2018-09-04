@@ -67,6 +67,7 @@ before_script:
     - mysql LorisTest < docs/instruments/instrument_sql/medical_history.sql
     - mysql LorisTest < docs/instruments/instrument_sql/mri_parameter_form.sql
     - mysql LorisTest < docs/instruments/instrument_sql/radiology_review.sql
+    - mysql LorisTest < test/RBdata_consent_info_history.sql
     - cat test/RBfiles/*.sql | mysql LorisTest
     - mysql LorisTest < test/RBdata_meta_prerequesites.sql
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
