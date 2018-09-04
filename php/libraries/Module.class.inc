@@ -54,7 +54,15 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisNoSuchModuleException("No such module: $name");
+            try {
+                $modulename = "\\LORIS\\$name\\Module";
+                print $modulename;
+                $m = new $modulename();
+                return $m;
+            } catch(\Exception $e) {
+                var_dump($e);
+            }
+            throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -123,6 +131,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 ]
             )
         );
+        print("ModuleDir: $moduledir");
         $this->name = $name;
         $this->dir  = $moduledir;
     }
@@ -281,5 +290,9 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         }
 
         return $page->process($request, $page);
+    }
+
+    function getDir() : string {
+        return $this->dir;
     }
 }

@@ -82,9 +82,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
-        if (is_dir($this->moduledir . "/" . $modulename)
-            || is_dir($this->projectdir . "/modules/" . $modulename)
-        ) {
+
+        try {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
             $module = \Module::factory($modulename);
@@ -97,6 +96,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $mr      = new ModuleRouter($module, $this->moduledir);
             $request = $request->withURI($suburi);
             return $mr->handle($request);
+        } catch(\Exception $e) {
+            var_dump($e);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch

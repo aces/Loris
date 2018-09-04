@@ -36,7 +36,7 @@ class Smarty_NeuroDB extends Smarty
      *
      * @param string $moduleName The name of the module to search through
      */
-    function __construct($moduleName = null)
+    function __construct(?\Module $module = null)
     {
         parent::__construct();
 
@@ -54,9 +54,9 @@ class Smarty_NeuroDB extends Smarty
         $this->loristemplate_dir    = $basePath . "smarty/templates/";
         $this->project_template_dir = $basePath . "project/templates/";
 
-        $this->modules_dir = is_dir($basePath . "project/modules/$moduleName")
-            ? $basePath . "project/modules/$moduleName"
-            : $basePath . "modules/$moduleName" ;
+        if ($module !== null) {
+            $this->modules_dir = $module->getDir();
+        }
 
         // These are probably not needed anymore and can use the smarty
         // defaults, but keep them for now to ensure that Loris doesn't
@@ -82,7 +82,9 @@ class Smarty_NeuroDB extends Smarty
         // Set the template directories. First check for project overrides,
         // then check for modules, then check for old Loris jumbled together
         // templates
-        $this->setTemplateDir($this->modules_dir . "/templates");
+        if ($module !== null) {
+            $this->setTemplateDir($this->modules_dir . "/templates");
+        }
         $this->addTemplateDir($this->project_template_dir);
         $this->addTemplateDir($this->loristemplate_dir);
 
