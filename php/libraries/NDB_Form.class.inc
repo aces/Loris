@@ -275,7 +275,10 @@ class NDB_Form extends NDB_Page
                 }
                 // Check if the CSRF token was created in the last day.  If not, it
                 // is expired and the request is rejected.
-                if (strtotime("now") > $timeOfTokenCreation + strtotime("+1 day")) {
+                $now  = strtotime("now");
+                $then = strtotime($timeOfTokenCreation);
+                $aDay = strtotime("+1 day");
+                if ($now > $then + $aDay) {
                     error_log(
                         'Submitted CSRF token is expired (more than one day 
                         old.'
