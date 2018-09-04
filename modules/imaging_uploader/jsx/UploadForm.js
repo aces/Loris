@@ -103,25 +103,49 @@ class UploadForm extends React.Component {
           confirmButtonText: "OK"
         });
         let fieldMsg = "Field does not match the filename!";
+
         let errorMessage = {
           mriFile: "Filename does not match other fields!",
-          candID: fieldMsg,
-          pSCID: fieldMsg,
-          visitLabel: fieldMsg
+          candID: undefined,
+          pSCID: undefined,
+          visitLabel: undefined
         };
+
         let hasError = {
           mriFile: true,
-          candID: true,
-          pSCID: true,
-          visitLabel: true
+          candID: false,
+          pSCID: false,
+          visitLabel: false
         };
+
+        // check filename fields individually to decide
+        // which fields to apply error message
+        // use limit of 2 to avoid splitting the visit label
+        let fileNameParts = fileName.split('_', 2);
+        if (data.pSCID !== fileNameParts[0]) {
+          errorMessage.pSCID = fieldMsg;
+          hasError.pSCID = true;
+        }
+
+        if (data.candID !== fileNameParts[1]) {
+          errorMessage.candID = fieldMsg;
+          hasError.candID = true;
+        }
+
+        // offset for visit label is size of the two parts plus 2 _'s
+        let visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
+        let fileNameRemains = fileName.substr(visitLabelOffset);
+        // only check that this part of the filename begins with
+        // the field, last part of file name includes optional
+        // specifiers + file extension
+        if (fileNameRemains.indexOf(data.visitLabel) !== 0) {
+          errorMessage.visitLabel = fieldMsg;
+          hasError.visitLabel = true;
+        }
+
         this.setState({errorMessage, hasError});
         return;
       }
-    }
-
-    if (data.IsPhantom === 'N' && (!data.candID || !data.pSCID || !data.visitLabel)) {
-      return;
     }
 
     // Checks if a file with a given fileName has already been uploaded
