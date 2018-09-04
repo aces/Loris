@@ -310,15 +310,26 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
             . PHP_EOL;
     }
 
+    /* Following a discussion on this pull request, it was decided that patching
+     * SQL files automatically when a LORIS is more than one version behind
+     * should not be supported. This is to minimize errors that could impact
+     * data integrity.
+     * https://github.com/aces/Loris/pull/3677#discussion_r202814374
+     */
+    if ($diff_major > 1) {
+        echo "[!] Updating database schema when more than one major release "
+            . "behind is not supported. Patches will not be applied."
+            . PHP_EOL;
+        return array();
+    }
+
     // For every major version released between the version that is installed
     // and the latest version, add the relevant patches if they begin with
-    // a number in that range. For example, if upgrading from 17 to 19, the
-    // array will contain all aptches beginning with "17", "18", or "19".
+    // a number in that range. For example, if upgrading from 18 to 19, the
+    // array will contain all aptches beginning with "18", or "19".
     // i.e.:
-    //   [0] => /var/www/loris/SQL/Release_patches/17.0_To_18.0_upgrade_A.sql
-    //   [1] => /var/www/loris/SQL/Release_patches/17.0_To_18.0_upgrade_B.sql
-    //   [2] => /var/www/loris/SQL/Release_patches/18.0_To_19.0_upgrade.sql
-    //   [3] => /var/www/loris/SQL/Release_patches/19.0_To_19.1_upgrade.sql
+    //   [0] => /var/www/loris/SQL/Release_patches/18.0_To_19.0_upgrade.sql
+    //   [1] => /var/www/loris/SQL/Release_patches/19.0_To_19.1_upgrade.sql
     // Range will run once when $start = $end. We want this in the case where
     // there is no difference in major versions but there is a change in minor
     // versions. The below loops will, in this case, match the minor release
@@ -612,7 +623,7 @@ function isDev() : bool
     $paths          = $config->getSetting('paths');
     $version_string = getVersionFromLORISRoot($paths['base']);
     // If dev string exists in VERSION file
-    // NOTE this may be broken as of 20.0.0. The string 'dev' doesn't appear 
+    // NOTE this may be broken as of 20.0.0. The string 'dev' doesn't appear
     // in the version file anymore.
     // The version file will be generated differently as of the 21 major release
     // so this function may need to be reworked.
