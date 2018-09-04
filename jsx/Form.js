@@ -1,6 +1,6 @@
 /* exported FormElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
 TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
-ButtonElement, LorisElement
+CheckboxElement, ButtonElement, LorisElement
 */
 
 /**
@@ -1286,6 +1286,95 @@ LinkElement.defaultProps = {
 };
 
 /**
+ * Checkbox Component
+ * React wrapper for a <input type="checkbox"> element.
+ */
+class CheckboxElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.checked);
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+    let label = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    if (this.props.label) {
+      label = (
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.inputClass}>
+          <input
+            type="checkbox"
+            className="form-control"
+            style={{width: '5%'}}
+            name={this.props.name}
+            id={this.props.id}
+            checked={this.props.value}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+CheckboxElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func,
+};
+
+CheckboxElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  inputClass: 'col-sm-9',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
+/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -1378,6 +1467,9 @@ class LorisElement extends React.Component {
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
+      case 'checkbox':
+        elementHtml = (<CheckboxElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -1401,6 +1493,7 @@ window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
 window.LinkElement = LinkElement;
+window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -1417,6 +1510,7 @@ export default {
   FileElement,
   StaticElement,
   LinkElement,
+  CheckboxElement,
   ButtonElement,
   LorisElement
 };
