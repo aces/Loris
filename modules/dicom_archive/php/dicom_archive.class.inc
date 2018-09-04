@@ -45,7 +45,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -94,7 +94,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->addBasicDate('dateOfBirth', 'Date of Birth');
         $this->addBasicDate('acquisition', 'Acquisition Date');
         $this->addBasicText('archiveLocation', 'Archive Location');
-        $this->addBasicText('seriesuid', 'Series UI');
+        $this->addBasicText('seriesuid', 'Series UID');
     }
 
 
@@ -102,7 +102,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
@@ -161,7 +161,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      * Overrides base getJSDependencies() to add support for dicom specific
      * React column formatters.
      *
-     * @return an array of extra JS files that this page depends on
+     * @return array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {

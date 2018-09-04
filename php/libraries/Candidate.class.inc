@@ -52,8 +52,9 @@ class Candidate
      *                        a candidate in the candidate table
      *
      * @return Candidate the Candidate object
+     * @static
      */
-    static function &singleton($candID)
+    static public function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
@@ -134,10 +135,17 @@ class Candidate
                      'PTName'    => $parameter_type,
                     )
                 );
+                // Sanitize values coming from the parameter_candidate table
+                // before injecting them into the HTML table.
                 if (!empty($row['Value'])) {
-                    $params[$row['Description']] = $row['Value'];
+                    $params[$row['Description']] = htmlentities(
+                        $row['Value'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
                 }
             }
+
             $this->candidateInfo['DisplayParameters'] = $params;
         }
 
@@ -629,6 +637,29 @@ class Candidate
         return $vLabel;
     }
 
+    /**
+     * Returns list of consents and their respective statuses for this candidate
+     *
+     * @return array List of consents and their associated values for this candidate
+     *               The keys of the arrays are the IDs of the consents
+     */
+    public function getConsents()
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
+            WHERE CandidateID=:cid";
+        $where = array('cid' => $candID);
+        $key   = "ConsentID";
+
+        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+
+        return $consentList;
+    }
 
     /**
     * Generates a new random CandID
@@ -642,7 +673,7 @@ class Candidate
         $db      = $factory->database();
 
         // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
 
         // make sure the cand id is not used
         while ($db->pselectOne(
@@ -650,7 +681,7 @@ class Candidate
             array('CaID' => $candID)
         ) > 0) {
             // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
 
         return $candID;

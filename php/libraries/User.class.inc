@@ -399,15 +399,11 @@ class User extends UserPermissions
         }
 
         if (strpbrk($password, $numbers) === false) {
-            $password .= substr(
-                $numbers,
-                mt_rand(0, strlen($numbers)-1),
-                1
-            );
+            $password .= random_int(0, 9);
         }
 
         for ($i = strlen($password); $i < $length; $i++) {
-            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+            $password .= substr($possible, random_int(0, $possible_cnt), 1);
         }
 
         return $password;
@@ -560,6 +556,26 @@ class User extends UserPermissions
         }
         return $this->hasPermission($code)
             && $this->hasCenter($center_id);
+    }
+
+    /**
+     * Determines if the user has ever logged in successfully
+     *
+     * @return bool
+     */
+    public function hasLoggedIn(): bool
+    {
+        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+            "SELECT
+               COUNT(1)
+             FROM user_login_history
+             WHERE
+               UserID = :v_userid AND
+               Success = 'Y'
+            ",
+            array('v_userid' => $this->userInfo['UserID'])
+        );
+        return $count > 0;
     }
 }
 ?>

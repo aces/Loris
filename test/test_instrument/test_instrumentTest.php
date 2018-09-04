@@ -183,7 +183,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 
     private function _landing(){
       $this->safeGet($this->url .
-        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+        "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
       );
     } 
 }

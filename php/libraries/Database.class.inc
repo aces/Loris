@@ -139,11 +139,17 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return void
+     * @return bool True if DB connection established. False otherwise.
      * @access public
      */
-    function connect($database, $username, $password, $host, $trackChanges = true)
-    {
+    function connect(
+        $database,
+        $username,
+        $password,
+        $host,
+        $trackChanges = true
+    ) : bool {
+
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
@@ -165,11 +171,22 @@ class Database
 
         }
 
-        $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database;charset=UTF8",
-            $username,
-            $password
-        );
+        try {
+            $this->_PDO = new PDO(
+                "mysql:host=$host;dbname=$database;charset=UTF8",
+                $username,
+                $password
+            );
+        } catch (PDOException $e) {
+            // This exception will not be included in the error log as it will
+            // likely include credentials.
+            throw new DatabaseException(
+                "Could not establish a PDO object using the following values: "
+                . "username: `$username`, dbname: `$database`, host: `$host` "
+                . "and the supplied password."
+            );
+            return false;
+        }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -207,6 +224,7 @@ class Database
               :type
             )"
         );
+        return true;
     }
 
     /**
@@ -279,6 +297,41 @@ class Database
     }
 
     /**
+     * Insert row into the database or update on duplicate key.
+     *
+     * This will attempt to insert a row into the database. If there is a duplicate
+     * value for any unique key, the row where the duplicate is present will be
+     * updated.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the row
+     *
+     * @return void
+     */
+    public function insertOnDuplicateUpdate($table, $set)
+    {
+        return $this->_realinsert($table, $set, true, false, true);
+    }
+
+    /**
+     * Insert row into the database or update on duplicate key without validating
+     * input.
+     *
+     * This will attempt to insert a row into the database. If there is a duplicate
+     * value for any unique key, the row where the duplicate is present will be
+     * updated. HTML from any field in the row will *not* be automatically escaped.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the row
+     *
+     * @return void
+     */
+    public function unsafeInsertOnDuplicateUpdate($table, $set)
+    {
+        return $this->_realinsert($table, $set, false, false, true);
+    }
+
+    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -303,17 +356,30 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
-     * @param bool   $autoescape determines whether the values to be set should
-     *                           automatically have the html escaped
-     * @param bool   $ignore     determines whether the insert throws and error or
-     *                           is discarded when value exists in DB
+     * @param string $table             the table into which to insert the row
+     * @param array  $set               the values with which to fill the new row
+     * @param bool   $autoescape        determines whether the values to be set
+     *                                  should automatically have the html escaped
+     * @param bool   $ignore            determines whether the insert throws an
+     *                                  error or is discarded when value exists in DB
+     * @param bool   $onDuplicateUpdate determines whether the row should be updated
+     *                                  upon unique key duplication
      *
      * @return void
      */
-    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
-    {
+    private function _realinsert(
+        $table,
+        $set,
+        $autoescape = true,
+        $ignore = false,
+        $onDuplicateUpdate = false
+    ) {
+        if ($ignore && $onDuplicateUpdate) {
+            throw new DatabaseException(
+                'The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.'
+            );
+        }
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -327,6 +393,13 @@ class Database
 
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
+
+        if ($onDuplicateUpdate) {
+            $prepQ .= ' ON DUPLICATE KEY UPDATE ';
+            $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params);
+            $query .= ' ON DUPLICATE KEY UPDATE ';
+            $query .= $this->_implodeWithKeys(', ', $set);
+        }
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -434,6 +507,7 @@ class Database
     {
         return $this->_realupdate($table, $set, $i_where, false);
     }
+
     /**
      * Updates a row
      *
@@ -730,9 +804,9 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
+     * Runs a query as a prepared statement and returns the values of the
+     * column given in the select statement. If multiple columns are given, an error
+     * is thrown.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
@@ -740,7 +814,7 @@ class Database
      * @throws DatabaseException if the query selected more than one column
      *
      * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
+     *               for the only column of the select statement
      */
     function pselectCol($query, $params)
     {
@@ -856,17 +930,18 @@ class Database
         }
         return $result;
     }
+
     /**
      * Implodes a hash including the keys (unlike php's implode)
      *
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string $glue      The glue to pass to php's implode function
-     * @param array  $dataArray The array with keys to implode
+     * @param string               $glue      The glue to pass to php's implode
+     *                                        function
+     * @param array<string,string> $dataArray The array with keys to implode
      *
-     * @return string the string containing the imploded array
-     * @access private
+     * @return string
      */
     function _implodeWithKeys($glue, $dataArray)
     {
@@ -925,7 +1000,7 @@ class Database
      *
      * @param string $value An unsafe string
      *
-     * @return The value appropriately quoted/escaped
+     * @return string The value appropriately quoted/escaped
      */
     function quote($value)
     {
@@ -940,7 +1015,7 @@ class Database
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
-     * @param array  $where the selection filter, joined as a boolean and
+     * @param string $where the selection filter, joined as a boolean and
      * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *

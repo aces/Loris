@@ -16,7 +16,7 @@
 
 	php_value include_path .:/usr/share/php:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
 
-	DirectoryIndex main.php index.html
+	#DirectoryIndex main.php index.html
 
 	ErrorLog %LOGDIRECTORY%/loris-error.log
 

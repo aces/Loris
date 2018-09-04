@@ -42,7 +42,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
     /**
      * Sets up the filter and result table layout.
      *
-     * @return bool true if the set up is successful, false otherwise.
+     * @return void
      */
     function _setupVariables()
     {
@@ -81,7 +81,6 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
                                'userid' => 'userid',
                               );
 
-        return true;
     }
 
 
@@ -90,7 +89,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -100,7 +99,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         $this->addBasicText('type', 'Type:');
         $this->addBasicText('userid', 'UserId:');
 
-        return true;
+        return;
     }
     /**
      * Gathers JS dependecies and merge them with the parent

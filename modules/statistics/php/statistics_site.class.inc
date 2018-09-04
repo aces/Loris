@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -23,7 +23,7 @@ namespace LORIS\statistics;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Site extends \NDB_Form
+class Statistics_Site extends \NDB_Menu
 {
 
     var $instruments    = array();
@@ -40,7 +40,12 @@ class Statistics_Site extends \NDB_Form
     {
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
-        return $user->hasCenterPermission('data_entry', $centerID);
+        //TODO: Create a permission specific to statistics
+        $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
+            $user->hasPermission('data_entry');
+        return $user->hasCenterPermission('data_entry', $centerID) ||
+            $accessAllProfiles;
+
     }
 
     /**
@@ -62,6 +67,7 @@ class Statistics_Site extends \NDB_Form
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * SetInstrumentName function
      *
@@ -121,25 +127,25 @@ class Statistics_Site extends \NDB_Form
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
         $DB     =& \Database::singleton();
         $result = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
-               s.Visit_label 
-               FROM session s, candidate c, flag  f, 
-               {$instrument} i 
-               WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-               AND s.CandID=c.CandID  
-               AND s.Active='Y' 
-               AND s.CenterID <> '1' 
-               AND s.Current_stage <> 'Recycling Bin'
-               $this->query_criteria
-               AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-               AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
+            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
+                s.Visit_label
+                FROM session s, candidate c, flag  f,
+                {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                AND s.Current_stage <> 'Recycling Bin'
+                $this->query_criteria
+                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
             $this->query_vars
         );
         return $result;
