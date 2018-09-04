@@ -52,7 +52,7 @@ $config =& NDB_Config::singleton();
  *
  * @param string $param The $_REQUEST parameter to convert to a smarty variable
  *
- * @return none, side effect of modifying $tpl_data
+ * @return void (side effect of modifying $tpl_data)
  */
 function tplFromRequest($param)
 {
@@ -174,17 +174,24 @@ try {
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
-
-    if (isset($caller->feedbackPanel) && $user->hasPermission('bvl_feedback')) {
-        $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
-            $TestName
-        );
-        $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+    if (isset($caller->feedbackPanel)) {
+        if (!isset($user)) {
+            throw new Exception(401);
+        }
+        if ($user->hasPermission('bvl_feedback')) {
+            $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
+                $TestName
+            );
+            $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+        }
     }
-
     if (isset($caller->page)) {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
+
+        if (!$anonymous) {
+            $tpl_data['breadcrumbs'] = $caller->page->getBreadcrumbs();
+        }
     }
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
@@ -213,6 +220,12 @@ try {
         $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
+    case 401:
+        header("HTTP/1.1 401 Unauthorized");
+        $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
+        $tpl_data['workspace'] = $errorPage->fetch('401.tpl');
+        break;
     default:
         header("HTTP/1.1 500 Internal Server Error");
         $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
@@ -224,32 +237,17 @@ try {
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
-        $page = (new NDB_Page(new Module(""), '', '', '', ''));
+        $page = (new NDB_Page(new Module('', ''), '', '', '', ''));
         $tpl_data['jsfiles']  = $page->getJSDependencies();
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }
 }
-//--------------------------------------------------
-
-if (!$anonymous) {
-    try {
-        $breadcrumb = new NDB_Breadcrumb;
-        $crumbs     = $breadcrumb->getBreadcrumb();
-
-        $tpl_data['crumbs'] = $crumbs;
-    } catch(Exception $e) {
-        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    }
-}
-
-//--------------------------------------------------
-
 
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 
 // bug tracking link
-$tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+$tpl_data['issue_tracker_url'] = $config->getSetting('issue_tracker_url');
 
 
 //Display the links, as specified in the config file
@@ -284,9 +282,7 @@ if (!$anonymous) {
                                 'useEDC'      => $config->getSetting('useEDC'),
                                 'useProband'  => $config->getSetting('useProband'),
                                 'useFamilyID' => $config->getSetting('useFamilyID'),
-                                'useConsent'  => $config->getSetting(
-                                    'ConsentModule'
-                                )['useConsent'],
+                                'useConsent'  => $config->getSetting('useConsent'),
                                );
     $tpl_data['jsonParams']  = json_encode(
         array(

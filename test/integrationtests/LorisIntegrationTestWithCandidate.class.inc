@@ -37,7 +37,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
      * to user for the tests, and logging in, and creating a candidate
      * with a session
      *
-     * @return none
+     * @return void
      */
     public function setUp()
     {

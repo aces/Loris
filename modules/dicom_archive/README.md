@@ -30,6 +30,8 @@ the DICOM Archive module.
 
 ## Configurations
 
+#### Database Configurations
+
 The `patientNameRegex`, `LegoPhantomRegex`, and `LivingPhantomRegex`
 configuration variables provide regular expressions to ensure that
 the DICOM has been properly anonymized. If at least one of these
@@ -43,6 +45,8 @@ Patient ID column.
 The `showTransferStatus` configuration option is obsolete and should
 not be used, but determines if a first "Transfer Status" column
 appears in the menu table.
+
+#### Install Configurations
 
 For downloading large DICOM files, it may be necessary to increase the 
  value of the `memory_limit` configuration option within `php.ini`.

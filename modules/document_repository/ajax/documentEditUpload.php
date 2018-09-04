@@ -2,7 +2,7 @@
 /**
   * Document_repository module
   *
-  * PHP Version 5
+  * PHP Version 7
   *
   * @category Test
   * @package  Loris
@@ -10,30 +10,21 @@
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-$userSingleton =& User::singleton();
+$userSingleton =& \User::singleton();
 if (!$userSingleton->hasPermission('document_repository_view')
     && !$userSingleton->hasPermission('document_repository_delete')
 ) {
-    header("HTTP/1.1 403 Forbidden");
+    http_response_code(403);
     exit;
 }
-
-set_include_path(
-    get_include_path().
-    ":../../project/libraries:../../php/libraries:"
-);
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "Email.class.inc";
-$client = new NDB_Client();
-$client->initialize("../../project/config.xml");
-$factory = NDB_Factory::singleton();
+$factory = \NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
-$config = NDB_Config::singleton();
+$config = $factory->config();
+$base   = $config->getSetting('base');
+$name   = $userSingleton->getUsername();
 
-// create Database object
-$DB =& Database::singleton();
+$DB = $factory->database();
 
 $editNotifier = new NDB_Notifier(
     "document_repository",
@@ -45,15 +36,14 @@ $uploadNotifier = new NDB_Notifier(
     "upload"
 );
 
-$action = $_POST['action'];
+$action = $_POST['action'] ?? null;
 
 //if user has document repository permission
 if ($userSingleton->hasPermission('document_repository_view')
     || $userSingleton->hasPermission('document_repository_delete')
 ) {
     if ($action == 'upload') {
-        $puser      = $_POST['user'];
-        $category   = $_POST['category'];
+        $category   = $_POST['category']; // required
         $site       = $_POST['site']       !== '' ? $_POST['site'] : null;
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
@@ -63,23 +53,40 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
-        $fileType = end((explode(".", $fileName)));
+        $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
-        // __DIR__ is the document_repository ajax directory
-        // when this script is executing. Go up a level to the
-        // document_repository module directory, and use a
-        // user_uploads directory as a base for user uploads
-        $base_path = __DIR__ . "/../user_uploads/";
-        $fileBase  = $puser . "/" . $fileName;
+        $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
+        $fullPath   = $uploadPath . $fileName;
 
-        if (!file_exists($base_path . $puser)) {
-            mkdir($base_path . $puser, 0777);
+        // $category is a string representation of an ID, and so should be at
+        // least equal to zero.
+        if (intval($category) < 0) {
+            throw new LorisException(
+                "'Category' parameter must be a positive integer."
+            );
         }
 
+        // Check to see if $fullPath is writable. If not, throw an error. If it
+        // doesn't exist, create an uploads folder for the logged-in user.
+        if (!is_writable($fullPath)) {
+            if (file_exists($fullPath)) {
+                throw new LorisException(
+                    "User uploads path in Document Repository is not writable."
+                );
+            }
+            mkdir($fullPath, 0770);
+        }
 
-        $target_path = $base_path  . $fileBase;
-
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
+        // Copy the uploaded file to the user's upload folder if possible.
+        // Insert a record of the file into the document_repository table
+        if (!move_uploaded_file(
+            $_FILES['file']['tmp_name'],
+            $fullPath . $fileName
+        )) {
+            throw new LorisException(
+                'ERROR: Could not upload file. Contact your administrator.'
+            );
+        } else {
             $success = $DB->insert(
                 'document_repository',
                 array(
@@ -89,8 +96,8 @@ if ($userSingleton->hasPermission('document_repository_view')
                  'version'       => $version,
                  'File_name'     => $fileName,
                  'File_size'     => $fileSize,
-                 'Data_dir'      => $fileBase,
-                 'uploaded_by'   => $puser,
+                 'Data_dir'      => "$name/$fileName", // e.g. 'admin/file.png'
+                 'uploaded_by'   => $name,
                  'Instrument'    => $instrument,
                  'PSCID'         => $pscid,
                  'visitLabel'    => $visit,
@@ -103,14 +110,10 @@ if ($userSingleton->hasPermission('document_repository_view')
 
             $uploadNotifier->notify($msg_data);
 
-            $header = "Location:".
-                      " $baseURL/document_repository/?uploadSuccess=true";
-            header($header);
-
-        } else {
-            echo "There was an error uploading the file";
+            http_response_code(303);
+            header('Location:' . $baseURL . '/document_repository/');
         }
-    } elseif ($action == 'edit') {
+    } else if ($action == 'edit') {
         $id         = $_POST['idEdit'];
         $category   = $_POST['categoryEdit'];
         $instrument = $_POST['instrumentEdit'];
@@ -120,9 +123,12 @@ if ($userSingleton->hasPermission('document_repository_view')
         $comments   = $_POST['commentsEdit'];
         $version    = $_POST['versionEdit'];
 
-        if (empty($category) && $category !== '0') {
-            header("HTTP/1.1 400 Bad Request");
-            exit;
+        // $category is a string representation of an ID, and so should be at
+        // least equal to zero
+        if (intval($category) < 0) {
+            throw new LorisException(
+                "Category parameter must be a positive integer."
+            );
         }
 
         $values = array(

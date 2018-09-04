@@ -58,7 +58,7 @@ class Imaging_Session_ControlPanel
     /**
     *  Gets data for the control panel template
     *
-    * @return $subjectData array with data for the template
+    * @return array ($subjectData) with data for the template
     */
     function getData()
     {
@@ -122,8 +122,18 @@ class Imaging_Session_ControlPanel
 
         $config =& \NDB_Config::singleton();
 
-        $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
-        $subjectData['mantis']          = $config->getSetting('mantis_url');
+        //if table is not in database return false to not display in the template
+        $this->tpl_data['mri_param_form_table_exists']
+            = $DB->tableExists('mri_parameter_form');
+
+        $this->tpl_data['rad_review_table_exists'] = $DB->tableExists(
+            'radiology_review'
+        );
+
+        $issue_tracker_url = $config->getSetting("issue_tracker_url");
+        $this->tpl_data['issue_tracker_url'] = $issue_tracker_url;
+        $subjectData['issue_tracker_url']    = $issue_tracker_url;
+
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
                                            'Unrated' => '',

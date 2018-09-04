@@ -194,15 +194,15 @@ class Project
      * @note If the database value is null then the return value will be the sum of
      * all this project's subproject recruitment target.
      *
-     * @return string This project's name
+     * @return int
      */
-    public function getRecruitmentTarget()
+    public function getRecruitmentTarget() : int
     {
         if (empty($this->_recruitmentTarget)) {
             $total = array_reduce(
                 $this->getSubprojects(),
                 function ($carry, $item) {
-                    return $carry + $item->_recruitmentTarget;
+                    return (int )($carry + $item->_recruitmentTarget);
                 },
                 0
             );
@@ -210,7 +210,7 @@ class Project
             // database.
             $this->_recruitmentTarget = $total;
         }
-        return $this->_recruitmentTarget;
+        return (int )$this->_recruitmentTarget;
     }
 
     /**

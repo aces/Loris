@@ -46,9 +46,9 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         if (!empty($commentID)) {
             $db =& Database::singleton();
 
-            $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-            $db->selectRow($query, $record);
-        
+            $query = "SELECT * FROM ".$this->table." WHERE CommentID=:CID";
+            $record = $db->pselectRow($query, array("CID"=>$this->getCommentID()));
+
             if (!is_array($record)) {
                 $record = array();
             }
@@ -449,7 +449,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
           /**
           * getTargetDirectory retrieves info about where the file should be stored.
           *
-          * The returned directory is ADDED to the baseUploadDirectory proprety.  It should have a trailing slash.
+          * The returned directory is ADDED to the baseUploadDirectory property.  It should have a trailing slash.
           *
           * @param     string  $file    The full filename including directory.
           *

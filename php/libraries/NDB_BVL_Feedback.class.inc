@@ -121,7 +121,7 @@ class NDB_BVL_Feedback
      * @param string $commentID The commentID we're getting a feedback thread for.
      *                          (optional)
      *
-     * @return none
+     * @return void
      */
     function setup($username, $candID=null, $sessionID=null, $commentID=null)
     {
@@ -224,7 +224,7 @@ class NDB_BVL_Feedback
      *
      * @return array
      */
-    function getFeedbackTypes()
+    static public function getFeedbackTypes()
     {
         // new DB Object
         $db =& Database::singleton();
@@ -603,7 +603,7 @@ class NDB_BVL_Feedback
     *
     * @return array
     */
-    function getThreadEntries($feedbackID)
+    static function getThreadEntries($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -793,7 +793,10 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // create the new entry - every update need to be follow up with a comment
-        $success = $this->createEntry($feedbackID, $comment);
+        // FIXME: I don't think the third parameter is correct, but I'm not sure
+        // what it's supposed to be, and I'm not sure if this code is even used
+        // at all.
+        $success = $this->createEntry($feedbackID, $comment, '');
 
         // force private threads to status='comment'
         if ($public=='N') {
@@ -988,7 +991,7 @@ class NDB_BVL_Feedback
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      *
-     * @return void*
+     * @return void
      */
     function openThread($feedbackID)
     {
@@ -1065,25 +1068,22 @@ class NDB_BVL_Feedback
      */
     static function bvlFeedbackPossible($test_name)
     {
-
         $user =& User::singleton();
 
-        if ($user->hasStudySite()) {
-            if ($user->hasPermission('bvl_feedback')) {
-                if (($test_name === "timepoint_list")
-                    || ($test_name === "instrument_list")
-                ) {
+        if ($user->hasPermission('bvl_feedback')) {
+            if (($test_name === "timepoint_list")
+                || ($test_name === "instrument_list")
+            ) {
+                return true;
+            } else {
+                $Factory       = NDB_Factory::singleton();
+                $DB            = $Factory->database();
+                $instruments_q = $DB->pselectOne(
+                    "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
+                    array('testName' => $test_name)
+                );
+                if ($instruments_q == 1) {
                     return true;
-                } else {
-                    $Factory       = NDB_Factory::singleton();
-                    $DB            = $Factory->Database();
-                    $instruments_q = $DB->pselectOne(
-                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
-                        array('testName' => $test_name)
-                    );
-                    if ($instruments_q == 1) {
-                        return true;
-                    }
                 }
             }
         }

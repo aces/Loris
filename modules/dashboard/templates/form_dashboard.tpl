@@ -166,7 +166,7 @@
                                                 Incomplete form{if $incomplete_forms neq 1}s{/if}
                                             </div>
                                             <div class="col-xs-4 text-right alert-chevron">
-                                                {foreach from=$incomplete_forms_site key=ind item=centerID}
+                                                {foreach from=$user_site key=ind item=centerID}
                                                     <a href="{$baseURL}/statistics/statistics_site/?CenterID={$centerID}">
                                                         <p style="color:#555" class="small task-site">{$incomplete_forms_site.$ind}
                                                             <span class="glyphicon glyphicon-chevron-right small"></span>

@@ -28,7 +28,7 @@
 });
 </script>
 {/literal}
-<form method="post" name="edit_user">
+<form method="post" name="edit_user" autocomplete="new-password">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors
@@ -391,33 +391,9 @@
   <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
 </div>
 {if $can_reject}
-
 <div class="col-sm-2">
     <input type=hidden id ="UserID" value="{$form.UserID.html}">
-    <input type=hidden id = "baseurl" value="{$baseurl}">
     <input class="btn btn-sm btn-primary col-xs-12" value="Reject User" type="button" id="btn_reject"/>
-    {literal}
-    <script type="text/javascript">
-        $(document).ready(
-            function(){
-                $("#btn_reject").click(
-                    function(){
-                        var userID = document.getElementById("UserID").value;
-                        var baseurl = document.getElementById("baseurl").value;
-                        $.ajax(baseurl+'/user_accounts/ajax/rejectUser.php', {
-                            type:'POST',
-                            data: {identifier: userID},
-                            success: function(data, textStatus){
-                                location.href=baseurl+'/user_accounts/';
-                            },
-                            error: function(jqXHR, textStatus, errorThrown){
-                                alert(textStatus, errorThrown);
-                           }
-                       });       
-                    });
-            });
-        </script>
-        {/literal}
     </div>
     {/if}
 </div>

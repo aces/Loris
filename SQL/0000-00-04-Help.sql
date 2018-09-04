@@ -16,4 +16,3 @@ CREATE TABLE `help` (
     PRIMARY KEY (`helpID`), 
     UNIQUE KEY `hash` (`hash`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-

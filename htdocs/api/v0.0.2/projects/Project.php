@@ -85,12 +85,12 @@ class Project extends \Loris\API\APIBase
     /**
      * Handles a GET request for a project data
      *
-     * @return none, but populates $this->JSON
+     * @return void
      */
     function handleGET()
     {
         if (!empty($this->JSON)) {
-            return $this->JSON;
+            return;
         }
         $JSONArray = [
                       "Meta" => [

@@ -77,7 +77,7 @@ class Process
      * @param string $exitCodeFile full path to the file that will be used to
      *                             store the process exit code.
      *
-     * @throws InvalidArgumentException if $shellCommand is null.
+     * @throws \InvalidArgumentException if $shellCommand is null.
      */
     function __construct($shellCommand, $stdoutFile, $stderrFile, $exitCodeFile)
     {
@@ -125,8 +125,8 @@ class Process
     /**
      * Start the process using the $_shellCommand.
      *
-     * @return void.
-     * @throws RuntimeException if the process is already started.
+     * @return void
+     * @throws \RuntimeException if the process is already started.
      */
     function start()
     {

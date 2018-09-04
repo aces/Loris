@@ -43,8 +43,8 @@ class ServerProcessFactory
      *                             YYYY-MM-DD HH:MM:SS format
      * @param string $exitText     text output by the process upon completion.
      *
-     * @return the server process created
-     * @throws InvalidArgumentException if the server process type is unknown
+     * @return string the server process created
+     * @throws \InvalidArgumentException if the server process type is unknown
      */
     public function getServerProcess(
         $id, $pid, $type, $stdoutFile, $stderrFile,
