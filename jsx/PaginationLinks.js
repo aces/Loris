@@ -21,7 +21,7 @@ class PaginationLinks extends Component {
       if (this.props.onChangePage) {
         this.props.onChangePage(i);
       }
-    };
+    }.bind(this);
   }
 
   render() {
