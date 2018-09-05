@@ -29,7 +29,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * It does the setUp before running the tests
      *
-     * @return void
+     * @return none
      */
     function setUp()
     {
@@ -40,7 +40,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * It does the tearDown after running the tests
      *
-     * @return void
+     * @return none
      */
     function tearDown()
     {
@@ -89,7 +89,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @param string $subproject text of subproject
      * @param string $visitlabel text of visit label
      *
-     * @return void
+     * @return void.
      */
     private function _createTimepoint($canID, $subproject, $visitlabel)
     {
