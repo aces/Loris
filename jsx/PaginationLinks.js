@@ -49,7 +49,7 @@ class PaginationLinks extends Component {
 
     if (startPage > 1) {
       pageLinks.push(
-        <li onClick={this.changePage(1)}><a href="#">&laquo;</a></li>
+        <li key={'table_page_beginning_' + startPage.toString()} onClick={this.changePage(1)}><a href='#'>&laquo;</a></li>
       );
     }
     if (startPage < 1) {
@@ -70,21 +70,21 @@ class PaginationLinks extends Component {
         classList = 'active';
       }
       pageLinks.push(
-        <li key={'table_page_' + i} onClick={this.changePage(i)} className={classList}>
+        <li key={'table_page_' + i.toString()} onClick={this.changePage(i)} className={classList}>
           <a href="#">{i}</a>
         </li>
       );
     }
     if (lastShownPage !== lastPage) {
       pageLinks.push(
-        <li key={'table_page_more'} onClick={this.changePage(lastPage)}>
-          <a href="#">&raquo;</a>
+        <li key={'table_page_more_' + lastShownPage.toString()} onClick={this.changePage(lastPage)}>
+          <a href='#'>&raquo;</a>
         </li>
       );
     }
 
     return (
-      <ul className="pagination pagination-table">
+      <ul className='pagination pagination-table'>
           {pageLinks}
       </ul>
     );
