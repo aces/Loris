@@ -700,7 +700,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty = new Smarty_neurodb($this->name);
+        $smarty = new Smarty_neurodb($this->Module);
 
         $smarty->ModuleName = $this->name;
 
