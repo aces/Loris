@@ -14,7 +14,7 @@ class PagedRowHeader extends Component {
   render() {
     return (
       <thead>
-      <tr className="info">
+      <tr className='info'>
         {this.props.headerRow.map(function(headerColumn, key) {
           return (<th key={key}>{headerColumn}</th>);
         })}
@@ -88,7 +88,7 @@ class PagedTable extends Component {
 
     if (currentPageRows.length) {
       tableContents = (
-        <table className="table table-hover table-bordered colm-freeze">
+        <table className='table table-hover table-bordered colm-freeze'>
           <PagedRowHeader headerRow={this.props.tableHeaders}/>
           <tbody>
             {currentPageRows}
@@ -105,7 +105,6 @@ class PagedTable extends Component {
     );
   }
 }
-
 PagedTable.propTypes = {
   tableHeaders: PropTypes.array,
   tableRows: PropTypes.array,
@@ -152,7 +151,7 @@ class IncompleteCandidatesRow extends Component {
           <a href={this.props.BaseURL + '/instruments/' + row.test_name +
               '/?candID=' + row.candid +
               '&sessionID=' + row.SessionID +
-              '&commentID=' + row.commentid} ref="incomplete"
+              '&commentID=' + row.commentid} ref='incomplete'
               onClick={this.handleClick} >
             {row.Full_name}
           </a>
@@ -260,7 +259,7 @@ class BehaviouralFeedbackRow extends Component {
               </a>
           </td>
         <td>
-          <a href={bvlLink} onClick={this.handleClick} ref="feedback">
+          <a href={bvlLink} onClick={this.handleClick} ref='feedback'>
             {bvlLevel}
           </a>
         </td>
@@ -286,9 +285,9 @@ class DefaultPanel extends Component {
 
   render() {
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">{this.props.title}</div>
-        <div className="panel-body">
+      <div className='panel panel-primary'>
+        <div className='panel-heading'>{this.props.title}</div>
+        <div className='panel-body'>
           {this.props.children}
         </div>
       </div>
@@ -297,6 +296,7 @@ class DefaultPanel extends Component {
 }
 DefaultPanel.propTypes = {
   title: PropTypes.string,
+  children: PropTypes.string,
 };
 
 class IncompleteCandidates extends Component {
@@ -320,8 +320,22 @@ class IncompleteCandidates extends Component {
     );
   }
 }
+IncompleteCandidates.propTypes = {
+  title: PropTypes.string,
+  incomplete_candidates: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
+
 
 class InstrumentConflicts extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
   render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
@@ -337,8 +351,21 @@ class InstrumentConflicts extends Component {
     );
   }
 }
+InstrumentConflicts.propTypes = {
+  title: PropTypes.string,
+  conflicts: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
 class BehaviouralFeedback extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
   render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
@@ -354,8 +381,21 @@ class BehaviouralFeedback extends Component {
     );
   }
 }
+BehaviouralFeedback.propTypes = {
+  title: PropTypes.string,
+  feedback: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
 class BVLPager extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
   render() {
     let page = this.props.page;
     let pageLinks = [];
@@ -378,7 +418,7 @@ class BVLPager extends Component {
 
     if (page.numPages > 1) {
       pageLinks.push(
-        <li key={4} className="active"><span>{page.currentPage}</span></li>
+        <li key={4} className='active'><span>{page.currentPage}</span></li>
       );
     }
 
@@ -416,17 +456,24 @@ class BVLPager extends Component {
 
       pageLinks.push(
         <li key={10} onClick={page.handleClick(page.currentPage + 1)}>
-          <span aria-hidden="true">›</span>
+          <span aria-hidden='true'>›</span>
         </li>
       );
     }
     return (
-      <ul className="pagination pagination-sm">{pageLinks}</ul>
+      <ul className='pagination pagination-sm'>{pageLinks}</ul>
     );
   }
 }
 
 class dataTeamGraphics extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
   componentDidMount() {
     c3.generate({
       bindto: '#completedChart',
@@ -468,19 +515,28 @@ class dataTeamGraphics extends Component {
       );
 
     return (
-      <div className="col-sm-12 col-md-5">
-        <div className="panel panel-primary">
-          <div className="panel-heading">
+      <div className='col-sm-12 col-md-5'>
+        <div className='panel panel-primary'>
+          <div className='panel-heading'>
             At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus} - {siteStatus} -{projectStatus}
           </div>
-          <div className="panel-body">
-            <div id="completedChart"></div>
+          <div className='panel-body'>
+            <div id='completedChart'/>
           </div>
         </div>
       </div>
     );
   }
 }
+dataTeamGraphics.propTypes = {
+  percentCompleted: PropTypes.string,
+  pscid: PropTypes.string,
+  visit: PropTypes.string,
+  instrument: PropTypes.string,
+  site: PropTypes.string,
+  project: PropTypes.string,
+};
+
 
 let GraphicsPanel = React.createFactory(dataTeamGraphics);
 let BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
