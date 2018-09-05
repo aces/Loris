@@ -27,12 +27,6 @@
  *
  * Assumptions:
  *
- * As of now the script always runs in "Report-Only" mode, meaning
- * SQL patches are not applied by the script. However, if desired,
- * this functionality can be added easily by creating a command-line arg and
- * calling the apply function with `$report_only_mode = false`. I chose not to
- * include it as this is a potentially risky process.
- *
  * As of now there is no "rollback" feature. `rsync` is used to overwrite the
  * LORIS-root source code from the unzipped release folder. A backup is created,
  * but should something go wrong with `rsync`, the user will need to restore the
