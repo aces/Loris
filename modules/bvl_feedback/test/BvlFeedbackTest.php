@@ -44,11 +44,12 @@ class BvlFeedbackTest extends LorisIntegrationTest
             "document.querySelector('#nav-right >".
             " li:nth-child(1) > a > span').click()"
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector".
-                      "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
-        );
-
+        $text = $this->webDriver->wait(5)->until(function () {
+            return $this->webDriver->executescript(
+                "return document.querySelector".
+                "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
+            );
+        });
         $this->assertContains("Feedback for PSCID: ", $text);
         // Instrument List
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
