@@ -100,7 +100,11 @@ class PagedTable extends Component {
     return (
       <div>
         {tableContents}
-        <nav><BVLPager page={page}/></nav>
+        <nav>
+          <BVLPager
+            page={page}
+          />
+        </nav>
       </div>
     );
   }
@@ -397,13 +401,13 @@ class BVLPager extends Component {
 
     if (page.currentPage > 1) {
       pageLinks.push(
-        <li key={1} onClick={page.handleClick(page.currentPage - 1)}>
+        <li key={1} onClick={() => page.handleClick(page.currentPage - 1)}>
           <span>‹</span>
         </li>
       );
       if (page.currentPage > 2) {
         pageLinks.push(
-          <li key={2} onClick={page.handleClick(1)}>
+          <li key={2} onClick={() => page.handleClick(1)}>
             <span>1</span>
           </li>
         );
@@ -419,14 +423,14 @@ class BVLPager extends Component {
 
     if (page.currentPage < page.numPages) {
       pageLinks.push(
-        <li key={5} onClick={page.handleClick(page.currentPage + 1)}>
+        <li key={5} onClick={() => page.handleClick(page.currentPage + 1)}>
           <span>{page.currentPage + 1}</span>
         </li>
       );
 
       if (page.currentPage < page.numPages - 1) {
         pageLinks.push(
-          <li key={6} onClick={page.handleClick(page.currentPage + 2)}>
+          <li key={6} onClick={() => page.handleClick(page.currentPage + 2)}>
             <span>{page.currentPage + 2}</span>
           </li>
         );
@@ -434,7 +438,7 @@ class BVLPager extends Component {
 
       if (page.currentPage < page.numPages - 2) {
         pageLinks.push(
-          <li key={7} onClick={page.handleClick(page.currentPage + 3)}>
+          <li key={7} onClick={() => page.handleClick(page.currentPage + 3)}>
             <span>{page.currentPage + 3}</span>
           </li>
         );
@@ -443,14 +447,14 @@ class BVLPager extends Component {
       if (page.currentPage < page.numPages - 3) {
         pageLinks.push(<li key={8}><span>...</span></li>);
         pageLinks.push(
-          <li key={9} onClick={page.handleClick(page.numPages)}>
+          <li key={9} onClick={() => page.handleClick(page.numPages)}>
             <span>{page.numPages}</span>
           </li>
         );
       }
 
       pageLinks.push(
-        <li key={10} onClick={page.handleClick(page.currentPage + 1)}>
+        <li key={10} onClick={() => page.handleClick(page.currentPage + 1)}>
           <span aria-hidden='true'>›</span>
         </li>
       );
