@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 INSERT INTO `ConfigSettings`
     (
         `Name`,
@@ -85,6 +86,7 @@ ALTER TABLE genomic_cpg ADD CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_na
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useConsent', 'Enable if the study uses the loris architecture for consent', 1, 0, 'boolean', ID, 'Use consent', 15 FROM ConfigSettings WHERE Name='study';
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name='useConsent';
 
+DROP TABLE IF EXISTS `consent`;
 CREATE TABLE `consent` (
   `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
@@ -94,6 +96,7 @@ CREATE TABLE `consent` (
   CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `candidate_consent_rel`;
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
@@ -105,6 +108,7 @@ CREATE TABLE `candidate_consent_rel` (
   CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `candidate_consent_history`;
 CREATE TABLE `candidate_consent_history` (
   `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -166,3 +170,4 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";
 INSERT IGNORE INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_view' AND m.Label='Examiner';
+SET FOREIGN_KEY_CHECKS=1;
