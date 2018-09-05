@@ -399,7 +399,6 @@ var StaticDataTable = React.createClass({
           data = this.props.Data[index[i].RowIdx][j];
         }
 
-        console.log(this.props.Headers);
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
           filteredData.push(this.props.Data[index[i].RowIdx]);
