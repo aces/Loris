@@ -322,8 +322,8 @@ class NDB_Form extends NDB_Page
         // always set.  This is just a provisional measure until CSRF validation
         // is implemented everywhere in LORIS.
         if (isset($validCSRFToken) && !$validCSRFToken) {
-            http_response_code(400);
-            die("Malformed CSRF token. Exiting.");
+            echo "Bad CSRF token. Won't process request.\n";
+            throw new \LorisException("Malformed CSRF token submitted.");
         }
         $this->_process($values);
     }
