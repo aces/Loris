@@ -113,8 +113,8 @@ class Statistics_Test extends LorisIntegrationTest
             "/statistics/"
         );
         $this->webDriver->executescript(
-            "document.querySelector('.nav-tabs > li:nth-child(2)".
-            " > a:nth-child(1)').click()"
+        "document.querySelector('.nav-tabs > li:nth-child(2)".
+        " > a:nth-child(1)').click()"
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".statsH2")
