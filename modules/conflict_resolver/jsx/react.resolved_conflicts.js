@@ -1,7 +1,5 @@
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
-import formatColumn from './resolved_conflicts_columnFormatter';
-
 /**
  *	This file contains the React classes for conflicts resolved
  * 	module.
@@ -17,10 +15,42 @@ class ResolvedConflictsPane extends React.Component {
     this.state = {
       Data: this.props.data
     };
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   updateFilterState(filter) {
     this.setState({filter});
+  }
+
+  formatColumn(column, cell, rowData, rowHeaders) {
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
+    // Create the mapping between rowHeaders and rowData in a row object.
+    let row = {};
+
+    rowHeaders.forEach(function(header, index) {
+      row[header] = rowData[index];
+    }, this);
+
+    if (column === 'Correct Answer') {
+      let correctAnswer = '';
+      let newValue = row['New Value'];
+      let oldValue1 = row['Correct Answer'];
+      let oldValue2 = row.OldValue2;
+
+      if (newValue === '1' && oldValue1 !== null) {
+        correctAnswer = oldValue1;
+      }
+
+      if (newValue === '2' && oldValue2 !== null) {
+        correctAnswer = oldValue2;
+      }
+
+      return <td>{correctAnswer}</td>;
+    }
+
+    return <td>{cell}</td>;
   }
 
   // Render the HTML
@@ -32,7 +62,7 @@ class ResolvedConflictsPane extends React.Component {
           Data={this.state.Data.Data}
           Headers={this.state.Data.Headers}
           Filter={this.state.filter}
-          getFormattedCell={formatColumn}
+          getFormattedCell={this.formatColumn}
         />
       </TabPane>
     );

@@ -1,6 +1,5 @@
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
-import formatColumn from './columnFormatter';
 
 /**
  *	This file contains the React classes for conflict resolver
@@ -17,10 +16,40 @@ class UnresolvedConflictsPane extends React.Component {
     this.state = {
       Data: this.props.data
     };
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   updateFilterState(filter) {
     this.setState({filter});
+  }
+
+  formatColumn(column, cell, rowData, rowHeaders) {
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
+    // Create the mapping between rowHeaders and rowData in a row object.
+    let row = {};
+
+    rowHeaders.forEach(function(header, index) {
+      row[header] = rowData[index];
+    }, this);
+    let value1;
+    let value2;
+    let hash;
+
+    if (column === 'Correct Answer') {
+      value1 = row.Value1;
+      value2 = row.Value2;
+      hash = row.Hash;
+      return <td>
+        <select name={hash} className="form-control input-sm" >
+          <option value="none">Unresolved</option>
+          <option value="1">{value1}</option>
+          <option value="2">{value2}</option>
+        </select>
+      </td>;
+    }
+    return <td>{cell}</td>;
   }
 
   // Render the HTML
@@ -36,7 +65,7 @@ class UnresolvedConflictsPane extends React.Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
-            getFormattedCell={formatColumn}
+            getFormattedCell={this.formatColumn}
           />
 
           <div className="pull-right">
@@ -195,7 +224,6 @@ class ConflictResolverApp extends React.Component {
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
-            emptyOption={false}
           >
             <ButtonElement
               id="testClearForm1"
