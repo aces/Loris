@@ -280,10 +280,10 @@ var StaticDataTable = React.createClass({
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword: function(headerData, data, exactMatch = false) {
+  hasFilterKeyword: function(headerData, data) {
     let header = this.toCamelCase(headerData);
     let filterData = null;
-    //let exactMatch = false;
+    let exactMatch = false;
     let result = false;
     let searchKey = null;
     let searchString = null;
