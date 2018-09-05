@@ -160,6 +160,7 @@ class NDB_Form extends NDB_Page
      * was not forged from another domain.
      *
      * @return string The newly created CSRF token.
+     * @throws \LorisException
      */
     private function _setCSRFToken(): string
     {
@@ -177,8 +178,8 @@ class NDB_Form extends NDB_Page
                  'PhpSessionID' => session_id(),
                 )
             );
-        } catch (DatabaseException $e) {
-            throw new LorisException(
+        } catch (\DatabaseException $e) {
+            throw new \LorisException(
                 'Could not insert CSRF token into '
                 . 'database. '
                 . $e
@@ -186,8 +187,8 @@ class NDB_Form extends NDB_Page
         }
 
         /* Add the token to a cookie so it can be submitted via ajax.
-         * TODO This should have the Secure flag but is likely to break our 
-         * automated test environment.  When we resolve that issue, that flag 
+         * TODO This should have the Secure flag but is likely to break our
+         * automated test environment.  When we resolve that issue, that flag
          * should be added here.
          */
         setcookie(
@@ -236,15 +237,16 @@ class NDB_Form extends NDB_Page
     function _save($values)
     {
 
-        // Validate CSRF token, if one is present.  In the future they should be
-        // included with every state-changing request (usually POST requests
-        // but LORIS does not always conform to this).  For now this will check
-        // only that when a CSRF token is sent that it is well-formed and
-        // accurate but will not enforce failure if one is not present.
-        // TODO Once CSRF tokens are enforced universally across LORIS, any
-        // state-changing request wihtout a valid CSRF token should be rejected.
-        // TODO This only validates CSRF tokens present in POST bodies
-        // A different approach is neded for AJAX (i.e. headers)
+        /* Validate CSRF token, if one is present.  In the future they should be
+        * included with every state-changing request (usually POST requests
+        * but LORIS does not always conform to this).  For now this will check
+        * only that when a CSRF token is sent that it is well-formed and
+        * accurate but will not enforce failure if one is not present.
+        * TODO Once CSRF tokens are enforced universally across LORIS, any
+        * state-changing request wihtout a valid CSRF token should be rejected.
+        * TODO This only validates CSRF tokens present in POST bodies
+        * A different approach is neded for AJAX (i.e. headers)
+         */
 
         $token = $values['__csrfToken'] ?? null;
         if (!is_null($token)) {
@@ -264,10 +266,11 @@ class NDB_Form extends NDB_Page
             } else {
                 $storedSessionID     = $results[0]['PhpSessionID'];
                 $timeOfTokenCreation = $results[0]['CreatedAt'];
-                // Session ID stored in the DB does not match the current session.
-                // Should not occur organically, i.e. this case is likely a case of
-                // someone attempting to replay a token meant for another user's
-                // session.
+                /* Session ID stored in the DB does not match the current session.
+                * Should not occur organically, i.e. this case is likely a case of
+                * someone attempting to replay a token meant for another user's
+                * session.
+                */
                 if ($storedSessionID !== session_id()) {
                     error_log(
                         'ERROR: Submitted CSRF token was issued from a '
