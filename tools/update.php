@@ -94,7 +94,6 @@ if (in_array('--apply-patches', $argv)) {
 }
 // Require a confirm flag so this script is not accidentally run
 if (!in_array('--confirm', $argv)) {
-    $info = json_decode(getLatestReleaseInfo());
     echo "Your LORIS version is $preupdate_version. The current LORIS version "
         . "is $release_version. "
         . PHP_EOL
@@ -263,29 +262,44 @@ function updateRequiredPackages($requirements) : bool
  *
  * @return array Patch files to be applied. Empty if up-to-date.
  */
-function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
-{
-    // Semantic versioning: 0 = major, 1 = minor, 2 = bugfix
+function getPatchesFromVersion(
+    $loris_root,
+    $version_from,
+    $version_to
+): array {
+
+    // Definie indices corresponding to our semantic versioning system.
     define('MAJOR', 0);
     define('MINOR', 1);
     define('BUGFIX', 2);
     // Convert string representation of version into arrays of ints
-    // TODO: check for dev branches
     $from_versions = array_map('intval', explode('.', $version_from));
     $to_versions   = array_map('intval', explode('.', $version_to));
     // Calculate difference between old version and latest
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
-    // Display output based on version differences. Actual patching occurs
-    // below.
+    /* Display output based on version differences. Actual patching occurs
+     * below.
+     */
     if ($diff_major < 0) {
         echo '[!] Your version of LORIS is ahead of the latest release. If you '
-        . 'are not a developer working on the bleeding edge of LORIS, then '
-        . 'something has gone very wrong. No SQL patches will be displayed.'
-        . PHP_EOL;
+            . 'are not a developer working on the bleeding edge of LORIS, then '
+            . 'something has gone very wrong. SQL patches will not be applied.'
+            . PHP_EOL;
         return array();
     } else if ($diff_major === 0) {
-        // Check for difference in minor releases.
+        // If major version is equal, check for difference in minor releases.
+        if ($diff_minor < 0) {
+            /* Major versions equal, but installed minor version is ahead of the
+             * latest release.
+             */
+            echo '[!] Your version of LORIS is ahead of the latest release. If '
+                . 'you are not a developer working on the bleeding edge of '
+                . 'LORIS, then something has gone very wrong. SQL patches will '
+                . 'not be applied.'
+                . PHP_EOL;
+            return array();
+        }
         if ($diff_minor > 0) {
             echo "[**] Latest version $version_to is ahead of installed "
                 . "$version_from by $diff_minor MINOR release(s)."
