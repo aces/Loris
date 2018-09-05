@@ -116,8 +116,9 @@ sleep(3);
 
 /* BEGIN UPDATE PROCESS */
 
-// Below are all the apt packages required for LORIS to run.
-//      See: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+/* Below are all the apt packages required for LORIS to run.
+ *      @see: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+ */
 $loris_requirements = [
                        "wget",
                        "zip",
@@ -135,7 +136,7 @@ $loris_requirements = [
                        "libapache2-mod-php$php_version",
                       ];
 
-// Update source code (if not on a development version)
+// Update source code.
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
 echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
@@ -145,7 +146,7 @@ if (updateSourceCode($loris_root_dir, $backup_dir)) {
     echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
 }
 
-// Update apt packages
+// Update apt packages.
 echo '[**] Updating required packages...' . PHP_EOL;
 if (updateRequiredPackages($loris_requirements)) {
     echo '[**] Required apt packages up-to-date.' . PHP_EOL;
@@ -184,9 +185,10 @@ echo "[***] Done." . PHP_EOL;
  *
  * @return bool True if rsync executes successfully, false otherwise.
  */
-function updateSourceCode($loris_root_dir, $backup_dir) : bool
+function updateSourceCode(string $loris_root_dir, string $backup_dir) : bool
 {
     // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
+    $backup_dir      .= 'bkp-LORIS';
     $version_filepath = $loris_root_dir . 'VERSION';
     $backup_dir      .= '_v' . getVersionFromLORISRoot($loris_root_dir);
     $backup_dir      .= '_' . date("j-M-Y") . '/'; // e.g. 10-May-2018
