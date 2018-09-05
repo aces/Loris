@@ -391,12 +391,7 @@ BehaviouralFeedback.propTypes = {
 class BVLPager extends Component {
   constructor(props) {
     super(props);
-    this.state = {
 
-    };
-  }
-
-  render() {
     let page = this.props.page;
     let pageLinks = [];
 
@@ -460,11 +455,20 @@ class BVLPager extends Component {
         </li>
       );
     }
+    this.state = {
+      pageLinks: pageLinks,
+    };
+  }
+
+  render() {
     return (
-      <ul className='pagination pagination-sm'>{pageLinks}</ul>
+      <ul className='pagination pagination-sm'>{this.state.pageLinks}</ul>
     );
   }
 }
+BVLPager.propTypes = {
+  page: PropTypes.object,
+};
 
 class dataTeamGraphics extends Component {
   constructor(props) {
