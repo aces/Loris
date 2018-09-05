@@ -58,6 +58,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 // Try and load it using the autoloader, if it was
                 // composer require'd and in the vendor directory.
                 $modulename = "\\LORIS\\$name\\Module";
+
                 $m = new $modulename();
                 return $m;
             } catch(\Exception $e) {
@@ -294,7 +295,13 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         return $page->process($request, $page);
     }
 
-    function getDir() : string {
+    /**
+     * Gets the base directory that this module is stored in.
+     *
+     * @return string The name of the module's base directory.
+     */
+    function getDir() : string
+    {
         return $this->dir;
     }
 }

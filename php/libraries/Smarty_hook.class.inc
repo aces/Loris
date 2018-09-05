@@ -34,7 +34,7 @@ class Smarty_NeuroDB extends Smarty
      * Constructor for the NeuroDB Smarty hook class.
      *                           the templates directory for.
      *
-     * @param string $moduleName The name of the module to search through
+     * @param ?\Module $module The module being handled, if applicable.
      */
     function __construct(?\Module $module = null)
     {
