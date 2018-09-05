@@ -26,7 +26,7 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
-    /**
+     /**
      * It does the setUp before running the tests
      *
      * @return none

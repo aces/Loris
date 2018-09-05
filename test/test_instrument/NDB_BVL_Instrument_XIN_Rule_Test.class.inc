@@ -16,9 +16,9 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID = null, $page = null){
+    function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new LorisForm();
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
