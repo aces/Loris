@@ -9,9 +9,9 @@ class SliderPanel extends Component {
   }
   render() {
     return (
-      <div className="panel-group" id="bvl_feedback_menu">
-        <div className="breadcrumb-panel">
-          <a className="info">
+      <div className='panel-group' id='bvl_feedback_menu'>
+        <div className='breadcrumb-panel'>
+          <a className='info'>
             Feedback for PSCID: {this.props.pscid}
           </a>
         </div>
@@ -20,6 +20,10 @@ class SliderPanel extends Component {
     );
   }
 }
+SliderPanel.propTypes = {
+  pscid: PropTypes.string,
+  children: PropTypes.string,
+};
 
 class FeedbackPanelContent extends Component {
   constructor(props) {
@@ -63,7 +67,7 @@ class FeedbackPanelContent extends Component {
     }
 
     let tableHeaders = (
-      <tr className="info">
+      <tr className='info'>
         {headers.map(function(header, key) {
           return (<td key={key}>{header}</td>);
         })}
@@ -116,12 +120,18 @@ class FeedbackPanelContent extends Component {
     }
 
     return (
-      <div className="panel-body">There are no threads for this user!</div>
+      <div className='panel-body'>There are no threads for this user!</div>
     );
   }
 }
 FeedbackPanelContent.propTypes = {
-  feedbackLevel: PropTypes.string.isRequired,
+  feedbackLevel: PropTypes.string,
+  threads: PropTypes.array,
+  open_thread: PropTypes.func,
+  close_thread: PropTypes.func,
+  candID: PropTypes.string,
+  commentID: PropTypes.string,
+  sessionID: PropTypes.string,
 };
 
 class FeedbackPanelRow extends Component {
@@ -201,8 +211,8 @@ class FeedbackPanelRow extends Component {
       arrow = 'glyphicon glyphicon-chevron-down glyphs';
       threadEntries = this.state.threadEntriesLoaded.map(function(entry, key) {
         return (
-          <tr key={key} className="thread_entry">
-            <td colSpan="100%">
+          <tr key={key} className='thread_entry'>
+            <td colSpan='100%'>
               {entry.UserID} on {entry.TestDate} commented:<br/>
               {entry.Comment}
             </td>
@@ -216,8 +226,8 @@ class FeedbackPanelRow extends Component {
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
-        <span className="glyphicon glyphicon-pencil"
-              onClick={this.props.commentToggle}></span>
+        <span className='glyphicon glyphicon-pencil'
+              onClick={this.props.commentToggle}/>
       );
     }
 
@@ -229,14 +239,14 @@ class FeedbackPanelRow extends Component {
           <td>{this.props.type}</td>}
         <td>{this.props.author} on:<br/>{this.props.date}</td>
         <td>
-          <div className="btn-group">
-            <button name="thread_button" type="button" className={buttonClass}
-                    data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+          <div className='btn-group'>
+            <button name='thread_button' type='button' className={buttonClass}
+                    data-toggle='dropdown' aria-haspopup='true'
+                    aria-expanded='false'>
               {buttonText}
-              <span className="caret"></span>
+              <span className='caret'></span>
             </button>
-            <ul className="dropdown-menu">
+            <ul className='dropdown-menu'>
               {dropdown}
             </ul>
           </div>
@@ -293,18 +303,18 @@ class CommentEntryForm extends Component {
   render() {
     return (
       <tr>
-        <td colSpan="100%">Add a thread entry:
-          <div className="input-group" style={{width: '100%'}}>
+        <td colSpan='100%'>Add a thread entry:
+          <div className='input-group' style={{width: '100%'}}>
             <textarea
-              className="form-control"
+              className='form-control'
               value={this.state.value}
               style={{resize: 'none'}}
-              rows="2"
-              ref="threadEntry"
+              rows='2'
+              ref='threadEntry'
               onChange={this.handleChange}>
             </textarea>
             <span
-              className="input-group-addon btn btn-primary"
+              className='input-group-addon btn btn-primary'
               onClick={this.sendComment}
             >
               Send
@@ -345,10 +355,10 @@ class AccordionPanel extends Component {
     }
 
     return (
-      <div className="panel-group" id="accordion">
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h4 className="panel-title">
+      <div className='panel-group' id='accordion'>
+        <div className='panel panel-default'>
+          <div className='panel-heading'>
+            <h4 className='panel-title'>
               <a className={arrowClass} onClick={this.toggleChange}>
                 {this.props.title}
               </a>
@@ -433,13 +443,13 @@ class NewThreadPanel extends Component {
 
     if (this.props.feedbackLevel === 'instrument') {
       fieldnameSelect = (
-        <div className="form-group">
-          <div className="row">
-            <label className="col-xs-4">Field Name</label>
-            <div className="col-xs-8">
+        <div className='form-group'>
+          <div className='row'>
+            <label className='col-xs-4'>Field Name</label>
+            <div className='col-xs-8'>
               <select
-                className="form-control"
-                name="inputType"
+                className='form-control'
+                name='inputType'
                 selected={this.state.selectValue}
                 onChange={this.handleSelectChange}
               >
@@ -464,37 +474,37 @@ class NewThreadPanel extends Component {
     }
 
     return (
-      <div className="panel-body" id="new_feedback">
-        <div className="form-group">
+      <div className='panel-body' id='new_feedback'>
+        <div className='form-group'>
           <textarea
-            className="form-control"
-            rows="4"
-            id="comment"
+            className='form-control'
+            rows='4'
+            id='comment'
             value={this.state.textValue}
             onChange={this.handleTextChange}>
           </textarea>
         </div>
         {fieldnameSelect}
-        <div className="form-group">
-          <div className="row">
-            <label className="col-xs-4">Feedback Type</label>
-            <div className="col-xs-8">
+        <div className='form-group'>
+          <div className='row'>
+            <label className='col-xs-4'>Feedback Type</label>
+            <div className='col-xs-8'>
               <select
-                name="input"
+                name='input'
                 selected={this.state.inputValue}
                 onChange={this.handleInputChange}
-                className="form-control"
+                className='form-control'
               >
                 {input}
               </select>
             </div>
           </div>
         </div>
-        <div className="form-group">
+        <div className='form-group'>
           <button
-            id="save_data"
+            id='save_data'
             onClick={this.createNewThread}
-            className="btn btn-default pull-right btn-sm"
+            className='btn btn-default pull-right btn-sm'
           >
             Save data
           </button>
@@ -557,18 +567,18 @@ class FeedbackSummaryPanel extends Component {
 
     if (summaryRows === undefined || summaryRows.length === 0) {
       return (
-        <div className="panel-body">
+        <div className='panel-body'>
           This candidate has no behavioural feedback.
         </div>
       );
     }
 
     return (
-      <div className="panel-body">
+      <div className='panel-body'>
         <table
-          className="table table-hover table-bordered dynamictable">
+          className='table table-hover table-bordered dynamictable'>
           <thead>
-            <tr className="info">
+            <tr className='info'>
               <th>QC Class</th>
               <th>Instrument</th>
               <th>Visit</th>
@@ -707,7 +717,7 @@ class FeedbackPanel extends Component {
     let title = 'New ' + this.props.feedbackLevel + ' level feedback';
     return (
       <SliderPanel pscid={this.props.pscid}>
-        <AccordionPanel title="Open Thread Summary">
+        <AccordionPanel title='Open Thread Summary'>
           <FeedbackSummaryPanel summary_data={this.state.summary} />
         </AccordionPanel>
         <AccordionPanel title={title}>
@@ -721,7 +731,7 @@ class FeedbackPanel extends Component {
             feedbackTypes={this.props.feedbackTypes}
           />
         </AccordionPanel>
-        <AccordionPanel title="Feedback Threads">
+        <AccordionPanel title='Feedback Threads'>
           <FeedbackPanelContent
             threads={this.state.threads}
             close_thread={this.markThreadClosed}
