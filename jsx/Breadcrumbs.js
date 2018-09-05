@@ -77,7 +77,7 @@ class Breadcrumbs extends Component {
       const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
-          <li key={'crumbs_' + i}>
+          <li key={'drop_' + i}>
             <a href={url}>
               {element.text}
             </a>
