@@ -91,7 +91,7 @@ class Issue_Tracker_ControlPanel
     function display()
     {
         $this->tpl_data['issue'] = $this->getData();
-        $smarty = new \Smarty_neurodb("issue_tracker");
+        $smarty = new \Smarty_neurodb(\Module::factory("issue_tracker"));
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("issue_tracker_controlpanel.tpl");
