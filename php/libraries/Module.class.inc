@@ -58,7 +58,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             // composer require'd and in the vendor directory.
             $modulename = "\\LORIS\\$name\\Module";
 
-            if (class_exists( $modulename, true)) {
+            if (class_exists($modulename, true)) {
                 $m = new $modulename();
                 return $m;
             }
