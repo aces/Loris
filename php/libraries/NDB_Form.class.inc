@@ -144,12 +144,13 @@ class NDB_Form extends NDB_Page
      */
     function setup()
     {
-        $this::_setCSRFToken();
+        $newCookie = $this::_setCSRFToken();
         $this->addHidden(
-            // Double underscores are used here as fields with double underscores
-            // are automatically unset in the _save function below.
+            /* Double underscores are used here as fields with double underscores
+            * are automatically unset in the _save function below.
+             */
             '__csrfToken',
-            $_COOKIE['__csrfToken']
+            $newCookie
         );
     }
 
@@ -158,9 +159,9 @@ class NDB_Form extends NDB_Page
      * are checked against form submissions to assure that the request
      * was not forged from another domain.
      *
-     * @return void
+     * @return string The newly created CSRF token.
      */
-    private function _setCSRFToken(): void
+    private function _setCSRFToken(): string
     {
         // Create db connection
         $db =& \Database::singleton();
@@ -182,16 +183,18 @@ class NDB_Form extends NDB_Page
                 . 'database. '
                 . $e
             );
-            http_response_code(500);
         }
 
-        // This should have the Secure flag but is likely to break our automated
-        // test environment.  When we resolve that issue, that flag should be
-        // added here.
+        /* Add the token to a cookie so it can be submitted via ajax.
+         * TODO This should have the Secure flag but is likely to break our 
+         * automated test environment.  When we resolve that issue, that flag 
+         * should be added here.
+         */
         setcookie(
             '__csrfToken',
             $csrfToken
         );
+        return $csrfToken;
     }
 
     /**
