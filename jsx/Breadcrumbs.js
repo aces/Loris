@@ -11,6 +11,7 @@
  */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Breadcrumbs Component.
@@ -76,7 +77,7 @@ class Breadcrumbs extends Component {
       const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
-          <li>
+          <li key={'crumbs_' + i}>
             <a href={url}>
               {element.text}
             </a>
@@ -84,7 +85,7 @@ class Breadcrumbs extends Component {
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className="btn btn-primary">
+          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
             <div>
               {element.text}
             </div>
@@ -95,16 +96,16 @@ class Breadcrumbs extends Component {
 
     if (dropdown.length !== 0) {
       breadcrumbDropdown = (
-        <div className="btn-group ellipsis btn btn-primary">
-          <button type="button"
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+        <div className='btn-group ellipsis btn btn-primary'>
+          <button type='button'
+                  className='dropdown-toggle'
+                  data-toggle='dropdown'
+                  aria-haspopup='true'
+                  aria-expanded='false'
           >
             ...
           </button>
-          <ul className="dropdown-menu">
+          <ul className='dropdown-menu'>
             {dropdown}
           </ul>
         </div>
@@ -112,9 +113,9 @@ class Breadcrumbs extends Component {
     }
 
     return (
-      <div id="bc2" className="btn-group btn-breadcrumb">
-        <a href={baseURL} className="btn btn-primary">
-          <span className="glyphicon glyphicon-home" aria-hidden="true"></span>
+      <div id='bc2' className='btn-group btn-breadcrumb'>
+        <a href={baseURL} className='btn btn-primary'>
+          <span className='glyphicon glyphicon-home' aria-hidden='true'/>
         </a>
         {breadcrumbDropdown}
         {breadcrumbs}
@@ -122,6 +123,10 @@ class Breadcrumbs extends Component {
     );
   }
 }
+Breadcrumbs.propTypes = {
+  baseURL: PropTypes.string,
+  breadcrumbs: PropTypes.array,
+};
 
 let RBreadcrumbs = React.createFactory(Breadcrumbs);
 
