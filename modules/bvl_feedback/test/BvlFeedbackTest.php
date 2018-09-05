@@ -44,7 +44,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
             "document.querySelector('#nav-right >".
             " li:nth-child(1) > a > span').click()"
         );
-        $text = $this->webDriver->wait(5)->until(function () {
+        $text = $this->webDriver->wait()->until(function () {
             return $this->webDriver->executescript(
                 "return document.querySelector".
                 "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
