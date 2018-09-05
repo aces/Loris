@@ -8,7 +8,8 @@
   "extra" : {
       "branch-alias" : {
           "dev-major" : "21.0.x-dev"
-      },
+      }
+  },
     "require" : {
         "smarty/smarty" : "~3.1",
         "PHPOffice/PHPExcel": "1.8.*",
