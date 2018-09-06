@@ -669,7 +669,7 @@ class ViewSession extends \NDB_Form
             $tpl_data['useEDC'] = true;
         }
 
-        $smarty = new \Smarty_neurodb('imaging_browser');
+        $smarty = new \Smarty_neurodb($this->Module);
 
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_session_header.tpl");
