@@ -88,7 +88,9 @@ class Stats_Behavioural extends \NDB_Form
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if ($_REQUEST['site'] == $row['NumericID']) {
+            if (isset($_REQUEST['site'])
+                && $_REQUEST['site'] == $row['NumericID']
+            ) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
@@ -160,19 +162,43 @@ class Stats_Behavioural extends \NDB_Form
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
-            $c[$vl]['total']   += $row['val'];
-            $c['all']['total'] += $row['val'];
+            if (isset($c[$vl]['total'])) {
+                $c[$vl]['total'] += $row['val'];
+            } else {
+                $c[$vl]['total'] = $row['val'];
+            }
+            if (isset($c['all']['total'])) {
+                $c['all']['total'] += $row['val'];
+            } else {
+                $c['all']['total'] = $row['val'];
+            }
             if ($row['Data_Entry'] == 'Complete') {
-                $c[$vl]['complete']   += $row['val'];
-                $c['all']['complete'] += $row['val'];
+                if (isset($c[$vl]['complete'])) {
+                    $c[$vl]['complete'] += $row['val'];
+                } else {
+                    $c[$vl]['complete'] = $row['val'];
+                }
+                if (isset($c['all']['complete'])) {
+                    $c['all']['complete'] += $row['val'];
+                } else {
+                    $c['all']['complete'] = $row['val'];
+                }
             }
             if ($c[$vl]['total'] != 0) {
-                $c[$vl]['percent']
-                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                if (isset($c[$vl]['complete'])) {
+                    $c[$vl]['percent']
+                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                } else {
+                    $c[$vl]['percent'] = 0;
+                }
             }
             if ($c['all']['total'] != 0) {
-                $c['all']['percent']
-                    = floor($c['all']['complete'] / $c['all']['total']*100);
+                if (isset($c['all']['complete'])) {
+                    $c['all']['percent']
+                        = floor($c['all']['complete'] / $c['all']['total']*100);
+                } else {
+                    $c['all']['percent'] = 0;
+                }
             }
         }
         // DDE STATS
@@ -200,19 +226,43 @@ class Stats_Behavioural extends \NDB_Form
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
 
-            $c[$vl]['total']   += $row['val'];
-            $c['all']['total'] += $row['val'];
+            if (isset($c[$vl]['total'])) {
+                $c[$vl]['total'] += $row['val'];
+            } else {
+                $c[$vl]['total'] = $row['val'];
+            }
+            if (isset($c['all']['total'])) {
+                $c['all']['total'] += $row['val'];
+            } else {
+                $c['all']['total'] = $row['val'];
+            }
             if ($row['Data_Entry'] == 'Complete') {
-                $c[$vl]['complete']   += $row['val'];
-                $c['all']['complete'] += $row['val'];
+                if (isset($c[$vl]['complete'])) {
+                    $c[$vl]['complete'] += $row['val'];
+                } else  {
+                    $c[$vl]['complete'] = $row['val'];
+                }
+                if (isset($c['all']['complete'])) {
+                    $c['all']['complete'] += $row['val'];
+                } else {
+                    $c['all']['complete'] = $row['val'];
+                }
             }
             if ($c[$vl]['total'] != 0) {
-                $c[$vl]['percent']
-                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                if (isset($c[$vl]['complete'])) {
+                    $c[$vl]['percent']
+                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                } else {
+                    $c[$vl]['percent'] = 0;
+                }
             }
             if ($c['all']['total'] != 0) {
-                $c['all']['percent']
-                    = floor($c['all']['complete'] / $c['all']['total']*100);
+                if (isset($c['all']['complete'])) {
+                    $c['all']['percent']
+                        = floor($c['all']['complete'] / $c['all']['total']*100);
+                } else {
+                    $c['all']['percent'] = 0;
+                }
             }
         }
     }
