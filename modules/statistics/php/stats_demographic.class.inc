@@ -91,7 +91,8 @@ class Stats_Demographic extends \NDB_Form
     ) {
 
         $tpl_data = array();
-        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
+        $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
+            htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb("statistics");
@@ -218,7 +219,9 @@ class Stats_Demographic extends \NDB_Form
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
-            if ($_REQUEST['DemographicSite'] == $row['NumericID']) {
+            if (isset($_REQUEST['DemographicSite'])
+                && $_REQUEST['DemographicSite'] == $row['NumericID']
+            ) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
@@ -250,7 +253,11 @@ class Stats_Demographic extends \NDB_Form
 
         foreach ($result as $row) {
             $this->tpl_data['registered'][$row['rowid']] = $row['val'];
-            $this->tpl_data['registered']['total']      += $row['val'];
+            if (isset($this->tpl_data['registered']['total'])) {
+                $this->tpl_data['registered']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['registered']['total'] = $row['val'];
+            }
         }
 
         //PARTICIPANT STATUS ACTIVE
@@ -273,7 +280,11 @@ class Stats_Demographic extends \NDB_Form
 
         foreach ($result as $row) {
             $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
-            $this->tpl_data['ps_active']['total']      += $row['val'];
+            if (isset($this->tpl_data['ps_active']['total'])) {
+                $this->tpl_data['ps_active']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['ps_active']['total'] = $row['val'];
+            }
         }
 
         //PARTICIPANT STATUS INACTIVE
@@ -320,7 +331,11 @@ class Stats_Demographic extends \NDB_Form
 
         foreach ($result as $row) {
             $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_male']['total']      += $row['val'];
+            if (isset($this->tpl_data['gender_male']['total'])) {
+                $this->tpl_data['gender_male']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['gender_male']['total'] = $row['val'];
+            }
         }
         //FEMALE
         $result = $DB->pselect(
@@ -344,7 +359,11 @@ class Stats_Demographic extends \NDB_Form
 
         foreach ($result as $row) {
             $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_female']['total']      += $row['val'];
+            if (isset($this->tpl_data['gender_female']['total'])) {
+                $this->tpl_data['gender_female']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['gender_female']['total'] = $row['val'];
+            }
         }
 
         //AGE AVERAGE
