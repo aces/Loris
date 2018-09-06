@@ -1333,8 +1333,7 @@ class CheckboxElement extends React.Component {
         <div className={this.props.inputClass}>
           <input
             type="checkbox"
-            className="form-control"
-            style={{width: '5%'}}
+            className="input-sm"
             name={this.props.name}
             id={this.props.id}
             checked={this.props.value}
@@ -1357,7 +1356,7 @@ CheckboxElement.propTypes = {
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func,
+  onUserInput: React.PropTypes.func
 };
 
 CheckboxElement.defaultProps = {
@@ -1371,7 +1370,7 @@ CheckboxElement.defaultProps = {
   inputClass: 'col-sm-9',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  },
+  }
 };
 
 /**
@@ -1467,7 +1466,7 @@ class LorisElement extends React.Component {
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
-      case 'checkbox':
+      case 'advcheckbox':
         elementHtml = (<CheckboxElement {...elementProps} />);
         break;
       default:
