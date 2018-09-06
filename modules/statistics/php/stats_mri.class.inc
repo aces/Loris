@@ -208,7 +208,9 @@ class Stats_MRI extends \NDB_Form
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
-            if ($_REQUEST['MRIsite'] == $row['NumericID']) {
+            if (isset($_REQUEST['MRIsite'])
+                && $_REQUEST['MRIsite'] == $row['NumericID']
+            ) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
