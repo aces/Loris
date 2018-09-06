@@ -88,17 +88,29 @@ if ($printToSQL) {
     // Run on database
     // Get data from all tables to be modified
     $dataPre = array();
-    foreach ($createdTables[1] as $key=>$table)
+    foreach ($table_names as $key=>$table)
     {
-        $dataPre[$table] = $DB->pselect("SELECT * FROM ". $table, array());
+        $colNumber = getNumberOfCols($table,$adminDB,$dbConfig);
+        $sortString = "";
+        for ($i=1; $i < $colNumber-1; $i++) {
+            $sortString .= "$i,";
+        }
+        $sortString .= $colNumber-1;
+        $dataPre[$table] = $DB->pselect("SELECT * FROM ". $table . " ORDER BY $sortString", array());
     }
     echo "Running database calls.\n";
     // Admin necessary, ALTER TABLE calls
     $adminDB->run($output);
     $dataPost = array();
-    foreach ($createdTables[1] as $key=>$table)
+    foreach ($table_names as $key=>$table)
     {
-        $dataPost[$table] = $DB->pselect("SELECT * FROM ". $table, array());
+        $colNumber = getNumberOfCols($table,$adminDB,$dbConfig);
+        $sortString = "";
+        for ($i=1; $i < $colNumber-1; $i++) {
+            $sortString .= "$i,";
+        }
+        $sortString .= $colNumber-1;
+        $dataPost[$table] = $DB->pselect("SELECT * FROM ". $table . " ORDER BY $sortString", array());
     }
     compareArrays($dataPre, $dataPost);
 }
@@ -110,11 +122,26 @@ function compareArrays($array1, $array2)
         foreach ($rows as $rowid=>$row) {
             foreach ($row as $key=>$val) {
                 if ($array2[$table][$rowid][$key] !== $val) {
-                    echo "The data has been corrupted for Table $table, at field $key\n";
+                    echo "A potential data corruption has been detected in Table $table, at field $key. 
+                    (old value: $val, new value: $array2[$table][$rowid][$key])\n";
                 }
             }
         }
     }
+}
+
+function getNumberOfCols($DBTable, $DB, $dbConfig)
+{
+    $number = $DB->pselectOne("
+          SELECT COUNT(*) 
+          FROM `information_schema`.`COLUMNS` 
+          WHERE TABLE_NAME=:tbl AND TABLE_SCHEMA=:dbn",
+        array(
+            "tbl"=> $DBTable,
+            "dbn"=> $dbConfig['database']
+        )
+    );
+    return $number;
 }
 
 function showHelp()
