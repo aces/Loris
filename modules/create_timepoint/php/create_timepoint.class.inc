@@ -209,7 +209,7 @@ class Create_Timepoint extends \NDB_Form
         $errors = array();
 
         // validate site entered
-        $site = $val['psc'];
+        $site = $val['psc'] ?? '';
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
@@ -218,7 +218,7 @@ class Create_Timepoint extends \NDB_Form
 
         $candid       = $this->identifier;
         $subprojectID = $val['subprojectID'];
-        $visitLabel   = $val['visitLabel'];
+        $visitLabel   = $val['visitLabel'] ?? '';
 
         try {
             \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
