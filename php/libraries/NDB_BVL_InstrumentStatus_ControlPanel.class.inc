@@ -25,6 +25,30 @@
  */
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
+
+    /**
+     * Construct a controller for the instrument status control panel
+     *
+     * @param string  $testname  The instrument name being managed
+     * @param string  $commentid The commentID being loaded
+     * @param int     $candid    The candidate who this instrument belongs to
+     * @param int     $sessionid The session at which the instrument took place
+     * @param ?string $subtest   The page of the instrument being accessed
+     */
+    function __construct(
+        string $testname,
+        string $commentid,
+        int $candid,
+        int $sessionid,
+        ?string $subtest
+    ) {
+        $this->candID    = $candid;
+        $this->testname  = $testname;
+        $this->commentID = $commentid;
+        $this->sessionID = $sessionid;
+        $this->subtest   = $subtest;
+    }
+
     /**
      * Generates the HTML to display the set of buttons for the instrument
      * status flags
@@ -37,13 +61,11 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             throw new Exception("No instrument instance selected");
         }
 
-        $this->tpl_data['candID']    = isset($_REQUEST['candID'])
-            ? intval($_REQUEST['candID'])
-            : '';
-        $this->tpl_data['sessionID'] = intval($_REQUEST['sessionID']);
-        $this->tpl_data['commentID'] = $_REQUEST['commentID'];
-        $this->tpl_data['test_name'] = $_REQUEST['test_name'];
-        $this->tpl_data['subtest']   = $_REQUEST['subtest'] ?? '';
+        $this->tpl_data['candID']    = $this->candID ?? '';
+        $this->tpl_data['sessionID'] = $this->sessionID;
+        $this->tpl_data['commentID'] = $this->commentID;
+        $this->tpl_data['test_name'] = $this->testname;
+        $this->tpl_data['subtest']   = $this->subtest ?? '';
 
         // get the files path
         $config = \NDB_Config::singleton();
@@ -51,10 +73,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         // the instrument exists
         $InstrumentPath = $base."project/instruments/NDB_BVL_Instrument_"
-            .$_REQUEST['test_name']
+            .$this->testname
             .".class.inc";
         $LinstPath      = $base."project/instruments/"
-            .$_REQUEST['test_name']
+            .$this->testname
             .".linst";
         if (file_exists($InstrumentPath)
             || file_exists($LinstPath)
@@ -64,11 +86,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 include_once $InstrumentPath;
             }
             // create an instance of the instrument
-
-            $instrument = \NDB_BVL_Instrument::factory(
-                $_REQUEST['test_name'],
-                $_REQUEST['commentID'],
-                $this->tpl_data['subtest'] ?? ''
+            $instrument = NDB_BVL_Instrument::factory(
+                $this->testname,
+                $this->commentID,
+                $this->subtest ?? ''
             );
 
             $this->_instrument = $instrument;
@@ -81,7 +102,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $this->tpl_data['subtests'] = $list;
         }
 
-        if (empty($_REQUEST['subtest'])) {
+        if (empty($this->subtest)) {
             $hasAccess = $this->_hasAccess();
 
             if ($this->getDataEntryStatus() == null && $hasAccess) {
