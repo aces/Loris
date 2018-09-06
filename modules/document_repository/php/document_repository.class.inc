@@ -79,9 +79,9 @@ class Document_Repository extends \NDB_Menu_Filter
                           'v.Date_uploaded',
                          );
 
-        $openAccordion = $_GET['openAccordion'];
+        $openAccordion = $_GET['openAccordion'] ?? '';
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = $_GET['filtered'];
+        $filtered = $_GET['filtered'] ?? '';
         $this->tpl_data['filtered'] = $filtered;
         $this->query        = $query;
         $this->group_by     = '';
@@ -166,6 +166,15 @@ class Document_Repository extends \NDB_Menu_Filter
             $fileTypes[$fileType['File_type']] = $fileType['File_type'];
         }
         $fileTypes = array_merge(array(null => 'Any') + $fileTypes);
+
+        $fileCategories = array();
+        $sqlSelect = "SELECT DISTINCT File_category".
+            " FROM document_repository ORDER BY File_category";
+        $fileC     = $DB->pselect($sqlSelect, array());
+        foreach ($fileC as $fileCategory) {
+            $fileCategories[$fileCategory['File_category']] = $fileCategory['File_category'];
+        }
+        $fileCategories = array_merge(array(null => 'Any') + $fileCategories);
 
         // Form Elements
         $this->addBasicText('File_name', 'File name:');
