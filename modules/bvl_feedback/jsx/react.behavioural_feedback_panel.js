@@ -155,6 +155,7 @@ class FeedbackPanelRow extends Component {
     $.ajax({
       type: 'GET',
       url: loris.BaseURL + '/bvl_feedback/ajax/get_thread_entry_data.php',
+      dataType: 'json',
       data: {feedbackID: this.props.feedbackID},
       success: function(data) {
         that.setState({threadEntriesLoaded: data});
