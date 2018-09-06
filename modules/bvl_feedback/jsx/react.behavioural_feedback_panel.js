@@ -183,6 +183,7 @@ class FeedbackPanelRow extends Component {
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
+      dataType: 'json',
       data: {
         comment: comment,
         feedbackID: feedbackID,
@@ -409,6 +410,7 @@ class NewThreadPanel extends Component {
       $.ajax({
         type: 'POST',
         url: loris.BaseURL + '/bvl_feedback/ajax/new_bvl_feedback.php',
+        dataType: 'json',
         data: {
           inputType: this.state.inputValue,
           fieldName: this.state.selectValue,
@@ -620,6 +622,7 @@ class FeedbackPanel extends Component {
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/get_bvl_feedback_summary.php',
+      dataType: 'json',
       data: {
         candID: this.props.candID,
         sessionID: this.props.sessionID,
@@ -639,6 +642,7 @@ class FeedbackPanel extends Component {
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/react_get_bvl_threads.php',
+      dataType: 'json',
       data: {
         candID: this.props.candID,
         sessionID: this.props.sessionID,
@@ -672,6 +676,7 @@ class FeedbackPanel extends Component {
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/close_bvl_feedback_thread.php',
+      dataType: 'json',
       data: {
         candID: this.props.candID,
         feedbackID: feedbackID,
@@ -699,6 +704,7 @@ class FeedbackPanel extends Component {
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/open_bvl_feedback_thread.php',
+      dataType: 'json',
       data: {
         candID: this.props.candID,
         feedbackID: feedbackID,
