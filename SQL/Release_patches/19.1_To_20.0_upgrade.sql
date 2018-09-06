@@ -120,7 +120,7 @@ CREATE TABLE `consent` (
   CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
   CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
   CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE parameter_session DROP FOREIGN KEY `FK_parameter_session_1`;
 ALTER TABLE parameter_session ADD CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
