@@ -683,7 +683,7 @@ class NDB_BVL_Feedback
                 $setArray,
                 array(
                  "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
-                 "SessionID"      => $feedbackInfo['SessionID'],
+                 "SessionID"      => $feedbackInfo['SessionID'] ?? '',
                  "CandID"         => $feedbackInfo['CandID'],
                  "Feedback_level" => "instrument",
                  "FieldName"      => $fieldname,
@@ -694,7 +694,7 @@ class NDB_BVL_Feedback
             $setArray = array_merge(
                 $setArray,
                 array(
-                 "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
+                 "SessionID"      => $this->_feedbackObjectInfo['SessionID'] ?? '',
                  "CandID"         => $this->_feedbackCandidateProfileInfo['CandID'],
                  "Feedback_level" => "visit",
                 )
@@ -712,6 +712,22 @@ class NDB_BVL_Feedback
                 "NDB_BVL_Feedback::closeThread: Unsupported Feedback Level\n"
             );
         }
+
+        $nextID = $DB->pselect('SELECT FeedbackID from feedback_bvl_thread ORDER BY FeedbackID DESC LIMIT 0, 1', null);
+        if ($nextID == null) {
+            $nextID = 0;
+        } else {
+            $nextID = $nextID[0]['FeedbackID'] + 1;
+        }
+        $setArray['FeedbackID'] = $nextID;
+        $setArray['Feedback_type'] = intval($setArray['Feedback_type']);
+        $setArray['FieldName'] = $fieldname;
+        $setArray['CommentID'] = 'test';
+        $setArray['Testdate'] = date( 'Y-m-d H:i:s');
+        $setArray['SessionID'] = 0;
+
+        print_r('CHECK:');
+        print_r($setArray);
 
         $DB->insert('feedback_bvl_thread', $setArray);
 

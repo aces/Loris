@@ -59,15 +59,19 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
+    print_r('CHECK:');
+    print_r($feedbackLevel);
+    print_r('DONE');
+
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
         $_POST['inputType'],
         $_POST['comment'],
         'Y',
-        $_POST['fieldName']
+        (string)$_POST['fieldName']
     );
 
     print json_encode($newEntryValues);
 }
 
-    exit();
+exit();

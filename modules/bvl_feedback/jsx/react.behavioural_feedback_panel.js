@@ -359,9 +359,10 @@ var NewThreadPanel = React.createClass({
           this.props.addThread(data);
           this.props.updateSummaryThread();
         }.bind(this),
-        error: function(xhr, desc, err) {
-          console.error(xhr);
-          console.error("Details: " + desc + "\nError:" + err);
+        error: function(err) {
+          console.log(JSON.stringify(err));
+          //console.error(xhr);
+          //console.error("Details: " + desc + "\nError:" + err);
         }
       });
     }
