@@ -239,7 +239,7 @@ class Stats_Behavioural extends \NDB_Form
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
                     $c[$vl]['complete'] += $row['val'];
-                } else  {
+                } else {
                     $c[$vl]['complete'] = $row['val'];
                 }
                 if (isset($c['all']['complete'])) {
