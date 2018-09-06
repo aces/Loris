@@ -83,7 +83,7 @@
             <li>
                 <img src="{$baseurl}/images/{$icon}.gif" alt="" width="12" height="12" />&nbsp;
             {if $subtest != $subtests[item].Name}
-                <a href="{$baseurl}/instruments/{$test_name}/?candID={$candID}&sessionID={$sessionID}&subtest={$subtests[item].Name}&commentID={$commentID}">{$subtests[item].Description}</a>
+                <a href="{$baseurl}/instruments/{$test_name}/{$subtests[item].Name}/?candID={$candID}&sessionID={$sessionID}&commentID={$commentID}">{$subtests[item].Description}</a>
             {else}
                 {$subtests[item].Description}
             {/if}
