@@ -26,7 +26,7 @@ $db        = \Database::singleton(
     $db_config['host']
 );
 // Delete all tokens more than 2 days old.
-$queryTime = date('Y-m-d', strtotime("+2 day"));
+$queryTime = date('Y-m-d', strtotime("-2 day"));
 $query     = 'SELECT * FROM csrf_tokens WHERE CreatedAt < :queryTime';
 try {
     $result = $db->pselect($query, array('queryTime' => $queryTime));
