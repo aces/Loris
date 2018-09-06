@@ -40,9 +40,8 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         // Candidate Profile
         $this->safeGet($this->url . "/300002/");
-        $element = $this->webDriver->findElement(WebDriverBy::id('wrap'));
         $this->webDriver->wait(10, 1000)->until(
-            WebDriverExpectedCondition::visibilityOf($element)
+            WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::id('wrap'))
         );
         $this->webDriver->executescript(
             "document.querySelector('#nav-right >".
