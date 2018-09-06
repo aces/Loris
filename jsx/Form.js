@@ -1318,18 +1318,12 @@ class CheckboxElement extends React.Component {
       elementClass = 'row form-group has-error';
     }
 
-    if (this.props.label) {
-      label = (
+    return (
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-      );
-    }
-
-    return (
-      <div className={elementClass}>
-        {label}
         <div className={this.props.inputClass}>
           <input
             type="checkbox"
@@ -1350,7 +1344,7 @@ class CheckboxElement extends React.Component {
 
 CheckboxElement.propTypes = {
   name: React.PropTypes.string.isRequired,
-  label: React.PropTypes.string,
+  label: React.PropTypes.string.isRequired,
   value: React.PropTypes.string,
   id: React.PropTypes.string,
   disabled: React.PropTypes.bool,
@@ -1360,8 +1354,6 @@ CheckboxElement.propTypes = {
 };
 
 CheckboxElement.defaultProps = {
-  name: '',
-  label: '',
   value: '',
   id: null,
   disabled: false,
