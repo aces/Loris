@@ -70,4 +70,4 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
     print json_encode($newEntryValues);
 }
 
-    exit();
+exit();
