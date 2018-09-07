@@ -64,7 +64,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['inputType'],
         $_POST['comment'],
         'Y',
-        (string)$_POST['fieldName']
+        $_POST['fieldName']
     );
 
     print json_encode($newEntryValues);
