@@ -246,7 +246,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals('View Details', $text);
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
-        ); 
+        );
         $text = $this->webDriver->getPageSource();
         $this->assertContains('View Details', $text);
     }
