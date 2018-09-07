@@ -237,7 +237,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         $path     = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
-            $pagename = explode("@", $path)[0];
+            $pagename = explode("/", $path)[0];
         }
 
         try {
