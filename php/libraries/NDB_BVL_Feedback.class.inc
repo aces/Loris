@@ -718,14 +718,10 @@ class NDB_BVL_Feedback
             $nextID = 0;
         } else {
             $nextID = $nextID[0]['FeedbackID'] + 1;
+            print_r('1 test:');
+            print_r($nextID);
         }
         $setArray['FeedbackID'] = $nextID;
-        $setArray['Feedback_type'] = intval($setArray['Feedback_type']);
-        $setArray['FieldName'] = $fieldname;
-        $setArray['CommentID'] = 'test';
-        $setArray['Testdate'] = date( 'Y-m-d H:i:s');
-        $setArray['SessionID'] = 0;
-
         print_r('CHECK:');
         print_r($setArray);
 
