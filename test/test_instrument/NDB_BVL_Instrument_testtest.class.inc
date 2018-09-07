@@ -28,6 +28,9 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      */
     function setup($commentID = NULL, $page = NULL)
     {
+        if ($commentID === null) {
+            return;
+        }
         $this->formType = 'XIN';
         $this->form = new LorisForm();
         $this->page = $page; // page label (number or string - used by user-defined child classes)
