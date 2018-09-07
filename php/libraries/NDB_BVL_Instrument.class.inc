@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -24,7 +26,6 @@
  */
 class NDB_BVL_Instrument extends NDB_Page
 {
-
     /**
      * HTML_Quickform object
      *
@@ -1414,7 +1415,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
@@ -2174,8 +2175,17 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
-            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-            $success      = $controlPanel->select($_REQUEST['commentID']);
+            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel(
+                $this->testName,
+                $this->getCommentID(),
+                0,
+                $this->getSessionID(),
+                $this->page
+            );
+               $this->addHidden('test_name', $this->testName);
+            $this->addHidden('page', $this->page);
+            $this->addHidden('subtest', $this->page);
+            $success = $controlPanel->select($_REQUEST['commentID']);
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
@@ -2569,5 +2579,23 @@ class NDB_BVL_Instrument extends NDB_Page
             )
         );
     }
-}
 
+    /**
+     * A form extends the basic page handler to call save() on a POST request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The PSR15 response to the request.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->setup();
+        if ($request->getMethod() === "POST") {
+            $this->save();
+        }
+
+        return (new \Zend\Diactoros\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+}
