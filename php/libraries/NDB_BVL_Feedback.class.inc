@@ -713,7 +713,11 @@ class NDB_BVL_Feedback
             );
         }
 
-        $nextID = $DB->pselect('SELECT FeedbackID from feedback_bvl_thread ORDER BY FeedbackID DESC LIMIT 0, 1', null);
+        $nextID = $DB->pselect(
+            'SELECT FeedbackID from feedback_bvl_thread '
+            .'ORDER BY FeedbackID DESC LIMIT 0, 1',
+            null
+        );
         if ($nextID == null) {
             $nextID = 0;
         } else {
