@@ -718,13 +718,8 @@ class NDB_BVL_Feedback
             $nextID = 0;
         } else {
             $nextID = $nextID[0]['FeedbackID'] + 1;
-            print_r('1 test:');
-            print_r($nextID);
         }
         $setArray['FeedbackID'] = $nextID;
-        print_r('CHECK:');
-        print_r($setArray);
-
         $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
