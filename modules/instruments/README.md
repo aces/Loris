@@ -3,9 +3,9 @@
 ## Purpose
 
 The instruments module is responsible for loading of instruments
-which are part of a study for data entry. It provides provides the
-routing to the appropriate instrument class to handle the page which
-is being handled.
+which are part of a study for data entry. It provides the routing
+to the appropriate instrument class to handle the page which is
+being handled.
 
 ## Intended Users
 
