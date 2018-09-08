@@ -102,11 +102,11 @@ class Create_Timepoint extends \NDB_Form
 
         $this->addHidden('candID', $this->identifier);
 
-        $candidate   =& \Candidate::singleton($this->identifier);
+        $candidate =& \Candidate::singleton($this->identifier);
         // List of all subprojects from config file
         $allSubprojects  = \Utility::getSubprojectList();
         $sp_labelOptions = array(null => '');
-        $subprojList = null;
+        $subprojList     = null;
         //List of valid subprojects for a given project
         if ($config->getSetting('useProjects') === 'true') {
             // If projects enabled, loop through and add valid subprojects only
