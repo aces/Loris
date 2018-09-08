@@ -103,26 +103,22 @@ class Create_Timepoint extends \NDB_Form
         $this->addHidden('candID', $this->identifier);
 
         $candidate   =& \Candidate::singleton($this->identifier);
+        // List of all subprojects from config file
+        $allSubprojects  = \Utility::getSubprojectList();
+        $sp_labelOptions = array(null => '');
         $subprojList = null;
         //List of valid subprojects for a given project
         if ($config->getSetting('useProjects') === 'true') {
+            // If projects enabled, loop through and add valid subprojects only
             $subprojList = $candidate->getValidSubprojects();
-        }
-        // List of all subprojects from config file
-
-        // Loop through the subprojects to get an id out and to create
-        // the subproject drop down.
-        $allSubprojects  = \Utility::getSubprojectList();
-        $sp_labelOptions = array(null => '');
-
-        foreach ($allSubprojects as $subprojectID => $title) {
-            if (! empty($subprojList)) {
+            foreach ($allSubprojects as $subprojectID => $title) {
                 if (in_array($subprojectID, $subprojList)) {
                     $sp_labelOptions[$subprojectID] = $title;
                 }
-            } else {
-                $sp_labelOptions[$subprojectID] = $title;
             }
+        } else {
+            // If projects disabled, add all subprojects
+            $sp_labelOptions += $allSubprojects;
         }
 
         $attributes = array(
