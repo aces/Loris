@@ -113,20 +113,32 @@ class Stats_MRI extends \NDB_Form
                 $C = 'C' . $center;
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj]['total']      += $row['val'];
-                $tpl_data['data'][$vl][$subcat]           += $row['val'];
-                $tpl_data['data'][$vl]['total']           += $row['val'];
+                if (isset($tpl_data['data'][$subproj][$subcat])) {
+                    $tpl_data['data'][$subproj][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$subcat] = $row['val'];
+                }
+                if (isset($tpl_data['data'][$subproj]['total'])) {
+                    $tpl_data['data'][$subproj]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj]['total'] = $row['val'];
+                }
+                $tpl_data['data'][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
                 $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
-                $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
-                $tpl_data['data'][$C][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$C][$subcat] += $row['val'];
-                $tpl_data['data'][$C]['total'] += $row['val'];
-                $tpl_data['data'][$subcat]     += $row['val'];
-                $tpl_data['data']['total']     += $row['val'];
+                if (isset($tpl_data['data'][$C][$vl][$subcat])) {
+                    $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$C][$vl][$subcat] = $row['val'];
+                }
+                $tpl_data['data'][$C][$vl]['total'] += $row['val'];
+                $tpl_data['data'][$C][$subcat]      += $row['val'];
+                $tpl_data['data'][$C]['total']      += $row['val'];
+                $tpl_data['data'][$subcat]          += $row['val'];
+                $tpl_data['data']['total']          += $row['val'];
             }
 
         }
