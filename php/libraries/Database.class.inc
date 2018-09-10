@@ -953,7 +953,7 @@ class Database
             if ($item===null || $item==='') {
                 $output[] = "`$key`=NULL";
             } else {
-                $item     = $this->quote($item);
+                $item     = $this->quote((string) $item);
                 $output[] = "`$key`=$item";
             }
         }
