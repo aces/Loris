@@ -142,8 +142,8 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
         }
         // Sanitize variables before using in exec statement.
-        $codePath = escapeshellarg($this->_mriCodePath);
-        $uploadId = escapeshellarg($this->_mriUploadId);
+        $codePath       = escapeshellarg($this->_mriCodePath);
+        $uploadId       = escapeshellarg($this->_mriUploadId);
         $sourceLocation = escapeshellarg($this->_sourceLocation);
         return "source $codePath/" . self::ENVIRONMENT_BASENAME . " ;"
                . " $codePath/" . self::IMAGING_UPLOAD_FILE_PATH
