@@ -5,16 +5,21 @@
 The candidate list is intended to provide a menu from which users
 can access specific candidates while browsing LORIS data.
 
+It is referred to as "Access Profiles" in the LORIS menus.
+
 ## Intended Users
 
-The candidate list is primarily used by data entry staff to use in
-order to access the `timepoint_list` module (and `instrument_list`
+The candidate list is primarily used by data entry staff in order
+to access the `timepoint_list` module (and `instrument_list`
 from there) in order to access the candidate and perform data entry.
+
+Other user groups may use it for filtering candidate profiles for
+reviewing candidate data status.
 
 ## Scope
 
-The `candidate_list` module provides a list of candidates, as well
-as linking to other relevant LORIS modules where applicable.
+The `candidate_list` module provides a list of candidates and links
+to other relevant LORIS modules where applicable.
 
 ## Permissions
 
@@ -24,7 +29,7 @@ permission.
 
 Users with the `access_all_profiles` permission can see every
 candidate in LORIS, while users with only the `data_entry` permission
-can only see candidates at study sites where they are affiliated.
+can exclusively see candidates at study sites where they are affiliated.
 
 ## Configurations
 
@@ -33,7 +38,8 @@ The `useProjects` configuration affects whether the table has a
 dropdown for that column.
 
 The `useEDC` configuration variable has a similar function for the
-"EDC" column.
+"EDC" ("EDC" stands for "Expected Date Of Confinement" which refers
+to the pregnancy due date) column.
 
 ## Interactions with LORIS
 
