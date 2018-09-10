@@ -167,16 +167,13 @@ class Document_Repository extends \NDB_Menu_Filter
         }
         $fileTypes = array_merge(array(null => 'Any') + $fileTypes);
 
-        $fileCategories = array();
         $sqlSelect      = "SELECT DISTINCT File_category".
             " FROM document_repository ORDER BY File_category";
-        $fileC          = $DB->pselect($sqlSelect, array());
-        foreach ($fileC as $fileCategory) {
-            $fileCategories[$fileCategory['File_category']]
-                = $fileCategory['File_category'];
+        $fileCategories = array();
+        try {
+            $fileCategories = $DB->pselectCol($sqlSelect, array());
+        } catch (\DatabaseException $e) {
         }
-        $fileCategories = array_merge(array(null => 'Any') + $fileCategories);
-
         // Form Elements
         $this->addBasicText('File_name', 'File name:');
         $this->addBasicText('version', 'Version:');
