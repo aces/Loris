@@ -51,21 +51,14 @@ class VisitController
      */
     public function getAllVisits(): array
     {
-        return array_map(
-            function ($row) {
-                return new \LORIS\Visit(
-                    $row['visit']
-                );
-            },
-            $this->database->pselect(
-                'SELECT
-                  v.VisitName as "visit"
-                 FROM
-                  visit v
-                ',
-                array()
+        return $this->database->pselect(
+            'SELECT
+              v.VisitName as "visit"
+             FROM
+              visit v
+            ',
+            array()
             )
-        );
     }
 
     /**
@@ -73,27 +66,20 @@ class VisitController
      *
      * @param string $visit the name of the visit
      *
-     * @return array the ID of the visit  //TODO array of Visit
+     * @return array the ID of the visit  
      */
     public function getVisitsWithID(string $visit): array
     {
-        return array_map(
-            function ($row) {
-                return new \LORIS\Visit(
-                    $row['ID']
-                );
-            },
-            $this->database->pselect(
-                'SELECT
-                  v.VisitID as "ID"
-                 FROM
-                  visit v
-                 WHERE
-                  v.VisitName = :name
-                ',
-                array('name' => $visit)
+        return $this->database->pselect(
+            'SELECT
+             v.VisitID as "ID"
+            FROM
+             visit v
+            WHERE
+             v.VisitName = :name
+            ',
+            array('name' => $visit)
             )
-        );
     }
     /**
      * Returns a list of configured Visits and their association with projects
