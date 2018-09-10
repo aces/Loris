@@ -29,6 +29,14 @@ $middlewarechain = (new \LORIS\Middleware\ContentLength())
 
 $serverrequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
 
+if (isset($_GET['lorispath'])) {
+    // If mod_rewrite changed the URL to a "lorispath" get variable, change
+    // back to a normal URL path in the request.
+    $uri = $serverrequest->getUri();
+    $newuri = $uri->withPath($_GET['lorispath']);
+    $serverrequest = $serverrequest->withUri($newuri);
+}
+
 // Now that we've created the ServerRequest, handle it.
 $user = \User::singleton();
 
