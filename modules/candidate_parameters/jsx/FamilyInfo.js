@@ -18,10 +18,10 @@ class FamilyInfo extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
     this.deleteFamilyMember = this.deleteFamilyMember.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  componentDidMount() {
-    let that = this;
+  fetchData() {
     $.ajax(
       this.props.dataURL,
       {
@@ -31,26 +31,30 @@ class FamilyInfo extends Component {
           xhr.addEventListener(
             'progress',
             function(evt) {
-              that.setState({
+              this.setState({
                 loadedData: evt.loaded,
               });
-            });
+            }.bind(this));
           return xhr;
-        },
+        }.bind(this),
         success: function(data) {
-          that.setState({
+          this.setState({
             Data: data,
             isLoaded: true,
             familyMembers: data.existingFamilyMembers,
           });
-        },
+        }.bind(this),
         error: function(data, errorCode, errorMsg) {
-          that.setState({
+          this.setState({
             error: 'An error occurred when loading the form!',
           });
-        },
+        }.bind(this),
       }
     );
+  }
+
+  componentDidMount() {
+
   }
 
   setFormData(formElement, value) {
