@@ -71,9 +71,7 @@ class MediaIndex extends Component {
 
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach(function(header, index) {
-      row[header] = rowData[index];
-    }, this);
+    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
 
     // create array of classes to be added to td tag
     let classes = [];
