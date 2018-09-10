@@ -169,11 +169,7 @@ class Document_Repository extends \NDB_Menu_Filter
 
         $sqlSelect      = "SELECT DISTINCT File_category".
             " FROM document_repository ORDER BY File_category";
-        $fileCategories = array();
-        try {
-            $fileCategories = $DB->pselectCol($sqlSelect, array());
-        } catch (\DatabaseException $e) {
-        }
+        $fileCategories = $DB->pselectCol($sqlSelect, array());
         // Form Elements
         $this->addBasicText('File_name', 'File name:');
         $this->addBasicText('version', 'Version:');
