@@ -32,7 +32,7 @@ class UnresolvedConflictsPane extends React.Component {
 
     rowHeaders.forEach(function(header, index) {
       row[header] = rowData[index];
-    }, this);
+    });
     let value1;
     let value2;
     let hash;
