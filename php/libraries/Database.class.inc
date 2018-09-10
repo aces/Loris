@@ -73,7 +73,7 @@ class Database
      *
      * @param string  $database     the database to select
      * @param string  $username     the username with which to log into
-     *                                      the database server
+     *                              the database server
      * @param string  $password     the password that matches the username
      * @param string  $host         the name of the database server
      * @param boolean $trackChanges boolean determining if changes should be
@@ -134,11 +134,11 @@ class Database
      *
      * @param string      $database     the database to select
      * @param string|null $username     the username with which to log into
-     *                              the database server
+     *                                  the database server
      * @param string|null $password     the password that matches the username
      * @param string|null $host         the name of the database server
      * @param boolean     $trackChanges whether to use the trackChanges
-     *                              mechanism on this connection
+     *                                  mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
@@ -910,7 +910,7 @@ class Database
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row.
      *
-     * FIXME This function does not have have a return type declaration because
+     * FIXME This function does not have a return type declaration because
      * the function pselectRow will sometimes return a string and sometimes
      * return an array. This behaviour should be made consistent (i.e. perhaps
      * returning an array of a single element) so that we can properly enforce
