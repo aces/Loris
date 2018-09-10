@@ -173,7 +173,7 @@ class CouchDBDemographicsImporter {
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandSex as sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields = ", c.ProbandSex as Sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
             $groupBy .= ", c.ProbandSex, Age_difference";
         }
