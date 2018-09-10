@@ -11,10 +11,6 @@ class SelectField extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-
-    };
-
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
@@ -45,10 +41,6 @@ class SelectField extends Component {
 class SearchField extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-
-    };
   }
 
   clearFilter() {
