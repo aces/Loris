@@ -58,7 +58,7 @@ class VisitController
               visit v
             ',
             array()
-            )
+            );
     }
 
     /**
@@ -79,7 +79,7 @@ class VisitController
              v.VisitName = :name
             ',
             array('name' => $visit)
-            )
+            );
     }
     /**
      * Returns a list of configured Visits and their association with projects
