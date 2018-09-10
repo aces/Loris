@@ -1,15 +1,15 @@
 -- Create a physiological_modality table
 CREATE TABLE `physiological_modality` (
-  `PhysiologicalModalityID` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `PhysiologicalModality`   VARCHAR(50)      NOT NULL,
+  `PhysiologicalModalityID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `PhysiologicalModality`   VARCHAR(50)         NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalModalityID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 -- Create a physiological_output_type table
 CREATE TABLE `physiological_output_type` (
-  `PhysiologicalOutputTypeID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `OutputType`                VARCHAR(20)     NOT NULL,
+  `PhysiologicalOutputTypeID` INT(5)      UNSIGNED NOT NULL AUTO_INCREMENT,
+  `OutputTypeName`            VARCHAR(20)          NOT NULL UNIQUE,
   `OutputTypeDescription`     VARCHAR(255),
   PRIMARY KEY (`PhysiologicalOutputTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -18,15 +18,14 @@ CREATE TABLE `physiological_output_type` (
 -- Create a physiological_file table
 CREATE TABLE `physiological_file` (
   `PhysiologicalFileID`       INT(10)    UNSIGNED  NOT NULL      AUTO_INCREMENT,
-  `PhysiologicalModalityID`   TINYINT(3) UNSIGNED  DEFAULT NULL,
-  `Caveat`                    TINYINT(1) UNSIGNED  DEFAULT 0,
+  `PhysiologicalModalityID`   INT(5)     UNSIGNED  DEFAULT NULL,
   `PhysiologicalOutputTypeID` INT(5)     UNSIGNED  NOT NULL,
   `SessionID`                 INT(10)    UNSIGNED  NOT NULL,
-  `InsertTime`                INT(10)    UNSIGNED  NOT NULL,
+  `InsertTime`                TIMESTAMP            NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `FileType`                  VARCHAR(12)          DEFAULT NULL,
-  `AcquisitionTime`           VARCHAR(20)          DEFAULT NULL,
+  `AcquisitionTime`           DATETIME             DEFAULT '1970-01-01 00:00:01',
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
-  `File`                      VARCHAR(255)         NOT NULL,
+  `FilePath`                  VARCHAR(255)         NOT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
   CONSTRAINT `FK_session_ID`
     FOREIGN KEY (`SessionID`)
@@ -47,10 +46,10 @@ CREATE TABLE `physiological_file` (
 -- Create a physiological_parameter_file table that will store all JSON
 -- information that accompanies the BIDS physiological dataset
 CREATE TABLE `physiological_parameter_file` (
-  `PhysiologicalParameterFileID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `PhysiologicalParameterFileID` INT(10) UNSIGNED NOT NULL  AUTO_INCREMENT,
   `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
-  `InsertTime`                   INT(10) UNSIGNED NOT NULL,
+  `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
   `Value`                        VARCHAR(255),
   PRIMARY KEY (`PhysiologicalParameterFileID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID`
@@ -66,8 +65,8 @@ CREATE TABLE `physiological_parameter_file` (
 
 -- Create a physiological_status_type table
 CREATE TABLE `physiological_status_type` (
-  `PhysiologicalStatusTypeID` TINYINT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ChannelStatus`             VARCHAR(10)         NOT NULL,
+  `PhysiologicalStatusTypeID` INT(5)      UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ChannelStatus`             VARCHAR(10)          NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalStatusTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -75,9 +74,9 @@ CREATE TABLE `physiological_status_type` (
 
 -- Create a physiological_channel_type table
 CREATE TABLE `physiological_channel_type` (
-  `PhysiologicalChannelTypeID` TINYINT(3) UNSIGNED NOT NULL      AUTO_INCREMENT,
-  `ChannelType`                VARCHAR(255)        NOT NULL,
-  `ChannelDescription`         VARCHAR(255)        DEFAULT NULL,
+  `PhysiologicalChannelTypeID` INT(5)       UNSIGNED NOT NULL      AUTO_INCREMENT,
+  `ChannelTypeName`            VARCHAR(255)          NOT NULL      UNIQUE,
+  `ChannelDescription`         VARCHAR(255)          DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalChannelTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -85,10 +84,11 @@ CREATE TABLE `physiological_channel_type` (
 
 -- Create a physiological_channel table that will store all information from
 CREATE TABLE `physiological_channel` (
-  `PhysiologicalChannelID`     INT(10) UNSIGNED    NOT NULL      AUTO_INCREMENT,
-  `PhysiologicalFileID`        INT(10) UNSIGNED    NOT NULL,
-  `PhysiologicalChannelTypeID` TINYINT(3) UNSIGNED NOT NULL,
-  `PhysiologicalStatusTypeID`  TINYINT(2) UNSIGNED DEFAULT NULL,
+  `PhysiologicalChannelID`     INT(10)    UNSIGNED NOT NULL      AUTO_INCREMENT,
+  `PhysiologicalFileID`        INT(10)    UNSIGNED NOT NULL,
+  `PhysiologicalChannelTypeID` INT(5)     UNSIGNED NOT NULL,
+  `PhysiologicalStatusTypeID`  INT(5)     UNSIGNED DEFAULT NULL,
+  `InsertTime`                 TIMESTAMP           NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Name`                       VARCHAR(50)         NOT NULL,
   `Description`                VARCHAR(255)        DEFAULT NULL,
   `SamplingFrequency`          INT(6)              DEFAULT NULL,
@@ -96,10 +96,10 @@ CREATE TABLE `physiological_channel` (
   `HighCutoff`                 DECIMAL(8,3)        DEFAULT NULL,
   `ManualFlag`                 DECIMAL(5,4)        DEFAULT NULL,
   `Notch`                      INT(6)              DEFAULT NULL,
+  `Reference`                  VARCHAR(255)        DEFAULT NULL,
   `StatusDescription`          VARCHAR(255)        DEFAULT NULL,
   `Unit`                       VARCHAR(255)        DEFAULT NULL,
-  `File`                       VARCHAR(255)        DEFAULT NULL,
-  `SoftwareFilters`            VARCHAR(255)        DEFAULT NULL,
+  `FilePath`                   VARCHAR(255)        DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalChannelID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID_2`
     FOREIGN KEY (`PhysiologicalFileID`)
@@ -119,13 +119,14 @@ CREATE TABLE `physiological_channel` (
 CREATE TABLE `physiological_electrode` (
   `PhysiologicalElectrodeID` INT(10) UNSIGNED NOT NULL      AUTO_INCREMENT,
   `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
+  `InsertTime`               TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Name`                     VARCHAR(50)      NOT NULL,
   `X`                        DECIMAL(12,6)    NOT NULL,
   `Y`                        DECIMAL(12,6)    NOT NULL,
   `Z`                        DECIMAL(12,6)    NOT NULL,
   `Type`                     VARCHAR(50)      NOT NULL,
   `Material`                 VARCHAR(50)      NOT NULL,
-  `File`                     VARCHAR(255)     DEFAULT NULL,
+  `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalElectrodeID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID_3`
     FOREIGN KEY (`PhysiologicalFileID`)
@@ -138,15 +139,16 @@ CREATE TABLE `physiological_electrode` (
 -- Create physiological_task_event table that will store all information
 -- regarding the task executed during the physiological recording
 CREATE TABLE `physiological_task_event` (
-  `PhysiologicalTaskEventID` INT(10) UNSIGNED NOT NULL       AUTO_INCREMENT,
+  `PhysiologicalTaskEventID` INT(10) UNSIGNED NOT NULL      AUTO_INCREMENT,
   `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
+  `InsertTime`               TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
+  `EventCode`                INT(10)          DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
-  `EventCode`                VARCHAR(255)     DEFAULT NULL,
   `Sample`                   VARCHAR(255)     DEFAULT NULL,
-  `File`                     VARCHAR(255)     DEFAULT NULL,
+  `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
@@ -159,11 +161,11 @@ CREATE TABLE `physiological_task_event` (
 -- Create physiological_archive which will store archives of all the files for
 -- Front-end download
 CREATE TABLE `physiological_archive` (
-  `PhysiologicalArchiveID`   INT(10) UNSIGNED NOT NULL       AUTO_INCREMENT,
+  `PhysiologicalArchiveID`   INT(10) UNSIGNED NOT NULL   AUTO_INCREMENT,
   `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
-  `InsertTime`               INT(10) UNSIGNED NOT NULL,
+  `InsertTime`               TIMESTAMP        NOT NULL   DEFAULT CURRENT_TIMESTAMP,
   `Blake2bHash`              VARCHAR(128)     NOT NULL,
-  `File`                     VARCHAR(255)     NOT NULL,
+  `FilePath`                 VARCHAR(255)     NOT NULL,
   PRIMARY KEY (`PhysiologicalArchiveID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID_5`
     FOREIGN KEY (`PhysiologicalFileID`)
