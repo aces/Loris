@@ -89,35 +89,9 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
         }
 
-        try {
-            $this->_mriCodePath = $config->getSetting('MRICodePath');
-        } catch(\ConfigurationException $exception) {
-            error_log(
-                "Unable to construct MriUploadTask: 
-                 config setting MRICodePath undefined"
-            );
-            throw $exception;
-        }
-
-        try {
-            $this->_prodFile = $config->getSetting('MriConfigFile');
-        } catch(\ConfigurationException $exception) {
-            error_log(
-                "Unable to construct MriUploadTask:
-                 config setting MriConfigFile undefined"
-            );
-            throw $exception;
-        }
-
-        try {
-            $this->_environmentFile = $config->getSetting('EnvironmentFile');
-        } catch(\ConfigurationException $exception) {
-            error_log(
-                "Unable to construct MriUploadTask:
-                 config setting EnvironmentFile undefined"
-            );
-            throw $exception;
-        }
+        $this->_mriCodePath     = $config->getSetting('MRICodePath');
+        $this->_prodFile        = $config->getSetting('MriConfigFile');
+        $this->_environmentFile = $config->getSetting('EnvironmentFile');
 
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
