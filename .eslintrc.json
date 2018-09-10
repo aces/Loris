@@ -29,7 +29,7 @@
     "new-cap": ["error", {
       "capIsNewExceptions": ["DynamicTable"]
     }],
-    "no-console": ["warn", {
+    "no-console": ["error", {
       "allow": ["info", "warn", "error"]
     }]
   },
