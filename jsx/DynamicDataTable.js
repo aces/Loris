@@ -71,18 +71,19 @@ class DynamicDataTable extends Component {
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
-        return <div className="alert alert-danger">
-                 <strong>
-                   {this.state.error}
-                 </strong>
-               </div>;
+        return (
+          <div className='alert alert-danger'>
+            <strong>{this.state.error}</strong>
+          </div>
+        );
       }
 
-      return <button className="btn-info has-spinner">
-               Loading
-               <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-               </span>
-             </button>;
+      return (
+        <button className='btn-info has-spinner'>
+          Loading
+          <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'/>
+        </button>
+      );
     }
 
     return (
