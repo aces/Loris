@@ -81,7 +81,7 @@ class Document_Repository extends \NDB_Menu_Filter
 
         $openAccordion = $_GET['openAccordion'] ?? '';
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = isset($_GET['filtered']) ? true : false;
+        $filtered = !empty($_GET['filtered']) ? true : false;
         $this->tpl_data['filtered'] = $filtered;
         $this->query        = $query;
         $this->group_by     = '';
