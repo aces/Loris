@@ -130,10 +130,25 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
-        return "source {$this->_mriCodePath}/" . self::ENVIRONMENT_BASENAME . " ; "
-               . "{$this->_mriCodePath}/" . self::IMAGING_UPLOAD_FILE_PATH
-               . " -upload_id "    . escapeshellarg($this->_mriUploadId)
-               . " -profile prod " . escapeshellarg($this->_sourceLocation);
+        // Check that paths exist before using.
+        if (!is_dir($this->_mriCodePath)) {
+            throw new \ConfigurationException(
+                "Value for MRI code path is not a directory!"
+            );
+        }
+        if (!file_exists($this->_mriCodePath)) {
+            throw new \LorisException(
+                "Source code for imaging upload could not be found!"
+            );
+        }
+        // Sanitize variables before using in exec statement.
+        $codePath = escapeshellarg($this->_mriCodePath);
+        $uploadId = escapeshellarg($this->_mriUploadId);
+        $sourceLocation = escapeshellarg($this->_sourceLocation);
+        return "source $codePath/" . self::ENVIRONMENT_BASENAME . " ;"
+               . " $codePath/" . self::IMAGING_UPLOAD_FILE_PATH
+               . " -upload_id $uploadId"
+               . " -profile prod $sourceLocation";
     }
 
     /**
