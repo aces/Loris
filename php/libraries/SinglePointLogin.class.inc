@@ -230,7 +230,8 @@ class SinglePointLogin
         $this->_username
             = isset($decodedArray['user'])
                 ? $decodedArray['user'] : 'Unknown';
-        return isset($decodedArray['user']);
+        return isset($decodedArray['user']) 
+            && !$this->accountLocked($decodedArray['user']);
     }
 
     /**
@@ -316,6 +317,16 @@ class SinglePointLogin
             $this->_lastError = "Incorrect username or password.";
             return false;
         }
+        /* Check whether a user's account is locked due to too many bad login
+         * attempts before actually trying to authenticate their credentials.
+         * Doing so can help mititgate timing attacks against the server.
+         */
+        if ($this->accountLocked($_POST['username'])){
+            $this->_lastError = 'This account is currently suspended due '
+                . 'to too many bad login attempts.';
+            $this->insertFailedDetail('Account locked', $setArray);
+            return false;
+        }
         // Validate passsword
         $oldhash = $row['Password_hash'];
         if (password_verify($password, $oldhash)) {
@@ -323,6 +334,34 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 $user = \User::factory($username);
                 $user->updatePassword($password);
+            }
+
+            if ($row['Active'] == 'N'
+                || $this->disabledDueToInactivity($username, 365)
+            ) {
+                $this->_lastError = "Your account has been deactivated."
+                    . " Please contact your project administrator to"
+                    . " reactivate this account.";
+                $this->insertFailedDetail(
+                    "user account not active",
+                    $setArray
+                );
+
+                return false;
+            }
+
+            // check if the account is longer active
+            $date       = new DateTime();
+            $currentDay = $date->getTimestamp();
+
+            if (($row['active_to'] != null)
+                && ($currentDay > strtotime($row['active_to']))
+            ) {
+                $this->_lastError = "Your account has expired."
+                    . " Please contact your project administrator to re-activate"
+                    . " this account.";
+                return false;
+
             }
 
             // Check whether the account is expired.
@@ -401,6 +440,63 @@ class SinglePointLogin
         return false;
     }
 
+    /**
+     * Determines whether a user's account is locked due to too many failed 
+     * attempts.
+     *
+     * @param string username The user account to check.
+     *
+     * @return void
+     * @access public
+     */
+    function accountLocked(string $username): bool
+    {
+        /* A user is locked out if they have made X attempts in the last Y
+         * minutes or X' attempts in the last Y' minutes.
+         * The reason for using two time windows is to provide some flexibility:
+         * legitimate locked-out users to try again in a short time while also
+         * preventing attackers from simply trying another X login attempts 
+         * after Y minutes.
+         */
+
+        // These represent X and X' above, but with more helpful names.
+        $shortWindowInMinutes = 15;
+        $longWindowInMinutes = 60;
+        /* These represent Y and Y' above, but with more helpful names.
+         * These values represent the maximum umber of attempts a user may make
+         * to login before being locked out.
+         */
+        $shortLockoutThreshold = 10; 
+        $longLockoutThreshold = 15; 
+
+        $shortFailCount = $this->countFailedLogins(
+            $username,
+            $shortWindowInMinutes
+        );
+        $longFailCount = $this->countFailedLogins(
+            $username,
+            $longWindowInMinutes
+        );
+        return $shortFailCount > $shortLockoutThreshold
+            || $longFailCount > $longLockoutThreshold;
+    }
+
+    function countFailedLogins(string $username, int $timeWindow): int {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+        $query = "SELECT COUNT(*) from user_login_history " .
+            "WHERE userID = :username " .
+            "AND Success = 'N' " .
+            "AND Login_timestamp < :queryTime;";
+        $row   = $db->pselectRow(
+            $query, 
+            array(
+                'username' => $username,
+                'queryTime' => strtotime("-$timeWindowInMinutes minutes"),
+            )
+        );
+        return intval($row[0] ?? 0);
+    }
     /**
      * Sets the session data (State object)
      *
