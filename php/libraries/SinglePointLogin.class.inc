@@ -308,7 +308,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (($row['User_count'] ?? 0) !== 1) {
+        if (intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an 
              * attacker will have a harder time knowing the difference 
              * between a bad username and a bad password.
