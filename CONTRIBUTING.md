@@ -21,23 +21,20 @@ You should base your pull requests on one of the following branches
 depending on the kind of change you are making:
 
 #### Bug Fixes
-   - Branch: `bugfix` - Label:
-   ![](https://via.placeholder.com/15/cc9966/000000?text=+) **[branch]
-   bugfix** - Content: Generally these changes do not require SQL scripts
+   - Branch: `bugfix` - Label: **[branch] bugfix** 
+   - Content: Generally these changes do not require SQL scripts
    and are concise with the sole objective to correct a single problem
    in the code.
 
 #### Minor Changes and Small Features
-   - Branch: `minor` - Label:
-   ![](https://via.placeholder.com/15/996633/000000?text=+) **[branch]
-   minor** - Content: Features affecting self-contained components such
+   - Branch: `minor` - Label: **[branch] minor** 
+   - Content: Features affecting self-contained components such
    as modules. Additions to Libraries, API, or modules that do not change
    any function signatures.
 
 #### Major Changes, Non Backwards-Compatible Changes and Large Features
-   - Branch: `major` - Label:
-   ![](https://via.placeholder.com/15/4d3319/000000?text=+) **[branch]
-   major** - Content: Any change modifying a function signature in a
+   - Branch: `major` - Label: **[branch major** 
+   - Content: Any change modifying a function signature in a
    library class. Features require extensive LORIS-wide testing. New
    complex systems and features spanning across multiple modules and
    libraries. Deprecated functions clean-up.
@@ -93,9 +90,8 @@ otherwise the automated tests will fail.
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
-request description and tag it with 
-![](https://via.placeholder.com/15/d4c5f9/000000?text=+) **Caveat for Existing 
-Projects**. This helps us to document our release notes.
+request description and tag it with **Caveat for Existing Projects**. 
+This helps us to document our release notes.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
@@ -106,8 +102,7 @@ If you're looking for ideas for a way to contribute but don't know where
 to begin, here are some ideas to get you started:
 
 * You can browse some of our public
-[Issues](https://github.com/aces/Loris/issues). Issues tagged with
-![](https://via.placeholder.com/15/0e8a16/000000?text=+) **Beginner
+[Issues](https://github.com/aces/Loris/issues). Issues tagged with **Beginner
 Friendly** are good ones to tackle if you are new to LORIS development.
 * You can run PHP CodeSniffer on modules that haven't had it run yet.
 * You can help improve our documentation if you find any parts of it
