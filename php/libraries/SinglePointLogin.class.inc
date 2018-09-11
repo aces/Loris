@@ -309,8 +309,8 @@ class SinglePointLogin
         $row   = $DB->pselectRow($query, array('username' => $username));
 
         if (intval($row['User_count'] ?? 0) !== 1) {
-            /* Display generic failure message to front-end so that an 
-             * attacker will have a harder time knowing the difference 
+            /* Display generic failure message to front-end so that an
+             * attacker will have a harder time knowing the difference
              * between a bad username and a bad password.
              */
             $this->_lastError = "Incorrect username or password.";
