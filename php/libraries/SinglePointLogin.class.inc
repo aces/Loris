@@ -230,7 +230,7 @@ class SinglePointLogin
         $this->_username
             = isset($decodedArray['user'])
                 ? $decodedArray['user'] : 'Unknown';
-        return isset($decodedArray['user']) 
+        return isset($decodedArray['user'])
             && !$this->accountLocked($decodedArray['user']);
     }
 
@@ -325,6 +325,10 @@ class SinglePointLogin
             $this->_lastError = 'This account is currently suspended due '
                 . 'to too many bad login attempts.';
             $this->insertFailedDetail('Account locked', $setArray);
+            error_log(
+                "The acccount for $username is locked out. Potential "
+                . "brute force login attempt"
+            );
             return false;
         }
         // Validate passsword
@@ -347,14 +351,6 @@ class SinglePointLogin
                     $setArray
                 );
 
-=======
-            if ($this->accountLocked($username)){
-                $this->_lastError = 'This account is currently suspended due '
-                    . 'to too many bad login attempts.';
-                error_log("The acccount for $username is locked out. Potential "
-                    . "brute force login attempt"
-                );
->>>>>>> a59b9289e... Add rate-limting mechanism for log ins.
                 return false;
             }
 
@@ -449,13 +445,12 @@ class SinglePointLogin
     }
 
     /**
-     * Determines whether a user's account is locked due to too many failed 
+     * Determines whether a user's account is locked due to too many failed
      * attempts.
      *
-     * @param string username The user account to check.
+     * @param string $username The user account to check.
      *
-     * @return void
-     * @access public
+     * @return bool
      */
     function accountLocked(string $username): bool
     {
@@ -463,25 +458,25 @@ class SinglePointLogin
          * minutes or X' attempts in the last Y' minutes.
          * The reason for using two time windows is to provide some flexibility:
          * legitimate locked-out users to try again in a short time while also
-         * preventing attackers from simply trying another X login attempts 
+         * preventing attackers from simply trying another X login attempts
          * after Y minutes.
          */
 
         // These represent X and X' above, but with more helpful names.
         $shortWindowInMinutes = 15;
-        $longWindowInMinutes = 60;
+        $longWindowInMinutes  = 60;
         /* These represent Y and Y' above, but with more helpful names.
          * These values represent the maximum umber of attempts a user may make
          * to login before being locked out.
          */
-        $shortLockoutThreshold = 10; 
-        $longLockoutThreshold = 15; 
+        $shortLockoutThreshold = 10;
+        $longLockoutThreshold  = 15;
 
         $shortFailCount = $this->countFailedLogins(
             $username,
             $shortWindowInMinutes
         );
-        $longFailCount = $this->countFailedLogins(
+        $longFailCount  = $this->countFailedLogins(
             $username,
             $longWindowInMinutes
         );
@@ -489,20 +484,31 @@ class SinglePointLogin
             || $longFailCount > $longLockoutThreshold;
     }
 
+    /**
+     * Gives the number of failed login attempts that occurred in the last
+     * $timeWindowInMinutes minutes. Used to determine whether a user's login
+     * request should be denied as a security precaution.
+     *
+     * @param string $username            The user account to check.
+     * @param int    $timeWindowInMinutes This value is subtracted from the
+     *                          current timestamp to find relevant failed
+     *                          login attempts. Only more recent failed
+     *                          attempts are considered relevant here.
+     *
+     * @return int The number of failed attempts in the time window.
+     */
     function countFailedLogins(
-        string $username, 
+        string $username,
         int $timeWindowInMinutes
     ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-        $query = "SELECT Login_timestamp from user_login_history " .
+        $query   = "SELECT Login_timestamp from user_login_history " .
             "WHERE userID = :username " .
             "AND Success = 'N' ";
-        $results   = $db->pselect(
-            $query, 
-            array(
-                'username' => $username
-            )
+        $results = $db->pselect(
+            $query,
+            array('username' => $username)
         );
         /* Iterate over bad login attempts to find those logged between now
          * and $timeWindowInMinutes minutes ago.
@@ -511,7 +517,7 @@ class SinglePointLogin
         foreach ($results as $row) {
             $attemptTime = date_create($row['Login_timestamp']);
             // Create a date object for $timeWindowInMinutes minutes ago.
-            $now = date_create();
+            $now           = date_create();
             $timeThreshold = date_sub(
                 $now,
                 date_interval_create_from_date_string(
@@ -519,8 +525,8 @@ class SinglePointLogin
                 )
             );
             /* If a failed login attempt is made with a timestamp that is more
-             * recent than the time threshold, then it is considered in the 
-             * decision to lockout a user. Timestamps older than this are 
+             * recent than the time threshold, then it is considered in the
+             * decision to lockout a user. Timestamps older than this are
              * considered too distant for concern.
              */
             if ($attemptTime > $timeThreshold) {
