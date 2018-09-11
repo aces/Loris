@@ -309,19 +309,15 @@ class Database
         foreach ($set as $key => $val) {
             // Only call htmlspecialchars on strings, or else an error occurs.
             if (is_string($val)) {
-                if ($val === 'Unrated') {
-                    $retVal[$key] = '';
-                } else {
-                    /* Escape HTML characters when present. NOTE that this will
-                     * only provide safety when elements are inserted into the
-                     * "innerHTML" of an element; if a value is instead injected
-                     * into attribute such as 'name', 'value', 'class', etc.
-                     * then Javascript injection is still possible.
-                     *
-                     * This function alone goes not guarantee safety.
-                     */
-                    $retVal[$key] = htmlspecialchars($val);
-                }
+                /* Escape HTML characters when present. NOTE that this will
+                 * only provide safety when elements are inserted into the
+                 * "innerHTML" of an element; if a value is instead injected
+                 * into attribute such as 'name', 'value', 'class', etc.
+                 * then Javascript injection is still possible.
+                 *
+                 * This function alone goes not guarantee safety.
+                 */
+                $retVal[$key] = htmlspecialchars($val);
             } else {
                 $retVal[$key] = $val;
             }
