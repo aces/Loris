@@ -21,27 +21,30 @@ You should base your pull requests on one of the following branches
 depending on the kind of change you are making:
 
 #### Bug Fixes
-   - Branch: `bugfix` - Label: **[branch] bugfix** 
+   - Branch: `bugfix` 
+   - Label: **[branch] bugfix** 
    - Content: Generally these changes do not require SQL scripts
    and are concise with the sole objective to correct a single problem
    in the code.
 
 #### Minor Changes and Small Features
-   - Branch: `minor` - Label: **[branch] minor** 
+   - Branch: `minor` 
+   - Label: **[branch] minor** 
    - Content: Features affecting self-contained components such
    as modules. Additions to Libraries, API, or modules that do not change
    any function signatures.
 
 #### Major Changes, Non Backwards-Compatible Changes and Large Features
-   - Branch: `major` - Label: **[branch major** 
+   - Branch: `major` 
+   - Label: **[branch] major** 
    - Content: Any change modifying a function signature in a
    library class. Features require extensive LORIS-wide testing. New
    complex systems and features spanning across multiple modules and
    libraries. Deprecated functions clean-up.
 
 For more information about making well-organized pull requests,
-please read our in-depth Wiki page, ["Contributing to the
-Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
+please read our in-depth Wiki page, 
+["Contributing to the Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
 
 ## Pull Request Title and Description
 
@@ -53,8 +56,9 @@ expertise, we request that new pull requests follow a few conventions.
 The title should begin with square brackets enclosing the name of the
 module that you are changing followed by a brief description.
 
-e.g. This is a well-formed title.  > [Imaging Uploader / Server Process
-Manager] Fix invalid upload state
+e.g. This is a well-formed title. 
+
+> [Imaging Uploader / Server Process Manager] Fix invalid upload state
 
 If you are instead editing the `Core` libraries or the `tools` directory,
 etc., you can supply these values in place of a module name.
