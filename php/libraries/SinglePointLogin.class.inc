@@ -308,28 +308,30 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (($row['User_count'] ?? 0) == 1) {
-            // validate passsword
-            $oldhash = $row['Password_hash'];
-            if (password_verify($password, $oldhash)) {
-                if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                    $user =& User::factory($username);
-                    $user->updatePassword($password);
-                }
+        if (($row['User_count'] ?? 0) !== 1) {
+            /* Display generic failure message to front-end so that an 
+             * attacker will have a harder time knowing the difference 
+             * between a bad username and a bad password.
+             */
+            $this->_lastError = "Incorrect username or password.";
+            return false;
+        }
+        // validate passsword
+        $oldhash = $row['Password_hash'];
+        if (!password_verify($password, $oldhash)) {
+            // Display generic failure message, as above.
+            $this->_lastError = "Incorrect username or password.";
+            $this->insertFailedDetail(
+                "Bad password",
+                $setArray
+            );
+            return false;
+        }
 
-                if ($row['Active'] == 'N'
-                    || $this->disabledDueToInactivity($username, 365)
-                ) {
-                    $this->_lastError = "Your account has been deactivated."
-                        . " Please contact your project administrator to"
-                        . " reactivate this account.";
-                    $this->insertFailedDetail(
-                        "user account not active",
-                        $setArray
-                    );
-
-                    return false;
-                }
+        if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+            $user =& User::factory($username);
+            $user->updatePassword($password);
+        }
 
                 // check if the account is longer active
                 $date       = new DateTime();
@@ -364,30 +366,45 @@ class SinglePointLogin
                     $this->insertFailedDetail("user account pending", $setArray);
                     return false;
                 }
+        if ($row['Active'] == 'N'
+            || $this->disabledDueToInactivity($username, 365)
+        ) {
+            $this->_lastError = "Your account has been deactivated."
+                . " Please contact your project administrator to"
+                . " reactivate this account.";
+            $this->insertFailedDetail(
+                "user account not active",
+                $setArray
+            );
 
-                // save the new password if the last password expired
-                if ($row['Expired']) {
-                    $success = $this->save();
+            return false;
+        }
 
-                    if ($success == false) {
-                        if ($redirect) {
-                            $this->showPasswordExpiryScreen();
-                        }
-                        return false;
-                    }
+        if ($row['Pending_approval'] == 'Y') {
+            $this->_lastError = "Your account has not yet been activated."
+                . " Please contact your project administrator to activate"
+                . " this account.";
+            $this->insertFailedDetail("user account pending", $setArray);
+            return false;
+        }
+
+        // save the new password if the last password expired
+        if ($row['Expired']) {
+            $success = $this->save();
+
+            if ($success == false) {
+                if ($redirect) {
+                    $this->showPasswordExpiryScreen();
                 }
-
-                // user is valid
-                $this->_username = $row['UserID'];
-
-                $DB->insert('user_login_history', $setArray);
-                return true;
+                return false;
             }
         }
 
-        // bad usename or password
-        $this->_lastError = "Incorrect email or password";
-        return false;
+        // user is valid
+        $this->_username = $row['UserID'];
+
+        $DB->insert('user_login_history', $setArray);
+        return true;
     }
 
     /**
