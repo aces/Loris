@@ -347,6 +347,14 @@ class SinglePointLogin
                     $setArray
                 );
 
+=======
+            if ($this->accountLocked($username)){
+                $this->_lastError = 'This account is currently suspended due '
+                    . 'to too many bad login attempts.';
+                error_log("The acccount for $username is locked out. Potential "
+                    . "brute force login attempt"
+                );
+>>>>>>> a59b9289e... Add rate-limting mechanism for log ins.
                 return false;
             }
 
@@ -481,21 +489,45 @@ class SinglePointLogin
             || $longFailCount > $longLockoutThreshold;
     }
 
-    function countFailedLogins(string $username, int $timeWindow): int {
+    function countFailedLogins(
+        string $username, 
+        int $timeWindowInMinutes
+    ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-        $query = "SELECT COUNT(*) from user_login_history " .
+        $query = "SELECT Login_timestamp from user_login_history " .
             "WHERE userID = :username " .
-            "AND Success = 'N' " .
-            "AND Login_timestamp < :queryTime;";
-        $row   = $db->pselectRow(
+            "AND Success = 'N' ";
+        $results   = $db->pselect(
             $query, 
             array(
-                'username' => $username,
-                'queryTime' => strtotime("-$timeWindowInMinutes minutes"),
+                'username' => $username
             )
         );
-        return intval($row[0] ?? 0);
+        /* Iterate over bad login attempts to find those logged between now
+         * and $timeWindowInMinutes minutes ago.
+         */
+        $badLoginsInsideTimeWindow = 0;
+        foreach ($results as $row) {
+            $attemptTime = date_create($row['Login_timestamp']);
+            // Create a date object for $timeWindowInMinutes minutes ago.
+            $now = date_create();
+            $timeThreshold = date_sub(
+                $now,
+                date_interval_create_from_date_string(
+                    "$timeWindowInMinutes minutes"
+                )
+            );
+            /* If a failed login attempt is made with a timestamp that is more
+             * recent than the time threshold, then it is considered in the 
+             * decision to lockout a user. Timestamps older than this are 
+             * considered too distant for concern.
+             */
+            if ($attemptTime > $timeThreshold) {
+                $badLoginsInsideTimeWindow++;
+            }
+        }
+        return $badLoginsInsideTimeWindow;
     }
     /**
      * Sets the session data (State object)
