@@ -61,8 +61,9 @@ class GenericDownloader implements FileDownloader
      */
     public function downloadFile(string $userPath)
     {
-        // Ensure that every following test is conducted on a sanitized
-        // (non-malicious) file path.
+        /* Ensure that every following test is conducted on a sanitized
+         * (non-malicious) file path.
+         */
         $this->sanitizePath($userPath);
         $fullPath = $userPath;
 
@@ -73,12 +74,14 @@ class GenericDownloader implements FileDownloader
                 "ERROR: $this->realBasePath should be readable by the "
                 . 'apache user but is not.'
             );
-            http_response_code(500);
+            throw new LorisException(
+                "The server is not configured to allow downloads from the "
+                . "requested location. Please contact your administrator."
+            );
             return;
         }
         // Make sure file is actually a file.
         if (!is_file($fullPath)) {
-            error_log($fullPath);
             error_log("ERROR: File requested for download is not a file.");
             http_response_code(400);
             return;
@@ -140,15 +143,9 @@ class GenericDownloader implements FileDownloader
                 . 'downloading a file.'
             );
         }
-        //Resolve path (remove '..' and other relative file path structures.
+        // Resolve path (remove '..' and other relative file path structures.)
         $realUserPath = realpath($userPath);
-        // Validate that the path supplied by the user begins with the same base
-        // path as the proper directory of the file.
-        // If not, it is almost certainly a hacking attempt.
-        if ($realUserPath === false
-            || strpos($realUserPath, $this->realBasePath) !== 0
-        ) {
-            http_response_code(400);
+        if ($realUserPath === false) {
             throw new LorisException(
                 'ERROR: Likely path traversal attempt in '
                 . 'file download.'
