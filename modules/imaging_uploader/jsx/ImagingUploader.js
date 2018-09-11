@@ -5,6 +5,7 @@ import {Tabs, TabPane} from 'Tabs';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
+import Loader from 'jsx/Loader';
 
 class ImagingUploader extends Component {
   constructor(props) {
@@ -57,12 +58,7 @@ class ImagingUploader extends Component {
   render() {
     if (!this.state.isLoaded) {
       return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
+        <Loader/>
       );
     }
 

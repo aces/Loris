@@ -83,6 +83,7 @@ const config = [{
       DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
       FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
       Form: path.resolve(__dirname, './jsx/Form'),
+      Loader: path.resolve(__dirname, './jsx/Loader'),
       Markdown: path.resolve(__dirname, './jsx/Markdown'),
       MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
       PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),

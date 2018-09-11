@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import Loader from 'jsx/Loader';
 
 /**
  * Media Upload Form
@@ -68,12 +69,7 @@ class MediaUploadForm extends Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
