@@ -66,7 +66,7 @@ class VisitController
      *
      * @param string $visit the name of the visit
      *
-     * @return array the ID of the visit  
+     * @return array the ID of the visit
      */
     public function getVisitsWithID(string $visit): array
     {
