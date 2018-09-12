@@ -367,12 +367,13 @@ SearchableDropdown.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]),
-  class: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  placeHolder: PropTypes.string,
-  onUserInput: PropTypes.func,
+  class: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  sortByValue: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  placeHolder: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 SearchableDropdown.defaultProps = {
@@ -488,6 +489,7 @@ class SelectElement extends Component {
             onChange={this.handleChange}
             required={required}
             disabled={disabled}
+            sortByValue={sortByValue}
           >
             {emptyOptionHTML}
             {optionList}
@@ -507,15 +509,16 @@ SelectElement.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]),
-  id: PropTypes.string,
-  class: PropTypes.string,
-  multiple: PropTypes.bool,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  emptyOption: PropTypes.bool,
-  hasError: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onUserInput: PropTypes.func,
+  id: React.PropTypes.string,
+  class: React.PropTypes.string,
+  multiple: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  sortByValue: React.PropTypes.bool,
+  emptyOption: React.PropTypes.bool,
+  hasError: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 SelectElement.defaultProps = {
