@@ -79,7 +79,7 @@ class Document_Repository extends \NDB_Menu_Filter
                           'v.Date_uploaded',
                          );
 
-        $openAccordion = $_GET['openAccordion'] ?? '';
+        $openAccordion = !empty($_GET['openAccordion']);
         $this->tpl_data['openAccordion'] = $openAccordion;
         $filtered = !empty($_GET['filtered']);
         $this->tpl_data['filtered'] = $filtered;
