@@ -65,7 +65,9 @@ class DynamicDataTable extends Component {
 
   ajaxFailure(data, errorCode, errorMsg) {
     console.error(errorCode + ': ' + errorMsg);
-    this.setState({error: 'Error loading data'});
+    this.setState({
+      error: 'Error loading data',
+    });
   }
 
   render() {
