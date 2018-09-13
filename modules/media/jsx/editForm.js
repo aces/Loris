@@ -10,7 +10,10 @@
  * @version 1.0.0
  *
  * */
-class MediaEditForm extends React.Component {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class MediaEditForm extends Component {
   constructor(props) {
     super(props);
 
@@ -60,7 +63,7 @@ class MediaEditForm extends React.Component {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
-        <div className="alert alert-danger text-center">
+        <div className='alert alert-danger text-center'>
           <strong>
             {this.state.error}
           </strong>
@@ -71,10 +74,10 @@ class MediaEditForm extends React.Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
@@ -96,95 +99,95 @@ class MediaEditForm extends React.Component {
 
     return (
       <div>
-        <div className={alertClass} role="alert" ref="alert-message">
+        <div className={alertClass} role='alert' ref='alert-message'>
           {alertMessage}
         </div>
         {
           this.state.uploadResult === 'success' ?
-          <a className="btn btn-primary" href={backURL}>Back to media</a> :
+          <a className='btn btn-primary' href={backURL}>Back to media</a> :
           null
         }
         <FormElement
-          name="mediaEdit"
+          name='mediaEdit'
           onSubmit={this.handleSubmit}
-          ref="form"
+          ref='form'
         >
           <h3>Edit Media File</h3>
           <br />
           <SelectElement
-            name="pscid"
-            label="PSCID"
+            name='pscid'
+            label='PSCID'
             options={this.state.Data.candidates}
             onUserInput={this.setFormData}
-            ref="pscid"
+            ref='pscid'
             required={true}
             disabled={true}
             value={this.state.mediaData.pscid}
           />
           <SelectElement
-            name="visitLabel"
-            label="Visit Label"
+            name='visitLabel'
+            label='Visit Label'
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visitLabel"
+            ref='visitLabel'
             required={true}
             disabled={true}
             value={this.state.mediaData.visitLabel}
           />
           <SelectElement
-            name="forSite"
-            label="Site"
+            name='forSite'
+            label='Site'
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="forSite"
+            ref='forSite'
             disabled={true}
             value={this.state.mediaData.forSite}
           />
           <SelectElement
-            name="instrument"
-            label="Instrument"
+            name='instrument'
+            label='Instrument'
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
-            ref="instrument"
+            ref='instrument'
             disabled={true}
             value={this.state.mediaData.instrument}
           />
           <DateElement
-            name="dateTaken"
-            label="Date of Administration"
-            minYear="2000"
-            maxYear="2017"
+            name='dateTaken'
+            label='Date of Administration'
+            minYear='2000'
+            maxYear='2017'
             onUserInput={this.setFormData}
-            ref="dateTaken"
+            ref='dateTaken'
             value={this.state.formData.dateTaken}
           />
           <TextareaElement
-            name="comments"
-            label="Comments"
+            name='comments'
+            label='Comments'
             onUserInput={this.setFormData}
-            ref="comments"
+            ref='comments'
             value={this.state.formData.comments}
           />
           <FileElement
-            name="file"
-            id="mediaEditEl"
+            name='file'
+            id='mediaEditEl'
             onUserInput={this.setFormData}
             required={true}
             disabled={true}
-            ref="file"
-            label="Uploaded file"
+            ref='file'
+            label='Uploaded file'
             value={this.state.mediaData.fileName}
           />
           <SelectElement
-            name="hideFile"
-            label="Hide File"
+            name='hideFile'
+            label='Hide File'
             emptyOption={false}
             options={['No', 'Yes']}
             onUserInput={this.setFormData}
-            ref="hideFile"
+            ref='hideFile'
             value={this.state.formData.hideFile}
           />
-          <ButtonElement label="Update File"/>
+          <ButtonElement label='Update File'/>
         </FormElement>
       </div>
     );
@@ -192,7 +195,7 @@ class MediaEditForm extends React.Component {
 
   /**
    * Handles form submission
-   * @param {event} e - Form submition event
+   * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
@@ -238,12 +241,11 @@ class MediaEditForm extends React.Component {
         });
         self.showAlertMessage();
       },
-
     });
   }
 
   /**
-   * Set the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/components
    *
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
@@ -282,8 +284,8 @@ class MediaEditForm extends React.Component {
 }
 
 MediaEditForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 let RMediaEditForm = React.createFactory(MediaEditForm);

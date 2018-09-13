@@ -1,6 +1,7 @@
+import React, {Component} from 'react';
 import Panel from 'Panel';
 
-class AccessProfilePanel extends React.Component {
+class AccessProfilePanel extends Component {
   constructor(props) {
     super(props);
 
@@ -88,28 +89,28 @@ class AccessProfilePanel extends React.Component {
               </div>
       );
     }
-    return (<div className="col-sm-3">
-            <Panel title="Open Profile">
+    return (<div className='col-sm-3'>
+            <Panel title='Open Profile'>
             <FormElement
-            name="openprofile"
+            name='openprofile'
                 onSubmit={this.validateAndSubmit}
                 onUserInput={this.validateAndSubmit}>
                 <TextboxElement
-                    name="CandID"
-                    label="CandID"
+                    name='CandID'
+                    label='CandID'
                     value={this.state.CandID}
                     onUserInput={this.updateFormElement}
                  />
                 <TextboxElement
-                    name="PSCID"
-                    label="PSCID"
+                    name='PSCID'
+                    label='PSCID'
                     value={this.state.PSCID}
                     onUserInput={this.updateFormElement}
                  />
                 {warning}
                  <ButtonElement
-                    name="Open Profile"
-                    label="Open Profile"
+                    name='Open Profile'
+                    label='Open Profile'
                     onUserInput={this.validateAndSubmit}
                  />
              </FormElement>
