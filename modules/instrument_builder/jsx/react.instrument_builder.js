@@ -28,7 +28,7 @@ class LoadPane extends Component {
     this.loadFile = this.loadFile.bind(this);
   }
 
-  // Indicates to the state which file has been choosen
+  // Indicates to the state which file has been chosen
   chooseFile(e) {
     let value = e.target.files[0];
     this.setState({
@@ -70,25 +70,25 @@ class LoadPane extends Component {
     switch (this.state.alert) {
       case 'success':
         alert = (
-          <div className="alert alert-success alert-dismissible" role="alert">
-            <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+          <div className='alert alert-success alert-dismissible' role='alert'>
+            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
             <strong>Success!</strong> Instrument Loaded
           </div>
         );
         break;
       case 'typeError':
         alert = (
-          <div className="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+          <div className='alert alert-danger alert-dismissible' role='alert'>
+            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
             <strong>Error!</strong> Wrong file format
           </div>
         );
         break;
       case 'duplicateEntry':
         alert = (
-          <div className="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" className="close" onClick={this.resetAlert}>
-              <span aria-hidden="true">&times;</span>
+          <div className='alert alert-danger alert-dismissible' role='alert'>
+            <button type='button' className='close' onClick={this.resetAlert}>
+              <span aria-hidden='true'>&times;</span>
             </button>
             <strong>Error!</strong><br/>
               {this.state.alertMessage}
@@ -99,18 +99,18 @@ class LoadPane extends Component {
         break;
     }
     return (
-      <TabPane Title="Load Instrument" {...this.props}>
-        <div className="col-sm-6 col-xs-12">
+      <TabPane Title='Load Instrument' {...this.props}>
+        <div className='col-sm-6 col-xs-12'>
           {alert}
           <input
-            className="fileUpload"
-            type="file" id="instfile"
+            className='fileUpload'
+            type='file' id='instfile'
             onChange={this.chooseFile}
           />
           <input
-            className="btn btn-primary spacingTop"
-            type="button" id="load"
-            value="Load Instrument"
+            className='btn btn-primary spacingTop'
+            type='button' id='load'
+            value='Load Instrument'
             disabled={this.state.disabled}
             onClick={this.loadFile}
           />
@@ -161,32 +161,32 @@ class SavePane extends Component {
   render() {
     let value = this.state.fileName;
     return (
-      <TabPane Title="Save Instrument" {...this.props}>
-        <div className="form-group">
-          <div className="col-xs-12">
-            <label className="col-sm-2 control-label">Filename: </label>
-            <div className="col-sm-4">
-              <input className="form-control"
-                     type="text" id="filename"
+      <TabPane Title='Save Instrument' {...this.props}>
+        <div className='form-group'>
+          <div className='col-xs-12'>
+            <label className='col-sm-2 control-label'>Filename: </label>
+            <div className='col-sm-4'>
+              <input className='form-control'
+                     type='text' id='filename'
                      value={value}
                      onChange={this.onChangeFile}
               />
             </div>
           </div>
-          <div className="col-xs-12 spacingTop">
-            <label className="col-sm-2 control-label">Instrument Name: </label>
-            <div className="col-sm-4">
-              <input className="form-control"
-                     type="text" id="longname"
+          <div className='col-xs-12 spacingTop'>
+            <label className='col-sm-2 control-label'>Instrument Name: </label>
+            <div className='col-sm-4'>
+              <input className='form-control'
+                     type='text' id='longname'
                      value={this.state.instrumentName}
                      onChange={this.onChangeInst}
               />
             </div>
           </div>
-          <div className="col-xs-12 spacingTop">
-            <div className="col-xs-12 col-sm-4 col-sm-offset-2">
-              <input className="btn btn-primary col-xs-12"
-                     type="submit" value="Save"
+          <div className='col-xs-12 spacingTop'>
+            <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
+              <input className='btn btn-primary col-xs-12'
+                     type='submit' value='Save'
                      onClick={this.props.save}
               />
             </div>
@@ -333,12 +333,12 @@ class DisplayElements extends Component {
     };
 
     return (
-      <table id="sortable" className="table table-hover" style={tableStyles}>
+      <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
         <tr>
-          <th className="col-xs-2">Database Name</th>
-          <th className="col-xs-6">Question Display (Front End)</th>
-          <th className="col-xs-4">Edit</th>
+          <th className='col-xs-2'>Database Name</th>
+          <th className='col-xs-6'>Question Display (Front End)</th>
+          <th className='col-xs-4'>Edit</th>
         </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
@@ -443,7 +443,7 @@ class BuildPane extends Component {
     // setting any values
     this.setState(function(state) {
       let temp = state.Elements;
-      // Decriment the editing count
+      // Decrement the editing count
       let edit = state.amountEditing - 1;
       let dbNa = state.elementDBNames;
       temp[state.currentPage].Elements[index] = element;
@@ -523,16 +523,16 @@ class BuildPane extends Component {
     }.bind(this));
 
     return (
-      <TabPane Title="Build Instrument" {...this.props}>
-        <div className="form-group col-xs-12">
-          <label htmlFor="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
-          <div className="col-sm-4">
-            <div className="btn-group">
-              <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span id="search_concept">{this.state.Elements[this.state.currentPage].Description}</span>
-                <span className="caret"></span>
+      <TabPane Title='Build Instrument' {...this.props}>
+        <div className='form-group col-xs-12'>
+          <label htmlFor='selected-input' className='col-xs-2 col-sm-1 control-label'>Page:</label>
+          <div className='col-sm-4'>
+            <div className='btn-group'>
+              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
+                <span id='search_concept'>{this.state.Elements[this.state.currentPage].Description}</span>
+                <span className='caret'/>
               </button>
-              <ul className="dropdown-menu" role="menu">
+              <ul className='dropdown-menu' role='menu'>
                 {pages}
               </ul>
             </div>
@@ -545,7 +545,7 @@ class BuildPane extends Component {
           updateElement={this.updateElement}
           draggable = {draggable}
         />
-        <div className="row">
+        <div className='row'>
           <AddElement updateQuestions={this.addQuestion} addPage={this.addPage}/>
         </div>
       </TabPane>
@@ -586,23 +586,23 @@ class InstrumentBuilderApp extends Component {
     let tabs = [];
     tabs.push(
       <LoadPane
-        TabId="Load"
-        ref="loadPane"
+        TabId='Load'
+        ref='loadPane'
         loadCallback={this.loadCallback}
         key={1}
       />
     );
     tabs.push(
       <BuildPane
-        TabId="Build"
-        ref="buildPane"
+        TabId='Build'
+        ref='buildPane'
         key={2}
       />
     );
     tabs.push(
       <SavePane
-        TabId="Save"
-        ref="savePane"
+        TabId='Save'
+        ref='savePane'
         save={this.saveInstrument}
         key={3}
       />
@@ -625,7 +625,7 @@ class InstrumentBuilderApp extends Component {
 
     return (
       <div>
-        <Tabs tabs={tabList} defaultTab="Build">
+        <Tabs tabs={tabList} defaultTab='Build'>
           {tabs}
         </Tabs>
       </div>
