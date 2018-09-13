@@ -23,7 +23,7 @@ class BIDSFile
 {
     var $fileData   = array();
     var $parameters = array();
-    //var $QCData     = array();
+
     /**
      * Construct a BIDSFile
      *
@@ -38,7 +38,7 @@ class BIDSFile
         foreach ($fileData AS $key=>$value) {
             $this->fileData[$key] = $value;
         }
-        $query        = "SELECT Name, Value
+        $query = "SELECT Name, Value
             FROM physiological_parameter_file as ppf, parameter_type as pt
             WHERE ppf.ParameterTypeID=pt.ParameterTypeID AND
             PhysiologicalFileID=:PFID";
@@ -58,13 +58,5 @@ class BIDSFile
     {
         return $this->fileData[$parameterName] ??
             ($this->parameters[$parameterName] ?? '');
-        /*if (isset($this->fileData[$parameterName])) {
-             return $this->fileData[$parameterName];
-         } elseif (isset($this->parameters[$parameterName])) {
-             return $this->parameters[$parameterName];
-         } else {
-             return '';
-         }
-         */
     }
 }

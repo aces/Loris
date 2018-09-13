@@ -1,11 +1,13 @@
 project
 smarty/templates_c
+.gitignore
 .gitmodules
 project-*
 *.un~
 *.linst~
 *.php~
 /vendor
+.github/*
 .idea
 tools/*.txt
 htdocs/phpunit_codecoverage/

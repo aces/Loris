@@ -45,46 +45,52 @@ echo json_encode($response);
 function getSessionData($sessionID)
 {
     $db = \Database::singleton();
+
     $query = 'SELECT DISTINCT(pf.SessionID) FROM physiological_file pf LEFT
     JOIN session s ON s.ID=pf.SessionID LEFT JOIN candidate c USING (CandID)
     LEFT JOIN psc ON s.CenterID=psc.CenterID LEFT JOIN physiological_output_type
     pot USING (PhysiologicalOutputTypeID) WHERE s.Active = "Y" AND pf.FileType
     IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm") ORDER BY pf.SessionID';
-    $sessions = $db->pselect($query, array());
-    $sessions = array_column($sessions, 'SessionID');
-    $response['patient'] = getSubjectData($sessionID);
-    $response['database'] = array_values(getFilesData($sessionID));
-    $response['sessions'] = $sessions;
-    $currentIndex = array_search($sessionID,$sessions);
+
+    $sessions                = $db->pselect($query, array());
+    $sessions                = array_column($sessions, 'SessionID');
+    $response['patient']     = getSubjectData($sessionID);
+    $response['database']    = array_values(getFilesData($sessionID));
+    $response['sessions']    = $sessions;
+    $currentIndex            = array_search($sessionID,$sessions);
     $response['nextSession'] = isset($sessions[$currentIndex+1]) ?
         $sessions[$currentIndex+1] : '';
     $response['prevSession'] = isset($sessions[$currentIndex-1]) ?
         $sessions[$currentIndex-1] : '';
+
     return $response;
 }
 function getSubjectData($sessionID)
 {
     $subjectData = array();
-    $timePoint =& \TimePoint::singleton($sessionID);
-    $candidate =& \Candidate::singleton($timePoint->getCandID());
-    $subjectData['pscid'] = $candidate->getPSCID();
-    $subjectData['dccid'] = $timePoint->getCandID();
+    $timePoint   =& \TimePoint::singleton($sessionID);
+    $candidate   =& \Candidate::singleton($timePoint->getCandID());
+
+    $subjectData['pscid']       = $candidate->getPSCID();
+    $subjectData['dccid']       = $timePoint->getCandID();
     $subjectData['visit_label'] = $timePoint->getVisitLabel();
-    $subjectData['sessionID'] = $sessionID;
-    $subjectData['site'] = $timePoint->getPSC();
-    $subjectData['dob'] = $candidate->getCandidateDoB();
-    $subjectData['gender'] = $candidate->getCandidateGender();
-    $subjectData['subproject'] = $timePoint->getData('SubprojectTitle');
+    $subjectData['sessionID']   = $sessionID;
+    $subjectData['site']        = $timePoint->getPSC();
+    $subjectData['dob']         = $candidate->getCandidateDoB();
+    $subjectData['sex']         = $candidate->getCandidateSex();
+    $subjectData['subproject']  = $timePoint->getData('SubprojectTitle');
     $subjectData['output_type'] = $_REQUEST['outputType'];
+
     return $subjectData;
 }
 function getFilesData($sessionID)
 {
-    $fileCollection = array();
     $db = \Database::singleton();
-    $outputType = $_REQUEST['outputType'];
-    $params['SID'] = $sessionID;
-    $query = 'SELECT pf.PhysiologicalFileID, pf.File from
+
+    $fileCollection = array();
+    $outputType     = $_REQUEST['outputType'];
+    $params['SID']  = $sessionID;
+    $query          = 'SELECT pf.PhysiologicalFileID, pf.FilePath FROM
     physiological_file pf ';
     //WHERE SessionID=:SID
     if ($outputType != 'all_types') {
@@ -92,9 +98,9 @@ function getFilesData($sessionID)
         $query .= 'pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID ';
         $query .= 'WHERE SessionID=:SID ';
         if ($outputType == 'raw') {
-            $query .= 'AND pot.OutputType = "raw"';
+            $query .= 'AND pot.OutputTypeName = "raw"';
         } else if ($outputType == 'derivatives') {
-            $query .= 'AND pot.OutputType = "derivatives"';
+            $query .= 'AND pot.OutputTypeName = "derivatives"';
         }
     } else {
         $query .= "WHERE SessionID=:SID";
@@ -102,11 +108,13 @@ function getFilesData($sessionID)
     $physiologicalFiles = $db->pselect($query, $params);
     $files = [];
     foreach ($physiologicalFiles as $file) {
-        $fileSummary = array();
-        $physiologicalFileID = $file['PhysiologicalFileID'];
-        $physiologicalFile = $file['File'];
+        $fileSummary          = array();
+        $physiologicalFileID  = $file['PhysiologicalFileID'];
+        $physiologicalFile    = $file['FilePath'];
         $physiologicalFileObj = new \BIDSFile($physiologicalFileID);
-        $fileName = basename($physiologicalFileObj->getParameter('File'));
+        $fileName             = basename(
+            $physiologicalFileObj->getParameter('FilePath')
+        );
 
         $fileSummary['name'] = $fileName;
         $fileSummary['task']['frequency']['sampling'] = $physiologicalFileObj->getParameter('SamplingFrequency');
@@ -151,21 +159,20 @@ function getDownloadlinks($physiologicalFileID, $physiologicalFile)
     $downloadLinks[] = array('type'=>'physiological_file', 'file'=> $physiologicalFile);
 
     $queries = [
-        'physiological_electrode' => 'physiological_electrode_file',
-        'physiological_channel' =>'physiological_channel_file',
-        'physiological_task_event' =>'physiological_task_event_file',
-        'physiological_archive' =>'all_files'
+        'physiological_electrode'  => 'physiological_electrode_file',
+        'physiological_channel'    => 'physiological_channel_file',
+        'physiological_task_event' => 'physiological_task_event_file',
+        'physiological_archive'    => 'all_files'
     ];
 
     foreach($queries as $query_key=>$query_value) {
-        $query_statement = "SELECT DISTINCT(File), '". $query_value . "' as FileType
+        $query_statement = "SELECT DISTINCT(FilePath), '". $query_value . "' as FileType
                 FROM " . $query_key . " WHERE PhysiologicalFileID=:PFID";
-        //print($query_statement);
         $query_statement = $db->pselectRow($query_statement, $params);
         if (isset($query_statement['FileType'])) {
             $downloadLinks[] = array(
                 'type'=>$query_statement['FileType'],
-                'file'=>$query_statement['File']
+                'file'=>$query_statement['FilePath']
             );
         } else {
             $downloadLinks[] = array(
@@ -175,7 +182,7 @@ function getDownloadlinks($physiologicalFileID, $physiologicalFile)
         }
     }
 
-    $queryFDT = "SELECT Value as File, 'physiological_fdt_file' as
+    $queryFDT = "SELECT Value as FilePath, 'physiological_fdt_file' as
         FileType FROM physiological_parameter_file JOIN parameter_type AS pt
         USING (ParameterTypeID) WHERE pt.Name='fdt_file' AND
         PhysiologicalFileID=:PFID";
@@ -183,7 +190,7 @@ function getDownloadlinks($physiologicalFileID, $physiologicalFile)
     if (isset($queryFDT['FileType'])) {
         $downloadLinks[] = array(
             'type'=>$queryFDT['FileType'],
-            'file'=>$queryFDT['File']
+            'file'=>$queryFDT['FilePath']
         );
     } else {
         $downloadLinks[] = array(

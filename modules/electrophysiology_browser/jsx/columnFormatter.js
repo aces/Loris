@@ -20,25 +20,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // Create links for 'all types', 'raw' and 'derivatives' output types
   if (column === 'Links') {
-    let cellTypes  = cell.split(",");
-    let cellLinks  = [];
-    let baseURL = loris.BaseURL + "/electrophysiology_browser/electrophysiology_session/";
-    let backURL = "&backURL=/electrophysiology_browser/";
+    let cellTypes = cell.split(',');
+    let cellLinks = [];
+    let baseURL = loris.BaseURL + '/electrophysiology_browser/electrophysiology_session/';
+    let backURL = '&backURL=/electrophysiology_browser/';
 
     // display the link for 'all types'
     cellLinks.push(
-      <a key='all' href={baseURL + "?sessionID=" + row["Session ID"] + backURL}>
+      <a key='all' href={baseURL + '?sessionID=' + row['Session ID'] + backURL}>
         all types
       </a>
     );
 
     // display the link for raw and derivatives when they exist
     for (let i = 0; i < cellTypes.length; i++) {
-      cellLinks.push(" | ");
+      cellLinks.push(' | ');
       let linkURL = baseURL
-        + "?sessionID=" + row["Session ID"]
-        + "&outputType=" + cellTypes[i]
-        + backURL
+        + '?sessionID=' + row['Session ID']
+        + '&outputType=' + cellTypes[i]
+        + backURL;
       cellLinks.push(<a key={i} href={linkURL}>{cellTypes[i]}</a>);
     }
 
