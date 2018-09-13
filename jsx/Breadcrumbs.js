@@ -10,11 +10,14 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Breadcrumbs Component.
  * Used for navigation on all Loris pages.
  */
-class Breadcrumbs extends React.Component {
+class Breadcrumbs extends Component {
   constructor(props) {
     super(props);
 
@@ -28,14 +31,14 @@ class Breadcrumbs extends React.Component {
   componentWillMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
-window.addEventListener('resize', this.checkScreenSize);
-}
+      window.addEventListener('resize', this.checkScreenSize);
+    }
   }
 
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
-window.removeEventListener('resize', this.checkScreenSize);
-}
+      window.removeEventListener('resize', this.checkScreenSize);
+    }
   }
 
   checkScreenSize() {
@@ -74,7 +77,7 @@ window.removeEventListener('resize', this.checkScreenSize);
       const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
-          <li>
+          <li key={'drop_' + i}>
             <a href={url}>
               {element.text}
             </a>
@@ -82,7 +85,7 @@ window.removeEventListener('resize', this.checkScreenSize);
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className="btn btn-primary">
+          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
             <div>
               {element.text}
             </div>
@@ -93,16 +96,16 @@ window.removeEventListener('resize', this.checkScreenSize);
 
     if (dropdown.length !== 0) {
       breadcrumbDropdown = (
-        <div className="btn-group ellipsis btn btn-primary">
-          <button type="button"
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+        <div className='btn-group ellipsis btn btn-primary'>
+          <button type='button'
+                  className='dropdown-toggle'
+                  data-toggle='dropdown'
+                  aria-haspopup='true'
+                  aria-expanded='false'
           >
             ...
           </button>
-          <ul className="dropdown-menu">
+          <ul className='dropdown-menu'>
             {dropdown}
           </ul>
         </div>
@@ -110,9 +113,9 @@ window.removeEventListener('resize', this.checkScreenSize);
     }
 
     return (
-      <div id="bc2" className="btn-group btn-breadcrumb">
-        <a href={baseURL} className="btn btn-primary">
-          <span className="glyphicon glyphicon-home" aria-hidden="true"></span>
+      <div id='bc2' className='btn-group btn-breadcrumb'>
+        <a href={baseURL} className='btn btn-primary'>
+          <span className='glyphicon glyphicon-home' aria-hidden='true'/>
         </a>
         {breadcrumbDropdown}
         {breadcrumbs}
@@ -120,6 +123,10 @@ window.removeEventListener('resize', this.checkScreenSize);
     );
   }
 }
+Breadcrumbs.propTypes = {
+  baseURL: PropTypes.string,
+  breadcrumbs: PropTypes.array,
+};
 
 let RBreadcrumbs = React.createFactory(Breadcrumbs);
 

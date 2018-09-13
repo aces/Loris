@@ -1,4 +1,5 @@
 import ProgressBar from 'ProgressBar';
+import React, {Component} from 'react';
 
 /**
  * Imaging Upload Form
@@ -11,7 +12,7 @@ import ProgressBar from 'ProgressBar';
  * @since 2017/04/01
  *
  */
-class UploadForm extends React.Component {
+class UploadForm extends Component {
   constructor(props) {
     super(props);
 
@@ -272,17 +273,17 @@ class UploadForm extends React.Component {
     // For all elements, hasError and errorMessage
     // are updated depending on what values are submitted
     return (
-      <div className="row">
-        <div className="col-md-7">
+      <div className='row'>
+        <div className='col-md-7'>
           <h3>Upload an imaging scan</h3>
           <br/>
           <FormElement
-            name="upload_form"
+            name='upload_form'
             fileUpload={true}
           >
             <SelectElement
-              name="IsPhantom"
-              label="Phantom Scans"
+              name='IsPhantom'
+              label='Phantom Scans'
               options={this.props.form.IsPhantom.options}
               onUserInput={this.onFormChange}
               required={true}
@@ -291,8 +292,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.IsPhantom}
             />
             <TextboxElement
-              name="candID"
-              label="CandID"
+              name='candID'
+              label='CandID'
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
               required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -301,8 +302,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.candID}
             />
             <TextboxElement
-              name="pSCID"
-              label="PSCID"
+              name='pSCID'
+              label='PSCID'
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
               required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -311,8 +312,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.pSCID}
             />
             <SelectElement
-              name="visitLabel"
-              label="Visit Label"
+              name='visitLabel'
+              label='Visit Label'
               options={this.props.form.visitLabel.options}
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -322,8 +323,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.visitLabel}
             />
             <FileElement
-              name="mri_file"
-              label="File to Upload"
+              name='mri_file'
+              label='File to Upload'
               onUserInput={this.onFormChange}
               required={true}
               hasError={this.state.hasError.mri_file}
@@ -331,11 +332,11 @@ class UploadForm extends React.Component {
               value={this.state.formData.mri_file}
             />
             <StaticElement
-              label="Notes"
+              label='Notes'
               text={notes}
             />
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
+            <div className='row'>
+              <div className='col-sm-9 col-sm-offset-3'>
                 <ProgressBar value={this.state.uploadProgress}/>
               </div>
             </div>

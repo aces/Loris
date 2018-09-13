@@ -1,5 +1,8 @@
 import FilterForm from 'FilterForm';
 import formatDataDictColumn from './columnFormatter';
+import StaticDataTable from 'jsx/StaticDataTable';
+
+import React, {Component} from 'react';
 
 /**
  * Data Dictionary Page.
@@ -14,7 +17,7 @@ import formatDataDictColumn from './columnFormatter';
  * @version 1.0.0
  *
  * */
-class DataDictIndex extends React.Component {
+class DataDictIndex extends Component {
   constructor(props) {
     loris.hiddenHeaders = ['DescriptionStatus'];
     super(props);
