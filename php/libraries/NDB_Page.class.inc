@@ -751,6 +751,7 @@ class NDB_Page implements RequestHandlerInterface
         $baseurl = $www['url'];
         $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
+        $min = '';
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
