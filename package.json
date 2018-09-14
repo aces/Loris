@@ -18,6 +18,8 @@
     "eslint-config-google": "0.9.1",
     "eslint-loader": "2.1.0",
     "eslint-plugin-react": "7.11.1",
+    "@material-ui/core": "^3.0.3",
+    "@material-ui/icons": "^3.0.1",
     "prop-types": "latest",
     "react": "^16.4.2",
     "react-addons-create-fragment": "^15.6.2",

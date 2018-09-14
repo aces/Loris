@@ -769,14 +769,16 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . ($min === '') ?
                       '/vendor/js/react/react-dom.development.js' :
                       '/vendor/js/react/react-dom.production.js',
-
+                  $baseurl . ($min === '') ?
+                      '/vendor/js/material-ui/material-ui.development.js' :
+                      '/vendor/js/material-ui/material-ui.production.min.js',
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/Breadcrumbs.js',
                   $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
-                  $baseurl . "/js/util/queryString.js",
+                  $baseurl . '/js/util/queryString.js',
                   $baseurl . '/js/components/Form.js',
                   $baseurl . '/js/components/Markdown.js',
                  );
