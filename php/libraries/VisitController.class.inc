@@ -51,7 +51,7 @@ class VisitController
      */
     public function getAllVisits(): array
     {
-        return $this->database->pselect(
+        return $this->database->pselectCol(
             'SELECT
               v.VisitName as "visit"
              FROM
@@ -70,7 +70,7 @@ class VisitController
      */
     public function getVisitsWithID(string $visit): array
     {
-        return $this->database->pselect(
+        return $this->database->pselectCol(
             'SELECT
              v.VisitID as "ID"
             FROM
