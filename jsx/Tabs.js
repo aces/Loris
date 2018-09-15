@@ -86,10 +86,10 @@ class Tabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>
@@ -203,10 +203,10 @@ class VerticalTabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>

@@ -10,17 +10,19 @@ let SubprojectRelations = React.createClass({
     let subprojectIDs = Object.keys(this.props.Relations);
     let that = this;
     let subprojectList = subprojectIDs.map(function(key) {
-      return <li>{that.props.Relations[key]}</li>;
+      return (
+        <li>{that.props.Relations[key]}</li>
+      );
     });
 
     return (
-            <div>
-                <h2>Related Subprojects</h2>
-                <ul>
-                    {subprojectList}
-                </ul>
-            </div>
-        );
+      <div>
+        <h2>Related Subprojects</h2>
+        <ul>
+          {subprojectList}
+        </ul>
+      </div>
+    );
   },
 });
 let RSubprojectRelations = React.createFactory(SubprojectRelations);

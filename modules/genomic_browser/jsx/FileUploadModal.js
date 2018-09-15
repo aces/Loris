@@ -103,23 +103,23 @@ class GenomicFileUploadModal extends Component {
       footerButtons.push(<button key="cancel" className="btn btn-default" id="cancelButton" role="reset" type="reset" data-dismiss="modal">Cancel</button>);
     }
     return (
-            <div className="modal fade" id="fileUploadModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                            <h3 className="modal-title" id="myModalLabel">Upload File</h3>
-                        </div>
-                        <div className="modal-body">
-                            <UploadForm baseURL={this.props.baseURL} validate={this.validateForm}/>
-                        </div>
-                        <div className="modal-footer">
-                            {footerButtons}
-                        </div>
-                    </div>
-                </div>
+      <div className="modal fade" id="fileUploadModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+              <h3 className="modal-title" id="myModalLabel">Upload File</h3>
             </div>
-        );
+            <div className="modal-body">
+              <UploadForm baseURL={this.props.baseURL} validate={this.validateForm}/>
+            </div>
+            <div className="modal-footer">
+              {footerButtons}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 GenomicFileUploadModal.propTypes = {
@@ -182,10 +182,10 @@ class UploadForm extends Component {
 
     return (
       <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
-          <div className="row">
-              {instructions}
-              {inputs}
-          </div>
+        <div className="row">
+          {instructions}
+          {inputs}
+        </div>
       </form>
     );
   }
@@ -247,15 +247,15 @@ class FileTypeSelect extends Component {
     });
 
     return (
-            <div className="col-xs-12 form-group">
-                <label htmlFor={this.props.name} className="col-xs-3">{this.props.label}<font color="red"><sup> *</sup></font></label>
-                <div className="col-xs-9">
-                    <select name={this.props.name} id={this.props.name} className="form-fields form-control input-sm" onChange={this.props.onFileTypeChange}>
-                        {options}
-                    </select>
-                </div>
-            </div>
-        );
+      <div className="col-xs-12 form-group">
+        <label htmlFor={this.props.name} className="col-xs-3">{this.props.label}<a color='red'><sup> *</sup></a></label>
+        <div className="col-xs-9">
+          <select name={this.props.name} id={this.props.name} className="form-fields form-control input-sm" onChange={this.props.onFileTypeChange}>
+            {options}
+          </select>
+        </div>
+      </div>
+    );
   }
 }
 FileTypeSelect.propTypes = {
@@ -280,10 +280,10 @@ class FileInput extends Component {
   render() {
     return (
       <div className="col-xs-12 form-group">
-          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-          <div className="col-xs-9">
-              <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
-          </div>
+        <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+        <div className="col-xs-9">
+          <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
+        </div>
       </div>
     );
   }
@@ -303,10 +303,10 @@ class TextAreaInput extends Component {
   render() {
     return (
       <div className="col-xs-12 form-group">
-          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-          <div className="col-xs-9">
-              <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
-          </div>
+        <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+        <div className="col-xs-9">
+          <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
+        </div>
       </div>
     );
   }
@@ -325,15 +325,15 @@ class CheckboxInput extends Component {
   }
 
   render() {
-        // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
+    // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
     return (
       <div className="form-group col-sm-12">
-          <label className="col-xs-3"></label>
-          <div className="col-xs-9">
-              <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
-              Use PSCID in column headers
-              {this.props.label}
-          </div>
+        <label className="col-xs-3"/>
+        <div className="col-xs-9">
+          <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
+          Use PSCID in column headers
+          {this.props.label}
+        </div>
       </div>
     );
   }
@@ -353,12 +353,12 @@ class ProgressBar extends Component {
   render() {
     return (
       <div className="col-xs-12 form-group">
-          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-          <div className="col-xs-9">
-              <div className="progress" style={{height: '20px'}}>
-                  <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
-              </div>
+        <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+        <div className="col-xs-9">
+          <div className="progress" style={{height: '20px'}}>
+            <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
           </div>
+        </div>
       </div>
     );
   }

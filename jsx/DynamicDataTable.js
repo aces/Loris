@@ -24,12 +24,12 @@ class DynamicDataTable extends Component {
 
   componentDidMount() {
     this.fetchData();
-      // Listen for update event to update data table on outside changes
+    // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   }
 
   componentWillUnmount() {
-      // Unsubscribe from the event before component is destroyed
+    // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
   }
 

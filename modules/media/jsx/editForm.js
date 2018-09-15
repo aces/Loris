@@ -104,8 +104,8 @@ class MediaEditForm extends Component {
         </div>
         {
           this.state.uploadResult === 'success' ?
-          <a className='btn btn-primary' href={backURL}>Back to media</a> :
-          null
+            <a className='btn btn-primary' href={backURL}>Back to media</a> :
+            null
         }
         <FormElement
           name='mediaEdit'

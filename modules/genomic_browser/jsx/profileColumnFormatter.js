@@ -72,8 +72,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       break;
     default:
       reactElement = (
-       <td>{cell}</td>
-     );
+        <td>{cell}</td>
+      );
   }
   return reactElement;
 }

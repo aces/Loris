@@ -601,19 +601,19 @@ class TagsElement extends Component {
         itmTxt = item;
       }
       return (
-          <button
-            className="btn btn-info btn-inline"
-            type="button"
-            onClick={this.handleRemove}
+        <button
+          className="btn btn-info btn-inline"
+          type="button"
+          onClick={this.handleRemove}
+          data-item={item}
+        >
+          {itmTxt}
+          &nbsp;
+          <span
+            className="glyphicon glyphicon-remove"
             data-item={item}
-          >
-            {itmTxt}
-            &nbsp;
-            <span
-              className="glyphicon glyphicon-remove"
-              data-item={item}
-            />
-          </button>
+          />
+        </button>
       );
     }, this);
     return (
@@ -631,7 +631,7 @@ class TagsElement extends Component {
             id={this.props.id + 'Add'}
             type="button"
             onClick={this.handleAdd}
-            >
+          >
             <span className="glyphicon glyphicon-plus"/>
             {this.props.btnLabel}
           </button>
@@ -1154,16 +1154,15 @@ class FileElement extends Component {
         </label>
         <div className="col-sm-9">
           <div className="input-group">
-            <div tabIndex="-1"
-                 className="form-control file-caption kv-fileinput-caption">
+            <div tabIndex="-1" className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
                 <span style={truncateEllipsisChild}>{fileName}</span>
               </div>
-              <div className="file-caption-name" id="video_file"></div>
+              <div className="file-caption-name" id="video_file"/>
             </div>
             <div className="input-group-btn">
               <div className="btn btn-primary btn-file">
-                <i className="glyphicon glyphicon-folder-open"></i> Browse
+                <i className="glyphicon glyphicon-folder-open"/> Browse
                 <input
                   type="file"
                   className="fileUpload"

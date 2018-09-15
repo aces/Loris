@@ -30,7 +30,7 @@ function formatDataDictColumn(column, cell, rowData, rowHeaders) {
         contentEditable="true"
         className="description"
         onBlur={updateDict(rowData[1])}>
-          {cell}
+        {cell}
       </td>
     );
   }

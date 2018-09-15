@@ -21,8 +21,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' +
        row.TarchiveID;
     return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
+      <a href ={url}>{cell}</a>
+    </td>;
   }
 
   return <td>{cell}</td>;

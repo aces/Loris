@@ -256,15 +256,15 @@ class UploadForm extends Component {
     );
 
     const notes = (
-        <span>
+      <span>
           File cannot exceed {this.props.maxUploadSize}<br/>
           File must be of type .tgz or tar.gz or .zip<br/>
           For files that are not Phantom Scans, file name must begin with
-          <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
+        <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
           For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
           Visit Label <i>V1</i> the file name should be prefixed by:
-          <b> ABC123_100000_V1</b><br/>
-        </span>
+        <b> ABC123_100000_V1</b><br/>
+      </span>
     );
 
     // Returns individual form elements

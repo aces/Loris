@@ -99,7 +99,7 @@ class ConsentStatus extends Component {
         <button className="btn-info has-spinner">
           Loading
           <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-              </span>
+          </span>
         </button>
       );
     }

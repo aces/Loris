@@ -97,11 +97,12 @@ class Breadcrumbs extends Component {
     if (dropdown.length !== 0) {
       breadcrumbDropdown = (
         <div className='btn-group ellipsis btn btn-primary'>
-          <button type='button'
-                  className='dropdown-toggle'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'
+          <button
+            type='button'
+            className='dropdown-toggle'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
           >
             ...
           </button>

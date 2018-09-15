@@ -215,16 +215,17 @@ class SelectDropdown extends Component {
     }
     return (
       <div className={parentDivClass}>
-        <button type="button"
-                className="btn btn-default dropdown-toggle col-xs-12"
-                onClick={this.toggleDropdown}>
+        <button
+          type="button"
+          className="btn btn-default dropdown-toggle col-xs-12"
+          onClick={this.toggleDropdown}>
           <div className="col-xs-10">
-              <span className="pull-left">
-                {selectLabel}
-              </span>
+            <span className="pull-left">
+              {selectLabel}
+            </span>
           </div>
           <div className="pull-right">
-            <span className="glyphicon glyphicon-menu-down"></span>
+            <span className="glyphicon glyphicon-menu-down"/>
           </div>
         </button>
         <ul className="dropdown-menu">

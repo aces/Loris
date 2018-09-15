@@ -82,7 +82,7 @@ let ProbandInfo = React.createClass(
               className ="glyphicon glyphicon-refresh
                         glyphicon-refresh-animate"
             >
-                    </span>
+            </span>
           </button>
         );
       }
@@ -125,42 +125,42 @@ let ProbandInfo = React.createClass(
 
               extraParameterFields.push(
                 <SelectElement
-                    label={extraParameters[key2].Description}
-                    name={name}
-                    options={selectOptions}
-                    value={value}
-                    onUserInput={this.setFormData}
-                    ref={name}
-                    disabled={disabled}
-                    key={key2}
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  options={selectOptions}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
                 />
-            );
+              );
               break;
             case 'dat':
               extraParameterFields.push(
                 <DateElement
-                    label={extraParameters[key2].Description}
-                    name={name}
-                    value={value}
-                    onUserInput={this.setFormData}
-                    ref={name}
-                    disabled={disabled}
-                    key={key2}
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
                 />
-            );
+              );
               break;
             default:
               extraParameterFields.push(
                 <TextareaElement
-                    label={extraParameters[key2].Description}
-                    name={name}
-                    value={value}
-                    onUserInput={this.setFormData}
-                    ref={name}
-                    disabled={disabled}
-                    key={key2}
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
                 />
-            );
+              );
           }
         }
       }

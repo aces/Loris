@@ -91,7 +91,7 @@ class LoadPane extends Component {
               <span aria-hidden='true'>&times;</span>
             </button>
             <strong>Error!</strong><br/>
-              {this.state.alertMessage}
+            {this.state.alertMessage}
           </div>
         );
         break;
@@ -166,28 +166,33 @@ class SavePane extends Component {
           <div className='col-xs-12'>
             <label className='col-sm-2 control-label'>Filename: </label>
             <div className='col-sm-4'>
-              <input className='form-control'
-                     type='text' id='filename'
-                     value={value}
-                     onChange={this.onChangeFile}
+              <input
+                className='form-control'
+                type='text' id='filename'
+                value={value}
+                onChange={this.onChangeFile}
               />
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
             <label className='col-sm-2 control-label'>Instrument Name: </label>
             <div className='col-sm-4'>
-              <input className='form-control'
-                     type='text' id='longname'
-                     value={this.state.instrumentName}
-                     onChange={this.onChangeInst}
+              <input
+                className='form-control'
+                type='text'
+                id='longname'
+                value={this.state.instrumentName}
+                onChange={this.onChangeInst}
               />
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
             <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
-              <input className='btn btn-primary col-xs-12'
-                     type='submit' value='Save'
-                     onClick={this.props.save}
+              <input
+                className='btn btn-primary col-xs-12'
+                type='submit'
+                value='Save'
+                onClick={this.props.save}
               />
             </div>
           </div>
@@ -285,11 +290,12 @@ class DisplayElements extends Component {
       if (element.editing) {
         // If you are editing an element, show element as an AddElement object
         row = (
-          <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}
+          <tr
+            data-id={i}
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}
           >
             <td className="col-xs-2" colSpan="3">
               <AddElement
@@ -302,11 +308,12 @@ class DisplayElements extends Component {
       } else {
         // Else display element in regular way
         row = (
-          <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}>
+          <tr
+            data-id={i}
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}>
             <td style={colStyles}>
               {element.Name}
             </td>
@@ -335,14 +342,14 @@ class DisplayElements extends Component {
     return (
       <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
-        <tr>
-          <th className='col-xs-2'>Database Name</th>
-          <th className='col-xs-6'>Question Display (Front End)</th>
-          <th className='col-xs-4'>Edit</th>
-        </tr>
+          <tr>
+            <th className='col-xs-2'>Database Name</th>
+            <th className='col-xs-6'>Question Display (Front End)</th>
+            <th className='col-xs-4'>Edit</th>
+          </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
-        {tableRows}
+          {tableRows}
         </tbody>
       </table>
     );

@@ -1,8 +1,10 @@
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import FilterForm from 'jsx/FilterForm';
 import Panel from 'jsx/Panel';
 import Button from '@material-ui/core/Button';
 
-class Acknowledgements extends React.Component {
+class Acknowledgements extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,24 +51,24 @@ class Acknowledgements extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(window.location.origin + '/', {
-      method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        // console.log('ajax success - data: ' + JSON.stringify(data));
-      },
-      error: function(error) {
-        console.error(error);
-      },
-    });
+    // $.ajax(window.location.origin + '/', {
+    //   method: 'GET',
+    //   dataType: 'json',
+    //   success: function(data) {
+    //     // console.log('ajax success - data: ' + JSON.stringify(data));
+    //   },
+    //   error: function(error) {
+    //     console.error(error);
+    //   },
+    // });
   }
 
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <Button variant="raised" color="primary">
-          Hello World
+        <Button size='large' variant="raised" color="primary">
+          Show Data
         </Button>
         // {/*<div>*/}
         //   {/*<Button variant="raised" color="primary">*/}

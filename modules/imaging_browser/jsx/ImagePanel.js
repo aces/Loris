@@ -19,24 +19,34 @@ class ImagePanelHeader extends Component {
   render() {
     let QCStatusLabel;
     if (this.props.QCStatus === 'Pass') {
-      QCStatusLabel = <span className="label label-success">
-                         {this.props.QCStatus}
-                      </span>;
+      QCStatusLabel = (
+        <span className="label label-success">
+          {this.props.QCStatus}
+        </span>
+      );
     } else if (this.props.QCStatus === 'Fail') {
-      QCStatusLabel = <span className="label label-danger">
-                         {this.props.QCStatus}
-                      </span>;
+      QCStatusLabel = (
+        <span className="label label-danger">
+          {this.props.QCStatus}
+        </span>
+      );
     }
 
     let arrow;
     if (this.props.Expanded) {
-      arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-up">
-              </span>;
+      arrow = (
+        <span
+          onClick={this.props.onToggleBody}
+          className="pull-right clickable glyphicon arrow glyphicon-chevron-up">
+        </span>
+      );
     } else {
-      arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-down">
-              </span>;
+      arrow = (
+        <span
+          onClick={this.props.onToggleBody}
+          className="pull-right clickable glyphicon arrow glyphicon-chevron-down">
+        </span>
+      );
     }
     let headerButton = (
       <div className="pull-right">
@@ -48,15 +58,15 @@ class ImagePanelHeader extends Component {
             aria-expanded={this.props.HeadersExpanded}>
             Header Info
           </button>
-          <span className="caret"></span>
+          <span className="caret"/>
         </div>
       </div>
     );
     return (
-
       <div className="panel-heading clearfix">
-        <input type="checkbox" data-file-id={this.props.FileID}
-               className="mripanel user-success"/>
+        <input
+          type="checkbox" data-file-id={this.props.FileID}
+          className="mripanel user-success"/>
         <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
           {this.props.Filename}
         </h3>
@@ -95,125 +105,124 @@ class ImagePanelHeadersTable extends Component {
 
   render() {
     return (
-      <table className=
-               "table table-hover table-bordered header-info col-xs-12 dynamictable">
+      <table className="table table-hover table-bordered header-info col-xs-12 dynamictable">
         <tbody>
-        <tr>
-          <th className="info col-xs-2">Voxel Size</th>
-          <td className="col-xs-6" colSpan="3">
-            {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
-              this.props.HeaderInfo.XStep + ' mm '}
-            {this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' +
-              this.props.HeaderInfo.YStep + ' mm '}
-            {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' +
-              this.props.HeaderInfo.ZStep + ' mm '}
-          </td>
-          <th className="col-xs-2 info">Output Type</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.OutputType}
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">Acquisition Date</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.AcquisitionDate}
-          </td>
+          <tr>
+            <th className="info col-xs-2">Voxel Size</th>
+            <td className="col-xs-6" colSpan="3">
+              {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
+                this.props.HeaderInfo.XStep + ' mm '}
+              {this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' +
+                this.props.HeaderInfo.YStep + ' mm '}
+              {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' +
+                this.props.HeaderInfo.ZStep + ' mm '}
+            </td>
+            <th className="col-xs-2 info">Output Type</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.OutputType}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">Acquisition Date</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.AcquisitionDate}
+            </td>
 
-          <th className="col-xs-2 info">Space</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.CoordinateSpace}
-          </td>
+            <th className="col-xs-2 info">Space</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.CoordinateSpace}
+            </td>
 
-          <th className="col-xs-2 info">Inserted Date</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.InsertedDate}
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">Protocol</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.AcquisitionProtocol}
-          </td>
+            <th className="col-xs-2 info">Inserted Date</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.InsertedDate}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">Protocol</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.AcquisitionProtocol}
+            </td>
 
-          <th className="col-xs-2 info">Series Description</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.SeriesDescription}
-          </td>
+            <th className="col-xs-2 info">Series Description</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.SeriesDescription}
+            </td>
 
-          <th className="col-xs-2 info">Series Number</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.SeriesNumber}
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">Echo Time</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.EchoTime} ms
-          </td>
+            <th className="col-xs-2 info">Series Number</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.SeriesNumber}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">Echo Time</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.EchoTime} ms
+            </td>
 
-          <th className="col-xs-2 info">Rep Time</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.RepetitionTime} ms
-          </td>
+            <th className="col-xs-2 info">Rep Time</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.RepetitionTime} ms
+            </td>
 
-          <th className="col-xs-2 info">Slice Thick</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.SliceThickness} mm
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">Number of volumes</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.NumVolumes} volumes
-          </td>
+            <th className="col-xs-2 info">Slice Thick</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.SliceThickness} mm
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">Number of volumes</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.NumVolumes} volumes
+            </td>
 
-          <th className="col-xs-2 info">Pipeline</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.Pipeline}
-          </td>
+            <th className="col-xs-2 info">Pipeline</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.Pipeline}
+            </td>
 
-          <th className="col-xs-2 info">Algorithm</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.Algorithm}
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">
-            Number of rejected directions
-          </th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.TotalRejected}
-          </td>
+            <th className="col-xs-2 info">Algorithm</th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.Algorithm}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">
+              Number of rejected directions
+            </th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.TotalRejected}
+            </td>
 
-          <th className="col-xs-2 info">
-            Number of Interlace correlations
-          </th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.InterlaceRejected}
-          </td>
+            <th className="col-xs-2 info">
+              Number of Interlace correlations
+            </th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.InterlaceRejected}
+            </td>
 
-          <th className="col-xs-2 info">
-            Number of Gradient-wise correlations
-          </th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.IntergradientRejected}
-          </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">
-            Number of Slicewise correlations
-          </th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.SlicewiseRejected}
-          </td>
-          <th className="col-xs-2 info">
-            Series Instance UID
-          </th>
-          <td className="col-xs-2" colSpan="2">
-            {this.props.HeaderInfo.SeriesUID}
-          </td>
-          <td className="col-xs-4" colSpan="4">&nbsp;</td>
-        </tr>
+            <th className="col-xs-2 info">
+              Number of Gradient-wise correlations
+            </th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.IntergradientRejected}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-xs-2 info">
+              Number of Slicewise correlations
+            </th>
+            <td className="col-xs-2">
+              {this.props.HeaderInfo.SlicewiseRejected}
+            </td>
+            <th className="col-xs-2 info">
+              Series Instance UID
+            </th>
+            <td className="col-xs-2" colSpan="2">
+              {this.props.HeaderInfo.SeriesUID}
+            </td>
+            <td className="col-xs-4" colSpan="4">&nbsp;</td>
+          </tr>
         </tbody>
       </table>
     );
@@ -241,18 +250,19 @@ class ImageQCDropdown extends Component {
       for (let key in this.props.options) {
         if (this.props.options.hasOwnProperty(key)) {
           options.push(
-            <option key={this.props.FormName + this.props.FileID + key}
-                    className="form-control input-sm option"
-                    value={key}>{this.props.options[key]}
+            <option
+              key={this.props.FormName + this.props.FileID + key}
+              className="form-control input-sm option"
+              value={key}>{this.props.options[key]}
             </option>
           );
         }
       }
       dropdown = (
-        <select name={this.props.FormName +
-        '[' + this.props.FileID + ']'}
-                defaultValue={this.props.defaultValue}
-                className="form-control input-sm"
+        <select
+          name={this.props.FormName + '[' + this.props.FileID + ']'}
+          defaultValue={this.props.defaultValue}
+          className="form-control input-sm"
         >
           {options}
         </select>
@@ -315,12 +325,11 @@ class ImagePanelQCStatusSelector extends Component {
   render() {
     let qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
-      qcStatusLabel = <span>
-                        QC Status <span className="text-info">
-                             ( <span className="glyphicon glyphicon-star">
-                           </span> New )
-                         </span>
-                      </span>;
+      qcStatusLabel = (
+        <span>
+          QC Status <span className="text-info">( <span className="glyphicon glyphicon-star"/> New )</span>
+        </span>
+      );
     } else {
       qcStatusLabel = 'QC Status';
     }
@@ -485,10 +494,10 @@ class DownloadButton extends Component {
       margin: 6,
     };
     return (
-      <a href={this.props.BaseURL + '/mri/jiv/get_file.php?file=' +
-      this.props.FileName}
-         className="btn btn-default" style={style}>
-        <span className="glyphicon glyphicon-download-alt"></span>
+      <a
+        href={this.props.BaseURL + '/mri/jiv/get_file.php?file=' + this.props.FileName}
+        className="btn btn-default" style={style}>
+        <span className="glyphicon glyphicon-download-alt"/>
         <span className="hidden-xs">{this.props.Label}</span>
       </a>
     );
@@ -522,13 +531,14 @@ class ImageQCCommentsButton extends Component {
       return <span/>;
     }
     return (
-      <a className="btn btn-default"
-         href="#noID"
-         onClick={this.openWindowHandler}
+      <a
+        className="btn btn-default"
+        href="#noID"
+        onClick={this.openWindowHandler}
       >
         <span className="text-default">
-            <span className="glyphicon glyphicon-pencil"></span>
-            <span className="hidden-xs">QC Comments</span>
+          <span className="glyphicon glyphicon-pencil"/>
+          <span className="hidden-xs">QC Comments</span>
         </span>
       </a>
     );
@@ -560,13 +570,14 @@ class LongitudinalViewButton extends Component {
       return <span/>;
     }
     return (
-      <a className="btn btn-default"
-         href="#noID"
-         onClick={this.openWindowHandler}
+      <a
+        className="btn btn-default"
+        href="#noID"
+        onClick={this.openWindowHandler}
       >
         <span className="text-default">
-            <span className="glyphicon glyphicon-eye-open"></span>
-            <span className="hidden-xs">Longitudinal View</span>
+          <span className="glyphicon glyphicon-eye-open"/>
+          <span className="hidden-xs">Longitudinal View</span>
         </span>
       </a>
     );
@@ -586,28 +597,34 @@ class ImageDownloadButtons extends Component {
   render() {
     return (
       <div className="row mri-second-row-panel col-xs-12">
-        <ImageQCCommentsButton FileID={this.props.FileID}
-                               BaseURL={this.props.BaseURL}
+        <ImageQCCommentsButton
+          FileID={this.props.FileID}
+          BaseURL={this.props.BaseURL}
         />
-        <DownloadButton FileName={this.props.Fullname}
-                        Label="Download Minc"
-                        BaseURL={this.props.BaseURL}
+        <DownloadButton
+          FileName={this.props.Fullname}
+          Label="Download Minc"
+          BaseURL={this.props.BaseURL}
         />
-        <DownloadButton FileName={this.props.XMLProtocol}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download XML Protocol"
+        <DownloadButton
+          FileName={this.props.XMLProtocol}
+          BaseURL={this.props.BaseURL}
+          Label="Download XML Protocol"
         />
-        <DownloadButton FileName={this.props.XMLReport}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download XML Report"
+        <DownloadButton
+          FileName={this.props.XMLReport}
+          BaseURL={this.props.BaseURL}
+          Label="Download XML Report"
         />
-        <DownloadButton FileName={this.props.NrrdFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download NRRD"
+        <DownloadButton
+          FileName={this.props.NrrdFile}
+          BaseURL={this.props.BaseURL}
+          Label="Download NRRD"
         />
-        <LongitudinalViewButton FileID={this.props.FileID}
-                                BaseURL={this.props.BaseURL}
-                                OtherTimepoints={this.props.OtherTimepoints}
+        <LongitudinalViewButton
+          FileID={this.props.FileID}
+          BaseURL={this.props.BaseURL}
+          OtherTimepoints={this.props.OtherTimepoints}
         />
       </div>
     );
@@ -629,12 +646,11 @@ class ImagePanelBody extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
   }
 
-
   openWindowHandler(e) {
     e.preventDefault();
     window.open(this.props.BaseURL + '/brainbrowser/?minc_id=[' +
       this.props.FileID + ']', 'BrainBrowser Volume Viewer',
-      'location = 0,width = auto, height = auto, scrollbars=yes');
+    'location = 0,width = auto, height = auto, scrollbars=yes');
   }
 
   render() {
@@ -643,8 +659,9 @@ class ImagePanelBody extends Component {
         <div className="row">
           <div className="col-xs-9 imaging_browser_pic">
             <a href="#noID" onClick={this.openWindowHandler}>
-              <img className="img-checkpic img-responsive"
-                   src={this.props.Checkpic}/>
+              <img
+                className="img-checkpic img-responsive"
+                src={this.props.Checkpic}/>
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">

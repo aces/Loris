@@ -1,4 +1,7 @@
+'use strict';
+
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const externals = require('webpack-node-externals');
 const path = require('path');
 const fs = require('fs');
 
@@ -62,13 +65,8 @@ const config = [{
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel-loader'
       },
       {
         test: /\.json$/,
@@ -95,9 +93,7 @@ const config = [{
     },
     extensions: ['*', '.js', '.jsx', '.json'],
   },
-  externals: {
-    react: 'React',
-  },
+  externals: ['React'],
   node: {
     fs: 'empty',
   },

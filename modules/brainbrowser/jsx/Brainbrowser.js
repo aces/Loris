@@ -71,10 +71,11 @@ class BrainBrowser extends Component {
           <div id='global-controls' className='global-controls'>
             <button id='sync-volumes' className='control'>Sync Volumes</button>
             <button id='reset-view' className='control'>Reset View</button>
-            <select id='panel-size'
-                    className='control'
-                    value={this.state.panelSize}
-                    onChange={this.handleChange}>
+            <select
+              id='panel-size'
+              className='control'
+              value={this.state.panelSize}
+              onChange={this.handleChange}>
               <option value='-1'>Auto</option>
               {Object.keys(options).map(function(option) {
                 return (

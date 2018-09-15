@@ -4,9 +4,9 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
- * @return {*} a formated table cell for a given column
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
+ * @return {*} a formatted table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   if (loris.hiddenHeaders.indexOf(column) > -1) {
@@ -20,13 +20,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   switch (column) {
     case 'Examiner':
-      const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                row.ID;
+      const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' + row.ID;
       return (
-             <td>
-                <a href ={url}>{cell}</a>
-             </td>
-             );
+        <td>
+          <a href ={url}>{cell}</a>
+        </td>
+      );
 
     case 'Radiologist':
       let radiologist = 'No';
@@ -34,31 +33,32 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         radiologist = 'Yes';
       }
 
-      return (<td>
-                 {radiologist}
-              </td>
-              );
+      return (
+        <td>
+          {radiologist}
+        </td>
+      );
 
     case 'Certification':
       if (row.Certification === null) {
         return (
-                     <td>
-                        None
-                     </td>
-                    );
+          <td>
+            None
+          </td>
+        );
       }
       return (
-                   <td>
-                      {cell}
-                   </td>
-                   );
+        <td>
+          {cell}
+        </td>
+      );
 
     default:
       return (
-                   <td>
-                      {cell}
-                   </td>
-                   );
+        <td>
+          {cell}
+        </td>
+      );
   }
 }
 

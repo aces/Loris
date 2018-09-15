@@ -50,12 +50,14 @@ class LorisElement extends Component {
         break;
       case 'select':
         if (element.Options.AllowMultiple) {
-          elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}
-                                       multiple={true}/>;
+          elementHtml = <SelectElement
+            label={element.Description}
+            options={element.Options.Values}
+            multiple={true}/>;
         } else {
-          elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}/>;
+          elementHtml = <SelectElement
+            label={element.Description}
+            options={element.Options.Values}/>;
         }
         break;
       case 'date':
@@ -92,17 +94,19 @@ class QuestionText extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-    // Keep track of the current input
+  // Keep track of the current input
   onChange(e) {
     this.props.updateState({Description: e.target.value});
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionText) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
+      errorMessage = (
+        <a className="form-error">{this.props.element.error.questionText}</a>
+      );
       errorClass += ' has-error';
     }
     return (
@@ -151,7 +155,9 @@ class BasicOptions extends Component {
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionName) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionName}</font>);
+      errorMessage = (
+        <a className="form-error">{this.props.element.error.questionName}</a>
+      );
       errorClass += ' has-error';
     }
     return (
@@ -319,7 +325,7 @@ class DateOptions extends Component {
   componentDidMount() {
     this.props.element.Options.dateFormat = '';
   }
-    // Keep track of the inputed years
+  // Keep track of the inputed years
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin' && e.target.value.length > 0) {
@@ -434,7 +440,7 @@ class NumericOptions extends Component {
     let errorMessage = '';
     let optionsClass = 'options form-group';
 
-        // If an error is present, display the error
+    // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
       errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
       optionsClass += 'options form-group has-error';
@@ -488,7 +494,7 @@ class ListElements extends Component {
     };
     this.selectType = this.selectType.bind(this);
   }
-    // Set the desired question type
+  // Set the desired question type
   selectType(newId, newValue) {
     let newState = {
       selected: {
@@ -534,66 +540,66 @@ class ListElements extends Component {
     }
     this.props.updateState(newState);
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     return (
-        <div className="form-group">
-            <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
-            <div className="col-sm-4">
-                <div className="btn-group">
-                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span id="search_concept">{this.props.value} </span>
-                        <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu" role="menu">
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Information</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'header', 'Header')}>
-                            <a id="header" className="option" title="Centered, header information">Header</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'label', 'Label')}>
-                            <a id="label" className="option" title="Unemphasized display text">Label</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
-                            <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Data entry</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
-                            <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
-                            <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
-                            <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
-                            <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'date', 'Date')}>
-                            <a id="date" className="option" title="User data entry of a date">Date</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
-                            <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Formatting</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
-                            <a id="line" className="option" title="Empty line">Blank Line</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
-                            <a id="page-break" className="option" title="Start a new page">Page Break</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <div className="form-group">
+        <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+        <div className="col-sm-4">
+          <div className="btn-group">
+            <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span id="search_concept">{this.props.value} </span>
+              <span className="caret"></span>
+            </button>
+            <ul className="dropdown-menu" role="menu">
+              <li>
+                <div className="col-sm-12"><h5 className="">Information</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'header', 'Header')}>
+                <a id="header" className="option" title="Centered, header information">Header</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'label', 'Label')}>
+                <a id="label" className="option" title="Unemphasized display text">Label</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
+                <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
+                <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
+                <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
+                <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
+                <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'date', 'Date')}>
+                <a id="date" className="option" title="User data entry of a date">Date</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
+                <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
+                <a id="line" className="option" title="Empty line">Blank Line</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
+                <a id="page-break" className="option" title="Start a new page">Page Break</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     );
   }
 }
@@ -697,7 +703,7 @@ class AddElement extends Component {
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
       let min = this.state.Options.MinValue;
       let max = this.state.Options.MaxValue;
@@ -711,7 +717,7 @@ class AddElement extends Component {
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
         let temp = this.state.error;
         delete temp.numeric;
@@ -722,8 +728,8 @@ class AddElement extends Component {
     }
 
     if (questionText === '' && selected !== 'line') {
-        // Error, question text is required. Set the element error flag
-        // for the questionText with message. Set the hasError flag
+      // Error, question text is required. Set the element error flag
+      // for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
         temp.questionText = 'Must use question text as page header';
@@ -737,8 +743,8 @@ class AddElement extends Component {
     }
 
     if (!hasError && this.state.error) {
-        // No error, remove the elememt's questionText error flag
-        // if set
+      // No error, remove the elememt's questionText error flag
+      // if set
       let temp = this.state.error;
       delete temp.questionText;
       this.setState({
@@ -824,7 +830,7 @@ class AddElement extends Component {
       });
     }
   }
-    // Add an option to the options array
+  // Add an option to the options array
   addOption(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -838,18 +844,18 @@ class AddElement extends Component {
       };
     });
   }
-    // Reset the options array
+  // Reset the options array
   resetOptions() {
     this.setState({
       options: [],
     });
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     let questionInput;
     let header = '';
     let buttons;
-        // Set the inputs to display based on the desired element type
+    // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
       case 'header':
       case 'label':

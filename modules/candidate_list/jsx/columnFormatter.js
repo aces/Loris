@@ -4,8 +4,8 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @return {*} a formated table cell for a given column
+ * @param {array} rowData - array of cell contents for a specific row
+ * @return {*} a formatted table cell for a given column
  */
 function formatColumn(column, cell, rowData) {
   if (column === 'PSCID') {
@@ -23,15 +23,14 @@ function formatColumn(column, cell, rowData) {
   }
   if (column === 'Scan Done' && cell === 'Y') {
     return (
-        <td className="scanDoneLink">
-            <a href="#"
-               onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
-                 {pscid: rowData[2]})}
-            >
-                {cell}
-            </a>
-        </td>
-      );
+      <td className="scanDoneLink">
+        <a href="#" onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
+          {pscid: rowData[2]})}
+        >
+          {cell}
+        </a>
+      </td>
+    );
   }
   return <td>{cell}</td>;
 }

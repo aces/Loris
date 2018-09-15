@@ -64,34 +64,34 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
 
     return (
-            <td className= {resolutionStatusStyle} style={fontColor}>
-                {resolutionStatus}
-            </td>
-           );
+      <td className= {resolutionStatusStyle} style={fontColor}>
+        {resolutionStatus}
+      </td>
+    );
   }
   if (column === 'Problem' && row.Problem === 'Protocol Violation') {
     return (
-            <td>
-                <a href= "#"
-                   onClick={loris.loadFilteredMenuClickHandler(
-                       'mri_violations/mri_protocol_check_violations',
-                       {PatientName: patientname,
-                        SeriesUID: uid}
-                   )}>Protocol Violation</a>
-            </td>
-           );
+      <td>
+        <a href= "#"
+          onClick={loris.loadFilteredMenuClickHandler(
+            'mri_violations/mri_protocol_check_violations',
+            {PatientName: patientname,
+              SeriesUID: uid}
+          )}>Protocol Violation</a>
+      </td>
+    );
   }
   if (column === 'Problem' && row.Problem === 'Could not identify scan type') {
     return (
-           <td>
-               <a href= "#"
-                  onClick={loris.loadFilteredMenuClickHandler(
-                      'mri_violations/mri_protocol_violations',
-                      {PatientName: patientname,
-                       SeriesUID: uid}
-                  )}>Could not identify scan type</a>
-           </td>
-           );
+      <td>
+        <a href= "#"
+          onClick={loris.loadFilteredMenuClickHandler(
+            'mri_violations/mri_protocol_violations',
+            {PatientName: patientname,
+              SeriesUID: uid}
+          )}>Could not identify scan type</a>
+      </td>
+    );
   }
   return (<td>{cell}</td>);
 }

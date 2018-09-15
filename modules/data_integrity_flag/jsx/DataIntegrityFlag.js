@@ -3,7 +3,7 @@ import formatColumn from './columnFormatter';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'FilterForm';
 
- /**
+/**
   * Data Integrity Flag
   *
   * Main module component rendering the tab pane with Browse and Update tabs

@@ -95,7 +95,7 @@ class CandidateInfo extends Component {
           Loading
           <span
             className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-            </span>
+          </span>
         </button>
       );
     }

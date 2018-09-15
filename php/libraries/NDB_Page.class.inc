@@ -751,7 +751,6 @@ class NDB_Page implements RequestHandlerInterface
         $baseurl = $www['url'];
         $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
-        $min = '';
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
@@ -762,17 +761,15 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
                   $baseurl . '/js/polyfills.js',
-                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                    // $baseurl . '/js/react/react-dom' . $min . '.js',
-                  $baseurl . ($min === '') ?
+                  $baseurl . ($min === '' ?
                       '/vendor/js/react/react.development.js' :
-                      '/vendor/js/react/react.production.js',
-                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react.production.min.js'),
+                  $baseurl . ($min === '' ?
                       '/vendor/js/react/react-dom.development.js' :
-                      '/vendor/js/react/react-dom.production.js',
-                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react-dom.production.min.js'),
+                  $baseurl . ($min === '' ?
                       '/vendor/js/material-ui/material-ui.development.js' :
-                      '/vendor/js/material-ui/material-ui.production.min.js',
+                      '/vendor/js/material-ui/material-ui.production.min.js'),
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',

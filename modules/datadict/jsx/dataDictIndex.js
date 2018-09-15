@@ -73,9 +73,7 @@ class DataDictIndex extends Component {
       return (
         <button className="btn-info has-spinner">
           Loading
-          <span
-          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-        </span>
+          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
         </button>
       );
     }
@@ -85,35 +83,35 @@ class DataDictIndex extends Component {
     }.bind(this);
 
     return (
-        <div>
-            <FilterForm
-                Module="datadict"
-                name="data_dict_filter"
-                id="data_dict_filter"
-                ref={filterRef}
-                columns={2}
-                formElements={this.state.Data.form}
-                onUpdate={this.updateFilter}
-                filter={this.state.filter}>
-                <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
-            </FilterForm>
-            <StaticDataTable
-                Data={this.state.Data.Data}
-                Headers={this.state.Data.Headers}
-                Filter={this.state.filter}
-                getFormattedCell={formatDataDictColumn}
-            />
-        </div>
+      <div>
+        <FilterForm
+          Module="datadict"
+          name="data_dict_filter"
+          id="data_dict_filter"
+          ref={filterRef}
+          columns={2}
+          formElements={this.state.Data.form}
+          onUpdate={this.updateFilter}
+          filter={this.state.filter}>
+          <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
+        </FilterForm>
+        <StaticDataTable
+          Data={this.state.Data.Data}
+          Headers={this.state.Data.Headers}
+          Filter={this.state.filter}
+          getFormattedCell={formatDataDictColumn}
+        />
+      </div>
     );
   }
 }
 
 $(function() {
   const dataDictIndex = (
-        <div className="page-datadict">
-            <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
-        </div>
-    );
+    <div className="page-datadict">
+      <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
+    </div>
+  );
   ReactDOM.render(dataDictIndex, document.getElementById('lorisworkspace'));
 });
 

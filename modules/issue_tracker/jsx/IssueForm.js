@@ -195,8 +195,8 @@ class IssueForm extends Component {
             ref='status'
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-                                               // different if the user doesn't have
-                                               // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'

@@ -14,11 +14,11 @@ class PagedRowHeader extends Component {
   render() {
     return (
       <thead>
-      <tr className='info'>
-        {this.props.headerRow.map(function(headerColumn, key) {
-          return (<th key={key}>{headerColumn}</th>);
-        })}
-      </tr>
+        <tr className='info'>
+          {this.props.headerRow.map(function(headerColumn, key) {
+            return (<th key={key}>{headerColumn}</th>);
+          })}
+        </tr>
       </thead>
     );
   }
@@ -146,17 +146,16 @@ class IncompleteCandidatesRow extends Component {
             {row.candid}
           </a>
         </td>
-          <td>
-              <a href={this.props.BaseURL + '/' + row.candid + '/'}>
-                  {row.PSCID}
-              </a>
-          </td>
+        <td>
+          <a href={this.props.BaseURL + '/' + row.candid + '/'}>
+            {row.PSCID}
+          </a>
+        </td>
         <td>
           <a href={this.props.BaseURL + '/instruments/' + row.test_name +
               '/?candID=' + row.candid +
               '&sessionID=' + row.SessionID +
-              '&commentID=' + row.commentid} ref='incomplete'
-              onClick={this.handleClick} >
+              '&commentID=' + row.commentid} ref='incomplete' onClick={this.handleClick} >
             {row.Full_name}
           </a>
         </td>
@@ -190,15 +189,17 @@ class InstrumentConflictsRow extends Component {
         <td>
           <a href={baseURL + '/' + row.CandID + '/'}>{row.CandID}</a>
         </td>
-          <td>
-              <a href={baseURL + '/' + row.CandID + '/'}>{row.PSCID}</a>
-          </td>
+        <td>
+          <a href={baseURL + '/' + row.CandID + '/'}>{row.PSCID}</a>
+        </td>
         <td>
           <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                 'conflict_resolver/',
-                  {CandID: row.CandID,
-                  Instrument: row.TableName,
-                  Question: row.FieldName}
+            'conflict_resolver/',
+            {
+              CandID: row.CandID,
+              Instrument: row.TableName,
+              Question: row.FieldName,
+            }
           )}>{row.test_name_display}</a>
         </td>
         <td>{row.FieldName}</td>
@@ -257,11 +258,11 @@ class BehaviouralFeedbackRow extends Component {
             {row.CandID}
           </a>
         </td>
-          <td>
-              <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
-                  {row.PSCID}
-              </a>
-          </td>
+        <td>
+          <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
+            {row.PSCID}
+          </a>
+        </td>
         <td>
           <a href={bvlLink} onClick={this.handleClick} ref='feedback'>
             {bvlLevel}
@@ -514,13 +515,11 @@ class dataTeamGraphics extends Component {
         'Across All Instruments'
     );
     let siteStatus = (
-      this.props.site ? (this.props.site) :
-        'Across All Sites'
-      );
+      this.props.site ? (this.props.site) : 'Across All Sites'
+    );
     let projectStatus = (
-      this.props.project ? (this.props.project) :
-        'Across All Projects'
-      );
+      this.props.project ? (this.props.project) : 'Across All Projects'
+    );
 
     return (
       <div className='col-sm-12 col-md-5'>

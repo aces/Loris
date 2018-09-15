@@ -87,15 +87,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       let patientName = row.PatientName;
       violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
          ({numViolatedScans} violated scans)
-       </a>;
+      </a>;
     }
 
     return (
-         <td style={cellStyle}>
-             {cell}
+      <td style={cellStyle}>
+        {cell}
              &nbsp;
-             {violatedScans}
-         </td>
+        {violatedScans}
+      </td>
     );
   }
 
@@ -111,7 +111,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     })(e);
   }
 
-    /**
+  /**
      * Opens MRI Violations for when there are violated scans
      *
      * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel

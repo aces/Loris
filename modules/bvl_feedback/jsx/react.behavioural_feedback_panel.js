@@ -228,44 +228,47 @@ class FeedbackPanelRow extends Component {
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
-        <span className='glyphicon glyphicon-pencil'
-              onClick={this.props.commentToggle}/>
+        <span
+          className='glyphicon glyphicon-pencil'
+          onClick={this.props.commentToggle}/>
       );
     }
 
     return (
       <tbody>
-      <tr>
-        {this.props.fieldname ?
-          <td>{this.props.fieldname}<br/>{this.props.type}</td> :
-          <td>{this.props.type}</td>}
-        <td>{this.props.author} on:<br/>{this.props.date}</td>
-        <td>
-          <div className='btn-group'>
-            <button name='thread_button' type='button' className={buttonClass}
-                    data-toggle='dropdown' aria-haspopup='true'
-                    aria-expanded='false'>
-              {buttonText}
-              <span className='caret'></span>
-            </button>
-            <ul className='dropdown-menu'>
-              {dropdown}
-            </ul>
-          </div>
-          <span className={arrow}
-                onClick={this.toggleEntries.bind(this, false)}></span>
-          {commentButton}
-        </td>
-      </tr>
-      {this.props.commentToggled ?
-        (<CommentEntryForm
-          user={this.props.user}
-          onCommentSend={this.newThreadEntry}
-          toggleThisThread={this.toggleEntries.bind(this, true)}
-        />) :
-        null
-      }
-      {threadEntries}
+        <tr>
+          {this.props.fieldname ?
+            <td>{this.props.fieldname}<br/>{this.props.type}</td> :
+            <td>{this.props.type}</td>}
+          <td>{this.props.author} on:<br/>{this.props.date}</td>
+          <td>
+            <div className='btn-group'>
+              <button
+                name='thread_button' type='button' className={buttonClass}
+                data-toggle='dropdown' aria-haspopup='true'
+                aria-expanded='false'>
+                {buttonText}
+                <span className='caret'/>
+              </button>
+              <ul className='dropdown-menu'>
+                {dropdown}
+              </ul>
+            </div>
+            <span
+              className={arrow}
+              onClick={this.toggleEntries.bind(this, false)}/>
+            {commentButton}
+          </td>
+        </tr>
+        {this.props.commentToggled ?
+          (<CommentEntryForm
+            user={this.props.user}
+            onCommentSend={this.newThreadEntry}
+            toggleThisThread={this.toggleEntries.bind(this, true)}
+          />) :
+          null
+        }
+        {threadEntries}
       </tbody>
     );
   }

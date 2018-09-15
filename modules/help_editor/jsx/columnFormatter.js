@@ -4,9 +4,9 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
- * @return {*} a formated table cell for a given column
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
+ * @return {*} a formatted table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   if (loris.hiddenHeaders.indexOf(column) > -1) {
@@ -22,19 +22,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Topic') {
     url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
            row.HelpID + '&parentID=' + row.ParentID;
-    return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
+    return (
+      <td>
+        <a href ={url}>{cell}</a>
+      </td>
+    );
   }
   if (column === 'Parent Topic') {
     url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
            row.ParentID + '&parentID=' + row.ParentTopicID;
-    return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
+    return (
+      <td>
+        <a href ={url}>{cell}</a>
+      </td>
+    );
   }
 
-  return <td>{cell}</td>;
+  return (
+    <td>{cell}</td>
+  );
 }
 
 window.formatColumn = formatColumn;
