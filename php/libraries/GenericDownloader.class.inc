@@ -47,7 +47,7 @@ class GenericDownloader extends Response
         /* Warn administrators if relative paths are used. This could be done
          * legitimately in some circumstances but is also often suspicious.
          */
-        if (strpos($userPath, '..') !== false) {
+        if (strpos($path, '..') !== false) {
             error_log(
                 'WARNING: A relative path was supplied in the context of '
                 . 'downloading a file.'
