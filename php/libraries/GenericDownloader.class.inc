@@ -114,7 +114,7 @@ class GenericDownloader implements FileDownloader
      */
     function getContentType(string $fullPath): string
     {
-        sanitizePath($fullPath);
+        $this->sanitizePath($fullPath);
         if (!is_file($fullPath)) {
             $pathForPrinting = htmlentities($fullPath);
             throw new LorisException(
