@@ -329,7 +329,7 @@ class SinglePointLogin
         }
 
         if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-            $user =& User::factory($username);
+            $user = \User::factory($username);
             $user->updatePassword($password);
         }
 
