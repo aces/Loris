@@ -3,7 +3,7 @@ CREATE TABLE `physiological_modality` (
   `PhysiologicalModalityID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `PhysiologicalModality`   VARCHAR(50)         NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalModalityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- Create a physiological_output_type table
@@ -12,7 +12,7 @@ CREATE TABLE `physiological_output_type` (
   `OutputTypeName`            VARCHAR(20)          NOT NULL UNIQUE,
   `OutputTypeDescription`     VARCHAR(255),
   PRIMARY KEY (`PhysiologicalOutputTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- Create a physiological_file table
@@ -39,7 +39,7 @@ CREATE TABLE `physiological_file` (
   CONSTRAINT `FK_physiological_output_type_PhysiologicalOutputTypeID`
     FOREIGN KEY (`PhysiologicalOutputTypeID`)
     REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -59,7 +59,7 @@ CREATE TABLE `physiological_parameter_file` (
   CONSTRAINT `FK_parameter_type_ParameterTypeID`
     FOREIGN KEY (`ParameterTypeID`)
     REFERENCES `parameter_type` (`ParameterTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -68,7 +68,7 @@ CREATE TABLE `physiological_status_type` (
   `PhysiologicalStatusTypeID` INT(5)      UNSIGNED NOT NULL AUTO_INCREMENT,
   `ChannelStatus`             VARCHAR(10)          NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalStatusTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -78,7 +78,7 @@ CREATE TABLE `physiological_channel_type` (
   `ChannelTypeName`            VARCHAR(255)          NOT NULL      UNIQUE,
   `ChannelDescription`         VARCHAR(255)          DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalChannelTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -111,7 +111,7 @@ CREATE TABLE `physiological_channel` (
   CONSTRAINT `FK_physiological_status_type_PhysiologicalStatusTypeID`
     FOREIGN KEY (`PhysiologicalStatusTypeID`)
     REFERENCES `physiological_status_type` (`PhysiologicalStatusTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -124,6 +124,7 @@ CREATE TABLE `physiological_electrode` (
   `X`                        DECIMAL(12,6)    NOT NULL,
   `Y`                        DECIMAL(12,6)    NOT NULL,
   `Z`                        DECIMAL(12,6)    NOT NULL,
+  `Impedance`                INT(10)          DEFAULT NULL,
   `Type`                     VARCHAR(50)      NOT NULL,
   `Material`                 VARCHAR(50)      NOT NULL,
   `FilePath`                 VARCHAR(255)     DEFAULT NULL,
@@ -132,7 +133,7 @@ CREATE TABLE `physiological_electrode` (
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -145,16 +146,18 @@ CREATE TABLE `physiological_task_event` (
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
+  `EventValue`               INT(10)          DEFAULT NULL,
+  `EventSample`              INT(10)          DEFAULT NULL,
+  `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
-  `Sample`                   VARCHAR(255)     DEFAULT NULL,
   `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   CONSTRAINT `FK_physiological_file_PhysiologicalFileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -171,7 +174,7 @@ CREATE TABLE `physiological_archive` (
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- Insert into physiological_output_type
