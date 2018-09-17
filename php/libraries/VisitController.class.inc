@@ -51,13 +51,21 @@ class VisitController
      */
     public function getAllVisits(): array
     {
-        return $this->database->pselectCol(
-            'SELECT
-              v.VisitName as "visit"
-             FROM
-              visit v
-            ',
-            array()
+        return array_map(
+            function ($row) {
+                return array(
+                        new \LORIS\Visit($row['visit']),
+                        $row['visit'],
+                       );
+                },
+                $this->database->pselectCol(
+                'SELECT
+                  v.VisitName as "visit"
+                 FROM
+                  visit v
+                ',
+                array()
+            )
         );
     }
 
@@ -70,15 +78,23 @@ class VisitController
      */
     public function getVisitsWithID(string $visit): array
     {
-        return $this->database->pselectCol(
-            'SELECT
-             v.VisitID as "ID"
-            FROM
-             visit v
-            WHERE
-             v.VisitName = :name
-            ',
-            array('name' => $visit)
+        return array_map(
+            function ($row) {
+                return array(
+                        new \LORIS\Visit($row['visit']),
+                        $row['ID'],
+                       );
+            },
+            $this->database->pselectCol(
+                'SELECT
+                 v.VisitID as "ID"
+                FROM
+                 visit v
+                WHERE
+                 v.VisitName = :name
+                ',
+                array('name' => $visit)
+            )
         );
     }
     /**
