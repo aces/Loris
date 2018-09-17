@@ -26,7 +26,7 @@ class DataDictIndex extends React.Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData    = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
@@ -64,7 +64,7 @@ class DataDictIndex extends React.Component {
     this.setState({filter});
   }
 
-  //TODO: deprecate clearing filters via refs in future refactoring.
+  // TODO: deprecate clearing filters via refs in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */
@@ -91,7 +91,7 @@ class DataDictIndex extends React.Component {
       let updateDict = name => {
         return e => {
           e.stopPropagation();
-  
+ 
           let value = e.target.valueOf().innerText;
           $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
             fieldname: name, description: value
@@ -100,8 +100,8 @@ class DataDictIndex extends React.Component {
       };
       return (
         <td
-          contentEditable='true'
-          className='description'
+          contentEditable="true"
+          className="description"
           onBlur={updateDict(rowData[1])}>
             {cell}
         </td>
@@ -116,7 +116,7 @@ class DataDictIndex extends React.Component {
       return <Loader/>;
     }
 
-    //TODO: deprecate use of refs in future refactoring.
+    // TODO: deprecate use of refs in future refactoring.
     const filterRef = function(f) {
       this.dataDictFilter = f;
     }.bind(this);
@@ -124,15 +124,15 @@ class DataDictIndex extends React.Component {
     return (
       <div>
         <FilterForm
-          Module='datadict'
-          name='data_dict_filter'
-          id='data_dict_filter'
+          Module="datadict"
+          name="data_dict_filter"
+          id="data_dict_filter"
           ref={filterRef}
           columns={2}
           formElements={this.state.data.form}
           onUpdate={this.updateFilter}
           filter={this.state.filter}>
-          <ButtonElement label='Clear Filters' type='reset' onUserInput={this.resetFilters} />
+          <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
         </FilterForm>
         <StaticDataTable
           Data={this.state.data.Data}
@@ -148,7 +148,7 @@ class DataDictIndex extends React.Component {
 
 $(function() {
   const dataDictIndex = (
-    <div className='page-datadict'>
+    <div className="page-datadict">
         <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
     </div>
   );
