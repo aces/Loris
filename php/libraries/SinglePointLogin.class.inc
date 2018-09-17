@@ -503,12 +503,13 @@ class SinglePointLogin
     ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-        $query = "SELECT COUNT(loginhistoryID)" .
+        $query   = "SELECT COUNT(loginhistoryID)" .
             "FROM user_login_history " .
             "WHERE userID = :username " .
             "AND Success = 'N' " .
             "AND Login_timestamp > ( " .
-                "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(),  INTERVAL :timeWindowInMinutes MINUTE), " .
+            "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(), ".
+            "INTERVAL :timeWindowInMinutes MINUTE), " .
                 "MAX(Login_timestamp), DATE_SUB(NOW(), " .
                 "INTERVAL :timeWindowInMinutes MINUTE) " .
             ") " .
@@ -516,10 +517,11 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        $result = $db->pselect($query, 
+        $result  = $db->pselect(
+            $query,
             array(
-            "username" => $username,
-            "timeWindowInMinutes" => $timeWindowInMinutes
+             "username"            => $username,
+             "timeWindowInMinutes" => $timeWindowInMinutes,
             )
         );
         $failedLoginAttempts = intval($result[0]["COUNT(loginhistoryID)"]);
