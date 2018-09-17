@@ -114,6 +114,7 @@ class GenericDownloader implements FileDownloader
      */
     function getContentType(string $fullPath): string
     {
+        sanitizePath($fullPath);
         if (!is_file($fullPath)) {
             $pathForPrinting = htmlentities($fullPath);
             throw new LorisException(
@@ -147,8 +148,8 @@ class GenericDownloader implements FileDownloader
         $realUserPath = realpath($userPath);
         if ($realUserPath === false) {
             throw new LorisException(
-                'ERROR: Likely path traversal attempt in '
-                . 'file download.'
+                'ERROR: Likely path traversal attempt in user-supplied '
+                . 'parameter'
             );
         }
     }
