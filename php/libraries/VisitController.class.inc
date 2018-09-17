@@ -53,10 +53,9 @@ class VisitController
     {
         return array_map(
             function ($row) {
-                return array(
-                        new \LORIS\Visit($row['visit']),
-                        $row['visit'],
-                       );
+                return new \LORIS\Visit(
+                    $row['visit'],
+                );
             },
             $this->database->pselectCol(
                 'SELECT
@@ -80,10 +79,9 @@ class VisitController
     {
         return array_map(
             function ($row) {
-                return array(
-                        new \LORIS\Visit($row['visit']),
-                        $row['ID'],
-                       );
+                return new \LORIS\Visit(
+                    $row['ID'],
+                );
             },
             $this->database->pselectCol(
                 'SELECT
