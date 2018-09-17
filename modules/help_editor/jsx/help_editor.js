@@ -1,4 +1,5 @@
 import FilterForm from 'FilterForm';
+import Loader from 'Loader';
 
 /**
  * Help Editor Archive Page.
@@ -9,7 +10,7 @@ import FilterForm from 'FilterForm';
  * Renders Help Editor main page consisting of FilterTable and
  * DataTable components.
  *
- * @author Alex Ilea
+ * @author LORIS Team
  * @version 1.0.0
  *
  * */
@@ -24,10 +25,13 @@ class HelpEditor extends React.Component {
       data: {}
     };
 
-    // Bind component instance to custom methods
-    this.fetchData = this.fetchData.bind(this);
+    /*
+     * Bind component instance to custom methods
+     */
+    this.fetchData    = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -35,74 +39,108 @@ class HelpEditor extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
-   * for easy access by columnFormatter.
+   * Retrieve data from the provided URL and save it in state
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
-      success: function(data) {
-        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
-	this.setState({
-          Data: data,
+      success: data => {
+	      this.setState({
+          data: data,
           isLoaded: true
         });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      }
+      },
+      error: error => console.error(error)
     });
   }
 
+  /**
+   * Set this.state.filter to the input filter object
+   *
+   * @param {object} filter - the filter object
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  //TODO: Clearing filters via refs should be deprecated in future refactoring.
+  /**
+   * Reset the filter elements with textInput refs to empty values
+   */
   resetFilters() {
     this.filter.clearFilter();
+  }
+
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {arrray} rowData - array of cell contents for a specific row
+   * @param {arrray} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formated table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
+
+    // Create the mapping between rowHeaders and rowData in a row object.
+    let row = {};
+    let url;
+    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
+  
+    if (column === 'Topic') {
+      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+             row.HelpID + '&parentID=' + row.ParentID;
+      return <td><a href ={url}>{cell}</a></td>;
+    }
+    if (column === 'Parent Topic') {
+      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+             row.ParentID + '&parentID=' + row.ParentTopicID;
+      return <td><a href ={url}>{cell}</a></td>;
+    }
+  
+    return <td>{cell}</td>;
   }
 
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
-      );
+      return <Loader/>
     }
 
+    //TODO: refs should be deprecated in future refactoring.
     const filterRef = function(f) {
       this.filter = f;
     }.bind(this);
+
     return (
       <div>
         <FilterForm
-          Module="help_editor"
-          name="help_filter"
-          id="help_filter"
+          Module='help_editor'
+          name='help_filter'
+          id='help_filter'
           ref={filterRef}
           columns={2}
-          formElements={this.state.Data.form}
+          formElements={this.state.data.form}
           onUpdate={this.updateFilter}
           filter={this.state.filter}
         >
           <ButtonElement
-            label="Clear Filters"
-            type="reset"
+            label='Clear Filters'
+            type='reset'
             onUserInput={this.resetFilters}
           />
         </FilterForm>
         <StaticDataTable
-          Data={this.state.Data.Data}
-          Headers={this.state.Data.Headers}
+          Data={this.state.data.Data}
+          Headers={this.state.data.Headers}
+          hiddenHeaders={this.state.data.hiddenHeaders}
           Filter={this.state.filter}
-          getFormattedCell={formatColumn}
+          getFormattedCell={this.formatColumn}
         />
       </div>
     );
@@ -114,68 +152,17 @@ HelpEditor.propTypes = {
   DataURL: React.PropTypes.string.isRequired
 };
 
-/* exported formatColumn */
-
-/**
- * Modify behaviour of specified column cells in the Data Table component
- * @param {string} column - column name
- * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
- * @return {*} a formated table cell for a given column
- */
-function formatColumn(column, cell, rowData, rowHeaders) {
-  if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
-  }
-  // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
-  var url;
-  rowHeaders.forEach(function(header, index) {
-    row[header] = rowData[index];
-  }, this);
-
-  if (column === 'Topic') {
-    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" +
-           row.HelpID + "&parentID=" + row.ParentID;
-    return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
-  }
-  if (column === 'Parent Topic') {
-    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" +
-           row.ParentID + "&parentID=" + row.ParentTopicID;
-    return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
-  }
-
-  return <td>{cell}</td>;
-}
-
-window.formatColumn = formatColumn;
-
-export default formatColumn;
-
 /**
  * Render help_editor on page load
  */
-window.onload = function() {
-  var dataURL = loris.BaseURL + "/help_editor/?format=json";
-  var helpEditor = (
+window.onload = () => {
+  let dataURL = loris.BaseURL + '/help_editor/?format=json';
+  let helpEditor = (
     <HelpEditor
-      Module="help_editor"
+      Module='help_editor'
       DataURL={dataURL}
     />
   );
 
-  // Create a wrapper div in which react component will be loaded
-  const helpEditorDOM = document.createElement('div');
-  helpEditorDOM.id = 'page-help-editor';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById("lorisworkspace");
-  rootDOM.appendChild(helpEditorDOM);
-
-  ReactDOM.render(helpEditor, document.getElementById("page-help-editor"));
+  ReactDOM.render(helpEditor, document.getElementById('lorisworkspace'));
 };
