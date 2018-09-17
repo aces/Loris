@@ -105,6 +105,18 @@ class MriUploadServerProcess extends AbstractServerProcess
             throw $exception;
         }
 
+        // Check that paths exist before using.
+        if (!file_exists($this->_mriCodePath)) {
+            throw new \LorisException(
+                "Source code for imaging upload could not be found!"
+            );
+        }
+        if (!is_dir($this->_mriCodePath)) {
+            throw new \ConfigurationException(
+                "Value for MRI code path is not a directory!"
+            );
+        }
+
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
 
@@ -130,17 +142,6 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
-        // Check that paths exist before using.
-        if (!is_dir($this->_mriCodePath)) {
-            throw new \ConfigurationException(
-                "Value for MRI code path is not a directory!"
-            );
-        }
-        if (!file_exists($this->_mriCodePath)) {
-            throw new \LorisException(
-                "Source code for imaging upload could not be found!"
-            );
-        }
         // Sanitize variables before using in exec statement.
         $codePath       = escapeshellarg($this->_mriCodePath);
         $uploadId       = escapeshellarg($this->_mriUploadId);
