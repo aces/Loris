@@ -11,3 +11,4 @@
  sudo composer install
  sudo npm run tests:integration
 ```
+Make sure to get lastest version of docker-compose (1.22.0 or higher)
