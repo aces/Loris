@@ -90,7 +90,7 @@ class GenericDownloader extends Response
             new \Zend\Diactoros\Stream(realpath($path), 'r'),
             '200',
             $this->injectContentType(
-                (new \finfo(FILEINFO_MIME_TYPE))->file($path), 
+                (new \finfo(FILEINFO_MIME_TYPE))->file($path),
                 array()
             )
         );
@@ -98,18 +98,18 @@ class GenericDownloader extends Response
 
     /**
      * Protects against path traversal by resolving paths containing relative
-     * characters. This is done by checking that the prefix of the real path 
+     * characters. This is done by checking that the prefix of the real path
      * matches the one supplied to the function.
      *
      * E.g.
-     *      Input of "/var/www/loris/my_uploads/" will have the same prefix as 
+     *      Input of "/var/www/loris/my_uploads/" will have the same prefix as
      *      the valid path of /var/www/loris/my_uploads/, but an input like
      *      "/var/www/loris/my_uploads/../../../../../etc/passwd" will resolve
      *      to "/etc/passwd" which will not have the same prefix as the valid
      *      destination.
      * Note that this approach does not work for symlinks as their resolve paths
      * are actually expected to be outside of the target directory. This option
-     * is left open in case sysadmins decide that the files must be hosted 
+     * is left open in case sysadmins decide that the files must be hosted
      * elsewhere.
      *
      * @param string $userPath The full path supplied by the user.
