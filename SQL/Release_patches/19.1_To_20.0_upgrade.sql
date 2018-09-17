@@ -86,6 +86,16 @@ ALTER TABLE genomic_cpg ADD CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_na
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useConsent', 'Enable if the study uses the loris architecture for consent', 1, 0, 'boolean', ID, 'Use consent', 15 FROM ConfigSettings WHERE Name='study';
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name='useConsent';
 
+DROP TABLE IF EXISTS `consent`;
+CREATE TABLE `consent` (
+  `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
+  CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `candidate_consent_rel`;
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
@@ -110,16 +120,6 @@ CREATE TABLE `candidate_consent_history` (
   `Status` enum('yes','no') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `consent`;
-CREATE TABLE `consent` (
-  `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) NOT NULL,
-  `Label` varchar(255) NOT NULL,
-  CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
-  CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
-  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE parameter_session DROP FOREIGN KEY `FK_parameter_session_1`;
