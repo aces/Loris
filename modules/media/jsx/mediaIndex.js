@@ -16,10 +16,10 @@ class MediaIndex extends React.Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData     = this.fetchData.bind(this);
-    this.updateFilter  = this.updateFilter.bind(this);
-    this.resetFilters  = this.resetFilters.bind(this);
-    this.formatColumn  = this.formatColumn.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -54,7 +54,7 @@ class MediaIndex extends React.Component {
     this.setState({filter});
   }
 
-  //TODO: deprecate clearing filters via refs in future refactoring.
+  // TODO: deprecate clearing filters via refs in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */
@@ -77,11 +77,11 @@ class MediaIndex extends React.Component {
     if (this.state.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-  
+
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
-  
+    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
+
     // create array of classes to be added to td tag
     let classes = [];
     if (row['Hide File'] === '1') {
@@ -89,7 +89,7 @@ class MediaIndex extends React.Component {
     }
     // convert array to string, with blank space separator
     classes = classes.join(" ");
-  
+
     const hasWritePermission = loris.userHasPermission('media_write');
     if (column === 'File Name' && hasWritePermission === true) {
       const downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" + encodeURIComponent(row['File Name']);
@@ -101,7 +101,7 @@ class MediaIndex extends React.Component {
         </td>
       );
     }
-  
+
     if (column === 'Visit Label') {
       if (row["Cand ID"] !== null && row["Session ID"]) {
         const sessionURL = loris.BaseURL + "/instrument_list/?candID=" +
@@ -109,12 +109,12 @@ class MediaIndex extends React.Component {
         return <td className={classes}><a href={sessionURL}>{cell}</a></td>;
       }
     }
-  
+
     if (column === 'Edit Metadata') {
       const editURL = loris.BaseURL + "/media/edit/?id=" + row['Edit Metadata'];
       return <td className={classes}><a href={editURL}>Edit</a></td>;
     }
-  
+
     return <td className={classes}>{cell}</td>;
   }
 
