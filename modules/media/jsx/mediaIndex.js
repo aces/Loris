@@ -19,7 +19,7 @@ class MediaIndex extends React.Component {
     this.fetchData     = this.fetchData.bind(this);
     this.updateFilter  = this.updateFilter.bind(this);
     this.resetFilters  = this.resetFilters.bind(this);
-    this.formatColumns = this.formatColumns.bind(this);
+    this.formatColumn  = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -160,7 +160,7 @@ class MediaIndex extends React.Component {
             Headers={this.state.data.Headers}
             hiddeHeaders={this.state.hiddenHeaders}
             Filter={this.state.filter}
-            getFormattedCell={formatColumn}
+            getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
           />
         </TabPane>
