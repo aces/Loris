@@ -106,11 +106,6 @@ class MriUploadServerProcess extends AbstractServerProcess
         }
 
         // Check that paths exist before using.
-        if (!file_exists($this->_mriCodePath)) {
-            throw new \LorisException(
-                "Source code for imaging upload could not be found!"
-            );
-        }
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
                 "Value for MRI code path is not a directory!"
