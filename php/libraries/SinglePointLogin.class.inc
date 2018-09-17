@@ -503,37 +503,27 @@ class SinglePointLogin
     ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-        $query   = "SELECT Login_timestamp from user_login_history " .
+        $query = "SELECT COUNT(loginhistoryID)" .
+            "FROM user_login_history " .
             "WHERE userID = :username " .
-            "AND Success = 'N' ";
-        $results = $db->pselect(
-            $query,
-            array('username' => $username)
+            "AND Success = 'N' " .
+            "AND Login_timestamp > ( " .
+                "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(),  INTERVAL :timeWindowInMinutes MINUTE), " .
+                "MAX(Login_timestamp), DATE_SUB(NOW(), " .
+                "INTERVAL :timeWindowInMinutes MINUTE) " .
+            ") " .
+            "FROM user_login_history " .
+            "WHERE userID = :username " .
+            "AND Success = 'Y'" .
+        ");";
+        $result = $db->pselect($query, 
+            array(
+            "username" => $username,
+            "timeWindowInMinutes" => $timeWindowInMinutes
+            )
         );
-        /* Iterate over bad login attempts to find those logged between now
-         * and $timeWindowInMinutes minutes ago.
-         */
-        $badLoginsInsideTimeWindow = 0;
-        foreach ($results as $row) {
-            $attemptTime = date_create($row['Login_timestamp']);
-            // Create a date object for $timeWindowInMinutes minutes ago.
-            $now           = date_create();
-            $timeThreshold = date_sub(
-                $now,
-                date_interval_create_from_date_string(
-                    "$timeWindowInMinutes minutes"
-                )
-            );
-            /* If a failed login attempt is made with a timestamp that is more
-             * recent than the time threshold, then it is considered in the
-             * decision to lockout a user. Timestamps older than this are
-             * considered too distant for concern.
-             */
-            if ($attemptTime > $timeThreshold) {
-                $badLoginsInsideTimeWindow++;
-            }
-        }
-        return $badLoginsInsideTimeWindow;
+        $failedLoginAttempts = intval($result[0]["COUNT(loginhistoryID)"]);
+        return $failedLoginAttempts;
     }
     /**
      * Sets the session data (State object)
