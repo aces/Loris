@@ -17,7 +17,7 @@ class ImagingUploader extends React.Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData    = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
@@ -55,7 +55,7 @@ class ImagingUploader extends React.Component {
     this.setState({filter});
   }
 
-  //TODO: deprecate clearing filters via refs in future refactoring.
+  // TODO: deprecate clearing filters via refs in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */
@@ -78,14 +78,14 @@ class ImagingUploader extends React.Component {
     if (this.state.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-  
+
     // Create the mapping between rowHeaders and rowData in a row object.
     const row = {};
-    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
-  
+    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
+
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
-  
+
     if (column === 'Progress') {
       if (cell === 'Failure') {
         cellStyle.color = '#fff';
@@ -95,7 +95,7 @@ class ImagingUploader extends React.Component {
           </td>
         );
       }
-  
+
       if (cell === 'In Progress...') {
         cellStyle.color = '#fff';
         return (
@@ -104,7 +104,7 @@ class ImagingUploader extends React.Component {
           </td>
         );
       }
-  
+
       const created = row['Number Of MincCreated'];
       const inserted = row['Number Of MincInserted'];
       return (
@@ -113,12 +113,12 @@ class ImagingUploader extends React.Component {
         </td>
       );
     }
-  
+
     if (column === 'Tarchive Info') {
       if (!cell || cell === "0") {
         return (<td></td>);
       }
-  
+
       const url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
       return (
         <td style={cellStyle}>
@@ -126,7 +126,7 @@ class ImagingUploader extends React.Component {
         </td>
       );
     }
-  
+
     if (column === 'Number Of MincInserted') {
       if (cell > 0) {
         return (
@@ -136,19 +136,19 @@ class ImagingUploader extends React.Component {
         );
       }
     }
-  
+
     if (column === 'Number Of MincCreated') {
       let violatedScans;
       if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
         let numViolatedScans =
              row['Number Of MincCreated'] - row['Number Of MincInserted'];
-  
+
         let patientName = row.PatientName;
         violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
            ({numViolatedScans} violated scans)
          </a>;
       }
-  
+
       return (
         <td style={cellStyle}>
           {cell}
@@ -160,7 +160,7 @@ class ImagingUploader extends React.Component {
 
     return (<td style={cellStyle}>{cell}</td>);
   }
-  
+
   /**
    * Handles clicks on 'Number Of MincInserted' cells
    *
@@ -172,7 +172,7 @@ class ImagingUploader extends React.Component {
       DCCID: dccid
     })(e);
   }
-  
+
   /**
    * Opens MRI Violations for when there are violated scans
    *
@@ -184,7 +184,6 @@ class ImagingUploader extends React.Component {
       PatientName: patientName
     })(e);
   }
-  
 
   render() {
     if (!this.state.isLoaded) {
@@ -196,7 +195,7 @@ class ImagingUploader extends React.Component {
       {id: "upload", label: "Upload"}
     ];
 
-    //TODO: deprecate use of filter refs in future refactor.
+    // TODO: deprecate use of filter refs in future refactor.
     const filterRef = function(f) {
       this.imagingUploaderFilter = f;
     }.bind(this);
