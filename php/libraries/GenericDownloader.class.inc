@@ -13,10 +13,8 @@
  *  @link     https://www.github.com/aces/Loris
  */
 
-use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\InjectContentTypeTrait;
-use Zend\Diactoros\Stream;
 require_once '../php/libraries/FileDownloader.class.inc';
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
