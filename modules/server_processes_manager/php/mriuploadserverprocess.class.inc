@@ -138,10 +138,10 @@ class MriUploadServerProcess extends AbstractServerProcess
     public function getShellCommand()
     {
         // Sanitize variables before using in exec statement.
-        $env = $this->_mriCodePath . '/' . self::ENVIRONMENT_BASENAME;
-        $env = escapeshellarg($envFile);
-        $uploadScript = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
-        $uploadScript = escapeshellarg($uploadScript);
+        $env            = $this->_mriCodePath . '/' . self::ENVIRONMENT_BASENAME;
+        $env            = escapeshellarg($envFile);
+        $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
+        $uploadScript   = escapeshellarg($uploadScript);
         $uploadId       = escapeshellarg($this->_mriUploadId);
         $sourceLocation = escapeshellarg($this->_sourceLocation);
         return "source $env;"
