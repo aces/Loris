@@ -13,6 +13,10 @@
  *  @link     https://www.github.com/aces/Loris
  */
 
+use Psr\Http\Message\StreamInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\InjectContentTypeTrait;
+use Zend\Diactoros\Stream;
 require_once '../php/libraries/FileDownloader.class.inc';
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
@@ -29,47 +33,30 @@ require_once '../php/libraries/FileDownloader.class.inc';
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
  */
-class GenericDownloader implements FileDownloader
+class GenericDownloader extends Response
 {
-
-    protected $realBasePath;
+    use InjectContentTypeTrait;
 
     /**
      * Constructor for GenericDownloader.
      *
-     * @param string $basePath The full path to the directory that will serve
-     *                              the files for download.
+     * @param string $path A path to a file attachment for download.
      *
      * @return void
      */
-    function __construct(string $basePath)
+    function __construct(string $path)
     {
-        $this->realBasePath = realpath($basePath);
-        // Ensure there is a trailing forward slash.
-        $this->realBasePath = rtrim($this->realBasePath, '/') . '/';
-    }
-
-    /**
-     * Downloads a file from the filesystem.
-     *
-     * @param string $userPath The full path supplied by the calling program.
-     *                          This path can be unsanitized (i.e. can accept
-     *                          raw request data) as sanitization is done
-     *                          automatically.
-     *
-     * @return resource
-     */
-    public function downloadFile(string $userPath)
-    {
-        /* Ensure that every following test is conducted on a sanitized
-         * (non-malicious) file path.
+        /* Warn administrators if relative paths are used. This could be done
+         * legitimately in some circumstances but is also often suspicious.
          */
-        $this->sanitizePath($userPath);
-        $fullPath = $userPath;
+        if (strpos($userPath, '..') !== false) {
+            error_log(
+                'WARNING: A relative path was supplied in the context of '
+                . 'downloading a file.'
+            );
+        }
 
-        // Ensure the server is configured correctly to allow the apache user
-        // to download files from the directory where they are stored.
-        if (!is_readable($this->realBasePath)) {
+        if (!is_readable($path)) {
             error_log(
                 "ERROR: $this->realBasePath should be readable by the "
                 . 'apache user but is not.'
@@ -78,80 +65,69 @@ class GenericDownloader implements FileDownloader
                 "The server is not configured to allow downloads from the "
                 . "requested location. Please contact your administrator."
             );
-            return;
         }
-        // Make sure file is actually a file.
-        if (!is_file($fullPath)) {
-            error_log("ERROR: File requested for download is not a file.");
-            http_response_code(400);
-            return;
-        }
-
-        // Make sure the file itself is readable.
-        if (!is_readable($fullPath)) {
-            error_log("ERROR: A forbidden file was requested for download");
-            http_response_code(403);
-            return;
-        }
-
-        // Make sure the requested file exists.
-        if (!file_exists($fullPath)) {
-            error_log("ERROR: File requested for download does not exist.");
-            http_response_code(404);
-            return;
-        }
-
-        $stream = new \Zend\Diactoros\Stream($fullPath);
-        return $stream->detach();
-    }
-
-    /**
-     * Returns the MIME type given a file
-     *
-     * @param string $fullPath The path to the file.
-     *
-     * @return string The MIME type of $filename.
-     */
-    function getContentType(string $fullPath): string
-    {
-        $this->sanitizePath($fullPath);
-        if (!is_file($fullPath)) {
-            $pathForPrinting = htmlentities($fullPath);
-            throw new LorisException(
-                "Cannot get mimetype of $pathForPrinting because it is not a "
-                . "file!"
+        if (!is_file($path)) {
+            throw new \LorisException(
+                "Not a file or file does not exist."
             );
-            return '';
         }
-        return mime_content_type($fullPath);
+
+        if (!is_readable($path)) {
+            throw new \LorisException(
+                "A forbidden file was requested for download"
+            );
+        }
+
+        // Check for path traversal attempts for file that are not symlinks.
+        if (!is_link($path)) {
+            if (!$this->safePathPrefix($path)) {
+                throw new LorisException(
+                    'ERROR: Likely path traversal attempt in user-supplied '
+                    . 'parameter'
+                );
+            }
+        }
+
+        parent::__construct(
+            new \Zend\Diactoros\Stream(realpath($path), 'r'),
+            '200',
+            $this->injectContentType(
+                (new \finfo(FILEINFO_MIME_TYPE))->file($path), 
+                array()
+            )
+        );
     }
 
     /**
      * Protects against path traversal by resolving paths containing relative
-     * characters. If relative characters are detected this function will log
-     * the incident.  The function will throw an exception if a path traversal
-     * attempt is confirmed.
+     * characters. This is done by checking that the prefix of the real path 
+     * matches the one supplied to the function.
+     *
+     * E.g.
+     *      Input of "/var/www/loris/my_uploads/" will have the same prefix as 
+     *      the valid path of /var/www/loris/my_uploads/, but an input like
+     *      "/var/www/loris/my_uploads/../../../../../etc/passwd" will resolve
+     *      to "/etc/passwd" which will not have the same prefix as the valid
+     *      destination.
+     * Note that this approach does not work for symlinks as their resolve paths
+     * are actually expected to be outside of the target directory. This option
+     * is left open in case sysadmins decide that the files must be hosted 
+     * elsewhere.
      *
      * @param string $userPath The full path supplied by the user.
      *
-     * @return void
+     * @return bool Whether path traversal is happening.
      */
-    function sanitizePath(string $userPath): void
+    function safePathPrefix(string $userPath): bool
     {
-        if (strpos($userPath, '..') !== false) {
-            error_log(
-                'WARNING: A relative path was supplied in the context of '
-                . 'downloading a file.'
-            );
-        }
         // Resolve path (remove '..' and other relative file path structures.)
         $realUserPath = realpath($userPath);
-        if ($realUserPath === false) {
-            throw new LorisException(
-                'ERROR: Likely path traversal attempt in user-supplied '
-                . 'parameter'
-            );
+        if ($realUserPath === false
+            || strpos($realUserPath, $userPath) !== 0
+        ) {
+            return false;
         }
+        return true;
     }
 
 }
