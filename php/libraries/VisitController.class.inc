@@ -57,12 +57,12 @@ class VisitController
                         new \LORIS\Visit($row['visit']),
                         $row['visit'],
                        );
-                },
-                $this->database->pselectCol(
+            },
+            $this->database->pselectCol(
                 'SELECT
-                  v.VisitName as "visit"
-                 FROM
-                  visit v
+                 v.VisitName as "visit"
+                FROM
+                 visit v
                 ',
                 array()
             )
