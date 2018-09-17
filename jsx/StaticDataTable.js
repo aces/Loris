@@ -346,8 +346,8 @@ var StaticDataTable = React.createClass({
       </th>
     ];
     for (let i = 0; i < this.props.Headers.length; i += 1) {
-      if (typeof loris.hiddenHeaders === "undefined" ||
-        loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+      if (typeof this.props.hiddenHeaders === "undefined" ||
+        this.props.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
         var colIndex = i + 1;
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
