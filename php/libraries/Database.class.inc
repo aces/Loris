@@ -304,7 +304,7 @@ class Database
      * into attribute such as 'name', 'value', 'class', etc.
      * then Javascript injection is still possible.
      *
-     * This function alone goes not guarantee safety.
+     * This function alone does not guarantee safety.
      *
      * @param array $set The array to be inserted as a new row
      *
