@@ -406,7 +406,7 @@ class EditExaminer extends \NDB_Form
      *
      * @return array of instruments requiring certification
      */
-    function getCertificationInstruments(): array
+    function getCertificationInstruments()
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
