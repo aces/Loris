@@ -74,6 +74,7 @@ const config = [{
   },
   resolve: {
     alias: {
+      react: path.resolve(__dirname, './node_modules', 'react'),
       util: path.resolve(__dirname, './htdocs/js/util'),
       jsx: path.resolve(__dirname, './jsx'),
       Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
