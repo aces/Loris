@@ -1,7 +1,6 @@
 'use strict';
 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const externals = require('webpack-node-externals');
 const path = require('path');
 const fs = require('fs');
 
@@ -65,7 +64,7 @@ const config = [{
       {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.json$/,
