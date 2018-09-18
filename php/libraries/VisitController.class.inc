@@ -57,7 +57,7 @@ class VisitController
                     $row['visit']
                 );
             },
-            $this->database->pselectCol(
+            $this->database->pselect(
                 'SELECT
                  v.VisitName as "visit"
                 FROM
@@ -83,7 +83,7 @@ class VisitController
                     $row['ID']
                 );
             },
-            $this->database->pselectCol(
+            $this->database->pselect(
                 'SELECT
                  v.VisitID as "ID"
                 FROM
