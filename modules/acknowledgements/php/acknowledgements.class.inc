@@ -221,7 +221,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             array(
              $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
              $baseurl . '/acknowledgements/js/columnFormatter.js',
-             $baseurl . '/acknowledgements/js/react.acknowledgements.js'
             )
         );
 
