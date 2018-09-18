@@ -32,15 +32,13 @@ $config    = NDB_Config::singleton();
 $paths     = $config->getSetting('paths');
 $lorisRoot = $paths['base'];
 
-// Format: username/filename.ext
-
+// Format of $partialPath: username/filename.ext
 $partialPath = $_GET['File'] ?? null;
 if (is_null($partialPath)) {
     http_response_code(400);
     echo "Bad request. A valid path must be specified.";
 } else {
     $downloadBasePath = $lorisRoot . 'modules/document_repository/user_uploads/';
-    $fullPath = $downloadBasePath . $_GET['File'];
     $response       = new DocRepoFileDownloader($downloadBasePath . $partialPath);
     if (!$response->isFileInDatabase($partialPath)) {
         throw new LorisException("Requested file is not in the database");
@@ -50,10 +48,3 @@ if (is_null($partialPath)) {
     header("Content-Disposition: attachment; filename=" . basename($partialPath));
     fpassthru($response->getBody()->detach());
 }
-
-
-#// Verify file exists in the database.
-#// All generic verification and sanitization occurs here.
-#$contentType = $downloader->getContentType($downloadBasePath . $partialPath);
-#$stream      = $downloader->downloadFile($downloadBasePath . $partialPath);
-#// TODO Replace this with middlware.

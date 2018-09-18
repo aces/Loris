@@ -70,12 +70,6 @@ class GenericDownloader extends Response
             );
         }
 
-        if (!is_readable($path)) {
-            throw new \LorisException(
-                "A forbidden file was requested for download"
-            );
-        }
-
         // Check for path traversal attempts for file that are not symlinks.
         if (!is_link($path)) {
             if (!$this->safePathPrefix($path)) {
