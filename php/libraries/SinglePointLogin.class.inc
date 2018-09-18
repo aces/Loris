@@ -121,15 +121,18 @@ class SinglePointLogin
         ) {
             $this->_lastError = 'The password is weak, or'
                . ' the passwords do not match';
+            return false;
         }
 
         if (password_verify($_POST['password'], $data['Password_hash'])) {
             $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
             return false;
+        }
+        // Check if password is present in existing data breaches.
+        if ($user->pwnedPassword($_POST['password'])) {
+            $this->_lastError = 'The password you chose is too common. Please '
+                . 'choose a more unique password.';
+                return false;
         }
 
         // Reset passwordExpired flag

@@ -531,6 +531,47 @@ class User extends UserPermissions
         $this->update($updateArray);
     }
 
+    function pwnedPassword(string $password): bool
+    {
+        // TODO Use the HttpClient in LORIS core to cURL more simply.
+        
+        /* The pwned passwords API searches a range of password hashes to 
+         * protect the actual SHA1 hash from being revealed.
+         * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
+         */
+        $hash = sha1($password);
+        $hashPrefix = substr(sha1($password), 0, 5);
+        $url = "https://api.pwnedpasswords.com/range/$hashPrefix";
+
+        /* Build curl */
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        // get response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $hashSuffixes = explode("\n", $response);
+        /* The response will be one long string consisting of suffixes matching
+         * our hash prefix, followed by a colon and the number of times the 
+         * password has occurred in data breaches.
+         * Here we iterate over all of the suffixes and check whether the prefix
+         * and the whole suffix line together contain $hash as a substring at 
+         * the beginning of the line (instead of preprocessing by removing
+         * the colon and count from the end of the $suffix line.
+         * Check the above link if you want more info.
+         */
+        foreach ($hashSuffixes as $suffix) {
+            $line = strtolower($hashPrefix . $suffix);
+            if ($hash == substr($line, 0, strlen($hash))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Determines if the user has a center
      *
