@@ -100,41 +100,17 @@ class SinglePointLogin
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
+        $newPassword = $_POST['password'];
 
-        // get user's data
-        $data = $user->getData();
-
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'] ?? '',
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-        }
-
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
+        $result = \User::validatePassword($newPassword);
+        if (!$result['valid']) {
+            $this->_lastError = $result['why'];
             return false;
         }
 
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
+        $user->updatePassword($newPassword);
         return true;
     }
 

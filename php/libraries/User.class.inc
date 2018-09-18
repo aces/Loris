@@ -21,6 +21,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use ZxcvbnPhp\Zxcvbn;
+
 class User extends UserPermissions
 {
     /**
@@ -417,89 +419,83 @@ class User extends UserPermissions
 
 
     /**
-     * Check password strength
-     *
-     * If the password fails a comparison, it is not strong
+     * Check password strength using Zxcvbn.
      *
      * @param string $password  Password to check
-     * @param array  $values    Values that can not be in the password
-     *                          should contain ie. the user's name
-     * @param array  $operators Operators used in comparison of values
-     *                          array
      *
-     * @return boolean
-     * @access public
-     * @static
+     * @return array The results of Zxcvbn's analysis
      */
-    public static function isPasswordStrong(
-        $password,
-        $values = array(),
-        $operators = array()
-    ): bool {
-        // FIXME: This should be cleaned up to more cleanly separate
-        // concerns. The "values" and "operators" are the same at
-        // every call site, and some of them are only required because
-        // the function is static despite working with instance data.
-        // (ie the second value/operator pair is always the UserID of
-        // the user whose password is being checked, the third is their
-        // email, and the first is the "Confirm" password which has
-        // nothing to do with whether the password is strong or not..)
-        $CharTypes = 0;
-        // less than 8 characters
-        if (strlen($password) < 8) {
-            return false;
-        }
+    function checkPasswordStrength(string $password): array
+    {
+        $user = \User::singleton();
+        $data = $user->getData();
+        /* This is an array of information related to the user. This is used by
+         * Zxcvbn to check if a user is doing something foolish like making 
+         * their password 'johnnyloris'. 
+         * We should add words as we think of them.
+         */
+        $userInputs = array(
+            $user->getUsername(),
+            $data['Email'],
+            $data['Full_name'],
+            'loris',
+            'brain',
+            'mcgill',
+        );
 
-        // nothing but letters
-        if (!preg_match('/[^A-Za-z]/', $password)) {
-            return false;
-        }
-
-        // nothing but numbers
-        if (!preg_match('/[^0-9]/', $password)) {
-            return false;
-        }
-
-        // preg_match returns 1 on match, 0 on non-match
-        $CharTypes += preg_match('/[0-9]+/', $password);
-        $CharTypes += preg_match('/[A-Za-z]+/', $password);
-        $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $password);
-        if ($CharTypes < 3) {
-            return false;
-        }
-
-        // compare password to values
-        foreach ($values as $key => $value) {
-            switch ($operators[$key]) {
-            case '==':
-                // They must be equal, so the whole thing is false
-                // if they're not.
-                if ($password != $value) {
-                    return false;
-                }
-                break;
-            case '!=':
-                if ($password == $value) {
-                    return false;
-                }
-                break;
-            default:
-                throw new \LorisException("Invalid operator in isPasswordStrong");
-            }
-        }
-
-        return true;
+        $zxcvbn = new Zxcvbn();
+        return $zxcvbn->passwordStrength($password, $userInputs);
     }
 
+
     /**
-     * Check if user belongs to DCC
+     * Validate a potential password to check whether it meets our requirements,
+     * including length as well as strength measured by Zxcvbn. Also makes sure
+     * that the new password is different from the old one.
      *
-     * @return boolean
+     * @param string $newPassword The password to validate.
+     *
+     * @return array A bool and string array representing whether a password is
+     * valid or not and why we have marked it as such.
      */
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
         return ($this->userInfo['CenterID'] == 1);
+    }
+
+    function validatePassword(string $newPassword): array
+    {
+        $minimumLength = 8;
+        $result = array(
+            'valid' => false,
+            'why' => '',
+        );
+        if (strlen($newPassword) < $minimumLength) {
+            $result['why'] = 'Passphrase is too short.';
+            return $result;
+        }
+        $user = \User::singleton();
+        $data = $user->getData();
+        if (password_verify($newPassword, $data['Password_hash'])) {
+            $result['why'] = 'You cannot keep the same passphrase.';
+            return $result;
+        }
+        /* Score comes from Zxcvbn library from Dropbox. The scale is 0-5 in 
+         * terms of password strength.
+         * For now this is set to 3 but 2 is probably enough if 3 is too hard
+         * to achieve.
+         */
+        $strength = \User::checkPasswordStrength($newPassword);
+        $threshold = 3;
+        if (intval($strength['score']) < $threshold) {
+            $result['why'] = 'This passphrase is easily guessable. Try adding '
+                . 'more words.';
+            return $result;
+        }
+        // Return true if everything went well.
+        $result['valid'] = true;
+        return $result;
     }
 
     /**

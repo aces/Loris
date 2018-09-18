@@ -415,30 +415,11 @@ class My_Preferences extends \NDB_Form
         $errors = array();
 
         // if password is user-defined, and user wants to change password
-        if (!empty($values['Password_hash'])) {
-            // check password strength
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-            if (!$isPasswordStrong) {
-                $errors['Password_hash']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
-                // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
-                    $errors['Password_hash'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
-                }
+        $newPassword = $values['Password_hash'];
+        if (!empty($newPassword)) {
+            $result = \User::validatePassword($newPassword);
+            if (!$result['valid']) {
+                $errors['Password_hash'] = $result['why'];
             }
         }
 

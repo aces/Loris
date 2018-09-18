@@ -10,7 +10,8 @@
         "psr/http-message": "~1.0",
         "psr/http-server-handler" : "*",
         "psr/http-server-middleware" : "*",
-        "zendframework/zend-diactoros": "^1.6"
+        "zendframework/zend-diactoros": "^1.6",
+        "bjeavons/zxcvbn-php": "^0.4"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",
