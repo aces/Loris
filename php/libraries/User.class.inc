@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use ZxcvbnPhp\Zxcvbn;
 /**
  * User class. This deals with any User management except permissions,
  * which is contained in the UserPermissions base class.
@@ -21,8 +22,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-use ZxcvbnPhp\Zxcvbn;
-
 class User extends UserPermissions
 {
     /**
@@ -421,7 +420,7 @@ class User extends UserPermissions
     /**
      * Check password strength using Zxcvbn.
      *
-     * @param string $password  Password to check
+     * @param string $password Password to check
      *
      * @return array The results of Zxcvbn's analysis
      */
@@ -430,18 +429,18 @@ class User extends UserPermissions
         $user = \User::singleton();
         $data = $user->getData();
         /* This is an array of information related to the user. This is used by
-         * Zxcvbn to check if a user is doing something foolish like making 
-         * their password 'johnnyloris'. 
+         * Zxcvbn to check if a user is doing something foolish like making
+         * their password 'johnnyloris'.
          * We should add words as we think of them.
          */
         $userInputs = array(
-            $user->getUsername(),
-            $data['Email'],
-            $data['Full_name'],
-            'loris',
-            'brain',
-            'mcgill',
-        );
+                       $user->getUsername(),
+                       $data['Email'],
+                       $data['Full_name'],
+                       'loris',
+                       'brain',
+                       'mcgill',
+                      );
 
         $zxcvbn = new Zxcvbn();
         return $zxcvbn->passwordStrength($password, $userInputs);
@@ -467,10 +466,10 @@ class User extends UserPermissions
     function validatePassword(string $newPassword): array
     {
         $minimumLength = 8;
-        $result = array(
-            'valid' => false,
-            'why' => '',
-        );
+        $result        = array(
+                          'valid' => false,
+                          'why'   => '',
+                         );
         if (strlen($newPassword) < $minimumLength) {
             $result['why'] = 'Passphrase is too short.';
             return $result;
@@ -481,12 +480,12 @@ class User extends UserPermissions
             $result['why'] = 'You cannot keep the same passphrase.';
             return $result;
         }
-        /* Score comes from Zxcvbn library from Dropbox. The scale is 0-5 in 
+        /* Score comes from Zxcvbn library from Dropbox. The scale is 0-5 in
          * terms of password strength.
          * For now this is set to 3 but 2 is probably enough if 3 is too hard
          * to achieve.
          */
-        $strength = \User::checkPasswordStrength($newPassword);
+        $strength  = \User::checkPasswordStrength($newPassword);
         $threshold = 3;
         if (intval($strength['score']) < $threshold) {
             $result['why'] = 'This passphrase is easily guessable. Try adding '
