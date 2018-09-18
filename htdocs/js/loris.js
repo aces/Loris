@@ -4,10 +4,10 @@ let LorisHelper = function(configParams, userPerms, studyParams) {
   'use strict';
   let lorisObj = configParams;
 
-    // Filters will only get applied on a POST, so
-    // on click we need to fake a form which posts
-    // to the module in order to get filters applied
-    // when there's a link to a filtered menu
+  // Filters will only get applied on a POST, so
+  // on click we need to fake a form which posts
+  // to the module in order to get filters applied
+  // when there's a link to a filtered menu
   lorisObj.loadFilteredMenuClickHandler = function(module, filters) {
     return function(e) {
       e.preventDefault();
@@ -66,7 +66,7 @@ let LorisHelper = function(configParams, userPerms, studyParams) {
     };
   };
 
-    // Returns config settings from whitelist passed in main.php (study options)
+  // Returns config settings from whitelist passed in main.php (study options)
   lorisObj.config = function(param) {
     'use strict';
     return studyParams[param];
