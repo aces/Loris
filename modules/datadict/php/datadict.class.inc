@@ -26,7 +26,6 @@ namespace LORIS\datadict;
 class Datadict extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
-
     /**
      * Overloading this method to allow access to site users (their own site
      * only) and users w/ multisite privs

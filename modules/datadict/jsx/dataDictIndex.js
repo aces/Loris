@@ -26,7 +26,7 @@ class DataDictIndex extends React.Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData    = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
   }

@@ -25,10 +25,10 @@ class DicomArchive extends React.Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData     = this.fetchData.bind(this);
-    this.updateFilter  = this.updateFilter.bind(this);
-    this.resetFilters  = this.resetFilters.bind(this);
-    this.formatColumn  = this.formatColumn.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -63,7 +63,7 @@ class DicomArchive extends React.Component {
     this.setState({filter});
   }
 
-  //TODO: deprecate use of refs for filter clearing in future refactoring.
+  // TODO: deprecate use of refs for filter clearing in future refactoring.
   /**
    * Reset the fitler elements with textInput refs to empty value
    */
@@ -84,35 +84,38 @@ class DicomArchive extends React.Component {
     if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-  
+
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
+    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
     switch (column) {
-      case 'Archive Location':
+      case 'Archive Location': {
         const downloadURL = '/mri/jiv/get_file.php?file=' + cell;
         const toRet =
           <td>
             <a href={downloadURL}>
-              <span className='glyphicon glyphicon-cloud-download'/>
+              <span className="glyphicon glyphicon-cloud-download"/>
               &nbsp;
               {cell}
             </a>
           </td>;
         return toRet;
-      case 'Metadata':
+      }
+      case 'Metadata': {
         const metadataURL = loris.BaseURL +
           '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
         return <td><a href={metadataURL}>{cell}</a></td>;
-      case 'MRI Browser':
+      }
+      case 'MRI Browser': {
         if (row.SessionID === null || row.SessionID === '') {
           return <td>&nbsp;</td>;
         }
         let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
           row.SessionID;
         return <td><a href={mrlURL}>{cell}</a></td>;
+      }
       case 'INVALID - HIDDEN':
-        return <td className='text-danger'>{cell}</td>;
+        return <td className="text-danger">{cell}</td>;
       default:
         return <td>{cell}</td>;
     }
@@ -127,18 +130,18 @@ class DicomArchive extends React.Component {
     return (
       <div>
         <FilterForm
-          Module='dicom_archive'
-          name='dicom_filter'
-          id='dicom_filter'
-          ref='dicomFilter'
+          Module="dicom_archive"
+          name="dicom_filter"
+          id="dicom_filter"
+          ref="dicomFilter"
           columns={2}
           formElements={this.state.data.form}
           onUpdate={this.updateFilter}
           filter={this.state.filter}
         >
           <ButtonElement
-            label='Clear Filters'
-            type='reset'
+            label="Clear Filters"
+            type="reset"
             onUserInput={this.resetFilters}
           />
         </FilterForm>
@@ -166,7 +169,7 @@ window.onload = function() {
   let dataURL = loris.BaseURL + '/dicom_archive/?format=json';
   let dicomArchive = (
     <DicomArchive
-      Module='dicom_archive'
+      Module="dicom_archive"
       DataURL={dataURL}
     />
   );
