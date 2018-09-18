@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import FilterForm from 'jsx/FilterForm';
 import Panel from 'jsx/Panel';
 import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class Acknowledgements extends Component {
   constructor(props) {
@@ -67,21 +69,11 @@ class Acknowledgements extends Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <Button size='large' variant="raised" color="primary">
-          Show Data
-        </Button>
-        // {/*<div>*/}
-        //   {/*<Button variant="raised" color="primary">*/}
-        //     {/*Hello World*/}
-        //   {/*</Button>*/}
-        //   {/*<button className='btn-info has-spinner'>*/}
-        //     {/*Loading*/}
-        //     {/*<span*/}
-        //       {/*className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>*/}
-        //     {/*</span>*/}
-        //   {/*</button>*/}
-        //
-        // {/*</div>*/}
+        <div>
+          <Button size='medium' variant="contained" color="primary">
+            Show Data
+          </Button>
+        </div>
       );
     }
 
