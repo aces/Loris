@@ -1,4 +1,4 @@
-/** @license Material-UI v3.0.3
+/** @license Material-UI v3.1.0
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -6512,6 +6512,18 @@
 
   var hoistNonReactStatics_cjs = hoistNonReactStatics;
 
+  var interopRequireDefault = createCommonjsModule(function (module) {
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  module.exports = _interopRequireDefault;
+  });
+
+  unwrapExports(interopRequireDefault);
+
   var getDisplayName_1 = createCommonjsModule(function (module, exports) {
 
   exports.__esModule = true;
@@ -6533,19 +6545,7 @@
   exports.default = _default;
   });
 
-  var getDisplayName = unwrapExports(getDisplayName_1);
-
-  var interopRequireDefault = createCommonjsModule(function (module) {
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  module.exports = _interopRequireDefault;
-  });
-
-  unwrapExports(interopRequireDefault);
+  unwrapExports(getDisplayName_1);
 
   var wrapDisplayName_1 = createCommonjsModule(function (module, exports) {
 
@@ -6640,6 +6640,28 @@
 
   var contextTypes$1 = unwrapExports(contextTypes);
 
+  // Fork of recompose/getDisplayName with added IE11 support
+  // Simplified polyfill for IE11 support
+  // https://github.com/JamesMGreene/Function.name/blob/58b314d4a983110c3682f1228f845d39ccca1817/Function.name.js#L3
+  var fnNameMatchRegex = /^\s*function(?:\s|\s*\/\*.*\*\/\s*)+([^(\s/]*)\s*/;
+  function getFunctionName(fn) {
+    var match = "".concat(fn).match(fnNameMatchRegex);
+    var name = match && match[1];
+    return name || '';
+  }
+
+  function getDisplayName$1(Component) {
+    if (typeof Component === 'string') {
+      return Component;
+    }
+
+    if (!Component) {
+      return undefined;
+    }
+
+    return Component.displayName || Component.name || getFunctionName(Component) || 'Component';
+  }
+
   function mergeClasses() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var baseClasses = options.baseClasses,
@@ -6653,8 +6675,8 @@
     }
 
     return _extends_1({}, baseClasses, Object.keys(newClasses).reduce(function (accumulator, key) {
-      warning_1(baseClasses[key] || noBase, ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not implemented in ".concat(getDisplayName(Component), "."), "You can only override one of the following: ".concat(Object.keys(baseClasses).join(','))].join('\n'));
-      warning_1(!newClasses[key] || typeof newClasses[key] === 'string', ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not valid for ".concat(getDisplayName(Component), "."), "You need to provide a non empty string instead of: ".concat(newClasses[key], ".")].join('\n'));
+      warning_1(baseClasses[key] || noBase || !newClasses[key], ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not implemented in ".concat(getDisplayName$1(Component), "."), "You can only override one of the following: ".concat(Object.keys(baseClasses).join(','))].join('\n'));
+      warning_1(!newClasses[key] || typeof newClasses[key] === 'string', ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not valid for ".concat(getDisplayName$1(Component), "."), "You need to provide a non empty string instead of: ".concat(newClasses[key], ".")].join('\n'));
 
       if (newClasses[key]) {
         accumulator[key] = "".concat(baseClasses[key], " ").concat(newClasses[key]);
@@ -6725,24 +6747,12 @@
     return props;
   }
 
-  /* eslint-disable no-underscore-dangle, no-plusplus */
-  if (!global$1.__MUI_PACKAGE_ID__) {
-    global$1.__MUI_PACKAGE_ID__ = 0;
-  } // One unique value per @material-ui/core package installation.
-
-
-  var packageId = global$1.__MUI_PACKAGE_ID__++;
-
   var jss = lib_1(jssPreset()); // Use a singleton or the provided one by the context.
   //
-  // ⚠️ People might use the default generator more than once.
-  // It can be an issue, aside from the bundle size overhead, it can break the styles.
-  // The generated classNames can collide.
-  // We are avoiding the collision with a seed, one per package installation.
+  // The counter-based approach doesn't tolerate any mistake.
+  // It's much safer to use the same counter everywhere.
 
-  var generateClassName = createGenerateClassName({
-    seed: packageId
-  }); // Global index counter to preserve source order.
+  var generateClassName = createGenerateClassName(); // Global index counter to preserve source order.
   // We create the style sheet during at the creation of the component,
   // children are handled after the parents, so the order of style elements would be parent->child.
   // It is a problem though when a parent passes a className
@@ -6947,6 +6957,11 @@
               var meta = name;
 
               if (!meta) {
+                // Use customized getDisplayName to support IE11 in development
+                // Save some bytes by not importing this in production
+                // eslint-disable-next-line global-require
+                var getDisplayName = require('../utils/getDisplayName').default;
+
                 meta = getDisplayName(Component);
                 warning_1(typeof meta === 'string', ['Material-UI: the component displayName is invalid. It needs to be a string.', "Please fix the following component: ".concat(Component, ".")].join('\n'));
               }
@@ -8614,7 +8629,6 @@
         other = objectWithoutProperties(props, ["classes", "className", "invisible", "open", "transitionDuration"]);
 
     return React.createElement(Fade$1, _extends_1({
-      appear: true,
       in: open,
       timeout: transitionDuration
     }, other), React.createElement("div", {
@@ -11276,6 +11290,14 @@
       /* Styles applied to the root element if `variant="button"`. */
       button: theme.typography.button,
 
+      /* Styles applied to the root element if `variant="srOnly"`. Only accessible to screen readers. */
+      srOnly: {
+        position: 'absolute',
+        height: 1,
+        width: 1,
+        overflow: 'hidden'
+      },
+
       /* Styles applied to the root element if `align="left"`. */
       alignLeft: {
         textAlign: 'left'
@@ -11360,7 +11382,7 @@
         variant = props.variant,
         other = objectWithoutProperties(props, ["align", "classes", "className", "color", "component", "gutterBottom", "headlineMapping", "noWrap", "paragraph", "variant"]);
 
-    var className = classnames(classes.root, classes[variant], (_classNames = {}, defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'default'), defineProperty(_classNames, classes.noWrap, noWrap), defineProperty(_classNames, classes.gutterBottom, gutterBottom), defineProperty(_classNames, classes.paragraph, paragraph), defineProperty(_classNames, classes["align".concat(capitalize(align))], align !== 'inherit'), _classNames), classNameProp);
+    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes[variant], variant !== 'inherit'), defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'default'), defineProperty(_classNames, classes.noWrap, noWrap), defineProperty(_classNames, classes.gutterBottom, gutterBottom), defineProperty(_classNames, classes.paragraph, paragraph), defineProperty(_classNames, classes["align".concat(capitalize(align))], align !== 'inherit'), _classNames), classNameProp);
     var Component = componentProp || (paragraph ? 'p' : headlineMapping[variant]) || 'span';
     return React.createElement(Component, _extends_1({
       className: className
@@ -11426,7 +11448,7 @@
     /**
      * Applies the theme typography styles.
      */
-    variant: propTypes.oneOf(['display4', 'display3', 'display2', 'display1', 'headline', 'title', 'subheading', 'body2', 'body1', 'caption', 'button'])
+    variant: propTypes.oneOf(['display4', 'display3', 'display2', 'display1', 'headline', 'title', 'subheading', 'body2', 'body1', 'caption', 'button', 'srOnly', 'inherit'])
   };
   Typography.defaultProps = {
     align: 'inherit',
@@ -11689,9 +11711,7 @@
         textAlign: 'center',
         flex: '0 0 auto',
         fontSize: theme.typography.pxToRem(24),
-        width: 48,
-        height: 48,
-        padding: 0,
+        padding: 12,
         borderRadius: '50%',
         overflow: 'visible',
         // Explicitly set the default value to solve a bug on IE11.
@@ -12338,7 +12358,7 @@
         color: theme.palette.secondary.main
       },
 
-      /* Styles applied to the root element if `color="saction"`. */
+      /* Styles applied to the root element if `color="action"`. */
       colorAction: {
         color: theme.palette.action.active
       },
@@ -12356,6 +12376,16 @@
       /* Styles applied to the root element if `fontSize="inherit"`. */
       fontSizeInherit: {
         fontSize: 'inherit'
+      },
+
+      /* Styles applied to the root element if `fontSize="small"`. */
+      fontSizeSmall: {
+        fontSize: 20
+      },
+
+      /* Styles applied to the root element if `fontSize="large"`. */
+      fontSizeLarge: {
+        fontSize: 36
       }
     };
   };
@@ -12365,7 +12395,7 @@
 
     var children = props.children,
         classes = props.classes,
-        classNameProp = props.className,
+        className = props.className,
         color = props.color,
         Component = props.component,
         fontSize = props.fontSize,
@@ -12374,13 +12404,13 @@
         viewBox = props.viewBox,
         other = objectWithoutProperties(props, ["children", "classes", "className", "color", "component", "fontSize", "nativeColor", "titleAccess", "viewBox"]);
 
-    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.fontSizeInherit, fontSize === 'inherit'), defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'inherit'), _classNames), classNameProp);
     return React.createElement(Component, _extends_1({
-      className: className,
+      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'inherit'), defineProperty(_classNames, classes["fontSize".concat(capitalize(fontSize))], fontSize !== 'default'), _classNames), className),
       focusable: "false",
       viewBox: viewBox,
       color: nativeColor,
-      "aria-hidden": titleAccess ? 'false' : 'true'
+      "aria-hidden": titleAccess ? 'false' : 'true',
+      role: titleAccess ? 'img' : 'presentation'
     }, other), children, titleAccess ? React.createElement("title", null, titleAccess) : null);
   }
 
@@ -12416,7 +12446,7 @@
     /**
      * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
      */
-    fontSize: propTypes.oneOf(['inherit', 'default']),
+    fontSize: propTypes.oneOf(['inherit', 'default', 'small', 'large']),
 
     /**
      * Applies a color attribute to the SVG element.
@@ -12793,20 +12823,18 @@
       /* Styles applied to the root element if `variant="outlined"` and `color="primary"`. */
       outlinedPrimary: {
         color: theme.palette.primary.main,
-        border: "1px solid ".concat(fade(theme.palette.primary.main, 0.5)),
+        border: "1px solid ".concat(theme.palette.primary.main),
         '$clickable&:hover, $clickable&:focus, $deletable&:focus': {
-          backgroundColor: fade(theme.palette.primary.main, theme.palette.action.hoverOpacity),
-          border: "1px solid ".concat(theme.palette.primary.main)
+          backgroundColor: fade(theme.palette.primary.main, theme.palette.action.hoverOpacity)
         }
       },
 
       /* Styles applied to the root element if `variant="outlined"` and `color="secondary"`. */
       outlinedSecondary: {
         color: theme.palette.secondary.main,
-        border: "1px solid ".concat(fade(theme.palette.secondary.main, 0.5)),
+        border: "1px solid ".concat(theme.palette.secondary.main),
         '$clickable&:hover, $clickable&:focus, $deletable&:focus': {
-          backgroundColor: fade(theme.palette.secondary.main, theme.palette.action.hoverOpacity),
-          border: "1px solid ".concat(theme.palette.secondary.main)
+          backgroundColor: fade(theme.palette.secondary.main, theme.palette.action.hoverOpacity)
         }
       },
 
@@ -12819,15 +12847,15 @@
         fontSize: theme.typography.pxToRem(16)
       },
 
-      /* Styles applied to the `avatar` element if `checked={true}` and `color="primary"` */
+      /* Styles applied to the `avatar` element if `color="primary"` */
       avatarColorPrimary: {
-        color: darken(theme.palette.primary.contrastText, 0.1),
+        color: theme.palette.primary.contrastText,
         backgroundColor: theme.palette.primary.dark
       },
 
-      /* Styles applied to the `avatar` element if `checked={true}` and `color="secondary"` */
+      /* Styles applied to the `avatar` element if `color="secondary"` */
       avatarColorSecondary: {
-        color: darken(theme.palette.secondary.contrastText, 0.1),
+        color: theme.palette.secondary.contrastText,
         backgroundColor: theme.palette.secondary.dark
       },
 
@@ -12835,6 +12863,23 @@
       avatarChildren: {
         width: 19,
         height: 19
+      },
+
+      /* Styles applied to the `icon` element. */
+      icon: {
+        color: theme.palette.type === 'light' ? theme.palette.grey[700] : theme.palette.grey[300],
+        marginLeft: 4,
+        marginRight: -8
+      },
+
+      /* Styles applied to the `icon` element if `color="primary"` */
+      iconColorPrimary: {
+        color: 'inherit'
+      },
+
+      /* Styles applied to the `icon` element if `color="secondary"` */
+      iconColorSecondary: {
+        color: 'inherit'
       },
 
       /* Styles applied to the label `span` element`. */
@@ -12863,7 +12908,7 @@
 
       /* Styles applied to the deleteIcon element if `color="primary"` and `variant="default"`. */
       deleteIconColorPrimary: {
-        color: fade(theme.palette.primary.contrastText, 0.65),
+        color: fade(theme.palette.primary.contrastText, 0.7),
         '&:hover, &:active': {
           color: theme.palette.primary.contrastText
         }
@@ -12871,7 +12916,7 @@
 
       /* Styles applied to the deleteIcon element if `color="secondary"` and `variant="default"`. */
       deleteIconColorSecondary: {
-        color: fade(theme.palette.primary.contrastText, 0.65),
+        color: fade(theme.palette.primary.contrastText, 0.7),
         '&:hover, &:active': {
           color: theme.palette.primary.contrastText
         }
@@ -12879,7 +12924,7 @@
 
       /* Styles applied to the deleteIcon element if `color="primary"` and `variant="outlined"`. */
       deleteIconOutlinedColorPrimary: {
-        color: fade(theme.palette.primary.main, 0.65),
+        color: fade(theme.palette.primary.main, 0.7),
         '&:hover, &:active': {
           color: theme.palette.primary.main
         }
@@ -12887,7 +12932,7 @@
 
       /* Styles applied to the deleteIcon element if `color="secondary"` and `variant="outlined"`. */
       deleteIconOutlinedColorSecondary: {
-        color: fade(theme.palette.secondary.main, 0.65),
+        color: fade(theme.palette.secondary.main, 0.7),
         '&:hover, &:active': {
           color: theme.palette.secondary.main
         }
@@ -12989,6 +13034,7 @@
             color = _this$props2.color,
             Component = _this$props2.component,
             deleteIconProp = _this$props2.deleteIcon,
+            iconProp = _this$props2.icon,
             label = _this$props2.label,
             onClick = _this$props2.onClick,
             onDelete = _this$props2.onDelete,
@@ -12996,7 +13042,7 @@
             onKeyUp = _this$props2.onKeyUp,
             tabIndexProp = _this$props2.tabIndex,
             variant = _this$props2.variant,
-            other = objectWithoutProperties(_this$props2, ["avatar", "classes", "className", "clickable", "color", "component", "deleteIcon", "label", "onClick", "onDelete", "onKeyDown", "onKeyUp", "tabIndex", "variant"]);
+            other = objectWithoutProperties(_this$props2, ["avatar", "classes", "className", "clickable", "color", "component", "deleteIcon", "icon", "label", "onClick", "onDelete", "onKeyDown", "onKeyUp", "tabIndex", "variant"]);
 
         var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'default'), defineProperty(_classNames, classes.clickable, onClick || clickable), defineProperty(_classNames, classes["clickableColor".concat(capitalize(color))], (onClick || clickable) && color !== 'default'), defineProperty(_classNames, classes.deletable, onDelete), defineProperty(_classNames, classes["deletableColor".concat(capitalize(color))], onDelete && color !== 'default'), defineProperty(_classNames, classes.outlined, variant === 'outlined'), defineProperty(_classNames, classes.outlinedPrimary, variant === 'outlined' && color === 'primary'), defineProperty(_classNames, classes.outlinedSecondary, variant === 'outlined' && color === 'secondary'), _classNames), classNameProp);
         var deleteIcon = null;
@@ -13023,12 +13069,21 @@
           });
         }
 
+        var icon = null;
+
+        if (iconProp && React.isValidElement(iconProp)) {
+          icon = React.cloneElement(iconProp, {
+            className: classnames(classes.icon, iconProp.props.className, defineProperty({}, classes["iconColor".concat(capitalize(color))], color !== 'default'))
+          });
+        }
+
         var tabIndex = tabIndexProp;
 
         if (!tabIndex) {
           tabIndex = onClick || onDelete || clickable ? 0 : -1;
         }
 
+        warning_1(!avatar || !icon, 'Material-UI: the Chip component can not handle the avatar ' + 'and the icon property at the same time. Pick one.');
         return React.createElement(Component, _extends_1({
           role: "button",
           className: className,
@@ -13039,7 +13094,7 @@
           ref: function ref(_ref) {
             _this2.chipRef = _ref;
           }
-        }, other), avatar, React.createElement("span", {
+        }, other), avatar || icon, React.createElement("span", {
           className: classes.label
         }, label), deleteIcon);
       }
@@ -13093,6 +13148,11 @@
      * Override the default delete icon element. Shown only if `onDelete` is set.
      */
     deleteIcon: propTypes.element,
+
+    /**
+     * Icon element.
+     */
+    icon: propTypes.element,
 
     /**
      * The content of the label.
@@ -14873,7 +14933,7 @@
 
   function isBody(node) {
     return node && node.tagName.toLowerCase() === 'body';
-  } // Do we have a scroll bar?
+  } // Do we have a vertical scroll bar?
 
   function isOverflowing(container) {
     var doc = ownerDocument(container);
@@ -17284,6 +17344,269 @@
     name: 'MuiExpansionPanelSummary'
   })(ExpansionPanelSummary);
 
+  var ROWS_HEIGHT = 19;
+  var styles$C = {
+    /* Styles applied to the root element. */
+    root: {
+      position: 'relative',
+      // because the shadow has position: 'absolute',
+      width: '100%'
+    },
+    textarea: {
+      width: '100%',
+      height: '100%',
+      resize: 'none',
+      font: 'inherit',
+      padding: 0,
+      cursor: 'inherit',
+      boxSizing: 'border-box',
+      lineHeight: 'inherit',
+      border: 'none',
+      outline: 'none',
+      background: 'transparent'
+    },
+    shadow: {
+      // Overflow also needed to here to remove the extra row
+      // added to textareas in Firefox.
+      overflow: 'hidden',
+      // Visibility needed to hide the extra text area on ipads
+      visibility: 'hidden',
+      position: 'absolute',
+      height: 'auto',
+      whiteSpace: 'pre-wrap'
+    }
+  };
+  /**
+   * @ignore - internal component.
+   */
+
+  var Textarea =
+  /*#__PURE__*/
+  function (_React$Component) {
+    inherits(Textarea, _React$Component);
+
+    // Corresponds to 10 frames at 60 Hz.
+    function Textarea(props) {
+      var _this;
+
+      classCallCheck(this, Textarea);
+
+      _this = possibleConstructorReturn(this, getPrototypeOf(Textarea).call(this));
+      _this.isControlled = null;
+      _this.shadowRef = null;
+      _this.singlelineShadowRef = null;
+      _this.inputRef = null;
+      _this.value = null;
+      _this.handleResize = debounce_1(function () {
+        _this.syncHeightWithShadow();
+      }, 166);
+      _this.state = {
+        height: null
+      };
+
+      _this.handleRefInput = function (ref) {
+        _this.inputRef = ref;
+        var textareaRef = _this.props.textareaRef;
+
+        if (textareaRef) {
+          if (typeof textareaRef === 'function') {
+            textareaRef(ref);
+          } else {
+            textareaRef.current = ref;
+          }
+        }
+      };
+
+      _this.handleRefSinglelineShadow = function (ref) {
+        _this.singlelineShadowRef = ref;
+      };
+
+      _this.handleRefShadow = function (ref) {
+        _this.shadowRef = ref;
+      };
+
+      _this.handleChange = function (event) {
+        _this.value = event.target.value;
+
+        if (!_this.isControlled) {
+          // The component is not controlled, we need to update the shallow value.
+          _this.shadowRef.value = _this.value;
+
+          _this.syncHeightWithShadow();
+        }
+
+        if (_this.props.onChange) {
+          _this.props.onChange(event);
+        }
+      };
+
+      _this.isControlled = props.value != null; // <Input> expects the components it renders to respond to 'value'
+      // so that it can check whether they are filled.
+
+      _this.value = props.value || props.defaultValue || '';
+      _this.state = {
+        height: Number(props.rows) * ROWS_HEIGHT
+      };
+      return _this;
+    }
+
+    createClass(Textarea, [{
+      key: "componentDidMount",
+      value: function componentDidMount() {
+        this.syncHeightWithShadow();
+      }
+    }, {
+      key: "componentDidUpdate",
+      value: function componentDidUpdate() {
+        this.syncHeightWithShadow();
+      }
+    }, {
+      key: "componentWillUnmount",
+      value: function componentWillUnmount() {
+        this.handleResize.clear();
+      }
+    }, {
+      key: "syncHeightWithShadow",
+      value: function syncHeightWithShadow() {
+        var props = this.props; // Guarding for **broken** shallow rendering method that call componentDidMount
+        // but doesn't handle refs correctly.
+        // To remove once the shallow rendering has been fixed.
+
+        if (!this.shadowRef) {
+          return;
+        }
+
+        if (this.isControlled) {
+          // The component is controlled, we need to update the shallow value.
+          this.shadowRef.value = props.value == null ? '' : String(props.value);
+        }
+
+        var lineHeight = this.singlelineShadowRef.scrollHeight;
+        var newHeight = this.shadowRef.scrollHeight; // Guarding for jsdom, where scrollHeight isn't present.
+        // See https://github.com/tmpvar/jsdom/issues/1013
+
+        if (newHeight === undefined) {
+          return;
+        }
+
+        if (Number(props.rowsMax) >= Number(props.rows)) {
+          newHeight = Math.min(Number(props.rowsMax) * lineHeight, newHeight);
+        }
+
+        newHeight = Math.max(newHeight, lineHeight); // Need a large enough different to update the height.
+        // This prevents infinite rendering loop.
+
+        if (Math.abs(this.state.height - newHeight) > 1) {
+          this.setState({
+            height: newHeight
+          });
+        }
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this$props = this.props,
+            classes = _this$props.classes,
+            className = _this$props.className,
+            defaultValue = _this$props.defaultValue,
+            onChange = _this$props.onChange,
+            rows = _this$props.rows,
+            rowsMax = _this$props.rowsMax,
+            textareaRef = _this$props.textareaRef,
+            value = _this$props.value,
+            other = objectWithoutProperties(_this$props, ["classes", "className", "defaultValue", "onChange", "rows", "rowsMax", "textareaRef", "value"]);
+
+        return React.createElement("div", {
+          className: classes.root
+        }, React.createElement(EventListener, {
+          target: "window",
+          onResize: this.handleResize
+        }), React.createElement("textarea", {
+          "aria-hidden": "true",
+          className: classnames(classes.textarea, classes.shadow),
+          readOnly: true,
+          ref: this.handleRefSinglelineShadow,
+          rows: "1",
+          tabIndex: -1,
+          value: ""
+        }), React.createElement("textarea", {
+          "aria-hidden": "true",
+          className: classnames(classes.textarea, classes.shadow),
+          defaultValue: defaultValue,
+          readOnly: true,
+          ref: this.handleRefShadow,
+          rows: rows,
+          tabIndex: -1,
+          value: value
+        }), React.createElement("textarea", _extends_1({
+          rows: rows,
+          className: classnames(classes.textarea, className),
+          defaultValue: defaultValue,
+          value: value,
+          onChange: this.handleChange,
+          ref: this.handleRefInput,
+          style: {
+            height: this.state.height
+          }
+        }, other)));
+      }
+    }]);
+
+    return Textarea;
+  }(React.Component);
+
+  Textarea.propTypes = {
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object.isRequired,
+
+    /**
+     * @ignore
+     */
+    className: propTypes.string,
+
+    /**
+     * @ignore
+     */
+    defaultValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * @ignore
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * @ignore
+     */
+    onChange: propTypes.func,
+
+    /**
+     * Number of rows to display when multiline option is set to true.
+     */
+    rows: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Maximum number of rows to display when multiline option is set to true.
+     */
+    rowsMax: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Use that property to pass a ref callback to the native textarea element.
+     */
+    textareaRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
+
+    /**
+     * @ignore
+     */
+    value: propTypes.oneOfType([propTypes.string, propTypes.number])
+  };
+  Textarea.defaultProps = {
+    rows: 1
+  };
+  var Textarea$1 = withStyles(styles$C)(Textarea);
+
   // Supports determination of isControlled().
   // Controlled input accepts its current value as a prop.
   //
@@ -17314,7 +17637,973 @@
     return obj.startAdornment;
   }
 
-  var styles$C = {
+  var styles$D = function styles(theme) {
+    var light = theme.palette.type === 'light';
+    var placeholder = {
+      color: 'currentColor',
+      opacity: light ? 0.42 : 0.5,
+      transition: theme.transitions.create('opacity', {
+        duration: theme.transitions.duration.shorter
+      })
+    };
+    var placeholderHidden = {
+      opacity: 0
+    };
+    var placeholderVisible = {
+      opacity: light ? 0.42 : 0.5
+    };
+    return {
+      /* Styles applied to the root element. */
+      root: {
+        // Mimics the default input display property used by browsers for an input.
+        fontFamily: theme.typography.fontFamily,
+        color: theme.palette.text.primary,
+        fontSize: theme.typography.pxToRem(16),
+        lineHeight: '1.1875em',
+        // Reset (19px), match the native input line-height
+        cursor: 'text',
+        display: 'inline-flex',
+        alignItems: 'center',
+        '&$disabled': {
+          color: theme.palette.text.disabled
+        }
+      },
+
+      /* Styles applied to the root element if the component is a descendant of `FormControl`. */
+      formControl: {},
+
+      /* Styles applied to the root element if the component is focused. */
+      focused: {},
+
+      /* Styles applied to the root element if `disabled={true}`. */
+      disabled: {},
+
+      /* Styles applied to the root element if `startAdornment` is provided. */
+      adornedStart: {},
+
+      /* Styles applied to the root element if `endAdornment` is provided. */
+      adornedEnd: {},
+
+      /* Styles applied to the root element if `error={true}`. */
+      error: {},
+
+      /* Styles applied to the `input` element if `margin="dense"`. */
+      marginDense: {},
+
+      /* Styles applied to the root element if `multiline={true}`. */
+      multiline: {
+        padding: "".concat(8 - 2, "px 0 ").concat(8 - 1, "px")
+      },
+
+      /* Styles applied to the root element if `fullWidth={true}`. */
+      fullWidth: {
+        width: '100%'
+      },
+
+      /* Styles applied to the `input` element. */
+      input: {
+        font: 'inherit',
+        color: 'currentColor',
+        padding: "".concat(8 - 2, "px 0 ").concat(8 - 1, "px"),
+        border: 0,
+        boxSizing: 'content-box',
+        verticalAlign: 'middle',
+        background: 'none',
+        margin: 0,
+        // Reset for Safari
+        // Remove grey highlight
+        WebkitTapHighlightColor: 'transparent',
+        display: 'block',
+        // Make the flex item shrink with Firefox
+        minWidth: 0,
+        flexGrow: 1,
+        '&::-webkit-input-placeholder': placeholder,
+        '&::-moz-placeholder': placeholder,
+        // Firefox 19+
+        '&:-ms-input-placeholder': placeholder,
+        // IE 11
+        '&::-ms-input-placeholder': placeholder,
+        // Edge
+        '&:focus': {
+          outline: 0
+        },
+        // Reset Firefox invalid required input style
+        '&:invalid': {
+          boxShadow: 'none'
+        },
+        '&::-webkit-search-decoration': {
+          // Remove the padding when type=search.
+          '-webkit-appearance': 'none'
+        },
+        // Show and hide the placeholder logic
+        'label[data-shrink=false] + $formControl &': {
+          '&::-webkit-input-placeholder': placeholderHidden,
+          '&::-moz-placeholder': placeholderHidden,
+          // Firefox 19+
+          '&:-ms-input-placeholder': placeholderHidden,
+          // IE 11
+          '&::-ms-input-placeholder': placeholderHidden,
+          // Edge
+          '&:focus::-webkit-input-placeholder': placeholderVisible,
+          '&:focus::-moz-placeholder': placeholderVisible,
+          // Firefox 19+
+          '&:focus:-ms-input-placeholder': placeholderVisible,
+          // IE 11
+          '&:focus::-ms-input-placeholder': placeholderVisible // Edge
+
+        },
+        '&$disabled': {
+          opacity: 1 // Reset iOS opacity
+
+        }
+      },
+
+      /* Styles applied to the `input` element if `margin="dense"`. */
+      inputMarginDense: {
+        paddingTop: 4 - 1
+      },
+
+      /* Styles applied to the `input` element if `multiline={true}`. */
+      inputMultiline: {
+        resize: 'none',
+        padding: 0
+      },
+
+      /* Styles applied to the `input` element if `type` is not "text"`. */
+      inputType: {
+        // type="date" or type="time", etc. have specific styles we need to reset.
+        height: '1.1875em' // Reset (19px), match the native input line-height
+
+      },
+
+      /* Styles applied to the `input` element if `type="search"`. */
+      inputTypeSearch: {
+        // Improve type search style.
+        '-moz-appearance': 'textfield',
+        '-webkit-appearance': 'textfield'
+      },
+
+      /* Styles applied to the `input` element if `startAdornment` is provided. */
+      inputAdornedStart: {},
+
+      /* Styles applied to the `input` element if `endAdornment` is provided. */
+      inputAdornedEnd: {}
+    };
+  };
+  function formControlState(_ref) {
+    var props = _ref.props,
+        states = _ref.states,
+        context = _ref.context;
+    return states.reduce(function (acc, state) {
+      acc[state] = props[state];
+
+      if (context && context.muiFormControl) {
+        if (typeof props[state] === 'undefined') {
+          acc[state] = context.muiFormControl[state];
+        }
+      }
+
+      return acc;
+    }, {});
+  }
+
+  var InputBase =
+  /*#__PURE__*/
+  function (_React$Component) {
+    inherits(InputBase, _React$Component);
+
+    // Holds the input reference
+    function InputBase(props, context) {
+      var _this;
+
+      classCallCheck(this, InputBase);
+
+      _this = possibleConstructorReturn(this, getPrototypeOf(InputBase).call(this, props, context));
+      _this.isControlled = null;
+      _this.input = null;
+      _this.state = {
+        focused: false
+      };
+
+      _this.handleFocus = function (event) {
+        // Fix a bug with IE11 where the focus/blur events are triggered
+        // while the input is disabled.
+        if (formControlState({
+          props: _this.props,
+          context: _this.context,
+          states: ['disabled']
+        }).disabled) {
+          event.stopPropagation();
+          return;
+        }
+
+        _this.setState({
+          focused: true
+        });
+
+        if (_this.props.onFocus) {
+          _this.props.onFocus(event);
+        }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onFocus) {
+          muiFormControl.onFocus(event);
+        }
+      };
+
+      _this.handleBlur = function (event) {
+        _this.setState({
+          focused: false
+        });
+
+        if (_this.props.onBlur) {
+          _this.props.onBlur(event);
+        }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onBlur) {
+          muiFormControl.onBlur(event);
+        }
+      };
+
+      _this.handleChange = function () {
+        if (!_this.isControlled) {
+          _this.checkDirty(_this.inputRef);
+        } // Perform in the willUpdate
+
+
+        if (_this.props.onChange) {
+          var _this$props;
+
+          (_this$props = _this.props).onChange.apply(_this$props, arguments);
+        }
+      };
+
+      _this.handleRefInput = function (ref) {
+        _this.inputRef = ref;
+        var refProp;
+
+        if (_this.props.inputRef) {
+          refProp = _this.props.inputRef;
+        } else if (_this.props.inputProps && _this.props.inputProps.ref) {
+          refProp = _this.props.inputProps.ref;
+        }
+
+        if (refProp) {
+          if (typeof refProp === 'function') {
+            refProp(ref);
+          } else {
+            refProp.current = ref;
+          }
+        }
+      };
+
+      _this.handleClick = function (event) {
+        if (_this.inputRef && event.currentTarget === event.target) {
+          _this.inputRef.focus();
+        }
+
+        if (_this.props.onClick) {
+          _this.props.onClick(event);
+        }
+      };
+
+      _this.isControlled = props.value != null;
+
+      if (_this.isControlled) {
+        _this.checkDirty(props);
+      }
+
+      var componentWillReceiveProps = function componentWillReceiveProps(nextProps, nextContext) {
+        // The blur won't fire when the disabled state is set on a focused input.
+        // We need to book keep the focused state manually.
+        if (!formControlState({
+          props: _this.props,
+          context: _this.context,
+          states: ['disabled']
+        }).disabled && formControlState({
+          props: nextProps,
+          context: nextContext,
+          states: ['disabled']
+        }).disabled) {
+          _this.setState({
+            focused: false
+          });
+        }
+      };
+
+      var componentWillUpdate = function componentWillUpdate(nextProps, nextState, nextContext) {
+        // Book keep the focused state.
+        if (!formControlState({
+          props: _this.props,
+          context: _this.context,
+          states: ['disabled']
+        }).disabled && formControlState({
+          props: nextProps,
+          context: nextContext,
+          states: ['disabled']
+        }).disabled) {
+          var muiFormControl = _this.context.muiFormControl;
+
+          if (muiFormControl && muiFormControl.onBlur) {
+            muiFormControl.onBlur();
+          }
+        }
+      };
+      /* eslint-disable no-underscore-dangle */
+
+
+      _this.componentWillReceiveProps = componentWillReceiveProps;
+      _this.componentWillReceiveProps.__suppressDeprecationWarning = true;
+      _this.componentWillUpdate = componentWillUpdate;
+      _this.componentWillUpdate.__suppressDeprecationWarning = true;
+      /* eslint-enable no-underscore-dangle */
+
+      return _this;
+    }
+
+    createClass(InputBase, [{
+      key: "getChildContext",
+      value: function getChildContext() {
+        // We are consuming the parent muiFormControl context.
+        // We don't want a child to consume it a second time.
+        return {
+          muiFormControl: null
+        };
+      }
+    }, {
+      key: "componentDidMount",
+      value: function componentDidMount() {
+        if (!this.isControlled) {
+          this.checkDirty(this.inputRef);
+        }
+      }
+    }, {
+      key: "componentDidUpdate",
+      value: function componentDidUpdate() {
+        if (this.isControlled) {
+          this.checkDirty(this.props);
+        } // else performed in the onChange
+
+      }
+    }, {
+      key: "checkDirty",
+      value: function checkDirty(obj) {
+        var muiFormControl = this.context.muiFormControl;
+
+        if (isFilled(obj)) {
+          if (muiFormControl && muiFormControl.onFilled) {
+            muiFormControl.onFilled();
+          }
+
+          if (this.props.onFilled) {
+            this.props.onFilled();
+          }
+
+          return;
+        }
+
+        if (muiFormControl && muiFormControl.onEmpty) {
+          muiFormControl.onEmpty();
+        }
+
+        if (this.props.onEmpty) {
+          this.props.onEmpty();
+        }
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _classNames, _classNames2;
+
+        var _this$props2 = this.props,
+            autoComplete = _this$props2.autoComplete,
+            autoFocus = _this$props2.autoFocus,
+            classes = _this$props2.classes,
+            classNameProp = _this$props2.className,
+            defaultValue = _this$props2.defaultValue,
+            disabled = _this$props2.disabled,
+            endAdornment = _this$props2.endAdornment,
+            error = _this$props2.error,
+            fullWidth = _this$props2.fullWidth,
+            id = _this$props2.id,
+            inputComponent = _this$props2.inputComponent,
+            _this$props2$inputPro = _this$props2.inputProps;
+        _this$props2$inputPro = _this$props2$inputPro === void 0 ? {} : _this$props2$inputPro;
+
+        var inputPropsClassName = _this$props2$inputPro.className,
+            inputPropsProp = objectWithoutProperties(_this$props2$inputPro, ["className"]),
+            inputRef = _this$props2.inputRef,
+            margin = _this$props2.margin,
+            multiline = _this$props2.multiline,
+            name = _this$props2.name,
+            onBlur = _this$props2.onBlur,
+            onChange = _this$props2.onChange,
+            onClick = _this$props2.onClick,
+            onEmpty = _this$props2.onEmpty,
+            onFilled = _this$props2.onFilled,
+            onFocus = _this$props2.onFocus,
+            onKeyDown = _this$props2.onKeyDown,
+            onKeyUp = _this$props2.onKeyUp,
+            placeholder = _this$props2.placeholder,
+            readOnly = _this$props2.readOnly,
+            renderPrefix = _this$props2.renderPrefix,
+            rows = _this$props2.rows,
+            rowsMax = _this$props2.rowsMax,
+            startAdornment = _this$props2.startAdornment,
+            type = _this$props2.type,
+            value = _this$props2.value,
+            other = objectWithoutProperties(_this$props2, ["autoComplete", "autoFocus", "classes", "className", "defaultValue", "disabled", "endAdornment", "error", "fullWidth", "id", "inputComponent", "inputProps", "inputRef", "margin", "multiline", "name", "onBlur", "onChange", "onClick", "onEmpty", "onFilled", "onFocus", "onKeyDown", "onKeyUp", "placeholder", "readOnly", "renderPrefix", "rows", "rowsMax", "startAdornment", "type", "value"]);
+
+        var muiFormControl = this.context.muiFormControl;
+        var fcs = formControlState({
+          props: this.props,
+          context: this.context,
+          states: ['disabled', 'error', 'margin', 'required', 'filled']
+        });
+        var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, fcs.disabled), defineProperty(_classNames, classes.error, fcs.error), defineProperty(_classNames, classes.fullWidth, fullWidth), defineProperty(_classNames, classes.focused, this.state.focused), defineProperty(_classNames, classes.formControl, muiFormControl), defineProperty(_classNames, classes.marginDense, fcs.margin === 'dense'), defineProperty(_classNames, classes.multiline, multiline), defineProperty(_classNames, classes.adornedStart, startAdornment), defineProperty(_classNames, classes.adornedEnd, endAdornment), _classNames), classNameProp);
+        var inputClassName = classnames(classes.input, (_classNames2 = {}, defineProperty(_classNames2, classes.disabled, fcs.disabled), defineProperty(_classNames2, classes.inputType, type !== 'text'), defineProperty(_classNames2, classes.inputTypeSearch, type === 'search'), defineProperty(_classNames2, classes.inputMultiline, multiline), defineProperty(_classNames2, classes.inputMarginDense, fcs.margin === 'dense'), defineProperty(_classNames2, classes.inputAdornedStart, startAdornment), defineProperty(_classNames2, classes.inputAdornedEnd, endAdornment), _classNames2), inputPropsClassName);
+        var InputComponent = inputComponent;
+
+        var inputProps = _extends_1({}, inputPropsProp, {
+          ref: this.handleRefInput
+        });
+
+        if (typeof InputComponent !== 'string') {
+          inputProps = _extends_1({
+            // Rename ref to inputRef as we don't know the
+            // provided `inputComponent` structure.
+            inputRef: this.handleRefInput,
+            type: type
+          }, inputProps, {
+            ref: null
+          });
+        } else if (multiline) {
+          if (rows && !rowsMax) {
+            InputComponent = 'textarea';
+          } else {
+            inputProps = _extends_1({
+              rowsMax: rowsMax,
+              textareaRef: this.handleRefInput
+            }, inputProps, {
+              ref: null
+            });
+            InputComponent = Textarea$1;
+          }
+        } else {
+          inputProps = _extends_1({
+            type: type
+          }, inputProps);
+        }
+
+        return React.createElement("div", _extends_1({
+          className: className,
+          onClick: this.handleClick
+        }, other), renderPrefix ? renderPrefix(_extends_1({}, fcs, {
+          startAdornment: startAdornment,
+          focused: this.state.focused
+        })) : null, startAdornment, React.createElement(InputComponent, _extends_1({
+          "aria-invalid": fcs.error,
+          autoComplete: autoComplete,
+          autoFocus: autoFocus,
+          className: inputClassName,
+          defaultValue: defaultValue,
+          disabled: fcs.disabled,
+          id: id,
+          name: name,
+          onBlur: this.handleBlur,
+          onChange: this.handleChange,
+          onFocus: this.handleFocus,
+          onKeyDown: onKeyDown,
+          onKeyUp: onKeyUp,
+          placeholder: placeholder,
+          readOnly: readOnly,
+          required: fcs.required,
+          rows: rows,
+          value: value
+        }, inputProps)), endAdornment);
+      }
+    }]);
+
+    return InputBase;
+  }(React.Component);
+
+  InputBase.propTypes = {
+    /**
+     * This property helps users to fill forms faster, especially on mobile devices.
+     * The name can be confusing, as it's more like an autofill.
+     * You can learn more about it here:
+     * https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
+     */
+    autoComplete: propTypes.string,
+
+    /**
+     * If `true`, the input will be focused during the first mount.
+     */
+    autoFocus: propTypes.bool,
+
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object.isRequired,
+
+    /**
+     * The CSS class name of the wrapper element.
+     */
+    className: propTypes.string,
+
+    /**
+     * The default input value, useful when not controlling the component.
+     */
+    defaultValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * If `true`, the input will be disabled.
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * End `InputAdornment` for this component.
+     */
+    endAdornment: propTypes.node,
+
+    /**
+     * If `true`, the input will indicate an error. This is normally obtained via context from
+     * FormControl.
+     */
+    error: propTypes.bool,
+
+    /**
+     * If `true`, the input will take up the full width of its container.
+     */
+    fullWidth: propTypes.bool,
+
+    /**
+     * The id of the `input` element.
+     */
+    id: propTypes.string,
+
+    /**
+     * The component used for the native input.
+     * Either a string to use a DOM element or a component.
+     */
+    inputComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
+
+    /**
+     * Attributes applied to the `input` element.
+     */
+    inputProps: propTypes.object,
+
+    /**
+     * Use that property to pass a ref callback to the native input component.
+     */
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
+
+    /**
+     * If `dense`, will adjust vertical spacing. This is normally obtained via context from
+     * FormControl.
+     */
+    margin: propTypes.oneOf(['dense', 'none']),
+
+    /**
+     * If `true`, a textarea element will be rendered.
+     */
+    multiline: propTypes.bool,
+
+    /**
+     * Name attribute of the `input` element.
+     */
+    name: propTypes.string,
+
+    /**
+     * @ignore
+     */
+    onBlur: propTypes.func,
+
+    /**
+     * Callback fired when the value is changed.
+     *
+     * @param {object} event The event source of the callback.
+     * You can pull out the new value by accessing `event.target.value`.
+     */
+    onChange: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onEmpty: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onFilled: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onFocus: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onKeyDown: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onKeyUp: propTypes.func,
+
+    /**
+     * The short hint displayed in the input before the user enters a value.
+     */
+    placeholder: propTypes.string,
+
+    /**
+     * It prevents the user from changing the value of the field
+     * (not from interacting with the field).
+     */
+    readOnly: propTypes.bool,
+
+    /**
+     * @ignore
+     */
+    renderPrefix: propTypes.func,
+
+    /**
+     * If `true`, the input will be required.
+     */
+    required: propTypes.bool,
+
+    /**
+     * Number of rows to display when multiline option is set to true.
+     */
+    rows: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Maximum number of rows to display when multiline option is set to true.
+     */
+    rowsMax: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Start `InputAdornment` for this component.
+     */
+    startAdornment: propTypes.node,
+
+    /**
+     * Type of the input element. It should be a valid HTML5 input type.
+     */
+    type: propTypes.string,
+
+    /**
+     * The input value, required for a controlled component.
+     */
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
+  };
+  InputBase.defaultProps = {
+    fullWidth: false,
+    inputComponent: 'input',
+    multiline: false,
+    type: 'text'
+  };
+  InputBase.contextTypes = {
+    muiFormControl: propTypes.object
+  };
+  InputBase.childContextTypes = {
+    muiFormControl: propTypes.object
+  };
+  var InputBase$1 = withStyles(styles$D, {
+    name: 'MuiInputBase'
+  })(InputBase);
+
+  var styles$E = function styles(theme) {
+    var light = theme.palette.type === 'light';
+    var bottomLineColor = light ? 'rgba(0, 0, 0, 0.42)' : 'rgba(255, 255, 255, 0.7)';
+    return {
+      /* Styles applied to the root element. */
+      root: {
+        position: 'relative',
+        backgroundColor: light ? 'rgba(0, 0, 0, 0.09)' : 'rgba(255, 255, 255, 0.09)',
+        borderTopLeftRadius: theme.shape.borderRadius,
+        borderTopRightRadius: theme.shape.borderRadius,
+        transition: theme.transitions.create('background-color', {
+          duration: theme.transitions.duration.shorter,
+          easing: theme.transitions.easing.easeOut
+        }),
+        '&:hover': {
+          backgroundColor: light ? 'rgba(0, 0, 0, 0.13)' : 'rgba(255, 255, 255, 0.13)'
+        },
+        '&$focused': {
+          backgroundColor: light ? 'rgba(0, 0, 0, 0.18)' : 'rgba(255, 255, 255, 0.18)'
+        },
+        '&$disabled': {
+          backgroundColor: light ? 'rgba(0, 0, 0, 0.14)' : 'rgba(255, 255, 255, 0.14)'
+        }
+      },
+
+      /* Styles applied to the root element. */
+      underline: {
+        '&:after': {
+          borderBottom: "2px solid ".concat(theme.palette.primary[light ? 'dark' : 'light']),
+          left: 0,
+          bottom: 0,
+          // Doing the other way around crash on IE11 "''" https://github.com/cssinjs/jss/issues/242
+          content: '""',
+          position: 'absolute',
+          right: 0,
+          transform: 'scaleX(0)',
+          transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shorter,
+            easing: theme.transitions.easing.easeOut
+          }),
+          pointerEvents: 'none' // Transparent to the hover style.
+
+        },
+        '&$focused:after': {
+          transform: 'scaleX(1)'
+        },
+        '&$error:after': {
+          borderBottomColor: theme.palette.error.main,
+          transform: 'scaleX(1)' // error is always underlined in red
+
+        },
+        '&:before': {
+          borderBottom: "1px solid ".concat(bottomLineColor),
+          left: 0,
+          bottom: 0,
+          // Doing the other way around crash on IE11 "''" https://github.com/cssinjs/jss/issues/242
+          content: '"\\00a0"',
+          position: 'absolute',
+          right: 0,
+          transition: theme.transitions.create('border-bottom-color', {
+            duration: theme.transitions.duration.shorter
+          }),
+          pointerEvents: 'none' // Transparent to the hover style.
+
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+          borderBottom: "1px solid ".concat(theme.palette.text.primary)
+        },
+        '&$disabled:before': {
+          borderBottom: "1px dotted ".concat(bottomLineColor)
+        }
+      },
+
+      /* Styles applied to the root element if the component is focused. */
+      focused: {},
+
+      /* Styles applied to the root element if `disabled={true}`. */
+      disabled: {},
+
+      /* Styles applied to the root element if `startAdornment` is provided. */
+      adornedStart: {
+        paddingLeft: 12
+      },
+
+      /* Styles applied to the root element if `endAdornment` is provided. */
+      adornedEnd: {
+        paddingRight: 12
+      },
+
+      /* Styles applied to the root element if `error={true}`. */
+      error: {},
+
+      /* Styles applied to the root element if `multiline={true}`. */
+      multiline: {
+        padding: '27px 12px 10px'
+      },
+
+      /* Styles applied to the `input` element. */
+      input: {
+        padding: '27px 12px 10px'
+      },
+
+      /* Styles applied to the `input` element if `margin="dense"`. */
+      inputMarginDense: {
+        paddingTop: 24,
+        paddingBottom: 6
+      },
+
+      /* Styles applied to the `input` element if `multiline={true}`. */
+      inputMultiline: {
+        padding: 0
+      },
+
+      /* Styles applied to the `input` element if `startAdornment` is provided. */
+      inputAdornedStart: {
+        paddingLeft: 0
+      },
+
+      /* Styles applied to the `input` element if `endAdornment` is provided. */
+      inputAdornedEnd: {
+        paddingRight: 0
+      }
+    };
+  };
+
+  function FilledInput(props) {
+    var classes = props.classes,
+        other = objectWithoutProperties(props, ["classes"]);
+
+    return React.createElement(InputBase$1, _extends_1({
+      classes: _extends_1({}, classes, {
+        root: classnames(classes.root, classes.underline, {}),
+        underline: null
+      })
+    }, other));
+  }
+
+  FilledInput.propTypes = {
+    /**
+     * This property helps users to fill forms faster, especially on mobile devices.
+     * The name can be confusing, as it's more like an autofill.
+     * You can learn more about it here:
+     * https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
+     */
+    autoComplete: propTypes.string,
+
+    /**
+     * If `true`, the input will be focused during the first mount.
+     */
+    autoFocus: propTypes.bool,
+
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object.isRequired,
+
+    /**
+     * The CSS class name of the wrapper element.
+     */
+    className: propTypes.string,
+
+    /**
+     * The default input value, useful when not controlling the component.
+     */
+    defaultValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * If `true`, the input will be disabled.
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * End `InputAdornment` for this component.
+     */
+    endAdornment: propTypes.node,
+
+    /**
+     * If `true`, the input will indicate an error. This is normally obtained via context from
+     * FormControl.
+     */
+    error: propTypes.bool,
+
+    /**
+     * If `true`, the input will take up the full width of its container.
+     */
+    fullWidth: propTypes.bool,
+
+    /**
+     * The id of the `input` element.
+     */
+    id: propTypes.string,
+
+    /**
+     * The component used for the native input.
+     * Either a string to use a DOM element or a component.
+     */
+    inputComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
+
+    /**
+     * Attributes applied to the `input` element.
+     */
+    inputProps: propTypes.object,
+
+    /**
+     * Use that property to pass a ref callback to the native input component.
+     */
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
+
+    /**
+     * If `dense`, will adjust vertical spacing. This is normally obtained via context from
+     * FormControl.
+     */
+    margin: propTypes.oneOf(['dense', 'none']),
+
+    /**
+     * If `true`, a textarea element will be rendered.
+     */
+    multiline: propTypes.bool,
+
+    /**
+     * Name attribute of the `input` element.
+     */
+    name: propTypes.string,
+
+    /**
+     * Callback fired when the value is changed.
+     *
+     * @param {object} event The event source of the callback.
+     * You can pull out the new value by accessing `event.target.value`.
+     */
+    onChange: propTypes.func,
+
+    /**
+     * The short hint displayed in the input before the user enters a value.
+     */
+    placeholder: propTypes.string,
+
+    /**
+     * It prevents the user from changing the value of the field
+     * (not from interacting with the field).
+     */
+    readOnly: propTypes.bool,
+
+    /**
+     * If `true`, the input will be required.
+     */
+    required: propTypes.bool,
+
+    /**
+     * Number of rows to display when multiline option is set to true.
+     */
+    rows: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Maximum number of rows to display when multiline option is set to true.
+     */
+    rowsMax: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Start `InputAdornment` for this component.
+     */
+    startAdornment: propTypes.node,
+
+    /**
+     * Type of the input element. It should be a valid HTML5 input type.
+     */
+    type: propTypes.string,
+
+    /**
+     * The input value, required for a controlled component.
+     */
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
+  };
+  InputBase$1.defaultProps = {
+    fullWidth: false,
+    inputComponent: 'input',
+    multiline: false,
+    type: 'text'
+  };
+  FilledInput.muiName = 'Input';
+  var FilledInput$1 = withStyles(styles$E, {
+    name: 'MuiFilledInput'
+  })(FilledInput);
+
+  var styles$F = {
     /* Styles applied to the root element. */
     root: {
       display: 'inline-flex',
@@ -17410,7 +18699,7 @@
 
       if (children) {
         React.Children.forEach(children, function (child) {
-          if (!isMuiElement(child, ['Input', 'Select', 'NativeSelect'])) {
+          if (!isMuiElement(child, ['Input', 'Select'])) {
             return;
           }
 
@@ -17418,7 +18707,7 @@
             _this.state.filled = true;
           }
 
-          var input = isMuiElement(child, ['Select', 'NativeSelect']) ? child.props.input : child;
+          var input = isMuiElement(child, ['Select']) ? child.props.input : child;
 
           if (input && isAdornedStart(input.props)) {
             _this.state.adornedStart = true;
@@ -17436,7 +18725,8 @@
             disabled = _this$props.disabled,
             error = _this$props.error,
             required = _this$props.required,
-            margin = _this$props.margin;
+            margin = _this$props.margin,
+            variant = _this$props.variant;
         var _this$state = this.state,
             adornedStart = _this$state.adornedStart,
             filled = _this$state.filled,
@@ -17453,7 +18743,8 @@
             onEmpty: this.handleClean,
             onFilled: this.handleDirty,
             onFocus: this.handleFocus,
-            required: required
+            required: required,
+            variant: variant
           }
         };
       }
@@ -17471,7 +18762,8 @@
             fullWidth = _this$props2.fullWidth,
             margin = _this$props2.margin,
             required = _this$props2.required,
-            other = objectWithoutProperties(_this$props2, ["classes", "className", "component", "disabled", "error", "fullWidth", "margin", "required"]);
+            variant = _this$props2.variant,
+            other = objectWithoutProperties(_this$props2, ["classes", "className", "component", "disabled", "error", "fullWidth", "margin", "required", "variant"]);
 
         return React.createElement(Component, _extends_1({
           className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes["margin".concat(capitalize(margin))], margin !== 'none'), defineProperty(_classNames, classes.fullWidth, fullWidth), _classNames), className)
@@ -17528,7 +18820,12 @@
     /**
      * If `true`, the label will indicate that the input is required.
      */
-    required: propTypes.bool
+    required: propTypes.bool,
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   FormControl.defaultProps = {
     component: 'div',
@@ -17536,16 +18833,17 @@
     error: false,
     fullWidth: false,
     margin: 'none',
-    required: false
+    required: false,
+    variant: 'standard'
   };
   FormControl.childContextTypes = {
     muiFormControl: propTypes.object
   };
-  var FormControl$1 = withStyles(styles$C, {
+  var FormControl$1 = withStyles(styles$F, {
     name: 'MuiFormControl'
   })(FormControl);
 
-  var styles$D = function styles(theme) {
+  var styles$G = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -17695,11 +18993,11 @@
   FormControlLabel.contextTypes = {
     muiFormControl: propTypes.object
   };
-  var FormControlLabel$1 = withStyles(styles$D, {
+  var FormControlLabel$1 = withStyles(styles$G, {
     name: 'MuiFormControlLabel'
   })(FormControlLabel);
 
-  var styles$E = {
+  var styles$H = {
     /* Styles applied to the root element. */
     root: {
       display: 'flex',
@@ -17755,11 +19053,11 @@
   FormGroup.defaultProps = {
     row: false
   };
-  var FormGroup$1 = withStyles(styles$E, {
+  var FormGroup$1 = withStyles(styles$H, {
     name: 'MuiFormGroup'
   })(FormGroup);
 
-  var styles$F = function styles(theme) {
+  var styles$I = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -17790,6 +19088,11 @@
         marginTop: 4
       },
 
+      /* Styles applied to the root element if `variant="filled"` or `variant="outlined"`. */
+      contained: {
+        margin: '8px 12px 0'
+      },
+
       /* Styles applied to the root element if `focused={true}`. */
       focused: {},
 
@@ -17807,51 +19110,22 @@
     var classes = props.classes,
         classNameProp = props.className,
         Component = props.component,
-        disabledProp = props.disabled,
-        errorProp = props.error,
-        filledProp = props.filled,
-        focusedProp = props.focused,
-        marginProp = props.margin,
-        requiredProp = props.required,
-        other = objectWithoutProperties(props, ["classes", "className", "component", "disabled", "error", "filled", "focused", "margin", "required"]);
+        disabled = props.disabled,
+        error = props.error,
+        filled = props.filled,
+        focused = props.focused,
+        margin = props.margin,
+        required = props.required,
+        variant = props.variant,
+        other = objectWithoutProperties(props, ["classes", "className", "component", "disabled", "error", "filled", "focused", "margin", "required", "variant"]);
 
-    var muiFormControl = context.muiFormControl;
-    var disabled = disabledProp;
-    var error = errorProp;
-    var filled = filledProp;
-    var focused = focusedProp;
-    var margin = marginProp;
-    var required = requiredProp;
-
-    if (muiFormControl) {
-      if (typeof disabled === 'undefined') {
-        disabled = muiFormControl.disabled;
-      }
-
-      if (typeof error === 'undefined') {
-        error = muiFormControl.error;
-      }
-
-      if (typeof margin === 'undefined') {
-        margin = muiFormControl.margin;
-      }
-
-      if (typeof required === 'undefined') {
-        required = muiFormControl.required;
-      }
-
-      if (typeof focused === 'undefined') {
-        focused = muiFormControl.focused;
-      }
-
-      if (typeof filled === 'undefined') {
-        filled = muiFormControl.filled;
-      }
-    }
-
-    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.error, error), defineProperty(_classNames, classes.filled, filled), defineProperty(_classNames, classes.focused, focused), defineProperty(_classNames, classes.marginDense, margin === 'dense'), defineProperty(_classNames, classes.required, required), _classNames), classNameProp);
+    var fcs = formControlState({
+      props: props,
+      context: context,
+      states: ['variant', 'margin', 'disabled', 'error', 'filled', 'focused', 'required']
+    });
     return React.createElement(Component, _extends_1({
-      className: className
+      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.contained, fcs.variant === 'filled' || fcs.variant === 'outlined'), defineProperty(_classNames, classes.marginDense, fcs.margin === 'dense'), defineProperty(_classNames, classes.disabled, fcs.disabled), defineProperty(_classNames, classes.error, fcs.error), defineProperty(_classNames, classes.filled, fcs.filled), defineProperty(_classNames, classes.focused, fcs.focused), defineProperty(_classNames, classes.required, fcs.required), _classNames), classNameProp)
     }, other));
   }
 
@@ -17907,7 +19181,12 @@
     /**
      * If `true`, the helper text should use required classes key.
      */
-    required: propTypes.bool
+    required: propTypes.bool,
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   FormHelperText.defaultProps = {
     component: 'p'
@@ -17915,11 +19194,11 @@
   FormHelperText.contextTypes = {
     muiFormControl: propTypes.object
   };
-  var FormHelperText$1 = withStyles(styles$F, {
+  var FormHelperText$1 = withStyles(styles$I, {
     name: 'MuiFormHelperText'
   })(FormHelperText);
 
-  var styles$G = function styles(theme) {
+  var styles$J = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -17968,47 +19247,22 @@
         classes = props.classes,
         classNameProp = props.className,
         Component = props.component,
-        disabledProp = props.disabled,
-        errorProp = props.error,
-        filledProp = props.filled,
-        focusedProp = props.focused,
-        requiredProp = props.required,
+        disabled = props.disabled,
+        error = props.error,
+        filled = props.filled,
+        focused = props.focused,
+        required = props.required,
         other = objectWithoutProperties(props, ["children", "classes", "className", "component", "disabled", "error", "filled", "focused", "required"]);
 
-    var muiFormControl = context.muiFormControl;
-    var disabled = disabledProp;
-    var error = errorProp;
-    var filled = filledProp;
-    var focused = focusedProp;
-    var required = requiredProp;
-
-    if (muiFormControl) {
-      if (typeof required === 'undefined') {
-        required = muiFormControl.required;
-      }
-
-      if (typeof focused === 'undefined') {
-        focused = muiFormControl.focused;
-      }
-
-      if (typeof disabled === 'undefined') {
-        disabled = muiFormControl.disabled;
-      }
-
-      if (typeof error === 'undefined') {
-        error = muiFormControl.error;
-      }
-
-      if (typeof filled === 'undefined') {
-        filled = muiFormControl.filled;
-      }
-    }
-
-    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.error, error), defineProperty(_classNames, classes.filled, filled), defineProperty(_classNames, classes.focused, focused), defineProperty(_classNames, classes.required, required), _classNames), classNameProp);
+    var fcs = formControlState({
+      props: props,
+      context: context,
+      states: ['required', 'focused', 'disabled', 'error', 'filled']
+    });
     return React.createElement(Component, _extends_1({
-      className: className
-    }, other), children, required && React.createElement("span", {
-      className: classnames(classes.asterisk, defineProperty({}, classes.error, error))
+      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, fcs.disabled), defineProperty(_classNames, classes.error, fcs.error), defineProperty(_classNames, classes.filled, fcs.filled), defineProperty(_classNames, classes.focused, fcs.focused), defineProperty(_classNames, classes.required, fcs.required), _classNames), classNameProp)
+    }, other), children, fcs.required && React.createElement("span", {
+      className: classnames(classes.asterisk, defineProperty({}, classes.error, fcs.error))
     }, "\u2009*"));
   }
 
@@ -18066,7 +19320,7 @@
   FormLabel.contextTypes = {
     muiFormControl: propTypes.object
   };
-  var FormLabel$1 = withStyles(styles$G, {
+  var FormLabel$1 = withStyles(styles$J, {
     name: 'MuiFormLabel'
   })(FormLabel);
 
@@ -18157,7 +19411,7 @@
   // justifyContent: 'flex-start',
 
 
-  var styles$H = function styles(theme) {
+  var styles$K = function styles(theme) {
     return _extends_1({
       /* Styles applied to the root element if `container={true}`. */
       container: {
@@ -18432,7 +19686,7 @@
     xs: false,
     zeroMinWidth: false
   };
-  var StyledGrid = withStyles(styles$H, {
+  var StyledGrid = withStyles(styles$K, {
     name: 'MuiGrid'
   })(Grid);
 
@@ -18453,7 +19707,7 @@
     });
   }
 
-  var styles$I = {
+  var styles$L = {
     /* Styles applied to the root element. */
     root: {
       display: 'flex',
@@ -18550,11 +19804,11 @@
     component: 'ul',
     spacing: 4
   };
-  var GridList$1 = withStyles(styles$I, {
+  var GridList$1 = withStyles(styles$L, {
     name: 'MuiGridList'
   })(GridList);
 
-  var styles$J = {
+  var styles$M = {
     /* Styles applied to the root element. */
     root: {
       boxSizing: 'border-box',
@@ -18747,11 +20001,11 @@
     component: 'li',
     rows: 1
   };
-  var GridListTile$1 = withStyles(styles$J, {
+  var GridListTile$1 = withStyles(styles$M, {
     name: 'MuiGridListTile'
   })(GridListTile);
 
-  var styles$K = function styles(theme) {
+  var styles$N = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -18898,7 +20152,7 @@
     actionPosition: 'right',
     titlePosition: 'bottom'
   };
-  var GridListTileBar$1 = withStyles(styles$K, {
+  var GridListTileBar$1 = withStyles(styles$N, {
     name: 'MuiGridListTileBar'
   })(GridListTileBar);
 
@@ -18906,7 +20160,7 @@
     return "scale(".concat(value, ", ").concat(Math.pow(value, 2), ")");
   }
 
-  var styles$L = {
+  var styles$O = {
     entering: {
       opacity: 1,
       transform: getScale(1)
@@ -19050,7 +20304,7 @@
             style: _extends_1({
               opacity: 0,
               transform: getScale(0.75)
-            }, styles$L[state], style)
+            }, styles$O[state], style)
           }, childProps));
         });
       }
@@ -19246,10 +20500,10 @@
               more.theme = theme;
             }
 
-            return React.createElement(EventListener, {
+            return React.createElement(React.Fragment, null, React.createElement(Component, more), React.createElement(EventListener, {
               target: "window",
               onResize: this.handleResize
-            }, React.createElement(Component, more));
+            }));
           }
         }]);
 
@@ -19429,7 +20683,7 @@
   HiddenJs.propTypes = exactProp(HiddenJs.propTypes);
   var HiddenJs$1 = withWidth()(HiddenJs);
 
-  var styles$M = function styles(theme) {
+  var styles$P = function styles(theme) {
     var hidden = {
       display: 'none'
     };
@@ -19573,7 +20827,7 @@
      */
     xsUp: propTypes.bool
   };
-  var HiddenCss$1 = withStyles(styles$M)(HiddenCss);
+  var HiddenCss$1 = withStyles(styles$P)(HiddenCss);
 
   /**
    * Responsively hides children based on the selected implementation.
@@ -19689,7 +20943,7 @@
     xsUp: false
   };
 
-  var styles$N = function styles(theme) {
+  var styles$Q = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -19729,6 +20983,16 @@
       },
       fontSizeInherit: {
         fontSize: 'inherit'
+      },
+
+      /* Styles applied to the root element if `fontSize="small"`. */
+      fontSizeSmall: {
+        fontSize: 20
+      },
+
+      /* Styles applied to the root element if `fontSize="large"`. */
+      fontSizeLarge: {
+        fontSize: 36
       }
     };
   };
@@ -19740,10 +21004,11 @@
         classes = props.classes,
         className = props.className,
         color = props.color,
+        Component = props.component,
         fontSize = props.fontSize,
-        other = objectWithoutProperties(props, ["children", "classes", "className", "color", "fontSize"]);
+        other = objectWithoutProperties(props, ["children", "classes", "className", "color", "component", "fontSize"]);
 
-    return React.createElement("span", _extends_1({
+    return React.createElement(Component, _extends_1({
       className: classnames('material-icons', classes.root, (_classNames = {}, defineProperty(_classNames, classes["color".concat(capitalize(color))], color !== 'inherit'), defineProperty(_classNames, classes["fontSize".concat(capitalize(fontSize))], fontSize !== 'default'), _classNames), className),
       "aria-hidden": "true"
     }, other), children);
@@ -19772,312 +21037,33 @@
     color: propTypes.oneOf(['inherit', 'primary', 'secondary', 'action', 'error', 'disabled']),
 
     /**
+     * The component used for the root node.
+     * Either a string to use a DOM element or a component.
+     */
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
+
+    /**
      * The fontSize applied to the icon. Defaults to 24px, but can be configure to inherit font size.
      */
-    fontSize: propTypes.oneOf(['inherit', 'default'])
+    fontSize: propTypes.oneOf(['inherit', 'default', 'small', 'large'])
   };
   Icon.defaultProps = {
     color: 'inherit',
+    component: 'span',
     fontSize: 'default'
   };
   Icon.muiName = 'Icon';
-  var Icon$1 = withStyles(styles$N, {
+  var Icon$1 = withStyles(styles$Q, {
     name: 'MuiIcon'
   })(Icon);
 
-  var ROWS_HEIGHT = 19;
-  var styles$O = {
-    /* Styles applied to the root element. */
-    root: {
-      position: 'relative',
-      // because the shadow has position: 'absolute',
-      width: '100%'
-    },
-    textarea: {
-      width: '100%',
-      height: '100%',
-      resize: 'none',
-      font: 'inherit',
-      padding: 0,
-      cursor: 'inherit',
-      boxSizing: 'border-box',
-      lineHeight: 'inherit',
-      border: 'none',
-      outline: 'none',
-      background: 'transparent'
-    },
-    shadow: {
-      // Overflow also needed to here to remove the extra row
-      // added to textareas in Firefox.
-      overflow: 'hidden',
-      // Visibility needed to hide the extra text area on ipads
-      visibility: 'hidden',
-      position: 'absolute',
-      height: 'auto',
-      whiteSpace: 'pre-wrap'
-    }
-  };
-  /**
-   * @ignore - internal component.
-   */
-
-  var Textarea =
-  /*#__PURE__*/
-  function (_React$Component) {
-    inherits(Textarea, _React$Component);
-
-    // Corresponds to 10 frames at 60 Hz.
-    function Textarea(props) {
-      var _this;
-
-      classCallCheck(this, Textarea);
-
-      _this = possibleConstructorReturn(this, getPrototypeOf(Textarea).call(this));
-      _this.isControlled = null;
-      _this.shadowRef = null;
-      _this.singlelineShadowRef = null;
-      _this.inputRef = null;
-      _this.value = null;
-      _this.handleResize = debounce_1(function () {
-        _this.syncHeightWithShadow();
-      }, 166);
-      _this.state = {
-        height: null
-      };
-
-      _this.handleRefInput = function (ref) {
-        _this.inputRef = ref;
-        var textareaRef = _this.props.textareaRef;
-
-        if (textareaRef) {
-          if (typeof textareaRef === 'function') {
-            textareaRef(ref);
-          } else {
-            textareaRef.current = ref;
-          }
-        }
-      };
-
-      _this.handleRefSinglelineShadow = function (ref) {
-        _this.singlelineShadowRef = ref;
-      };
-
-      _this.handleRefShadow = function (ref) {
-        _this.shadowRef = ref;
-      };
-
-      _this.handleChange = function (event) {
-        _this.value = event.target.value;
-
-        if (!_this.isControlled) {
-          // The component is not controlled, we need to update the shallow value.
-          _this.shadowRef.value = _this.value;
-
-          _this.syncHeightWithShadow();
-        }
-
-        if (_this.props.onChange) {
-          _this.props.onChange(event);
-        }
-      };
-
-      _this.isControlled = props.value != null; // <Input> expects the components it renders to respond to 'value'
-      // so that it can check whether they are filled.
-
-      _this.value = props.value || props.defaultValue || '';
-      _this.state = {
-        height: Number(props.rows) * ROWS_HEIGHT
-      };
-      return _this;
-    }
-
-    createClass(Textarea, [{
-      key: "componentDidMount",
-      value: function componentDidMount() {
-        this.syncHeightWithShadow();
-      }
-    }, {
-      key: "componentDidUpdate",
-      value: function componentDidUpdate() {
-        this.syncHeightWithShadow();
-      }
-    }, {
-      key: "componentWillUnmount",
-      value: function componentWillUnmount() {
-        this.handleResize.clear();
-      }
-    }, {
-      key: "syncHeightWithShadow",
-      value: function syncHeightWithShadow() {
-        var props = this.props; // Guarding for **broken** shallow rendering method that call componentDidMount
-        // but doesn't handle refs correctly.
-        // To remove once the shallow rendering has been fixed.
-
-        if (!this.shadowRef) {
-          return;
-        }
-
-        if (this.isControlled) {
-          // The component is controlled, we need to update the shallow value.
-          this.shadowRef.value = props.value == null ? '' : String(props.value);
-        }
-
-        var lineHeight = this.singlelineShadowRef.scrollHeight;
-        var newHeight = this.shadowRef.scrollHeight; // Guarding for jsdom, where scrollHeight isn't present.
-        // See https://github.com/tmpvar/jsdom/issues/1013
-
-        if (newHeight === undefined) {
-          return;
-        }
-
-        if (Number(props.rowsMax) >= Number(props.rows)) {
-          newHeight = Math.min(Number(props.rowsMax) * lineHeight, newHeight);
-        }
-
-        newHeight = Math.max(newHeight, lineHeight); // Need a large enough different to update the height.
-        // This prevents infinite rendering loop.
-
-        if (Math.abs(this.state.height - newHeight) > 1) {
-          this.setState({
-            height: newHeight
-          });
-        }
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _this$props = this.props,
-            classes = _this$props.classes,
-            className = _this$props.className,
-            defaultValue = _this$props.defaultValue,
-            onChange = _this$props.onChange,
-            rows = _this$props.rows,
-            rowsMax = _this$props.rowsMax,
-            textareaRef = _this$props.textareaRef,
-            value = _this$props.value,
-            other = objectWithoutProperties(_this$props, ["classes", "className", "defaultValue", "onChange", "rows", "rowsMax", "textareaRef", "value"]);
-
-        return React.createElement("div", {
-          className: classes.root,
-          style: {
-            height: this.state.height
-          }
-        }, React.createElement(EventListener, {
-          target: "window",
-          onResize: this.handleResize
-        }), React.createElement("textarea", {
-          "aria-hidden": "true",
-          className: classnames(classes.textarea, classes.shadow),
-          readOnly: true,
-          ref: this.handleRefSinglelineShadow,
-          rows: "1",
-          tabIndex: -1,
-          value: ""
-        }), React.createElement("textarea", {
-          "aria-hidden": "true",
-          className: classnames(classes.textarea, classes.shadow),
-          defaultValue: defaultValue,
-          readOnly: true,
-          ref: this.handleRefShadow,
-          rows: rows,
-          tabIndex: -1,
-          value: value
-        }), React.createElement("textarea", _extends_1({
-          rows: rows,
-          className: classnames(classes.textarea, className),
-          defaultValue: defaultValue,
-          value: value,
-          onChange: this.handleChange,
-          ref: this.handleRefInput
-        }, other)));
-      }
-    }]);
-
-    return Textarea;
-  }(React.Component);
-
-  Textarea.propTypes = {
-    /**
-     * Override or extend the styles applied to the component.
-     * See [CSS API](#css-api) below for more details.
-     */
-    classes: propTypes.object.isRequired,
-
-    /**
-     * @ignore
-     */
-    className: propTypes.string,
-
-    /**
-     * @ignore
-     */
-    defaultValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
-
-    /**
-     * @ignore
-     */
-    disabled: propTypes.bool,
-
-    /**
-     * @ignore
-     */
-    onChange: propTypes.func,
-
-    /**
-     * Number of rows to display when multiline option is set to true.
-     */
-    rows: propTypes.oneOfType([propTypes.string, propTypes.number]),
-
-    /**
-     * Maximum number of rows to display when multiline option is set to true.
-     */
-    rowsMax: propTypes.oneOfType([propTypes.string, propTypes.number]),
-
-    /**
-     * Use that property to pass a ref callback to the native textarea element.
-     */
-    textareaRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
-
-    /**
-     * @ignore
-     */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number])
-  };
-  Textarea.defaultProps = {
-    rows: 1
-  };
-  var Textarea$1 = withStyles(styles$O)(Textarea);
-
-  var styles$P = function styles(theme) {
+  var styles$R = function styles(theme) {
     var light = theme.palette.type === 'light';
-    var placeholder = {
-      color: 'currentColor',
-      opacity: light ? 0.42 : 0.5,
-      transition: theme.transitions.create('opacity', {
-        duration: theme.transitions.duration.shorter
-      })
-    };
-    var placeholderHidden = {
-      opacity: 0
-    };
-    var placeholderVisible = {
-      opacity: light ? 0.42 : 0.5
-    };
     var bottomLineColor = light ? 'rgba(0, 0, 0, 0.42)' : 'rgba(255, 255, 255, 0.7)';
     return {
       /* Styles applied to the root element. */
       root: {
-        // Mimics the default input display property used by browsers for an input.
-        display: 'inline-flex',
-        position: 'relative',
-        fontFamily: theme.typography.fontFamily,
-        color: theme.palette.text.primary,
-        fontSize: theme.typography.pxToRem(16),
-        lineHeight: '1.1875em',
-        // Reset (19px), match the native input line-height
-        '&$disabled': {
-          color: theme.palette.text.disabled
-        }
+        position: 'relative'
       },
 
       /* Styles applied to the root element if the component is a descendant of `FormControl`. */
@@ -20145,413 +21131,40 @@
       error: {},
 
       /* Styles applied to the root element if `multiline={true}`. */
-      multiline: {
-        padding: "".concat(8 - 2, "px 0 ").concat(8 - 1, "px")
-      },
+      multiline: {},
 
       /* Styles applied to the root element if `fullWidth={true}`. */
-      fullWidth: {
-        width: '100%'
-      },
+      fullWidth: {},
 
       /* Styles applied to the `input` element. */
-      input: {
-        font: 'inherit',
-        color: 'currentColor',
-        padding: "".concat(8 - 2, "px 0 ").concat(8 - 1, "px"),
-        border: 0,
-        boxSizing: 'content-box',
-        verticalAlign: 'middle',
-        background: 'none',
-        margin: 0,
-        // Reset for Safari
-        // Remove grey highlight
-        WebkitTapHighlightColor: 'transparent',
-        display: 'block',
-        // Make the flex item shrink with Firefox
-        minWidth: 0,
-        flexGrow: 1,
-        '&::-webkit-input-placeholder': placeholder,
-        '&::-moz-placeholder': placeholder,
-        // Firefox 19+
-        '&:-ms-input-placeholder': placeholder,
-        // IE 11
-        '&::-ms-input-placeholder': placeholder,
-        // Edge
-        '&:focus': {
-          outline: 0
-        },
-        // Reset Firefox invalid required input style
-        '&:invalid': {
-          boxShadow: 'none'
-        },
-        '&::-webkit-search-decoration': {
-          // Remove the padding when type=search.
-          '-webkit-appearance': 'none'
-        },
-        // Show and hide the placeholder logic
-        'label[data-shrink=false] + $formControl &': {
-          '&::-webkit-input-placeholder': placeholderHidden,
-          '&::-moz-placeholder': placeholderHidden,
-          // Firefox 19+
-          '&:-ms-input-placeholder': placeholderHidden,
-          // IE 11
-          '&::-ms-input-placeholder': placeholderHidden,
-          // Edge
-          '&:focus::-webkit-input-placeholder': placeholderVisible,
-          '&:focus::-moz-placeholder': placeholderVisible,
-          // Firefox 19+
-          '&:focus:-ms-input-placeholder': placeholderVisible,
-          // IE 11
-          '&:focus::-ms-input-placeholder': placeholderVisible // Edge
-
-        },
-        '&$disabled': {
-          opacity: 1 // Reset iOS opacity
-
-        }
-      },
+      input: {},
 
       /* Styles applied to the `input` element if `margin="dense"`. */
-      inputMarginDense: {
-        paddingTop: 4 - 1
-      },
+      inputMarginDense: {},
 
       /* Styles applied to the `input` element if `multiline={true}`. */
-      inputMultiline: {
-        resize: 'none',
-        padding: 0
-      },
+      inputMultiline: {},
 
       /* Styles applied to the `input` element if `type` is not "text"`. */
-      inputType: {
-        // type="date" or type="time", etc. have specific styles we need to reset.
-        height: '1.1875em' // Reset (19px), match the native input line-height
-
-      },
+      inputType: {},
 
       /* Styles applied to the `input` element if `type="search"`. */
-      inputTypeSearch: {
-        // Improve type search style.
-        '-moz-appearance': 'textfield',
-        '-webkit-appearance': 'textfield'
-      }
+      inputTypeSearch: {}
     };
   };
 
-  function formControlState(props, context) {
-    var disabled = props.disabled;
-    var error = props.error;
-    var margin = props.margin;
-    var required = props.required;
+  function Input(props) {
+    var disableUnderline = props.disableUnderline,
+        classes = props.classes,
+        other = objectWithoutProperties(props, ["disableUnderline", "classes"]);
 
-    if (context && context.muiFormControl) {
-      if (typeof disabled === 'undefined') {
-        disabled = context.muiFormControl.disabled;
-      }
-
-      if (typeof error === 'undefined') {
-        error = context.muiFormControl.error;
-      }
-
-      if (typeof margin === 'undefined') {
-        margin = context.muiFormControl.margin;
-      }
-
-      if (typeof required === 'undefined') {
-        required = context.muiFormControl.required;
-      }
-    }
-
-    return {
-      disabled: disabled,
-      error: error,
-      margin: margin,
-      required: required
-    };
+    return React.createElement(InputBase$1, _extends_1({
+      classes: _extends_1({}, classes, {
+        root: classnames(classes.root, defineProperty({}, classes.underline, !disableUnderline)),
+        underline: null
+      })
+    }, other));
   }
-
-  var Input =
-  /*#__PURE__*/
-  function (_React$Component) {
-    inherits(Input, _React$Component);
-
-    // Holds the input reference
-    function Input(props, context) {
-      var _this;
-
-      classCallCheck(this, Input);
-
-      _this = possibleConstructorReturn(this, getPrototypeOf(Input).call(this, props, context));
-      _this.isControlled = null;
-      _this.input = null;
-      _this.state = {
-        focused: false
-      };
-
-      _this.handleFocus = function (event) {
-        // Fix a bug with IE11 where the focus/blur events are triggered
-        // while the input is disabled.
-        if (formControlState(_this.props, _this.context).disabled) {
-          event.stopPropagation();
-          return;
-        }
-
-        _this.setState({
-          focused: true
-        });
-
-        if (_this.props.onFocus) {
-          _this.props.onFocus(event);
-        }
-
-        var muiFormControl = _this.context.muiFormControl;
-
-        if (muiFormControl && muiFormControl.onFocus) {
-          muiFormControl.onFocus(event);
-        }
-      };
-
-      _this.handleBlur = function (event) {
-        _this.setState({
-          focused: false
-        });
-
-        if (_this.props.onBlur) {
-          _this.props.onBlur(event);
-        }
-
-        var muiFormControl = _this.context.muiFormControl;
-
-        if (muiFormControl && muiFormControl.onBlur) {
-          muiFormControl.onBlur(event);
-        }
-      };
-
-      _this.handleChange = function () {
-        if (!_this.isControlled) {
-          _this.checkDirty(_this.inputRef);
-        } // Perform in the willUpdate
-
-
-        if (_this.props.onChange) {
-          var _this$props;
-
-          (_this$props = _this.props).onChange.apply(_this$props, arguments);
-        }
-      };
-
-      _this.handleRefInput = function (ref) {
-        _this.inputRef = ref;
-        var refProp;
-
-        if (_this.props.inputRef) {
-          refProp = _this.props.inputRef;
-        } else if (_this.props.inputProps && _this.props.inputProps.ref) {
-          refProp = _this.props.inputProps.ref;
-        }
-
-        if (refProp) {
-          if (typeof refProp === 'function') {
-            refProp(ref);
-          } else {
-            refProp.current = ref;
-          }
-        }
-      };
-
-      _this.isControlled = props.value != null;
-
-      if (_this.isControlled) {
-        _this.checkDirty(props);
-      }
-
-      var componentWillReceiveProps = function componentWillReceiveProps(nextProps, nextContext) {
-        // The blur won't fire when the disabled state is set on a focused input.
-        // We need to book keep the focused state manually.
-        if (!formControlState(_this.props, _this.context).disabled && formControlState(nextProps, nextContext).disabled) {
-          _this.setState({
-            focused: false
-          });
-        }
-      };
-
-      var componentWillUpdate = function componentWillUpdate(nextProps, nextState, nextContext) {
-        // Book keep the focused state.
-        if (!formControlState(_this.props, _this.context).disabled && formControlState(nextProps, nextContext).disabled) {
-          var muiFormControl = _this.context.muiFormControl;
-
-          if (muiFormControl && muiFormControl.onBlur) {
-            muiFormControl.onBlur();
-          }
-        }
-      };
-
-      _this.componentWillReceiveProps = componentWillReceiveProps;
-      _this.componentWillReceiveProps.__suppressDeprecationWarning = true;
-      _this.componentWillUpdate = componentWillUpdate;
-      _this.componentWillUpdate.__suppressDeprecationWarning = true;
-      return _this;
-    }
-
-    createClass(Input, [{
-      key: "getChildContext",
-      value: function getChildContext() {
-        // We are consuming the parent muiFormControl context.
-        // We don't want a child to consume it a second time.
-        return {
-          muiFormControl: null
-        };
-      }
-    }, {
-      key: "componentDidMount",
-      value: function componentDidMount() {
-        if (!this.isControlled) {
-          this.checkDirty(this.inputRef);
-        }
-      }
-    }, {
-      key: "componentDidUpdate",
-      value: function componentDidUpdate() {
-        if (this.isControlled) {
-          this.checkDirty(this.props);
-        } // else performed in the onChange
-
-      }
-    }, {
-      key: "checkDirty",
-      value: function checkDirty(obj) {
-        var muiFormControl = this.context.muiFormControl;
-
-        if (isFilled(obj)) {
-          if (muiFormControl && muiFormControl.onFilled) {
-            muiFormControl.onFilled();
-          }
-
-          if (this.props.onFilled) {
-            this.props.onFilled();
-          }
-
-          return;
-        }
-
-        if (muiFormControl && muiFormControl.onEmpty) {
-          muiFormControl.onEmpty();
-        }
-
-        if (this.props.onEmpty) {
-          this.props.onEmpty();
-        }
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _classNames, _classNames2;
-
-        var _this$props2 = this.props,
-            autoComplete = _this$props2.autoComplete,
-            autoFocus = _this$props2.autoFocus,
-            classes = _this$props2.classes,
-            classNameProp = _this$props2.className,
-            defaultValue = _this$props2.defaultValue,
-            disabledProp = _this$props2.disabled,
-            disableUnderline = _this$props2.disableUnderline,
-            endAdornment = _this$props2.endAdornment,
-            errorProp = _this$props2.error,
-            fullWidth = _this$props2.fullWidth,
-            id = _this$props2.id,
-            inputComponent = _this$props2.inputComponent,
-            _this$props2$inputPro = _this$props2.inputProps;
-        _this$props2$inputPro = _this$props2$inputPro === void 0 ? {} : _this$props2$inputPro;
-
-        var inputPropsClassName = _this$props2$inputPro.className,
-            inputPropsProp = objectWithoutProperties(_this$props2$inputPro, ["className"]),
-            inputRef = _this$props2.inputRef,
-            marginProp = _this$props2.margin,
-            multiline = _this$props2.multiline,
-            name = _this$props2.name,
-            onBlur = _this$props2.onBlur,
-            onChange = _this$props2.onChange,
-            onEmpty = _this$props2.onEmpty,
-            onFilled = _this$props2.onFilled,
-            onFocus = _this$props2.onFocus,
-            onKeyDown = _this$props2.onKeyDown,
-            onKeyUp = _this$props2.onKeyUp,
-            placeholder = _this$props2.placeholder,
-            readOnly = _this$props2.readOnly,
-            rows = _this$props2.rows,
-            rowsMax = _this$props2.rowsMax,
-            startAdornment = _this$props2.startAdornment,
-            type = _this$props2.type,
-            value = _this$props2.value,
-            other = objectWithoutProperties(_this$props2, ["autoComplete", "autoFocus", "classes", "className", "defaultValue", "disabled", "disableUnderline", "endAdornment", "error", "fullWidth", "id", "inputComponent", "inputProps", "inputRef", "margin", "multiline", "name", "onBlur", "onChange", "onEmpty", "onFilled", "onFocus", "onKeyDown", "onKeyUp", "placeholder", "readOnly", "rows", "rowsMax", "startAdornment", "type", "value"]);
-
-        var muiFormControl = this.context.muiFormControl;
-
-        var _formControlState = formControlState(this.props, this.context),
-            disabled = _formControlState.disabled,
-            error = _formControlState.error,
-            margin = _formControlState.margin,
-            required = _formControlState.required;
-
-        var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.error, error), defineProperty(_classNames, classes.fullWidth, fullWidth), defineProperty(_classNames, classes.focused, this.state.focused), defineProperty(_classNames, classes.formControl, muiFormControl), defineProperty(_classNames, classes.multiline, multiline), defineProperty(_classNames, classes.underline, !disableUnderline), _classNames), classNameProp);
-        var inputClassName = classnames(classes.input, (_classNames2 = {}, defineProperty(_classNames2, classes.disabled, disabled), defineProperty(_classNames2, classes.inputType, type !== 'text'), defineProperty(_classNames2, classes.inputTypeSearch, type === 'search'), defineProperty(_classNames2, classes.inputMultiline, multiline), defineProperty(_classNames2, classes.inputMarginDense, margin === 'dense'), _classNames2), inputPropsClassName);
-        var InputComponent = inputComponent;
-
-        var inputProps = _extends_1({}, inputPropsProp, {
-          ref: this.handleRefInput
-        });
-
-        if (typeof InputComponent !== 'string') {
-          inputProps = _extends_1({
-            // Rename ref to inputRef as we don't know the
-            // provided `inputComponent` structure.
-            inputRef: this.handleRefInput
-          }, inputProps, {
-            ref: null
-          });
-        } else if (multiline) {
-          if (rows && !rowsMax) {
-            InputComponent = 'textarea';
-          } else {
-            inputProps = _extends_1({
-              rowsMax: rowsMax,
-              textareaRef: this.handleRefInput
-            }, inputProps, {
-              ref: null
-            });
-            InputComponent = Textarea$1;
-          }
-        }
-
-        return React.createElement("div", _extends_1({
-          className: className
-        }, other), startAdornment, React.createElement(InputComponent, _extends_1({
-          "aria-invalid": error,
-          autoComplete: autoComplete,
-          autoFocus: autoFocus,
-          className: inputClassName,
-          defaultValue: defaultValue,
-          disabled: disabled,
-          id: id,
-          name: name,
-          onBlur: this.handleBlur,
-          onChange: this.handleChange,
-          onFocus: this.handleFocus,
-          onKeyDown: onKeyDown,
-          onKeyUp: onKeyUp,
-          placeholder: placeholder,
-          readOnly: readOnly,
-          required: required,
-          rows: rows,
-          type: type,
-          value: value
-        }, inputProps)), endAdornment);
-      }
-    }]);
-
-    return Input;
-  }(React.Component);
 
   Input.propTypes = {
     /**
@@ -20647,42 +21260,12 @@
     name: propTypes.string,
 
     /**
-     * @ignore
-     */
-    onBlur: propTypes.func,
-
-    /**
      * Callback fired when the value is changed.
      *
      * @param {object} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value`.
      */
     onChange: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onEmpty: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onFilled: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onFocus: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onKeyDown: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onKeyUp: propTypes.func,
 
     /**
      * The short hint displayed in the input before the user enters a value.
@@ -20725,30 +21308,30 @@
      */
     value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
   };
-  Input.muiName = 'Input';
-  Input.defaultProps = {
-    disableUnderline: false,
+  InputBase$1.defaultProps = {
     fullWidth: false,
     inputComponent: 'input',
     multiline: false,
     type: 'text'
   };
-  Input.contextTypes = {
-    muiFormControl: propTypes.object
-  };
-  Input.childContextTypes = {
-    muiFormControl: propTypes.object
-  };
-  var Input$1 = withStyles(styles$P, {
+  Input.muiName = 'Input';
+  var Input$1 = withStyles(styles$R, {
     name: 'MuiInput'
   })(Input);
 
-  var styles$Q = {
+  var styles$S = {
     /* Styles applied to the root element. */
     root: {
       display: 'flex',
       maxHeight: '2em',
       alignItems: 'center'
+    },
+
+    /* Styles applied to the root element if `variant="filled"` */
+    filled: {
+      '&$positionStart': {
+        marginTop: 16
+      }
     },
 
     /* Styles applied to the root element if `position="start"`. */
@@ -20771,10 +21354,11 @@
         className = props.className,
         disableTypography = props.disableTypography,
         position = props.position,
-        other = objectWithoutProperties(props, ["children", "component", "classes", "className", "disableTypography", "position"]);
+        variant = props.variant,
+        other = objectWithoutProperties(props, ["children", "component", "classes", "className", "disableTypography", "position", "variant"]);
 
     return React.createElement(Component, _extends_1({
-      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.positionStart, position === 'start'), defineProperty(_classNames, classes.positionEnd, position === 'end'), _classNames), className)
+      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.filled, variant === 'filled'), defineProperty(_classNames, classes.positionStart, position === 'start'), defineProperty(_classNames, classes.positionEnd, position === 'end'), _classNames), className)
     }, other), typeof children === 'string' && !disableTypography ? React.createElement(Typography$1, {
       color: "textSecondary"
     }, children) : children);
@@ -20811,17 +21395,22 @@
     /**
      * The position this adornment should appear relative to the `Input`.
      */
-    position: propTypes.oneOf(['start', 'end'])
+    position: propTypes.oneOf(['start', 'end']),
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   InputAdornment.defaultProps = {
     component: 'div',
     disableTypography: false
   };
-  var InputAdornment$1 = withStyles(styles$Q, {
+  var InputAdornment$1 = withStyles(styles$S, {
     name: 'MuiInputAdornment'
   })(InputAdornment);
 
-  var styles$R = function styles(theme) {
+  var styles$T = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -20851,10 +21440,35 @@
 
       /* Styles applied to the `input` element if `disableAnimation={false}`. */
       animated: {
-        transition: theme.transitions.create('transform', {
+        transition: theme.transitions.create(['color', 'transform'], {
           duration: theme.transitions.duration.shorter,
           easing: theme.transitions.easing.easeOut
         })
+      },
+
+      /* Styles applied to the root element if `variant="filled"`. */
+      filled: {
+        transform: 'translate(12px, 22px) scale(1)',
+        '&$marginDense': {
+          transform: 'translate(12px, 19px) scale(1)'
+        },
+        '&$shrink': {
+          transform: 'translate(12px, 10px) scale(0.75)',
+          '&$marginDense': {
+            transform: 'translate(12px, 7px) scale(0.75)'
+          }
+        }
+      },
+
+      /* Styles applied to the root element if `variant="outlined"`. */
+      outlined: {
+        transform: 'translate(14px, 22px) scale(1)',
+        '&$marginDense': {
+          transform: 'translate(14px, 17.5px) scale(1)'
+        },
+        '&$shrink': {
+          transform: 'translate(14px, -6px) scale(0.75)'
+        }
       }
     };
   };
@@ -20869,7 +21483,8 @@
         FormLabelClasses = props.FormLabelClasses,
         marginProp = props.margin,
         shrinkProp = props.shrink,
-        other = objectWithoutProperties(props, ["children", "classes", "className", "disableAnimation", "FormLabelClasses", "margin", "shrink"]);
+        variantProp = props.variant,
+        other = objectWithoutProperties(props, ["children", "classes", "className", "disableAnimation", "FormLabelClasses", "margin", "shrink", "variant"]);
 
     var muiFormControl = context.muiFormControl;
     var shrink = shrinkProp;
@@ -20878,13 +21493,12 @@
       shrink = muiFormControl.filled || muiFormControl.focused || muiFormControl.adornedStart;
     }
 
-    var margin = marginProp;
-
-    if (typeof margin === 'undefined' && muiFormControl) {
-      margin = muiFormControl.margin;
-    }
-
-    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.formControl, muiFormControl), defineProperty(_classNames, classes.animated, !disableAnimation), defineProperty(_classNames, classes.shrink, shrink), defineProperty(_classNames, classes.marginDense, margin === 'dense'), _classNames), classNameProp);
+    var fcs = formControlState({
+      props: props,
+      context: context,
+      states: ['margin', 'variant']
+    });
+    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.formControl, muiFormControl), defineProperty(_classNames, classes.animated, !disableAnimation), defineProperty(_classNames, classes.shrink, shrink), defineProperty(_classNames, classes.marginDense, fcs.margin === 'dense'), defineProperty(_classNames, classes.filled, fcs.variant === 'filled'), defineProperty(_classNames, classes.outlined, fcs.variant === 'outlined'), _classNames), classNameProp);
     return React.createElement(FormLabel$1, _extends_1({
       "data-shrink": shrink,
       className: className,
@@ -20948,7 +21562,12 @@
     /**
      * If `true`, the label is shrunk.
      */
-    shrink: propTypes.bool
+    shrink: propTypes.bool,
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   InputLabel.defaultProps = {
     disableAnimation: false
@@ -20956,13 +21575,13 @@
   InputLabel.contextTypes = {
     muiFormControl: propTypes.object
   };
-  var InputLabel$1 = withStyles(styles$R, {
+  var InputLabel$1 = withStyles(styles$T, {
     name: 'MuiInputLabel'
   })(InputLabel);
 
   var TRANSITION_DURATION = 4; // seconds
 
-  var styles$S = function styles(theme) {
+  var styles$U = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -21221,11 +21840,11 @@
     color: 'primary',
     variant: 'indeterminate'
   };
-  var LinearProgress$1 = withStyles(styles$S, {
+  var LinearProgress$1 = withStyles(styles$U, {
     name: 'MuiLinearProgress'
   })(LinearProgress);
 
-  var styles$T = {
+  var styles$V = {
     /* Styles applied to the root element. */
     root: {
       listStyle: 'none',
@@ -21343,11 +21962,11 @@
   List.childContextTypes = {
     dense: propTypes.bool
   };
-  var List$1 = withStyles(styles$T, {
+  var List$1 = withStyles(styles$V, {
     name: 'MuiList'
   })(List);
 
-  var styles$U = function styles(theme) {
+  var styles$W = function styles(theme) {
     return {
       /* Styles applied to the (normally root) `component` element. May be wrapped by a `container`. */
       root: {
@@ -21600,11 +22219,11 @@
   ListItem.childContextTypes = {
     dense: propTypes.bool
   };
-  var ListItem$1 = withStyles(styles$U, {
+  var ListItem$1 = withStyles(styles$W, {
     name: 'MuiListItem'
   })(ListItem);
 
-  var styles$V = function styles(theme) {
+  var styles$X = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -21664,11 +22283,11 @@
     dense: propTypes.bool
   };
   ListItemAvatar.muiName = 'ListItemAvatar';
-  var ListItemAvatar$1 = withStyles(styles$V, {
+  var ListItemAvatar$1 = withStyles(styles$X, {
     name: 'MuiListItemAvatar'
   })(ListItemAvatar);
 
-  var styles$W = function styles(theme) {
+  var styles$Y = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -21711,11 +22330,11 @@
      */
     className: propTypes.string
   };
-  var ListItemIcon$1 = withStyles(styles$W, {
+  var ListItemIcon$1 = withStyles(styles$Y, {
     name: 'MuiListItemIcon'
   })(ListItemIcon);
 
-  var styles$X = {
+  var styles$Z = {
     /* Styles applied to the root element. */
     root: {
       position: 'absolute',
@@ -21754,11 +22373,11 @@
     className: propTypes.string
   };
   ListItemSecondaryAction.muiName = 'ListItemSecondaryAction';
-  var ListItemSecondaryAction$1 = withStyles(styles$X, {
+  var ListItemSecondaryAction$1 = withStyles(styles$Z, {
     name: 'MuiListItemSecondaryAction'
   })(ListItemSecondaryAction);
 
-  var styles$Y = function styles(theme) {
+  var styles$_ = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -21901,11 +22520,11 @@
   ListItemText.contextTypes = {
     dense: propTypes.bool
   };
-  var ListItemText$1 = withStyles(styles$Y, {
+  var ListItemText$1 = withStyles(styles$_, {
     name: 'MuiListItemText'
   })(ListItemText);
 
-  var styles$Z = function styles(theme) {
+  var styles$10 = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -22014,7 +22633,7 @@
     inset: false
   };
   ListSubheader.muiName = 'ListSubheader';
-  var ListSubheader$1 = withStyles(styles$Z, {
+  var ListSubheader$1 = withStyles(styles$10, {
     name: 'MuiListSubheader'
   })(ListSubheader);
 
@@ -22069,7 +22688,7 @@
     return typeof anchorEl === 'function' ? anchorEl() : anchorEl;
   }
 
-  var styles$_ = {
+  var styles$11 = {
     /* Styles applied to the `Paper` component. */
     paper: {
       position: 'absolute',
@@ -22139,8 +22758,8 @@
         var contentAnchorOffset = _this.getContentAnchorOffset(element);
 
         var elemRect = {
-          width: element.clientWidth,
-          height: element.clientHeight
+          width: element.offsetWidth,
+          height: element.offsetHeight
         }; // Get the transform origin point on the element itself
 
         var transformOrigin = _this.getTransformOrigin(elemRect, contentAnchorOffset);
@@ -22547,7 +23166,7 @@
     TransitionComponent: Grow$1,
     transitionDuration: 'auto'
   };
-  var Popover$1 = withStyles(styles$_, {
+  var Popover$1 = withStyles(styles$11, {
     name: 'MuiPopover'
   })(Popover);
 
@@ -22765,7 +23384,7 @@
     vertical: 'top',
     horizontal: 'left'
   };
-  var styles$10 = {
+  var styles$12 = {
     /* Styles applied to the `Paper` component. */
     paper: {
       // specZ: The maximum height of a simple menu should be one or more rows less than the view
@@ -22997,12 +23616,12 @@
     disableAutoFocusItem: false,
     transitionDuration: 'auto'
   };
-  var Menu$1 = withStyles(styles$10, {
+  var Menu$1 = withStyles(styles$12, {
     name: 'MuiMenu',
     withTheme: true
   })(Menu);
 
-  var styles$11 = function styles(theme) {
+  var styles$13 = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: _extends_1({}, theme.typography.subheading, {
@@ -23077,11 +23696,11 @@
     component: 'li',
     role: 'menuitem'
   };
-  var MenuItem$1 = withStyles(styles$11, {
+  var MenuItem$1 = withStyles(styles$13, {
     name: 'MuiMenuItem'
   })(MenuItem);
 
-  var styles$12 = function styles(theme) {
+  var styles$14 = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -23227,7 +23846,7 @@
     position: 'bottom',
     variant: 'dots'
   };
-  var MobileStepper$1 = withStyles(styles$12, {
+  var MobileStepper$1 = withStyles(styles$14, {
     name: 'MuiMobileStepper'
   })(MobileStepper);
 
@@ -23236,6 +23855,8 @@
    */
 
   function NativeSelectInput(props) {
+    var _classNames;
+
     var children = props.children,
         classes = props.classes,
         className = props.className,
@@ -23245,12 +23866,13 @@
         name = props.name,
         onChange = props.onChange,
         value = props.value,
-        other = objectWithoutProperties(props, ["children", "classes", "className", "disabled", "IconComponent", "inputRef", "name", "onChange", "value"]);
+        variant = props.variant,
+        other = objectWithoutProperties(props, ["children", "classes", "className", "disabled", "IconComponent", "inputRef", "name", "onChange", "value", "variant"]);
 
     return React.createElement("div", {
       className: classes.root
     }, React.createElement("select", _extends_1({
-      className: classnames(classes.select, defineProperty({}, classes.disabled, disabled), className),
+      className: classnames(classes.select, (_classNames = {}, defineProperty(_classNames, classes.filled, variant === 'filled'), defineProperty(_classNames, classes.outlined, variant === 'outlined'), defineProperty(_classNames, classes.disabled, disabled), _classNames), className),
       name: name,
       disabled: disabled,
       onChange: onChange,
@@ -23310,7 +23932,12 @@
     /**
      * The input value.
      */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool])
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]),
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
 
   /**
@@ -23329,7 +23956,7 @@
   ArrowDropDown.muiName = 'SvgIcon';
   var ArrowDropDownIcon = ArrowDropDown;
 
-  var styles$13 = function styles(theme) {
+  var styles$15 = function styles(theme) {
     return {
       /* Styles applied to the `Input` component `root` class. */
       root: {
@@ -23347,6 +23974,8 @@
         // Native select can't be selected either.
         userSelect: 'none',
         paddingRight: 32,
+        borderRadius: 0,
+        // Reset
         width: 'calc(100% - 32px)',
         minWidth: 16,
         // So it doesn't collapse.
@@ -23369,6 +23998,17 @@
         '&$disabled': {
           cursor: 'default'
         }
+      },
+
+      /* Styles applied to the `Input` component if `variant="filled"`. */
+      filled: {
+        width: 'calc(100% - 44px)'
+      },
+
+      /* Styles applied to the `Input` component if `variant="outlined"`. */
+      outlined: {
+        width: 'calc(100% - 46px)',
+        borderRadius: theme.shape.borderRadius
       },
 
       /* Styles applied to the `Input` component `selectMenu` class. */
@@ -23400,17 +24040,23 @@
     };
   };
   /**
-   * An alternative to `<Select native />` with a much smaller dependency graph.
+   * An alternative to `<Select native />` with a much smaller bundle size footprint.
    */
 
-  function NativeSelect(props) {
+  function NativeSelect(props, context) {
     var children = props.children,
         classes = props.classes,
         IconComponent = props.IconComponent,
         input = props.input,
         inputProps = props.inputProps,
-        other = objectWithoutProperties(props, ["children", "classes", "IconComponent", "input", "inputProps"]);
+        variant = props.variant,
+        other = objectWithoutProperties(props, ["children", "classes", "IconComponent", "input", "inputProps", "variant"]);
 
+    var fcs = formControlState({
+      props: props,
+      context: context,
+      states: ['variant']
+    });
     return React.cloneElement(input, _extends_1({
       // Most of the logic is implemented in `NativeSelectInput`.
       // The `Select` component is a simple API wrapper to expose something better to play with.
@@ -23419,6 +24065,7 @@
         children: children,
         classes: classes,
         IconComponent: IconComponent,
+        variant: fcs.variant,
         type: undefined
       }, inputProps, input ? input.props.inputProps : {})
     }, other));
@@ -23463,14 +24110,22 @@
     /**
      * The input value.
      */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool])
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]),
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   NativeSelect.defaultProps = {
     IconComponent: ArrowDropDownIcon,
     input: React.createElement(Input$1, null)
   };
-  NativeSelect.muiName = 'NativeSelect';
-  var NativeSelect$1 = withStyles(styles$13, {
+  NativeSelect.contextTypes = {
+    muiFormControl: propTypes.object
+  };
+  NativeSelect.muiName = 'Select';
+  var NativeSelect$1 = withStyles(styles$15, {
     name: 'MuiNativeSelect'
   })(NativeSelect);
 
@@ -23571,6 +24226,403 @@
     defer: false,
     fallback: null
   };
+
+  var styles$16 = function styles(theme) {
+    var light = theme.palette.type === 'light';
+    var align = theme.direction === 'rtl' ? 'right' : 'left';
+    return {
+      /* Styles applied to the root element. */
+      root: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
+        top: 0,
+        left: 0,
+        margin: 0,
+        padding: 0,
+        pointerEvents: 'none',
+        borderRadius: theme.shape.borderRadius,
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: light ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)',
+        // Match the Input Label
+        transition: theme.transitions.create(["padding-".concat(align), 'border-color', 'border-width'], {
+          duration: theme.transitions.duration.shorter,
+          easing: theme.transitions.easing.easeOut
+        })
+      },
+
+      /* Styles applied to the legend element. */
+      legend: {
+        textAlign: align,
+        padding: 0,
+        transition: theme.transitions.create('width', {
+          duration: theme.transitions.duration.shorter,
+          easing: theme.transitions.easing.easeOut
+        }),
+        // Firefox workaround. Firefox will only obscure the
+        // rendered height of the legend and, unlike other browsers,
+        // will not push fieldset contents.
+        '@supports (-moz-appearance:none)': {
+          height: 2
+        }
+      },
+
+      /* Styles applied to the root element if the control is focused. */
+      focused: {
+        borderColor: theme.palette.primary.main,
+        borderWidth: 2
+      },
+
+      /* Styles applied to the root element if `error={true}`. */
+      error: {
+        borderColor: theme.palette.error.main
+      },
+
+      /* Styles applied to the root element if `disabled={true}`. */
+      disabled: {
+        borderColor: theme.palette.action.disabled
+      }
+    };
+  };
+  /**
+   * @ignore - internal component.
+   */
+
+  function NotchedOutline(props) {
+    var _classNames;
+
+    var children = props.children,
+        classes = props.classes,
+        className = props.className,
+        disabled = props.disabled,
+        error = props.error,
+        focused = props.focused,
+        labelWidth = props.labelWidth,
+        notched = props.notched,
+        style = props.style,
+        theme = props.theme,
+        other = objectWithoutProperties(props, ["children", "classes", "className", "disabled", "error", "focused", "labelWidth", "notched", "style", "theme"]);
+
+    var align = theme.direction === 'rtl' ? 'right' : 'left';
+    return React.createElement("fieldset", _extends_1({
+      "aria-hidden": true,
+      style: _extends_1(defineProperty({}, "padding".concat(capitalize(align)), 8 + (notched ? 0 : labelWidth / 2)), style),
+      className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.focused, focused), defineProperty(_classNames, classes.error, error), defineProperty(_classNames, classes.disabled, disabled), _classNames), className)
+    }, other), React.createElement("legend", {
+      className: classes.legend,
+      style: {
+        // IE 11: fieldset with legend does not render
+        // a border radius. This maintains consistency
+        // by always having a legend rendered
+        width: notched ? labelWidth : 0.01
+      }
+    }));
+  }
+
+  NotchedOutline.propTypes = {
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object,
+
+    /**
+     * @ignore
+     */
+    className: propTypes.string,
+
+    /**
+     * If `true`, the outline should be displayed in a disabled state.
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * If `true`, the outline should be displayed in an error state.
+     */
+    error: propTypes.bool,
+
+    /**
+     * If `true`, the outline should be displayed in a focused state.
+     */
+    focused: propTypes.bool,
+
+    /**
+     * The width of the legend.
+     */
+    labelWidth: propTypes.number.isRequired,
+
+    /**
+     * If `true`, the outline is notched to accommodate the label.
+     */
+    notched: propTypes.bool.isRequired,
+
+    /**
+     * @ignore
+     */
+    style: propTypes.object,
+
+    /**
+     * @ignore
+     */
+    theme: propTypes.object
+  };
+  var NotchedOutline$1 = withStyles(styles$16, {
+    name: 'MuiNotchedOutline',
+    withTheme: true
+  })(NotchedOutline);
+
+  var styles$17 = function styles(theme) {
+    return {
+      /* Styles applied to the root element. */
+      root: {
+        position: 'relative',
+        '&:hover:not($disabled):not($focused):not($error) $notchedOutline': {
+          borderColor: theme.palette.text.primary
+        }
+      },
+
+      /* Styles applied to the root element if the component is focused. */
+      focused: {},
+
+      /* Styles applied to the root element if `disabled={true}`. */
+      disabled: {},
+
+      /* Styles applied to the root element if `startAdornment` is provided. */
+      adornedStart: {
+        paddingLeft: 14
+      },
+
+      /* Styles applied to the root element if `endAdornment` is provided. */
+      adornedEnd: {
+        paddingRight: 14
+      },
+
+      /* Styles applied to the root element if `error={true}`. */
+      error: {},
+
+      /* Styles applied to the root element if `multiline={true}`. */
+      multiline: {
+        padding: '18.5px 14px' // // These values are needed to prevent us from
+        // // overrunning the notched outline (including label)
+        // paddingTop: 27,
+        // paddingBottom: 10,
+
+      },
+
+      /* Styles applied to the `NotchedOutline` element. */
+      notchedOutline: {},
+
+      /* Styles applied to the `input` element. */
+      input: {
+        padding: '18.5px 14px'
+      },
+
+      /* Styles applied to the `input` element if `margin="dense"`. */
+      inputMarginDense: {
+        paddingTop: 15,
+        paddingBottom: 15
+      },
+
+      /* Styles applied to the `input` element if `multiline={true}`. */
+      inputMultiline: {
+        padding: 0
+      },
+
+      /* Styles applied to the `input` element if `startAdornment` is provided. */
+      inputAdornedStart: {
+        paddingLeft: 0
+      },
+
+      /* Styles applied to the `input` element if `endAdornment` is provided. */
+      inputAdornedEnd: {
+        paddingRight: 0
+      }
+    };
+  };
+
+  function OutlinedInput(props) {
+    var classes = props.classes,
+        labelWidth = props.labelWidth,
+        notched = props.notched,
+        other = objectWithoutProperties(props, ["classes", "labelWidth", "notched"]);
+
+    return React.createElement(InputBase$1, _extends_1({
+      renderPrefix: function renderPrefix(state) {
+        return React.createElement(NotchedOutline$1, {
+          className: classes.notchedOutline,
+          disabled: state.disabled,
+          error: state.error,
+          focused: state.focused,
+          labelWidth: labelWidth,
+          notched: typeof notched !== 'undefined' ? notched : Boolean(state.startAdornment || state.filled || state.focused)
+        });
+      },
+      classes: _extends_1({}, classes, {
+        root: classnames(classes.root, classes.underline, {}),
+        notchedOutline: null
+      })
+    }, other));
+  }
+
+  OutlinedInput.propTypes = {
+    /**
+     * This property helps users to fill forms faster, especially on mobile devices.
+     * The name can be confusing, as it's more like an autofill.
+     * You can learn more about it here:
+     * https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
+     */
+    autoComplete: propTypes.string,
+
+    /**
+     * If `true`, the input will be focused during the first mount.
+     */
+    autoFocus: propTypes.bool,
+
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object.isRequired,
+
+    /**
+     * The CSS class name of the wrapper element.
+     */
+    className: propTypes.string,
+
+    /**
+     * The default input value, useful when not controlling the component.
+     */
+    defaultValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * If `true`, the input will be disabled.
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * End `InputAdornment` for this component.
+     */
+    endAdornment: propTypes.node,
+
+    /**
+     * If `true`, the input will indicate an error. This is normally obtained via context from
+     * FormControl.
+     */
+    error: propTypes.bool,
+
+    /**
+     * If `true`, the input will take up the full width of its container.
+     */
+    fullWidth: propTypes.bool,
+
+    /**
+     * The id of the `input` element.
+     */
+    id: propTypes.string,
+
+    /**
+     * The component used for the native input.
+     * Either a string to use a DOM element or a component.
+     */
+    inputComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
+
+    /**
+     * Attributes applied to the `input` element.
+     */
+    inputProps: propTypes.object,
+
+    /**
+     * Use that property to pass a ref callback to the native input component.
+     */
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
+
+    /**
+     * The width of the legend.
+     */
+    labelWidth: propTypes.number.isRequired,
+
+    /**
+     * If `dense`, will adjust vertical spacing. This is normally obtained via context from
+     * FormControl.
+     */
+    margin: propTypes.oneOf(['dense', 'none']),
+
+    /**
+     * If `true`, a textarea element will be rendered.
+     */
+    multiline: propTypes.bool,
+
+    /**
+     * Name attribute of the `input` element.
+     */
+    name: propTypes.string,
+
+    /**
+     * If `true`, the outline is notched to accommodate the label.
+     */
+    notched: propTypes.bool,
+
+    /**
+     * Callback fired when the value is changed.
+     *
+     * @param {object} event The event source of the callback.
+     * You can pull out the new value by accessing `event.target.value`.
+     */
+    onChange: propTypes.func,
+
+    /**
+     * The short hint displayed in the input before the user enters a value.
+     */
+    placeholder: propTypes.string,
+
+    /**
+     * It prevents the user from changing the value of the field
+     * (not from interacting with the field).
+     */
+    readOnly: propTypes.bool,
+
+    /**
+     * If `true`, the input will be required.
+     */
+    required: propTypes.bool,
+
+    /**
+     * Number of rows to display when multiline option is set to true.
+     */
+    rows: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Maximum number of rows to display when multiline option is set to true.
+     */
+    rowsMax: propTypes.oneOfType([propTypes.string, propTypes.number]),
+
+    /**
+     * Start `InputAdornment` for this component.
+     */
+    startAdornment: propTypes.node,
+
+    /**
+     * Type of the input element. It should be a valid HTML5 input type.
+     */
+    type: propTypes.string,
+
+    /**
+     * The input value, required for a controlled component.
+     */
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
+  };
+  InputBase$1.defaultProps = {
+    fullWidth: false,
+    inputComponent: 'input',
+    multiline: false,
+    type: 'text'
+  };
+  OutlinedInput.muiName = 'Input';
+  var OutlinedInput$1 = withStyles(styles$17, {
+    name: 'MuiOutlinedInput'
+  })(OutlinedInput);
 
   /**!
    * @fileOverview Kickass library to create and place poppers near their reference elements.
@@ -26415,7 +27467,7 @@
   RadioButtonChecked.muiName = 'SvgIcon';
   var RadioButtonCheckedIcon = RadioButtonChecked;
 
-  var styles$14 = function styles(theme) {
+  var styles$18 = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -26545,7 +27597,7 @@
   Radio.defaultProps = {
     color: 'secondary'
   };
-  var Radio$1 = withStyles(styles$14, {
+  var Radio$1 = withStyles(styles$18, {
     name: 'MuiRadio'
   })(Radio);
 
@@ -26866,7 +27918,8 @@
     }, {
       key: "render",
       value: function render() {
-        var _this2 = this;
+        var _this2 = this,
+            _classNames;
 
         var _this$props3 = this.props,
             autoWidth = _this$props3.autoWidth,
@@ -26895,7 +27948,8 @@
             _this$props3$type = _this$props3.type,
             type = _this$props3$type === void 0 ? 'hidden' : _this$props3$type,
             value = _this$props3.value,
-            other = objectWithoutProperties(_this$props3, ["autoWidth", "children", "classes", "className", "disabled", "displayEmpty", "IconComponent", "inputRef", "MenuProps", "multiple", "name", "onBlur", "onChange", "onClose", "onFocus", "onOpen", "open", "readOnly", "renderValue", "required", "SelectDisplayProps", "tabIndex", "type", "value"]);
+            variant = _this$props3.variant,
+            other = objectWithoutProperties(_this$props3, ["autoWidth", "children", "classes", "className", "disabled", "displayEmpty", "IconComponent", "inputRef", "MenuProps", "multiple", "name", "onBlur", "onChange", "onClose", "onFocus", "onOpen", "open", "readOnly", "renderValue", "required", "SelectDisplayProps", "tabIndex", "type", "value", "variant"]);
 
         var open = this.isOpenControlled && this.displayRef ? openProp : this.state.open;
         delete other['aria-invalid'];
@@ -26971,7 +28025,7 @@
         return React.createElement("div", {
           className: classes.root
         }, React.createElement("div", _extends_1({
-          className: classnames(classes.select, classes.selectMenu, defineProperty({}, classes.disabled, disabled), className),
+          className: classnames(classes.select, classes.selectMenu, (_classNames = {}, defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.filled, variant === 'filled'), defineProperty(_classNames, classes.outlined, variant === 'outlined'), _classNames), className),
           ref: this.handleDisplayRef,
           "aria-pressed": open ? 'true' : 'false',
           tabIndex: tabIndex,
@@ -27154,10 +28208,15 @@
     /**
      * The input value.
      */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))]).isRequired
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))]).isRequired,
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
 
-  function Select(props) {
+  function Select(props, context) {
     var autoWidth = props.autoWidth,
         children = props.children,
         classes = props.classes,
@@ -27173,9 +28232,15 @@
         open = props.open,
         renderValue = props.renderValue,
         SelectDisplayProps = props.SelectDisplayProps,
-        other = objectWithoutProperties(props, ["autoWidth", "children", "classes", "displayEmpty", "IconComponent", "input", "inputProps", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps"]);
+        variant = props.variant,
+        other = objectWithoutProperties(props, ["autoWidth", "children", "classes", "displayEmpty", "IconComponent", "input", "inputProps", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps", "variant"]);
 
     var inputComponent = native ? NativeSelectInput : SelectInput;
+    var fcs = formControlState({
+      props: props,
+      context: context,
+      states: ['variant']
+    });
     return React.cloneElement(input, _extends_1({
       // Most of the logic is implemented in `SelectInput`.
       // The `Select` component is a simple API wrapper to expose something better to play with.
@@ -27183,6 +28248,7 @@
       inputProps: _extends_1({
         children: children,
         IconComponent: IconComponent,
+        variant: fcs.variant,
         type: undefined
       }, native ? {} : {
         autoWidth: autoWidth,
@@ -27310,7 +28376,12 @@
      * The input value.
      * This property is required when the `native` property is `false` (default).
      */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))]),
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   Select.defaultProps = {
     autoWidth: false,
@@ -27320,12 +28391,15 @@
     multiple: false,
     native: false
   };
+  Select.contextTypes = {
+    muiFormControl: propTypes.object
+  };
   Select.muiName = 'Select';
-  var Select$1 = withStyles(styles$13, {
+  var Select$1 = withStyles(styles$15, {
     name: 'MuiSelect'
   })(Select);
 
-  var styles$16 = function styles(theme) {
+  var styles$1a = function styles(theme) {
     var _root;
 
     var emphasis = theme.palette.type === 'light' ? 0.8 : 0.98;
@@ -27408,11 +28482,11 @@
      */
     message: propTypes.node
   };
-  var SnackbarContent$1 = withStyles(styles$16, {
+  var SnackbarContent$1 = withStyles(styles$1a, {
     name: 'MuiSnackbarContent'
   })(SnackbarContent);
 
-  var styles$17 = function styles(theme) {
+  var styles$1b = function styles(theme) {
     var gutter = 24;
     var top = {
       top: 0
@@ -27849,12 +28923,12 @@
       exit: duration.leavingScreen
     }
   };
-  var Snackbar$1 = withStyles(styles$17, {
+  var Snackbar$1 = withStyles(styles$1b, {
     flip: false,
     name: 'MuiSnackbar'
   })(Snackbar);
 
-  var styles$18 = {
+  var styles$1c = {
     /* Styles applied to the root element. */
     root: {},
 
@@ -27989,7 +29063,7 @@
     completed: false,
     disabled: false
   };
-  var Step$1 = withStyles(styles$18, {
+  var Step$1 = withStyles(styles$1c, {
     name: 'MuiStep'
   })(Step);
 
@@ -28025,7 +29099,7 @@
   Warning.muiName = 'SvgIcon';
   var Warning$1 = Warning;
 
-  var styles$19 = function styles(theme) {
+  var styles$1d = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -28131,11 +29205,11 @@
     completed: false,
     error: false
   };
-  var StepIcon$1 = withStyles(styles$19, {
+  var StepIcon$1 = withStyles(styles$1d, {
     name: 'MuiStepIcon'
   })(StepIcon);
 
-  var styles$1a = function styles(theme) {
+  var styles$1e = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -28323,11 +29397,11 @@
     orientation: 'horizontal'
   };
   StepLabel.muiName = 'StepLabel';
-  var StepLabel$1 = withStyles(styles$1a, {
+  var StepLabel$1 = withStyles(styles$1e, {
     name: 'MuiStepLabel'
   })(StepLabel);
 
-  var styles$1b = {
+  var styles$1f = {
     /* Styles applied to the root element. */
     root: {
       width: '100%',
@@ -28444,11 +29518,11 @@
      */
     orientation: propTypes.oneOf(['horizontal', 'vertical'])
   };
-  var StepButton$1 = withStyles(styles$1b, {
+  var StepButton$1 = withStyles(styles$1f, {
     name: 'MuiStepButton'
   })(StepButton);
 
-  var styles$1c = function styles(theme) {
+  var styles$1g = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -28539,11 +29613,11 @@
     alternativeLabel: false,
     orientation: 'horizontal'
   };
-  var StepConnector$1 = withStyles(styles$1c, {
+  var StepConnector$1 = withStyles(styles$1g, {
     name: 'MuiStepConnector'
   })(StepConnector);
 
-  var styles$1d = function styles(theme) {
+  var styles$1h = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -28673,11 +29747,11 @@
     TransitionComponent: Collapse$1,
     transitionDuration: 'auto'
   };
-  var StepContent$1 = withStyles(styles$1d, {
+  var StepContent$1 = withStyles(styles$1h, {
     name: 'MuiStepContent'
   })(StepContent);
 
-  var styles$1e = {
+  var styles$1i = {
     /* Styles applied to the root element. */
     root: {
       display: 'flex',
@@ -28800,11 +29874,11 @@
     orientation: 'horizontal'
   };
   Stepper.muiName = 'Stepper';
-  var Stepper$1 = withStyles(styles$1e, {
+  var Stepper$1 = withStyles(styles$1i, {
     name: 'MuiStepper'
   })(Stepper);
 
-  var styles$1f = function styles(theme) {
+  var styles$1j = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -28865,7 +29939,7 @@
      */
     width: propTypes.number.isRequired
   };
-  var SwipeArea$1 = withStyles(styles$1f)(SwipeArea);
+  var SwipeArea$1 = withStyles(styles$1j)(SwipeArea);
 
   // trigger a native scroll.
 
@@ -29365,7 +30439,7 @@
   };
   var SwipeableDrawer$1 = withTheme()(SwipeableDrawer);
 
-  var styles$1g = function styles(theme) {
+  var styles$1k = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -29394,6 +30468,9 @@
       /* Styles applied to the internal `SwitchBase` component's `root` class. */
       switchBase: {
         zIndex: 1,
+        padding: 0,
+        height: 48,
+        width: 48,
         color: theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[400],
         transition: theme.transitions.create('transform', {
           duration: theme.transitions.duration.shortest
@@ -29574,11 +30651,308 @@
   Switch.defaultProps = {
     color: 'secondary'
   };
-  var Switch$1 = withStyles(styles$1g, {
+  var Switch$1 = withStyles(styles$1k, {
     name: 'MuiSwitch'
   })(Switch);
 
-  var styles$1h = function styles(theme) {
+  var styles$1l = function styles(theme) {
+    return {
+      /* Styles applied to the root element. */
+      root: _extends_1({}, theme.typography.button, defineProperty({
+        maxWidth: 264,
+        position: 'relative',
+        minWidth: 72,
+        padding: 0,
+        minHeight: 48,
+        flexShrink: 0,
+        overflow: 'hidden',
+        whiteSpace: 'normal'
+      }, theme.breakpoints.up('md'), {
+        fontSize: theme.typography.pxToRem(13),
+        minWidth: 160
+      })),
+
+      /* Styles applied to the root element if both `icon` and `label` are provided. */
+      labelIcon: {
+        minHeight: 72
+      },
+
+      /* Styles applied to the root element if `textColor="inherit"`. */
+      textColorInherit: {
+        color: 'inherit',
+        opacity: 0.7,
+        '&$selected': {
+          opacity: 1
+        },
+        '&$disabled': {
+          opacity: 0.4
+        }
+      },
+
+      /* Styles applied to the root element if `textColor="primary"`. */
+      textColorPrimary: {
+        color: theme.palette.text.secondary,
+        '&$selected': {
+          color: theme.palette.primary.main
+        },
+        '&$disabled': {
+          color: theme.palette.text.disabled
+        }
+      },
+
+      /* Styles applied to the root element if `textColor="secondary"`. */
+      textColorSecondary: {
+        color: theme.palette.text.secondary,
+        '&$selected': {
+          color: theme.palette.secondary.main
+        },
+        '&$disabled': {
+          color: theme.palette.text.disabled
+        }
+      },
+
+      /* Styles applied to the root element if `selected={true}` (controlled by the Tabs component). */
+      selected: {},
+
+      /* Styles applied to the root element if `disabled={true}` (controlled by the Tabs component). */
+      disabled: {},
+
+      /* Styles applied to the root element if `fullWidth={true}` (controlled by the Tabs component). */
+      fullWidth: {
+        flexShrink: 1,
+        flexGrow: 1,
+        maxWidth: 'none'
+      },
+
+      /* Styles applied to the `icon` and `label`'s wrapper element. */
+      wrapper: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        flexDirection: 'column'
+      },
+
+      /* Styles applied to the label container element if `label` is provided. */
+      labelContainer: defineProperty({
+        paddingTop: 6,
+        paddingBottom: 6,
+        paddingLeft: 12,
+        paddingRight: 12
+      }, theme.breakpoints.up('md'), {
+        paddingLeft: 24,
+        paddingRight: 24
+      }),
+
+      /* Styles applied to the label wrapper element if `label` is provided. */
+      label: {},
+
+      /* Styles applied to the label wrapper element if `label` is provided and the text is wrapped. */
+      labelWrapped: defineProperty({}, theme.breakpoints.down('sm'), {
+        fontSize: theme.typography.pxToRem(12)
+      })
+    };
+  };
+
+  var Tab =
+  /*#__PURE__*/
+  function (_React$Component) {
+    inherits(Tab, _React$Component);
+
+    function Tab() {
+      var _getPrototypeOf2;
+
+      var _this;
+
+      classCallCheck(this, Tab);
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = possibleConstructorReturn(this, (_getPrototypeOf2 = getPrototypeOf(Tab)).call.apply(_getPrototypeOf2, [this].concat(args)));
+      _this.label = null;
+      _this.state = {
+        labelWrapped: false
+      };
+
+      _this.handleChange = function (event) {
+        var _this$props = _this.props,
+            onChange = _this$props.onChange,
+            value = _this$props.value,
+            onClick = _this$props.onClick;
+
+        if (onChange) {
+          onChange(event, value);
+        }
+
+        if (onClick) {
+          onClick(event);
+        }
+      };
+
+      _this.checkTextWrap = function () {
+        if (_this.labelRef) {
+          var labelWrapped = _this.labelRef.getClientRects().length > 1;
+
+          if (_this.state.labelWrapped !== labelWrapped) {
+            _this.setState({
+              labelWrapped: labelWrapped
+            });
+          }
+        }
+      };
+
+      return _this;
+    }
+
+    createClass(Tab, [{
+      key: "componentDidMount",
+      value: function componentDidMount() {
+        this.checkTextWrap();
+      }
+    }, {
+      key: "componentDidUpdate",
+      value: function componentDidUpdate(prevProps, prevState) {
+        if (this.state.labelWrapped === prevState.labelWrapped) {
+          /**
+           * At certain text and tab lengths, a larger font size may wrap to two lines while the smaller
+           * font size still only requires one line.  This check will prevent an infinite render loop
+           * fron occurring in that scenario.
+           */
+          this.checkTextWrap();
+        }
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this2 = this,
+            _classNames2;
+
+        var _this$props2 = this.props,
+            classes = _this$props2.classes,
+            classNameProp = _this$props2.className,
+            disabled = _this$props2.disabled,
+            fullWidth = _this$props2.fullWidth,
+            icon = _this$props2.icon,
+            indicator = _this$props2.indicator,
+            labelProp = _this$props2.label,
+            onChange = _this$props2.onChange,
+            selected = _this$props2.selected,
+            textColor = _this$props2.textColor,
+            value = _this$props2.value,
+            other = objectWithoutProperties(_this$props2, ["classes", "className", "disabled", "fullWidth", "icon", "indicator", "label", "onChange", "selected", "textColor", "value"]);
+
+        var label;
+
+        if (labelProp !== undefined) {
+          label = React.createElement("span", {
+            className: classes.labelContainer
+          }, React.createElement("span", {
+            className: classnames(classes.label, defineProperty({}, classes.labelWrapped, this.state.labelWrapped)),
+            ref: function ref(_ref) {
+              _this2.labelRef = _ref;
+            }
+          }, labelProp));
+        }
+
+        var className = classnames(classes.root, classes["textColor".concat(capitalize(textColor))], (_classNames2 = {}, defineProperty(_classNames2, classes.disabled, disabled), defineProperty(_classNames2, classes.selected, selected), defineProperty(_classNames2, classes.labelIcon, icon && label), defineProperty(_classNames2, classes.fullWidth, fullWidth), _classNames2), classNameProp);
+        return React.createElement(ButtonBase$1, _extends_1({
+          focusRipple: true,
+          className: className,
+          role: "tab",
+          "aria-selected": selected,
+          disabled: disabled
+        }, other, {
+          onClick: this.handleChange
+        }), React.createElement("span", {
+          className: classes.wrapper
+        }, icon, label), indicator);
+      }
+    }]);
+
+    return Tab;
+  }(React.Component);
+
+  Tab.propTypes = {
+    /**
+     * This property isn't supported.
+     * Use the `component` property if you need to change the children structure.
+     */
+    children: unsupportedProp,
+
+    /**
+     * Override or extend the styles applied to the component.
+     * See [CSS API](#css-api) below for more details.
+     */
+    classes: propTypes.object.isRequired,
+
+    /**
+     * @ignore
+     */
+    className: propTypes.string,
+
+    /**
+     * If `true`, the tab will be disabled.
+     */
+    disabled: propTypes.bool,
+
+    /**
+     * @ignore
+     */
+    fullWidth: propTypes.bool,
+
+    /**
+     * The icon element.
+     */
+    icon: propTypes.node,
+
+    /**
+     * @ignore
+     * For server side rendering consideration, we let the selected tab
+     * render the indicator.
+     */
+    indicator: propTypes.node,
+
+    /**
+     * The label element.
+     */
+    label: propTypes.node,
+
+    /**
+     * @ignore
+     */
+    onChange: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onClick: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    selected: propTypes.bool,
+
+    /**
+     * @ignore
+     */
+    textColor: propTypes.oneOf(['secondary', 'primary', 'inherit']),
+
+    /**
+     * You can provide your own value. Otherwise, we fallback to the child position index.
+     */
+    value: propTypes.any
+  };
+  Tab.defaultProps = {
+    disabled: false,
+    textColor: 'inherit'
+  };
+  var Tab$1 = withStyles(styles$1l, {
+    name: 'MuiTab'
+  })(Tab);
+
+  var styles$1m = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -29666,11 +31040,11 @@
   Table.childContextTypes = {
     table: propTypes.object
   };
-  var Table$1 = withStyles(styles$1h, {
+  var Table$1 = withStyles(styles$1m, {
     name: 'MuiTable'
   })(Table);
 
-  var styles$1i = {
+  var styles$1n = {
     /* Styles applied to the root element. */
     root: {
       display: 'table-row-group'
@@ -29745,11 +31119,11 @@
   TableBody.childContextTypes = {
     tablelvl2: propTypes.object
   };
-  var TableBody$1 = withStyles(styles$1i, {
+  var TableBody$1 = withStyles(styles$1n, {
     name: 'MuiTableBody'
   })(TableBody);
 
-  var styles$1j = function styles(theme) {
+  var styles$1o = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -29918,11 +31292,11 @@
     table: propTypes.object,
     tablelvl2: propTypes.object
   };
-  var TableCell$1 = withStyles(styles$1j, {
+  var TableCell$1 = withStyles(styles$1o, {
     name: 'MuiTableCell'
   })(TableCell);
 
-  var styles$1k = {
+  var styles$1p = {
     /* Styles applied to the root element. */
     root: {
       display: 'table-footer-group'
@@ -29997,11 +31371,11 @@
   TableFooter.childContextTypes = {
     tablelvl2: propTypes.object
   };
-  var TableFooter$1 = withStyles(styles$1k, {
+  var TableFooter$1 = withStyles(styles$1p, {
     name: 'MuiTableFooter'
   })(TableFooter);
 
-  var styles$1l = {
+  var styles$1q = {
     /* Styles applied to the root element. */
     root: {
       display: 'table-header-group'
@@ -30076,11 +31450,11 @@
   TableHead.childContextTypes = {
     tablelvl2: propTypes.object
   };
-  var TableHead$1 = withStyles(styles$1l, {
+  var TableHead$1 = withStyles(styles$1q, {
     name: 'MuiTableHead'
   })(TableHead);
 
-  var styles$1m = function styles(theme) {
+  var styles$1r = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -30147,7 +31521,7 @@
     disableGutters: false,
     variant: 'regular'
   };
-  var Toolbar$1 = withStyles(styles$1m, {
+  var Toolbar$1 = withStyles(styles$1r, {
     name: 'MuiToolbar'
   })(Toolbar);
 
@@ -30291,7 +31665,7 @@
   };
   var TablePaginationActions$1 = withTheme()(TablePaginationActions);
 
-  var styles$1n = function styles(theme) {
+  var styles$1s = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -30337,7 +31711,7 @@
         top: 1
       },
 
-      /* Styles applied to the Input component. */
+      /* Styles applied to the `InputBase` component. */
       input: {
         fontSize: 'inherit',
         flexShrink: 0
@@ -30428,9 +31802,8 @@
             select: classes.select,
             icon: classes.selectIcon
           },
-          input: React.createElement(Input$1, {
-            className: classes.input,
-            disableUnderline: true
+          input: React.createElement(InputBase$1, {
+            className: classes.input
           }),
           value: rowsPerPage,
           onChange: onChangeRowsPerPage
@@ -30561,11 +31934,11 @@
     labelRowsPerPage: 'Rows per page:',
     rowsPerPageOptions: [5, 10, 25]
   };
-  var TablePagination$1 = withStyles(styles$1n, {
+  var TablePagination$1 = withStyles(styles$1s, {
     name: 'MuiTablePagination'
   })(TablePagination);
 
-  var styles$1o = function styles(theme) {
+  var styles$1t = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -30665,7 +32038,7 @@
   TableRow.contextTypes = {
     tablelvl2: propTypes.object
   };
-  var TableRow$1 = withStyles(styles$1o, {
+  var TableRow$1 = withStyles(styles$1t, {
     name: 'MuiTableRow'
   })(TableRow);
 
@@ -30685,7 +32058,7 @@
   ArrowDownward.muiName = 'SvgIcon';
   var ArrowDownwardIcon = ArrowDownward;
 
-  var styles$1p = function styles(theme) {
+  var styles$1u = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -30740,18 +32113,19 @@
 
   function TableSortLabel(props) {
     var active = props.active,
+        children = props.children,
         classes = props.classes,
         className = props.className,
-        children = props.children,
         direction = props.direction,
+        hideSortIcon = props.hideSortIcon,
         IconComponent = props.IconComponent,
-        other = objectWithoutProperties(props, ["active", "classes", "className", "children", "direction", "IconComponent"]);
+        other = objectWithoutProperties(props, ["active", "children", "classes", "className", "direction", "hideSortIcon", "IconComponent"]);
 
     return React.createElement(ButtonBase$1, _extends_1({
       className: classnames(classes.root, defineProperty({}, classes.active, active), className),
       component: "span",
       disableRipple: true
-    }, other), children, React.createElement(IconComponent, {
+    }, other), children, hideSortIcon && !active ? null : React.createElement(IconComponent, {
       className: classnames(classes.icon, classes["iconDirection".concat(capitalize(direction))])
     }));
   }
@@ -30784,6 +32158,11 @@
     direction: propTypes.oneOf(['asc', 'desc']),
 
     /**
+     * Hide sort icon when active is false.
+     */
+    hideSortIcon: propTypes.bool,
+
+    /**
      * Sort icon to use.
      */
     IconComponent: propTypes.func
@@ -30791,9 +32170,10 @@
   TableSortLabel.defaultProps = {
     active: false,
     direction: 'desc',
+    hideSortIcon: false,
     IconComponent: ArrowDownwardIcon
   };
-  var TableSortLabel$1 = withStyles(styles$1p, {
+  var TableSortLabel$1 = withStyles(styles$1u, {
     name: 'MuiTableSortLabel'
   })(TableSortLabel);
 
@@ -30940,7 +32320,7 @@
     return cancel;
   }
 
-  var styles$1q = {
+  var styles$1v = {
     width: 100,
     height: 100,
     position: 'absolute',
@@ -31025,7 +32405,7 @@
           target: "window",
           onResize: this.handleResize
         }) : null, React.createElement("div", {
-          style: styles$1q,
+          style: styles$1v,
           ref: function ref(_ref) {
             _this2.nodeRef = _ref;
           }
@@ -31041,7 +32421,7 @@
     onLoad: propTypes.func.isRequired
   };
 
-  var styles$1r = function styles(theme) {
+  var styles$1w = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -31097,9 +32477,9 @@
      */
     color: propTypes.oneOf(['primary', 'secondary'])
   };
-  var TabIndicator$1 = withStyles(styles$1r)(TabIndicator);
+  var TabIndicator$1 = withStyles(styles$1w)(TabIndicator);
 
-  var styles$1s = {
+  var styles$1x = {
     /* Styles applied to the root element. */
     root: {
       color: 'inherit',
@@ -31167,11 +32547,11 @@
   TabScrollButton.defaultProps = {
     visible: true
   };
-  var TabScrollButton$1 = withStyles(styles$1s, {
+  var TabScrollButton$1 = withStyles(styles$1x, {
     name: 'MuiTabScrollButton'
   })(TabScrollButton);
 
-  var styles$1t = function styles(theme) {
+  var styles$1y = function styles(theme) {
     return {
       /* Styles applied to the root element. */
       root: {
@@ -31663,308 +33043,16 @@
     scrollButtons: 'auto',
     textColor: 'inherit'
   };
-  var Tabs$1 = withStyles(styles$1t, {
+  var Tabs$1 = withStyles(styles$1y, {
     name: 'MuiTabs',
     withTheme: true
   })(Tabs);
 
-  var styles$1u = function styles(theme) {
-    return {
-      /* Styles applied to the root element. */
-      root: _extends_1({}, theme.typography.button, defineProperty({
-        maxWidth: 264,
-        position: 'relative',
-        minWidth: 72,
-        padding: 0,
-        minHeight: 48,
-        flexShrink: 0,
-        overflow: 'hidden',
-        whiteSpace: 'normal'
-      }, theme.breakpoints.up('md'), {
-        fontSize: theme.typography.pxToRem(13),
-        minWidth: 160
-      })),
-
-      /* Styles applied to the root element if both `icon` and `label` are provided. */
-      labelIcon: {
-        minHeight: 72
-      },
-
-      /* Styles applied to the root element if `textColor="inherit"`. */
-      textColorInherit: {
-        color: 'inherit',
-        opacity: 0.7,
-        '&$selected': {
-          opacity: 1
-        },
-        '&$disabled': {
-          opacity: 0.4
-        }
-      },
-
-      /* Styles applied to the root element if `textColor="primary"`. */
-      textColorPrimary: {
-        color: theme.palette.text.secondary,
-        '&$selected': {
-          color: theme.palette.primary.main
-        },
-        '&$disabled': {
-          color: theme.palette.text.disabled
-        }
-      },
-
-      /* Styles applied to the root element if `textColor="secondary"`. */
-      textColorSecondary: {
-        color: theme.palette.text.secondary,
-        '&$selected': {
-          color: theme.palette.secondary.main
-        },
-        '&$disabled': {
-          color: theme.palette.text.disabled
-        }
-      },
-
-      /* Styles applied to the root element if `selected={true}` (controlled by the Tabs component). */
-      selected: {},
-
-      /* Styles applied to the root element if `disabled={true}` (controlled by the Tabs component). */
-      disabled: {},
-
-      /* Styles applied to the root element if `fullWidth={true}` (controlled by the Tabs component). */
-      fullWidth: {
-        flexShrink: 1,
-        flexGrow: 1,
-        maxWidth: 'none'
-      },
-
-      /* Styles applied to the `icon` and `label`'s wrapper element. */
-      wrapper: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        flexDirection: 'column'
-      },
-
-      /* Styles applied to the label container element if `label` is provided. */
-      labelContainer: defineProperty({
-        paddingTop: 6,
-        paddingBottom: 6,
-        paddingLeft: 12,
-        paddingRight: 12
-      }, theme.breakpoints.up('md'), {
-        paddingLeft: 24,
-        paddingRight: 24
-      }),
-
-      /* Styles applied to the label wrapper element if `label` is provided. */
-      label: {},
-
-      /* Styles applied to the label wrapper element if `label` is provided and the text is wrapped. */
-      labelWrapped: defineProperty({}, theme.breakpoints.down('sm'), {
-        fontSize: theme.typography.pxToRem(12)
-      })
-    };
+  var variantComponent = {
+    standard: Input$1,
+    filled: FilledInput$1,
+    outlined: OutlinedInput$1
   };
-
-  var Tab =
-  /*#__PURE__*/
-  function (_React$Component) {
-    inherits(Tab, _React$Component);
-
-    function Tab() {
-      var _getPrototypeOf2;
-
-      var _this;
-
-      classCallCheck(this, Tab);
-
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      _this = possibleConstructorReturn(this, (_getPrototypeOf2 = getPrototypeOf(Tab)).call.apply(_getPrototypeOf2, [this].concat(args)));
-      _this.label = null;
-      _this.state = {
-        labelWrapped: false
-      };
-
-      _this.handleChange = function (event) {
-        var _this$props = _this.props,
-            onChange = _this$props.onChange,
-            value = _this$props.value,
-            onClick = _this$props.onClick;
-
-        if (onChange) {
-          onChange(event, value);
-        }
-
-        if (onClick) {
-          onClick(event);
-        }
-      };
-
-      _this.checkTextWrap = function () {
-        if (_this.labelRef) {
-          var labelWrapped = _this.labelRef.getClientRects().length > 1;
-
-          if (_this.state.labelWrapped !== labelWrapped) {
-            _this.setState({
-              labelWrapped: labelWrapped
-            });
-          }
-        }
-      };
-
-      return _this;
-    }
-
-    createClass(Tab, [{
-      key: "componentDidMount",
-      value: function componentDidMount() {
-        this.checkTextWrap();
-      }
-    }, {
-      key: "componentDidUpdate",
-      value: function componentDidUpdate(prevProps, prevState) {
-        if (this.state.labelWrapped === prevState.labelWrapped) {
-          /**
-           * At certain text and tab lengths, a larger font size may wrap to two lines while the smaller
-           * font size still only requires one line.  This check will prevent an infinite render loop
-           * fron occurring in that scenario.
-           */
-          this.checkTextWrap();
-        }
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _this2 = this,
-            _classNames2;
-
-        var _this$props2 = this.props,
-            classes = _this$props2.classes,
-            classNameProp = _this$props2.className,
-            disabled = _this$props2.disabled,
-            fullWidth = _this$props2.fullWidth,
-            icon = _this$props2.icon,
-            indicator = _this$props2.indicator,
-            labelProp = _this$props2.label,
-            onChange = _this$props2.onChange,
-            selected = _this$props2.selected,
-            textColor = _this$props2.textColor,
-            value = _this$props2.value,
-            other = objectWithoutProperties(_this$props2, ["classes", "className", "disabled", "fullWidth", "icon", "indicator", "label", "onChange", "selected", "textColor", "value"]);
-
-        var label;
-
-        if (labelProp !== undefined) {
-          label = React.createElement("span", {
-            className: classes.labelContainer
-          }, React.createElement("span", {
-            className: classnames(classes.label, defineProperty({}, classes.labelWrapped, this.state.labelWrapped)),
-            ref: function ref(_ref) {
-              _this2.labelRef = _ref;
-            }
-          }, labelProp));
-        }
-
-        var className = classnames(classes.root, classes["textColor".concat(capitalize(textColor))], (_classNames2 = {}, defineProperty(_classNames2, classes.disabled, disabled), defineProperty(_classNames2, classes.selected, selected), defineProperty(_classNames2, classes.labelIcon, icon && label), defineProperty(_classNames2, classes.fullWidth, fullWidth), _classNames2), classNameProp);
-        return React.createElement(ButtonBase$1, _extends_1({
-          focusRipple: true,
-          className: className,
-          role: "tab",
-          "aria-selected": selected,
-          disabled: disabled
-        }, other, {
-          onClick: this.handleChange
-        }), React.createElement("span", {
-          className: classes.wrapper
-        }, icon, label), indicator);
-      }
-    }]);
-
-    return Tab;
-  }(React.Component);
-
-  Tab.propTypes = {
-    /**
-     * This property isn't supported.
-     * Use the `component` property if you need to change the children structure.
-     */
-    children: unsupportedProp,
-
-    /**
-     * Override or extend the styles applied to the component.
-     * See [CSS API](#css-api) below for more details.
-     */
-    classes: propTypes.object.isRequired,
-
-    /**
-     * @ignore
-     */
-    className: propTypes.string,
-
-    /**
-     * If `true`, the tab will be disabled.
-     */
-    disabled: propTypes.bool,
-
-    /**
-     * @ignore
-     */
-    fullWidth: propTypes.bool,
-
-    /**
-     * The icon element.
-     */
-    icon: propTypes.node,
-
-    /**
-     * @ignore
-     * For server side rendering consideration, we let the selected tab
-     * render the indicator.
-     */
-    indicator: propTypes.node,
-
-    /**
-     * The label element.
-     */
-    label: propTypes.node,
-
-    /**
-     * @ignore
-     */
-    onChange: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onClick: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    selected: propTypes.bool,
-
-    /**
-     * @ignore
-     */
-    textColor: propTypes.oneOf(['secondary', 'primary', 'inherit']),
-
-    /**
-     * You can provide your own value. Otherwise, we fallback to the child position index.
-     */
-    value: propTypes.any
-  };
-  Tab.defaultProps = {
-    disabled: false,
-    textColor: 'inherit'
-  };
-  var Tab$1 = withStyles(styles$1u, {
-    name: 'MuiTab'
-  })(Tab);
-
   /**
    * The `TextField` is a convenience wrapper for the most common cases (80%).
    * It cannot be all things to all people, otherwise the API would grow out of control.
@@ -31994,73 +33082,119 @@
    * - using the underlying components directly as shown in the demos
    */
 
-  function TextField(props) {
-    var autoComplete = props.autoComplete,
-        autoFocus = props.autoFocus,
-        children = props.children,
-        className = props.className,
-        defaultValue = props.defaultValue,
-        error = props.error,
-        FormHelperTextProps = props.FormHelperTextProps,
-        fullWidth = props.fullWidth,
-        helperText = props.helperText,
-        id = props.id,
-        InputLabelProps = props.InputLabelProps,
-        inputProps = props.inputProps,
-        InputProps = props.InputProps,
-        inputRef = props.inputRef,
-        label = props.label,
-        multiline = props.multiline,
-        name = props.name,
-        onBlur = props.onBlur,
-        onChange = props.onChange,
-        onFocus = props.onFocus,
-        placeholder = props.placeholder,
-        required = props.required,
-        rows = props.rows,
-        rowsMax = props.rowsMax,
-        select = props.select,
-        SelectProps = props.SelectProps,
-        type = props.type,
-        value = props.value,
-        other = objectWithoutProperties(props, ["autoComplete", "autoFocus", "children", "className", "defaultValue", "error", "FormHelperTextProps", "fullWidth", "helperText", "id", "InputLabelProps", "inputProps", "InputProps", "inputRef", "label", "multiline", "name", "onBlur", "onChange", "onFocus", "placeholder", "required", "rows", "rowsMax", "select", "SelectProps", "type", "value"]);
+  var TextField =
+  /*#__PURE__*/
+  function (_React$Component) {
+    inherits(TextField, _React$Component);
 
-    warning_1(!select || Boolean(children), 'Material-UI: `children` must be passed when using the `TextField` component with `select`.');
-    var helperTextId = helperText && id ? "".concat(id, "-helper-text") : undefined;
-    var InputElement = React.createElement(Input$1, _extends_1({
-      autoComplete: autoComplete,
-      autoFocus: autoFocus,
-      defaultValue: defaultValue,
-      fullWidth: fullWidth,
-      multiline: multiline,
-      name: name,
-      rows: rows,
-      rowsMax: rowsMax,
-      type: type,
-      value: value,
-      id: id,
-      inputRef: inputRef,
-      onBlur: onBlur,
-      onChange: onChange,
-      onFocus: onFocus,
-      placeholder: placeholder,
-      inputProps: inputProps
-    }, InputProps));
-    return React.createElement(FormControl$1, _extends_1({
-      "aria-describedby": helperTextId,
-      className: className,
-      error: error,
-      fullWidth: fullWidth,
-      required: required
-    }, other), label && React.createElement(InputLabel$1, _extends_1({
-      htmlFor: id
-    }, InputLabelProps), label), select ? React.createElement(Select$1, _extends_1({
-      value: value,
-      input: InputElement
-    }, SelectProps), children) : InputElement, helperText && React.createElement(FormHelperText$1, _extends_1({
-      id: helperTextId
-    }, FormHelperTextProps), helperText));
-  }
+    function TextField(props) {
+      var _this;
+
+      classCallCheck(this, TextField);
+
+      _this = possibleConstructorReturn(this, getPrototypeOf(TextField).call(this, props));
+      _this.labelNode = null;
+      _this.labelRef = null;
+      _this.labelRef = React.createRef();
+      return _this;
+    }
+
+    createClass(TextField, [{
+      key: "componentDidMount",
+      value: function componentDidMount() {
+        if (this.props.variant === 'outlined') {
+          this.labelNode = ReactDOM.findDOMNode(this.labelRef.current);
+          this.forceUpdate();
+        }
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this$props = this.props,
+            autoComplete = _this$props.autoComplete,
+            autoFocus = _this$props.autoFocus,
+            children = _this$props.children,
+            className = _this$props.className,
+            defaultValue = _this$props.defaultValue,
+            error = _this$props.error,
+            FormHelperTextProps = _this$props.FormHelperTextProps,
+            fullWidth = _this$props.fullWidth,
+            helperText = _this$props.helperText,
+            id = _this$props.id,
+            InputLabelProps = _this$props.InputLabelProps,
+            inputProps = _this$props.inputProps,
+            InputProps = _this$props.InputProps,
+            inputRef = _this$props.inputRef,
+            label = _this$props.label,
+            multiline = _this$props.multiline,
+            name = _this$props.name,
+            onBlur = _this$props.onBlur,
+            onChange = _this$props.onChange,
+            onFocus = _this$props.onFocus,
+            placeholder = _this$props.placeholder,
+            required = _this$props.required,
+            rows = _this$props.rows,
+            rowsMax = _this$props.rowsMax,
+            select = _this$props.select,
+            SelectProps = _this$props.SelectProps,
+            type = _this$props.type,
+            value = _this$props.value,
+            variant = _this$props.variant,
+            other = objectWithoutProperties(_this$props, ["autoComplete", "autoFocus", "children", "className", "defaultValue", "error", "FormHelperTextProps", "fullWidth", "helperText", "id", "InputLabelProps", "inputProps", "InputProps", "inputRef", "label", "multiline", "name", "onBlur", "onChange", "onFocus", "placeholder", "required", "rows", "rowsMax", "select", "SelectProps", "type", "value", "variant"]);
+
+        warning_1(!select || Boolean(children), 'Material-UI: `children` must be passed when using the `TextField` component with `select`.');
+        var InputMore = {};
+
+        if (variant === 'outlined') {
+          if (InputLabelProps && typeof InputLabelProps.shrink !== 'undefined') {
+            InputMore.notched = InputLabelProps.shrink;
+          }
+
+          InputMore.labelWidth = this.labelNode ? this.labelNode.offsetWidth * 0.75 + 8 : 0;
+        }
+
+        var helperTextId = helperText && id ? "".concat(id, "-helper-text") : undefined;
+        var InputComponent = variantComponent[variant];
+        var InputElement = React.createElement(InputComponent, _extends_1({
+          autoComplete: autoComplete,
+          autoFocus: autoFocus,
+          defaultValue: defaultValue,
+          fullWidth: fullWidth,
+          multiline: multiline,
+          name: name,
+          rows: rows,
+          rowsMax: rowsMax,
+          type: type,
+          value: value,
+          id: id,
+          inputRef: inputRef,
+          onBlur: onBlur,
+          onChange: onChange,
+          onFocus: onFocus,
+          placeholder: placeholder,
+          inputProps: inputProps
+        }, InputMore, InputProps));
+        return React.createElement(FormControl$1, _extends_1({
+          "aria-describedby": helperTextId,
+          className: className,
+          error: error,
+          fullWidth: fullWidth,
+          required: required,
+          variant: variant
+        }, other), label && React.createElement(InputLabel$1, _extends_1({
+          htmlFor: id,
+          ref: this.labelRef
+        }, InputLabelProps), label), select ? React.createElement(Select$1, _extends_1({
+          value: value,
+          input: InputElement
+        }, SelectProps), children) : InputElement, helperText && React.createElement(FormHelperText$1, _extends_1({
+          id: helperTextId
+        }, FormHelperTextProps), helperText));
+      }
+    }]);
+
+    return TextField;
+  }(React.Component);
 
   TextField.propTypes = {
     /**
@@ -32219,14 +33353,20 @@
     /**
      * The value of the `Input` element, required for a controlled component.
      */
-    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))])
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool, propTypes.arrayOf(propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]))]),
+
+    /**
+     * The variant to use.
+     */
+    variant: propTypes.oneOf(['standard', 'outlined', 'filled'])
   };
   TextField.defaultProps = {
     required: false,
-    select: false
+    select: false,
+    variant: 'standard'
   };
 
-  var styles$1v = function styles(theme) {
+  var styles$1z = function styles(theme) {
     return {
       /* Styles applied to the Popper component. */
       popper: {
@@ -32674,7 +33814,7 @@
     placement: 'bottom',
     TransitionComponent: Grow$1
   };
-  var Tooltip$1 = withStyles(styles$1v, {
+  var Tooltip$1 = withStyles(styles$1z, {
     name: 'MuiTooltip',
     withTheme: true
   })(Tooltip);
@@ -32704,7 +33844,7 @@
     };
   };
 
-  var styles$1w = {
+  var styles$1A = {
     entering: {
       transform: 'scale(1)'
     },
@@ -32789,7 +33929,7 @@
             style: _extends_1({
               transform: 'scale(0)',
               willChange: 'transform'
-            }, styles$1w[state], style)
+            }, styles$1A[state], style)
           }, childProps));
         });
       }
@@ -32886,6 +34026,7 @@
   exports.ExpansionPanelDetails = ExpansionPanelDetails$1;
   exports.ExpansionPanelSummary = ExpansionPanelSummary$1;
   exports.Fade = Fade$1;
+  exports.FilledInput = FilledInput$1;
   exports.FormControl = FormControl$1;
   exports.FormControlLabel = FormControlLabel$1;
   exports.FormGroup = FormGroup$1;
@@ -32901,6 +34042,7 @@
   exports.IconButton = IconButton$1;
   exports.Input = Input$1;
   exports.InputAdornment = InputAdornment$1;
+  exports.InputBase = InputBase$1;
   exports.InputLabel = InputLabel$1;
   exports.LinearProgress = LinearProgress$1;
   exports.List = List$1;
@@ -32918,6 +34060,7 @@
   exports.ModalManager = ModalManager;
   exports.NativeSelect = NativeSelect$1;
   exports.NoSsr = NoSsr;
+  exports.OutlinedInput = OutlinedInput$1;
   exports.Paper = Paper$1;
   exports.Popover = Popover$1;
   exports.Popper = Popper$2;
@@ -32939,6 +34082,7 @@
   exports.SvgIcon = SvgIcon$1;
   exports.SwipeableDrawer = SwipeableDrawer$1;
   exports.Switch = Switch$1;
+  exports.Tab = Tab$1;
   exports.Table = Table$1;
   exports.TableBody = TableBody$1;
   exports.TableCell = TableCell$1;
@@ -32948,7 +34092,6 @@
   exports.TableRow = TableRow$1;
   exports.TableSortLabel = TableSortLabel$1;
   exports.Tabs = Tabs$1;
-  exports.Tab = Tab$1;
   exports.TextField = TextField;
   exports.Toolbar = Toolbar$1;
   exports.Tooltip = Tooltip$1;
