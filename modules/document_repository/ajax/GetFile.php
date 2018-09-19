@@ -13,7 +13,7 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
-$user =& \User::singleton();
+$user = \User::singleton();
 if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {
@@ -24,27 +24,22 @@ if (!$user->hasPermission('document_repository_view')
     );
 }
 require_once '../tools/generic_includes.php';
+require_once __DIR__ . '/../php/DocRepoAttachment.class.inc';
 
 // Initialize downloader.
-require_once __DIR__ . '/../php/DocRepoFileDownloader.class.inc';
-$db        =& \Database::singleton();
-$config    = NDB_Config::singleton();
-$paths     = $config->getSetting('paths');
+$paths    = \NDB_Config::singleton()->getSetting('paths');
 $lorisRoot = $paths['base'];
 
-// Format of $partialPath: username/filename.ext
-$partialPath = $_GET['File'] ?? null;
+$partialPath = $_GET['File'] ?? null; //Format: username/filename.ext
 if (is_null($partialPath)) {
     http_response_code(400);
     echo "Bad request. A valid path must be specified.";
 } else {
     $downloadBasePath = $lorisRoot . 'modules/document_repository/user_uploads/';
-    $response         = new DocRepoFileDownloader($downloadBasePath . $partialPath);
-    if (!$response->isFileInDatabase($partialPath)) {
+    $attachment         = new DocRepoAttachment($downloadBasePath . $partialPath);
+    var_dump($attachment);
+    if (!$attachment->isFileInDatabase($partialPath)) {
         throw new LorisException("Requested file is not in the database");
     }
-
-    header('Content-Type: ' . $response->getHeaderLine('Content-Type'));
-    header("Content-Disposition: attachment; filename=" . basename($partialPath));
-    fpassthru($response->getBody()->detach());
+    $attachment->download();
 }

@@ -14,15 +14,16 @@
  */
 
 use Zend\Diactoros\Response;
+use Zend\Diactoros\Stream;
 use Zend\Diactoros\Response\InjectContentTypeTrait;
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
- * needed. It implements the FileDownloader interface to provide core download
- * functionality and security. It does not actually provide any functionlity
- * related to retrieving additional file information from the database as in
- * practice this is done in an ad-hoc way across LORIS.  Therefore it is
- * suitable only when a file can be directly and simply retrieved from the
- * file system.
+ * needed. It does basic validation as to whether a file is accessible and
+ * also provides path traversal protection. 
+ * This class does NOT provide functionality related to retrieving additionl
+ * file information from the database as in practice this is done in an ad-hoc 
+ * way across LORIS.  Therefore its use as a base class is suitable only when 
+ * a file can be directly and simply retrieved from the file system.
  *
  *  @category Main
  *  @package  Main
@@ -30,9 +31,10 @@ use Zend\Diactoros\Response\InjectContentTypeTrait;
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
  */
-class GenericDownloader extends Response
+class AttachmentResponse extends Response
 {
     use InjectContentTypeTrait;
+    public $path;
 
     /**
      * Constructor for GenericDownloader.
@@ -41,52 +43,90 @@ class GenericDownloader extends Response
      *
      * @return void
      */
-    function __construct(string $path)
+    function __construct(
+        string $path,
+        string $status = '200',
+        array $headers = array()
+    ) {
+        $this->path = $path;
+        // Throw exception if path is not valid.
+        $this->validate();
+
+        $headers = array_replace(
+            $headers, 
+            array(
+                'Content-Disposition' => 'attachment; filename=' . basename($path),
+            )
+        );
+
+        parent::__construct(
+            new \Zend\Diactoros\Stream(realpath($path), 'r'),
+            $status,
+            $this->injectContentType(
+                (new \finfo(FILEINFO_MIME_TYPE))->file(realpath($this->path)),
+                array()
+            ),
+            $headers
+        );
+    }
+
+    /** Do basic validation and security checking on the supplied download path
+     * @throws LorisException
+     */
+    function validate(): void
     {
         /* Warn administrators if relative paths are used. This could be done
          * legitimately in some circumstances but is also often suspicious.
          */
-        if (strpos($path, '..') !== false) {
+        if (strpos($this->path, '..') !== false) {
             error_log(
                 'WARNING: A relative path was supplied in the context of '
                 . 'downloading a file.'
             );
         }
 
-        if (!is_readable($path)) {
+        if (!is_readable($this->path)) {
             error_log(
                 "ERROR: $this->realBasePath should be readable by the "
                 . 'apache user but is not.'
             );
-            throw new LorisException(
+            throw new \LorisException(
                 "The server is not configured to allow downloads from the "
                 . "requested location. Please contact your administrator."
             );
         }
-        if (!is_file($path)) {
+        if (!is_file($this->path)) {
             throw new \LorisException(
                 "Not a file or file does not exist."
             );
         }
 
         // Check for path traversal attempts for file that are not symlinks.
-        if (!is_link($path)) {
-            if (!$this->safePathPrefix($path)) {
-                throw new LorisException(
+        if (!is_link($this->path)) {
+            if (!$this->safePathPrefix($this->path)) {
+                throw new \LorisException(
                     'ERROR: Likely path traversal attempt in user-supplied '
                     . 'parameter'
                 );
             }
         }
+    }
 
-        parent::__construct(
-            new \Zend\Diactoros\Stream(realpath($path), 'r'),
-            '200',
-            $this->injectContentType(
-                (new \finfo(FILEINFO_MIME_TYPE))->file($path),
-                array()
-            )
-        );
+    /**
+     * Actually download the file. A manual chunked-download approach is used
+     * here to support downloading very large files from the server.
+     */
+    function download() {
+        $chunkSize = 1024 * 1024;
+        $stream = $this->getBody();
+        header('content-type: ' . $this->getHeader('content-type')[0]);
+        while (!$stream->eof()) {
+            $buffer = $stream->read($chunkSize);
+            echo $buffer;
+            ob_flush();
+            flush();
+        }
+        $stream->close();
     }
 
     /**

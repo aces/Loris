@@ -13,7 +13,7 @@
  */
 
 require_once '../tools/generic_includes.php';
-require_once '../php/libraries/GenericDownloader.class.inc';
+require_once '../php/libraries/AttachmentResponse.class.inc';
 
 /**
  * Extension of the GenericDownloader in the LORIS core libraries.  Queries the
@@ -28,7 +28,7 @@ require_once '../php/libraries/GenericDownloader.class.inc';
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
  */
-class DocRepoFileDownloader extends GenericDownloader
+class DocRepoAttachment extends AttachmentResponse
 {
 
     /**
