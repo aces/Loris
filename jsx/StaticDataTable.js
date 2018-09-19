@@ -343,7 +343,7 @@ class StaticDataTable extends Component {
     if (this.props.Data === null || this.props.Data.length === 0) {
       return (
         <div className='alert alert-info no-result-found-panel'
-             suppressContentEditableWarning="true">
+          suppressContentEditableWarning="true">
           <strong>No result found.</strong>
         </div>
       );
@@ -482,7 +482,7 @@ class StaticDataTable extends Component {
 
     let header = this.state.Hide.rowsPerPage === true ? '' : (
       <div className="table-header panel-heading"
-           suppressContentEditableWarning="true">
+        suppressContentEditableWarning="true">
         <div className="row">
           <div className="col-xs-12">
             {rows.length} rows displayed of {filteredRows}.
@@ -531,7 +531,7 @@ class StaticDataTable extends Component {
 
     return (
       <div className="panel panel-default"
-           suppressContentEditableWarning="true">
+        suppressContentEditableWarning="true">
         {header}
         <table className="table table-hover table-primary table-bordered" id="dynamictable">
           <thead>

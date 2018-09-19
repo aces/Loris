@@ -593,7 +593,7 @@ class InstrumentBuilderApp extends Component {
     tabs.push(
       <LoadPane
         TabId='Load'
-        ref={loadPane => {
+        ref={(loadPane) => {
           this.loadPane = loadPane;
         }}
         loadCallback={this.loadCallback}
@@ -604,7 +604,7 @@ class InstrumentBuilderApp extends Component {
     tabs.push(
       <BuildPane
         TabId='Build'
-        ref={buildPane => {
+        ref={(buildPane) => {
           this.buildPane = buildPane;
         }}
         key={2}
@@ -614,7 +614,7 @@ class InstrumentBuilderApp extends Component {
     tabs.push(
       <SavePane
         TabId='Save'
-        ref={savePane => {
+        ref={(savePane) => {
           this.savePane = savePane;
         }}
         save={this.saveInstrument}

@@ -72,7 +72,6 @@ class FormElement extends Component {
       formElementsHTML.push(
         <div key={'el_child_' + key} className={elementClass}>{child}</div>
       );
-
     });
 
     return formElementsHTML;
