@@ -742,16 +742,18 @@ class Database
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
      *
-     * @return array Associative array of form ColumnName => Value for each column
-     *               in the first row of the query
+     * @return ?array Associative array of form ColumnName => Value for each column
+     *                in the first row of the query
      */
-    function pselectRow($query, $params)
+    function pselectRow(string $query, array $params) : ?array
     {
-        $rows = $this->pselect($query . " LIMIT 1", $params);
-        if (isset($rows[0])) {
-            return $rows[0];
+        $rows = $this->pselect($query . " LIMIT 2", $params);
+        if (count($rows) > 1) {
+            throw new \DomainException(
+                "Attempt to use pselectRow on a query that returns multiple rows"
+            );
         }
-        return $rows;
+        return $rows[0] ?? null;
     }
 
     /**
