@@ -314,6 +314,14 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
+            /* FIXME this check is only here because of a quirk of the
+             * imaging browser. The module should be refactored and this check
+             * removed.
+             */
+            if ($val === 'Unrated') {
+                $retVal[$key] = '';
+                continue;
+            }
             // Only call htmlspecialchars on strings, or else an error occurs.
             $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
         }
