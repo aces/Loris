@@ -25,7 +25,6 @@ ButtonElement, LorisElement
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import DynamicDataTable from 'jsx/DynamicDataTable';
 
 class FormElement extends Component {
   constructor(props) {
