@@ -90,7 +90,6 @@ class MediaUploadForm extends Component {
             name='mediaUpload'
             fileUpload={true}
             onSubmit={this.handleSubmit}
-            ref='form'
           >
             <h3>Upload a media file</h3><br/>
             <StaticElement
@@ -102,7 +101,6 @@ class MediaUploadForm extends Component {
               label='PSCID'
               options={this.state.Data.candidates}
               onUserInput={this.setFormData}
-              ref='pscid'
               hasError={false}
               required={true}
               value={this.state.formData.pscid}
@@ -112,7 +110,6 @@ class MediaUploadForm extends Component {
               label='Visit Label'
               options={this.state.Data.visits}
               onUserInput={this.setFormData}
-              ref='visitLabel'
               required={true}
               value={this.state.formData.visitLabel}
             />
@@ -123,7 +120,6 @@ class MediaUploadForm extends Component {
               options={this.state.Data.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
-              ref='forSite'
               required={true}
               value={this.state.formData.forSite}
             />
@@ -132,7 +128,6 @@ class MediaUploadForm extends Component {
               label='Instrument'
               options={this.state.Data.instruments}
               onUserInput={this.setFormData}
-              ref='instrument'
               value={this.state.formData.instrument}
             />
             <DateElement
@@ -141,14 +136,12 @@ class MediaUploadForm extends Component {
               minYear='2000'
               maxYear='2017'
               onUserInput={this.setFormData}
-              ref='dateTaken'
               value={this.state.formData.dateTaken}
             />
             <TextareaElement
               name='comments'
               label='Comments'
               onUserInput={this.setFormData}
-              ref='comments'
               value={this.state.formData.comments}
             />
             <SelectElement
@@ -156,7 +149,6 @@ class MediaUploadForm extends Component {
               label={'Document\'s Language'}
               options={this.state.Data.language}
               onUserInput={this.setFormData}
-              ref='language'
               required={false}
               value={this.state.formData.language}
             />
@@ -164,7 +156,6 @@ class MediaUploadForm extends Component {
               name='file'
               id='mediaUploadEl'
               onUserInput={this.setFormData}
-              ref='file'
               label='File to upload'
               required={true}
               value={this.state.formData.file}
