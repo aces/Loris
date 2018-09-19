@@ -1005,29 +1005,11 @@ class Edit_User extends \NDB_Form
         if (empty($values['NA_Password'])
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 isset($values['UserID']) ? $values['UserID'] : $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-
-            // check password strength
-            if (!$isPasswordStrong) {
-                $errors['Password_Group']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
-                // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
-                    $errors['Password_Group'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+            $newPassword = $values['Password_hash'];
+            if (!empty($newPassword)) {
+                $result = \User::validatePassword($newPassword);
+                if (!$result['valid']) {
+                    $errors['Password_Group'] = $result['why'];
                 }
             }
         }
@@ -1127,35 +1109,6 @@ class Edit_User extends \NDB_Form
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;
-    }
-
-    /**
-     * Determines if the new password that the user entered is different
-     * than its current password (the one stored in the database).
-     *
-     * @param \Database $db          database object.
-     * @param string    $newPassword the new password the user entered.
-     *
-     * @return bool  true if the password changed, false otherwise.
-     */
-    function _passwordChanged(\Database $db, $newPassword)
-    {
-        //--- Get current password stored in database
-        $passwordQuery
-            = "SELECT Password_hash
-               FROM users
-               WHERE UserID = :UID";
-
-        $passwords = $db->pselectRow(
-            $passwordQuery,
-            array('UID' => $this->identifier)
-        );
-
-        if (!is_null($passwords['Password_hash'] ?? null)) {
-            return !password_verify($newPassword, $passwords['Password_hash']);
-        }
-
-        return true;
     }
 
     /**
