@@ -160,7 +160,7 @@ class Utility
             $query .= "WHERE Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
+            $query .= " AND CenterID <> 1";
         }
 
         $result = $DB->pselect($query, array());
