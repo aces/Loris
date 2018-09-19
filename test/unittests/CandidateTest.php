@@ -412,7 +412,7 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
 
         $this->assertFalse(Candidate::candidateExists(123, 'Test'));
     }
