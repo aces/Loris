@@ -417,11 +417,6 @@ class My_Preferences extends \NDB_Form
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
 
-            if (\User::pwnedPassword($values['Password_hash'])) {
-                $errors['Password_hash'] = 'The password you chose is too common. Please '
-                    . 'choose a more unique password.';
-                return $errors;
-            }
             // check password strength
             $isPasswordStrong = \User::isPasswordStrong(
                 $values['Password_hash'],
@@ -447,8 +442,8 @@ class My_Preferences extends \NDB_Form
                 }
             }
             if (\User::pwnedPassword($values['Password_hash'])) {
-                $errors['Password_hash'] = 'The password you chose is too common. Please '
-                    . 'choose a more unique password.';
+                $errors['Password_hash'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
                 return $errors;
             }
         }
