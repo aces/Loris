@@ -86,43 +86,22 @@ class PasswordExpiry extends \NDB_Form
      */
     function _validate($values)
     {
-        if (empty($values['password'])) {
-            // FIXME: The way error_message is displayed in the template is inherited
-            // from before this page was a "real" LORIS page, when it was all done
-            // from SinglePointLogin. As a result, the usual way of displaying errors
-            // by returning them in an array with the key of the element with the
-            // problem doesn't work.
-            $this->tpl_data['error_message'] = 'Can not use an empty password';
+        // FIXME: The way error_message is displayed in the template is inherited
+        // from before this page was a "real" LORIS page, when it was all done
+        // from SinglePointLogin. As a result, the usual way of displaying errors
+        // by returning them in an array with the key of the element with the
+        // problem doesn't work.
 
-            // But we'll pretend it does anyways, so that validation still fails.
-            return array('password' => 'Can not use an empty password');
-        }
+        // But we'll pretend it does anyways, so that validation still fails.
 
+        $newPassword = $values['password'] ?? '';
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
 
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->tpl_data['error_message'] = 'You cannot keep the same password';
-            return array('password' => 'You cannot keep the same password');
-        }
-
-        if (!\User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'],
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->tpl_data['error_message'] = 'The password is weak, or'
-                . ' the passwords do not match';
-            return array('password' => 'Weak password.');
+        $result = \User::validatePassword($newPassword);
+        if (!$result['valid']) {
+            $this->tpl_data['error_message'] = $result['why'];
+            return array('password' => $result['why']);
         }
 
         return true;
@@ -148,5 +127,4 @@ class PasswordExpiry extends \NDB_Form
         // Hard exiting is still always wrong but still required for now.
         exit(0);
     }
-
 }
