@@ -82,19 +82,23 @@ class DataDictIndex extends Component {
       this.dataDictFilter = f;
     }.bind(this);
 
+    const filter = (
+      <FilterForm
+        Module="datadict"
+        name="data_dict_filter"
+        id="data_dict_filter"
+        ref={filterRef}
+        columns={2}
+        formElements={this.state.Data.form}
+        onUpdate={this.updateFilter}
+        filter={this.state.filter}>
+        <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
+      </FilterForm>
+    );
+
     return (
       <div>
-        <FilterForm
-          Module="datadict"
-          name="data_dict_filter"
-          id="data_dict_filter"
-          ref={filterRef}
-          columns={2}
-          formElements={this.state.Data.form}
-          onUpdate={this.updateFilter}
-          filter={this.state.filter}>
-          <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
-        </FilterForm>
+        {filter}
         <StaticDataTable
           Data={this.state.Data.Data}
           Headers={this.state.Data.Headers}

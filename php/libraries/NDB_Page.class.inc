@@ -369,9 +369,7 @@ class NDB_Page implements RequestHandlerInterface
             $not_answered_options,
             array('class' => 'form-control input-sm not-answered')
         );
-
         $this->addGroup($group, $field . '_group', $label, null, false);
-
     }
 
     /**
@@ -754,7 +752,7 @@ class NDB_Page implements RequestHandlerInterface
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
-
+        $min = '';
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',

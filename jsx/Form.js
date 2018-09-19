@@ -25,6 +25,7 @@ ButtonElement, LorisElement
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import DynamicDataTable from 'jsx/DynamicDataTable';
 
 class FormElement extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class FormElement extends Component {
   }
 
   getFormElements() {
-    const formElementsHTML = [];
+    let formElementsHTML = [];
     const columns = this.props.columns;
     const maxColumnSize = 12;
     const colSize = Math.floor(maxColumnSize / columns);
@@ -46,6 +47,7 @@ class FormElement extends Component {
     Object.keys(filter).forEach(function(objKey, index) {
       const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
       const value = filter[objKey].value ? filter[objKey].value : '';
+
       formElementsHTML.push(
         <div key={'el_' + index} className={colClass}>
           <LorisElement
@@ -70,6 +72,7 @@ class FormElement extends Component {
       formElementsHTML.push(
         <div key={'el_child_' + key} className={elementClass}>{child}</div>
       );
+
     });
 
     return formElementsHTML;
@@ -348,7 +351,9 @@ class SelectElement extends Component {
 
     // Add empty option
     if (this.props.emptyOption) {
-      emptyOptionHTML = <option></option>;
+      emptyOptionHTML = (
+        <option></option>
+      );
     }
 
     // Add error message
@@ -1349,10 +1354,11 @@ class LorisElement extends Component {
   }
   render() {
     let elementProps = this.props.element;
-    elementProps.ref = elementProps.name;
     elementProps.onUserInput = this.props.onUserInput;
 
-    let elementHtml = <div></div>;
+    let elementHtml = (
+      <div></div>
+    );
 
     switch (elementProps.type) {
       case 'text':
@@ -1394,10 +1400,14 @@ class LorisElement extends Component {
         );
         break;
     }
-
     return elementHtml;
   }
 }
+LorisElement.propTypes = {
+  element: PropTypes.object,
+  value: PropTypes.string,
+  onUserInput: PropTypes.object,
+};
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
