@@ -15,7 +15,6 @@
 
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\InjectContentTypeTrait;
-require_once '../php/libraries/FileDownloader.class.inc';
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
  * needed. It implements the FileDownloader interface to provide core download
