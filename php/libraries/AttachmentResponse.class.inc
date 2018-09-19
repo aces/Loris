@@ -14,7 +14,6 @@
  */
 
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 use Zend\Diactoros\Response\InjectContentTypeTrait;
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
@@ -62,7 +61,7 @@ class AttachmentResponse extends Response
         $headers = array_replace(
             $headers,
             array(
-             'Content-Disposition' => 'attachment; filename=' . basename($path),
+             'content-disposition' => 'attachment; filename=' . basename($path),
             )
         );
 
@@ -71,10 +70,10 @@ class AttachmentResponse extends Response
             $status,
             $this->injectContentType(
                 (new \finfo(FILEINFO_MIME_TYPE))->file(realpath($this->path)),
-                array()
-            ),
-            $headers
+                $headers
+            )
         );
+        $this->download();
     }
 
     /**
@@ -133,6 +132,7 @@ class AttachmentResponse extends Response
         $chunkSize = 1024 * 1024;
         $stream    = $this->getBody();
         header('content-type: ' . $this->getHeader('content-type')[0]);
+        header('content-length: ' . $stream->getSize());
         while (!$stream->eof()) {
             $buffer = $stream->read($chunkSize);
             echo $buffer;

@@ -34,12 +34,15 @@ class DocRepoAttachment extends AttachmentResponse
     /**
      * Check `document_repository` database for the existence of a file.
      *
-     * @param string $dataDirectory A string in the format username/filename.ext
-     *
      * @return bool Whether the file exists in the database.
      */
-    public function isFileInDatabase(string $dataDirectory): bool
+    public function isFileInDatabase(): bool
     {
+        // Format of $dataDirectory is user/filename.ext. Below we get the
+        $dataDirectory = \User::singleton()->getUsername()
+            . '/'
+            . basename($this->path);
+        error_log($dataDirectory);
         // Ensure file exists in the document_repository table before serving
         $db     =& Database::singleton();
         $record = $db->pselectOne(
@@ -49,6 +52,19 @@ class DocRepoAttachment extends AttachmentResponse
         );
         // True if record exists, false otherwise.
         return !empty($record);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return void
+     */
+    function validate(): void
+    {
+        parent::validate();
+        if (!$this->isFileInDatabase()) {
+            http_response_code(404);
+        }
     }
 
 }

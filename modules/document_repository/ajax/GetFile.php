@@ -36,10 +36,6 @@ if (is_null($partialPath)) {
     echo "Bad request. A valid path must be specified.";
 } else {
     $downloadBasePath = $lorisRoot . 'modules/document_repository/user_uploads/';
-    $attachment       = new DocRepoAttachment($downloadBasePath . $partialPath);
-    var_dump($attachment);
-    if (!$attachment->isFileInDatabase($partialPath)) {
-        throw new LorisException("Requested file is not in the database");
-    }
-    $attachment->download();
+    // This will immediately trigger a file download.
+    new DocRepoAttachment($downloadBasePath . $partialPath);
 }
