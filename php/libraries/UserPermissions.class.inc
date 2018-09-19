@@ -126,7 +126,7 @@ class UserPermissions
          */
         return $this->permissions['superuser'] ?? false
             || $hasSinglePermission
-            || hasPermissions(array_merge(array($code), $codes));
+            || $this->hasPermissions(array_merge(array($code), $codes));
     }
 
     /**
@@ -171,7 +171,6 @@ class UserPermissions
      */
     function getPermissions()
     {
-        var_dump($this->permissions);
         return $this->permissions;
     }
 
