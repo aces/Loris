@@ -93,7 +93,11 @@ class AttachmentResponse extends Response
                 . 'downloading a file.'
             );
         }
-
+        if (!is_file($this->path)) {
+            throw new \LorisException(
+                "Not a file or file does not exist."
+            );
+        }
         if (!is_readable($this->path)) {
             error_log(
                 "ERROR: $this->realBasePath should be readable by the "
@@ -104,12 +108,6 @@ class AttachmentResponse extends Response
                 . "requested location. Please contact your administrator."
             );
         }
-        if (!is_file($this->path)) {
-            throw new \LorisException(
-                "Not a file or file does not exist."
-            );
-        }
-
         // Check for path traversal attempts for file that are not symlinks.
         if (!is_link($this->path)) {
             if (!$this->safePathPrefix($this->path)) {
@@ -153,8 +151,8 @@ class AttachmentResponse extends Response
      *      "/var/www/loris/my_uploads/../../../../../etc/passwd" will resolve
      *      to "/etc/passwd" which will not have the same prefix as the valid
      *      destination.
-     * Note that this approach does not work for symlinks as their resolve paths
-     * are actually expected to be outside of the target directory. This option
+     * Note that this approach does not work for symlinks as their resolved
+     * paths are expected to be outside of the target directory. This option
      * is left open in case sysadmins decide that the files must be hosted
      * elsewhere.
      *

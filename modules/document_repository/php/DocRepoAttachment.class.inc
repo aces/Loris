@@ -32,9 +32,9 @@ class DocRepoAttachment extends AttachmentResponse
 {
 
     /**
-     * Check `document_repository` database for the existence of a file.
+     * Check `document_repository` table for the existence of a file.
      *
-     * @return bool Whether the file exists in the database.
+     * @return bool Whether the file exists in the table.
      */
     public function isFileInDatabase(): bool
     {
