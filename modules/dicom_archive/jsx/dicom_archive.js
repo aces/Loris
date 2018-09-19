@@ -1,5 +1,6 @@
 import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
+import StaticDataTable from 'jsx/StaticDataTable';
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -37,8 +38,8 @@ class DicomArchive extends Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    */
   fetchData() {
@@ -63,7 +64,7 @@ class DicomArchive extends Component {
   }
 
   resetFilters() {
-    this.refs.dicomFilter.clearFilter();
+    this.dicomFilter.clearFilter();
   }
 
   render() {
@@ -79,13 +80,17 @@ class DicomArchive extends Component {
       );
     }
 
+    const filterRef = function(f) {
+      this.dicomFilter = f;
+    }.bind(this);
+
     return (
       <div>
         <FilterForm
           Module="dicom_archive"
           name="dicom_filter"
           id="dicom_filter"
-          ref="dicomFilter"
+          ref={filterRef}
           columns={2}
           formElements={this.state.Data.form}
           onUpdate={this.updateFilter}

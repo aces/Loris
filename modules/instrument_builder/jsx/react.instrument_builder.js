@@ -332,7 +332,7 @@ class DisplayElements extends Component {
         );
       }
       return row;
-    });
+    }.bind(this));
 
     // Set fixed layout to force column widths to be based on first row
     let tableStyles = {
@@ -566,9 +566,7 @@ class BuildPane extends Component {
 class InstrumentBuilderApp extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
     this.saveInstrument = this.saveInstrument.bind(this);
     this.loadCallback = this.loadCallback.bind(this);
   }
@@ -577,39 +575,48 @@ class InstrumentBuilderApp extends Component {
   saveInstrument() {
     // Call to external function, passing it the save information and the elements
     // to save
-    Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
+    Instrument.save(this.savePane.state, this.buildPane.state.Elements);
   }
   // Load an instrument
   loadCallback(elements, info) {
     // Set the savePane state to that extracted from the file
-    this.refs.savePane.loadState(info);
+    this.savePane.loadState(info);
     // Set the buildPane elements to the rendered elements
-    this.refs.buildPane.loadElements(elements);
+    this.buildPane.loadElements(elements);
     // Set the alert state to success in the loadPane
-    this.refs.loadPane.setAlert('success');
+    this.loadPane.setAlert('success');
   }
   // Render the HTML
   render() {
     let tabs = [];
+
     tabs.push(
       <LoadPane
         TabId='Load'
-        ref='loadPane'
+        ref={loadPane => {
+          this.loadPane = loadPane;
+        }}
         loadCallback={this.loadCallback}
         key={1}
       />
     );
+
     tabs.push(
       <BuildPane
         TabId='Build'
-        ref='buildPane'
+        ref={buildPane => {
+          this.buildPane = buildPane;
+        }}
         key={2}
       />
     );
+
     tabs.push(
       <SavePane
         TabId='Save'
-        ref='savePane'
+        ref={savePane => {
+          this.savePane = savePane;
+        }}
         save={this.saveInstrument}
         key={3}
       />

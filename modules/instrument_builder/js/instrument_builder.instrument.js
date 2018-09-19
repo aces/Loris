@@ -1,5 +1,5 @@
 /*global document: false, $: false, alert: false, saveAs: false, Enumize: false*/
-var Instrument = {
+let Instrument = {
    //  validate: function () {
    //      "use strict";
    //      var names = [],
@@ -35,7 +35,7 @@ var Instrument = {
 
     save: function (saveInfo, elements) {
         "use strict";
-        var name = saveInfo.fileName || "instrument",
+        let name = saveInfo.fileName || "instrument",
             content = this.render(saveInfo, elements),
             element = document.createElement("a"),
             blob = new Blob([content], { type: 'text/plain;base64' }),
@@ -61,7 +61,7 @@ var Instrument = {
     },
     render: function (saveInfo, elements) {
         "use strict";
-        var content = '',
+        let content = '',
             name = saveInfo.fileName || "instrument",
             title = saveInfo.instrumentName,
             element,
@@ -113,8 +113,8 @@ var Instrument = {
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
                     case "date":
-                        var elName = element.Name.replace(/\s/g, "").toLowerCase();
-                        var dropdown = "";
+                        let elName = element.Name.replace(/\s/g, "").toLowerCase();
+                        let dropdown = "";
 
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
@@ -157,10 +157,10 @@ var Instrument = {
         return content;
    },
     load: function (file, callback) {
-        var reader = new FileReader();
+        let reader = new FileReader();
             ParseInstrument = function () {
-                var elementNames = [];
-                var Elements = [{
+                let elementNames = [];
+                let Elements = [{
                         Type        : "ElementGroup",
                         GroupType   : "Page",
                         Description : "Top",
@@ -177,11 +177,11 @@ var Instrument = {
                     options,
                     keyVal;
                 for (line of lines) {
-                    if (line == '') {
+                    if (line === '') {
                         continue;
                     }
                     pieces = line.split("{@}");
-                    if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" ||
+                    if(pieces[1] === "Date_taken" || pieces[1] === "Examiner" || pieces[1] === "Candidate_Age" || pieces[1] === "Window_Difference" ||
                             (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
                         continue;
                     }
@@ -214,8 +214,8 @@ var Instrument = {
                             options = pieces[3].split("{-}");
                             for (option of options) {
                                 keyVal = option.split("=>");
-                                if (keyVal[0].indexOf('not_answered') == -1) {
-                                    if (keyVal[0] == "NULL") {
+                                if (keyVal[0].indexOf('not_answered') === -1) {
+                                    if (keyVal[0] === "NULL") {
                                         tempElement.Options.Values['']
                                             = keyVal[1].substr(1, keyVal[1].length-2);
                                     } else {
@@ -300,11 +300,11 @@ var Instrument = {
                     /* "Header" elements always have 'undefined' as their Name. These should not trigger an error message. */
                     if (tempElement.Name) {
                         if (elementNames.indexOf(tempElement.Name) < 0) {
-                            if (tempElement.Type != "header") {
+                            if (tempElement.Type !== "header") {
                                 elementNames.push(tempElement.Name)
                             }
                         } else {
-                            var alertMessage = [
+                            let alertMessage = [
                                 "Duplicate entry on element named: ",
                                 tempElement.Name,
                                 ".",
@@ -326,13 +326,13 @@ var Instrument = {
             };
         if (file.name.split('.')[1] === 'linst') {
             reader.onload = ParseInstrument;
-            var data = reader.readAsText(file);
+            let data = reader.readAsText(file);
         } else {
             callback.error("typeError");
         }
     },
     enumize: function (option) {
-        var enum_option = option.replace(/ /g, "_");
+        let enum_option = option.replace(/ /g, "_");
         enum_option = enum_option.replace(/\./, "");
         enum_option = enum_option.toLowerCase();
         return enum_option;
@@ -340,4 +340,4 @@ var Instrument = {
     clone: function(obj) {
         return JSON.parse(JSON.stringify(obj))
     }
-}
+};

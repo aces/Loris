@@ -155,7 +155,7 @@ class IncompleteCandidatesRow extends Component {
           <a href={this.props.BaseURL + '/instruments/' + row.test_name +
               '/?candID=' + row.candid +
               '&sessionID=' + row.SessionID +
-              '&commentID=' + row.commentid} ref='incomplete' onClick={this.handleClick} >
+              '&commentID=' + row.commentid} onClick={this.handleClick} >
             {row.Full_name}
           </a>
         </td>
@@ -264,7 +264,7 @@ class BehaviouralFeedbackRow extends Component {
           </a>
         </td>
         <td>
-          <a href={bvlLink} onClick={this.handleClick} ref='feedback'>
+          <a href={bvlLink} onClick={this.handleClick} >
             {bvlLevel}
           </a>
         </td>
