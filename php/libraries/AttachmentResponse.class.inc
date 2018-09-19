@@ -19,11 +19,13 @@ use Zend\Diactoros\Response\InjectContentTypeTrait;
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
  * needed. It does basic validation as to whether a file is accessible and
- * also provides path traversal protection. 
+ * also provides path traversal protection.
  * This class does NOT provide functionality related to retrieving additionl
- * file information from the database as in practice this is done in an ad-hoc 
- * way across LORIS.  Therefore its use as a base class is suitable only when 
+ * file information from the database as in practice this is done in an ad-hoc
+ * way across LORIS.  Therefore its use as a base class is suitable only when
  * a file can be directly and simply retrieved from the file system.
+ *
+ * {@inheritdoc}
  *
  *  @category Main
  *  @package  Main
@@ -37,9 +39,14 @@ class AttachmentResponse extends Response
     public $path;
 
     /**
-     * Constructor for GenericDownloader.
+     * Constructor for AttachmentResponse.
      *
-     * @param string $path A path to a file attachment for download.
+     * {@inheritdoc}
+     * Creates a new stream based on $path and adds some headers.
+     *
+     * @param string $path    A path to a file attachment for download.
+     * @param string $status  A response status code.
+     * @param array  $headers Optional headers to include.
      *
      * @return void
      */
@@ -53,9 +60,9 @@ class AttachmentResponse extends Response
         $this->validate();
 
         $headers = array_replace(
-            $headers, 
+            $headers,
             array(
-                'Content-Disposition' => 'attachment; filename=' . basename($path),
+             'Content-Disposition' => 'attachment; filename=' . basename($path),
             )
         );
 
@@ -70,7 +77,10 @@ class AttachmentResponse extends Response
         );
     }
 
-    /** Do basic validation and security checking on the supplied download path
+    /**
+     * Do basic validation and security checking on the supplied download path
+     *
+     * @return void
      * @throws LorisException
      */
     function validate(): void
@@ -115,10 +125,13 @@ class AttachmentResponse extends Response
     /**
      * Actually download the file. A manual chunked-download approach is used
      * here to support downloading very large files from the server.
+     *
+     * @return void
      */
-    function download() {
+    function download(): void
+    {
         $chunkSize = 1024 * 1024;
-        $stream = $this->getBody();
+        $stream    = $this->getBody();
         header('content-type: ' . $this->getHeader('content-type')[0]);
         while (!$stream->eof()) {
             $buffer = $stream->read($chunkSize);
