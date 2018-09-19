@@ -52,7 +52,7 @@ class MediaIndex extends Component {
   }
 
   resetFilters() {
-    this.refs.mediaFilter.clearFilter();
+    this.mediaFilter.clearFilter();
   }
 
   render() {
@@ -62,6 +62,10 @@ class MediaIndex extends Component {
         <Loader/>
       );
     }
+
+    const filterRef = function(f) {
+      this.mediaFilter = f;
+    }.bind(this);
 
     let uploadTab;
     let tabList = [
@@ -87,7 +91,7 @@ class MediaIndex extends Component {
             Module='media'
             name='media_filter'
             id='media_filter_form'
-            ref='mediaFilter'
+            ref={filterRef}
             columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
