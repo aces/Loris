@@ -243,7 +243,7 @@ class NDB_Form extends NDB_Page
         * only that when a CSRF token is sent that it is well-formed and
         * accurate but will not enforce failure if one is not present.
         * TODO Once CSRF tokens are enforced universally across LORIS, any
-        * state-changing request wihtout a valid CSRF token should be rejected.
+        * state-changing request without a valid CSRF token should be rejected.
         * TODO This only validates CSRF tokens present in POST bodies
         * A different approach is neded for AJAX (i.e. headers)
          */
@@ -279,8 +279,9 @@ class NDB_Form extends NDB_Page
                     );
                     $validCSRFToken = false;
                 }
-                // Check if the CSRF token was created in the last day.  If not, it
-                // is expired and the request is rejected.
+                /* Check if the CSRF token was created in the last day.  If not, it
+                * is expired and the request is rejected.
+                 */
                 $now           = date_create();
                 $timeThreshold = date_sub(
                     $now,
@@ -298,8 +299,9 @@ class NDB_Form extends NDB_Page
                     $validCSRFToken = false;
                 }
 
-                // Regardless of whether the token is valid or not, we no longer
-                // need it to be stored in the Database.
+                /* Regardless of whether the token is valid or not, we no longer
+                * need it to be stored in the Database.
+                 */
                 $db->delete(
                     'csrf_tokens',
                     array('Token' => $token)
@@ -307,8 +309,9 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        // Unset boilerplate variables even with a bad CSRF token just to be
-        // safe.
+        /* Unset boilerplate variables even with a bad CSRF token just to be
+         * safe.
+         */
         unset(
             $values['test_name'],
             $values['subtest'],
@@ -323,9 +326,10 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        // TODO The code should be refactored so that $validCSRFToken is
-        // always set.  This is just a provisional measure until CSRF validation
-        // is implemented everywhere in LORIS.
+        /* TODO The code should be refactored so that $validCSRFToken is
+         * always set.  This is just a provisional measure until CSRF validation
+         * is implemented everywhere in LORIS.
+         */
         if (isset($validCSRFToken) && !$validCSRFToken) {
             echo "Bad CSRF token. Won't process request.\n";
             throw new \LorisException("Malformed CSRF token submitted.");
