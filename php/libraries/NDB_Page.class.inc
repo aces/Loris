@@ -752,7 +752,7 @@ class NDB_Page implements RequestHandlerInterface
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
-        $min = '';
+        $min   = '';
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',
