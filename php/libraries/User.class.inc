@@ -436,7 +436,7 @@ class User extends UserPermissions
         $userInputs = array(
                        $user->getUsername(),
                        $data['Email'],
-                       $data['Full_name'],
+                       $data['Real_name'],
                        'loris',
                        'brain',
                        'mcgill',
@@ -455,7 +455,7 @@ class User extends UserPermissions
      * @param string $newPassword The password to validate.
      *
      * @return array A bool and string array representing whether a password is
-     * valid or not and why we have marked it as such.
+     *                          valid or not and why we have marked it as such.
      */
     function isUserDCC(): bool
     {
@@ -465,17 +465,16 @@ class User extends UserPermissions
 
     function validatePassword(string $newPassword): array
     {
-        $minimumLength = 8;
         $result        = array(
                           'valid' => false,
                           'why'   => '',
                          );
+        $minimumLength = 8;
         if (strlen($newPassword) < $minimumLength) {
             $result['why'] = 'Passphrase is too short.';
             return $result;
         }
-        $user = \User::singleton();
-        $data = $user->getData();
+        $data = \User::singleton()->getData();
         if (password_verify($newPassword, $data['Password_hash'])) {
             $result['why'] = 'You cannot keep the same passphrase.';
             return $result;
