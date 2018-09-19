@@ -315,7 +315,7 @@ class Database
         $retVal = array();
         foreach ($set as $key => $val) {
             // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val)? htmlspecialchars($val) : $val;
+            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
         }
         return $retVal;
     }
