@@ -3,7 +3,7 @@ INSERT INTO ConfigSettings
   (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
   SELECT
     'MriConfigFile',
-    'Name of the MRI config file (stored in dicom-archive/.loris_mri/',
+    'Name of the MRI config file (stored in dicom-archive/.loris_mri/)',
     1,
     0,
     'text',
