@@ -68,7 +68,7 @@ class LoadPane extends Component {
     let alert = {
       message: '',
       details: '',
-      display: 'none'
+      display: 'none',
     };
     // Set up declared alerts, if there is any.
     switch (this.state.alert) {
@@ -76,21 +76,21 @@ class LoadPane extends Component {
         alert = {
           message: 'Success!',
           details: 'Instrument Loaded',
-          display: 'block'
+          display: 'block',
         };
         break;
       case 'typeError':
         alert = {
           message: 'Error!',
           details: 'Wrong file format',
-          display: 'block'
+          display: 'block',
         };
         break;
       case 'duplicateEntry':
         alert = {
           message: 'Error!',
           details: this.state.alertMessage,
-          display: 'block'
+          display: 'block',
         };
         break;
       default:
