@@ -5,7 +5,7 @@ import {Tabs, TabPane} from 'Tabs';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
-import Loader from 'jsx/Loader';
+import Loader from 'jsx/components/Loader';
 
 class ImagingUploader extends Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
-import Loader from 'jsx/Loader';
+import Loader from 'jsx/components/Loader';
 
 /**
  * Media Upload Form

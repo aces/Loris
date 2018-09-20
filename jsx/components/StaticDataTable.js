@@ -10,7 +10,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import PaginationLinks from 'jsx/PaginationLinks';
+import PaginationLinks from 'jsx/components/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 
 /**

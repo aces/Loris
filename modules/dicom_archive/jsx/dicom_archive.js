@@ -1,6 +1,6 @@
 import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
-import StaticDataTable from 'jsx/StaticDataTable';
+import StaticDataTable from 'jsx/components/StaticDataTable';
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';

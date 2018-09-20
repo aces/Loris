@@ -1,6 +1,6 @@
 import FilterForm from 'FilterForm';
 import formatDataDictColumn from './columnFormatter';
-import StaticDataTable from 'jsx/StaticDataTable';
+import StaticDataTable from 'jsx/components/StaticDataTable';
 
 import React, {Component} from 'react';
 
