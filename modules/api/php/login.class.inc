@@ -13,7 +13,6 @@
 namespace LORIS\api;
 
 use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 
