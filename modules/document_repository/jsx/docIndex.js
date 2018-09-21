@@ -71,7 +71,7 @@ class DocIndex extends React.Component {
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
-            Module="document_repository2"
+            Module="document_repository"
             name="document_filter"
             id="document_filter_form"
             ref="documentFilter"
@@ -105,7 +105,6 @@ class DocIndex extends React.Component {
             DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getCategory`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
           />
-          <div>Add categroy</div>
         </TabPane>
       </Tabs>
     );
@@ -115,7 +114,7 @@ class DocIndex extends React.Component {
 $(function() {
   const docIndex = (
     <div className="page-document">
-      <DocIndex DataURL={`${loris.BaseURL}/document_repository2/?format=json`} />
+      <DocIndex DataURL={`${loris.BaseURL}/document_repository/?format=json`} />
     </div>
   );
 

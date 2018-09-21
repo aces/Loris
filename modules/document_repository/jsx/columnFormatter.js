@@ -34,7 +34,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Edit') {
-    let editURL = loris.BaseURL + '/document_repository2/edit/?id=' + row['Edit'];
+    let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
     return <td className={classes}><a href={editURL}>Edit</a></td>;
   }
   if (column === 'Delete') {

@@ -220,7 +220,7 @@ foreach ($result as $value) {
         return array_merge(
             $deps,
             array(
-             $baseURL . "/document_repository2/js/docIndex.js",
+             $baseURL . "/document_repository/js/docIndex.js",
             )
         );
     }

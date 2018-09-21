@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-namespace LORIS\document_repository2;
+namespace LORIS\document_repository;
 
 /**
  * Creates the form for NDB_Form_media
@@ -75,7 +75,7 @@ class Edit extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/document_repository2/js/editFormIndex.js"]
+            [$baseURL . "/document_repository/js/editFormIndex.js"]
         );
     }
 
@@ -89,7 +89,7 @@ class Edit extends \NDB_Form
     function _hasAccess()
     {
         $user =& \User::singleton();
-        return $user->hasPermission('media_write');
+        return $user->hasPermission('document_repository_delete');
     }
 
 }
