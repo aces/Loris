@@ -60,13 +60,23 @@ class Module extends \Module
                             ];
         $url    = $request->getURI()->getPath();
         $pieces = [];
-        if (preg_match("/^\/?(v[0-9]+\.[0-9]+\.[0-9]+.*)\/(.*)/", $url, $pieces) !== 1) {
+        if (preg_match(
+            "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+.*)\/(.*)/",
+            $url,
+            $pieces
+        ) !== 1
+        ) {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(400)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        '{ "error" : "You must specify a version of the API to use in the URL." }'
+                        json_encode(
+                            [
+                             'error' => "You must specify a version of the API "
+                                . "to use in the URL.",
+                            ]
+                        )
                     )
                 );
         };
@@ -77,7 +87,11 @@ class Module extends \Module
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(400)
                 ->withBody(
-                    new \LORIS\Http\StringStream('{ "error" : "Unsupported LORIS API version." }')
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            ['error' => "Unsupported LORIS API version."]
+                        )
+                    )
                 );
         }
 

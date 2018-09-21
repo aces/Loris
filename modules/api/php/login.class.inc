@@ -45,7 +45,7 @@ class Login extends APIEndpoint
      *
      * @return array supported HTTP methods
      */
-    protected function AllowedMethods() : array
+    protected function allowedMethods() : array
     {
         return ['POST'];
     }
@@ -59,7 +59,7 @@ class Login extends APIEndpoint
      *
      * @return array a list of supported API versions.
      */
-    protected function SupportedVersions() : array
+    protected function supportedVersions() : array
     {
         return [
                 "v0.0.1",
