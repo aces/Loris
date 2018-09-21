@@ -47,13 +47,18 @@ class Module extends \Module
      * version from the URL to a request attribute, and then falls back on the
      * default LORIS page handler.
      *
-     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
-        $validAPIVersions = ["v0.0.1", "v0.0.2", "v0.0.3-dev"];
-        $url = $request->getURI()->getPath();
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $validAPIVersions = [
+                             "v0.0.1",
+                             "v0.0.2",
+                             "v0.0.3-dev",
+                            ];
+        $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match("/^\/?(v[0-9]+\.[0-9]+\.[0-9]+.*)\/(.*)/", $url, $pieces) !== 1) {
             return (new \LORIS\Http\Response())
@@ -65,7 +70,7 @@ class Module extends \Module
                     )
                 );
         };
-        $version = $pieces[1];
+        $version  = $pieces[1];
         $endpoint = $pieces[2];
         if (!in_array($version, $validAPIVersions)) {
             return (new \LORIS\Http\Response())
@@ -78,7 +83,7 @@ class Module extends \Module
 
         // Strip the version and add it to a request attribute, then let the default
         // module handler kick in to delegate to the appropriate page.
-        $newurl = $request->getURI()->withPath($endpoint);
+        $newurl     = $request->getURI()->withPath($endpoint);
         $newrequest = $request
             ->withURI($newurl)
             ->withAttribute("LORIS-API-Version", $version);

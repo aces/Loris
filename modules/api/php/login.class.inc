@@ -45,7 +45,8 @@ class Login extends APIEndpoint
      *
      * @return array supported HTTP methods
      */
-    protected function AllowedMethods() : array {
+    protected function AllowedMethods() : array
+    {
         return ['POST'];
     }
 
@@ -58,24 +59,32 @@ class Login extends APIEndpoint
      *
      * @return array a list of supported API versions.
      */
-    protected function SupportedVersions() : array {
-        return ["v0.0.1", "v0.0.2", "v0.0.3-dev"];
+    protected function SupportedVersions() : array
+    {
+        return [
+                "v0.0.1",
+                "v0.0.2",
+                "v0.0.3-dev",
+               ];
     }
 
     /**
      * Handles a login request
      *
-     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $requestdata = json_decode($request->getBody(), true);
         if (!isset($requestdata['username']) || !isset($requestdata['password'])) {
             return (new \LORIS\Http\Response())
-                ->withBody(new \LORIS\Http\StringStream(
-                    '{ "error" : Missing username or password" }'
-                ))
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        '{ "error" : Missing username or password" }'
+                    )
+                )
                 ->withStatus(400);
         }
 
@@ -88,24 +97,30 @@ class Login extends APIEndpoint
             $token = $this->getEncodedToken($user);
             if (!empty($token)) {
                 return (new \LORIS\Http\Response())
-                    ->withBody(new \LORIS\Http\StringStream(
-                        json_encode(['token' => $token])
-                    ))
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(['token' => $token])
+                        )
+                    )
                     ->withHeader("Content-Type", "application/json")
                     ->withStatus(200);
             } else {
                 return (new \LORIS\Http\Response())
-                    ->withBody(new \LORIS\Http\StringStream(
-                        ['error' => 'Unacceptable JWT key']
-                    ))
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            ['error' => 'Unacceptable JWT key']
+                        )
+                    )
                     ->withHeader("Content-Type", "application/json")
                     ->withStatus(500);
             }
         }
         return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream(
-                json_encode(array("error" => $login->_lastError))
-            ))
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode(array("error" => $login->_lastError))
+                )
+            )
             ->withHeader("Content-Type", "application/json")
             ->withStatus(401);
     }
@@ -138,16 +153,16 @@ class Login extends APIEndpoint
 
         $token = array(
             // JWT related tokens to for the JWT library to validate
-            "iss"  => $baseURL,
-            "aud"  => $baseURL,
+                  "iss"  => $baseURL,
+                  "aud"  => $baseURL,
             // Issued at
-            "iat"  => time(),
-            "nbf"  => time(),
+                  "iat"  => time(),
+                  "nbf"  => time(),
             // Expire in 1 day
-            "exp"  => time() + 86400,
+                  "exp"  => time() + 86400,
             // Additional payload data
-            "user" => $user,
-        );
+                  "user" => $user,
+                 );
 
         $key = $config->getSetting("JWTKey");
         if (!self::isKeyStrong($key)) {

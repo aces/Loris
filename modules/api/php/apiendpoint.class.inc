@@ -37,7 +37,8 @@ abstract class APIEndpoint extends \NDB_Page
      * It also acts as its own middleware by validating that an endpoint supports both the version of
      * the API passed, and the HTTP method request type.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
         $methods = $this->AllowedMethods();
         if (!in_array($request->getMethod(), $methods)) {
             return (new \LORIS\Http\Response())
@@ -50,7 +51,7 @@ abstract class APIEndpoint extends \NDB_Page
         }
 
         $versions = $this->SupportedVersions() ?? [];
-        $version = $request->getAttribute("LORIS-API-Version") ?? "unknown";
+        $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
 
         if (!in_array($version, $versions)) {
             return (new \LORIS\Http\Response())
