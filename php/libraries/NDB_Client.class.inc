@@ -128,7 +128,8 @@ class NDB_Client
             "Content-Security-Policy: "
             . "default-src 'self' 'unsafe-inline'; "
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
-            . "font-src 'self' data:; "
+            . "font-src 'self' fonts.googleapis.com fonts.gstatic.com data:; "
+            . "style-src 'self' 'unsafe-inline' fonts.googleapis.com; "
             . "img-src 'self' data:; "
             . $config_additions
         );

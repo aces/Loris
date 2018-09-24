@@ -4,6 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         {*
         This can't be loaded from getJSDependencies(), because it's needs access to smarty

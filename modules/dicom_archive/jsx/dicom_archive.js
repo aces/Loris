@@ -1,6 +1,9 @@
 import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
 import StaticDataTable from 'jsx/components/StaticDataTable';
+import TextButton from 'jsx/components/material-ui/TextButton';
+import Tooltip from 'jsx/components/material-ui/Tooltip';
+import DataTable from 'jsx/components/material-ui/DataTable'
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -50,7 +53,7 @@ class DicomArchive extends Component {
         loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         this.setState({
           Data: data,
-          isLoaded: true,
+          //isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
@@ -71,12 +74,29 @@ class DicomArchive extends Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        /*<button className="btn-info has-spinner">*/
+          /*Loading*/
+          /*<span*/
+            /*className="glyphicon glyphicon-refresh glyphicon-refresh-animate">*/
+          /*</span>*/
+        /*</button>*/
+        <div>
+          <Tooltip
+            text={'Hello World'}
+            placement={'top'}
+            component={
+              <TextButton
+                text={'Send'}
+                type={'primary'}
+                contained={true}
+                size={'large'}
+                circular={{extended: true}}
+                icon={{symbol: 'alarm', mode: 'right'}}
+              />
+            }
+          />
+          <DataTable/>
+        </div>
       );
     }
 
