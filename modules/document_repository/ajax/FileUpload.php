@@ -37,8 +37,8 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db   = \Database::singleton();
+    $user = \User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
