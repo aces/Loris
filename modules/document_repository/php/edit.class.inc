@@ -78,7 +78,6 @@ class Edit extends \NDB_Form
             [$baseURL . "/document_repository/js/editFormIndex.js"]
         );
     }
-
     /**
      * Check user permissions
      *
@@ -86,9 +85,8 @@ class Edit extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('document_repository_delete');
     }
 

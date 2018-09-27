@@ -32,14 +32,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('document_repository_view')
-               || $user->hasPermission('document_repository_delete');
-
+            || $user->hasPermission('document_repository_delete');
     }
 
     /**
