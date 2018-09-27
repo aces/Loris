@@ -17,11 +17,6 @@
  * @package behavioural
  */
 
-//Ensure php version compatability
-//taken from php.net notes
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-require_once __DIR__ . "/../vendor/autoload.php";
-
 if (version_compare(phpversion(),'4.3.0','<'))
 {
     define('STDIN',fopen("php://stdin","r"));
@@ -29,15 +24,41 @@ if (version_compare(phpversion(),'4.3.0','<'))
                 fclose(STDOUT); fclose(STDERR); fclose($logfp); return true;' ) );
 }
 
+require_once __DIR__."/generic_includes.php";
+
+// LOGGING
+$dir = __DIR__ . "/logs/";
+if (!is_dir($dir)) {
+    mkdir($dir);
+}
+$today= getdate();
+$date = sprintf("%04d-%02d-%02d", $today['year'], $today['mon'], $today['mday']);
+$logPath = __DIR__ . "/logs/score_instrument.$date.log";
+$logfp = fopen($logPath, 'a');
+
+if (!$logfp) {
+    printError(
+        "No logs can be generated, path:$logPath ".
+        "does not exist or can not be written to.\n"
+    );
+}
+
+
 /**
  * HELP SCREEN
  * display and stop processing if action=help
  */
-if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','one')) || ($argv[2]=='one' && (empty($argv[3]) || empty($argv[4])))) {
-    fwrite(STDERR, "Usage: \n\n");
-    fwrite(STDERR, "score_instrument.php help - displays this msg\n");
-    fwrite(STDERR, "score_instrument.php <test_name> one <candID> <sessionID>\n");
-    fwrite(STDERR, "score_instrument.php <test_name> all \n");
+if (empty($argv[1]) || $argv[1] == 'help' ||
+    (isset($argv[2]) && !in_array($argv[2], array('all','one'))) ||
+    (isset($argv[2]) && $argv[2]=='one' && (empty($argv[3]) || empty($argv[4])))
+) {
+    printOut(
+        "Usage:
+        score_instrument.php help - displays this msg
+        score_instrument.php <test_name> one <candID> <sessionID>
+        score_instrument.php <test_name> all
+        score_instrument.php all \n\n"
+    );
     return;
 }
 
@@ -47,44 +68,23 @@ if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','on
 // get $action argument
 $test_name = $argv[1];
 // get $action argument
-$action = strtolower($argv[2]);
+$action='';
+if (isset($argv[2])) {
+    $action = strtolower($argv[2]);
+}
 // CandID
 if (!empty($argv[3])) $candID = $argv[3];
 // sessionID
 if (!empty($argv[4])) $sessionID = $argv[4];
 
-
-require_once __DIR__ . "/../vendor/autoload.php";
-/**
- * inititalize
- */
-set_include_path(get_include_path().":../php/libraries:");
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../project/config.xml");
-
-$today= getdate();
-$date = sprintf("%04d-%02d-%02d", $today['year'], $today['mon'], $today['mday']);
-
-$logfp = fopen("logs/score_instrument.$date.log", 'a');
-function log_msg($message) {
-    global $logfp;
-    $now_array = getdate();
-    $now_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], $now_array['mon'], $now_array['mday'], $now_array['hours'], $now_array['minutes'], $now_array['seconds']);
-    fwrite($logfp, "[$now_string] $message\n");
-}
-
 // include instrument class
 if(strtolower($test_name) != 'all') {
-     if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
-            && !is_file("../project/instruments/$test_name.linst")) {
-        fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
+    if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
+        && !is_file("../project/instruments/$test_name.linst")) {
+        printError("Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)");
         return false;
     }
 }
-
-$db =& Database::singleton();
 
 // check that the $test_name is a valid instrument
 if($test_name== 'all') {
@@ -92,29 +92,40 @@ if($test_name== 'all') {
 } else {
     $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name = :tnm";
 }
-$result = $db->pselect($query, array('tnm' => $test_name));
+$result = $DB->pselect($query, array('tnm' => $test_name));
+
 // if nothing is returned than the instrument DNE
 if (!is_array($result) || count($result)==0) {
-    fwrite(STDERR, "Invalid Instrument ($test_name)!\n");
+    printError("Invalid Instrument ($test_name)!");
     return false;
 }
-
 
 // get the list of CommentIDs for valid timepoints
 foreach($result as $test) {
     $test_name = $test['test_name'];
-    fwrite(STDERR, "Running scoring for $test_name");
-    log_msg("");
-    log_msg("Running scoring for $test_name");
-    log_msg("------------------------------");
+    printOut("Running scoring for $test_name");
+    logMessage("");
+    logMessage("Running scoring for $test_name");
+    logMessage("------------------------------");
 
-    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID, c.PSCID
-        FROM candidate as c, session as s, flag as f, $test_name as t
-        WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
-        AND s.Active = 'Y' AND c.Active='Y' 
-        AND f.Test_name = :tnm AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
-
+    $query = "
+        SELECT s.CandID, 
+            s.Visit_label, 
+            s.ID as SessionID, 
+            t.CommentID, 
+            c.PSCID
+        FROM candidate c 
+            JOIN session s ON c.CandID=s.CandID, 
+            JOIN flag f ON s.ID=f.SessionID, 
+            JOIN $test_name t ON f.CommentID=t.CommentID
+        WHERE s.Active = 'Y' 
+            AND c.Active='Y' 
+            AND f.Test_name = :tnm 
+            AND f.Administration <> 'None' 
+            AND f.Administration IS NOT NULL
+            ";
     $params = array('tnm' => $test_name);
+
     if ($action=='one') {
         $query .= " AND s.ID = :sid AND s.CandID= :cid";
         $params = array_merge(
@@ -125,14 +136,23 @@ foreach($result as $test) {
             )
         );
     }
-    $result = $db->pselect($query, $params);
+    $result = $DB->pselect($query, $params);
+
     // return error if no candidates/timepoint matched the args
-    if (!is_array($result) || count($result)==0) {
-        fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
-        return false;
+    if (!is_array($result) || empty($result)) {
+        // given that the tool might be run with all, $candID and $sessionID might not be defined
+        if (!empty($candID) && !empty($sessionID)) {
+            printOut(
+                "No records match the criteria returned for ".
+                "candidate ($candID), timepoint ($sessionID), instrument ($test_name)!"
+            );
+        } else {
+            printOut("No records for instrument $test_name!");
+        }
+        continue;
     }
 
-    fwrite(STDERR, "Start \n");
+    printOut("Start");
 
     // loop the list and derive scores for each record
     foreach ($result as $record) {
@@ -141,41 +161,74 @@ foreach($result as $test) {
 
         // check if the instrument has a scoring method
         if (!method_exists($instrument, "score")) {
-            fwrite(STDERR, "Error, the instrument ($test_name) does not have a scoring feature \n");
-            return false;
+            printOut("Error, the instrument ($test_name) does not have a scoring feature");
+            continue;
         }
 
         // print out candidate/session info
-        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: (".$record['PSCID'].")\n");
-        //fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
+        printOut("Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: (".$record['PSCID'].")");
 
         // call the score function
-        $oldRecord = $db->pselectRow("SELECT * FROM $test_name WHERE CommentID=:cid", array('cid' => $record['CommentID']));
+        $oldRecord = $DB->pselectRow(
+            "SELECT * FROM $test_name WHERE CommentID=:cid",
+            array('cid' => $record['CommentID'])
+        );
         $success = $instrument->score();
-        $newRecord = $db->pselectRow("SELECT * FROM $test_name WHERE CommentID=:cid", array('cid' => $record['CommentID']));
+        $newRecord = $DB->pselectRow(
+            "SELECT * FROM $test_name WHERE CommentID=:cid",
+            array('cid' => $record['CommentID'])
+        );
         unset($oldRecord['Testdate']);
         unset($newRecord['Testdate']);
         $diff = array_diff_assoc($oldRecord, $newRecord);
 
         if($diff != array()) {
 
-            log_msg("Updated $record[CommentID]:");
+            logMessage("Updated $record[CommentID]:");
             foreach ($diff as $key => $val) {
                 $old = $oldRecord[$key] == null ? 'null' : $oldRecord[$key];
                 $new = $newRecord[$key] == null ? 'null' : $newRecord[$key];
-                log_msg("\t$key: $old => $new");
+                logMessage("\t$key: $old => $new");
             }
         }
         else {
-            log_msg("No changes made to " . $record['CommentID']);
+            logMessage("No changes made to " . $record['CommentID']);
         }
 
-        fwrite(STDERR, "-- OK! \n");
+        printOut("-- OK!");
         // unset
         unset($instrument);
     }
 }
-
 fclose($logfp);
-fwrite(STDERR, "End \n")
-?>
+printOut("End");
+
+/*
+ * Prints to log file
+ */
+function logMessage($message) {
+    global $logfp;
+    if (!$logfp) {
+        //The log file could not be instanciated
+        //use print instead
+        printOut($message);
+    }
+    $now_array = getdate();
+    $now_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], $now_array['mon'], $now_array['mday'], $now_array['hours'], $now_array['minutes'], $now_array['seconds']);
+    fwrite($logfp, "[$now_string] $message\n");
+
+}
+
+/*
+ * Prints to STDERR
+ */
+function printError($message) {
+    fwrite(STDERR, "$message \n");
+}
+
+/*
+ * Prints to STDOUT
+ */
+function printOut($message) {
+    print_r("$message\n");
+}
