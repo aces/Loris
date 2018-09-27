@@ -9,7 +9,10 @@ import CommentList from './CommentList';
  *
  * @author Caitrin Armstrong
  * */
-class IssueForm extends React.Component {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class IssueForm extends Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +42,7 @@ class IssueForm extends React.Component {
     // Data loading error
     if (this.state.error) {
       return (
-        <div className="alert alert-danger text-center">
+        <div className='alert alert-danger text-center'>
           <strong>
             {this.state.error}
           </strong>
@@ -50,10 +53,10 @@ class IssueForm extends React.Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
@@ -97,36 +100,36 @@ class IssueForm extends React.Component {
     let description;
     if (!this.state.isNewIssue) {
       header = (
-        <div className="row">
-          <div className="col-md-6">
+        <div className='row'>
+          <div className='col-md-6'>
             <StaticElement
-              name="lastUpdate"
+              name='lastUpdate'
               label={'Last Update: '}
-              ref="lastUpdate"
+              ref='lastUpdate'
               text={lastUpdateValue}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="lastUpdatedBy"
+              name='lastUpdatedBy'
               label={'Last Updated By: '}
-              ref="lastUpdatedBy"
+              ref='lastUpdatedBy'
               text={lastUpdatedByValue}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="dateCreated"
+              name='dateCreated'
               label={'Date Created: '}
-              ref="dateCreated"
+              ref='dateCreated'
               text={dateCreated}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="reporter"
+              name='reporter'
               label={'Reporter: '}
-              ref="reporter"
+              ref='reporter'
               text={this.state.issueData.reporter}
             />
           </div>
@@ -135,9 +138,9 @@ class IssueForm extends React.Component {
 
       description = (
         <StaticElement
-          name="description"
-          label="Description"
-          ref="description"
+          name='description'
+          label='Description'
+          ref='description'
           text={this.state.issueData.desc}
         />
       );
@@ -146,126 +149,126 @@ class IssueForm extends React.Component {
     return (
       <div>
         <FormElement
-          name="issueEdit"
+          name='issueEdit'
           onSubmit={this.handleSubmit}
-          ref="form"
+          ref='form'
         >
           <h3>{headerText}</h3>
           {header}
           <TextboxElement
-            name="title"
-            label="Title"
+            name='title'
+            label='Title'
             onUserInput={this.setFormData}
-            ref="title"
+            ref='title'
             value={this.state.formData.title}
             disabled={!hasEditPermission}
             required={true}
           />
           {description}
           <SelectElement
-            name="assignee"
-            label="Assignee"
+            name='assignee'
+            label='Assignee'
             emptyOption={true}
             options={this.state.Data.assignees}
             onUserInput={this.setFormData}
-            ref="assignee"
+            ref='assignee'
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
             required={true}
           />
           <SelectElement
-            name="centerID"
-            label="Site"
+            name='centerID'
+            label='Site'
             emptyOption={true}
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="centerID"
+            ref='centerID'
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
           />
           <SelectElement
-            name="status"
-            label="Status"
+            name='status'
+            label='Status'
             emptyOption={false}
             options={this.state.Data.statuses}
             onUserInput={this.setFormData}
-            ref="status"
+            ref='status'
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
                                                // different if the user doesn't have
                                                // permission
           />
           <SelectElement
-            name="priority"
-            label="Priority"
+            name='priority'
+            label='Priority'
             emptyOption={false}
             options={this.state.Data.priorities}
             onUserInput={this.setFormData}
-            ref="priority"
+            ref='priority'
             required={false}
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
           />
           <SelectElement
-            name="category"
-            label="Category"
+            name='category'
+            label='Category'
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}
-            ref="category"
+            ref='category'
             disabled={!hasEditPermission}
             value={this.state.formData.category}
           />
           <SelectElement
-            name="module"
-            label="Module"
+            name='module'
+            label='Module'
             emptyOption={true}
             options={this.state.Data.modules}
             onUserInput={this.setFormData}
-            ref="module"
+            ref='module'
             disabled={!hasEditPermission}
             value={this.state.formData.module}
           />
           <TextboxElement
-            name="PSCID"
-            label="PSCID"
+            name='PSCID'
+            label='PSCID'
             onUserInput={this.setFormData}
-            ref="PSCID"
+            ref='PSCID'
             disabled={!hasEditPermission}
             value={this.state.formData.PSCID}
           />
           <TextboxElement
-            name="visitLabel"
-            label="Visit Label"
+            name='visitLabel'
+            label='Visit Label'
             onUserInput={this.setFormData}
-            ref="visitLabel"
+            ref='visitLabel'
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
           />
           <SelectElement
-            name="watching"
-            label="Watching?"
+            name='watching'
+            label='Watching?'
             emptyOption={false}
             options={{No: 'No', Yes: 'Yes'}}
             onUserInput={this.setFormData}
-            ref="watching"
+            ref='watching'
             value={isWatching}
           />
           <SelectElement
-            name="othersWatching"
-            label="Add others to watching?"
+            name='othersWatching'
+            label='Add others to watching?'
             emptyOption={true}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
-            ref="watching"
+            ref='watching'
             multiple={true}
             value={this.state.formData.othersWatching}
           />
           <TextareaElement
-            name="comment"
+            name='comment'
             label={commentLabel}
             onUserInput={this.setFormData}
-            ref="comment"
+            ref='comment'
             value={this.state.formData.comment}
           />
           <ButtonElement label={submitButtonValue}/>
@@ -441,8 +444,8 @@ class IssueForm extends React.Component {
 }
 
 IssueForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 export default IssueForm;

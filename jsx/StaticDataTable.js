@@ -8,22 +8,38 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import PaginationLinks from 'jsx/PaginationLinks';
+import createFragment from 'react-addons-create-fragment';
+
 /**
  * Static Data Table component
  * Displays a set of data that is receives via props.
  */
-let StaticDataTable = React.createClass({
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    Headers: React.PropTypes.array.isRequired,
-    Data: React.PropTypes.array.isRequired,
-    RowNumLabel: React.PropTypes.string,
-    // Function of which returns a JSX element for a table cell, takes
-    // parameters of the form: func(ColumnName, CellData, EntireRowData)
-    getFormattedCell: React.PropTypes.func,
-    onSort: React.PropTypes.func,
-  },
-  componentDidMount: function() {
+class StaticDataTable extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      PageNumber: 1,
+      SortColumn: -1,
+      SortOrder: 'ASC',
+      RowsPerPage: 20,
+      Hide: this.props.Hide,
+    };
+
+    this.changePage = this.changePage.bind(this);
+    this.setSortColumn = this.setSortColumn.bind(this);
+    this.changeRowsPerPage = this.changeRowsPerPage.bind(this);
+    this.downloadCSV = this.downloadCSV.bind(this);
+    this.countFilteredRows = this.countFilteredRows.bind(this);
+    this.toCamelCase = this.toCamelCase.bind(this);
+    this.getSortedRows = this.getSortedRows.bind(this);//
+    this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
+  }
+
+  componentDidMount() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
@@ -32,32 +48,35 @@ let StaticDataTable = React.createClass({
       } else {
         $('#dynamictable').DynamicTable();
       }
+      if (this.state.Hide.defaultColumn) {
+        $('#dynamictable').find('tbody td:eq(0)').hide();
+      }
     }
 
-        // Retrieve module preferences
+    // Retrieve module preferences
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
 
-        // Init modulePrefs object
+    // Init modulePrefs object
     if (modulePrefs === null) {
       modulePrefs = {};
     }
 
-        // Init modulePrefs for current module
+    // Init modulePrefs for current module
     if (modulePrefs[loris.TestName] === undefined) {
       modulePrefs[loris.TestName] = {};
       modulePrefs[loris.TestName].rowsPerPage = this.state.RowsPerPage;
     }
 
-        // Set rows per page
+    // Set rows per page
     let rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
     this.setState({
       RowsPerPage: rowsPerPage,
     });
 
-        // Make prefs accesible within component
+    // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
-  },
-  componentDidUpdate: function(prevProps, prevState) {
+  }
+  componentDidUpdate(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
@@ -69,63 +88,50 @@ let StaticDataTable = React.createClass({
     }
     if (this.props.onSort &&
       (this.state.SortColumn !== prevState.SortColumn ||
-      this.state.SortOrder !== prevState.SortOrder)
+        this.state.SortOrder !== prevState.SortOrder)
     ) {
       let index = this.getSortedRows();
       this.props.onSort(index, this.props.Data, this.props.Headers);
     }
-  },
-  getInitialState: function() {
-    return {
-      PageNumber: 1,
-      SortColumn: -1,
-      SortOrder: 'ASC',
-      RowsPerPage: 20,
-    };
-  },
-  getDefaultProps: function() {
-    return {
-      Headers: [],
-      Data: {},
-      RowNumLabel: 'No.',
-      Filter: {},
-    };
-  },
-  changePage: function(pageNo) {
+  }
+
+  changePage(pageNo) {
     this.setState({
       PageNumber: pageNo,
     });
-  },
-  setSortColumn: function(colNumber) {
-    let that = this;
+  }
+
+  setSortColumn(colNumber) {
     return function(e) {
-      if (that.state.SortColumn === colNumber) {
-        that.setState({
-          SortOrder: that.state.SortOrder === 'ASC' ? 'DESC' : 'ASC',
+      if (this.state.SortColumn === colNumber) {
+        this.setState({
+          SortOrder: this.state.SortOrder === 'ASC' ? 'DESC' : 'ASC',
         });
       } else {
-        that.setState({
+        this.setState({
           SortColumn: colNumber,
         });
       }
     };
-  },
-  changeRowsPerPage: function(val) {
+  }
+
+  changeRowsPerPage(val) {
     let rowsPerPage = val.target.value;
     let modulePrefs = this.modulePrefs;
 
-        // Save current selection
+    // Save current selection
     modulePrefs[loris.TestName].rowsPerPage = rowsPerPage;
 
-        // Update localstorage
+    // Update localstorage
     localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
 
     this.setState({
       RowsPerPage: rowsPerPage,
       PageNumber: 1,
     });
-  },
-  downloadCSV: function(csvData) {
+  }
+
+  downloadCSV(csvData) {
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -150,13 +156,14 @@ let StaticDataTable = React.createClass({
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap,
     });
-  },
-  countFilteredRows: function() {
+  }
+
+  countFilteredRows() {
     let useKeyword = false;
     let filterMatchCount = 0;
     let filterValuesCount = (this.props.Filter ?
-            Object.keys(this.props.Filter).length :
-            0
+        Object.keys(this.props.Filter).length :
+        0
     );
     let tableData = this.props.Data;
     let headersData = this.props.Headers;
@@ -186,7 +193,7 @@ let StaticDataTable = React.createClass({
 
       if (headerCount === filterValuesCount &&
         ((useKeyword === true && keywordMatch > 0) ||
-         (useKeyword === false && keywordMatch === 0))) {
+          (useKeyword === false && keywordMatch === 0))) {
         filterMatchCount++;
       }
     }
@@ -197,13 +204,15 @@ let StaticDataTable = React.createClass({
     }
 
     return (filterMatchCount === 0) ? tableData.length : filterMatchCount;
-  },
-  toCamelCase: function(str) {
+  }
+
+  toCamelCase(str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
       if (Number(match) === 0) return '';
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
     });
-  },
+  }
+
   getSortedRows() {
     const index = [];
 
@@ -269,7 +278,8 @@ let StaticDataTable = React.createClass({
       return 0;
     }.bind(this));
     return index;
-  },
+  }
+
   /**
    * Searches for the filter keyword in the column cell
    *
@@ -280,7 +290,7 @@ let StaticDataTable = React.createClass({
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword: function(headerData, data) {
+  hasFilterKeyword(headerData, data) {
     let header = this.toCamelCase(headerData);
     let filterData = null;
     let exactMatch = false;
@@ -330,35 +340,36 @@ let StaticDataTable = React.createClass({
       }
     }
     return result;
-  },
-  render: function() {
+  }
+  render() {
     if (this.props.Data === null || this.props.Data.length === 0) {
       return (
-        <div className="alert alert-info no-result-found-panel">
+        <div className='alert alert-info no-result-found-panel'>
           <strong>No result found.</strong>
         </div>
       );
     }
     let rowsPerPage = this.state.RowsPerPage;
-    let headers = [
-      <th key="th_col_0" onClick={this.setSortColumn(-1)}>
+    let headers = this.state.Hide.defaultColumn === true ? [] : [
+      <th key='th_col_0' onClick={this.setSortColumn(-1).bind(this)}>
         {this.props.RowNumLabel}
       </th>,
     ];
+
     for (let i = 0; i < this.props.Headers.length; i += 1) {
-      if (typeof loris.hiddenHeaders === 'undefined' ||
-        loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+      if (typeof this.props.hiddenHeaders === 'undefined' ||
+        this.props.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
         let colIndex = i + 1;
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                onClick={this.setSortColumn(i)}>
+                onClick={this.setSortColumn(i).bind(this)}>
               {this.props.Headers[i]}
             </th>
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i)}>
+            <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
               {this.props.Headers[i]}
             </th>
           );
@@ -427,17 +438,17 @@ let StaticDataTable = React.createClass({
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.
-            curRow.push(React.addons.createFragment({data}));
+            curRow.push(createFragment({data}));
           }
         } else {
           curRow.push(<td key={key}>{data}</td>);
         }
       }
 
-            // Only display a row if all filter values have been matched
+      // Only display a row if all filter values have been matched
       if ((filterLength === filterMatchCount) &&
-          ((useKeyword === true && keywordMatch > 0) ||
-           (useKeyword === false && keywordMatch === 0))) {
+        ((useKeyword === true && keywordMatch > 0) ||
+          (useKeyword === false && keywordMatch === 0))) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
@@ -472,66 +483,91 @@ let StaticDataTable = React.createClass({
       csvData = filteredData;
     }
 
-    return (
-      <div className="panel panel-default">
-        <div className="table-header panel-heading">
-          <div className="row">
-            <div className="col-xs-12">
-              {rows.length} rows displayed of {filteredRows}.
-              (Maximum rows per page: {RowsPerPageDropdown})
-              <div className="pull-right">
-                <PaginationLinks
-                  Total={filteredRows}
-                  onChangePage={this.changePage}
-                  RowsPerPage={rowsPerPage}
-                  Active={this.state.PageNumber}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <table className="table table-hover table-primary table-bordered"
-               id="dynamictable"
-        >
-          <thead>
-              <tr className="info">{headers}</tr>
-          </thead>
-          <tbody>
-              {rows}
-          </tbody>
-        </table>
-
-        <div className="panel-footer table-footer">
-          <div className="row">
-            <div className="col-xs-12">
-              <div className="col-xs-12 footerText">
-                  {rows.length} rows displayed of {filteredRows}.
-                (Maximum rows per page: {RowsPerPageDropdown})
-              </div>
-              <div className="col-xs-6">
-                  <button
-                    className="btn btn-primary downloadCSV"
-                    onClick={this.downloadCSV.bind(null, csvData)}
-                  >
-                    Download Table as CSV
-                  </button>
-              </div>
-              <div className="pull-right">
-                  <PaginationLinks
-                    Total={filteredRows}
-                    onChangePage={this.changePage}
-                    RowsPerPage={rowsPerPage}
-                    Active={this.state.PageNumber}
-                  />
-              </div>
+    let header = this.state.Hide.rowsPerPage === true ? '' : (
+      <div className="table-header panel-heading">
+        <div className="row">
+          <div className="col-xs-12">
+            {rows.length} rows displayed of {filteredRows}.
+            (Maximum rows per page: {RowsPerPageDropdown})
+            <div className="pull-right">
+              <PaginationLinks
+                Total={filteredRows}
+                onChangePage={this.changePage}
+                RowsPerPage={rowsPerPage}
+                Active={this.state.PageNumber}
+              />
             </div>
           </div>
         </div>
       </div>
     );
+
+    let footer = this.state.Hide.downloadCSV === true ? '' : (
+      <div className="panel-footer table-footer">
+        <div className="row">
+          <div className="col-xs-12">
+            <div className="col-xs-12 footerText">
+              {rows.length} rows displayed of {filteredRows}.
+              (Maximum rows per page: {RowsPerPageDropdown})
+            </div>
+            <div className="col-xs-6">
+              <button
+                className="btn btn-primary downloadCSV"
+                onClick={this.downloadCSV.bind(null, csvData)}
+              >
+                Download Table as CSV
+              </button>
+            </div>
+            <div className="pull-right">
+              <PaginationLinks
+                Total={filteredRows}
+                onChangePage={this.changePage}
+                RowsPerPage={rowsPerPage}
+                Active={this.state.PageNumber}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="panel panel-default">
+        {header}
+        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+          <thead>
+            <tr className="info">{headers}</tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+        {footer}
+      </div>
+    );
+  }
+}
+StaticDataTable.propTypes = {
+  Headers: PropTypes.array.isRequired,
+  Data: PropTypes.array.isRequired,
+  RowNumLabel: PropTypes.string,
+  // Function of which returns a JSX element for a table cell, takes
+  // parameters of the form: func(ColumnName, CellData, EntireRowData)
+  getFormattedCell: PropTypes.func,
+  onSort: PropTypes.func,
+  Hide: PropTypes.object,
+};
+StaticDataTable.defaultProps = {
+  Headers: [],
+  Data: {},
+  RowNumLabel: 'No.',
+  Filter: {},
+  Hide: {
+    rowsPerPage: false,
+    downloadCSV: false,
+    defaultColumn: false,
   },
-});
+};
 
 let RStaticDataTable = React.createFactory(StaticDataTable);
 

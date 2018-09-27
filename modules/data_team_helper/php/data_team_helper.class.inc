@@ -330,15 +330,15 @@ class Data_Team_Helper extends \NDB_Form
      * Get the list of fieldnames in conflict for the given test_name
      * from conflict_unresolved
      *
-     * @param unknown_type $test_name   the value of test name
-     * @param string       $visit_label the value of visit label
-     * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the id or default value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param string     $test_name   the value of test name
+     * @param string     $visit_label the value of visit label
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the id or default value of the site
+     * @param int|null   $project     the id of the project or can be null
      *
      * @return unknown
      */
-    function instrumentInConflict($test_name,
+    function instrumentInConflict(string $test_name,
         $visit_label=null,
         $candidate=null,
         $site=null,
@@ -760,15 +760,15 @@ class Data_Team_Helper extends \NDB_Form
      * @param string|null $full_name    the value of full name
      * @param string|null $subprojectID the value of subproject ID
      *
-     * @return mixed|Non
+     * @return string
      * @throws \DatabaseException
      */
-    function getTestNameusingMappedName($full_name, $subprojectID = null)
+    function getTestNameusingMappedName($full_name, $subprojectID = null): string
     {
         $DB     =& \Database::singleton();
         $values = array();
 
-        $test_name = null;
+        $test_name = '';
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".

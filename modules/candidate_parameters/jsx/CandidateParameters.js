@@ -1,3 +1,4 @@
+import React, {Component} from 'react';
 import CandidateInfo from './CandidateInfo';
 import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
@@ -5,7 +6,11 @@ import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
 import {Tabs, TabPane} from 'Tabs';
 
-class CandidateParameters extends React.Component {
+class CandidateParameters extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   getTabPanes(tabList) {
     const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
     const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
@@ -44,14 +49,14 @@ class CandidateParameters extends React.Component {
 
     return (
       <div>
-        <a className="btn btn-sm btn-primary"
+        <a className='btn btn-sm btn-primary'
            href={loris.BaseURL + '/' + this.props.candID}
            style={{marginBottom: '20px'}}
         >
           Return to timepoint list
         </a>
         <br />
-        <Tabs tabs={tabList} defaultTab="candidateInfo" updateURL={true}>
+        <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
           {this.getTabPanes(tabList)}
         </Tabs>
       </div>

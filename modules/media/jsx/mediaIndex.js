@@ -1,13 +1,14 @@
+import React, {Component} from 'react';
+import Loader from 'Loader';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
 
-class MediaIndex extends React.Component {
+class MediaIndex extends Component {
   constructor(props) {
     super(props);
-
     loris.hiddenHeaders = ['Cand ID', 'Session ID', 'Hide File', 'File Type'];
 
     this.state = {
@@ -26,8 +27,8 @@ class MediaIndex extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    */
   fetchData() {
@@ -58,12 +59,7 @@ class MediaIndex extends React.Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
@@ -85,27 +81,27 @@ class MediaIndex extends React.Component {
       );
     }
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
-            Module="media"
-            name="media_filter"
-            id="media_filter_form"
-            ref="mediaFilter"
+            Module='media'
+            name='media_filter'
+            id='media_filter_form'
+            ref='mediaFilter'
             columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
           >
             <br/>
-            <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
+            <ButtonElement label='Clear Filters' type='reset' onUserInput={this.resetFilters}/>
           </FilterForm>
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
             getFormattedCell={formatColumn}
-            freezeColumn="File Name"
+            freezeColumn='File Name'
           />
         </TabPane>
         {uploadTab}
@@ -116,7 +112,7 @@ class MediaIndex extends React.Component {
 
 $(function() {
   const mediaIndex = (
-    <div className="page-media">
+    <div className='page-media'>
       <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`} />
     </div>
   );

@@ -18,7 +18,11 @@
  * @version 0.0.1
  *
  */
-class Markdown extends React.Component {
+
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class Markdown extends Component {
   htmlSpecialCharsDecode(text) {
     return text
       .replace(/&amp;/g, '&')
@@ -115,7 +119,7 @@ class Markdown extends React.Component {
 }
 
 Markdown.propTypes = {
-  content: React.PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
 };
 
 let RMarkdown = React.createFactory(Markdown);

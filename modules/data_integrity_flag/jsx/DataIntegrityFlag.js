@@ -12,7 +12,9 @@ import FilterForm from 'FilterForm';
   * @version 1.0.0
   *
   * */
-class DataIntegrityFlag extends React.Component {
+import React, {Component} from 'react';
+
+class DataIntegrityFlag extends Component {
   constructor(props) {
     super(props);
 
@@ -33,8 +35,8 @@ class DataIntegrityFlag extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    */
   fetchData() {
@@ -61,10 +63,10 @@ class DataIntegrityFlag extends React.Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
@@ -80,40 +82,40 @@ class DataIntegrityFlag extends React.Component {
     }.bind(this);
 
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module={this.props.Module}
-            name="data_integrity_filter"
-            id="data_integrity_filter"
+            name='data_integrity_filter'
+            id='data_integrity_filter'
             ref={filterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
           >
             <SelectElement
-              name="visitLabel"
-              label="Visit Label"
+              name='visitLabel'
+              label='Visit Label'
               options={this.state.Data.visits}
             />
             <SelectElement
-              name="instrument"
-              label="Instrument"
+              name='instrument'
+              label='Instrument'
               options={this.state.Data.instruments}
             />
             <SelectElement
-              name="userID"
-              label="User"
+              name='userID'
+              label='User'
               options={this.state.Data.users}
             />
             <SelectElement
-              name="flagStatus"
-              label="Flag Status"
+              name='flagStatus'
+              label='Flag Status'
               options={this.state.Data.flagStatusList}
             />
             <ButtonElement
-              label="Clear Filters"
-              type="reset"
+              label='Clear Filters'
+              type='reset'
               onUserInput={this.resetFilters}
             />
           </FilterForm>

@@ -9,15 +9,18 @@
  * @version 1.0.0
  *
  * */
-let BrainBrowser = React.createClass({
 
-  getInitialState: function() {
-    return {
+import React, {Component} from 'react';
+
+class BrainBrowser extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       defaultPanelSize: 300,
     };
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     // Retrieve module preferences
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
 
@@ -33,11 +36,11 @@ let BrainBrowser = React.createClass({
     const panelSize = modulePrefs[loris.TestName].panelSize;
     this.setState({panelSize});
 
-    // Make prefs accesible within component
+    // Make prefs accessible within component
     this.modulePrefs = modulePrefs;
-  },
+  }
 
-  handleChange: function(e) {
+  handleChange(e) {
     const panelSize = e.target.value || this.state.defaultPanelSize;
 
     // Save panelSize in localStorage
@@ -45,9 +48,9 @@ let BrainBrowser = React.createClass({
     localStorage.setItem('modulePrefs', JSON.stringify(this.modulePrefs));
 
     this.setState({panelSize});
-  },
+  }
 
-  render: function() {
+  render() {
     let options = {
       100: '100 Pixels',
       200: '200 Pixels',
@@ -64,15 +67,15 @@ let BrainBrowser = React.createClass({
 
     return (
       <div>
-        <div id="brainbrowser-wrapper" className="brainbrowser-wrapper">
-          <div id="global-controls" className="global-controls">
-            <button id="sync-volumes" className="control">Sync Volumes</button>
-            <button id="reset-view" className="control">Reset View</button>
-            <select id="panel-size"
-                    className="control"
+        <div id='brainbrowser-wrapper' className='brainbrowser-wrapper'>
+          <div id='global-controls' className='global-controls'>
+            <button id='sync-volumes' className='control'>Sync Volumes</button>
+            <button id='reset-view' className='control'>Reset View</button>
+            <select id='panel-size'
+                    className='control'
                     value={this.state.panelSize}
                     onChange={this.handleChange}>
-              <option value="-1">Auto</option>
+              <option value='-1'>Auto</option>
               {Object.keys(options).map(function(option) {
                 return (
                   <option value={option} key={option}>{options[option]}</option>
@@ -81,13 +84,12 @@ let BrainBrowser = React.createClass({
             </select>
           </div>
         </div>
-        <div id="brainbrowser" className="brainbrowser"></div>
-        <div id="loading" className="loading-message">Loading...</div>
+        <div id='brainbrowser' className='brainbrowser'/>
+        <div id='loading' className='loading-message'>Loading...</div>
       </div>
     );
-  },
-
-});
+  }
+}
 
 let RBrainBrowser = React.createFactory(BrainBrowser);
 

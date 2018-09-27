@@ -1,4 +1,7 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import Loader from 'jsx/Loader';
 
 /**
  * Media Upload Form
@@ -10,7 +13,7 @@ import ProgressBar from 'ProgressBar';
  * @version 1.0.0
  *
  * */
-class MediaUploadForm extends React.Component {
+class MediaUploadForm extends Component {
   constructor(props) {
     super(props);
 
@@ -55,7 +58,7 @@ class MediaUploadForm extends React.Component {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
-        <div className="alert alert-danger text-center">
+        <div className='alert alert-danger text-center'>
           <strong>
             {this.state.error}
           </strong>
@@ -66,12 +69,7 @@ class MediaUploadForm extends React.Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
@@ -86,94 +84,94 @@ class MediaUploadForm extends React.Component {
     );
 
     return (
-      <div className="row">
-        <div className="col-md-8 col-lg-7">
+      <div className='row'>
+        <div className='col-md-8 col-lg-7'>
           <FormElement
-            name="mediaUpload"
+            name='mediaUpload'
             fileUpload={true}
             onSubmit={this.handleSubmit}
-            ref="form"
+            ref='form'
           >
             <h3>Upload a media file</h3><br/>
             <StaticElement
-              label="Note"
+              label='Note'
               text={helpText}
             />
             <SelectElement
-              name="pscid"
-              label="PSCID"
+              name='pscid'
+              label='PSCID'
               options={this.state.Data.candidates}
               onUserInput={this.setFormData}
-              ref="pscid"
+              ref='pscid'
               hasError={false}
               required={true}
               value={this.state.formData.pscid}
             />
             <SelectElement
-              name="visitLabel"
-              label="Visit Label"
+              name='visitLabel'
+              label='Visit Label'
               options={this.state.Data.visits}
               onUserInput={this.setFormData}
-              ref="visitLabel"
+              ref='visitLabel'
               required={true}
               value={this.state.formData.visitLabel}
             />
             <SearchableDropdown
-              name="forSite"
-              label="Site"
-              placeHolder="Search for site"
+              name='forSite'
+              label='Site'
+              placeHolder='Search for site'
               options={this.state.Data.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
-              ref="forSite"
+              ref='forSite'
               required={true}
               value={this.state.formData.forSite}
             />
             <SelectElement
-              name="instrument"
-              label="Instrument"
+              name='instrument'
+              label='Instrument'
               options={this.state.Data.instruments}
               onUserInput={this.setFormData}
-              ref="instrument"
+              ref='instrument'
               value={this.state.formData.instrument}
             />
             <DateElement
-              name="dateTaken"
-              label="Date of Administration"
-              minYear="2000"
-              maxYear="2017"
+              name='dateTaken'
+              label='Date of Administration'
+              minYear='2000'
+              maxYear='2017'
               onUserInput={this.setFormData}
-              ref="dateTaken"
+              ref='dateTaken'
               value={this.state.formData.dateTaken}
             />
             <TextareaElement
-              name="comments"
-              label="Comments"
+              name='comments'
+              label='Comments'
               onUserInput={this.setFormData}
-              ref="comments"
+              ref='comments'
               value={this.state.formData.comments}
             />
             <SelectElement
-              name="language"
-              label="Document's Language"
+              name='language'
+              label={'Document\'s Language'}
               options={this.state.Data.language}
               onUserInput={this.setFormData}
-              ref="language"
+              ref='language'
               required={false}
               value={this.state.formData.language}
             />
             <FileElement
-              name="file"
-              id="mediaUploadEl"
+              name='file'
+              id='mediaUploadEl'
               onUserInput={this.setFormData}
-              ref="file"
-              label="File to upload"
+              ref='file'
+              label='File to upload'
               required={true}
               value={this.state.formData.file}
             />
-            <ButtonElement label="Upload File"/>
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
+            <ButtonElement label='Upload File'/>
+            <div className='row'>
+              <div className='col-sm-9 col-sm-offset-3'>
                 <ProgressBar value={this.state.uploadProgress}/>
               </div>
             </div>
@@ -396,8 +394,8 @@ class MediaUploadForm extends React.Component {
 }
 
 MediaUploadForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 export default MediaUploadForm;
