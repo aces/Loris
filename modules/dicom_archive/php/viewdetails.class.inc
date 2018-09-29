@@ -26,11 +26,6 @@ namespace LORIS\dicom_archive;
 class ViewDetails extends \NDB_Form
 {
     /**
-     * This page tarchiveID
-     */
-    protected $tarchiveID;
-
-    /**
      * Keeps array of protocols from mri_protocol
      */
     var $protocols;
@@ -49,12 +44,11 @@ class ViewDetails extends \NDB_Form
     /**
     * Sets up main parameters
     *
-    * @return void
+    * @return NULL
     */
     function setup()
     {
-        $this->DB         = \Database::singleton();
-        $this->tarchiveID = $_REQUEST['tarchiveID'] ?? '';
+        $this->DB = \Database::singleton();
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
@@ -94,7 +88,7 @@ class ViewDetails extends \NDB_Form
             $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
             break;
         case "tarchive_series":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID 
+            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
             $array = $this->DB->pselect(
                 $query,
@@ -184,11 +178,12 @@ class ViewDetails extends \NDB_Form
     function _setProtocols()
     {
         try {
-            $query           = "SELECT Scan_type, TR_range, TE_range, TI_range, 
-                slice_thickness_range FROM mri_protocol";
+            $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
+                TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
+                mri_protocol";
             $this->protocols = $this->DB->pselect($query, array());
             return true;
-        } catch(\LorisException $e) {
+        } catch(LorisException $e) {
             return false;
         }
     }
@@ -208,16 +203,18 @@ class ViewDetails extends \NDB_Form
         $sliceThickness = $series['SliceThickness'];
 
         foreach ($this->protocols as $protocol) {
-            if ((! $protocol['TR_range']
-                || $this->_inRange($tr, $protocol['TR_range']))
-                && (! $protocol['TE_range']
-                || $this->_inRange($te, $protocol['TE_range']))
-                && (! $protocol['TI_range']
-                || $this->_inRange($ti, $protocol['TI_range']))
-                && (! $protocol['slice_thickness_range']
+            if (((! $protocol['TR_min'] && ! $protocol['TR_max'])
+                || $this->_inRange($tr, $protocol['TR_min'], $protocol['TR_max']))
+                && ((! $protocol['TE_min'] && ! $protocol['TE_max'])
+                || $this->_inRange($te, $protocol['TE_min'], $protocol['TE_max']))
+                && ((! $protocol['TI_min'] && ! $protocol['TI_max'])
+                || $this->_inRange($ti, $protocol['TI_min'], $protocol['TI_max']))
+                && ((! $protocol['slice_thickness_min']
+                && ! $protocol['slice_thickness_max'])
                 || $this->_inRange(
                     $sliceThickness,
-                    $protocol['slice_thickness_range']
+                    $protocol['slice_thickness_min'],
+                    $protocol['slice_thickness_max']
                 ))) {
                 return $this->_getProtocolNameFromID($protocol['Scan_type']);
             }
@@ -228,41 +225,28 @@ class ViewDetails extends \NDB_Form
     /**
      * Compares parameters of a series and of the protocols
      *
-     * @param string $seriesRange   series parameter to be compared
-     * @param string $protocolRange protocol's parameter
+     * @param string $seriesRange series parameter to be compared
+     * @param string $protocolMin minimum value of protocol's parameter
      *        to be compared with
+     * @param string $protocolMax maximum value of protocol's parameter
+     *         to be compared with
      *
      * @return bool true if series parameter is in range with
      *         the protocol's one, false otherwise
      */
-    function _inRange($seriesRange, $protocolRange)
+    function _inRange($seriesRange, $protocolMin, $protocolMax)
     {
         if (! isset($seriesRange)) {
             return false;
-        } else if (! isset($protocolRange)) {
+        } else if (! isset($protocolMin) && ! isset($protocolMax)) {
             return false;
         } else {
-            $seriesRangeTrimmed = (float)trim($seriesRange);
-            $protocolRanges     = explode(",", $protocolRange);
-
-            foreach ($protocolRanges as $range) {
-                $rangeTrimmed = trim($range);
-                if (strpos($rangeTrimmed, "-")) { // range X-Y
-                    $array = explode("-", $rangeTrimmed);
-                    $left  = (float)trim($array[0]);
-                    $right = (float)trim($array[1]);
-                    if ($left <= $seriesRangeTrimmed
-                        && $seriesRangeTrimmed <= $right
-                    ) {
-                        return true;
-                    }
-                } else { // single value element
-                    if ($seriesRangeTrimmed === (float)$rangeTrimmed) {
-                        return true;
-                    }
-                }
+            //$seriesRangeTrimmed = (float)trim($seriesRange);
+            if ($protocolMin <= $seriesRange && $seriesRange <= $protocolMax) {
+                return true;
+            } else {
+                return false;
             }
-            return false;
         }
     }
     /**
@@ -280,7 +264,7 @@ class ViewDetails extends \NDB_Form
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
             return $array['Scan_type'];
-        } catch (\LorisException $e) {
+        } catch (LorisException $e) {
             return "Unknown";
         }
     }
@@ -304,7 +288,7 @@ class ViewDetails extends \NDB_Form
     /**
      * Overrides base getJSDependencies() to add additional JS files
      *
-     * @return array of extra JS files that this page depends on
+     * @return an array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {
@@ -318,21 +302,5 @@ class ViewDetails extends \NDB_Form
             )
         );
     }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        $label = ucwords(str_replace('_', ' ', $this->name));
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
-            new \LORIS\Breadcrumb(
-                'View Details',
-                "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
-            )
-        );
-    }
 }
+?>

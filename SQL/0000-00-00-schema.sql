@@ -1,10 +1,6 @@
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
-DROP TABLE IF EXISTS `candidate_consent_rel`;
-DROP TABLE IF EXISTS `consent`;
-DROP TABLE IF EXISTS `candidate_consent_history`;
-
 DROP TABLE IF EXISTS `acknowledgements`;
 
 DROP TABLE IF EXISTS `data_release_permissions`;
@@ -73,6 +69,7 @@ DROP TABLE IF EXISTS `examiners_psc_rel`;
 DROP TABLE IF EXISTS `examiners`;
 
 DROP TABLE IF EXISTS `participant_status_history`;
+DROP TABLE IF EXISTS `consent_info_history`;
 DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
@@ -129,7 +126,6 @@ DROP TABLE IF EXISTS `caveat_options`;
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `users`;
 SET FOREIGN_KEY_CHECKS=1;
-DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
@@ -228,8 +224,6 @@ CREATE TABLE `users` (
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
-  `active_from` date default NULL,
-  `active_to` date default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
@@ -694,32 +688,41 @@ CREATE TABLE `mri_protocol` (
   `Center_name` varchar(4) NOT NULL default '',
   `ScannerID` int(10) unsigned NOT NULL default '0',
   `Scan_type` int(10) unsigned NOT NULL default '0',
-  `TR_range` varchar(255) default NULL,
-  `TE_range` varchar(255) default NULL,
-  `TI_range` varchar(255) default NULL,
-  `slice_thickness_range` varchar(255) default NULL,
-  `FoV_x_range` varchar(255) default NULL,
-  `FoV_y_range` varchar(255) default NULL,
-  `FoV_z_range` varchar(255) default NULL,
-  `xspace_range` varchar(255) default NULL,
-  `yspace_range` varchar(255) default NULL,
-  `zspace_range` varchar(255) default NULL,
-  `xstep_range` varchar(255) default NULL,
-  `ystep_range` varchar(255) default NULL,
-  `zstep_range` varchar(255) default NULL,
-  `time_range` varchar(255) default NULL,
-  `series_description_regex` varchar(255) default NULL,
+  `TR_min` DECIMAL(10,4) DEFAULT NULL,
+  `TR_max` DECIMAL(10,4) DEFAULT NULL,
+	`TE_min` DECIMAL(10,4) DEFAULT NULL,
+	`TE_max` DECIMAL(10,4) DEFAULT NULL,
+	`TI_min` DECIMAL(10,4) DEFAULT NULL,
+	`TI_max` DECIMAL(10,4) DEFAULT NULL,
+	`slice_thickness_min` DECIMAL(9,4) DEFAULT NULL,
+	`slice_thickness_max` DECIMAL(9,4) DEFAULT NULL,
+	`xspace_min` int(4) DEFAULT NULL,
+	`xspace_max` int(4) DEFAULT NULL,
+	`yspace_min` int(4) DEFAULT NULL,
+	`yspace_max` int(4) DEFAULT NULL,
+	`zspace_min` int(4) DEFAULT NULL,
+	`zspace_max` int(4) DEFAULT NULL,
+	`xstep_min` DECIMAL(9,4) DEFAULT NULL,
+	`xstep_max` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_min` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_max` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_min` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_max` DECIMAL(9,4) DEFAULT NULL,
+	`time_min` int(4) DEFAULT NULL,
+	`time_max` int(4) DEFAULT NULL,
+  `series_description_regex` varchar(255) default NULL
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES
-  ('ZZZZ',48,'8000-14000','80-130','0-200'),
-  ('ZZZZ',40,'1900-2700','10-30','0-500'),
-  ('ZZZZ',44,'2000-2500','2-5',NULL),
-  ('ZZZZ',45,'3000-9000','100-550',NULL);
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+TE_max,time_min,time_max) VALUES
+  ('ZZZZ',48,8000,14000,80,130,0,200),
+  ('ZZZZ',40,1900,2700,10,30,0,500),
+  ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
+  ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -751,7 +754,8 @@ CREATE TABLE `mri_protocol_checks` (
   `Scan_type` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
-  `ValidRange` varchar(255) DEFAULT NULL,
+  `ValidMin` varchar(255) DEFAULT NULL,
+  `ValidMax` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
@@ -1085,6 +1089,9 @@ CREATE TABLE `participant_status` (
   `participant_suboptions` int(10) unsigned DEFAULT NULL,
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
+  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `study_consent_date` date DEFAULT NULL,
+  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `CandID` (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -1124,6 +1131,18 @@ CREATE TABLE `participant_status_history` (
   `reason_specify` varchar(255) DEFAULT NULL,
   `reason_specify_status` enum('not_answered') DEFAULT NULL,
   `participant_subOptions` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `consent_info_history` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6) NOT NULL DEFAULT '0',
+  `entry_staff` varchar(255) DEFAULT NULL,
+  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `study_consent_date` date DEFAULT NULL,
+  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1402,7 +1421,7 @@ CREATE TABLE `issues_history` (
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
   KEY `fk_issues_comments_1` (`issueID`),
-  CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments` (
@@ -1413,7 +1432,7 @@ CREATE TABLE `issues_comments` (
   `issueComment` text NOT NULL,
   PRIMARY KEY (`issueCommentID`),
   KEY `fk_issue_comments_1` (`issueID`),
-  CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments_history` (
@@ -1424,7 +1443,7 @@ CREATE TABLE `issues_comments_history` (
   `editedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueCommentHistoryID`),
   KEY `fk_issues_comments_history` (`issueCommentID`),
-  CONSTRAINT `fk_issues_comments_history` FOREIGN KEY (`issueCommentID`) REFERENCES `issues_comments` (`issueCommentID`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `fk_issues_comments_history` FOREIGN KEY (`issueCommentID`) REFERENCES `issues_comments` (`issueCommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_watching` (
@@ -1537,7 +1556,7 @@ CREATE TABLE `parameter_session` (
   KEY `session_type` (`SessionID`,`ParameterTypeID`),
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
   CONSTRAINT `FK_parameter_session_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
-  CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `parameter_type_override` (
@@ -1771,8 +1790,8 @@ CREATE TABLE `genomic_cpg` (
   `beta_value` decimal(4,3) DEFAULT NULL,
   PRIMARY KEY (`sample_label`,`cpg_name`),
   KEY `cpg_name` (`cpg_name`),
-  CONSTRAINT `genomic_cpg_ibfk_1` FOREIGN KEY (`sample_label`) REFERENCES `genomic_sample_candidate_rel` (`sample_label`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_name`) REFERENCES `genomic_cpg_annotation` (`cpg_name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `genomic_cpg_ibfk_1` FOREIGN KEY (`sample_label`) REFERENCES `genomic_sample_candidate_rel` (`sample_label`),
+  CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_name`) REFERENCES `genomic_cpg_annotation` (`cpg_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1946,45 +1965,45 @@ CREATE TABLE `feedback_mri_predefined_comments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `feedback_mri_predefined_comments` (CommentTypeID, Comment) VALUES
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'missing slices'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'reduced dynamic range due to bright artifact/pixel'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'slice to slice intensity differences'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'noisy scan'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibilty artifact above the ear canals.'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibilty artifact due to dental work'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'sagittal ghosts'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'slight ringing artefacts'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'severe ringing artefacts'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'movement artefact due to eyes'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'movement artefact due to carotid flow'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Packet movement artifact'),'slight movement between packets'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Packet movement artifact'),'large movement between packets'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Large AP wrap around, affecting brain'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Medium AP wrap around, no affect on brain'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Small AP wrap around, no affect on brain'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Too tight LR, cutting into scalp'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Too tight LR, affecting brain'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Top of scalp cut off'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Top of brain cut off'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Base of cerebellum cut off'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'missing top third - minc conversion?'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'copy of prev data'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'checkerboard artifact'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'horizontal intensity striping (Venetian blind effect, DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'diagonal striping (NRRD artifact, DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'high intensity in direction of acquisition'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'signal loss (dark patches)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'red artifact'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'green artifact'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'blue artifact'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Too few remaining gradients (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'No b0 remaining after DWIPrep (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'No gradient information available from scanner (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Incorrect diffusion direction (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Duplicate series'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'slice wise artifact (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'gradient wise artifact (DWI ONLY)'),
-  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibility artifact due to anatomy');
+  (2,'missing slices'),
+  (2,'reduced dynamic range due to bright artifact/pixel'),
+  (2,'slice to slice intensity differences'),
+  (2,'noisy scan'),
+  (2,'susceptibilty artifact above the ear canals.'),
+  (2,'susceptibilty artifact due to dental work'),
+  (2,'sagittal ghosts'),
+  (3,'slight ringing artefacts'),
+  (3,'severe ringing artefacts'),
+  (3,'movement artefact due to eyes'),
+  (3,'movement artefact due to carotid flow'),
+  (4,'slight movement between packets'),
+  (4,'large movement between packets'),
+  (5,'Large AP wrap around, affecting brain'),
+  (5,'Medium AP wrap around, no affect on brain'),
+  (5,'Small AP wrap around, no affect on brain'),
+  (5,'Too tight LR, cutting into scalp'),
+  (5,'Too tight LR, affecting brain'),
+  (5,'Top of scalp cut off'),
+  (5,'Top of brain cut off'),
+  (5,'Base of cerebellum cut off'),
+  (5,'missing top third - minc conversion?'),
+  (6,'copy of prev data'),
+  (2,"checkerboard artifact"),
+  (2,"horizontal intensity striping (Venetian blind effect, DWI ONLY)"),
+  (2,"diagonal striping (NRRD artifact, DWI ONLY)"),
+  (2,"high intensity in direction of acquisition"),
+  (2,"signal loss (dark patches)"),
+  (8,"red artifact"),
+  (8,"green artifact"),
+  (8,"blue artifact"),
+  (6,"Too few remaining gradients (DWI ONLY)"),
+  (6,"No b0 remaining after DWIPrep (DWI ONLY)"),
+  (6,"No gradient information available from scanner (DWI ONLY)"),
+  (6,"Incorrect diffusion direction (DWI ONLY)"),
+  (6,"Duplicate series"),
+  (3,"slice wise artifact (DWI ONLY)"),
+  (3,"gradient wise artifact (DWI ONLY)"),
+  (2,"susceptibility artifact due to anatomy");
 
 CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
@@ -2005,41 +2024,4 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ********************************
--- Consent tables
--- ********************************
-
-CREATE TABLE `consent` (
-  `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) NOT NULL,
-  `Label` varchar(255) NOT NULL,
-  CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
-  CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
-  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `candidate_consent_rel` (
-  `CandidateID` int(6) NOT NULL,
-  `ConsentID` integer unsigned NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
-  `DateGiven` date DEFAULT NULL,
-  `DateWithdrawn` date DEFAULT NULL,
-  CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
-  CONSTRAINT `FK_candidate_consent_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `candidate_consent_history` (
-  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `DateGiven` date DEFAULT NULL,
-  `DateWithdrawn` date DEFAULT NULL,
-  `PSCID` varchar(255) NOT NULL,
-  `ConsentName` varchar(255) NOT NULL,
-  `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
-  `EntryStaff` varchar(255) DEFAULT NULL,
-  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
