@@ -106,8 +106,8 @@ foreach ($field_names as $key=>$field)
             " SET ".$db->escape($field['COLUMN_NAME'])."=NULL".$autoUpdateSQL.
             " WHERE CAST(".$db->escape($field['COLUMN_NAME'])." AS CHAR(20))='0000-00-00 00:00:00';\n";
     } else {
-      echo "COLUMN ".$field['COLUMN_NAME']." in TABLE ".$field['TABLE_NAME']." is NOT NULLABLE. ".
-          "A date '1000-01-01' will be entered instead of '0000-00-00' values.\n";
+  echo "COLUMN ".$field['COLUMN_NAME']." in TABLE ".$field['TABLE_NAME']." is NOT NULLABLE. ".
+      "A date '1000-01-01' will be entered instead of '0000-00-00' values.\n";
         $nonNullUpdates .= "UPDATE ".$db->escape($database['database']).".".$db->escape($field['TABLE_NAME']).
             " SET ".$db->escape($field['COLUMN_NAME'])."='1000-01-01'".$autoUpdateSQL.
             " WHERE CAST(".$db->escape($field['COLUMN_NAME'])." AS CHAR(20))='0000-00-00';\n";
