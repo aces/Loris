@@ -45,7 +45,7 @@ class ViewDetails extends \NDB_Form
     /**
     * Sets up main parameters
     *
-    * @return NULL
+    * @return void
     */
     function setup()
     {
@@ -230,7 +230,7 @@ class ViewDetails extends \NDB_Form
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, array());
             return true;
-        } catch(LorisException $e) {
+        } catch(\LorisException $e) {
             return false;
         }
     }
@@ -311,7 +311,7 @@ class ViewDetails extends \NDB_Form
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
             return $array['Scan_type'];
-        } catch (LorisException $e) {
+        } catch (\LorisException $e) {
             return "Unknown";
         }
     }
@@ -349,5 +349,22 @@ class ViewDetails extends \NDB_Form
             )
         );
     }
+
+    /**
+      * Generate a breadcrumb trail for this page.
+      *
+      * @return \LORIS\BreadcrumbTrail
+      */
+     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+     {
+         $label = ucwords(str_replace('_', ' ', $this->name));
+         return new \LORIS\BreadcrumbTrail(
+             new \LORIS\Breadcrumb($label, "/$this->name"),
+             new \LORIS\Breadcrumb(
+                 'View Details',
+                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
+             )
+         );
+     }
 }
 ?>
