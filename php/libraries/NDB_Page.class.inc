@@ -664,7 +664,7 @@ class NDB_Page implements RequestHandlerInterface
     {
         $this->setup();
         return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display()));
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
     /**
