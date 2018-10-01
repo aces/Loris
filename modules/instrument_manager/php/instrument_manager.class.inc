@@ -334,23 +334,35 @@ class Instrument_Manager extends \NDB_Menu_Filter
         return null;
     }
     /**
-    * CheckTable function
-    *
-    * @param string $instname the value of instname
-    *
-    * @return bool
-    */
-    function checkTable($instname)
+     * This function validates an uploaded LORIS instrument ("linst") file.  It
+     * checks whether all of the fields defined in the .linst file are present
+     * in the SQL schema and vice-versa.  If the table is found to be consistent
+     * it is considered valid and a String confirming this will be returned and
+     * eventually output in the front-end table.  Otherwise an error will be
+     * returned and displayed to the user.
+     *
+     * @param string $instname The instrument's name.
+     *
+     * @return string A messsage representing the status of the table entry.
+     *
+     * @see Example linst file: docs/instruments/test_all_fields.linst
+     */
+    function checkTable($instname): String
     {
         $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
         $db       = \Database::singleton();
 
+        $linst_field_names = array();
+
+        // Loop over every line of the .linst file and validate that its
+        // structure matches the SQL table schema in the back-end.
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
             $type   = $pieces[0];
             $name   = $pieces[1];
+            $linst_field_names[] = $name;
             if ($name == 'Examiner') {
                 continue;
             }
@@ -415,6 +427,36 @@ class Instrument_Manager extends \NDB_Menu_Filter
             default:
                 break;
             }
+        }
+        // For every value in the `Field` column in the SQL schema, ensure a
+        // matching value exists in the linst file.  This is done to check
+        // whether a question has been deleted from the linst file but is still
+        // present in the back-end.
+        $sqlSelect = "SELECT COLUMN_NAME".
+            " FROM information_schema.columns".
+            " WHERE TABLE_SCHEMA=:dbname".
+            " AND TABLE_NAME=:tablename";
+        $result    = $db->pselect(
+            $sqlSelect,
+            array(
+             'dbname'    => $factory->settings()->dbName(),
+             'tablename' => $instname,
+            )
+        );
+        // Get all fields present in DB but absent in linst file.
+        $columns_in_database = array();
+        foreach ($result as $key=>$value_array) {
+            // Extract the information we want from the nested arrays returned
+            // by the call to pselect.
+            $columns_in_database[] = $value_array['COLUMN_NAME'];
+        }
+        $diff = array_diff($columns_in_database, $linst_field_names);
+        // Filter the difference by checking whether it contains values that are
+        // added/populated automatically by LORIS, and therefore need not and
+        // should not be present in .linst forms.
+        $diff = array_filter($diff, array($this, "filterDefaultColumns"));
+        if (!empty($diff)) {
+            return "Invalid: DB contains values not in linst";
         }
 
         return "Appears Valid";
@@ -489,5 +531,27 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $db_config['host'],
             false
         );
+
+    /** This function checks whether the column_name parameter exists in a list
+     * of default column names.  These defaults represent values that are 
+     * automatically created and populated by LORIS upon creating or uploading
+     * a linst form.
+     * This function is used by array_filter above to do table validation.
+     *
+     * @param string $column_name A column name in an instrument table.
+     *
+     * @return bool True if $column_name matches a default. False otherwise.
+     */
+    function filterDefaultColumns($column_name): Bool
+    {
+        $defaults = array(
+                     'CommentID',
+                     'UserID',
+                     'Testdate',
+                     'Data_entry_completion_status',
+                    );
+        // Negate in_array because we DON'T want default values, and so we
+        // should return false on a match.
+        return !in_array($column_name, $defaults);
     }
 }
