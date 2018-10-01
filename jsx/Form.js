@@ -489,7 +489,6 @@ class SelectElement extends Component {
             onChange={this.handleChange}
             required={required}
             disabled={disabled}
-            sortByValue={sortByValue}
           >
             {emptyOptionHTML}
             {optionList}
