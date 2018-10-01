@@ -68,16 +68,8 @@ class Data_Release extends \NDB_Menu_Filter
                                'upload_date' => 'upload_date',
                               );
 
-        $user_ID   = $DB->pselectOne(
-            "SELECT ID FROM users WHERE userid=:UserID",
-            array('UserID' => $user->getUsername())
-        );
-        $superuser = $DB->pselectOne(
-            "SELECT true FROM users WHERE ID IN "
-            . "(SELECT userid FROM user_perm_rel WHERE "
-            . "permid=1 AND userid=:UserID)",
-            array('UserID' => $user_ID)
-        );
+        $userCanUpload = $user->hasPermission("data_release_upload");
+        $userCanEdit= $user->hasPermission("data_release_edit_permissions");
 
         $results = $DB->pselect(
             "SELECT ID, UserID FROM users",
@@ -97,7 +89,8 @@ class Data_Release extends \NDB_Menu_Filter
             $data_release_ids[$row['id']] =$row['file_name'];
         }
 
-        $this->tpl_data['superuser']        = $superuser;
+        $this->tpl_data['usercanupload']    = $userCanUpload;
+        $this->tpl_data['usercanedit']      = $userCanEdit;
         $this->tpl_data['userids']          = $userids;
         $this->tpl_data['data_release_ids'] = $data_release_ids;
 
