@@ -1,3 +1,5 @@
+import Loader from 'Loader';
+
 /**
  * Battery Manager Add Form
  *
@@ -59,14 +61,7 @@ class BatteryManagerAddForm extends React.Component {
 
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
     // Inform users about duplicate entries
@@ -229,10 +224,10 @@ class BatteryManagerAddForm extends React.Component {
    * @param {string} duplicateEntry returned by server
    */
   giveOptions(duplicateEntry) {
-        // if duplicate entry exists, convert to JSON
-    if (Object.keys(duplicateEntry).length > 0) {
+    // if duplicate entry exists, convert to JSON
+    if (duplicateEntry !== undefined) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
-          // if duplicate entry is not active, trigger activate popup
+      // if duplicate entry is not active, trigger activate popup
       if (duplicateEntryJSON.Active === 'N') {
         swal({
           title: "Deactivated entry!",

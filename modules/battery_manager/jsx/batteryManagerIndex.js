@@ -1,6 +1,7 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import BatteryManagerAddForm from './addEntry';
+import Loader from 'Loader';
 
 /**
  * Battery Manager
@@ -62,14 +63,7 @@ class BatteryManagerIndex extends React.Component {
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
     // Create tab list and add Browse tab to it
@@ -99,7 +93,6 @@ class BatteryManagerIndex extends React.Component {
             Module="battery_manager"
             name="battery_manager_filter"
             id="battery_manager_filter_form"
-            ref="batteryManagerFilter"
             columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
