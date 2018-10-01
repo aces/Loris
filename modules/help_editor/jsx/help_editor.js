@@ -7,8 +7,8 @@ import Loader from 'Loader';
  * Serves as an entry-point to the module, rendering the whole react
  * component page on load.
  *
- * Renders Help Editor main page consisting of FilterTable and
- * DataTable components.
+ * Renders Help Editor main page consisting of FilterForm and
+ * StaticDataTable components.
  *
  * @author LORIS Team
  * @version 1.0.0
@@ -77,10 +77,10 @@ class HelpEditor extends React.Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} rowData - array of cell contents for a specific row
-   * @param {arrray} rowHeaders - array of table headers (column names)
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
    *
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
