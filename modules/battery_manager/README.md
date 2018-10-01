@@ -1,7 +1,7 @@
 # Battery Manager
 
 ## Purpose
-The Battery Manager module allows users to **browse**, **add**, **edit**, **activate**, **deactivate** entries 
+The Battery Manager module allows users to **browse**, **add**, **edit**, **activate** and **deactivate** entries 
 in the Test Battery. The Test Battery is used to determine which Instruments are administered at different timepoints.
 
 ## Intended Users
@@ -26,7 +26,7 @@ The following rules apply when editing:
   users will be given the option to activate the other entry and deactivate the original one.
 
 ### Activate
-The **activate** functionality can be accessed in the `Browse` tab, `Edit` window, and the `Add` tab..
+The **activate** functionality can be accessed in the `Browse` tab, `Edit` window, and the `Add` tab.
 
 #### Browse tab
 In the `Change Status` column of the Menu Table, users can directly activate an entry by pressing the **Activate** button.
