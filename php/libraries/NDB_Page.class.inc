@@ -663,7 +663,7 @@ class NDB_Page implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->setup();
-        return (new \Zend\Diactoros\Response())
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display()));
     }
 
