@@ -476,7 +476,7 @@ class User extends UserPermissions
         }
         $data = \User::singleton()->getData();
         if (password_verify($newPassword, $data['Password_hash'])) {
-            $result['why'] = 'You cannot keep the same passphrase.';
+            $result['why'] = 'You cannot keep the same password.';
             return $result;
         }
         /* Score comes from Zxcvbn library from Dropbox. The scale is 0-5 in
@@ -487,7 +487,7 @@ class User extends UserPermissions
         $strength  = \User::checkPasswordStrength($newPassword);
         $threshold = 3;
         if (intval($strength['score']) < $threshold) {
-            $result['why'] = 'This passphrase is easily guessable. Try adding '
+            $result['why'] = 'This password is easily guessable. Try adding '
                 . 'more words.';
             return $result;
         }
