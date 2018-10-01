@@ -3,7 +3,7 @@
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 <hr>
-NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
+<b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
 Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 
@@ -25,7 +25,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
 # Prerequisites for Installation
 
  * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
- * Apache2
+ * Apache **2.4**
  * MySQL 5.7 
  * PHP <b>7.2</b>  
  * Package manager (for LINUX distributions)
