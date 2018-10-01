@@ -6,7 +6,7 @@
 <script id="isFiltered" type="text/json">
     {
         "filtered": {/literal}
-                        {if isset($filtered)}
+                        {if $filtered}
                             true
                         {else}
                             false
