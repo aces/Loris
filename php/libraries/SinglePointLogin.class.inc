@@ -395,6 +395,8 @@ class SinglePointLogin
             return true;
         }
 
+        // Fail by default with a generic error message
+        $this->_lastError = "Incorrect username or password.";
         return false;
     }
 
