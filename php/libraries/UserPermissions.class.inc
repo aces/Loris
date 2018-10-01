@@ -109,7 +109,7 @@ class UserPermissions
      * Determines if the user has the permission to access a specific module
      * or page.
      *
-     * @param string $code     The permission code
+     * @param string $code The permission code
      *
      * @return bool If the user has a permission.
      */
@@ -142,12 +142,17 @@ class UserPermissions
      * Used to test whether a user has ALL of an array of specified permissions.
      * Returns false on the first permission that the user doesn't have.
      *
-     * @param array $permissions Array of permissions codes.
+     * @param string[] $permissions Array of permissions codes.
      *
      * @return bool Whether the user has all the permissions in $permissions.
      */
     function hasAllPermissions(array $permissions): bool
     {
+        if (!count($permissions)) {
+            throw new LorisException(
+                "Cannot call hasAllPermissions with an empty array!"
+            );
+        }
         foreach ($permissions as $p) {
             if (!$this->permissionTrueAndValid($p)) {
                 return false;
@@ -158,14 +163,18 @@ class UserPermissions
 
     /**
      * Used to test whether a user has ANY of an array of specified permissions.
-     * Returns true on the first permission that the user has.
      *
-     * @param array $permissions Array of permissions codes.
+     * @param string[] $permissions Array of permissions codes.
      *
      * @return bool Whether the user has any of the permissions in $permissions.
      */
     function hasAnyPermission(array $permissions): bool
     {
+        if (!count($permissions)) {
+            throw new LorisException(
+                "Cannot call hasAnyPermission with an empty array!"
+            );
+        }
         foreach ($permissions as $p) {
             if ($this->permissionTrueAndValid($p)) {
                 return true;
