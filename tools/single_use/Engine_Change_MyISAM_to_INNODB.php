@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once __DIR__ . "/../generic_includes.php";
-require_once __DIR__ . "/../helpers/FileHelper.php";
 
 $dbConfig = $config->getSetting("database");
 $adminDB  = Database::singleton(
@@ -131,7 +130,12 @@ $output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 // START ACTION
 if ($printToSQL) {
     // Generate the file
-    FileHelper::writeToFile($filePath, $output);
+    try {
+        (new SplFileObject($filePath, "w"))->fwrite($output);
+    } catch (\RuntimeException $e) {
+        // Most likely permission denied
+        echo $e->getMessage();
+    }
 } elseif ($confirm) {
     // Run on database
     // Get data from all tables to be modified
