@@ -77,8 +77,8 @@ class DataDictIndex extends React.Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} rowData - array of cell contents for a specific row
-   * @param {arrray} rowHeaders - array of table headers (column names)
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
    *
    * @return {*} a formated table cell for a given column
    */
@@ -91,7 +91,7 @@ class DataDictIndex extends React.Component {
       let updateDict = name => {
         return e => {
           e.stopPropagation();
- 
+
           let value = e.target.valueOf().innerText;
           $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
             fieldname: name, description: value
@@ -132,7 +132,11 @@ class DataDictIndex extends React.Component {
           formElements={this.state.data.form}
           onUpdate={this.updateFilter}
           filter={this.state.filter}>
-          <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
+          <ButtonElement
+            label="Clear Filters"
+            type="reset"
+            onUserInput={this.resetFilters}
+          />
         </FilterForm>
         <StaticDataTable
           Data={this.state.data.Data}
