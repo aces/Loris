@@ -113,7 +113,7 @@ class UserPermissions
      *
      * @return bool If the user has a permission.
      */
-    function hasPermission($code): bool
+    function hasPermission(string $code): bool
     {
         /* True if user superuser permission is set and user has it OR all
          * permissions are true.
@@ -130,7 +130,7 @@ class UserPermissions
      *
      * @return bool The setting of permission code $permission
      */
-    function permissionTrueAndValid(string $code)
+    function permissionTrueAndValid(string $code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
@@ -148,7 +148,7 @@ class UserPermissions
      */
     function hasAllPermissions(array $permissions): bool
     {
-        if (!count($permissions)) {
+        if (count($permissions) === 0) {
             throw new LorisException(
                 "Cannot call hasAllPermissions with an empty array!"
             );
@@ -170,7 +170,7 @@ class UserPermissions
      */
     function hasAnyPermission(array $permissions): bool
     {
-        if (!count($permissions)) {
+        if (count($permissions) === 0) {
             throw new LorisException(
                 "Cannot call hasAnyPermission with an empty array!"
             );
