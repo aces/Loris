@@ -25,6 +25,15 @@ class HelpEditor extends React.Component {
       data: {}
     };
 
+    //TODO: refs should be deprecated in future refactoring.
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
     /*
      * Bind component instance to custom methods
      */
@@ -112,18 +121,13 @@ class HelpEditor extends React.Component {
       return <Loader/>
     }
 
-    //TODO: refs should be deprecated in future refactoring.
-    const filterRef = function(f) {
-      this.filter = f;
-    }.bind(this);
-
     return (
       <div>
         <FilterForm
           Module='help_editor'
           name='help_filter'
           id='help_filter'
-          ref={filterRef}
+          ref={this.setFilterRef}
           columns={2}
           formElements={this.state.data.form}
           onUpdate={this.updateFilter}
