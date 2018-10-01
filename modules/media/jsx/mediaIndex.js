@@ -80,7 +80,9 @@ class MediaIndex extends React.Component {
 
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index];
+    });
 
     // create array of classes to be added to td tag
     let classes = [];
@@ -92,7 +94,8 @@ class MediaIndex extends React.Component {
 
     const hasWritePermission = loris.userHasPermission('media_write');
     if (column === 'File Name' && hasWritePermission === true) {
-      const downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" + encodeURIComponent(row['File Name']);
+      const downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
+        encodeURIComponent(row['File Name']);
       return (
         <td className= {classes}>
           <a href={downloadURL} target="_blank" download={row['File Name']}>
@@ -153,7 +156,11 @@ class MediaIndex extends React.Component {
             filter={this.state.filter}
           >
             <br/>
-            <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
+            <ButtonElement
+              label="Clear Filters"
+              type="reset"
+              onUserInput={this.resetFilters}
+            />
           </FilterForm>
           <StaticDataTable
             Data={this.state.data.Data}
