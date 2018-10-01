@@ -87,7 +87,9 @@ class DicomArchive extends React.Component {
 
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index]
+    });
     switch (column) {
       case 'Archive Location': {
         const downloadURL = '/mri/jiv/get_file.php?file=' + cell;
@@ -110,8 +112,7 @@ class DicomArchive extends React.Component {
         if (row.SessionID === null || row.SessionID === '') {
           return <td>&nbsp;</td>;
         }
-        let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-          row.SessionID;
+        let mrlURL = loris.BaseURL+'/imaging_browser/viewSession/?sessionID='+row.SessionID;
         return <td><a href={mrlURL}>{cell}</a></td>;
       }
       case 'INVALID - HIDDEN':
