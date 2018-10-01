@@ -54,8 +54,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-//        print_r($fileTypeList);
-        $siteList  = array();
+        //        print_r($fileTypeList);
+        $siteList = array();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -74,34 +74,34 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 }
             }
         }
-//todo get the list
-$result = $db->pselect(
-    "SELECT * FROM document_repository_categories",
-    array()
-);
+        //todo get the list
+        $result = $db->pselect(
+            "SELECT * FROM document_repository_categories",
+            array()
+        );
 
-$data = array();
-foreach ($result as $value) {
-       $item = $this->parseCategory($value);
-       $id   = $item['id'];
-       $name = $item['name'];
-       $data[$id]=$name;
-}
+        $data = array();
+        foreach ($result as $value) {
+               $item      = $this->parseCategory($value);
+               $id        = $item['id'];
+               $name      = $item['name'];
+               $data[$id] =$name;
+        }
         $categoryList = $data;
         // Form Elements
-        
+
         $this->addBasicText('fileName', 'File Name');
         $this->addBasicText('version', 'Version');
         $this->addSelect('fileType', 'File type', $fileTypeList);
         $this->addSelect('site', 'For Site', $siteList);
         $this->addBasicText('uploadedBy', 'Uploaded By');
-        $this->addSelect('category','File category',$categoryList);
+        $this->addSelect('category', 'File category', $categoryList);
 
         return true;
-}
-  public  function parseCategory($value)
+    }
+    public  function parseCategory($value)
     {
-        $id = $value['id'];
+        $id    = $value['id'];
         $depth = 0;
         $DB    = \Database::singleton();
             $categoryName = $value['category_name'];
@@ -115,10 +115,13 @@ foreach ($result as $value) {
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-//try to return array{{name:"ddd",id:'1'}{}}
-//        return $categoryName;
-//          return $id;
-         return array("name"=>$categoryName,"id"=>$id);
+        //try to return array{{name:"ddd",id:'1'}{}}
+        //        return $categoryName;
+        //          return $id;
+         return array(
+                 "name" => $categoryName,
+                 "id"   => $id,
+                );
     }
     /**
      * Build a list of media to display in Data Table
@@ -134,18 +137,18 @@ foreach ($result as $value) {
         $query .= " WHERE COALESCE(v.hide_video, false)=false";
         // set the class variables
         $this->columns =[
-                          'v.File_name',
-                          'v.version',
-                          'v.File_type',
-                          'v.Instrument',
-                          'v.uploaded_by',
-                          '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-                          'v.comments',
-                          'v.Date_uploaded',
-                          'v.File_category as category',
-                          'v.Data_dir',
+                         'v.File_name',
+                         'v.version',
+                         'v.File_type',
+                         'v.Instrument',
+                         'v.uploaded_by',
+                         '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
+                         'v.comments',
+                         'v.Date_uploaded',
+                         'v.File_category as category',
+                         'v.Data_dir',
                         ];
-        $this->query = $query;
+        $this->query   = $query;
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND v.For_site IN (" . $site_arr . ")";
@@ -153,18 +156,18 @@ foreach ($result as $value) {
         $this->group_by = '';
         $this->order_by = 'v.File_name';
         $this->headers  = [
-                               'File_name',
-                               'version',
-                               'File_type',
-                               'Instrument',
-                               'uploaded_by',
-                               'Site',
-                               'comments',
-                               'Date_uploaded',
-                               'category',
-                               'Data_dir',
-                               'Edit',
-                               'Delete',
+                           'File_name',
+                           'version',
+                           'File_type',
+                           'Instrument',
+                           'uploaded_by',
+                           'Site',
+                           'comments',
+                           'Date_uploaded',
+                           'category',
+                           'Data_dir',
+                           'Edit',
+                           'Delete',
                           ];
         return true;
     }
