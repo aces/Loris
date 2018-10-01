@@ -333,39 +333,39 @@ class SinglePointLogin
             $user->updatePassword($password);
         }
 
-                // check if the account is longer active
-                $date       = new DateTime();
-                $currentDay = $date->getTimestamp();
+        // check if the account is longer active
+        $date       = new DateTime();
+        $currentDay = $date->getTimestamp();
 
-                if (($row['active_to'] != null)
-                    && ($currentDay > strtotime($row['active_to']))
-                ) {
-                    $this->_lastError = "Your account has expired."
-                        . " Please contact your project administrator to re-activate"
-                        . " this account.";
-                    return false;
+        if (($row['active_to'] != null)
+            && ($currentDay > strtotime($row['active_to']))
+        ) {
+            $this->_lastError = "Your account has expired."
+                . " Please contact your project administrator to re-activate"
+                . " this account.";
+            return false;
 
-                }
+        }
 
-                // check if the account is active
-                if (($row['active_from'] != null)
-                    && ($currentDay < strtotime($row['active_from']))
-                ) {
-                    $this->_lastError = "Your account is not active yet."
-                        ." According to our records it will be active from 
-			{$row['active_from']}"
-                        . " Please contact your project administrator";
-                    return false;
+        // check if the account is active
+        if (($row['active_from'] != null)
+            && ($currentDay < strtotime($row['active_from']))
+        ) {
+            $this->_lastError = "Your account is not active yet."
+                ." According to our records it will be active from 
+        {$row['active_from']}"
+        . " Please contact your project administrator";
+            return false;
 
-                }
+        }
 
-                if ($row['Pending_approval'] == 'Y') {
-                    $this->_lastError = "Your account has not yet been activated."
-                        . " Please contact your project administrator to activate"
-                        . " this account.";
-                    $this->insertFailedDetail("user account pending", $setArray);
-                    return false;
-                }
+        if ($row['Pending_approval'] == 'Y') {
+            $this->_lastError = "Your account has not yet been activated."
+                . " Please contact your project administrator to activate"
+                . " this account.";
+            $this->insertFailedDetail("user account pending", $setArray);
+            return false;
+        }
         if ($row['Active'] == 'N'
             || $this->disabledDueToInactivity($username, 365)
         ) {
@@ -377,14 +377,6 @@ class SinglePointLogin
                 $setArray
             );
 
-            return false;
-        }
-
-        if ($row['Pending_approval'] == 'Y') {
-            $this->_lastError = "Your account has not yet been activated."
-                . " Please contact your project administrator to activate"
-                . " this account.";
-            $this->insertFailedDetail("user account pending", $setArray);
             return false;
         }
 
