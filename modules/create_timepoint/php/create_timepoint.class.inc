@@ -116,7 +116,7 @@ class Create_Timepoint extends \NDB_Form
         if ($config->getSetting('useProjects') === 'true') {
             // If projects enabled, loop through and add valid subprojects only
             $subprojList = $candidate->getValidSubprojects();
-            if (empty($allSubprojects)) {
+            if (empty($subprojList)) {
                 $this->form->errors['subprojectID'] = "No subprojects have been 
                 defined for the project this candidate is affiliated with. 
                 If you are an administrator, please use the Configuration module to 
