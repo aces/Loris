@@ -99,7 +99,7 @@ class SinglePointLogin
     function save(): bool
     {
         // get saved data to pre-populate form
-        $user        =& User::factory($_POST['username']);
+        $user        =& \User::factory($_POST['username']);
         $newPassword = $_POST['password'];
 
         $result = \User::validatePassword($newPassword);
