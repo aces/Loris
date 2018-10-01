@@ -80,8 +80,10 @@ class ImagingUploader extends React.Component {
     }
 
     // Create the mapping between rowHeaders and rowData in a row object.
-    const row = {};
-    rowHeaders.forEach((header, index) => {row[header] = rowData[index]});
+    let row = {};
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index];
+    });
 
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
