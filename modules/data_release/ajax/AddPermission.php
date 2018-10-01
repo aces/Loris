@@ -53,7 +53,6 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
             );
         }
     }
-    // Currently all the *Success=true don't do anything, maybe some visual feedback can be incorporated at some point.
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
 } elseif ($_POST['action'] == 'managepermissions'
     && $user->hasPermission('superuser')
@@ -93,13 +92,11 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
         }
         $DB->_PDO->commit();
         header("HTTP/1.1 303 See Other");
-        // Currently all the *Success=true don't do anything, maybe some visual feedback can be incorporated at some point.
         header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
     } catch (Exception $e) {
         $DB->_PDO->rollback();
         error_log("ERROR: Did not update Data Release permissions.");
         header("HTTP/1.1 500 Internal Server Error");
-        // Currently all the *Success=true don't do anything, maybe some visual feedback can be incorporated at some point.
         header("Location: {$baseURL}/data_release/?addpermissionSuccess=false");
     }
 } else {
