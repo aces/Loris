@@ -283,17 +283,17 @@ class ViewDetails extends \NDB_Form
      */
     function _inRange($seriesRange, $protocolMin, $protocolMax)
     {
-        if (! isset($seriesRange)) {
+        if (!isset($seriesRange)) {
             return false;
-        } else if (! isset($protocolMin) && ! isset($protocolMax)) {
+        }
+        if (!isset($protocolMin) && !isset($protocolMax)) {
             return false;
+        } elseif (isset($protocolMin) && $protocolMax == NULL) {
+            return $protocolMin <= $seriesRange;
+        } elseif (!isset($protocolMax) && $protocolMin == NULL) {
+            return $seriesRange <= $protocolMax;
         } else {
-            //$seriesRangeTrimmed = (float)trim($seriesRange);
-            if ($protocolMin <= $seriesRange && $seriesRange <= $protocolMax) {
-                return true;
-            } else {
-                return false;
-            }
+            return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
         }
     }
     /**
@@ -335,7 +335,7 @@ class ViewDetails extends \NDB_Form
     /**
      * Overrides base getJSDependencies() to add additional JS files
      *
-     * @return an array of extra JS files that this page depends on
+     * @return array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {
