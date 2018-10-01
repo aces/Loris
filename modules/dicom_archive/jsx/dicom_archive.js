@@ -75,8 +75,8 @@ class DicomArchive extends React.Component {
    * Modify behaviour of specified column cells in the Data Table component
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} rowData - array of cell contents for a specific row
-   * @param {arrray} rowHeaders - array of table headers (column names)
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -88,7 +88,7 @@ class DicomArchive extends React.Component {
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
     rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index]
+      row[header] = rowData[index];
     });
     switch (column) {
       case 'Archive Location': {
@@ -112,7 +112,8 @@ class DicomArchive extends React.Component {
         if (row.SessionID === null || row.SessionID === '') {
           return <td>&nbsp;</td>;
         }
-        let mrlURL = loris.BaseURL+'/imaging_browser/viewSession/?sessionID='+row.SessionID;
+        let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+          row.SessionID;
         return <td><a href={mrlURL}>{cell}</a></td>;
       }
       case 'INVALID - HIDDEN':
