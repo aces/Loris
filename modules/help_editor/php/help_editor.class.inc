@@ -103,9 +103,9 @@ class Help_Editor extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string json encoded string of the headers and data from this table
      */
-    function toJSON() : string
+    function toJSON()
     {
         $result = $this->toArray();
         $result['hiddenHeaders'] = [
