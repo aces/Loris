@@ -69,7 +69,7 @@ class Data_Release extends \NDB_Menu_Filter
                               );
 
         $userCanUpload = $user->hasPermission("data_release_upload");
-        $userCanEdit= $user->hasPermission("data_release_edit_permissions");
+        $userCanEdit   = $user->hasPermission("data_release_edit_permissions");
 
         $results = $DB->pselect(
             "SELECT ID, UserID FROM users",
