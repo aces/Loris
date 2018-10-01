@@ -24,7 +24,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
 
 # Prerequisites for Installation
 
- * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
+ * LINUX (supported on Ubuntu 14+ and [CentOS 7](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
  * Apache **2.4** or higher
  * MySQL 5.7
  * PHP <b>7.2</b> or higher
