@@ -110,23 +110,16 @@ class UserPermissions
      * or page.
      *
      * @param string $code     The permission code
-     * @param string ...$codes Optional additional permission codes
      *
-     * @return bool
+     * @return bool If the user has a permission.
      */
-    function hasPermission($code, ...$codes): bool
+    function hasPermission($code): bool
     {
-        /* True if $code is the only parameter passed and it is a valid
-         * permission code possessed by the user.
-         */
-        $hasSinglePermission = $this->permissionTrueAndValid($code)
-            && count($codes) === 0;
         /* True if user superuser permission is set and user has it OR all
          * permissions are true.
          */
         return $this->permissions['superuser'] ?? false
-            || $hasSinglePermission
-            || $this->hasPermissions(array_merge(array($code), $codes));
+            || $this->permissionTrueAndValid($code);
     }
 
     /**
@@ -146,14 +139,14 @@ class UserPermissions
     }
 
     /**
-     * Used to test whether a user has all of an array of specified permissions.
+     * Used to test whether a user has ALL of an array of specified permissions.
      * Returns false on the first permission that the user doesn't have.
      *
      * @param array $permissions Array of permissions codes.
      *
      * @return bool Whether the user has all the permissions in $permissions.
      */
-    function hasPermissions(array $permissions): bool
+    function hasAllPermissions(array $permissions): bool
     {
         foreach ($permissions as $p) {
             if (!$this->permissionTrueAndValid($p)) {
@@ -161,6 +154,24 @@ class UserPermissions
             }
         }
         return true;
+    }
+
+    /**
+     * Used to test whether a user has ANY of an array of specified permissions.
+     * Returns true on the first permission that the user has.
+     *
+     * @param array $permissions Array of permissions codes.
+     *
+     * @return bool Whether the user has any of the permissions in $permissions.
+     */
+    function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $p) {
+            if ($this->permissionTrueAndValid($p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
