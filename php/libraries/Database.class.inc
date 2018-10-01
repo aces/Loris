@@ -297,21 +297,33 @@ class Database
     }
 
     /**
-     * Escapes the HTML from an array that is about to be inserted into the database
+     * Escape the HTML from an array that is about to be inserted into the
+     * database.
+     * NOTE this only provide safety when elements are inserted into the
+     * "innerHTML" of an element; if a value is instead injected
+     * into attribute such as 'name', 'value', 'class', etc.
+     * then Javascript injection is still possible.
+     *
+     * This function alone does not guarantee safety.
      *
      * @param array $set The array to be inserted as a new row
      *
-     * @return A copy of $set with the HTML characters escaped
+     * @return array A copy of $set with the HTML characters escaped
      */
     private function _HTMLEscapeArray($set)
     {
         $retVal = array();
         foreach ($set as $key => $val) {
+            /* FIXME this check is only here because of a quirk of the
+             * imaging browser. The module should be refactored and this check
+             * removed.
+             */
             if ($val === 'Unrated') {
                 $retVal[$key] = '';
-            } else {
-                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+                continue;
             }
+            // Only call htmlspecialchars on strings, or else an error occurs.
+            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
         }
         return $retVal;
     }
