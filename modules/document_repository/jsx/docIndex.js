@@ -104,6 +104,7 @@ class DocIndex extends React.Component {
           <DocCategoryForm
             DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getCategory`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
+            refreshPage={this.fetchData}
           />
         </TabPane>
       </Tabs>

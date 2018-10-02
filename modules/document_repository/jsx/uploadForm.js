@@ -207,12 +207,6 @@ class DocUploadForm extends React.Component {
         return xhr;
       }.bind(this),
       success: function() {
-// to do here figurt out sweet alert
-//        swal('Upload Successful!', '', 'success');
-        // Add git pfile to the list of exiting files
-//        let docFiles = JSON.parse(JSON.stringify(this.state.Data.docFiles));
-//        docFiles.push(formData.file.name);
-
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
