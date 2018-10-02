@@ -1,5 +1,5 @@
 /* exported RMediaEditForm */
-
+import PropTypes from 'prop-types';
 /**
  * Media Edit Form
  *
@@ -263,8 +263,8 @@ class DocEditForm extends React.Component {
 }
 
 DocEditForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 let RDocEditForm = React.createFactory(DocEditForm);

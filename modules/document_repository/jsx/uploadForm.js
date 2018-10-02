@@ -1,4 +1,4 @@
-
+import PropTypes from 'prop-types';
 /**
  * Media Upload Form
  *
@@ -282,8 +282,8 @@ class DocUploadForm extends React.Component {
 }
 
 DocUploadForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 export default DocUploadForm;
