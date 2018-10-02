@@ -30,6 +30,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     /**
      * Checking user permissions
      *
+     * @param  string $user user
+     *
      * @return bool
      */
     function _hasAccess(\User $user) : bool
@@ -50,7 +52,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $db   = \Database::singleton();
 
         $fileTypeList  = [];
-        $fileTypeQuery = $db->pselect("SELECT File_type FROM document_repository", []);
+        $fileTypeQuery = $db->pselect(
+            "SELECT File_type FROM document_repository",
+            []
+        );
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
@@ -99,6 +104,13 @@ class Document_Repository extends \NDB_Menu_Filter_Form
 
         return true;
     }
+    /**
+     * Return the category list array
+     *
+     * @param  string $value value
+     *
+     * @return array
+     */
     public  function parseCategory($value)
     {
         $id    = $value['id'];

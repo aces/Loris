@@ -5,7 +5,7 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Document repository
+ * @package  Document_Repository
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -16,8 +16,9 @@ namespace LORIS\document_repository;
  * Creates the form for NDB_Form_media
  *
  * @category Loris
- * @package  Media
+ * @package  Document_Repository
  * @author   Alex Ilea <ailea.mcin@gmail.com>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */

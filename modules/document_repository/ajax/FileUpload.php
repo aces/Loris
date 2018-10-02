@@ -7,7 +7,7 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Document_repository
+ * @package  Document_Repository
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
@@ -64,7 +64,11 @@ function editFile()
                     ];
 
     try {
-        $db->update('document_repository', $updateValues, ['record_id' => $idDocFile]);
+        $db->update(
+            'document_repository',
+            $updateValues,
+            ['record_id' => $idDocFile]
+        );
     } catch (DatabaseException $e) {
         showError("Could not update the file. Please try again!");
     }
@@ -168,7 +172,11 @@ function uploadFile()
         header('Location:' . $baseURL . '/document_repository/');
     }
 }
-
+/**
+ * Handles the upload category process
+ *
+ * @return void
+ */
 function uploadCategory()
 {
     $DB = \Database::singleton();
@@ -184,6 +192,13 @@ function uploadCategory()
         )
     );
 }
+/**
+ * Return a json string to view the category
+ *
+ * @throws DatabaseException
+ *
+ * @return string
+ */
 function viewCategory()
 {
     $user = \User::singleton();
@@ -218,7 +233,12 @@ function getCategoryFields()
 
     return $result;
 }
-
+/**
+ * Returns a list of fields from database
+ *
+ * @return array
+ * @throws DatabaseException
+ */
 function viewData()
 {
     $user = \User::singleton();
@@ -289,6 +309,13 @@ function getUploadFields()
 
     return $result;
 }
+/**
+ * Handler of parsing category
+ *
+ * @param  string $value the value
+ *
+ * @return array
+ */
 function parseCategory($value)
 {
         $id    = $value['id'];
