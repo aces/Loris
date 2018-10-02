@@ -49,12 +49,30 @@ require_once __DIR__ . "/../vendor/autoload.php";
 error_reporting(E_ALL);
 $required_major_php = 7; //TODO: Update these values as time passes
 $required_minor_php = 2;
+$required_major_apache = 2;
+$required_minor_apache = 4;
 // PHP version required for LORIS.
-$php_version = "$required_major_php.$required_minor_php";
+$required_php = "$required_major_php.$required_minor_php";
 if (PHP_MAJOR_VERSION < $required_major_php
     || PHP_MINOR_VERSION < $required_minor_php
 ) {
-    die("[-] ERROR: {$argv[0]} and LORIS require PHP v$php_version or higher.");
+    die(
+        "[-] ERROR: {$argv[0]} and LORIS require PHP v$required_php or higher."
+        . PHP_EOL
+    );
+}
+// PHP version required for LORIS.
+$apache_info = shell_exec('apache2 -v');
+/* Look for the string "$major.$minor" in info string. Also match on versions
+ * higher than minor version because we want AT LEAST that version.
+ */
+$pattern = "/$required_major_apache\.[$required_minor_apache-9]/";
+if (preg_match($pattern, $apache_info) === 0) {
+    $required_apache = "$required_major_apache.$required_minor_apache";
+    die(
+        "[-] ERROR: LORIS requires Apache v$required_apache or higher."
+        . PHP_EOL
+    );
 }
 
 /* Create db connection and get version info. */
