@@ -24,15 +24,12 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
 
 # Prerequisites for Installation
 
- * LINUX (supported on Ubuntu 14+ and [CentOS 7](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
  * Apache **2.4** or higher
  * MySQL 5.7
  * PHP <b>7.2</b> or higher
  * Package manager (for LINUX distributions)
- * Composer : should be run with --no-dev option
 
 <b>Important:</b>
- * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7.2 and MySQL 5.7.
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
