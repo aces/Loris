@@ -438,11 +438,11 @@ class User extends UserPermissions
          * passwords.
          */
         $lorisKeywords = \User::_getLorisKeywords();
-        $userInputs = array_merge(
+        $userInputs    = array_merge(
             array(
-                $user->getUsername(),
-                $data['Email'],
-                $data['Real_name'],
+             $user->getUsername(),
+             $data['Email'],
+             $data['Real_name'],
             ),
             $lorisKeywords
         );
@@ -451,6 +451,11 @@ class User extends UserPermissions
         return $zxcvbn->passwordStrength($password, $userInputs);
     }
 
+    /**
+     * Slurps contents of keyword file and returns a word list.
+     *
+     * @return array Keywords that shouldn't be used in passwords
+     */
     private function _getLorisKeywords(): array
     {
         $keywords = array();
