@@ -172,20 +172,24 @@ if (runPackageManagers()) {
 }
 
 // Print required SQL patches and commands needed to apply them
-$patches = getPatchesFromVersion(
-    $loris_root_dir,
-    $preupdate_version,
-    $release_version
-);
-if (count($patches) > 0) {
-    echo "[*] Patches to update:" . PHP_EOL;
-    foreach ($patches as $filename) {
-        echo "\t] " . $filename . PHP_EOL;
-    }
-    echo '[*] Applying SQL patches...' . PHP_EOL;
-    applyPatches($patches, $db_config, $apply_patches);
+if ($apply_patches === true && $preupdate_version === '?') {
+    echo "[-] Preupdate version unknown. Can't apply patches!" . PHP_EOL;
 } else {
-    echo '[*] No patches to apply...' . PHP_EOL;
+    $patches = getPatchesFromVersion(
+        $loris_root_dir,
+        $preupdate_version,
+        $release_version
+    );
+    if (count($patches) > 0) {
+        echo "[*] Patches to update:" . PHP_EOL;
+        foreach ($patches as $filename) {
+            echo "\t] " . $filename . PHP_EOL;
+        }
+        echo '[*] Applying SQL patches...' . PHP_EOL;
+        applyPatches($patches, $db_config, $apply_patches);
+    } else {
+        echo '[*] No patches to apply...' . PHP_EOL;
+    }
 }
 echo "[***] Done." . PHP_EOL;
 
@@ -414,6 +418,7 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
     $A = $db_config['database'];
     $u = $db_config['username'];
     $h = $db_config['host'];
+    $privileges = getPrivileges($db_config);
     if ($apply_patches === false) {
         echo '[-] NOTE: Running in Report-Only mode. Patching commands will be '
             . 'displayed but not executed.' . PHP_EOL;
@@ -421,10 +426,23 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
     }
     while (count($patches) > 0) {
         $patch = array_shift($patches);
+        /* Check that the user has all required privileges before attempting
+         * to source MySQL script.
+         */
+        if (!canApplyPatch($patch, $db_config)) {
+            $missing = implode(',', getMissingPrivileges($patch, $db_config));
+            echo "[!] DB user $u does not have all the privileges necessary "
+                . "to execute MySQL script located at $patch."
+                . PHP_EOL
+                . "Missing: `$missing`. Can't continue."
+                . PHP_EOL;
+            return false;
+        }
+        /* Attempt to source SQL patches. Return false on error. */
         $cmd   = "mysql -h $h -u $u -p -A $A < $patch";
         if ($apply_patches === true) {
             if (doExec($cmd) === false) {
-                if (count($patches)) {
+                if (count($patches) > 0) {
                     echo "[!] Aborting the following queued commands:"
                         . PHP_EOL;
                     foreach ($patches as $patch_not_applied) {
@@ -433,7 +451,7 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
                     }
                 }
                 echo PHP_EOL;
-                break;
+                return false;
             }
         } else {
             echo "\t] $cmd" . PHP_EOL;
@@ -442,6 +460,92 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
     return true;
 }
 
+function getPrivileges($db_config): array {
+    $A = $db_config['database'];
+    $u = $db_config['username'];
+    $h = $db_config['host'];
+    $p = $db_config['password'];
+    /* Run 'SHOW privileges' for this user and parse the output. We are passing
+     * the password value on bhelaf of the user here as the SHOW command does
+     * not alter any data.
+     *
+     * NOTE this may have issues when dealing with passwords that contain
+     * special characters that the shell may interpret differently. TBD.
+     */
+    $cmd = "echo 'show privileges' "
+        . "| mysql -h $h -u $u --password='$p' -A $A "
+        . "| cut -f 1";
+    return array_map('strtolower',
+        explode(
+            "\n", 
+            /* Don't use doExec() here because we are entering the password and 
+             * don't want it printed to stdout.
+             */
+            shell_exec($cmd)
+        )
+    );
+}
+
+
+/**
+ * Using the keywords from a MySQL script, determine whether the user in
+ * $db_config is able to execute all the commands corresponding to the keywords.
+ */
+function canApplyPatch(string $patch, $db_config): bool
+{
+    $num_missing = count(
+        getMissingPrivileges(
+            $patch,
+            $db_config
+        )
+    );
+    return $num_missing === 0;
+}
+
+/**
+ * Use bash commands to extract MySQL keywords from an sql script.
+ */
+function getKeywords(string $patch): array
+{
+    //Scan file for MySQL keywords. Exclude comments and parentheses using grep.
+    $cmd = "cut $patch -d ' ' -f 1 "
+        . "| sort -u "
+        . "| grep -v '\--' | grep -v ')'";
+    /* Processing chain: 
+     *     Split output of shell exec by new lines into an array
+     *     Convert all array values to lower case
+     *     Filter out any false values, empty strings in this case.
+     */
+    return array_filter(
+        array_map(
+            'strtolower',
+            explode(
+                "\n", 
+                /* Don't use doExec() here because we are entering the password
+                 * and don't want it printed to stdout.
+                 */
+                shell_exec($cmd)
+            )
+        )
+    );
+}
+function getMissingPrivileges(string $patch, $db_config) {
+    $keywords = getKeywords($patch);
+    $privileges = getPrivileges($db_config);
+    $irrelevantWords = array(
+        'prepare',
+        'deallocate',
+        'set',
+    );
+    // Filter out keywords that we don't care about
+    $keywords = array_filter(
+        $keywords, 
+        function ($word) use($irrelevantWords) {
+            return !in_array($word, $irrelevantWords, true);
+        }
+    );
+    return array_diff($keywords, $privileges);
+}
 
 /**
  * Prints a list of missing apt packages and prompts user to install them.
@@ -450,7 +554,7 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
  *
  * @return bool True if all packages install properly. False otherwise.
  */
-function installMissingRequirements($requirements) : bool
+function installMissingRequirements(array $requirements): bool
 {
     $to_install = getMissingRequirements($requirements);
     if (empty($to_install)) {
