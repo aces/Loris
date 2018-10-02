@@ -312,7 +312,7 @@ function getUploadFields()
 /**
  * Handler of parsing category
  *
- * @param  string $value the value
+ * @param string $value the value
  *
  * @return array
  */
