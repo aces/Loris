@@ -34,7 +34,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    function _hasAccess(User $user) : bool
     {
         return $user->hasPermission('document_repository_view')
             || $user->hasPermission('document_repository_delete');
