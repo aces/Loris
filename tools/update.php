@@ -111,7 +111,7 @@ if (!in_array('--confirm', $argv, true)) {
         . PHP_EOL
         . 'Please run this script with the --confirm flag '
         . 'if you wish to update your environment and source code to be '
-        . "compatiable with version $release_version."
+        . "compatible with version $release_version."
         . PHP_EOL;
     die(usageString());
 }
@@ -177,13 +177,15 @@ $patches = getPatchesFromVersion(
     $preupdate_version,
     $release_version
 );
-if ($patches) {
+if (count($patches) > 0) {
     echo "[*] Patches to update:" . PHP_EOL;
     foreach ($patches as $filename) {
         echo "\t] " . $filename . PHP_EOL;
     }
     echo '[*] Applying SQL patches...' . PHP_EOL;
     applyPatches($patches, $db_config, $apply_patches);
+} else {
+    echo '[*] No patches to apply...' . PHP_EOL;
 }
 echo "[***] Done." . PHP_EOL;
 
@@ -343,6 +345,26 @@ function getPatchesFromVersion(
             . PHP_EOL;
         return array();
     }
+    /* Similarly, applying patches across multiple minor versions is potentially
+     * risky. The user must explicitly opt-in to doing so.
+     */
+    if ($diff_minor > 1) {
+        echo "[!] Updating database schema when more than one minor release "
+            . "behind is considered risky. It is recommended to review the "
+            . "release notes before continuing and to proceed with caution."
+            . PHP_EOL;
+        $answers       = [
+            'y',
+            'N',
+        ];
+        $defaultAnswer = 'N';
+        writeQuestion('Apply patches anyway?', $answers);
+        $answer = readAnswer($answers, $defaultAnswer);
+        if ($answer != 'y') {
+            return array();
+        }
+    }
+
 
     // For every major version released between the version that is installed
     // and the latest version, add the relevant patches if they begin with
