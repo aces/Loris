@@ -30,11 +30,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     /**
      * Checking user permissions
      *
-     * @param  User $user user
+     * @param \User $user The user whose access is being checked
      *
      * @return bool
      */
-    function _hasAccess(User $user) : bool
+    function _hasAccess(\User $user) : bool
     {
         return $user->hasPermission('document_repository_view')
             || $user->hasPermission('document_repository_delete');
