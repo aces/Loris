@@ -1,5 +1,4 @@
-{if $usecanupload}
-
+{if $user_upload}
 <button type="button" name = "upload" class = "btn btn-sm btn-primary" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
 
 <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -37,7 +36,7 @@
     </div>
 </div>
 {/if}
-{if $usecanedit}
+{if $user_edit_access}
 <button type="button" name = "permission" class = "btn btn-sm btn-primary" data-toggle="modal" data-target="#permissionModal">Add Permission</button>
 
 <div class="modal fade" id="permissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -20,7 +20,8 @@ $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
 $DB       = $factory->database();
 
-if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
+if ($_POST['action'] == 'addpermission'
+    && $user->hasPermission('data_release_edit_file_access')) {
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
         $userid          = $_POST['userid'];
         $data_release_id = $_POST['data_release_id'];
@@ -55,7 +56,7 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
     }
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
 } elseif ($_POST['action'] == 'managepermissions'
-    && $user->hasPermission('superuser')
+    && $user->hasPermission('data_release_edit_file_access')
 ) {
     // 1) so with checkboxes it's not straightforward to figure out
     //    which permissions were either set or unset during the save,

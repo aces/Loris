@@ -12,10 +12,12 @@
   *  @link     https://github.com/aces/Loris
   */
 
-$DB   =& Database::singleton();
-$user =& User::singleton();
+$DB   = \Database::singleton();
+$user = \User::singleton();
 
-if ($_POST['action'] == 'upload') {
+if ($_POST['action'] == 'upload'
+    && $user->hasPermission("data_release_upload")
+) {
     $fileName    = $_FILES["file"]["name"];
     $version     = $_POST['version'];
     $upload_date = date('Y-m-d');

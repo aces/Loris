@@ -28,7 +28,7 @@ web interface.
 
 - Only users with `data_release_upload` an superusers can upload anything, 
 no one else has upload permission.
-- Only users with `data_release_edit_permissions` and superusers can grant 
+- Only users with `data_release_edit_file_access` and superusers can grant 
 permissions whether by "version" or specific "file_name".
 - Once a user is granted permission on any data release, they will be able
   to see the data release and download it directly from the module.
