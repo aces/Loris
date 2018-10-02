@@ -89,7 +89,7 @@ function uploadFile()
         "document_repository",
         "upload"
     );
-    $userSingleton  =& \User::singleton();
+    $userSingleton  = \User::singleton();
     if (!$userSingleton->hasPermission('document_repository_view')
         && !$userSingleton->hasPermission('document_repository_delete')
     ) {
