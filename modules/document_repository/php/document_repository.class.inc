@@ -30,7 +30,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     /**
      * Checking user permissions
      *
-     * @param  string $user user
+     * @param  User $user user
      *
      * @return bool
      */

@@ -197,7 +197,7 @@ function uploadCategory()
  *
  * @throws DatabaseException
  *
- * @return string
+ * @return void
  */
 function viewCategory()
 {
@@ -236,7 +236,7 @@ function getCategoryFields()
 /**
  * Returns a list of fields from database
  *
- * @return array
+ * @return void
  * @throws DatabaseException
  */
 function viewData()
