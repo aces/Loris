@@ -39,8 +39,8 @@ class Examiner extends \NDB_Menu_Filter_Form
     {
         return $user->hasAnyPermission(
             array(
-                'examiner_view', 
-                'examiner_multisite',
+             'examiner_view',
+             'examiner_multisite',
             )
         );
     }

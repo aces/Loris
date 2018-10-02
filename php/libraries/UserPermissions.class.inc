@@ -113,13 +113,13 @@ class UserPermissions
      *
      * @return bool If the user has a permission.
      */
-    function hasPermission(string $code): bool
+    public function hasPermission(string $code): bool
     {
         /* True if user superuser permission is set and user has it OR all
          * permissions are true.
          */
         return $this->permissions['superuser'] ?? false
-            || $this->permissionTrueAndValid($code);
+            || $this->_permissionTrueAndValid($code);
     }
 
     /**
@@ -130,7 +130,7 @@ class UserPermissions
      *
      * @return bool The setting of permission code $permission
      */
-    function permissionTrueAndValid(string $code): bool
+    private function _permissionTrueAndValid(string $code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
@@ -146,7 +146,7 @@ class UserPermissions
      *
      * @return bool Whether the user has all the permissions in $permissions.
      */
-    function hasAllPermissions(array $permissions): bool
+    public function hasAllPermissions(array $permissions): bool
     {
         if (count($permissions) === 0) {
             throw new LorisException(
@@ -154,7 +154,7 @@ class UserPermissions
             );
         }
         foreach ($permissions as $p) {
-            if (!$this->permissionTrueAndValid($p)) {
+            if (!$this->_permissionTrueAndValid($p)) {
                 return false;
             }
         }
@@ -168,7 +168,7 @@ class UserPermissions
      *
      * @return bool Whether the user has any of the permissions in $permissions.
      */
-    function hasAnyPermission(array $permissions): bool
+    public function hasAnyPermission(array $permissions): bool
     {
         if (count($permissions) === 0) {
             throw new LorisException(
@@ -176,7 +176,7 @@ class UserPermissions
             );
         }
         foreach ($permissions as $p) {
-            if ($this->permissionTrueAndValid($p)) {
+            if ($this->_permissionTrueAndValid($p)) {
                 return true;
             }
         }
