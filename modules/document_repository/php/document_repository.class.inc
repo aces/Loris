@@ -2,7 +2,7 @@
 /**
  * This file handles the Document Repository for LORIS
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Documentation
  * @package  Main
@@ -46,7 +46,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $db   = \Database::singleton();
 
         $fileTypeList  = [];
@@ -115,9 +115,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-        //try to return array{{name:"ddd",id:'1'}{}}
-        //        return $categoryName;
-        //          return $id;
          return array(
                  "name" => $categoryName,
                  "id"   => $id,
@@ -131,7 +128,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::singleton();
         // the base query
         $query  = " FROM document_repository v";
         $query .= " WHERE COALESCE(v.hide_video, false)=false";

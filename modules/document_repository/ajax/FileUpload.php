@@ -1,14 +1,14 @@
 <?php
 /**
- * Media uploader.
+ * Document Repository.
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
- * @package  Media
- * @author   Alex I. <ailea.mcin@gmail.com>
+ * @package  Document_repository
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -104,10 +104,6 @@ function uploadFile()
     $name    = $userSingleton->getUsername();
     $DB      = $factory->database();
 
-    //if user has document repository permission
-    //if ($userSingleton->hasPermission('document_repository_view')
-    //    || $userSingleton->hasPermission('document_repository_delete')
-    //) {
         $category   = $_POST['category']; // required
         $site       = $_POST['forSite']       !== '' ? $_POST['forSite'] : null;
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
@@ -175,7 +171,7 @@ function uploadFile()
 
 function uploadCategory()
 {
-    $DB =& Database::singleton();
+    $DB = \Database::singleton();
         $category_name = $_POST['category_name']; // required
         $parent_id     = $_POST['parent_id']  !== '' ? $_POST['parent_id'] : null;
         $comment       = $_POST['comments']    !== '' ? $_POST['comments'] : null;
@@ -190,7 +186,7 @@ function uploadCategory()
 }
 function viewCategory()
 {
-    $user =& User::singleton();
+    $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -205,7 +201,7 @@ function viewCategory()
  */
 function getCategoryFields()
 {
-    $db    =& Database::singleton();
+    $db    = \Database::singleton();
     $query = $db->pselect(
         "SELECT * FROM document_repository_categories",
         array()
@@ -225,7 +221,7 @@ function getCategoryFields()
 
 function viewData()
 {
-    $user =& User::singleton();
+    $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -242,7 +238,7 @@ function viewData()
 function getUploadFields()
 {
 
-    $db    =& Database::singleton();
+    $db    = \Database::singleton();
     $query = $db->pselect(
         "SELECT * FROM document_repository_categories",
         array()
@@ -255,7 +251,7 @@ function getUploadFields()
            $categoriesList[$arr['id']] =$arr['name'];
     }
     //site
-    $siteList = Utility::getSiteList(false);
+    $siteList = \Utility::getSiteList(false);
     //instrument
 
     $instruments     = $db->pselect(
@@ -309,9 +305,6 @@ function parseCategory($value)
             $categoryName = $value['category_name'] . ">" . $categoryName;
         }
     } while ($value['parent_id'] != 0);
-    //try to return array{{name:"ddd",id:'1'}{}}
-    //        return $categoryName;
-    //          return $id;
          return array(
                  "name" => $categoryName,
                  "id"   => $id,
@@ -369,7 +362,7 @@ function toSelect($options, $item, $item2)
  */
 function getFilesList()
 {
-    $db       =& Database::singleton();
+    $db       = \Database::singleton();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
     $mediaFiles = [];

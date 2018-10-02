@@ -2,11 +2,11 @@
 /**
  * This file contains the NDB_Form_media class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
+ * @package  Document repository
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -35,7 +35,7 @@ class Edit extends \NDB_Form
     {
         parent::setup();
 
-        $db      =& \Database::singleton();
+        $db      = \Database::singleton();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
@@ -54,13 +54,6 @@ class Edit extends \NDB_Form
             header('Location: ' . $baseURL . '/document_repository/');
         }
     }
-
-    /**
-     * Include additional CSS files:
-     *  1. media.js
-     *
-     * @return array of javascript to be inserted
-     */
 
     /**
      * Include additional JS files:
