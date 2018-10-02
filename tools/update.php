@@ -83,11 +83,11 @@ if (!is_dir($backup_dir)) {
 }
 // Only apply SQL patches if user explicitly requests it
 $apply_patches = false;
-if (in_array('--apply-patches', $argv)) {
+if (in_array('--apply-patches', $argv, true)) {
     $apply_patches = true;
 }
 // Require a confirm flag so this script is not accidentally run
-if (!in_array('--confirm', $argv)) {
+if (!in_array('--confirm', $argv, true)) {
     echo "Your LORIS version is $preupdate_version. The current LORIS version "
         . "is $release_version. "
         . PHP_EOL
@@ -679,7 +679,7 @@ function readAnswer($possibleAnswers, $defaultAnswer) : string
     $in     = fopen('php://stdin', 'rw+');
     $answer = trim(fgets($in));
 
-    if (!in_array($answer, $possibleAnswers)) {
+    if (!in_array($answer, $possibleAnswers, true)) {
         return $defaultAnswer;
     }
 
