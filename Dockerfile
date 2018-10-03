@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER Dave MacFarlane <david.macfarlane2@mcgill.ca>
 # Stock images come without apt archive -- needs an update
 RUN apt-get -qqq update
