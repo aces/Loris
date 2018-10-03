@@ -5,9 +5,12 @@
 error_reporting(E_ALL);
 
 require('tools/PHP_CLI_Helper.class.inc');
+if (isset($argv[1]) && $argv[1] === 'dev') {
+    doExec('script/bootstrap dev');
+} else {
+    doExec('script/bootstrap');
+}
 
-// Run script/bootstrap first.
-doExec('script/bootstrap');
 doExec('rm -f smarty/templates_c/*');
 doExec('composer update');
 doExec('npm run compile');
