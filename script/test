@@ -1,4 +1,6 @@
 #!/usr/bin/env php
+## script/test: Run test suite for application. Optionally pass in a path
+#              to run specific tests on those files/folders.
 <?php
 // Go to LORIS root.
 chdir(dirname(__FILE__) . '/..');
@@ -10,12 +12,27 @@ if ($argv[0] === 'php') {
 }
 $test_commands = array();
 $files = array();
-// Allow user to test individual files if supplied
-if (count($args) > 1) {
-    // Join individual files with spaces and ignore script name.
-    array_shift($args);
-    $files = $args;
+/* If no file arguments passed, just run all the tests. PHPCS is skipped
+ * because it requires a list of files.
+ */
+if (count($args) <= 1) {
+    $test_commands = array(
+        // Run linters first as they fail faster than unit tests.
+        'npm run lint:php',
+        'npm run lint:javascript',
+        'vendor/bin/phan',
+        'vendor/bin/phpunit --configuration test/phpunit-noCI.xml'
+    );
+    foreach ($test_commands as $cmd) {
+        if (doExec($cmd) === false) {
+            die("[-] Test $cmd failed." . PHP_EOL);
+        }
+    }
+    exit(0);
 }
+// Join individual files with spaces and ignore script name.
+array_shift($args);
+$files = $args;
 
 $sorted = sortFilesByExtension($files);
 
@@ -43,7 +60,7 @@ if (count($sorted['php']) > 0) {
         }
     }
 }
-echo "[+] All tests completed successfully!";
+echo "[+] All tests completed successfully!" . PHP_EOL;
 
 function sortFilesByExtension(array $files)
 {
