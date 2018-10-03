@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+# script/setup: Set up application for the first time after cloning, or set it
+#               back to the initial first unused state.
+<?php
+error_reporting(E_ALL);
+
+require('tools/PHP_CLI_Helper.class.inc');
+
+// Run script/bootstrap first.
+doExec('script/bootstrap');
+doExec('rm -f smarty/templates_c/*');
+doExec('composer update');
+doExec('npm run compile');
