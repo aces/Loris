@@ -1,4 +1,6 @@
 #!/usr/bin/env php
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
 <?php
 error_reporting(E_ALL);
 
