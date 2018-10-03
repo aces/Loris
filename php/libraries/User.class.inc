@@ -456,7 +456,7 @@ class User extends UserPermissions
      *
      * @return array Keywords that shouldn't be used in passwords
      */
-    private function _getLorisKeywords(): array
+    private static function _getLorisKeywords(): array
     {
         $keywords = array();
         // The file is located two directories up from this file.
