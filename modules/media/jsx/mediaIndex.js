@@ -36,6 +36,9 @@ class MediaIndex extends React.Component {
       method: "GET",
       dataType: 'json',
       success: data => {
+        // FIXME: Remove the following line of code as soon as hiddenHeaders is
+        // accepted as a prop by the StaticDataTable Component.
+        loris.hiddenHeaders = data.hiddenHeaders || [];
         this.setState({
           data: data,
           isLoaded: true
