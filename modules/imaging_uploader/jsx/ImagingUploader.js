@@ -37,6 +37,9 @@ class ImagingUploader extends React.Component {
       method: "GET",
       dataType: 'json',
       success: data => {
+        // FIXME: Remove the following line of code as soon as hiddenHEaders is
+        // accepted as a prop by the StaticDataTable Component.
+        loris.hiddenHeaders = data.hiddenHeaders || [];
         this.setState({
           data: data,
           isLoaded: true
@@ -68,10 +71,10 @@ class ImagingUploader extends React.Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} rowData - array of cell contents for a specific row
-   * @param {arrray} rowHeaders - array of table headers (column names)
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
    *
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
