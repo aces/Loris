@@ -164,15 +164,6 @@ color: #b94a48;
 	color: #c09853;
 }
 
-/* Necessary for swal2 while still with bootstrap v3 */
-.swal2-popup {
-  font-size: 1.6rem
-}
-
-.swal2-container {
-  z-index: 9999
-}
-
 .modal {
   display: none;
   position: fixed;
@@ -504,6 +495,7 @@ a.btn.btn-primary {
 }
 
 /* Loader customizations */
+
 .loader {
     position: relative;
     top: 50%;
