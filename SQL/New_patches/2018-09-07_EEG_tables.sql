@@ -179,7 +179,7 @@ CREATE TABLE `physiological_archive` (
 
 -- Insert into physiological_output_type
 INSERT INTO physiological_output_type
-  (`OutputType`, `OutputTypeDescription`)
+  (`OutputTypeName`, `OutputTypeDescription`)
   VALUES
   ('raw',         'raw dataset'),
   ('derivatives', 'derivative/processed dataset');
