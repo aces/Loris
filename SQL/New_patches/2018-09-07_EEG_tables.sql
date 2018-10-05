@@ -33,10 +33,10 @@ CREATE TABLE `physiological_file` (
   CONSTRAINT `FK_ImagingFileTypes_type`
     FOREIGN KEY (`FileType`)
     REFERENCES `ImagingFileTypes` (`type`),
-  CONSTRAINT `FK_physiological_modality_PhysiologicalModalityID`
+  CONSTRAINT `FK_phys_modality_ModID`
     FOREIGN KEY (`PhysiologicalModalityID`)
     REFERENCES `physiological_modality` (`PhysiologicalModalityID`),
-  CONSTRAINT `FK_physiological_output_type_PhysiologicalOutputTypeID`
+  CONSTRAINT `FK_phys_output_type_TypeID`
     FOREIGN KEY (`PhysiologicalOutputTypeID`)
     REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -52,11 +52,11 @@ CREATE TABLE `physiological_parameter_file` (
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
   `Value`                        VARCHAR(255),
   PRIMARY KEY (`PhysiologicalParameterFileID`),
-  CONSTRAINT `FK_physiological_file_PhysiologicalFileID`
+  CONSTRAINT `FK_phys_file_FileID`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE,
-  CONSTRAINT `FK_parameter_type_ParameterTypeID`
+  CONSTRAINT `FK_param_type_ParamTypeID`
     FOREIGN KEY (`ParameterTypeID`)
     REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -101,14 +101,14 @@ CREATE TABLE `physiological_channel` (
   `Unit`                       VARCHAR(255)        DEFAULT NULL,
   `FilePath`                   VARCHAR(255)        DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalChannelID`),
-  CONSTRAINT `FK_physiological_file_PhysiologicalFileID_2`
+  CONSTRAINT `FK_phys_file_FileID_2`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE,
-  CONSTRAINT `FK_physiological_channel_type_PhysiologicalChannelTypeID`
+  CONSTRAINT `FK_phys_channel_type_TypeID`
     FOREIGN KEY (`PhysiologicalChannelTypeID`)
     REFERENCES `physiological_channel_type` (`PhysiologicalChannelTypeID`),
-  CONSTRAINT `FK_physiological_status_type_PhysiologicalStatusTypeID`
+  CONSTRAINT `FK_phys_status_type_TypeID`
     FOREIGN KEY (`PhysiologicalStatusTypeID`)
     REFERENCES `physiological_status_type` (`PhysiologicalStatusTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -129,7 +129,7 @@ CREATE TABLE `physiological_electrode` (
   `Material`                 VARCHAR(50)      NOT NULL,
   `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalElectrodeID`),
-  CONSTRAINT `FK_physiological_file_PhysiologicalFileID_3`
+  CONSTRAINT `FK_phys_file_FileID_3`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
@@ -153,7 +153,7 @@ CREATE TABLE `physiological_task_event` (
   `ResponseTime`             TIME             DEFAULT NULL,
   `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
-  CONSTRAINT `FK_physiological_file_PhysiologicalFileID_4`
+  CONSTRAINT `FK_phys_file_FileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
@@ -170,7 +170,7 @@ CREATE TABLE `physiological_archive` (
   `Blake2bHash`              VARCHAR(128)     NOT NULL,
   `FilePath`                 VARCHAR(255)     NOT NULL,
   PRIMARY KEY (`PhysiologicalArchiveID`),
-  CONSTRAINT `FK_physiological_file_PhysiologicalFileID_5`
+  CONSTRAINT `FK_phys_file_FileID_5`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE
