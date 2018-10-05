@@ -149,13 +149,13 @@ class ViewDetails extends \NDB_Form
         $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
         if ((preg_match(
-            $dicomArchiveSettings['patientNameRegex'],
+            "/{$dicomArchiveSettings['patientNameRegex']}/",
             $this->tpl_data['archive']['PatientName']
         )) || (preg_match(
-            $dicomArchiveSettings['LegoPhantomRegex'],
+            "/{$dicomArchiveSettings['LegoPhantomRegex']}/",
             $this->tpl_data['archive']['PatientName']
         )) || (preg_match(
-            $dicomArchiveSettings['LivingPhantomRegex'],
+            "/{$dicomArchiveSettings['LivingPhantomRegex']}/",
             $this->tpl_data['archive']['PatientName']
         ))) {
             $this->tpl_data['archive']['patientNameValid'] = 1;
@@ -165,7 +165,7 @@ class ViewDetails extends \NDB_Form
         }
 
         if (preg_match(
-            $dicomArchiveSettings['patientIDRegex'],
+            "/{$dicomArchiveSettings['patientIDRegex']}/",
             $this->tpl_data['archive']['PatientID']
         )) {
             $this->tpl_data['archive']['patientIDValid'] = 1;
