@@ -20,6 +20,7 @@ class ViewProject extends React.Component {
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   validateEmail(field, email) {
@@ -85,7 +86,7 @@ class ViewProject extends React.Component {
     });
   }
 
-  componentDidMount() {
+  fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -136,6 +137,10 @@ class ViewProject extends React.Component {
         });
       }
     });
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   createFileDownloadLinks() {
@@ -285,6 +290,7 @@ class ViewProject extends React.Component {
           allKWs={this.state.allKWs}
           allCollabs={this.state.allCollabs}
           editMode={true}
+          fetchData={this.fetchData}
         />
       </div>
     );

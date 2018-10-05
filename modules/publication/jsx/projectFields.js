@@ -98,6 +98,7 @@ class ProjectFormFields extends React.Component {
   }
 
   deleteUpload(uploadID) {
+    let self = this;
     swal({
       title: "Are you sure?",
       text: "Are you sure you want to delete this file?",
@@ -109,7 +110,14 @@ class ProjectFormFields extends React.Component {
       function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
-          $.ajax(url, {method: 'DELETE'});
+          $.ajax(
+            url,
+            {
+              method: 'DELETE',
+              success: function() {
+                self.props.fetchData();
+              }
+            });
         }
       });
   }
@@ -124,7 +132,7 @@ class ProjectFormFields extends React.Component {
           <span>
             <a href={downloadURL}>{f.URL}</a>
             &nbsp;&nbsp;
-            <span className="glyphicon glyphicon-remove" onClick={() => this.deleteUpload(f.PublicationUploadID)} />
+            <span className="glyphicon glyphicon-remove clickable" onClick={() => this.deleteUpload(f.PublicationUploadID)} />
           </span>
         );
         let existFileFlag = 'existingUpload_';
