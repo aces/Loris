@@ -38,9 +38,13 @@ class EditExaminer extends React.Component {
         const self = this;
         let formData = {};
         $.ajax({
-            url: `${loris.BaseURL}/examiner/ajax/fetchCertificate.php?identifier=${this.props.examinerID}`,
+            url: this.props.dataURL,
+            type: 'GET',
             dataType: 'json',
-            success: function(data) {
+            data: {
+                identifier: this.props.examinerID
+            },
+            success: data => {
                 const instruments = data.instruments;
                 for (let instrumentID in instruments) {
                     if (instruments.hasOwnProperty(instrumentID)) {
@@ -57,10 +61,8 @@ class EditExaminer extends React.Component {
                     isLoaded: true
                 });
             },
-            error: function(data, errorCode, errorMsg) {
-                self.setState({
-                    error: 'An error occurred when loading the form!'
-                });
+            error: error => {
+                console.error(error);
             }
         });
     }
@@ -325,8 +327,21 @@ class EditExaminer extends React.Component {
     }
 }
 
-const args = QueryString.get(document.currentScript.src);
+/**
+ * Render Edit Examiner on page load
+ */
 
-$(function() {
-    ReactDOM.render(<EditExaminer examinerID={args.identifier}/>, document.getElementById("lorisworkspace"));
-});
+const args = QueryString.get(document.currentScript.src);
+window.onload = () => {
+    const fetchURL = `${loris.BaseURL}/examiner/fetchCertification/`;
+    let editExaminer = (
+        <div id='page-editexaminer'>
+            <EditExaminer
+                Module='examiner'
+                examinerID={args.identifier}
+                dataURL={fetchURL}
+            />
+        </div>
+    );
+    ReactDOM.render(editExaminer, document.getElementById('lorisworkspace'));
+};
