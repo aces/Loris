@@ -27,7 +27,6 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
  * Apache **2.4** or higher
  * MySQL 5.7
  * PHP <b>7.2</b> or higher
- * Package manager (for LINUX distributions)
 
 <b>Important:</b>
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
