@@ -109,7 +109,7 @@ class EditExaminer extends React.Component {
         formObject.append('identifier', this.props.examinerID);
         $.ajax({
             type: 'POST',
-            url: `${loris.BaseURL}/examiner/ajax/editCertificate.php`,
+            url: `${loris.BaseURL}/examiner/editCertification`,
             data: formObject,
             cache: false,
             contentType: false,
@@ -121,15 +121,8 @@ class EditExaminer extends React.Component {
                 this.showAlertMessage();
                 this.fetchData();
             },
-            error: err => {
-                if (err.responseText !== "") {
-                    var errorMessage = JSON.parse(err.responseText).message;
-                    this.setState({
-                        updateResult: "error",
-                        errorMessage: errorMessage
-                    });
-                    this.showAlertMessage();
-                }
+            error: error => {
+                console.error(error);
             }
         });
     }
