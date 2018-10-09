@@ -31,7 +31,7 @@ class EditCertification extends \NDB_Page
         // The parent handles things like hasAccess checks.
         $resp = parent::handle($request);
         switch ($resp->getStatusCode()) {
-            case 200;
+            case 200:
                 // If it was a 200 code, it just means display was called and
                 // access validated. We still need to do other validations
                 // and add the result body.
@@ -54,40 +54,38 @@ class EditCertification extends \NDB_Page
         }
         
         // Ensure examinerID and instrument testID is passed.
-        $posts = $request->getQueryParams();
-        if (!isset($posts['identifier']) || !isset($posts['testID'])) {
+        $posts = $request->getParsedBody();
+        if (!isset($posts['identifier'])) {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(400)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Must provide examiner identifier and instrument ID to validate"
+                        "Must provide examiner identifier to validate."
                     )
                 );
         }
 
         // Submit data.
-        $examinerID = $posts['identifier'];
-        $testID = $posts['testID'];
-        $this->submitData($examinerID, $testID);
+        $this->submitData($posts);
         return (new \LORIS\Http\Response())
             ->withHeader("Content-Type", "application/json")
-            ->withStatus(200)
+            ->withStatus(200);
     }
 
-    function submitData($identifier, $instrumentID)
+    function submitData(array $dataArray)
     {
-        // Get examinerID and testID
-        $examinerID = $identifier;
-        $testID = $instrumentID;
-        $DB = \NDB_Factory::singleton()->database();
+        // Get examinerID
+        $examinerID = $dataArray['identifier'];
+        $DB   = \NDB_Factory::singleton()->database();
+        $user = \User::singleton();
 
         // Get the list of certification instruments
         $instruments = EditExaminer::getCertificationInstruments();
         
         foreach($instruments as $testID=>$row) {
         
-            $data = json_decode($_POST[$testID], true) ?? null;
+            $data = json_decode($dataArray[$testID], true) ?? null;
         
             $comments = $data['comments'] ?? null;
             $date     = $data['date'] ?? null;
@@ -222,7 +220,5 @@ class EditCertification extends \NDB_Page
                 }
             }
         }
-         
-    }   
-
+    } 
 }
