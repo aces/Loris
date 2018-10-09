@@ -1,6 +1,8 @@
 <?php
 /**
- * Processes the Edit Certification form values and
+ * Examiner module
+ *
+ * This processes the values of the Edit Certification form and
  * inserts updates into the database.
  *
  * PHP Version 7
@@ -20,12 +22,27 @@ class EditCertification extends \NDB_Page
 {
     public $skipTemplate = true;
 
+    /**
+     * Checks if the user has access to the edit examiner form
+     *
+     * @return bool
+     * @throws \ConfigurationException
+     * @throws \DatabaseException
+     * @throws \LorisException
+     */
     function _hasAccess()
     {
         $user = \User::singleton();
         return $user->hasPermission('examiner_view') && $user->hasPermission('examiner_multisite');
     }
 
+    /**
+     * This acts as an AJAX endpoint for submission.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // The parent handles things like hasAccess checks.
@@ -53,7 +70,7 @@ class EditCertification extends \NDB_Page
                 );
         }
         
-        // Ensure examinerID and instrument testID is passed.
+        // Ensure examinerID is passed.
         $posts = $request->getParsedBody();
         if (!isset($posts['identifier'])) {
             return (new \LORIS\Http\Response())
@@ -61,7 +78,7 @@ class EditCertification extends \NDB_Page
                 ->withStatus(400)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Must provide examiner identifier to validate."
+                        "Must provide identifier to validate."
                     )
                 );
         }
@@ -73,6 +90,13 @@ class EditCertification extends \NDB_Page
             ->withStatus(200);
     }
 
+    /**
+     * Handles the processing of the submitted data to DB
+     *
+     * @param array $dataArray  the array of decoded json object containing
+     *                          certification data
+     * @return none
+     */
     function submitData(array $dataArray)
     {
         // Get examinerID

@@ -1,11 +1,12 @@
 <?php
 /**
- * Examiner module: Form used to update examiner certification status
+ * Examiner module
  *
- * Fetches default certification form values from the database.
- * Creates the certification history table ("Change Log").
+ * Edit Examiner page possesses the form used to update examiner certification status.
  *
- * @return array of default form values
+ * This class fetches the following data from the database:
+ * - default values for certification form
+ * - 'Change Log' from the certification history table.
  *
  * PHP Version 7
  *
@@ -16,14 +17,30 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
 namespace LORIS\examiner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
+/**
+ * Fetches data for Edit Examiner page
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
 class FetchCertification extends \NDB_Page
 {
     public $skipTemplate = true;
 
+    /**
+     * Same permissions as Edit Examiner page
+     *
+     * @return bool true if user has access to this page
+     */
     function _hasAccess()
     {
         $DB     = \NDB_Factory::singleton()->database();
@@ -57,8 +74,7 @@ class FetchCertification extends \NDB_Page
     }
 
     /**
-     * This acts as an AJAX endpoint that only returns a "0" or "1" depending
-     * on whether the candidate passed exists.
+     * This acts as an AJAX endpoint that returns the data
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -91,7 +107,7 @@ class FetchCertification extends \NDB_Page
                 );
         }
 
-        // Ensure CandID and PSCID are both passed.
+        // Ensure examinerID is passed.
         $gets = $request->getQueryParams();
         if (!isset($gets['identifier'])) {
             return (new \LORIS\Http\Response())
@@ -99,7 +115,7 @@ class FetchCertification extends \NDB_Page
                 ->withStatus(400)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Must provide identifier to validate"
+                        "Must provide identifier to validate."
                     )
                 );
         }
@@ -114,7 +130,14 @@ class FetchCertification extends \NDB_Page
 
     }
 
-    function fetchData($identifier)
+    /**
+     * This fetches the data from the database.
+     * 
+     * @param int $identifier the examinerID of the data to query
+     *
+     * @return array array of queried data
+     */
+    function fetchData(int $identifier) : array
     {
         // Get examiner ID
         $examinerID = $identifier;
