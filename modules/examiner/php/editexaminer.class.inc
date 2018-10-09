@@ -14,17 +14,14 @@ namespace LORIS\examiner;
 
 class EditExaminer extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * Checks if the user has access to the edit examiner form
      *
      * @return bool
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
      * @throws \LorisException
      */
-
-    public $skipTemplate = true;
-
     function _hasAccess()
     {
         if (empty($_REQUEST['identifier'])) {
