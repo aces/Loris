@@ -433,7 +433,7 @@ class User extends UserPermissions
          * their password 'johnnyloris'.
          * $lorisKeywords is a list that reduce the overall score of a potential
          * password. It comes from the file docs/LorisKeywords. Developers
-         * are encouraged to add relevant words to this file relating to their 
+         * are encouraged to add relevant words to this file relating to their
          * projects.
          * A useful tool for this tasks can be found at the link below.
          * https://tools.kali.org/password-attacks/cewl
@@ -472,7 +472,7 @@ class User extends UserPermissions
                     array_push($keywords, trim($line));
                 }
             }
-        } 
+        }
         return $keywords;
     }
 
