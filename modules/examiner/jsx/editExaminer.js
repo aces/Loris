@@ -1,13 +1,26 @@
 import Panel from 'Panel';
 import Loader from 'Loader';
 
+/**
+ * Examiner Module
+ *
+ * Edit examiner page to the module that allows changes to the examiner's
+ * certification status for enabled instruments
+ *
+ * Renders the Edit Examiner page consisting of FormElement
+ * and Panel components.
+ *
+ * @author Zaliqa Rosli
+ * @version 1.0.0
+ */ 
 class EditExaminer extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             isLoaded: false,
-            Data: {},
+            data: {},
             formData: {},
             statusOptions: {
                 null: "N/A",
@@ -15,15 +28,15 @@ class EditExaminer extends React.Component {
                 in_training: "In Training",
                 certified: "Certified",
             },
-            updateResult: null,
+            hasError: false,
             errorMessage: null,
-            loadedData: 0,
         };
 
-        //Bind component instance to custom methods
+        /**
+         * Bind component instance to custom methods
+         */
         this.fetchData = this.fetchData.bind(this);
         this.setFormData = this.setFormData.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -56,7 +69,7 @@ class EditExaminer extends React.Component {
                     }
                 }
                 self.setState({
-                    Data: data,
+                    data: data,
                     formData: formData,
                     isLoaded: true
                 });
@@ -68,11 +81,10 @@ class EditExaminer extends React.Component {
     }
 
     /**
-     * Set the form data with form values
+     * Store the value of the element in this.state.formData
      *
-     * @param {string} formElement  name of the selected element
-     * @param {string} value        selected value for corresponding form element
-     *
+     * @param {string} formElement  name of the form element
+     * @param {string} value        value of the form element
      */    
     setFormData(formElement, value) {
         let formData = this.state.formData;
@@ -85,22 +97,20 @@ class EditExaminer extends React.Component {
         });
     }
 
-    onSubmit(e) {
-        e.preventDefault();
-    }
-
+    /**
+     * Handles the submission of the Add Examiner form
+     *
+     * @param {event} e event of the form
+     */
     handleSubmit(e) {
         e.preventDefault();
         let formData = this.state.formData;
-
-
         let formObject = new FormData();
         for (let testID in formData) {
             if (formData.hasOwnProperty(testID) &&
                 JSON.stringify(formData[testID]) !== '{}') {
                 if (formData[testID].status === "null") {
-                    alert("You may not change a valid status to N/A");
-                    return; 
+                    this.state.errorMessage = "You may not change a valid status to N/A";
                 }
                 let instrumentData = JSON.stringify(formData[testID]);
                 formObject.append(testID, instrumentData);
@@ -115,32 +125,15 @@ class EditExaminer extends React.Component {
             contentType: false,
             processData: false,
             success: data => {
-                this.setState({
-                    updateResult: "success"    
-                });
-                this.showAlertMessage();
+                swal('Success!', 'Changes to certification submitted.', 'success');
                 this.fetchData();
             },
             error: error => {
                 console.error(error);
+                let message = error.responseText;
+                swal('Error!', message, 'error');
             }
         });
-    }
-
-    showAlertMessage() {
-        const self = this;
-        if (this.refs["alert-message"] === null) {
-            return;
-        }
-        let alertMsg = this.refs["alert-message"];
-        $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-            500,
-            function() {
-                self.setState({
-                    updateResult: null
-                });
-            }
-        );
     }
 
     render() {
@@ -149,6 +142,12 @@ class EditExaminer extends React.Component {
             return (
                 <Loader/>
             );
+        }
+        // Provide error message to be rendered if exists
+        if (this.state.errorMessage) {
+        this.setState({
+            hasError: true
+        });
         }
 
         let formHeaders = (
@@ -169,13 +168,13 @@ class EditExaminer extends React.Component {
         );
 
         const inputRow = [];        
-        for (let instrumentID in this.state.Data.instruments) {
+        for (let instrumentID in this.state.data.instruments) {
             let dateRequired = false;
             if (this.state.formData[instrumentID].status === "certified") {
                 dateRequired = true;
             }
-            if (this.state.Data.instruments.hasOwnProperty(instrumentID)) {
-                let instrumentName = this.state.Data.instruments[instrumentID].name;
+            if (this.state.data.instruments.hasOwnProperty(instrumentID)) {
+                let instrumentName = this.state.data.instruments[instrumentID].name;
                 const instrumentRow = (
                     <div className="row">
                         <div className="col-md-5" >
@@ -187,6 +186,8 @@ class EditExaminer extends React.Component {
                                 onUserInput={this.setFormData}
                                 ref={instrumentID + "_status"}
                                 emptyOption={false}
+                                hasError={this.state.hasError}
+                                errorMessage={this.state.errorMessage}
                             />
                         </div>
                         <div className="col-md-3">
@@ -196,8 +197,8 @@ class EditExaminer extends React.Component {
                                 onUserInput={this.setFormData}
                                 ref={instrumentID + "_date"}
                                 required={dateRequired}
-                                minYear={this.state.Data.minYear}
-                                maxYear={this.state.Data.maxYear}
+                                minYear={this.state.data.minYear}
+                                maxYear={this.state.data.maxYear}
                             />
                         </div>
                         <div className="col-md-3">
@@ -215,17 +216,17 @@ class EditExaminer extends React.Component {
         }
 
         const historyData = [];
-        for (let result in this.state.Data.certification_history) {
-            if (this.state.Data.certification_history.hasOwnProperty(result)) {
+        for (let result in this.state.data.certification_history) {
+            if (this.state.data.certification_history.hasOwnProperty(result)) {
                 const rowData = (
                     <tr>
-                        <td>{this.state.Data.certification_history[result].changeDate}</td>
-                        <td>{this.state.Data.certification_history[result].userID}</td>
-                        <td>{this.state.Data.certification_history[result].Measure}</td>
-                        <td>{this.state.Data.certification_history[result].old}</td>
-                        <td>{this.state.Data.certification_history[result].old_date}</td>
-                        <td>{this.state.Data.certification_history[result].new}</td>
-                        <td>{this.state.Data.certification_history[result].new_date}</td>
+                        <td>{this.state.data.certification_history[result].changeDate}</td>
+                        <td>{this.state.data.certification_history[result].userID}</td>
+                        <td>{this.state.data.certification_history[result].Measure}</td>
+                        <td>{this.state.data.certification_history[result].old}</td>
+                        <td>{this.state.data.certification_history[result].old_date}</td>
+                        <td>{this.state.data.certification_history[result].new}</td>
+                        <td>{this.state.data.certification_history[result].new_date}</td>
                     </tr>
                 );
                 historyData.push(rowData);
@@ -291,24 +292,11 @@ class EditExaminer extends React.Component {
             </div>
         );
 
-        let alertMessage = "";
-        let alertClass = "alert text-center hide";
-        if (this.state.updateResult) {
-            if (this.state.updateResult === "success") {
-                alertClass = "alert alert-success text-center";
-                alertMessage = "Update Successful!";
-            } else if (this.state.updateResult === "error") {
-                let errorMessage = this.state.errorMessage;
-                alertClass = "alert alert-danger text-center";
-                alertMessage = errorMessage ? errorMessage : "Failed to update!";
-            }
-        }
-
         return (
             <div>
                 <Panel
                     id="panel-body"
-                    title={"Edit Certification for " + this.state.Data.examinerName}
+                    title={"Edit Certification for " + this.state.data.examinerName}
                 >
                     {formHeaders}
                     <hr className="row hidden-xs hidden-sm"/>
@@ -319,6 +307,12 @@ class EditExaminer extends React.Component {
         );
     }
 }
+
+EditExaminer.propTypes = {
+    Module: React.PropTypes.string.isRequired,
+    examinerID: React.PropTypes.string.isRequired,
+    dataURL: React.PropTypes.string.isRequired
+};
 
 /**
  * Render Edit Examiner on page load
