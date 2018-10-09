@@ -113,7 +113,7 @@ class UserPermissions
      *
      * @return bool If the user has a permission.
      */
-    public function hasPermission(string $code): bool
+    public function hasPermission($code): bool
     {
         /* True if user superuser permission is set and user has it OR all
          * permissions are true.
@@ -130,7 +130,7 @@ class UserPermissions
      *
      * @return bool The setting of permission code $permission
      */
-    private function _permissionTrueAndValid(string $code): bool
+    private function _permissionTrueAndValid($code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
