@@ -31,7 +31,8 @@ $apache_version = end($apache_parts);
 /* Look for the string "$major.$minor" in info string. Also match on versions
  * higher than minor version because we want AT LEAST that version.
  */
-$pattern = "/$required_major_apache\.[$required_minor_apache-9]/";
+$pattern = "/$required_major_apache\.[$required_minor_apache-9].[0-9]/";
+// When preg_match returns 0 it means no match was found.
 if (preg_match($pattern, $apache_version) === 0) {
     $required_apache = "$required_major_apache.$required_minor_apache";
     die(
@@ -80,7 +81,7 @@ if (runPackageManagers(isset($argv[1]) && $argv[1] === 'dev')) {
 /**
  * Prints a list of missing apt packages and prompts user to install them.
  *
- * @param array $requirements Required packages determined missing earlier
+ * @param array $requirements Required packages determined missing earlier.
  *
  * @return bool True if all packages install properly. False otherwise.
  */
@@ -113,12 +114,12 @@ function installMissingRequirements(array $requirements): bool
  * Takes an array of packages to install using apt-get.  Uses exec to install
  * or upgrade apt packages based on $upgrade_mode.
  *
- * @param array $packages     List of apt packages to install
- * @param bool  $upgrade_mode If true, only upgrades packages. False to install
+ * @param array $packages     List of apt packages to install.
+ * @param bool  $upgrade_mode If true, only upgrades packages. False to install.
  *
  * @return bool true if all packages installed properly. False otherwise.
  */
-function installAptPackages($packages, $upgrade_mode = false) : bool
+function installAptPackages(array $packages, bool $upgrade_mode = false): bool
 {
     foreach ($packages as $package) {
         if (installAptPackage($package, $upgrade_mode) !== true) {
@@ -136,7 +137,7 @@ function installAptPackages($packages, $upgrade_mode = false) : bool
  *
  * @return bool True if package installed/upgraded successfull. Otherwise false
  */
-function installAptPackage($name, $only_upgrade = false) : bool
+function installAptPackage(string $name, bool $only_upgrade = false): bool
 {
     if ($only_upgrade) {
         $cmd = "sudo apt-get install --only-upgrade ";
@@ -189,7 +190,7 @@ function runPackageManagers(bool $dev = false): bool
  *
  * @return array of names of missing requirements
  */
-function getMissingRequirements($required) : array
+function getMissingRequirements(array $required): array
 {
     $missing = [];
     foreach ($required as $tool) {
