@@ -116,14 +116,14 @@ CREATE TABLE `physiological_channel` (
 -- Create physiololgical_electrode_type table
 CREATE TABLE `physiological_electrode_type` (
   `PhysiologicalElectrodeTypeID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ElectrodeType`                VARCHAR(50),
+  `ElectrodeType`                VARCHAR(50)     NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalElectrodeTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create physiological_electrode_material table
 CREATE TABLE `physiological_electrode_material` (
   `PhysiologicalElectrodeMaterialID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ElectrodeMaterial`                VARCHAR(50),
+  `ElectrodeMaterial`                VARCHAR(50)     NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalElectrodeMaterialID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
