@@ -113,26 +113,44 @@ CREATE TABLE `physiological_channel` (
     REFERENCES `physiological_status_type` (`PhysiologicalStatusTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create physiololgical_electrode_type table
+CREATE TABLE `physiological_electrode_type` (
+  `PhysiologicalElectrodeTypeID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ElectrodeType`                VARCHAR(50),
+  PRIMARY KEY (`PhysiologicalElectrodeTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create physiological_electrode_material table
+CREATE TABLE `physiological_electrode_material` (
+  `PhysiologicalElectrodeMaterialID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ElectrodeMaterial`                VARCHAR(50),
+  PRIMARY KEY (`PhysiologicalElectrodeMaterialID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create a physiological_electrode table
 CREATE TABLE `physiological_electrode` (
-  `PhysiologicalElectrodeID` INT(10) UNSIGNED NOT NULL      AUTO_INCREMENT,
-  `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
-  `InsertTime`               TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
-  `Name`                     VARCHAR(50)      NOT NULL,
-  `X`                        DECIMAL(12,6)    NOT NULL,
-  `Y`                        DECIMAL(12,6)    NOT NULL,
-  `Z`                        DECIMAL(12,6)    NOT NULL,
-  `Impedance`                INT(10)          DEFAULT NULL,
-  `Type`                     VARCHAR(50)      NOT NULL,
-  `Material`                 VARCHAR(50)      NOT NULL,
-  `FilePath`                 VARCHAR(255)     DEFAULT NULL,
+  `PhysiologicalElectrodeID`          INT(10) UNSIGNED NOT NULL      AUTO_INCREMENT,
+  `PhysiologicalFileID`               INT(10) UNSIGNED NOT NULL,
+  `PhysiologicalElectrodeTypeID`      INT(5)  UNSIGNED DEFAULT NULL,
+  `PhysiologicalElectrodeMaterialID`  INT(5)  UNSIGNED DEFAULT NULL,
+  `InsertTime`                        TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+  `Name`                              VARCHAR(50)      NOT NULL,
+  `X`                                 DECIMAL(12,6)    NOT NULL,
+  `Y`                                 DECIMAL(12,6)    NOT NULL,
+  `Z`                                 DECIMAL(12,6)    NOT NULL,
+  `Impedance`                         INT(10)          DEFAULT NULL,
+  `FilePath`                          VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalElectrodeID`),
   CONSTRAINT `FK_phys_file_FileID_3`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_phys_elec_type_ID`
+    FOREIGN KEY (`PhysiologicalElectrodeTypeID`)
+    REFERENCES `physiological_electrode_type` (`PhysiologicalElectrodeTypeID`),
+  CONSTRAINT `FK_phys_elec_material_ID`
+  FOREIGN KEY (`PhysiologicalElectrodeMaterialID`)
+  REFERENCES `physiological_electrode_material` (`PhysiologicalElectrodeMaterialID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
