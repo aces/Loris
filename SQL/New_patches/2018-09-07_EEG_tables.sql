@@ -204,7 +204,7 @@ INSERT INTO physiological_output_type
 
 -- Insert into physiological_channel_type
 INSERT INTO physiological_channel_type
-  (`ChannelType`, `ChannelDescription`)
+  (`ChannelTypeName`, `ChannelDescription`)
   VALUES
   ('EEG',              'ElectoEncephaloGram: EEG sensors'                    ),
   ('VEOG',             'Vertical ElectroOculoGram (eyes)'                    ),
