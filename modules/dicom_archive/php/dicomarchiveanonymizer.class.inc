@@ -53,9 +53,18 @@ class DICOMArchiveAnonymizer implements Mapper
         $newrow = json_decode($resource->toJSON(), true);
         $cid    = $resource->getCenterID();
 
-        if (!preg_match("/{$config['patientNameRegex']}/", $newrow['Patient Name'])
-            && !preg_match("/{$config['LegoPhantomRegex']}/", $newrow['Patient Name'])
-            && !preg_match("/{$config['LivingPhantomRegex']}/", $newrow['Patient Name'])
+        if (!preg_match(
+            "/{$config['patientNameRegex']}/",
+                $newrow['Patient Name']
+            )
+            && !preg_match(
+                "/{$config['LegoPhantomRegex']}/",
+                $newrow['Patient Name']
+            )
+            && !preg_match(
+                "/{$config['LivingPhantomRegex']}/",
+                $newrow['Patient Name']
+            )
         ) {
             $newrow['Patient Name'] = 'INVALID - HIDDEN';
         }
