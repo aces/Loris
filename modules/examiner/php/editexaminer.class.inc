@@ -12,19 +12,27 @@
  */
 namespace LORIS\examiner;
 
+/**
+ * Examiner module: Form used to update examiner certification status
+ *
+ * PHP Version 7
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
 class EditExaminer extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * Checks if the user has access to the edit examiner form
      *
      * @return bool
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
      * @throws \LorisException
      */
-
-    public $skipTemplate = true;
-
     function _hasAccess()
     {
         if (empty($_REQUEST['identifier'])) {
@@ -34,10 +42,7 @@ class EditExaminer extends \NDB_Form
         }
         $DB     = \NDB_Factory::singleton()->database();
         $config = \NDB_Config::singleton();
-
-        $user         = \User::singleton();
-        $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterIDs();
+        $user   = \User::singleton();
 
         $certification = $config->getSetting('Certification');
 
@@ -117,21 +122,25 @@ class EditExaminer extends \NDB_Form
     }
 
     /**
+     * Gets the JS dependencies
+     *
      * @return array of javascript to be inserted
      */
-   function getJSDependencies()
-   {
-       $factory = \NDB_Factory::singleton();
-       $baseURL = $factory->settings()->getBaseURL();
-       $deps    = parent::getJSDependencies();
-       return array_merge(
-           $deps,
-           array(
-               $baseURL . "/examiner/js/editExaminer.js",
-           )
-       );
-   }
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/examiner/js/editExaminer.js",
+            )
+        );
+    }
     /**
+     * Gets the CSS dependencies
+     *
      * @return array of CSS to be inserted
      */
     function getCSSDependencies()
@@ -142,7 +151,7 @@ class EditExaminer extends \NDB_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . "/examiner/css/editExaminer.css",
+             $baseURL . "/examiner/css/editExaminer.css",
             )
         );
     }
