@@ -151,6 +151,8 @@ function installAptPackage(string $name, bool $only_upgrade = false): bool
 /**
  * Runs 3rd-party package managers using exec
  *
+ * @param bool $dev Whether the script should be run in Dev mode.
+ *
  * @return bool True if all commands execute correctly. False otherwise
  */
 function runPackageManagers(bool $dev = false): bool
