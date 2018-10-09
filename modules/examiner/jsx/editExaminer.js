@@ -91,7 +91,7 @@ class EditExaminer extends React.Component {
         let split = formElement.split("_");
         let key = split[0];
         let element = split[1];
-        formData[key][element] = value
+        formData[key][element] = value;
         this.setState({
             formData: formData
         });
