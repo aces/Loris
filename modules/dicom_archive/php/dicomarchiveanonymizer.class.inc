@@ -55,8 +55,8 @@ class DICOMArchiveAnonymizer implements Mapper
 
         if (!preg_match(
             "/{$config['patientNameRegex']}/",
-                $newrow['Patient Name']
-            )
+            $newrow['Patient Name']
+        )
             && !preg_match(
                 "/{$config['LegoPhantomRegex']}/",
                 $newrow['Patient Name']
