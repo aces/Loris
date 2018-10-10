@@ -191,8 +191,11 @@ class NDB_BVL_Battery
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
 
+        // instantiate instrument object to get table name attribute
+        $obj = NDB_BVL_Instrument::factory($testName, '', '');
+
         // insert into the test table
-        $success = $DB->insert($testName, array('CommentID' => $commentID));
+        $success = $DB->insert($obj->table, array('CommentID' => $commentID));
 
         // insert into the flag table
         $success = $DB->insert(
@@ -209,7 +212,7 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-        $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
+        $success = $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
         $success = $DB->insert(
