@@ -29,6 +29,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 abstract class APIEndpoint extends \NDB_Page
 {
+    public $skipTemplate = true;
+
     /**
      * Return an array of valid HTTP methods for this endpoint
      *
@@ -87,7 +89,9 @@ abstract class APIEndpoint extends \NDB_Page
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(400);
         }
-        // FIXME: Add an ETag middleware
+        if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
+            return (new \LORIS\Middleware\ETag())->process($request, $handler);
+        }
         return $handler->handle($request);
     }
 }

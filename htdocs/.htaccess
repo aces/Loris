@@ -7,6 +7,7 @@ RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&scri
 
 # Do not rewrite API endpoints that have been converted to the LORIS API module.
 RewriteRule ^(api/v.*/login)$ index.php?lorispath=$1 [QSA,END]
+RewriteRule ^(api/v.*/projects[/]?)$ index.php?lorispath=$1 [QSA,END]
 
 # Instruments and reliability still use main.php, for now
 RewriteRule ^instruments/([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA,END]

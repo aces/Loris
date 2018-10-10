@@ -61,7 +61,7 @@ class Module extends \Module
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
-            "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+.*)\/(.*)/",
+            "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+[^\/]*)\/(.*)/",
             $url,
             $pieces
         ) !== 1
@@ -89,7 +89,7 @@ class Module extends \Module
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            ['error' => "Unsupported LORIS API version."]
+                            ['error' => "Unsupported LORIS API version " . $version]
                         )
                     )
                 );
@@ -104,5 +104,4 @@ class Module extends \Module
 
         return parent::handle($newrequest);
     }
-
 }
