@@ -31,12 +31,6 @@ class MriUploadServerProcess extends AbstractServerProcess
     const PROCESS_TYPE = 'mri_upload';
 
     /**
-     * Basename of the file used to set the environment variables before the
-     * upload can take place.
-     */
-    const ENVIRONMENT_BASENAME = 'environment';
-
-    /**
      * Path of the imaging upload script (relative the MRI files base path
      * found in the config).
      */
@@ -95,15 +89,9 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
         }
 
-        try {
-            $this->_mriCodePath = $config->getSetting('MRICodePath');
-        } catch(\ConfigurationException $exception) {
-            error_log(
-                "Unable to construct MriUploadTask: 
-                 config setting MRICodePath undefined"
-            );
-            throw $exception;
-        }
+        $this->_mriCodePath     = $config->getSetting('MRICodePath');
+        $this->_prodFile        = $config->getSetting('MriConfigFile');
+        $this->_environmentFile = $config->getSetting('EnvironmentFile');
 
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
@@ -130,10 +118,12 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
-        return "source {$this->_mriCodePath}/" . self::ENVIRONMENT_BASENAME . " ; "
+        return "source {$this->_mriCodePath}/"
+               . escapeshellarg($this->_environmentFile) . " ; "
                . "{$this->_mriCodePath}/" . self::IMAGING_UPLOAD_FILE_PATH
-               . " -upload_id "    . escapeshellarg($this->_mriUploadId)
-               . " -profile prod " . escapeshellarg($this->_sourceLocation);
+               . " -upload_id " . escapeshellarg($this->_mriUploadId)
+               . " -profile "   . escapeshellarg($this->_prodFile)
+               . " " . escapeshellarg($this->_sourceLocation);
     }
 
     /**
