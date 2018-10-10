@@ -1,12 +1,12 @@
-/* exported RMediaEditForm */
+/* exported DocEditForm */
 import PropTypes from 'prop-types';
 /**
- * Media Edit Form
+ * Document Edit Form
  *
  * Fetches data corresponding to a given file from Loris backend and
  * displays a form allowing meta information of the media file
  *
- * @author Alex Ilea
+ * @author Shen Wang
  * @version 1.0.0
  *
  * */
