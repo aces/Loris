@@ -16,6 +16,8 @@ CREATE TABLE `physiological_output_type` (
 
 
 -- Create a physiological_file table
+-- Note that the field InsertedByUser refers to the Linux User that ran the script
+-- and not a LORIS user
 CREATE TABLE `physiological_file` (
   `PhysiologicalFileID`       INT(10)    UNSIGNED  NOT NULL      AUTO_INCREMENT,
   `PhysiologicalModalityID`   INT(5)     UNSIGNED  DEFAULT NULL,
