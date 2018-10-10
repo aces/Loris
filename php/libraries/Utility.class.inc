@@ -537,7 +537,7 @@ class Utility
      */
     static function getAllInstruments()
     {
-        $Factory       = NDB_Factory::singleton();
+        $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
