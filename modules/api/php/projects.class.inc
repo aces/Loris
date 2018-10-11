@@ -41,8 +41,8 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
      */
     function _hasAccess()
     {
-        // FIXME: Add permission here (Data entry?).
-        return true;
+        $user = \User::singleton();
+        return !($user instanceof \LORIS\AnonymousUser);
     }
 
     /**

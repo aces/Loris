@@ -102,6 +102,24 @@ class Module extends \Module
             ->withURI($newurl)
             ->withAttribute("LORIS-API-Version", $version);
 
-        return parent::handle($newrequest);
+        $parentresp = parent::handle($newrequest);
+        switch ($parentresp->getStatusCode()) {
+        case 401:
+        case 403:
+        case 404:
+            // If permission was denied, fake a 404 to avoid leaking metadata.
+            // Also convert all 404s to the same message to ensure you can't
+            // derive metadata by looking at the error message.
+            return $parentresp
+                ->withHeader("Content-Type", "application/json")
+                ->withStatus(404)
+                ->withBody(
+                    new \LORIS\HTTP\StringStream(
+                        json_encode(["error" => "not found"])
+                    )
+                );
+        default:
+            return $parentresp;
+        }
     }
 }
