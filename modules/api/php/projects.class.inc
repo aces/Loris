@@ -1,6 +1,6 @@
 <?php
 /**
- * This implements the Login page class
+ * This implements the Projects page class
  *
  * PHP Version 7
  *
@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 
 
 /**
- * A class for handling the api/v????/login endpoint.
+ * A class for handling the api/v????/projects endpoint.
  *
  * @category API
  * @package  Loris
@@ -48,7 +48,7 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Return which methods are supported by this endpoint.
      *
-     * Login can only be POSTed to
+     * Projects can only be retrieved, not created.
      *
      * @return array supported HTTP methods
      */
@@ -76,7 +76,7 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request starts with /projects/ 
+     * Handles a request starts with /projects/
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -88,13 +88,13 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
         switch ($request->getURI()->getPath()) {
         case "projects":
         case "projects/":
-            $projects  = $this->getProjectList();
+            $projects = $this->_getProjectList();
             return (new \LORIS\HTTP\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withBody(new \LORIS\HTTP\StringStream(json_encode($projects)));
         // FIXME: Delegate to other endpoints under /projects/ for other paths.
         default:
-        return (new \LORIS\Http\Response())
+            return (new \LORIS\Http\Response())
             ->withBody(
                 new \LORIS\Http\StringStream(
                     '{ "error" : "Invalid API endpoint" }'
@@ -103,7 +103,15 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
         }
     }
 
-    private function getProjectList() : array {
+    /**
+     * Returns an array of projects for this LORIS instance
+     * a format that can be JSON encoded to confirm to the
+     * API.
+     *
+     * @return array of projects
+     */
+    private function _getProjectList() : array
+    {
         if (isset($this->projectsCache)) {
             return $this->projectsCache;
         }
@@ -123,12 +131,12 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = [
-            "useEDC" => $useEDC,
-            "PSCID"  => [
-                "Type"  => $type,
-                "Regex" => $PSCIDFormat,
-            ],
-        ];
+                     "useEDC" => $useEDC,
+                     "PSCID"  => [
+                                  "Type"  => $type,
+                                  "Regex" => $PSCIDFormat,
+                                 ],
+                    ];
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
             $projects  = \Utility::getProjectList();
@@ -139,13 +147,21 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
             $this->projectsCache = ["Projects" => $projArray];
         } else {
             $this->projectsCache = [
-                "Projects" => array("loris" => $settings),
-            ];
+                                    "Projects" => array("loris" => $settings),
+                                   ];
         }
         return $this->projectsCache;
     }
+
+    /**
+     * Implements the ETagCalculator interface
+     *
+     * @param ServerRequestInterface $request The PSR7 incoming request.
+     *
+     * @return string etag summarizing value of this request.
+     */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->getProjectList(), true));
+        return md5(json_encode($this->_getProjectList(), true));
     }
 }
