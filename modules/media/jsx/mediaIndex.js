@@ -11,7 +11,7 @@ class MediaIndex extends Component {
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
+      hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type'],
     };
 
     // Bind component instance to custom methods
