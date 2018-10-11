@@ -151,7 +151,7 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseVisitLink()
     {
         $this->safeGet($this->url . "/media/");
-        sleep(1);
+        sleep(10);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -179,7 +179,7 @@ class MediaTest extends LorisIntegrationTest
       */
     function _testFilter($url,$filter,$testData,$expectDataRows)
     {
-        $this->safeGet($this->url . $url);
+        $this->safeGet($this->url . $url);sleep(3);
         $this->safeFindElement(
             WebDriverBy::Name($filter)
         )->sendKeys($testData);
