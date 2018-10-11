@@ -1,27 +1,31 @@
 <?php
 /**
-* The candidate list menu
-*
-* PHP Version 5
-*
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * The validateIDs endpoint is used to verify whether or not
+ * a candidate PSCID and CandID match
+ *
+ * It takes two parameters (PSCID and CandID) and returns either
+ * "1" or "0".
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\candidate_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Implements the candidate_list menu
+ * Implements the ValidateIDs endpoint
  *
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class ValidateIDs extends \NDB_Page
 {
