@@ -6,7 +6,7 @@
  * It takes two parameters (PSCID and CandID) and returns either
  * "1" or "0".
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_List
