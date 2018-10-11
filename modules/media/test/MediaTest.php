@@ -90,7 +90,7 @@ class MediaTest extends LorisIntegrationTest
     function testPageBrowseUIs()
     {
         $this->safeGet($this->url . "/media/");
-        sleep(50);
+        sleep(1);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
