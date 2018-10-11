@@ -11,6 +11,7 @@ class MediaIndex extends Component {
     this.state = {
       isLoaded: false,
       filter: {},
+      hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
     };
 
     // Bind component instance to custom methods
@@ -62,10 +63,8 @@ class MediaIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    const hiddenHeaders = ['Cand ID', 'Session ID', 'Hide File', 'File Type'];
-
     // If a column if set as hidden, don't display it
-    if (hiddenHeaders.indexOf(column) > -1) {
+    if (this.state.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
@@ -155,6 +154,7 @@ class MediaIndex extends Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
+            hiddenHeaders={this.state.hiddenHeaders}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
           />
