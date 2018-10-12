@@ -87,7 +87,7 @@ class VisitTest extends TestCase
 
     function testVisitsProjects()
     {
-        $visits = $this->_visitController->getVisitsWithProject();
+        $visits = $this->_visitController->getVisitsAndProject();
         $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 
