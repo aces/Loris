@@ -36,20 +36,20 @@ class Visit
      *
      * @var string
      */
-    protected $visit;
+    protected $name;
 
     /**
      * The contructor
      *
-     * @param string|null $visit The visit name
-     * @param string|null $id    The ID of the visit
+     * @param string|null $name The visit name
+     * @param string|null $id   The ID of the visit
      */
     public function __construct(
-        ?string $visit = null,
-        ?string $id    = null
+        ?string $name = null,
+        ?string $id   = null
     ) {
-        $this->visit = $visit;
-        $this->id    = $id;
+        $this->name = $name;
+        $this->id   = $id;
     }
 
     /**
@@ -59,6 +59,6 @@ class Visit
      */
     public function getName(): string
     {
-        return $this->visit;
+        return $this->name;
     }
 }

@@ -54,12 +54,13 @@ class VisitController
         return array_map(
             function ($row) {
                 return new \LORIS\Visit(
-                    $row['visit']
+                    $row['name'],
+                    $row['ID']
                 );
             },
             $this->database->pselect(
                 'SELECT
-                 v.VisitName as "visit"
+                 v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
                 ',
@@ -75,17 +76,18 @@ class VisitController
      *
      * @return array the ID of the visit
      */
-    public function getVisitsWithID(string $visit): array
+    public function getVisitsByName(string $visit): array
     {
         return array_map(
             function ($row) {
                 return new \LORIS\Visit(
+                    $row['name'],
                     $row['ID']
                 );
             },
             $this->database->pselect(
                 'SELECT
-                 v.VisitID as "ID"
+                 v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
                 WHERE
@@ -101,18 +103,19 @@ class VisitController
      *
      * @return array The list of visits, projectID and subprojectID
      */
-    public function getVisitsWithProject(): array
+    public function getVisitsAndProject(): array
     {
         return array_map(
             function ($row) {
                 return array(
-                        new \LORIS\Visit($row['visit']),
-                        $row['project'],
-                        $row['subproject'],
+                        new \LORIS\Visit($row['name'], $row['ID']),
+                        $row['project'],    // will be modified to object when 
+                        $row['subproject'], // available
                        );
             },
             $this->database->pselect(
                 'SELECT
+                  v.VisitID as "ID",
                   v.VisitName as "visit",
                   vps.ProjectID as "project",
                   vps.SubProjectID as "subproject"
