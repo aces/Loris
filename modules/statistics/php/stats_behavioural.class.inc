@@ -38,15 +38,15 @@ class Stats_Behavioural extends \NDB_Form
     /**
      * InCenter function
      *
-     * @param string $centerID the value of centreID
-     * @param string $Centres  the value of Centres
+     * @param string $centerID the value of centerID
+     * @param string $Centers  the value of centers
      *
      * @return bool
      */
-    function _inCenter($centerID, $Centres)
+    function _inCenter($centerID, $Centers)
     {
-        foreach ($Centres as $Centre) {
-            if ($Centre['NumericID'] == $centerID) {
+        foreach ($Centers as $Center) {
+            if ($Center['NumericID'] == $centerID) {
                 return true;
             }
         }
