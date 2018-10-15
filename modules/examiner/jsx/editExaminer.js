@@ -24,8 +24,8 @@ class EditExaminer extends React.Component {
       formData: {},
       statusOptions: {
         null: "N/A",
-        notCertified: "Not Certified",
-        inTraining: "In Training",
+        not_certified: "Not Certified",
+        in_training: "In Training",
         certified: "Certified"
       },
       hasError: false,

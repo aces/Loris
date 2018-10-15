@@ -176,6 +176,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
             // content type right now, so we default to assuming HTML.
             return $undecorated;
         }
+
         // This should be moved out of the middleware and into the modules that need it,
         // but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for updated data
