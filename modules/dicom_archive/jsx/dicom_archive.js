@@ -21,7 +21,8 @@ class DicomArchive extends React.Component {
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
+      hiddenHeaders: ['Seriesuid', 'Site', 'TarchiveID', 'SessionID']
     };
 
     // Bind component instance to custom methods
@@ -47,7 +48,7 @@ class DicomArchive extends React.Component {
       success: data => {
         // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = data.hiddenHeaders || [];
+        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
           data: data,
           isLoaded: true
@@ -84,7 +85,7 @@ class DicomArchive extends React.Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
+    if (this.state.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
@@ -153,7 +154,7 @@ class DicomArchive extends React.Component {
         <StaticDataTable
           Data={this.state.data.Data}
           Headers={this.state.data.Headers}
-          hiddenHeaders={this.state.data.hiddenHeaders}
+          hiddenHeaders={this.state.hiddenHeaders}
           Filter={this.state.filter}
           getFormattedCell={this.formatColumn}
         />
