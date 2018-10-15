@@ -38,7 +38,7 @@ class MediaIndex extends React.Component {
       success: data => {
         // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = data.hiddenHeaders || [];
+        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
           data: data,
           isLoaded: true
@@ -168,7 +168,7 @@ class MediaIndex extends React.Component {
           <StaticDataTable
             Data={this.state.data.Data}
             Headers={this.state.data.Headers}
-            hiddeHeaders={this.state.hiddenHeaders}
+            hiddenHeaders={this.state.hiddenHeaders}
             Filter={this.state.filter}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
