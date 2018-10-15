@@ -13,7 +13,7 @@ The AjaxHelper.php and associated `module/*/ajax/*.php` scripts are
 being deprecated as a result.
 
 In the new architecture, modules should implement an endpoint which
-handles the ServerRequestInterface passed to it in a RESTful manor.
+handles the ServerRequestInterface passed to it in a RESTful manner.
 An example of how to do this is https://github.com/aces/Loris/pull/3977,
 which removes the "validateIDs.php" ajax script from the candidate_list
 module and replaces it with a validateIDs candidate_list/validateIDs
