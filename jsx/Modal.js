@@ -28,23 +28,23 @@ class Modal extends React.Component {
   }
 
   closeModal() {
-    if (this.props.throwWarning) {                                              
-      swal({                                                                    
-        title: "Are You Sure?",                                                 
+    if (this.props.throwWarning) {
+      swal({
+        title: "Are You Sure?",
         text: "Leaving the form will result in the loss of any information entered.",
-        type: "warning",                                                        
-        showCancelButton: true,                                                 
-        confirmButtonText: 'Proceed',                                           
-        cancelButtonText: 'Cancel',                                             
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'Proceed',
+        cancelButtonText: 'Cancel',
       }).then(result => {
         if (result.value) {
-          this.props.closeModal();                                                        
+          this.props.closeModal();
         }
       });
-    } else {                                                                    
+    } else {
       this.props.closeModal();
-    }                                                                           
-  }   
+    }
+  }
 
   render() {
     const headerStyle = {
@@ -56,20 +56,20 @@ class Modal extends React.Component {
       fontSize: 24,
       padding: 35,
       borderBottom: '1px solid #DDDDDD'
-    }
+    };
 
     const glyphStyle = {
       marginLeft: 'auto',
       cursor: 'pointer'
-    }
+    };
 
     const bodyStyle = {
       padding: 15
-    }
+    };
 
-    let children = () => this.props.show && this.props.children;
+    const children = () => this.props.show && this.props.children;
 
-    let display = () => this.props.show ? {display: 'block'} : {display: 'none'};
+    const display = () => this.props.show ? {display: 'block'} : {display: 'none'};
 
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
@@ -78,29 +78,29 @@ class Modal extends React.Component {
       alignItems: 'center',
       height: '40px',
       padding: '35px 35px 20px 35px'
-    }
+    };
 
     const submitStyle = {
       marginLeft: 'auto',
       marginRight: '20px'
-    }
+    };
 
-    let submitButton = () => {
+    const submitButton = () => {
       if (this.props.onSubmit) {
         return (
           <div style={submitStyle}>
             <ButtonElement
-              label='Submit'
+              label="Submit"
               onUserInput={this.props.onSubmit}
             />
           </div>
         );
       }
-    }
+    };
   
     let modal = (
-      <div className='modal' style={display()} onClick={this.closeModal}>
-        <div className='modal-content' onClick={e => {e.stopPropagation()}}>
+      <div className="modal" style={display()} onClick={this.closeModal}>
+        <div className="modal-content" onClick={e => e.stopPropagation()}>
           <div style={headerStyle}>
             {this.props.title}
             <span style={glyphStyle} onClick={this.closeModal}>
@@ -126,7 +126,7 @@ Modal.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onSubmit: React.PropTypes.func,
   closeModal: React.PropTypes.func.isRequired,
-  throwWarning: React.PropTypes.bool,
+  throwWarning: React.PropTypes.bool
 };
 
 Modal.defaultProps = {
