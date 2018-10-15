@@ -129,11 +129,6 @@ class Stats_Behavioural extends \NDB_Form
         $Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
 
-        // PREVENT Undefined property Console Output
-        if (!isset($this->params)) {
-            $this->params = null;
-        }
-
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
             "SELECT s.CenterID,
@@ -150,7 +145,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {

@@ -247,7 +247,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
