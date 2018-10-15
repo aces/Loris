@@ -22,7 +22,7 @@ class DataDictIndex extends React.Component {
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['DescriptionStatus']
+      hiddenHeaders: ['Description Status']
     };
 
     // Bind component instance to custom methods
@@ -48,7 +48,7 @@ class DataDictIndex extends React.Component {
       success: data => {
         // FIXME: Remove the following line of code as soon as hiddenHEaders is
         // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = data.hiddenHeaders || [];
+        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
           data: data,
           isLoaded: true
