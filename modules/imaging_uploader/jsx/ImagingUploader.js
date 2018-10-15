@@ -12,8 +12,7 @@ class ImagingUploader extends React.Component {
 
     this.state = {
       isLoaded: false,
-      filter: {},
-      hiddenHeaders: ['PatientName']
+      filter: {}
     };
 
     // Bind component instance to custom methods
@@ -37,7 +36,7 @@ class ImagingUploader extends React.Component {
       method: "GET",
       dataType: 'json',
       success: data => {
-        // FIXME: Remove the following line of code, add ['Patient Name'] to the
+        // FIXME: Remove the following line of code, add ['PatientName'] to the
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
         // the StaticDataTable Component.
