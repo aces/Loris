@@ -115,13 +115,8 @@ class UserPermissions
      */
     public function hasPermission(string $code): bool
     {
-        if (get_class() === 'UserPermissions') {
-            return $this->_permissionTrueAndValid['superuser']
-                || $this->_permissionTrueAndValid($code);
-        } else if (get_class() === 'User') {
-            return parent::_permissionTrueAndValid['superuser']
-                || parent::_permissionTrueAndValid($code);
-        }
+        return $this->permissionTrueAndValid('superuser')
+            || $this->permissionTrueAndValid($code);
     }
 
     /**
@@ -132,7 +127,7 @@ class UserPermissions
      *
      * @return bool The setting of permission code $permission
      */
-    private function _permissionTrueAndValid(string $code): bool
+    protected function permissionTrueAndValid(string $code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
@@ -156,7 +151,7 @@ class UserPermissions
             );
         }
         foreach ($permissions as $p) {
-            if (!$this->_permissionTrueAndValid($p)) {
+            if (!$this->permissionTrueAndValid($p)) {
                 return false;
             }
         }
