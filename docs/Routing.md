@@ -5,11 +5,11 @@ on (PSR15)[https://www.php-fig.org/psr/psr-15/] This has a number
 of benefits over the custom scripts in the htdocs directory used
 by previous LORIS releases such as reducing the dependency on Apache,
 removing the dependency on mod_rewrite, and making it possible for
-Modules to declare their own custom routes with complex path
+modules to declare their own custom routes with complex path
 components or use the same access checking mechanisms as the rest
 of LORIS automatically.
 
-The AjaxHelper.php and associated module/*/ajax/*.php scripts are
+The AjaxHelper.php and associated `module/*/ajax/*.php` scripts are
 being deprecated as a result.
 
 In the new architecture, modules should implement an endpoint which
