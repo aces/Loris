@@ -168,7 +168,6 @@ class MediaIndex extends React.Component {
           <StaticDataTable
             Data={this.state.data.Data}
             Headers={this.state.data.Headers}
-            hiddenHeaders={this.state.hiddenHeaders}
             Filter={this.state.filter}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
