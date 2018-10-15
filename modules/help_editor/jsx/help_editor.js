@@ -25,7 +25,7 @@ class HelpEditor extends React.Component {
       data: {}
     };
 
-    //TODO: refs should be deprecated in future refactoring.
+    // TODO: refs should be deprecated in future refactoring.
     /**
      * Set filter to the element's ref for filtering
      */
@@ -37,7 +37,7 @@ class HelpEditor extends React.Component {
     /*
      * Bind component instance to custom methods
      */
-    this.fetchData    = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
@@ -58,7 +58,7 @@ class HelpEditor extends React.Component {
         // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
         loris.hiddenHeaders = data.hiddenHeaders || [];
-	      this.setState({
+        this.setState({
           data: data,
           isLoaded: true
         });
@@ -76,7 +76,7 @@ class HelpEditor extends React.Component {
     this.setState({filter});
   }
 
-  //TODO: Clearing filters via refs should be deprecated in future refactoring.
+  // TODO: Clearing filters via refs should be deprecated in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */
@@ -102,8 +102,10 @@ class HelpEditor extends React.Component {
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
     let url;
-    rowHeaders.forEach((header, index) => row[header] = rowData[index]);
-  
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index];
+    });
+
     if (column === 'Topic') {
       url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
              row.HelpID + '&parentID=' + row.ParentID;
@@ -114,22 +116,22 @@ class HelpEditor extends React.Component {
              row.ParentID + '&parentID=' + row.ParentTopicID;
       return <td><a href ={url}>{cell}</a></td>;
     }
-  
+
     return <td>{cell}</td>;
   }
 
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>
+      return <Loader/>;
     }
 
     return (
       <div>
         <FilterForm
-          Module='help_editor'
-          name='help_filter'
-          id='help_filter'
+          Module="help_editor"
+          name="help_filter"
+          id="help_filter"
           ref={this.setFilterRef}
           columns={2}
           formElements={this.state.data.form}
@@ -137,8 +139,8 @@ class HelpEditor extends React.Component {
           filter={this.state.filter}
         >
           <ButtonElement
-            label='Clear Filters'
-            type='reset'
+            label="Clear Filters"
+            type="reset"
             onUserInput={this.resetFilters}
           />
         </FilterForm>
@@ -166,7 +168,7 @@ window.onload = () => {
   let dataURL = loris.BaseURL + '/help_editor/?format=json';
   let helpEditor = (
     <HelpEditor
-      Module='help_editor'
+      Module="help_editor"
       DataURL={dataURL}
     />
   );
