@@ -79,7 +79,6 @@ var config = [{
       PaginationLinks: 'jsx/PaginationLinks',
       Panel: 'jsx/Panel',
       Modal: 'jsx/Modal',
-      Loader: 'jsx/Loader',
       ProgressBar: 'jsx/ProgressBar',
       StaticDataTable: 'jsx/StaticDataTable',
       Tabs: 'jsx/Tabs'
