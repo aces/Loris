@@ -438,7 +438,7 @@ class User extends UserPermissions
          * A useful tool for this tasks can be found at the link below.
          * https://tools.kali.org/password-attacks/cewl
          */
-        $lorisKeywords = \User::_getLorisKeywords();
+        $lorisKeywords = self::_getLorisKeywords();
         $userInputs    = array_merge(
             array(
              $user->getUsername(),
@@ -457,7 +457,7 @@ class User extends UserPermissions
      *
      * @return array Keywords that shouldn't be used in passwords
      */
-    private static function _getLorisKeywords(): array
+    private function _getLorisKeywords(): array
     {
         $keywords = array();
         // The file is located two directories up from this file.
