@@ -37,7 +37,7 @@ class ImagingUploader extends React.Component {
       method: "GET",
       dataType: 'json',
       success: data => {
-        // FIXME: Remove the following line of code as soon as hiddenHEaders is
+        // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
         loris.hiddenHeaders = data.hiddenHeaders || [];
         this.setState({
@@ -232,7 +232,13 @@ class ImagingUploader extends React.Component {
             <StaticDataTable
               Data={this.state.data.Data}
               Headers={this.state.data.Headers}
-              hiddenHeader={this.state.hiddenHeaders}
+              {
+                /* FIXME: Remove comments arround following line of code as soon
+                  as hiddenHeaders is accepted as a prop by the STaticDataTable
+                  Component.
+                */
+              }
+              {/*hiddenHeader={this.state.data.hiddenHeaders*/}
               getFormattedCell={this.formatColumn}
               Filter={this.state.filter}
             />
