@@ -116,7 +116,7 @@ class VisitController
             $this->database->pselect(
                 'SELECT
                   v.VisitID as "ID",
-                  v.VisitName as "visit",
+                  v.VisitName as "name",
                   vps.ProjectID as "project",
                   vps.SubProjectID as "subproject"
                  FROM
