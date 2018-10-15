@@ -51,7 +51,7 @@ class AccessProfilePanel extends React.Component {
     };
     this.setState(state);
 
-    $.get(loris.BaseURL + "/candidate_list/ajax/validateProfileIDs.php",
+    $.get(loris.BaseURL + "/candidate_list/validateIDs",
       {
         CandID: state.CandID,
         PSCID: state.PSCID
