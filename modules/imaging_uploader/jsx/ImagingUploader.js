@@ -234,11 +234,11 @@ class ImagingUploader extends React.Component {
               Headers={this.state.data.Headers}
               {
                 /* FIXME: Remove comments arround following line of code as soon
-                  as hiddenHeaders is accepted as a prop by the STaticDataTable
+                  as hiddenHeaders is accepted as a prop by the StaticDataTable
                   Component.
                 */
               }
-              {/*hiddenHeader={this.state.data.hiddenHeaders*/}
+              {/*hiddenHeaders={this.state.hiddenHeaders*/}
               getFormattedCell={this.formatColumn}
               Filter={this.state.filter}
             />
