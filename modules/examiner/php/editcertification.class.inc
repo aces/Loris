@@ -115,10 +115,8 @@ class EditCertification extends \NDB_Page
         $DB         = \NDB_Factory::singleton()->database();
         $user       = \User::singleton();
 
-        // Get the list of certification instruments
-        $instruments = EditExaminer::getCertificationInstruments();
-
-        foreach ($instruments as $testID=>$row) {
+        unset($dataArray['identifier']);
+        foreach ($dataArray as $testID=>$row) {
 
             $data = json_decode($dataArray[$testID], true) ?? null;
 
