@@ -37,7 +37,7 @@ function writeQuestion($question, $answers) : void
 }
 
 /**
- * Gets user input from STDIN and checks if it matches a valye in
+ * Gets user input from STDIN and checks if it matches a value in
  * $possibleAnswers.  If not, the default answer is used.  Inteded to follow
  * function writeQuestion
  *
@@ -48,7 +48,7 @@ function writeQuestion($question, $answers) : void
  */
 function readAnswer($possibleAnswers, $defaultAnswer) : string
 {
-    $in     = fopen('php://stdin', 'rw+');
+    $in     = fopen('php://stdin', 'r');
     $answer = trim(fgets($in));
 
     if (!in_array($answer, $possibleAnswers, true)) {
