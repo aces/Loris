@@ -387,15 +387,14 @@ class SinglePointLogin
 
             $DB->insert('user_login_history', $setArray);
             return true;
-        } else {
-            /* When the password is wrong, log this detail for rate-limiting 
-             * purposes.
-             */
-            $this->insertFailedDetail(
-                "Bad password",
-                $setArray
-            );
         }
+        /* When the password is wrong, log this detail for rate-limiting 
+         * purposes.
+         */
+        $this->insertFailedDetail(
+            "Bad password",
+            $setArray
+        );
 
         // Fail by default with a generic error message
         $this->_lastError = "Incorrect username or password.";
