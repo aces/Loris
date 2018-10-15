@@ -225,7 +225,7 @@ class BatteryManagerAddForm extends React.Component {
    */
   giveOptions(duplicateEntry) {
     // if duplicate entry exists, convert to JSON
-    if (duplicateEntry !== undefined) {
+    if (duplicateEntry) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
       // if duplicate entry is not active, trigger activate popup
       if (duplicateEntryJSON.Active === 'N') {

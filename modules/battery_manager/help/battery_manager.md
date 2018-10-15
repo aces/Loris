@@ -1,4 +1,5 @@
 # Battery Manager
+*For Rida: Add what each value in the test_battery does and what happens if it's left empty*
 The Battery Manager module serves as a front-end for manipulating the Test Battery.
 This includes browsing, adding, editing, activating, and deactivating entries.
 
@@ -15,7 +16,7 @@ Under the `Browse` tab, use the `Selection Filters` to search for entries by fie
 `Instrument Order`,
 `Active`.
 As filters are selected, the data table below will dynamically update with relevant results.
-Click the `Clear Filters` button to reset all filters.
+Click the **Clear Filters** button to reset all filters.
 
 Within the data table, results can be sorted in ascending or descending order by 
 clicking on any column header.

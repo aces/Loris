@@ -31,6 +31,9 @@ The **activate** functionality can be accessed in the `Browse` tab, `Edit` windo
 #### Browse tab
 In the `Change Status` column of the Menu Table, users can directly activate an entry by pressing the **Activate** button.
 
+#### Interactions with LORIS
+*For Rida: Specify that changing the values in this table dictates what goes where in timepoints*
+
 #### Edit window
 In an entry's edit window, users can indirectly activate another entry. If they edit the entry so that it is the same as another deactivated entry, they will be given the option to activate the other entry.
 

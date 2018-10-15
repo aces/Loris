@@ -55,10 +55,11 @@ function checkForDuplicate()
     $connector = "WHERE ";
     // Iterate through values entered by user
     foreach ($form_data as $key => $value) {
+        //TODO For David: add better check for duplicate value.
         if ($i > 0) {
             $connector = "AND ";
         }
-        if (isset($value) || $value !== null) {
+        if (isset($value) || $value !== "") {
             $query .= $connector . $key . " = :" . $key . " ";
         } else {
             $query .= $connector . $key . " IS NULL ";

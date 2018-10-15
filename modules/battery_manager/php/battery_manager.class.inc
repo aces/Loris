@@ -40,7 +40,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return Bool
      */
-    function _hasAccess()
+    function _hasAccess() : bool
     {
         //create user object
         $user =& \User::singleton();
@@ -56,7 +56,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function setup()
+    function setup() : bool
     {
         parent::setup();
 
@@ -88,7 +88,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return array
      */
-    function getStageList()
+    function getStageList() : array
     {
         return array(
                 "Not Started"   => 'Not Started',
@@ -105,7 +105,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return array
      */
-    function getYesNoList()
+    function getYesNoList() : array
     {
         return array(
                 'Y' => 'Yes',
@@ -121,7 +121,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return array
      */
-    function makeKeySameAsValue($list)
+    function makeKeySameAsValue($list) : array
     {
         $options = array();
         foreach ($list as $key => $value ) {
@@ -136,7 +136,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      * @return bool
      * @throws DatabaseException
      */
-    function _setupVariables()
+    function _setupVariables() : bool
     {
         $user =& \User::singleton();
         // the base query
@@ -195,7 +195,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON() : string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
@@ -207,7 +207,7 @@ class Battery_Manager extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
