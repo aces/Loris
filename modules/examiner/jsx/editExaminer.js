@@ -27,9 +27,7 @@ class EditExaminer extends React.Component {
         not_certified: "Not Certified",
         in_training: "In Training",
         certified: "Certified"
-      },
-      hasError: false,
-      errorMessage: null
+      }
     };
 
     /**
@@ -109,9 +107,6 @@ class EditExaminer extends React.Component {
     for (let testID in formData) {
       if (formData.hasOwnProperty(testID) &&
         JSON.stringify(formData[testID]) !== '{}') {
-        if (formData[testID].status === "null") {
-          this.state.errorMessage = "You may not change a valid status to N/A";
-        }
         let instrumentData = JSON.stringify(formData[testID]);
         formObject.append(testID, instrumentData);
       }
@@ -143,12 +138,6 @@ class EditExaminer extends React.Component {
         <Loader/>
       );
     }
-    // Provide error message to be rendered if exists
-    if (this.state.errorMessage) {
-      this.setState({
-        hasError: true
-      });
-    }
 
     let formHeaders = (
       <div className="row hidden-xs hidden-sm">
@@ -175,6 +164,14 @@ class EditExaminer extends React.Component {
         if (this.state.formData[instrumentID].status === "certified") {
           dateRequired = true;
         }
+        let hasError = false;
+        let errorMessage = null;
+        if (this.state.data.instruments[instrumentID].pass) {
+          if (this.state.formData[instrumentID].status === "null") {
+            hasError = true;
+            errorMessage ="You may not change a valid status to N/A";
+          }
+        }
         // Create elements
         let instrumentName = this.state.data.instruments[instrumentID].name;
         const instrumentRow = (
@@ -188,8 +185,8 @@ class EditExaminer extends React.Component {
                 onUserInput={this.setFormData}
                 ref={instrumentID + "_status"}
                 emptyOption={false}
-                hasError={this.state.hasError}
-                errorMessage={this.state.errorMessage}
+                hasError={hasError}
+                errorMessage={errorMessage}
               />
             </div>
             <div className="col-md-3">
