@@ -22,7 +22,7 @@ class DataDictIndex extends React.Component {
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['Description Status']
+      hiddenHeaders: []
     };
 
     // Bind component instance to custom methods
@@ -46,9 +46,6 @@ class DataDictIndex extends React.Component {
       method: 'GET',
       dataType: 'json',
       success: data => {
-        // FIXME: Remove the following line of code as soon as hiddenHEaders is
-        // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
           data: data,
           isLoaded: true
@@ -144,7 +141,6 @@ class DataDictIndex extends React.Component {
         <StaticDataTable
           Data={this.state.data.Data}
           Headers={this.state.data.Headers}
-          hiddenHeaders={this.state.hiddenHeaders}
           Filter={this.state.filter}
           getFormattedCell={this.formatColumn}
         />
