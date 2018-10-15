@@ -239,9 +239,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'TarchiveSource'        => 263,
             )
         );
-        // @codingStandardsIgnoreEnd
-
-        // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
             array(
@@ -267,7 +264,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'TarchiveSource'        => 264,
             )
         );
-        // @codingStandardsIgnoreStart
+        // @codingStandardsIgnoreEnd
 
         $this->DB->insert(
             'mri_acquisition_dates',
