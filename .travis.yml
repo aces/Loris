@@ -26,14 +26,9 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
-    # Install composer modules
-    - composer install
-    - composer require --dev
-    - phpenv rehash
-
-
-    # Install node modules specified in package.json
     - npm install
+    - make dev
+    - phpenv rehash
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
@@ -94,7 +89,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - vendor/bin/phan
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise

@@ -33,13 +33,12 @@ class Timepoint_List extends \NDB_Menu
     /**
      * Overloading this method to allow access to timepoint list
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $candidate =& \Candidate::singleton($this->candID);
 
         // check user permissions
@@ -93,7 +92,6 @@ class Timepoint_List extends \NDB_Menu
             $gets         = $request->getQueryParams();
             $this->candID = $gets['candID'];
         }
-        $this->setup();
         return parent::process($request, $handler);
     }
 

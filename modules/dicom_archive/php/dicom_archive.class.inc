@@ -33,11 +33,12 @@ class Dicom_Archive extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 
@@ -94,7 +95,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->addBasicDate('dateOfBirth', 'Date of Birth');
         $this->addBasicDate('acquisition', 'Acquisition Date');
         $this->addBasicText('archiveLocation', 'Archive Location');
-        $this->addBasicText('seriesuid', 'Series UI');
+        $this->addBasicText('seriesuid', 'Series UID');
     }
 
 

@@ -369,7 +369,7 @@ class NDB_BVL_Feedback
         // new DB Object
         $db =& Database::singleton();
 
-        $query   = "SELECT Status FROM feedback_bvl_thread WHERE";
+        $query   = "SELECT MAX(Status) FROM feedback_bvl_thread WHERE";
         $qparams = array();
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query         .= " CandID = :CID";

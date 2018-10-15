@@ -105,13 +105,20 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        $tarchiveIDs = $DB->pselect(
-            "SELECT TarchiveID
+        // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
+        $qresult = $DB->pselect(
+            "SELECT TarchiveID, ArchiveLocation 
             FROM tarchive 
             WHERE PatientName LIKE $ID",
             $params
         );
-        $subjectData['tarchiveids'] = $tarchiveIDs;
+
+        $tarIDToTarLoc =array();
+        foreach ($qresult as $v) {
+            $tarchiveID = $v['TarchiveID'];
+            $tarIDToTarLoc[$tarchiveID] = $v['ArchiveLocation'];
+        }
+        $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
 
         $config =& \NDB_Config::singleton();
 

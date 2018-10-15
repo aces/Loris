@@ -92,11 +92,18 @@ class Visit extends \Loris\API\Candidates\Candidate
     public function handleGET()
     {
         $SubProjTitle = $this->Timepoint->getData("SubprojectTitle");
+        $centerID     = $this->Timepoint->getData("CenterID");
+        $center       = $this->DB->pselectRow(
+            "SELECT Name FROM psc WHERE CenterID =:cid",
+            array('cid' => $centerID)
+        );
+        $centerName   = $center['Name'];
 
         $this->JSON = [
                        "Meta" => [
                                   "CandID"  => $this->CandID,
                                   'Visit'   => $this->VisitLabel,
+                                  'Site'    => $centerName,
                                   'Battery' => $SubProjTitle,
                                  ],
                       ];
@@ -169,8 +176,7 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-        // This version of the API does not handle timepoint creation
-        // when users are at multiple sites
+        // The API requires siteName as an input to timepoint creation
         $user      = \User::singleton();
         $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
@@ -178,26 +184,53 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->header("HTTP/1.1 401 Unauthorized");
             $this->error("You are not affiliated with any site");
             $this->safeExit(0);
-        } else if ($num_sites > 1) {
-            $this->header("HTTP/1.1 501 Not Implemented");
-            $this->error(
-                "This API version does not support timepoint creation " .
-                "by users with multiple site affiliations. This will be ".
-                "implemented in a future release."
-            );
-            $this->safeExit(0);
         } else {
-            $centerID          = $centerIDs[0];
-            $candidateCenterID = \Candidate::singleton($this->CandID)
-                ->getCenterID();
-            if ($centerID != $candidateCenterID) {
-                $this->header("HTTP/1.1 401 Unauthorized");
-                $this->error("You are not affiliated with the candidate's site");
+            if (!isset($this->ReceivedJSON['Meta']['Site'])) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error(
+                    "Users need to specify the name of the site at " .
+                    "which the visit took place."
+                );
                 $this->safeExit(0);
+            } else {
+                $siteName         = $this->ReceivedJSON['Meta']['Site'];
+                $allSiteNames     = $this->DB->pselectColWithIndexKey(
+                    "SELECT CenterID, Name FROM psc ",
+                    array(),
+                    "CenterID"
+                );
+                $allUserSiteNames = $this->DB->pselectColWithIndexKey(
+                    "SELECT CenterID, Name FROM psc ".
+                    "WHERE FIND_IN_SET(CenterID, :cid)",
+                    array('cid' => implode(',', $centerIDs)),
+                    "CenterID"
+                );
+                if (!in_array($siteName, $allSiteNames)) {
+                    $this->header("HTTP/1.1 400 Bad Request");
+                    $this->error(
+                        "Users need to specify a valid name for the site " .
+                        "at which the visit took place."
+                    );
+                    $this->safeExit(0);
+                }
+                //Get the CenterID from the provided SiteName
+                $centerID = array_search($siteName, $allUserSiteNames);
+                if ($centerID === false) {
+                    $this->header("HTTP/1.1 403 Forbidden");
+                    $this->error(
+                        "You are creating a visit at a site you " .
+                        "are not affiliated with."
+                    );
+                    $this->safeExit(0);
+                }
+                $this->createNew(
+                    $this->CandID,
+                    $subprojectID,
+                    $this->VisitLabel,
+                    $centerID
+                );
+                $this->header("HTTP/1.1 201 Created");
             }
-            // need to extract subprojectID
-            $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
-            $this->header("HTTP/1.1 201 Created");
         }
     }
 
@@ -211,10 +244,11 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param integer $subprojectID The subproject for the new visit
      * @param string  $VL           The visit label of the visit to
      *                              be created
+     * @param integer $CID          The ID of the center of the visit
      *
      * @return void
      */
-    function createNew($CandID, $subprojectID, $VL)
+    function createNew($CandID, $subprojectID, $VL, $CID)
     {
         try {
             \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL);
@@ -224,7 +258,7 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
         }
 
-        \TimePoint::createNew($CandID, $subprojectID, $VL);
+        \TimePoint::createNew($CandID, $subprojectID, $VL, $CID);
     }
 }
 

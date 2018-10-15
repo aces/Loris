@@ -31,12 +31,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      * Returns true if the user has permission to access
      * the conflict resolver module
      *
-     * @return true if user has permission
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return ($user->hasPermission('conflict_resolver'));
     }
 
@@ -236,7 +236,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
-            WHERE 1=1";
+            WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {

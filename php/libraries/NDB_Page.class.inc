@@ -447,7 +447,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Extra options to pass to QuickForm
      * @param array  $attr    Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm select element
+     * @return array representing select element
      */
     function createSelect(
         $field,
@@ -463,7 +463,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $labelString The label to attach to the element
      *
-     * @return HTML_QuickForm Label element
+     * @return array representing label element
      */
     function createLabel(
         $labelString
@@ -482,7 +482,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to the element
      * @param array  $attribs Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm Text element
+     * @return array representing text element
      */
     function createText(
         $field,
@@ -499,7 +499,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field The field name for the TextArea
      * @param string $label The label to attach to this TextArea
      *
-     * @return HTML_QuickForm textarea element
+     * @return array representing textarea element
      */
     function createTextArea($field, $label=null)
     {
@@ -520,7 +520,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $attr        List of HTML attributes to add to the date
      *                            group.
      *
-     * @return HTML_QuickForm date element
+     * @return array representing date element
      */
     function createDate(
         $field,
@@ -548,7 +548,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $options Options to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
-     * @return QuickForm_Element representing checkbox
+     * @return array representing checkbox
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
@@ -568,7 +568,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to LorisForm
      *
-     * @return QuickForm_Element representing radio button
+     * @return array representing radio button
      */
     function createRadio($field, $label, $options=null)
     {
@@ -588,7 +588,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to the form element
      * @param array  $attr  List of HTML attributes to add to the element
      *
-     * @return QuickForm_Element Form element
+     * @return array representing form element
      */
     function createPassword(
         $field,
@@ -619,8 +619,12 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess() !== true) {
-            throw new PermissionDenied();
+        if ($this->_hasAccess($user ?? new AnonymousUser()) !== true) {
+            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
+                ->process(
+                    $request,
+                    new \LORIS\Http\StringStream("Permission Denied")
+                )->withStatus(403);
         }
 
         // The NDB_Page object itself is sometimes required by middleware,
@@ -757,8 +761,15 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
                   $baseurl . '/js/polyfills.js',
-                  $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                  $baseurl . '/js/react/react-dom' . $min . '.js',
+                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
+                    // $baseurl . '/js/react/react-dom' . $min . '.js',
+                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react.development.js' :
+                      '/vendor/js/react/react.production.js',
+                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react-dom.development.js' :
+                      '/vendor/js/react/react-dom.production.js',
+
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
@@ -808,23 +819,15 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
-     * Returns false if user does not have access to page.
+     * Returns true if user has access to this page.
      *
-     * Usage: the hasAccess() function in a child class should contain
-     * something like:
+     * You do not need to overload hasAccess() if there are no access restrictions.
      *
-     *     // create user object
-     *     $user =& User::singleton();
+     * @param \User $user The user whose access is being checked
      *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @note   overloaded function
      * @return bool
-     * @access private
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         return true;
     }

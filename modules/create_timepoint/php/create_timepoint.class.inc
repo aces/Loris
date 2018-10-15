@@ -40,14 +40,12 @@ class Create_Timepoint extends \NDB_Form
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $candidate =& \Candidate::singleton($this->identifier);
 
         // check user permissions

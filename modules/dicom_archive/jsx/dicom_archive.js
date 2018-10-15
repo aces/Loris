@@ -1,6 +1,9 @@
 import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * DICOM Archive Page.
  *
@@ -14,14 +17,13 @@ import formatColumn from './columnFormatter';
  * @version 1.0.0
  *
  * */
-class DicomArchive extends React.Component {
-
+class DicomArchive extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
@@ -41,18 +43,18 @@ class DicomArchive extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -107,16 +109,16 @@ class DicomArchive extends React.Component {
 }
 
 DicomArchive.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  DataURL: React.PropTypes.string.isRequired
+  Module: PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
 };
 
 /**
  * Render dicom_page on page load
  */
 window.onload = function() {
-  var dataURL = loris.BaseURL + "/dicom_archive/?format=json";
-  var dicomArchive = (
+  let dataURL = loris.BaseURL + '/dicom_archive/?format=json';
+  let dicomArchive = (
     <DicomArchive
       Module="dicom_archive"
       DataURL={dataURL}
@@ -128,8 +130,8 @@ window.onload = function() {
   dicomArchiveDOM.id = 'page-dicom-archive';
 
   // Append wrapper div to page content
-  const rootDOM = document.getElementById("lorisworkspace");
+  const rootDOM = document.getElementById('lorisworkspace');
   rootDOM.appendChild(dicomArchiveDOM);
 
-  ReactDOM.render(dicomArchive, document.getElementById("page-dicom-archive"));
+  ReactDOM.render(dicomArchive, document.getElementById('page-dicom-archive'));
 };

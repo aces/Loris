@@ -4,8 +4,8 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
@@ -15,7 +15,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
    // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
@@ -28,29 +28,29 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Links') {
-    var cellTypes = cell.split(",");
-    var cellLinks = [];
-    for (var i = 0; i < cellTypes.length; i += 1) {
+    let cellTypes = cell.split(',');
+    let cellLinks = [];
+    for (let i = 0; i < cellTypes.length; i += 1) {
       cellLinks.push(<a key={i} href={loris.BaseURL +
-        "/imaging_browser/viewSession/?sessionID=" +
-        row.SessionID + "&outputType=" +
-        cellTypes[i] + "&backURL=/imaging_browser/"}>
+        '/imaging_browser/viewSession/?sessionID=' +
+        row.SessionID + '&outputType=' +
+        cellTypes[i] + '&backURL=/imaging_browser/'}>
           {cellTypes[i]}
         </a>);
-      cellLinks.push(" | ");
+      cellLinks.push(' | ');
     }
     cellLinks.push(<a key="selected" href={loris.BaseURL +
-        "/imaging_browser/viewSession/?sessionID=" +
+        '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
-        "&selectedOnly=1&backURL=/imaging_browser/"}>
+        '&selectedOnly=1&backURL=/imaging_browser/'}>
           selected
       </a>);
 
-    cellLinks.push(" | ");
+    cellLinks.push(' | ');
     cellLinks.push(<a key="all" href={loris.BaseURL +
-        "/imaging_browser/viewSession/?sessionID=" +
+        '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
-        "&backURL=/imaging_browser/"}>
+        '&backURL=/imaging_browser/'}>
           all types
         </a>);
     return (<td>{cellLinks}</td>);

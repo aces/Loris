@@ -90,7 +90,24 @@ class Utility
 
         return $age;
     }
+    /**
+     * Returns list of consents in the database
+     *
+     * @return array An associative array of consents, with their names and labels.
+     *               The keys of the arrays are the IDs of the consents
+     */
+    static function getConsentList()
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
+        $query = "SELECT ConsentID, Name, Label FROM consent";
+        $key   = "ConsentID";
+
+        $result = $DB->pselectWithIndexKey($query, array(), $key);
+
+        return $result;
+    }
     /**
      * Returns a list of sites in the database
      *
@@ -128,7 +145,7 @@ class Utility
      *                            table
      * @param boolean $DCC        Whether the DCC should be included or not
      *
-     * @return Associative array of the form CenterID => Site Name.
+     * @return array of the form CenterID => Site Name.
      *         Note that even though CenterID is numeric, the array
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
@@ -376,7 +393,7 @@ class Utility
      *                            the parameters into. If not specified,
      *                            a new array will be created
      *
-     * @return An array with the two parameters recursively merged
+     * @return array with the two parameters recursively merged
      */
     static function arrayMergeRecursiveOverwriting(
         $array1,
@@ -516,8 +533,7 @@ class Utility
     /**
      * Get a list of instruments installed in Loris.
      *
-     * @return Associative array of the form Test_name => Full Description
-     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     * @return array of the form Test_name => Full Description
      */
     static function getAllInstruments()
     {
@@ -540,8 +556,7 @@ class Utility
     /**
      * Get a list of DDE instruments installed in Loris.
      *
-     * @return Associative array of the form Test_name => Full Description
-     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     * @return array of the form Test_name => Full Description
      */
     static function getAllDDEInstruments()
     {
@@ -573,7 +588,7 @@ class Utility
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
-     * @return associative array of test_names in a Test_Name => "Full Name"
+     * @return array of test_names in a Test_Name => "Full Name"
      */
     static function getDirectInstruments()
     {
@@ -709,17 +724,15 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
-    static function getTestNameUsingFullName($fullname)
+    static function getTestNameUsingFullName($fullname): string
     {
-        $test_name = '';
-        $db        =& Database::singleton();
-        //print_r($instument);
+        $test_name  = '';
+        $db         =& Database::singleton();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
             array('fname' => $fullname)
         );
         if (is_array($instrument) && count($instrument)) {
-            //$full_name = $names[0]
             list(,$test_name) = each($instrument[0]);
         }
         return $test_name;
@@ -784,7 +797,7 @@ class Utility
      *
      * @param integer $projectID Limit visit labels to labels used by this project
      *
-     * @return An associated array of study visits in the format array('VL' => 'VL')
+     * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
      * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN

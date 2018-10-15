@@ -272,6 +272,28 @@ class TimePoint
             );
         }
 
+        $config =& \NDB_Config::singleton();
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        $isValid            = false;
+        foreach (\Utility::toArray($visitLabelSettings) as $visitLabelSetting) {
+            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
+                $items = \Utility::toArray(
+                    $visitLabelSetting['labelSet']['item']
+                );
+                foreach ($items as $item) {
+                    if ($item['@']['value'] == $visitLabel) {
+                        $isValid = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!$isValid) {
+            throw new \LorisException(
+                'This visit label is not valid for this subproject.'
+            );
+        }
+
         $candidate =& \Candidate::singleton($candid);
 
         $timePointArray = $candidate->getListOfVisitLabels();
@@ -547,7 +569,7 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return status of current stage or null
+     * @return ?string status of current stage or null
      */
     function getCurrentStatus()
     {
@@ -562,7 +584,7 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return date or false on failure.
+     * @return string of the form "YYYY-MM-DD"
      */
     function getCurrentDate()
     {

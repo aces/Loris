@@ -22,13 +22,13 @@
    [Automate Test on Travis_CI]
 10. Verify that for a user with 'Resolving conflicts' permission the number of data entry conflicts is reported in the
     My Task panel. If the user also has 'Across all sites access candidates profiles' then the site displayed is
-    'All', otherwise it is set to the site the user belongs to. The number of data entry conflicts is the number of
+    'All', otherwise it is set to 'All user sites'. The number of data entry conflicts is the number of
     entries in the Unresolved tab of the Conflict Resolver page. Click on this task and check that you go to the
     Conflict Resolver page.
     [Automate Test on Travis_CI]
 11. Check that for a user with 'Data Entry' permission, the number of incomplete forms (instruments with Data Entry
     set to 'In Progress') is displayed in the My Tasks panel. If the user also has 'Across all sites access candidates
-    profiles' then the site displayed is 'All', otherwise it is set to the site the user belongs to and only the
+    profiles' then the site displayed is 'All', otherwise it is set to 'All user sites' and only the
     candidates that belong to the user's site are considered for the computation of the number of incomplete forms.
     Clicking on this task should take you to the BVL statistics page, with the stats filtered according to the user's
     site (or without any filter if the user has 'Across all sites access candidates profiles' permission).
@@ -48,7 +48,7 @@
 15. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
     account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
     page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The
-    Site displayed will be the user's site. Check that you are taken to that page (with the Selection Filter
+    Site displayed will be 'All user sites'. Check that you are taken to that page (with the Selection Filter
     correctly set) when you click on the task.
     [Automate Test on Travis_CI]
 16. Verify that a user with 'Violated Scans: View all-sites Violated Scans' permission has a task with the number

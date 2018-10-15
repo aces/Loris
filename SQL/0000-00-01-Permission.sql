@@ -87,8 +87,6 @@ INSERT INTO `permissions` VALUES
     (23,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (24,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
     (25,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
-    (26,'reliability_edit_all', 'Access and Edit all Reliability profiles', '2'),
-    (27,'reliability_swap_candidates', 'Swap Reliability candidates across all sites', '2'),
     (28,'instrument_builder', 'Instrument Builder: Create and Edit instrument forms', '2'),
     (29,'data_dict_edit','Edit Data Dictionary','2'),
     (30,'data_team_helper','Data Team Helper','2'),

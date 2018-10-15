@@ -31,13 +31,12 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Checking user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('document_repository_view')
                || $user->hasPermission('document_repository_delete');
 
@@ -410,6 +409,22 @@ class Document_Repository extends \NDB_Menu_Filter
                 =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem  = $item;
             $DisplayItem['File_name'] = utf8_encode($item['File_name']);
+            /* Note: The function "rawurlencode" handles character(s)
+             * needed to be converted and the function "strtr" uses
+             * the array supplied to replace the character(s)
+             * to match the output from the javascript function
+             * encodeURIComponent.
+             */
+            $DisplayItem['Data_dir']  = strtr(
+                rawurlencode($DisplayItem['Data_dir']),
+                array(
+                 '%21' => '!',
+                 '%2A' => '*',
+                 '%27' => "'",
+                 '%28' => '(',
+                 '%29' => ')',
+                )
+            );
             $DisplayItem['File_size'] = $this->formatSize($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 

@@ -32,11 +32,12 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      * Determine who has access to this page. At the moment, tied to
      * access to the Mri_Violation module.
      *
-     * @return boolean true if access is permitted
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('violated_scans_view_allsites');
     }
 

@@ -31,13 +31,12 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      * violated_scans_modifications permission if they're allowed to modify
      * the mri_protocol table
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));

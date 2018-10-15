@@ -32,12 +32,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Determine whether the user should have access to this submodule
      *
-     * @return boolean true if the user has access
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return ($user->hasPermission('conflict_resolver'));
     }
 
@@ -84,7 +84,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
-            WHERE 1=1";
+            WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {

@@ -77,7 +77,7 @@ class NDB_Form extends NDB_Page
         }
 
         // create a form instance
-        $obj = new $class($module, $name, $page, $identifier, '', 'test_form');
+        $obj = new $class($module, $page, $identifier, '', 'test_form');
 
         $obj->registerDefaultFilter();
 

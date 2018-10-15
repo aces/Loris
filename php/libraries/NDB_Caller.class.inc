@@ -229,43 +229,44 @@ class NDB_Caller
             error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
-            // Reliability and instruments aren't "real" modules. They probably
-            // should be at some point in the future.
-            $proj_reliable = $base . "project/reliability/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            if ($this->existsAndRequire($proj_reliable)
-            ) {
-
-                $html = $this->loadReliability(
-                    $test_name,
-                    $subtest,
-                    $_REQUEST['identifier'],
-                    $_REQUEST['reliability_center_id']
-                );
-
-                $this->type = 'reliability';
-                return $html;
-            }
-
             // it is an instrument
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
-
             if ($this->existsAndRequire($phpfile)
                 || $test_name=='instrument_preview'
             ) {
-                $html = $this->loadInstrument(
-                    $test_name,
-                    $subtest,
-                    $CommentID,
-                    $nextpage
-                );
-
+                if ($this->DataEntry === 'Direct') {
+                    $html = $this->loadInstrumentDirect(
+                        $test_name,
+                        $subtest,
+                        $CommentID,
+                        $nextpage
+                    );
+                } else {
+                    $html = $this->loadInstrument(
+                        $test_name,
+                        $subtest,
+                        $CommentID,
+                        $nextpage
+                    );
+                }
                 $this->type = 'instrument';
                 return $html;
             } else if (file_exists($linstfile)) {
-                $html = $this->loadInstrument($test_name, $subtest, $CommentID);
+                if ($this->DataEntry === 'Direct') {
+                    $html = $this->loadInstrumentDirect(
+                        $test_name,
+                        $subtest,
+                        $CommentID
+                    );
+                } else {
+                    $html = $this->loadInstrument(
+                        $test_name,
+                        $subtest,
+                        $CommentID
+                    );
+                }
 
                 $this->type = 'instrument';
                 return $html;
@@ -369,36 +370,7 @@ class NDB_Caller
     }
 
     /**
-     * Renders html for a Reliability Form
-     *
-     * @param string $class                 The Form to load
-     * @param string $page                  The page of the Form to load
-     * @param string $identifier            The identifier of the Form
-     * @param string $reliability_center_id The id of the center at which the
-     *                                      reliability test is being performed.
-     *
-     * @return string HTML to render to browser
-     */
-    function loadReliability($class, $page, $identifier, $reliability_center_id)
-    {
-        // make an instance of the form's object
-        $form = NDB_Reliability::reliabilityfactory(
-            $class,
-            $page,
-            $identifier,
-            $reliability_center_id
-        );
-
-        $form->save();
-
-        $this->page = $form;
-        $html       = $form->display();
-
-        return $html;
-    }
-
-    /**
-    * Renders html for a quickform Instrument
+    * Renders html for an Instrument
     *
     * @param string $instrumentName      Name of the instrument to load
     * @param string $page                Page (subtest) of the instrument
@@ -478,6 +450,58 @@ class NDB_Caller
                 $instrument->freeze();
             }
         }
+
+        $this->page = $instrument;
+        $html       = $instrument->display();
+
+        return $html;
+    }
+
+    /**
+     * Renders html for a direct data entry Instrument
+     *
+     * @param string $instrumentName      Name of the instrument to load
+     * @param string $page                Page (subtest) of the instrument
+     * @param string $commentID           CommentID of the instrument to load
+     * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
+     *                                    successfully.
+     *
+     * @return string HTML of the page to render.
+     */
+    function loadInstrumentDirect(
+        $instrumentName,
+        $page,
+        $commentID,
+        $redirectToOnSuccess=null
+    ) {
+        if ($page === 'finalpage') {
+            $instrument = NDB_BVL_Instrument::factory(
+                $instrumentName,
+                $commentID,
+                $page
+            );
+
+            $this->instrument = $instrument;
+            header("Location: $redirectToOnSuccess");
+            return "";
+        }
+
+        // make an instance of the instrument's object
+        $instrument = NDB_BVL_Instrument::factory(
+            $instrumentName,
+            $commentID,
+            $page
+        );
+
+        $this->instrument = $instrument;
+        $success          = $instrument->save();
+        if ($redirectToOnSuccess !== null && $success !== false) {
+            header("Location: $redirectToOnSuccess");
+            return "";
+        }
+        // create an instrument status object
+        $status  = new NDB_BVL_InstrumentStatus;
+        $success = $status->select($commentID);
 
         $this->page = $instrument;
         $html       = $instrument->display();

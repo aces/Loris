@@ -133,14 +133,18 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start();
+        session_start(
+            ['cookie_httponly' => true]
+        );
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             header("HTTP/1.1 303 See Other");
             header("Location: /");
-            session_start();
+            session_start(
+                ['cookie_httponly' => true]
+            );
         }
 
         /**

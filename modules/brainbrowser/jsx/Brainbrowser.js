@@ -9,15 +9,18 @@
  * @version 1.0.0
  *
  * */
-var BrainBrowser = React.createClass({
 
-  getInitialState: function() {
-    return {
-      defaultPanelSize: 300
+import React, {Component} from 'react';
+
+class BrainBrowser extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      defaultPanelSize: 300,
     };
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     // Retrieve module preferences
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
 
@@ -33,11 +36,11 @@ var BrainBrowser = React.createClass({
     const panelSize = modulePrefs[loris.TestName].panelSize;
     this.setState({panelSize});
 
-    // Make prefs accesible within component
+    // Make prefs accessible within component
     this.modulePrefs = modulePrefs;
-  },
+  }
 
-  handleChange: function(e) {
+  handleChange(e) {
     const panelSize = e.target.value || this.state.defaultPanelSize;
 
     // Save panelSize in localStorage
@@ -45,10 +48,10 @@ var BrainBrowser = React.createClass({
     localStorage.setItem('modulePrefs', JSON.stringify(this.modulePrefs));
 
     this.setState({panelSize});
-  },
+  }
 
-  render: function() {
-    var options = {
+  render() {
+    let options = {
       100: '100 Pixels',
       200: '200 Pixels',
       256: '256 Pixels',
@@ -59,20 +62,20 @@ var BrainBrowser = React.createClass({
       700: '700 Pixels',
       800: '800 Pixels',
       900: '900 Pixels',
-      1000: '1000 Pixels'
+      1000: '1000 Pixels',
     };
 
     return (
       <div>
-        <div id="brainbrowser-wrapper" className="brainbrowser-wrapper">
-          <div id="global-controls" className="global-controls">
-            <button id="sync-volumes" className="control">Sync Volumes</button>
-            <button id="reset-view" className="control">Reset View</button>
-            <select id="panel-size"
-                    className="control"
+        <div id='brainbrowser-wrapper' className='brainbrowser-wrapper'>
+          <div id='global-controls' className='global-controls'>
+            <button id='sync-volumes' className='control'>Sync Volumes</button>
+            <button id='reset-view' className='control'>Reset View</button>
+            <select id='panel-size'
+                    className='control'
                     value={this.state.panelSize}
                     onChange={this.handleChange}>
-              <option value="-1">Auto</option>
+              <option value='-1'>Auto</option>
               {Object.keys(options).map(function(option) {
                 return (
                   <option value={option} key={option}>{options[option]}</option>
@@ -81,15 +84,14 @@ var BrainBrowser = React.createClass({
             </select>
           </div>
         </div>
-        <div id="brainbrowser" className="brainbrowser"></div>
-        <div id="loading" className="loading-message">Loading...</div>
+        <div id='brainbrowser' className='brainbrowser'/>
+        <div id='loading' className='loading-message'>Loading...</div>
       </div>
     );
   }
+}
 
-});
-
-var RBrainBrowser = React.createFactory(BrainBrowser);
+let RBrainBrowser = React.createFactory(BrainBrowser);
 
 window.BrainBrowser = BrainBrowser;
 window.RBrainBrowser = RBrainBrowser;

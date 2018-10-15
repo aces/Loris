@@ -1,29 +1,29 @@
 @font-face {
-  font-family: 'PT Sans';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
-  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
-  local('PT Sans'),
-  local('PT-Sans-regular'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
+    font-family: 'PT Sans';
+    font-weight: 400;
+    font-style: normal;
+    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
+    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
+    local('PT Sans'),
+    local('PT-Sans-regular'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
 }
 
 @font-face {
-  font-family: 'PT Sans';
-  font-weight: 700;
-  font-style: normal;
-  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
-  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
-  local('PT Sans Bold'),
-  local('PT-Sans-700'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
+    font-family: 'PT Sans';
+    font-weight: 700;
+    font-style: normal;
+    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
+    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
+    local('PT Sans Bold'),
+    local('PT-Sans-700'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
 }
 
 /* Stylesheet for login, reset password and request account pages */
@@ -31,150 +31,160 @@ html, body {
   margin:0;
   padding:0;
   height: 100vh;
-  font-family: 'PT Sans', sans-serif;
+  font-family: sans-serif;
 }
 
 h1, h2, h3, h4 {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .btn {
-  -webkit-transition: background-color 0.2s ease-in;
-  transition: background-color 0.2s ease-in;
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
 }
 
 .header {
-  height: 100px;
-  background-color: #064785;
-  padding: 5px 0;
+    height: 100px;
+    background-color: #064785;
+    padding: 5px 0;
 }
 
 .flex-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .header .loris-logo {
-  margin-right: auto;
+    margin-right: auto;
 }
 
 .header .loris-logo img {
-  height: 80px;
+    height: 80px;
 }
 
 .header .github-logo {
-  margin-left: auto;.
+    margin-left: auto;
+.
 }
 
 .header .github-logo img {
-  height: 40px;
-  padding-right: 10px;
-  opacity: 0.8;
+    height: 40px;
+    padding-right: 10px;
+    opacity: 0.8;
 }
 
 .header .github-logo img:hover {
-  opacity: 1;
-  -webkit-transition: opacity 0.2s ease-in;
-  transition: opacity 0.2s ease-in;
+    opacity: 1;
+    -webkit-transition: opacity 0.2s ease-in;
+    transition: opacity 0.2s ease-in;
 }
 
 .header .nav-link {
-  color: #fff;
-  font-size: 22px;
-  line-height: 130px;
+    color: #fff;
+    font-size: 22px;
+    line-height: 130px;
 }
 
 .header .study-title {
-  width: 500px;
-  padding: 0 20px;
-  color: #eee;
-  font-size: 25px;
-  line-height: 1.15;
-  font-weight: 600;
-  font-variant: small-caps;
-  text-align: center;
+    width: 500px;
+    padding: 0 20px;
+    color: #eee;
+    font-size: 25px;
+    line-height: 1.15;
+    font-weight: 600;
+    font-variant: small-caps;
+    text-align: center;
 }
 
 .main-content {
-  background-color: #f8f8f8;
-  padding: 30px 0;
-  height: auto;
-  min-height: calc(100vh - 200px);
+    background-color: #f8f8f8;
+    padding: 30px 0;
+    height: auto;
+    min-height: calc(100vh - 200px);
 }
 
 .main-content .study-panel,
 .main-content .login-panel {
-  min-height: 500px;
+    min-height: 500px;
 }
 
 .main-content .login-panel form {
-  max-width: 300px;
-  margin: 0 auto;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .main-content .login-panel .help-links {
-  text-align: center;
+    text-align: center;
 }
 
 .main-content .login-panel .help-text {
-  font-size: 12px;
-  padding: 10px 0;
-  text-align: center;
-  color: #555;
+    font-size: 12px;
+    padding: 10px 0;
+    text-align: center;
+    color: #555;
 }
 
 .main-content .study-logo {
-  max-width: 200px;
-  margin: 0 auto 10px auto;
-  padding: 15px;
+    max-width: 200px;
+    margin: 0 auto 10px auto;
+    padding: 15px;
 }
 
 .main-content .study-logo img {
-  width: 100%;
+    width: 100%;
 }
 
 .footer {
-  font-size: 12px;
-  text-align: center;
-  background-color: #064785;
-  color: #f8f8f8;
-  height: 60px;
-  padding: 15px;
+    font-size: 12px;
+    text-align: center;
+    background-color: #064785;
+    color: #f8f8f8;
+    height: 60px;
+    padding: 15px;
 }
 
 .footer a {
-  color: #f8f8f8;
-  font-weight: 700;
+    color: #f8f8f8;
+    font-weight: 700;
 }
 
-
 .panel-center {
-  max-width: 450px;
-  margin: 0 auto;
+    max-width: 450px;
+    margin: 0 auto;
 }
 
 .panel-center form {
-  padding: 20px 25px;
+    padding: 20px 25px;
 }
 
 .success-message {
-  text-align: center;
-  padding: 0 20px 40px 20px;
+    text-align: center;
+    padding: 0 20px 40px 20px;
 }
 
 /* Tablets and bigger */
 @media (min-width: 768px) {
-  .header { height: 140px; }
-  .header .loris-logo img { height: 130px; }
-  .header .github-logo { padding-right: 20px; }
+    .header {
+        height: 140px;
+    }
 
-  .main-content {
-    display: flex;
-    align-items: center;
-  }
+    .header .loris-logo img {
+        height: 130px;
+    }
+
+    .header .github-logo {
+        padding-right: 20px;
+    }
+
+    .main-content {
+        display: flex;
+        align-items: center;
+    }
 }
 
 /* Small desktops and bigger */
 @media (min-width: 991px) {
-  .header .loris-logo { margin-right: 40px; }
+    .header .loris-logo {
+        margin-right: 40px;
+    }
 }

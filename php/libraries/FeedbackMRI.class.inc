@@ -472,12 +472,11 @@ class FeedbackMRI
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            $where .= "FileID='$this->fileID'";
+            return "FileID='$this->fileID'";
         } else {
             // per-visit
-            $where .= "SessionID='$this->sessionID'";
+            return "SessionID='$this->sessionID'";
         }
-        return $where;
     }
 
     /**

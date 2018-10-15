@@ -4,8 +4,8 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
@@ -15,14 +15,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'Archive Location') {
-    var downloadURL = '/mri/jiv/get_file.php?file=' + cell;
-    var toRet =
+    let downloadURL = '/mri/jiv/get_file.php?file=' + cell;
+    let toRet =
       <td>
         <a href={downloadURL}>
           <span className="glyphicon glyphicon-cloud-download"/>
@@ -34,8 +34,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Metadata') {
-    var metadataURL = loris.BaseURL +
-      "/dicom_archive/viewDetails/?tarchiveID=" + row.TarchiveID;
+    let metadataURL = loris.BaseURL +
+      '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
     return <td><a href={metadataURL}>{cell}</a></td>;
   }
 
@@ -43,12 +43,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     if (row.SessionID === null || row.SessionID === '') {
       return <td>&nbsp;</td>;
     }
-    var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" +
+    let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
       row.SessionID;
     return <td><a href={mrlURL}>{cell}</a></td>;
   }
 
-  if (cell === "INVALID - HIDDEN") {
+  if (cell === 'INVALID - HIDDEN') {
     return <td className="text-danger">{cell}</td>;
   }
 

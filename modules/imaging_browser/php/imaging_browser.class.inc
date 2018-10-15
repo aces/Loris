@@ -31,12 +31,12 @@ class Imaging_Browser extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user hass access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
         return ($user->hasPermission('imaging_browser_view_allsites')
                || ($user->hasStudySite()
                    && $user->hasPermission('imaging_browser_view_site')
@@ -84,6 +84,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->acqpid = "AND AcquisitionProtocolID IN (".
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
+            $acqpif       = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
@@ -152,7 +153,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.PendingStaging=0 AND 
             f.FileType='mnc'";
 
         $this->query .= $left_joins;

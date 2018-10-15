@@ -149,7 +149,7 @@ class Images extends \Loris\API\APIBase
                 $insert_time = date('c', $item['InsertTime']);
                 return array(
                         'Candidate'  => $candid,
-                        'PCSID'      => $pscid,
+                        'PSCID'      => $pscid,
                         'Visit'      => $session,
                         'Visit_date' => $visit_date,
                         'Site'       => $site_name,

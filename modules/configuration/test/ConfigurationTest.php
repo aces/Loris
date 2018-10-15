@@ -65,10 +65,13 @@ class ConfigurationTest extends LorisIntegrationTest
     public function testConfigurationPageLoads()
     {
         $this->safeGet($this->url . "/configuration/");
-
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Configuration", $bodyText);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertRegexp(
+            "/Please enter the various configuration variables/",
+            $bodyText
+        );
     }
     /**
      * Tests that configuration loads with the permission

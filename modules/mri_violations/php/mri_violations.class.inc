@@ -27,15 +27,16 @@ namespace LORIS\mri_violations;
 class Mri_Violations extends \NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
+
     /**
      * Check if user should be allowed to see this page.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -439,6 +440,22 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             array(
              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
             )
+        );
+    }
+
+    /**
+     * Include additional CSS files
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/mri_violations/css/mri_violations.css")
         );
     }
 }

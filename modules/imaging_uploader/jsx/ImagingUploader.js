@@ -1,23 +1,25 @@
+import React, {Component} from 'react';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
+import Loader from 'jsx/Loader';
 
-class ImagingUploader extends React.Component {
-
+class ImagingUploader extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -31,17 +33,17 @@ class ImagingUploader extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -49,46 +51,50 @@ class ImagingUploader extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.imagingUploaderFilter.clearFilter();
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "upload", label: "Upload"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
     ];
 
+    const filterRef = function(f) {
+      this.imagingUploaderFilter = f;
+    }.bind(this);
+
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <div className="row">
-            <div className="col-md-5">
+          <div className='row'>
+            <div className='col-md-5'>
               <FilterForm
-                Module="imaging_uploader"
-                name="imaging_filter"
-                id="imaging_filter"
+                Module='imaging_uploader'
+                name='imaging_filter'
+                id='imaging_filter'
+                ref={filterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
-                <ButtonElement type="reset" label="Clear Filters" />
+                <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
-            <div className="col-md-7">
+            <div className='col-md-7'>
               <LogPanel />
             </div>
           </div>
-          <div id="mri_upload_table">
+          <div id='mri_upload_table'>
             <StaticDataTable
               Data={this.state.Data.Data}
               Headers={this.state.Data.Headers}

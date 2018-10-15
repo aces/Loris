@@ -12,20 +12,22 @@ import FilterForm from 'FilterForm';
   * @version 1.0.0
   *
   * */
-class DataIntegrityFlag extends React.Component {
+import React, {Component} from 'react';
 
+class DataIntegrityFlag extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      formData: {}
+      formData: {},
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -33,16 +35,16 @@ class DataIntegrityFlag extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.getJSON(this.props.DataURL, data => {
+    $.getJSON(this.props.DataURL, (data) => {
       loris.flagStatusList = data.flagStatusList;
       this.setState({
         Data: data,
-        isLoaded: true
+        isLoaded: true,
       });
     }).error(function(error) {
       console.error(error);
@@ -53,58 +55,68 @@ class DataIntegrityFlag extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.filter.clearFilter();
+  }
+
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "setflag", label: "Update"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'setflag', label: 'Update'},
     ];
 
+    const filterRef = function(f) {
+      this.filter = f;
+    }.bind(this);
+
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module={this.props.Module}
-            name="data_integrity_filter"
-            id="data_integrity_filter"
+            name='data_integrity_filter'
+            id='data_integrity_filter'
+            ref={filterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
           >
             <SelectElement
-              name="visitLabel"
-              label="Visit Label"
+              name='visitLabel'
+              label='Visit Label'
               options={this.state.Data.visits}
             />
             <SelectElement
-              name="instrument"
-              label="Instrument"
+              name='instrument'
+              label='Instrument'
               options={this.state.Data.instruments}
             />
             <SelectElement
-              name="userID"
-              label="User"
+              name='userID'
+              label='User'
               options={this.state.Data.users}
             />
             <SelectElement
-              name="flagStatus"
-              label="Flag Status"
+              name='flagStatus'
+              label='Flag Status'
               options={this.state.Data.flagStatusList}
             />
             <ButtonElement
-              label="Clear Filters"
-              type="reset"
+              label='Clear Filters'
+              type='reset'
+              onUserInput={this.resetFilters}
             />
           </FilterForm>
           <StaticDataTable

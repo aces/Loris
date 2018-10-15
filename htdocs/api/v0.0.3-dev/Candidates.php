@@ -115,47 +115,62 @@ class Candidates extends APIBase
             $this->error("There is no Candidate object in the POST data");
             $this->safeExit(0);
         }
-
-        // This version of the API does not handle candidate creation
-        // when users are at multiple sites
-        $user      = \User::singleton();
-        $centerIDs = $user->getCenterIDs();
-        $num_sites = count($centerIDs);
-
+        // The API requires siteName as an input to candidate creation
+        $user         = \User::singleton();
+        $centerIDs    = $user->getCenterIDs();
+        $allSiteNames = array();
+        $allUserSiteNames = array();
+        $num_sites        = count($centerIDs);
         if ($num_sites == 0) {
             $this->header("HTTP/1.1 401 Unauthorized");
             $this->error("You are not affiliated with any site");
             $this->safeExit(0);
-        }
-
-        if ($num_sites > 1) {
-            $this->header("HTTP/1.1 501 Not Implemented");
-            $this->error(
-                "This API version does not support candidate creation " .
-                "by users with multiple site affiliations. This will be ".
-                "implemented in a future release."
+        } else {
+            $allSiteNames     = $this->DB->pselectColWithIndexKey(
+                "SELECT CenterID, Name FROM psc ",
+                array(),
+                "CenterID"
             );
-            $this->safeExit(0);
-        }
-
-        $centerID = $centerIDs[0];
-        $this->verifyField($data, 'Gender', ['Male', 'Female']);
-        $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-
-        //Candidate::createNew
-        try {
-            $candid = $this->createNew(
-                $centerID,
-                $data['Candidate']['DoB'],
-                $data['Candidate']['EDC'],
-                $data['Candidate']['Gender'],
-                $data['Candidate']['PSCID']
+            $allUserSiteNames = $this->DB->pselectColWithIndexKey(
+                "SELECT CenterID, Name FROM psc WHERE FIND_IN_SET(CenterID, :cid)",
+                array('cid' => implode(',', $centerIDs)),
+                "CenterID"
             );
 
-        } catch(\LorisException $e) {
-            $this->header("HTTP/1.1 500 Internal Server Error");
-            $this->error("Candidate can't be created");
-            $this->safeExit(0);
+            $siteName = $data['Candidate']['Site'];
+            // This will check that the SiteName provided is a valid one
+            $this->verifyField($data, 'Site', $allSiteNames);
+            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+            // Get the CenterID from the provided SiteName, and check if the
+            // user has permission to create a candidate at this site
+            $centerID = array_search($siteName, $allUserSiteNames);
+
+            if ($centerID === false) {
+                $this->header("HTTP/1.1 403 Forbidden");
+                $this->error("You are not affiliated with the candidate's site");
+                $this->safeExit(0);
+            }
+
+            //Candidate::createNew
+            try {
+                $candid = $this->createNew(
+                    $centerID,
+                    $data['Candidate']['DoB'],
+                    $data['Candidate']['EDC'],
+                    $data['Candidate']['Gender'],
+                    $data['Candidate']['PSCID']
+                );
+                $this->header("HTTP/1.1 201 Created");
+                $this->JSON = [
+                               'Meta' => ["CandID" => $candid],
+                              ];
+            } catch(\LorisException $e) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->safeExit(0);
+            }
+
         }
 
         if (isset($data['Candidate']['Project'])) {

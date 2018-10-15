@@ -3,7 +3,6 @@
  *	to overwrite bootstraps css file
  */
 
-
 /*******************************
 Loris color palette v.0.1
 
@@ -15,160 +14,169 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 ****************************************/
 
-
 /*
  *	Styling for the navbar dropdowns
  */
-.navbar-nav>li>.dropdown-menu {
+.navbar-nav > li > .dropdown-menu {
     margin-top: 0;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     background-color: #064785;
 }
-.navbar-nav>li>.dropdown-menu>li>a {
+
+.navbar-nav > li > .dropdown-menu > li > a {
     color: white;
 }
 
-
 .navbar-default a {
-  -webkit-transition: background-color 0.2s ease-in;
-  transition: background-color 0.2s ease-in;
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
 }
 
 /* Show submenu when hovering on menu item */
 .dropdown:hover .dropdown-menu {
-  display: block;
+    display: block;
 }
 
 /* Loris logo */
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
 /* Menu items */
-.navbar-default .navbar-nav>li:hover,
-.navbar-default .navbar-nav>li>a:hover,
-.navbar-default .navbar-nav>li>a:focus,
-.navbar-default .navbar-nav>li>a:active{
-  background-color: #042d54;
+.navbar-default .navbar-nav > li:hover,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:active {
+    background-color: #042d54;
 }
 
 /* Submenu items*/
-.navbar-nav>li>.dropdown-menu>li>a:hover,
-.navbar-nav>li>.dropdown-menu>li>a:focus{
-  background-color: #042d54;
+.navbar-nav > li > .dropdown-menu > li > a:hover,
+.navbar-nav > li > .dropdown-menu > li > a:focus {
+    background-color: #042d54;
 }
-
-
 
 /*
  *	Making the table header font colour white
  */
-table th{
+table th {
     color: white;
 }
-.table>thead>tr>th>a {
+
+.table > thead > tr > th > a {
     color: #ffffff;
 }
 
 /*
  *	CSS for the tables
  */
-.static-col.pis{
+.static-col.pis {
     padding-bottom: 71px;
 }
+
 .pis {
     height: 80px;
 }
+
 .table-scroll {
-    overflow-x:auto;
-    padding-bottom:1px;
+    overflow-x: auto;
+    padding-bottom: 1px;
 }
+
 .table-scroll-static {
-    overflow-x:auto;
-    margin-left:7em;
-    padding-bottom:1px;
+    overflow-x: auto;
+    margin-left: 7em;
+    padding-bottom: 1px;
 }
+
 .scrollable {
     margin-right: 50px;
-    margin-left:50px;
+    margin-left: 50px;
 }
+
 .scrollableStat {
     margin-right: 50px;
-    margin-left:10em;
+    margin-left: 10em;
 }
+
 .static-col {
-    position:absolute;
-    width:7em;
-    left:0;
-    top:auto;
+    position: absolute;
+    width: 7em;
+    left: 0;
+    top: auto;
     word-wrap: break-word;
-    border-right: 0px none black;
-    border-top-width:3px; /*only relevant for first row*/
+    border-right: 0 none black;
+    border-top-width: 3px; /*only relevant for first row*/
 }
-.colm-static{
+
+.colm-static {
     left: 3em;
     background: white;
 }
-.frozenHeader{
-  position   : absolute;
-  overflow-x : auto;
+
+.frozenHeader {
+    position: absolute;
+    overflow-x: auto;
 }
+
 .headerColm {
-  background: #1c70b6;
-  padding: 8px;
-  border-bottom-width: 2px;
-  border: 1px solid #ddd;
-  text-align: left;
-  color: white;
-  font-weight: bold;
+    background: #1c70b6;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: white;
+    font-weight: bold;
 }
 
 /*
  *	CSS for the footer
  */
 #footer {
-	position: relative;
+    position: relative;
     margin-top: -100px; /* negative value of footer height */
     height: 100px;
-    clear:both;
+    clear: both;
 }
+
 html, body {
-	height: 100%;
+    height: 100%;
 }
+
 #wrap {
-	min-height: 100%;
+    min-height: 100%;
 }
 
 #page {
-	overflow:auto;
+    overflow: auto;
     padding-bottom: 100px; /* must be same height as the footer */
- }
+}
 
 /*
- *	CSS for intrument forms
+ *	CSS for instrument forms
  */
 .has-error .form-control {
-    border: 3px solid;
-    border-color: #b94a48;
+    border: 3px solid #b94a48;
 }
+
 .has-error, .form-error {
-color: #b94a48;
+    color: #b94a48;
 }
+
 .has-warning .form-control {
-	border: 3px solid;
-	border-color: #c09853;
+    border: 3px solid #c09853;
 }
+
 .warning {
-	color: #c09853;
+    color: #c09853;
 }
 
 /*
  *  CSS for Loris footer
  */
 .LorisFooter {
-    bottom:0;
+    bottom: 0;
     clear: both;
     width: 100%;
     font-size: 0.9em;
@@ -176,14 +184,17 @@ color: #b94a48;
     text-align: center;
     vertical-align: bottom;
 }
+
 ul#navlist {
     margin-left: 0;
     padding-left: 0;
 }
+
 #navlist li {
-	display: inline;
-	list-style-type: none;
+    display: inline;
+    list-style-type: none;
 }
+
 /*
  *  Styling for modals
  */
@@ -193,10 +204,12 @@ ul#navlist {
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
 }
+
 .close {
     color: white;
     opacity: 1;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -226,12 +239,21 @@ div.navbar div.container div.navbar-brand {
 }
 
 @-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
+
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
 
 /*
@@ -247,64 +269,68 @@ div.navbar div.container div.navbar-brand {
  */
 
 .btn-breadcrumb {
-  width: 100%;
-  background-color: #064785;
-  border-radius: 4px;
-  margin-bottom: 20px;
+    width: 100%;
+    background-color: #064785;
+    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
 /*
  * Breadcrumbs from http://bootsnipp.com/snippets/featured/triangle-breadcrumbs-arrows
  */
 .btn-breadcrumb .btn:not(:last-child):after {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid white;
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    left: 100%;
+    z-index: 3;
 }
+
 .btn-breadcrumb .btn:not(:last-child):before {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid rgb(173, 173, 173);
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  margin-left: 2px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid rgb(173, 173, 173);
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    margin-left: 2px;
+    left: 100%;
+    z-index: 3;
 }
 
 /** Ellipsis styling **/
 .ellipsis > .dropdown-toggle {
-  border: none;
-  padding: 0px;
-  background: inherit;
+    border: none;
+    padding: 0;
+    background: inherit;
 }
+
 .ellipsis:hover .dropdown-menu {
-display: block;
+    display: block;
 }
 
 /** The Spacing **/
 .btn-breadcrumb .btn {
-  padding:6px 12px 6px 24px;
+    padding: 6px 12px 6px 24px;
 }
+
 .btn-breadcrumb .btn:first-child {
-  padding:6px 6px 6px 10px;
+    padding: 6px 6px 6px 10px;
 }
+
 .btn-breadcrumb .btn:last-child {
-  padding:6px 18px 6px 24px;
+    padding: 6px 18px 6px 24px;
 }
 .btn-inline {
     margin-right: 3px;
@@ -316,27 +342,30 @@ display: block;
 
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
-  border-left: 10px solid #064785;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #064785;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
+
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
-  border-left: 10px solid #042d54;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #042d54;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
+
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
-  border-left: 10px solid #042d54;
+    border-left: 10px solid #042d54;
 }
+
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
-  border-left: 10px solid #042d54;
+    border-left: 10px solid #042d54;
 }
 
 a.btn.btn-primary {
-  color: #fff;
-  border-color: transparent;
-  -webkit-transition: background-color 0.2s ease-in; /* Safari */
-  transition: background-color 0.2s ease-in;
+    color: #fff;
+    border-color: transparent;
+    -webkit-transition: background-color 0.2s ease-in; /* Safari */
+    transition: background-color 0.2s ease-in;
 }
 
 /* The responsive part */
@@ -353,16 +382,18 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 60px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
 }
 
 /* For tablets */
-@media (min-width: 768px) and (max-width:991px) {
+@media (min-width: 768px) and (max-width: 991px) {
     .btn-breadcrumb > * div {
         max-width: 100px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -373,6 +404,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 170px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -383,6 +415,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div:not(:last-child) {
         max-width: 170px;
     }
+
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
@@ -392,28 +425,33 @@ a.btn.btn-primary {
  *  CSS for static table
  *  Styling for the staticTable component
  */
-.panel>.table-header {
+.panel > .table-header {
     background-color: #DCDCDC;
 }
 
 .downloadCSV {
-    margin: 20px 0px;
+    margin: 20px 0;
 }
+
 .perPage {
     width: 75px;
     color: black;
 }
+
 .table-footer {
     background-color: #DCDCDC;
 }
+
 #dynamictable {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 .rowsPerPage {
     color: black;
 }
+
 .pagination-table {
-  margin: 0px;
+    margin: 0;
 }
 
 .left.carousel-control {
@@ -428,28 +466,46 @@ a.btn.btn-primary {
  *  CSS for Select Dropdown
  */
 .dropdownSearch {
-  padding: 10px;
+    padding: 10px;
 }
-
 
 /* Style login navbar and logo */
 .navbar {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .navbar-brand {
-  height: auto;
+    height: auto;
 }
 
 .navbar-brand .study-logo {
-  width: 64px;
-  height: 57px;
-  margin-bottom: 10px;
+    width: 64px;
+    height: 57px;
+    margin-bottom: 10px;
 }
 
 /* Sweetalert customizations */
 
 /* Break long strings to fit them in the popup */
 .sweet-alert p {
-  word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Loader customizations */
+
+.loader {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
+    border: 8px solid #FFFFFF; /* White */
+    border-top: 8px solid #A6D3F5; /* Blue */
+    border-left: 8px solid #A6D3F5; /* Blue */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

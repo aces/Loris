@@ -25,18 +25,18 @@ namespace LORIS\help_editor;
  */
 class Help_Editor extends \NDB_Menu_Filter
 {
-     /**
-       *  Checking user permissions
-       *
-       * @return bool
-       */
-    function _hasAccess()
+    /**
+     *  Checking user permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
-
         return $user->hasPermission('context_help');
     }
+
      /**
        * Setup Variables function
        *
@@ -156,7 +156,6 @@ class Help_Editor extends \NDB_Menu_Filter
             }
             $x++;
         }
-        setCookie("LastUrl", "?test_name=help_editor");
         return true;
     }
 

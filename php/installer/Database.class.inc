@@ -5,7 +5,7 @@
  * connect using the connection info from there, so this class does the
  * minimal amount that's necessary to bootstrap the installation.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Installer
  * @package  Installer
@@ -13,6 +13,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\Installer;
 use \PDO;
 
@@ -63,15 +64,21 @@ class Database
         $stmt    = $this->PDO->query("SHOW GRANTS");
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $stmt->closeCursor();
+        if ($database == '*') {
+            $database = '\*';
+        }
+        if ($table == '*') {
+            $table = '\*';
+        }
         $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
             " `?([*]|${database})`?[.]`?([*]|${table})`?/";
 
-        // Test all privileges return from SHOW GRANTS agains the pattern
+        // Test all privileges return from SHOW GRANTS against the pattern
         return array_reduce(
             $results,
             function ($carry, $privilege) use ($pattern) {
                 // Return true if a previous iteration returned true or the
-                // current priviledges matches the pattern.
+                // current privileges matches the pattern.
                 return $carry || (preg_match($pattern, $privilege) === 1);
             },
             false
@@ -113,7 +120,9 @@ class Database
                 $password
             );
             return true;
-        } catch (Exception $ex) {
+        } catch (PDOException $ex) {
+            return false;
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -149,6 +158,7 @@ class Database
                 $username,
                 $password
             );
+
             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
             if (!$this->hasPrivilege("*", "*", "CREATE")) {
@@ -162,7 +172,6 @@ class Database
                 }
                 return false;
             }
-
             $this->PDO->exec("CREATE DATABASE $database");
             $this->PDO->exec("USE $database");
             return true;

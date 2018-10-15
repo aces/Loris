@@ -33,13 +33,12 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -102,7 +101,6 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
                                   'Caveat',
                                  );
 
-        return true;
     }
 
     /**
