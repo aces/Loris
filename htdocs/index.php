@@ -32,8 +32,8 @@ $serverrequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
 if (isset($_GET['lorispath'])) {
     // If mod_rewrite changed the URL to a "lorispath" get variable, change
     // back to a normal URL path in the request.
-    $uri = $serverrequest->getUri();
-    $newuri = $uri->withPath($_GET['lorispath']);
+    $uri           = $serverrequest->getUri();
+    $newuri        = $uri->withPath($_GET['lorispath']);
     $serverrequest = $serverrequest->withUri($newuri);
 }
 
