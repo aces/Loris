@@ -35,7 +35,7 @@ class Modal extends React.Component {
         type: "warning",
         showCancelButton: true,
         confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel',
+        cancelButtonText: 'Cancel'
       }).then(result => {
         if (result.value) {
           this.props.closeModal();
@@ -97,7 +97,7 @@ class Modal extends React.Component {
         );
       }
     };
-  
+
     let modal = (
       <div className="modal" style={display()} onClick={this.closeModal}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
