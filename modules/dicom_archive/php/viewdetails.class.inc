@@ -148,14 +148,36 @@ class ViewDetails extends \NDB_Form
         $config =& \NDB_Config::singleton();
         $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
+        // escape any forward slashes
+        $pNameRegex      = preg_replace(
+            '/\//',
+            '\/',
+            $dicomArchiveSettings['patientNameRegex']
+        );
+        $legoPhanRegex   = preg_replace(
+            '/\//',
+            '\/',
+            $dicomArchiveSettings['LegoPhantomRegex']
+        );
+        $livingPhanRegex = preg_replace(
+            '/\//',
+            '\/',
+            $dicomArchiveSettings['LivingPhantomRegex']
+        );
+        $pIDRegex        = preg_replace(
+            '/\//',
+            '\/',
+            $dicomArchiveSettings['patientIDRegex']
+        );
+
         if ((preg_match(
-            "/{$dicomArchiveSettings['patientNameRegex']}/",
+            "/$pNameRegex/",
             $this->tpl_data['archive']['PatientName']
         )) || (preg_match(
-            "/{$dicomArchiveSettings['LegoPhantomRegex']}/",
+            "/$legoPhanRegex/",
             $this->tpl_data['archive']['PatientName']
         )) || (preg_match(
-            "/{$dicomArchiveSettings['LivingPhantomRegex']}/",
+            "/$livingPhanRegex/",
             $this->tpl_data['archive']['PatientName']
         ))) {
             $this->tpl_data['archive']['patientNameValid'] = 1;
@@ -165,7 +187,7 @@ class ViewDetails extends \NDB_Form
         }
 
         if (preg_match(
-            "/{$dicomArchiveSettings['patientIDRegex']}/",
+            "/$pIDRegex/",
             $this->tpl_data['archive']['PatientID']
         )) {
             $this->tpl_data['archive']['patientIDValid'] = 1;
