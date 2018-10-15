@@ -27,7 +27,7 @@ if (!$user->hasPermission('config')) {
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-$factory = NDB_Factory::singleton();
+$factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
@@ -79,7 +79,7 @@ foreach ($_POST as $key => $value) {
  */
 function countDuplicate($key,$value)
 {
-    $factory   = NDB_Factory::singleton();
+    $factory   = \NDB_Factory::singleton();
     $DB        = $factory->database();
        $result = $DB->pselectOne(
            "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
@@ -100,7 +100,7 @@ function countDuplicate($key,$value)
  */
 function noDuplicateInDropdown($id,$value)
 {
-    $factory = NDB_Factory::singleton();
+    $factory = \NDB_Factory::singleton();
     $DB      = $factory->database();
        // ConfigID can be found in the Config table by searching new id.
        $ConfigID = $DB->pselectOne(
