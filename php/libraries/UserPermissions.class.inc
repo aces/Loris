@@ -115,8 +115,13 @@ class UserPermissions
      */
     public function hasPermission(string $code): bool
     {
-        return $this->_permissionTrueAndValid['superuser']
-            || $this->_permissionTrueAndValid($code);
+        if (get_class() === 'UserPermissions') {
+            return $this->_permissionTrueAndValid['superuser']
+                || $this->_permissionTrueAndValid($code);
+        } else if (get_class() === 'User') {
+            return parent::_permissionTrueAndValid['superuser']
+                || parent::_permissionTrueAndValid($code);
+        }
     }
 
     /**
