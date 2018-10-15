@@ -44,13 +44,13 @@ class Data_Release extends \NDB_Menu_Filter
                           'version',
                           'upload_date',
                          );
-        $this->query   = " FROM data_release dr JOIN"
-                               . " data_release_permissions drp"
-                               . " ON (dr.id=drp.data_release_id)";
+        $this->query   = " FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
-            $this->query .= " JOIN users u ON (u.ID=drp.userid)"
-            . " WHERE u.UserID="
+            $this->query .= " JOIN data_release_permissions drp 
+            ON (dr.id=drp.data_release_id) 
+            JOIN users u ON (u.ID=drp.userid) 
+            WHERE u.UserID="
             . $DB->quote($user->getUsername());
         }
 
