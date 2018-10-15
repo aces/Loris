@@ -371,14 +371,13 @@ function getPatchesFromVersion(
     }
 
 
-    // For every major version released between the version that is installed
-    // and the latest version, add the relevant patches if they begin with
-    // a number in that range. For example, if upgrading from 18 to 19, the
-    // array will contain all aptches beginning with "18", or "19".
+    // Add the relevant patches between $start and $end.
+    // For example, if upgrading from 18 to 19, the array will contain all 
+    // patches beginning with "18", or "19".
     // i.e.:
     //   [0] => /var/www/loris/SQL/Release_patches/18.0_To_19.0_upgrade.sql
     //   [1] => /var/www/loris/SQL/Release_patches/19.0_To_19.1_upgrade.sql
-    // Range will run once when $start = $end. We want this in the case where
+    // Range will run one time when $start = $end. We want this in the case where
     // there is no difference in major versions but there is a change in minor
     // versions. The below loops will, in this case, match the minor release
     // patches.
