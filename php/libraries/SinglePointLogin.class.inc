@@ -316,17 +316,10 @@ class SinglePointLogin
             $this->_lastError = "Incorrect username or password.";
             return false;
         }
-        // validate passsword
+        // Validate passsword
         $oldhash = $row['Password_hash'];
-        if (!password_verify($password, $oldhash)) {
-            // Display generic failure message, as above.
-            $this->_lastError = "Incorrect username or password.";
-            $this->insertFailedDetail(
-                "Bad password",
-                $setArray
-            );
-            return false;
-        } else {
+        if (password_verify($password, $oldhash)) {
+            // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 $user = \User::factory($username);
                 $user->updatePassword($password);
@@ -345,7 +338,7 @@ class SinglePointLogin
                 return false;
             }
 
-            // check if the account is active
+            // Check if the account is active.
             if (($row['active_from'] != null)
                 && ($currentDay < strtotime($row['active_from']))
             ) {
@@ -356,6 +349,7 @@ class SinglePointLogin
                 return false;
             }
 
+            // Check whether account needs to be approved by an admin
             if ($row['Pending_approval'] == 'Y') {
                 $this->_lastError = "Your account has not yet been activated."
                     . " Please contact your project administrator to activate"
@@ -377,7 +371,7 @@ class SinglePointLogin
                 return false;
             }
 
-            // save the new password if the last password expired
+            // Save the new password if the last password expired
             if ($row['Expired']) {
                 $success = $this->save();
 
@@ -393,6 +387,14 @@ class SinglePointLogin
 
             $DB->insert('user_login_history', $setArray);
             return true;
+        } else {
+            /* When the password is wrong, log this detail for rate-limiting 
+             * purposes.
+             */
+            $this->insertFailedDetail(
+                "Bad password",
+                $setArray
+            );
         }
 
         // Fail by default with a generic error message
