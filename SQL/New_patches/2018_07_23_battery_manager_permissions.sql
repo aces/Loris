@@ -1,7 +1,8 @@
 -- Add Battery Manager to LorisMenu
-INSERT INTO   LorisMenu (Parent, Label, Link, Visible, OrderNumber)
+INSERT INTO LorisMenu (Parent, Label, Link, Visible, OrderNumber)
        VALUES (
-           (SELECT ID FROM LorisMenu WHERE Label = 'Admin', 'Battery Manager'),
+           (SELECT ID FROM (SELECT * FROM LorisMenu) as lm WHERE Label = 'Admin'),
+           'Battery Manager',
            'battery_manager/',
            null,
            7
