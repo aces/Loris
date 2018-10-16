@@ -127,8 +127,10 @@ class EditCertification extends \NDB_Page
             switch ($status) {
             case 'inTraining':
               $status = 'in_training';
+              break;
             case 'notCertified':
               $status = 'not_certified';
+              break;
             }
 
             // Get the certificationID if it exists
