@@ -135,7 +135,7 @@ class EditCertification extends \NDB_Page
 
             // Get the certificationID if it exists
             $certID = $DB->pselectOne(
-                "SELECT certID 
+                "SELECT certID
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
                 array(
@@ -163,6 +163,16 @@ class EditCertification extends \NDB_Page
                 );
 
                 // Add a new entry to the certification history table
+                // Get the certificationID again, now that it exists
+                $certID = $DB->pselectOne(
+                    "SELECT certID
+                     FROM certification
+                     WHERE examinerID=:EID AND testID=:TID",
+                    array(
+                     'EID' => $examinerID,
+                     'TID' => $testID,
+                    )
+                );
                 $data = array(
                          'col'         => 'pass',
                          'new'         => $status,
