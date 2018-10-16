@@ -124,6 +124,13 @@ class EditCertification extends \NDB_Page
             $date     = $data['date'] ?? null;
             $status   = $data['status'] ?? null;
 
+            switch ($status) {
+            case 'inTraining':
+              $status = 'in_training';
+            case 'notCertified':
+              $status = 'not_certified';
+            }
+
             // Get the certificationID if it exists
             $certID = $DB->pselectOne(
                 "SELECT certID 

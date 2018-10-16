@@ -176,7 +176,12 @@ class FetchCertification extends \NDB_Page
                  'TID' => $key,
                 )
             );
-
+            switch ($cert[$key]['pass']) {
+            case 'in_training':
+              $cert[$key]['pass'] = 'inTraining';
+            case 'not_certified':
+              $cert[$key]['pass'] = 'notCertified';
+            }
             $cert[$key]['name'] = $row;
         }
 

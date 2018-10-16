@@ -24,8 +24,8 @@ class EditExaminer extends React.Component {
       formData: {},
       statusOptions: {
         null: "N/A",
-        not_certified: "Not Certified",
-        in_training: "In Training",
+        notCertified: "Not Certified",
+        inTraining: "In Training",
         certified: "Certified"
       }
     };
@@ -169,7 +169,7 @@ class EditExaminer extends React.Component {
         if (this.state.data.instruments[instrumentID].pass) {
           if (this.state.formData[instrumentID].status === "null") {
             hasError = true;
-            errorMessage ="You may not change a valid status to N/A";
+            errorMessage = "You may not change a valid status to N/A";
           }
         }
         // Create elements
