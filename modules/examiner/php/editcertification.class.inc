@@ -126,11 +126,11 @@ class EditCertification extends \NDB_Page
 
             switch ($status) {
             case 'inTraining':
-              $status = 'in_training';
-              break;
+                $status = 'in_training';
+                break;
             case 'notCertified':
-              $status = 'not_certified';
-              break;
+                $status = 'not_certified';
+                break;
             }
 
             // Get the certificationID if it exists
@@ -173,6 +173,7 @@ class EditCertification extends \NDB_Page
                      'TID' => $testID,
                     )
                 );
+
                 $data = array(
                          'col'         => 'pass',
                          'new'         => $status,
