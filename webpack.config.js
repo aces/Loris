@@ -54,7 +54,6 @@ const config = [{
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
     './modules/document_repository/js/docIndex.js': './modules/document_repository/jsx/docIndex.js',
     './modules/document_repository/js/editFormIndex.js': './modules/document_repository/jsx/editFormIndex.js',
-    './modules/document_repository/js/columnFormatter.js': './modules/document_repository/jsx/columnFormatter.js',
   },
   output: {
     path: __dirname + '/',
