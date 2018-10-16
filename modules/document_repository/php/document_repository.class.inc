@@ -177,8 +177,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                            'Date_uploaded',
                            'Edit',
                            'Delete',
-                           'category',
-                           'Data_dir',
+                           'Category',
+                           'Data Dir',
                           ];
         return true;
     }

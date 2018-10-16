@@ -157,6 +157,7 @@ function() {
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
+            hiddenHeaders={this.state.hiddenHeaders}
             Filter={this.state.filter}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
