@@ -40,4 +40,4 @@ report.
 11. Test file download and file deletion. Only users that are affiliated 
 with the proposal can delete. File download should only be allowed for
 users with proposal affiliation or view permission can download.
-12. Test that the title of a proposal is only editable if the status is still Pending 
+12. Test that the title of a proposal is only editable if the status is still Pending. 
