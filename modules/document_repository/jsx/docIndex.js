@@ -1,5 +1,4 @@
 import FilterForm from 'FilterForm';
-import formatColumn from './columnFormatter';
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
@@ -10,13 +9,14 @@ class DocIndex extends React.Component {
     this.state = {
       isLoaded: false,
       filter: {},
-      refresh: 1,
+      hiddenHeaders: ['Category', 'Data Dir'],
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -52,6 +52,77 @@ class DocIndex extends React.Component {
   resetFilters() {
     this.refs.documentFilter.clearFilter();
   }
+/**
+ * Modify behaviour of specified column cells in the Data Table component
+ * @param {string} column - column name
+ * @param {string} cell - cell content
+ * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
+ * @return {*} a formated table cell for a given column
+ */
+ formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column if set as hidden, don't display it
+  if (this.state.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+
+  // Create the mapping between rowHeaders and rowData in a row object.
+  let row = {};
+  rowHeaders.forEach(function(header, index) {
+    row[header] = rowData[index];
+  }, this);
+
+  // create array of classes to be added to td tag
+  let classes = [];
+    if (row['Hide File'] === '1') {
+      classes.push('bg-danger');
+    }
+  // convert array to string, with blank space separator
+  classes = classes.join(' ');
+  if (column === 'File Name') {
+    let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['Data Dir']);
+    return (
+      <td className= {classes}>
+        <a href={downloadURL} target="_blank" download={row['File Name']}>
+          {cell}
+        </a>
+      </td>
+    );
+  }
+  if (column === 'Edit') {
+    let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
+    return <td className={classes}><a href={editURL}>Edit</a></td>;
+  }
+  if (column === 'Delete') {
+    let id = row['Edit'];
+function click() {
+swal({
+  title: 'Are you sure?',
+  text: 'Your will not be able to recover this file!',
+  type: 'warning',
+  showCancelButton: true,
+  confirmButtonClass: 'btn-danger',
+  confirmButtonText: 'Yes, delete it!',
+  closeOnConfirm: false,
+},
+function() {
+  swal('Deleted!', 'Your file has been deleted.', 'success');
+    $.ajax({
+    url: loris.BaseURL + '/document_repository/ajax/documentDelete.php',
+    type: 'POST',
+    data: {id: id},
+    success: function() {
+    location.reload();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+    },
+  });
+});
+}
+    return <td className={classes}><a onClick={click}>Delete</a></td>;
+  }
+  return <td className={classes}>{cell}</td>;
+}
 
   render() {
     // Waiting for async data to load
@@ -87,7 +158,7 @@ class DocIndex extends React.Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
-            getFormattedCell={formatColumn}
+            getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
             refreshPage={this.fetchData}
           />
