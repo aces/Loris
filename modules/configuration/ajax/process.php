@@ -84,8 +84,8 @@ function countDuplicate($key,$value)
        $result = $DB->pselectOne(
            "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
-            ':ConfigID' => $key,
-            ':Value'    => $value,
+            'ConfigID' => $key,
+            'Value'    => $value,
            )
        );
        return $result;
@@ -105,14 +105,14 @@ function noDuplicateInDropdown($id,$value)
        // ConfigID can be found in the Config table by searching new id.
        $ConfigID = $DB->pselectOne(
            "SELECT ConfigID FROM Config WHERE ID =:ID",
-           array(':ID' => $id)
+           array('ID' => $id)
        );
        // IDBefore means that row ID contains the same configID and value pair.
        $IDBefore = $DB->pselectOne(
            "SELECT ID FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
-            ':ConfigID' => $ConfigID,
-            ':Value'    => $value,
+            'ConfigID' => $ConfigID,
+            'Value'    => $value,
            )
        );
        //If the new "id" equals "IDBefore" in Config table means
