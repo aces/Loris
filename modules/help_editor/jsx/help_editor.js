@@ -147,7 +147,6 @@ class HelpEditor extends React.Component {
         <StaticDataTable
           Data={this.state.data.Data}
           Headers={this.state.data.Headers}
-          hiddenHeaders={this.state.data.hiddenHeaders}
           Filter={this.state.filter}
           getFormattedCell={this.formatColumn}
         />
