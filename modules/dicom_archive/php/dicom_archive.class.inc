@@ -116,22 +116,22 @@ class Dicom_Archive extends \NDB_Menu_Filter
         );
         return json_encode(
             [
-             'Headers'       => [
-                                 'Patient ID',
-                                 'Patient Name',
-                                 'Gender',
-                                 'Date Of Birth',
-                                 'Acquisition',
-                                 'Archive Location',
-                                 'Metadata',
-                                 'MRI Browser',
-                                 'Seriesuid',
-                                 'Site',
-                                 'TarchiveID',
-                                 'SessionID',
-                                ],
-             'Data'          => $arr,
-             'form'          => $this->form->form,
+             'Headers' => [
+                           'Patient ID',
+                           'Patient Name',
+                           'Gender',
+                           'Date Of Birth',
+                           'Acquisition',
+                           'Archive Location',
+                           'Metadata',
+                           'MRI Browser',
+                           'Seriesuid',
+                           'Site',
+                           'TarchiveID',
+                           'SessionID',
+                          ],
+             'Data'    => $arr,
+             'form'    => $this->form->form,
             ]
         );
     }
