@@ -154,6 +154,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                          '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
                          'v.comments',
                          'v.Date_uploaded',
+                         'v.record_id as editID',
+                         'v.record_id as deleteID',
                          'v.File_category as category',
                          'v.Data_dir',
                         ];
@@ -173,10 +175,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                            'Site',
                            'comments',
                            'Date_uploaded',
-                           'category',
-                           'Data_dir',
                            'Edit',
                            'Delete',
+                           'category',
+                           'Data_dir',
                           ];
         return true;
     }
