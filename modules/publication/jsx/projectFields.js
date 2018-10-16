@@ -132,7 +132,11 @@ class ProjectFormFields extends React.Component {
           <span>
             <a href={downloadURL}>{f.URL}</a>
             &nbsp;&nbsp;
-            <span className="glyphicon glyphicon-remove clickable" onClick={() => this.deleteUpload(f.PublicationUploadID)} />
+            <span
+              className="glyphicon glyphicon-remove"
+              style={{cursor: 'pointer'}}
+              onClick={() => this.deleteUpload(f.PublicationUploadID)}
+            />
           </span>
         );
         let existFileFlag = 'existingUpload_';
