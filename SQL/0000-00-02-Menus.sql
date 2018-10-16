@@ -87,7 +87,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Help Editor', 'help_editor/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 3),
     ('Instrument Manager', 'instrument_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 4),
     ('Configuration', 'configuration/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5),
-    ('Server Processes Manager', 'server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
+    ('Server Processes Manager', 'server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6),
+    ('Battery Manager', 'battery_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 7);
 
 
 
@@ -226,4 +227,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
 
-
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='battery_manager_view' AND m.Label='Battery Manager';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='battery_manager_edit' AND m.Label='Battery Manager';
