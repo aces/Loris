@@ -388,7 +388,7 @@ class SinglePointLogin
             $DB->insert('user_login_history', $setArray);
             return true;
         }
-        /* When the password is wrong, log this detail for rate-limiting 
+        /* When the password is wrong, log this detail for rate-limiting
          * purposes.
          */
         $this->insertFailedDetail(
