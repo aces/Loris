@@ -25,7 +25,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
 # Prerequisites for Installation
 
  * Apache **2.4** or higher
- * MySQL 5.7
+ * MySQL >= 5.7 (or MariaDB >= 10.3) 
  * PHP <b>7.2</b> or higher
  * [Composer](https://getcomposer.org/)
 
