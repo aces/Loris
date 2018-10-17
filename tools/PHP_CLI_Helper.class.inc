@@ -16,7 +16,7 @@ function installed($tool) : bool
         return true;
     }
     // check installed pacakages with dpkg. Returns 0 if installed.
-    exec("dpkg -s $tool", $output, $status);
+    exec("dpkg -S $tool", $output, $status);
     if ($status === 0) {
         return true;
     }
