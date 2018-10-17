@@ -270,7 +270,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -292,7 +292,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -317,7 +317,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -341,7 +341,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -368,7 +368,7 @@ class Stats_Demographic extends \NDB_Form
                           $Param_Site) 
                                 as res
               GROUP BY rowid",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -420,7 +420,7 @@ class Stats_Demographic extends \NDB_Form
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 ",
-                $this->params
+                $this->params ?? array()
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",

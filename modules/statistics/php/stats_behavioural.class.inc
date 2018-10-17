@@ -188,7 +188,7 @@ class Stats_Behavioural extends \NDB_Form
                 $suproject_query
                 $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
