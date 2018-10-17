@@ -46,11 +46,12 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/PHP_CLI_Helper.class.inc';
+require_once __DIR__ . '/generic_includes.php';
 
 error_reporting(E_ALL);
 /* Do validation and CLI flag processing */
 $required_major_php = 7; //TODO: Update these values as time passes
-$required_minor_php = 3;
+$required_minor_php = 2;
 $required_major_apache = 2;
 $required_minor_apache = 4;
 // PHP version required for LORIS.
@@ -120,12 +121,7 @@ if (updateRequiredPackages($loris_requirements)) {
 // Create db connection and get LORIS version info.
 $config    = \NDB_Config::singleton();
 $db_config = $config->getSetting('database');
-$db        = \Database::singleton(
-    $db_config['database'],
-    $db_config['username'],
-    $db_config['password'],
-    $db_config['host']
-);
+$db        = \Database::singleton();
 
 $paths     = $config->getSetting('paths');
 $loris_root_dir = $paths['base'];
@@ -150,8 +146,7 @@ if (!in_array('--confirm', $argv, true)) {
         . "is $release_version. "
         . PHP_EOL
         . 'Please run this script with the --confirm flag '
-        . 'if you wish to update your environment and source code to be '
-        . "compatible with version $release_version."
+        . 'to update your source code to version ' . $release_version
         . PHP_EOL;
     die(usageString());
 }
