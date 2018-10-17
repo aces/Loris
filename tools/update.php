@@ -48,8 +48,9 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/PHP_CLI_Helper.class.inc';
 
 error_reporting(E_ALL);
+/* Do validation and CLI flag processing */
 $required_major_php = 7; //TODO: Update these values as time passes
-$required_minor_php = 2;
+$required_minor_php = 3;
 $required_major_apache = 2;
 $required_minor_apache = 4;
 // PHP version required for LORIS.
@@ -76,23 +77,6 @@ if (preg_match($pattern, $apache_info) === 0) {
     );
 }
 
-/* Create db connection and get version info. */
-$config    = \NDB_Config::singleton();
-$db_config = $config->getSetting('database');
-$db        = \Database::singleton(
-    $db_config['database'],
-    $db_config['username'],
-    $db_config['password'],
-    $db_config['host']
-);
-$paths     = $config->getSetting('paths');
-$loris_root_dir = $paths['base'];
-
-$preupdate_version = getVersionFromLORISRoot($loris_root_dir);
-$info            = json_decode(getLatestReleaseInfo());
-$release_version = $info->{'tag_name'};
-$release_version = substr($release_version, 1); // remove leading 'v'
-
 // Check that the backup directory argument is present and valid
 $backup_dir = $argv[1] ?? '';
 if (!is_dir($backup_dir)) {
@@ -105,7 +89,62 @@ $apply_patches = false;
 if (in_array('--apply-patches', $argv, true)) {
     $apply_patches = true;
 }
-// Require a confirm flag so this script is not accidentally run
+
+/* BEGIN UPDATE PROCESS */
+
+/* Below are all the apt packages required for LORIS to run.
+ *      @see: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+ */
+$loris_requirements = [
+                       "wget",
+                       "zip",
+                       "unzip",
+                       "php-json",
+                       "npm",
+                       "software-properties-common",
+                       "php-ast",
+                       "php$required_php",
+                       "php$required_php-mysql",
+                       "php$required_php-xml",
+                       "php$required_php-json",
+                       "php$required_php-mbstring",
+                       "php$required_php-gd",
+                       "libapache2-mod-php$required_php",
+                      ];
+// Update apt packages.
+echo '[**] Updating required packages...' . PHP_EOL;
+if (updateRequiredPackages($loris_requirements)) {
+    echo '[**] Required apt packages up-to-date.' . PHP_EOL;
+}
+
+// Create db connection and get LORIS version info.
+$config    = \NDB_Config::singleton();
+$db_config = $config->getSetting('database');
+$db        = \Database::singleton(
+    $db_config['database'],
+    $db_config['username'],
+    $db_config['password'],
+    $db_config['host']
+);
+
+$paths     = $config->getSetting('paths');
+$loris_root_dir = $paths['base'];
+// Update other dependencies via e.g. composer and npm
+echo '[**] Updating dependencies via package managers...' . PHP_EOL;
+chdir($loris_root_dir); // Composer will fail if not in LORIS root
+if (runPackageManagers()) {
+    echo '[**] Dependencies up-to-date.' . PHP_EOL;
+}
+
+// Update source code.
+
+
+$preupdate_version = getVersionFromLORISRoot($loris_root_dir);
+$info            = json_decode(getLatestReleaseInfo());
+$release_version = $info->{'tag_name'};
+$release_version = substr($release_version, 1); // remove leading 'v'
+
+// Require a confirm flag so nothing is overwritten by accident
 if (!in_array('--confirm', $argv, true)) {
     echo "Your LORIS version is $preupdate_version. The current LORIS version "
         . "is $release_version. "
@@ -126,30 +165,6 @@ echo 'You may wish to review code changes tagged with "Caveat For '
     . 'q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged'
     . PHP_EOL . PHP_EOL;
 sleep(3);
-
-/* BEGIN UPDATE PROCESS */
-
-/* Below are all the apt packages required for LORIS to run.
- *      @see: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
- */
-$loris_requirements = [
-                       "wget",
-                       "zip",
-                       "unzip",
-                       "php-json",
-                       "npm",
-                       "software-properties-common",
-                       "php-ast",
-                       "php$php_version",
-                       "php$php_version-mysql",
-                       "php$php_version-xml",
-                       "php$php_version-json",
-                       "php$php_version-mbstring",
-                       "php$php_version-gd",
-                       "libapache2-mod-php$php_version",
-                      ];
-
-// Update source code.
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
 echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
@@ -159,18 +174,6 @@ if (updateSourceCode($loris_root_dir, $backup_dir)) {
     echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
 }
 
-// Update apt packages.
-echo '[**] Updating required packages...' . PHP_EOL;
-if (updateRequiredPackages($loris_requirements)) {
-    echo '[**] Required apt packages up-to-date.' . PHP_EOL;
-}
-
-// Update other dependencies via e.g. composer and npm
-echo '[**] Updating dependencies via package managers...' . PHP_EOL;
-chdir($loris_root_dir); // Composer will fail if not in LORIS root
-if (runPackageManagers()) {
-    echo '[**] Dependencies up-to-date.' . PHP_EOL;
-}
 
 // Print required SQL patches and commands needed to apply them
 if ($apply_patches === true && $preupdate_version === '?') {
@@ -263,8 +266,8 @@ function updateRequiredPackages($requirements) : bool
     exec('sudo apt-get update');
     // die unless all required packages are installed and up-to-date
     if (!(installMissingRequirements($requirements))
-        && (installAptPackages($requirements, $upgrade_mode = true))
-    ) {
+        && (installAptPackages($requirements)))
+    {
         die(
             'Could not upgrade all required packages. Exiting.'
             . PHP_EOL
@@ -714,6 +717,7 @@ function getMissingRequirements($required) : array
     $missing = [];
     foreach ($required as $tool) {
         if (!installed($tool)) {
+            echo "MISSING: $tool" .PHP_EOL;
             $missing[] = $tool;
         }
     }
