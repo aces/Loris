@@ -623,8 +623,8 @@ var AddElement = React.createClass({
       }
 
       if (min === '' || max === '') {
-        temp = (this.state.error) ? this.state.error : {};	        let temp = (this.state.error) ? this.state.error : {};
-        temp.dateOption = "End year append befor start year";	        temp.dateOption = "Invalid start or end year";
+        let temp = (this.state.error) ? this.state.error : {};
+        temp.dateOption = "Invalid start or end year";
         this.setState({
           error: temp
         });
