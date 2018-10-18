@@ -17,7 +17,7 @@
     </div>
 </div>
 {/if}
-{if $feedback|count}
+{if isset($feedback)}
 <div class="alert alert-warning">
 {$feedback}
 </div>

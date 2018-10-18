@@ -94,9 +94,11 @@ class Stats_Demographic extends \NDB_Form
         // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
         $tpl_data  = array();
-        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
         $tpl_data['Subsection'] = $subsection;
-        $tpl_data['Visits']     = $visits;
+
+        $tpl_data['test_name'] = isset($_REQUEST['test_name']) ?
+            htmlspecialchars($_REQUEST['test_name']) : '';
+        $tpl_data['Visits']    = $visits;
         $smarty = new \Smarty_neurodb('statistics');
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
@@ -260,7 +262,11 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['registered']['total'] = 0;
         foreach ($result as $row) {
             $this->tpl_data['registered'][$row['rowid']] = $row['val'];
-            $this->tpl_data['registered']['total']      += $row['val'];
+            if (isset($this->tpl_data['registered']['total'])) {
+                $this->tpl_data['registered']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['registered']['total'] = $row['val'];
+            }
         }
 
         //PARTICIPANT STATUS ACTIVE
@@ -283,7 +289,11 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['ps_active']['total'] = 0;
         foreach ($result as $row) {
             $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
-            $this->tpl_data['ps_active']['total']      += $row['val'];
+            if (isset($this->tpl_data['ps_active']['total'])) {
+                $this->tpl_data['ps_active']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['ps_active']['total'] = $row['val'];
+            }
         }
 
         //PARTICIPANT STATUS INACTIVE
@@ -331,7 +341,11 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['gender_male']['total'] = 0;
         foreach ($result as $row) {
             $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_male']['total']      += $row['val'];
+            if (isset($this->tpl_data['gender_male']['total'])) {
+                $this->tpl_data['gender_male']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['gender_male']['total'] = $row['val'];
+            }
         }
 
         //FEMALE
@@ -356,7 +370,11 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['gender_female']['total'] = 0;
         foreach ($result as $row) {
             $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_female']['total']      += $row['val'];
+            if (isset($this->tpl_data['gender_female']['total'])) {
+                $this->tpl_data['gender_female']['total'] += $row['val'];
+            } else {
+                $this->tpl_data['gender_female']['total'] = $row['val'];
+            }
         }
 
         //AGE AVERAGE
