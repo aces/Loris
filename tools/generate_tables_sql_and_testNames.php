@@ -29,8 +29,10 @@ $execute_mysql_query = ($argv[2] ?? true) === true;
 $data          = file_get_contents($argv[1]);
 $instruments   = explode("{-@-}", trim($data));
 $error_message = "";
-// User supplied instrument(s).
-if (is_array($instruments)) {
+// Do validation
+if (!is_array($instruments)) {
+    $error_message = "Instrument file could not be processed.";
+} else {
     $pages = array();
     $sql_query_statement  = "";
     $sql_query_table_name = "";
@@ -38,85 +40,85 @@ if (is_array($instruments)) {
     // Setup Database object.
     $factory   = \NDB_Factory::singleton();
     $db        = $factory->database();
-    foreach ($instruments AS $instrument) {
+    foreach ($instruments as $instrument) {
         $items = explode("\n", trim($instrument));
-        foreach ($items AS $item) {
+        foreach ($items as $item) {
             $bits = explode("{@}", trim($item));
             if (preg_match("/Examiner[0-9]*/", $bits[1])) {
                 continue;
             }
             switch($bits[0]) {
                 // Generate the CREATE TABLE syntax
-                case "table":
-                    $sql_query_table_name = str_replace('`', '', $db->escape($bits[1]));
-                    $file_name = "../project/tables_sql/".$bits[1].".sql";
-                    $output    = "CREATE TABLE `$bits[1]` (\n";
-                    $output   .= "`CommentID` varchar(255) NOT NULL default '',\n"
-                        ."`UserID` varchar(255) default NULL,\n"
-                        ."`Examiner` varchar(255) default NULL,\n"
-                        ."`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON "
-                        ."UPDATE CURRENT_TIMESTAMP,\n"
-                        ."`Data_entry_completion_status` "
-                        ."enum('Incomplete','Complete') "
-                        ."NOT NULL default 'Incomplete',\n";
-                    $sql_query_statement = "CREATE TABLE `$sql_query_table_name` (\n";
-                    // Create first five query entries.
-                    $sql_query_columns[] = "`CommentID` "
-                        ."varchar(255) NOT NULL default '',\n";
-                    $sql_query_columns[] = "`UserID` varchar(255) default NULL,\n";
-                    $sql_query_columns[] = "`Examiner` varchar(255) default NULL,\n";
-                    $sql_query_columns[] = "`Testdate` "
-                        ."timestamp DEFAULT CURRENT_TIMESTAMP "
-                        ."ON UPDATE CURRENT_TIMESTAMP,\n";
-                    $sql_query_columns[] = "`Data_entry_completion_status` "
-                        ."enum('Incomplete','Complete') "
-                        ."NOT NULL default 'Incomplete',\n";
-                    break;
-                case "page":
-                    $pages[] = $bits[2];
-                    continue;
+            case "table":
+                $sql_query_table_name = str_replace('`', '', $db->escape($bits[1]));
+                $file_name = "../project/tables_sql/".$bits[1].".sql";
+                $output    = "CREATE TABLE `$bits[1]` (\n";
+                $output   .= "`CommentID` varchar(255) NOT NULL default '',\n"
+                    ."`UserID` varchar(255) default NULL,\n"
+                    ."`Examiner` varchar(255) default NULL,\n"
+                    ."`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON "
+                    ."UPDATE CURRENT_TIMESTAMP,\n"
+                    ."`Data_entry_completion_status` "
+                    ."enum('Incomplete','Complete') "
+                    ."NOT NULL default 'Incomplete',\n";
+                $sql_query_statement = "CREATE TABLE `$sql_query_table_name` (\n";
+                // Create first five query entries.
+                $sql_query_columns[] = "`CommentID` "
+                    ."varchar(255) NOT NULL default '',\n";
+                $sql_query_columns[] = "`UserID` varchar(255) default NULL,\n";
+                $sql_query_columns[] = "`Examiner` varchar(255) default NULL,\n";
+                $sql_query_columns[] = "`Testdate` "
+                    ."timestamp DEFAULT CURRENT_TIMESTAMP "
+                    ."ON UPDATE CURRENT_TIMESTAMP,\n";
+                $sql_query_columns[] = "`Data_entry_completion_status` "
+                    ."enum('Incomplete','Complete') "
+                    ."NOT NULL default 'Incomplete',\n";
+                break;
+            case "page":
+                $pages[] = $bits[2];
+                continue;
                 // Continue as no SQL needs to be generated.
-                case "title":
-                    $title = $bits[1];
-                case "header":
-                    continue;
-                    break;
+            case "title":
+                $title = $bits[1];
+            case "header":
+                continue;
+                break;
                 // Generate specific column definitions for types of HTML elements
-                default:
-                    if ($bits[1] == "") {
-                        continue;
+            default:
+                if ($bits[1] == "") {
+                    continue;
+                }
+                if ($bits[0] == "select") {
+                    $bits[0] = enumizeOptions(
+                        $bits[3],
+                        $sql_query_table_name,
+                        $bits[1]
+                    );
+                } else if ($bits[0] == "selectmultiple") {
+                    $bits[0] = "varchar(255)";
+                } else if ($bits[0] == "textarea") {
+                    $bits[0] = "text";
+                } else if ($bits[0] == "text") {
+                    $bits[0] = "varchar(255)";
+                } else if ($bits[0] == "checkbox") {
+                    $bits[0] = "varchar(255)";
+                } else if ($bits[0] == "static") {
+                    $bits[0] = "varchar(255)";
+                } else if ($bits[0]=="date") {
+                    if (empty($bits[3])
+                        || empty($bits[4])
+                    ) {
+                        $error_message = "Instrument(s) file has invalid "
+                            . "instrument data.";
                     }
-                    if ($bits[0] == "select") {
-                        $bits[0] = enumizeOptions(
-                            $bits[3],
-                            $sql_query_table_name,
-                            $bits[1]
-                        );
-                    } else if ($bits[0] == "selectmultiple") {
-                        $bits[0] = "varchar(255)";
-                    } else if ($bits[0] == "textarea") {
-                        $bits[0] = "text";
-                    } else if ($bits[0] == "text") {
-                        $bits[0] = "varchar(255)";
-                    } else if ($bits[0] == "checkbox") {
-                        $bits[0] = "varchar(255)";
-                    } else if ($bits[0] == "static") {
-                        $bits[0] = "varchar(255)";
-                    } else if ($bits[0]=="date") {
-                        if (empty($bits[3])
-                            || empty($bits[4])
-                        ) {
-                            $error_message = "Instrument(s) file has invalid "
-                                . "instrument data.";
-                        }
-                    } else {
-                        // Safety SQL injection prevention.
-                        $bits[0] = str_replace('`', '', $db->escape($bits[0]));
-                    }
-                    $bits[2]     = htmlspecialchars($bits[2]);
-                    $output     .= "`$bits[1]` $bits[0] default NULL,\n";
-                    $column_name = str_replace('`', '', $db->escape($bits[1]));
-                    $sql_query_columns[] = "`$column_name` $bits[0] default NULL,\n";
+                } else {
+                    // Safety SQL injection prevention.
+                    $bits[0] = str_replace('`', '', $db->escape($bits[0]));
+                }
+                $bits[2]     = htmlspecialchars($bits[2]);
+                $output     .= "`$bits[1]` $bits[0] default NULL,\n";
+                $column_name = str_replace('`', '', $db->escape($bits[1]));
+                $sql_query_columns[] = "`$column_name` $bits[0] default NULL,\n";
             }
         }
         $output .= "PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB"
@@ -193,14 +195,13 @@ if (is_array($instruments)) {
             }
         }
     }
-} else {
-    $error_message = "Instrument(s) file has invalid instrument data.";
 }
 if ($error_message) {
     echo $error_message;
 }
 /**
- * The enumizeOptions function
+ * Creates a partial MySQL enum statement based on options extracted from
+ * a LINST file (which is in turn based on an HTML select field).
  *
  * @param array  $options the enum values.
  * @param string $table   the table name used.
@@ -210,7 +211,7 @@ if ($error_message) {
  */
 function enumizeOptions($options, $table, $name)
 {
-    $enum    = [];
+    $enum    = array();
     $options = explode("{-}", $options);
     foreach ($options as $option) {
         $option = explode("=>", $option);
