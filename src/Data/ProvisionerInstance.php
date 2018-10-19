@@ -125,12 +125,7 @@ abstract class ProvisionerInstance implements Provisioner
             };
 
             if ($rows instanceof \Iterator) {
-                //$rows = new \CallbackFilterIterator($rows, $callback);
-                foreach ($rows as $instance) {
-                    if ($this->modifier->filter($user, $instance) === false) {
-                        $rows->offsetUnset($rows->key());
-                    }
-                }
+                $rows = new \CallbackFilterIterator($rows, $callback);
             } else {
                 // Convert non-iterator traversables to iterators.
                 $rows = new \CallbackFilterIterator(
