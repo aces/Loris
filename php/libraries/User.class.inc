@@ -532,12 +532,12 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenter($center_id)
+    public function hasCenter(int $center_id)
     {
         return in_array(
             $center_id,
             $this->getCenterIDs(),
-            true
+            false
         );
     }
     /**
