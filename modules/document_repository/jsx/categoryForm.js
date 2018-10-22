@@ -14,7 +14,7 @@ class DocCategoryForm extends React.Component {
     super(props);
 
     this.state = {
-      Data: {},
+      data: {},
       formData: {},
       uploadResult: null,
       errorMessage: null,
@@ -27,25 +27,28 @@ class DocCategoryForm extends React.Component {
     this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.fatchData = this.fetchData.bind(this);
   }
-
-  componentDidMount() {
+ fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
         self.setState({
-          Data: data,
+          data: data,
           isLoaded: true,
         });
       },
       error: function(data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
-        self.setState({
+        this.setState({
           error: 'An error occurred when loading the form!',
         });
       },
     });
+}
+  componentDidMount() {
+   this.fetchData();
   }
 
   render() {
@@ -93,7 +96,7 @@ class DocCategoryForm extends React.Component {
             <SelectElement
               name="parent_id"
               label="Parent"
-              options={this.state.Data.categories}
+              options={this.state.data.categories}
               onUserInput={this.setFormData}
               ref="parent_id"
               hasError={false}
@@ -127,7 +130,6 @@ class DocCategoryForm extends React.Component {
 
     let formData = this.state.formData;
     let formRefs = this.refs;
-    // let docFiles = this.state.Data.docFiles ? this.state.Data.docFiles : [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
@@ -170,7 +172,6 @@ class DocCategoryForm extends React.Component {
         window.dispatchEvent(event);
         this.props.refreshPage();
         this.setState({
-//          docFiles: docFiles,
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
