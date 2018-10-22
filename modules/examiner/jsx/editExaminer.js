@@ -36,6 +36,8 @@ class EditExaminer extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.editForm = this.editForm.bind(this);
+    this.changeLog = this.changeLog.bind(this);  
   }
 
   componentDidMount() {
@@ -86,10 +88,13 @@ class EditExaminer extends React.Component {
    */
   setFormData(formElement, value) {
     let formData = this.state.formData;
-    let split = formElement.split("_");
-    let key = split[0];
-    let element = split[1];
-    formData[key][element] = value;
+    // Form elements have format name="instrumentID_fieldName"
+    // We want to extract that information to be used as keys
+    // in the nested formData array
+    let splitNameOfElement = formElement.split("_");
+    let instrumentID = splitNameOfElement[0];
+    let fieldName = splitNameOfElement[1];
+    formData[instrumentID][fieldName] = value;
     this.setState({
       formData: formData
     });
@@ -131,15 +136,11 @@ class EditExaminer extends React.Component {
     });
   }
 
-  render() {
-    // Waiting for async data to load
-    if (!this.state.isLoaded) {
-      return (
-        <Loader/>
-      );
-    }
-
-    let formHeaders = (
+  /**
+   * Return headers for edit form
+   */
+  formHeaders() {
+    return (
       <div className="row hidden-xs hidden-sm">
         <div className = "col-md-5">
           <label className = "col-md-3 instrument-header">Instrument</label>
@@ -155,8 +156,13 @@ class EditExaminer extends React.Component {
         </div>
       </div>
     );
+  } 
 
-    const inputRow = [];
+  /**
+   * Return Edit Certification form
+   */
+  editForm() {
+    const inputElements = [];
     for (let instrumentID in this.state.data.instruments) {
       if (this.state.data.instruments.hasOwnProperty(instrumentID)) {
         // Set date field as required if status is certified
@@ -210,29 +216,10 @@ class EditExaminer extends React.Component {
             </div>
           </div>
         );
-        inputRow.push(instrumentRow);
+        inputElements.push(instrumentRow);
       }
     }
-
-    const historyData = [];
-    for (let result in this.state.data.certification_history) {
-      if (this.state.data.certification_history.hasOwnProperty(result)) {
-        const rowData = (
-          <tr>
-            <td>{this.state.data.certification_history[result].changeDate}</td>
-            <td>{this.state.data.certification_history[result].userID}</td>
-            <td>{this.state.data.certification_history[result].Measure}</td>
-            <td>{this.state.data.certification_history[result].old}</td>
-            <td>{this.state.data.certification_history[result].old_date}</td>
-            <td>{this.state.data.certification_history[result].new}</td>
-            <td>{this.state.data.certification_history[result].new_date}</td>
-          </tr>
-        );
-        historyData.push(rowData);
-      }
-    }
-
-    let editForm = (
+    return (
       <FormElement
         Module="examiner"
         name="edit_cert"
@@ -240,7 +227,7 @@ class EditExaminer extends React.Component {
         onSubmit={this.handleSubmit}
         ref="editCert"
       >
-        {inputRow}
+        {inputElements}
         <div className="row col-xs-12">
           <div className="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
             <ButtonElement
@@ -263,8 +250,30 @@ class EditExaminer extends React.Component {
         </div>
       </FormElement>
     );
+  }
 
-    let changeLog = (
+  /**
+   * Return Change Log table
+   */
+  changeLog() {
+    const historyData = [];
+    for (let result in this.state.data.certification_history) {
+      if (this.state.data.certification_history.hasOwnProperty(result)) {
+        const rowData = (
+          <tr>
+            <td>{this.state.data.certification_history[result].changeDate}</td>
+            <td>{this.state.data.certification_history[result].userID}</td>
+            <td>{this.state.data.certification_history[result].Measure}</td>
+            <td>{this.state.data.certification_history[result].old}</td>
+            <td>{this.state.data.certification_history[result].old_date}</td>
+            <td>{this.state.data.certification_history[result].new}</td>
+            <td>{this.state.data.certification_history[result].new_date}</td>
+          </tr>
+        );
+        historyData.push(rowData);
+      }
+    }
+    return (
       <div>
         <div className="row">
           <div className="col-xs-12">
@@ -289,6 +298,19 @@ class EditExaminer extends React.Component {
         </table>
       </div>
     );
+  }
+
+  render() {
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return (
+        <Loader/>
+      );
+    }
+
+    let formHeaders = this.formHeaders();
+    let editForm = this.editForm();
+    let changeLog = this.changeLog();
 
     return (
       <div>
