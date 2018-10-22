@@ -428,7 +428,8 @@ class Edit_User extends \NDB_Form
 
         // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value)) {
+            // Password updates are handled separately
+            if (!empty($value) && $key != 'Password_hash') {
                 $set[$key] = $value;
             } else {
                 $set[$key] = null;
@@ -454,12 +455,10 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $expiry = isset($values['Password_expiry'])
-                ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_hash'], $expiry);
+        // Now set the password. Note that this field is named incorrectly
+        // and represents a plaintext password, not a hash.
+        if (isset($values['Password_hash'])) {
+            $user->updatePassword($values['Password_hash']);
         }
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
