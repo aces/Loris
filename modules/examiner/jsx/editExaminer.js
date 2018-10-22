@@ -48,8 +48,6 @@ class EditExaminer extends React.Component {
    * Retrieve data from the provided URL and save it in state
    */
   fetchData() {
-    const self = this;
-    let formData = {};
     $.ajax({
       url: this.props.dataURL,
       type: 'GET',
@@ -58,6 +56,7 @@ class EditExaminer extends React.Component {
         identifier: this.props.examinerID
       },
       success: data => {
+        let formData = {};
         const instruments = data.instruments;
         for (let instrumentID in instruments) {
           if (instruments.hasOwnProperty(instrumentID)) {
@@ -68,7 +67,7 @@ class EditExaminer extends React.Component {
             };
           }
         }
-        self.setState({
+        this.setState({
           data: data,
           formData: formData,
           isLoaded: true
@@ -91,9 +90,9 @@ class EditExaminer extends React.Component {
     // Form elements have format name="instrumentID_fieldName"
     // We want to extract that information to be used as keys
     // in the nested formData array
-    let splitNameOfElement = formElement.split("_");
-    let instrumentID = splitNameOfElement[0];
-    let fieldName = splitNameOfElement[1];
+    const splitNameOfElement = formElement.split("_");
+    const instrumentID = splitNameOfElement[0];
+    const fieldName = splitNameOfElement[1];
     formData[instrumentID][fieldName] = value;
     this.setState({
       formData: formData
@@ -107,12 +106,12 @@ class EditExaminer extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     let formObject = new FormData();
     for (let testID in formData) {
       if (formData.hasOwnProperty(testID) &&
         JSON.stringify(formData[testID]) !== '{}') {
-        let instrumentData = JSON.stringify(formData[testID]);
+        const instrumentData = JSON.stringify(formData[testID]);
         formObject.append(testID, instrumentData);
       }
     }
@@ -130,7 +129,7 @@ class EditExaminer extends React.Component {
       },
       error: error => {
         console.error(error);
-        let message = error.responseText;
+        const message = error.responseText;
         swal('Error!', message, 'error');
       }
     });
@@ -179,7 +178,7 @@ class EditExaminer extends React.Component {
           }
         }
         // Create elements
-        let instrumentName = this.state.data.instruments[instrumentID].name;
+        const instrumentName = this.state.data.instruments[instrumentID].name;
         const instrumentRow = (
           <div className="row">
             <div className="col-md-5" >
@@ -225,7 +224,6 @@ class EditExaminer extends React.Component {
         name="edit_cert"
         id="edit_cert_form"
         onSubmit={this.handleSubmit}
-        ref="editCert"
       >
         {inputElements}
         <div className="row col-xs-12">
@@ -308,9 +306,9 @@ class EditExaminer extends React.Component {
       );
     }
 
-    let formHeaders = this.formHeaders();
-    let editForm = this.editForm();
-    let changeLog = this.changeLog();
+    const formHeaders = this.formHeaders();
+    const editForm = this.editForm();
+    const changeLog = this.changeLog();
 
     return (
       <div>
@@ -342,7 +340,7 @@ EditExaminer.propTypes = {
 const args = QueryString.get(document.currentScript.src);
 window.onload = () => {
   const fetchURL = `${loris.BaseURL}/examiner/fetchCertification/`;
-  let editExaminer = (
+  const editExaminer = (
     <div id="page-editexaminer">
       <EditExaminer
         Module="examiner"
