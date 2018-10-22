@@ -50,9 +50,11 @@ if (!is_array($instruments)) {
             switch($bits[0]) {
                 // Generate the CREATE TABLE syntax
             case "table":
+                // Remove backticks from table name to prevent errors when 
+                // writing SQL patch file.
                 $sql_query_table_name = str_replace('`', '', $db->escape($bits[1]));
                 $file_name = "../project/tables_sql/".$sql_query_table_name.".sql";
-                $output    = "CREATE TABLE `$bits[1]` (\n";
+                $output    = "CREATE TABLE `$sql_query_table_name` (\n";
                 $output   .= "`CommentID` varchar(255) NOT NULL default '',\n"
                     ."`UserID` varchar(255) default NULL,\n"
                     ."`Examiner` varchar(255) default NULL,\n"
@@ -112,11 +114,11 @@ if (!is_array($instruments)) {
                             . "instrument data.";
                     }
                 } else {
-                    // Safety SQL injection prevention.
+                    // Sanitize $bits to mitigate SQL injection attacks.
                     $bits[0] = str_replace('`', '', $db->escape($bits[0]));
                 }
                 $bits[2]     = htmlspecialchars($bits[2]);
-                $output     .= "`$bits[1]` $bits[0] default NULL,\n";
+                $output     .= "`$sql_query_table_name` $bits[0] default NULL,\n";
                 $column_name = str_replace('`', '', $db->escape($bits[1]));
                 $sql_query_columns[] = "`$column_name` $bits[0] default NULL,\n";
             }
@@ -159,7 +161,10 @@ if (!is_array($instruments)) {
         fclose($fp);
     }
     // Execute the SQL tasks if no error_message.
-    if ($db->isConnected() && empty($error_message)) {
+    if ($db->isConnected() 
+        && empty($error_message)
+        && $execute_mysql_query) 
+    {
         if (!$db->tableExists($sql_query_table_name)) {
             // Table doesn't exist!
             $sql_query_statement .= implode($sql_query_columns);
@@ -177,9 +182,8 @@ if (!is_array($instruments)) {
         );
         $statement->bindParam(1, $sql_query_table_name, PDO::PARAM_STR);
         $statement->bindParam(2, $title, PDO::PARAM_STR);
-        if ($execute_mysql_query) {
-            $statement->execute();
-        }
+        $statement->execute();
+        // Each page requires its own seprate query to be run.
         foreach ($pages as $page_number => $page) {
             $statement    = $db->prepare(
                 'INSERT INTO instrument_subtests'
@@ -190,9 +194,7 @@ if (!is_array($instruments)) {
             $statement->bindParam(1, $sql_query_table_name, PDO::PARAM_STR);
             $statement->bindParam(2, $subtest_name, PDO::PARAM_STR);
             $statement->bindParam(3, $page, PDO::PARAM_STR);
-            if ($execute_mysql_query) {
-                $statement->execute();
-            }
+            $statement->execute();
         }
     }
 }
