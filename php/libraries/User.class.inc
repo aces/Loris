@@ -546,6 +546,10 @@ class User extends UserPermissions
         /* The pwned passwords API searches a range of password hashes to
          * protect the actual SHA1 hash from being revealed.
          * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
+         *
+         * NOTE your webserver will need to be configured to allow going 
+         * connections to the link below. If you encounter errors please
+         * verify your firewall settings.
          */
         $hash       = sha1($password);
         $hashPrefix = substr(sha1($password), 0, 5);
@@ -559,6 +563,15 @@ class User extends UserPermissions
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
+        // In case request fials for any reason
+        if (curl_error($ch)) {
+            error_log("ERROR: Problem connecting to pwned passwords API: "
+                . curl_error($ch));
+            /* Don't prevent password change if there is a cURL error. Using
+             * this API is nice but not critical to functioning.
+             */
+            return false;
+        }
         curl_close($ch);
 
         $hashSuffixes = explode("\n", $response);
