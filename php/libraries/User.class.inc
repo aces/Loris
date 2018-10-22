@@ -76,7 +76,8 @@ class User extends UserPermissions
         );
         $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
-            $user_cid[$key] = intval($val['CenterID']) //Cast values to int;
+            // Convert string representation of ID to int
+            $user_cid[$key] = intval($val['CenterID']);
         }
 
         // Get examiner information
