@@ -91,11 +91,7 @@ if (!is_array($instruments)) {
                     continue;
                 }
                 if ($bits[0] == "select") {
-                    $bits[0] = enumizeOptions(
-                        $bits[3],
-                        $sql_query_table_name,
-                        $bits[1]
-                    );
+                    $bits[0] = enumizeOptions($bits[3]);
                 } else if ($bits[0] == "selectmultiple") {
                     $bits[0] = "varchar(255)";
                 } else if ($bits[0] == "textarea") {
@@ -206,12 +202,10 @@ if ($error_message) {
  * a LINST file (which is in turn based on an HTML select field).
  *
  * @param array  $options the enum values.
- * @param string $table   the table name used.
- * @param string $name    the enum name used.
  *
  * @return string
  */
-function enumizeOptions($options, $table, $name)
+function enumizeOptions(array $options): string
 {
     $enum    = array();
     $options = explode("{-}", $options);
