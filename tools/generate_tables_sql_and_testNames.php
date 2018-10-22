@@ -51,7 +51,7 @@ if (!is_array($instruments)) {
                 // Generate the CREATE TABLE syntax
             case "table":
                 $sql_query_table_name = str_replace('`', '', $db->escape($bits[1]));
-                $file_name = "../project/tables_sql/".$bits[1].".sql";
+                $file_name = "../project/tables_sql/".$sql_query_table_name.".sql";
                 $output    = "CREATE TABLE `$bits[1]` (\n";
                 $output   .= "`CommentID` varchar(255) NOT NULL default '',\n"
                     ."`UserID` varchar(255) default NULL,\n"
