@@ -1,4 +1,4 @@
---- INSERT THE 2 NEW CONFIGs INTO ConfigSettings TABLE
+-- INSERT THE 2 NEW CONFIGs INTO ConfigSettings TABLE
 INSERT INTO ConfigSettings
   (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
   SELECT
@@ -26,7 +26,7 @@ INSERT INTO ConfigSettings
   FROM ConfigSettings
   WHERE Name="imaging_pipeline";
 
---- INSERT DEFAULT NAME FOR THE CONFIG AND ENVIRONMENT FILE
+-- INSERT DEFAULT NAME FOR THE CONFIG AND ENVIRONMENT FILE
 INSERT INTO Config
   (ConfigID, Value)
   SELECT ID, 'prod' FROM ConfigSettings cs WHERE cs.Name="MriConfigFile";
