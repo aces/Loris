@@ -103,7 +103,7 @@ class FetchCertification extends \NDB_Page
                 ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Only GET requests are allowed"
+                        "Only GET requests are allowed."
                     )
                 );
         }

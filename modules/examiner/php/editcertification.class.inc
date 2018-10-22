@@ -43,7 +43,7 @@ class EditCertification extends \NDB_Page
     {
         $user = \User::singleton();
         return $user->hasPermission('examiner_view')
-            && $user->hasPermission('examiner_multisite');
+            || $user->hasPermission('examiner_multisite');
     }
 
     /**
@@ -75,7 +75,7 @@ class EditCertification extends \NDB_Page
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Only POST requests are allowed"
+                        "Only POST requests are allowed."
                     )
                 );
         }
