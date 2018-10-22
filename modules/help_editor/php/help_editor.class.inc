@@ -97,7 +97,7 @@ class Help_Editor extends \NDB_Menu_Filter
 
         // add form elements
         $this->addBasicText('topic', 'Help topic:');
-        $this->addBasicText('keyword', 'Search keyword');
+        $this->addBasicText('keyword', 'Search keyword:');
     }
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
