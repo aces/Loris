@@ -93,7 +93,7 @@ class DataIntegrityFlag extends React.Component {
             Module={this.props.Module}
             name="data_integrity_filter"
             id="data_integrity_filter"
-            ref={this.setFfilterRef}
+            ref={this.setFilterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
