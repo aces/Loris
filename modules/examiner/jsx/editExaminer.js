@@ -162,7 +162,7 @@ class EditExaminer extends React.Component {
   /**
    * Return Edit Certification form
    *
-   * @return {<FormElement } The form to edit certification
+   * @return {jsx} The form to edit certification
    */
   editForm() {
     const inputElements = [];
