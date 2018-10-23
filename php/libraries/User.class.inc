@@ -547,7 +547,7 @@ class User extends UserPermissions
          * protect the actual SHA1 hash from being revealed.
          * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
          *
-         * NOTE your webserver will need to be configured to allow going 
+         * NOTE your webserver will need to be configured to allow going
          * connections to the link below. If you encounter errors please
          * verify your firewall settings.
          */
@@ -565,8 +565,10 @@ class User extends UserPermissions
         $response = curl_exec($ch);
         // In case request fials for any reason
         if (curl_error($ch)) {
-            error_log("ERROR: Problem connecting to pwned passwords API: "
-                . curl_error($ch));
+            error_log(
+                "ERROR: Problem connecting to pwned passwords API: "
+                . curl_error($ch)
+            );
             /* Don't prevent password change if there is a cURL error. Using
              * this API is nice but not critical to functioning.
              */
