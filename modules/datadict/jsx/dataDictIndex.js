@@ -31,7 +31,7 @@ class DataDictIndex extends React.Component {
     this.filter = null;
     this.setFilterRef = element => {
       this.filter = element;
-    }
+    };
 
     /**
      * Bind component instance to custom methods
