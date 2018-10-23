@@ -1,4 +1,19 @@
 #!/usr/bin/env php
+/** This script queries the database for plaintext passwords that were stored
+ * in the `history` table. It creates a text file containing the hashed versions
+ * of these plaintext passwords. This text file or "blacklist" will be analyzed
+ * upon password changes. If a user tries to use a password that appears in the
+ * list of hashes in this text file, it will be rejected.
+ *
+ * This script should be run BEFORE `2018-10-22-ExpireAllPasswords.sql` OR
+ * before upgrading to 20.1 from 20.0 OR 20.0.x to 21. This SQL file will
+ * delete the password entries which prevents the blacklist from being
+ * generated.
+ *
+ * The plaintext passwords appeared due to a bug in LORIS. As these passwords
+ * have potentially been viewed by administrators or could be read in the event
+ * of a data breach, we have chosen to reject them in this way.
+ */
 <?php
 require_once 'generic_includes.php';
 
