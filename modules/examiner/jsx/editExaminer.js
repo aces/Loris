@@ -37,7 +37,7 @@ class EditExaminer extends React.Component {
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.editForm = this.editForm.bind(this);
-    this.changeLog = this.changeLog.bind(this);  
+    this.changeLog = this.changeLog.bind(this);
   }
 
   componentDidMount() {
@@ -137,6 +137,8 @@ class EditExaminer extends React.Component {
 
   /**
    * Return headers for edit form
+   *
+   * @return {jsx} Div of the headers for the edit form elements
    */
   formHeaders() {
     return (
@@ -155,10 +157,12 @@ class EditExaminer extends React.Component {
         </div>
       </div>
     );
-  } 
+  }
 
   /**
    * Return Edit Certification form
+   *
+   * @return {<FormElement } The form to edit certification
    */
   editForm() {
     const inputElements = [];
@@ -252,6 +256,8 @@ class EditExaminer extends React.Component {
 
   /**
    * Return Change Log table
+   *
+   * @return {jsx} The Change Log history data table
    */
   changeLog() {
     const historyData = [];
