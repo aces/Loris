@@ -145,6 +145,9 @@ mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
 chmod 770 ../smarty/templates_c
 
+# Create password blacklist file
+echo "loris\nbrain\nmcgill\n" > ../project/password_blacklist.lst
+
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
 os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
@@ -160,6 +163,9 @@ if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     # can write the config.xml file.
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
+    # Make password blacklist readable by apache user
+    sudo chgrp www-data ../project/password_blacklist.lst
+    sudo chmod 640 ../project/password_blacklist.lst
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
@@ -168,6 +174,9 @@ elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
     # can write the config.xml file.
     sudo chgrp apache ../project
     sudo chmod 770 ../project
+    # Make password blacklist readable by apache user
+    sudo chgrp apache ../project/password_blacklist.lst
+    sudo chmod 640 ../project/password_blacklist.lst
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp to the web server user in: the user_uploads directory in ../modules/data_release/ and ../modules/document_repository/, as well as ../smarty/templates_c/"
 fi
