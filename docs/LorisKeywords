@@ -1,7 +1,0 @@
-# This represents a list of keywords significant to LORIS. 
-# This file is used in our password logic; passwords containing a word from the 
-# list below will be considered weak more likely to be rejected.
-# Please add relevant words to this file as you see fit.
-loris
-brain
-mcgill
