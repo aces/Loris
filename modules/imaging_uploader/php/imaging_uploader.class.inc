@@ -369,6 +369,25 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 " .tgz, .tar.gz or .zip."
             );
         }
+        ///////////////////////////////////////////////////////////////////////
+        //////// Make sure there's no existing identical entry ////////////////
+        //////// for "new" scans //////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        $updateFile = $args['values']['overwrite'] ? true : false;
+        $id       = $db->pselectOne(
+            "SELECT 
+                IF (InsertionComplete=0 AND 
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                FROM mri_upload WHERE UploadLocation LIKE :ul",
+            array('ul' => "%$file_name")
+        );
+
+        if (!$updateFile && !empty($id)) {
+            array_push(
+              $errors['mri_file'],
+                "This file has already been uploaded! Please refresh your browser."
+            );
+        }
         // Loops through associative array of error messages
         // If there are error messages, array is passed to front end
         // If there are no error messages but the file name is wrong,
