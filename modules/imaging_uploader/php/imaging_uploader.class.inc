@@ -374,7 +374,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $updateFile = $args['values']['overwrite'] ? true : false;
-        $id       = $db->pselectOne(
+        $id         = $db->pselectOne(
             "SELECT 
                 IF (InsertionComplete=0 AND 
                 (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
@@ -384,7 +384,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         if (!$updateFile && !empty($id)) {
             array_push(
-              $errors['mri_file'],
+                $errors['mri_file'],
                 "This file has already been uploaded! Please refresh your browser."
             );
         }
