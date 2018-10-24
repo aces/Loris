@@ -466,7 +466,7 @@
                         </li>
                         {foreach from=$links item=link}
                                 <li>
-                                    <a href="{$link.url}" target="{$link.windowName}">
+                                    <a href="{$link.url}" target="{$link.windowName}" rel="noopener noreferrer">
                                         {$link.label}
                                     </a>
                                     |
@@ -478,7 +478,7 @@
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
-                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
+                    Created by <a href="http://mcin-cnim.ca/" target="_blank" rel="noopener noreferrer">
                          MCIN
                     </a>
                 </div>

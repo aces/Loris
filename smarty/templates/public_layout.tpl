@@ -33,7 +33,7 @@
           {$study_title}
         </div>
         <div class="github-logo">
-          <a href="https://github.com/aces/Loris" target="_blank">
+          <a href="https://github.com/aces/Loris" target="_blank" rel="noopener noreferrer">
             <img src="{$baseurl}/images/GitHub-Mark-Light-64px.png" alt="Github"/>
           </a>
         </div>
@@ -46,13 +46,13 @@
   </section>
 
   <footer class="footer">
-    Powered by <a href="http://www.loris.ca/" target="_blank">LORIS</a>
+    Powered by <a href="http://www.loris.ca/" target="_blank" rel="noopener noreferrer">LORIS</a>
     | GPL-3.0 &copy; {$currentyear} <br/>
     Developed at
     <a href="http://www.mni.mcgill.ca" target="_blank">
       Montreal Neurological Institute and Hospital
     </a>
-    by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
+    by <a href="http://mcin-cnim.ca" target="_blank" rel="noopener noreferrer">MCIN</a>
   </footer>
   <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>
