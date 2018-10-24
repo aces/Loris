@@ -36,12 +36,12 @@ class User extends UserPermissions
      *
      * Selects a user and its permissions
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return User
      * @access public
      */
-    static function &factory(string $username): \User
+    static function &factory(?string $username): \User
     {
         $obj = new User;
 
