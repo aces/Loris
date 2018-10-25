@@ -16,7 +16,17 @@ class ImagingUploader extends React.Component {
       hiddenHeaders: ['PatientName']
     };
 
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -65,7 +75,7 @@ class ImagingUploader extends React.Component {
    * Reset the filter elements with textInput refs to empty values
    */
   resetFilters() {
-    this.imagingUploaderFilter.clearFilter();
+    this.filter.clearFilter();
   }
 
   /**
@@ -202,11 +212,6 @@ class ImagingUploader extends React.Component {
       {id: "upload", label: "Upload"}
     ];
 
-    // TODO: deprecate use of filter refs in future refactor.
-    const filterRef = function(f) {
-      this.imagingUploaderFilter = f;
-    }.bind(this);
-
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -216,7 +221,7 @@ class ImagingUploader extends React.Component {
                 Module="imaging_uploader"
                 name="imaging_filter"
                 id="imaging_filter"
-                ref={filterRef}
+                ref={this.setFilterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >

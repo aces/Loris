@@ -15,7 +15,17 @@ class MediaIndex extends React.Component {
       hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
     };
 
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -62,7 +72,7 @@ class MediaIndex extends React.Component {
    * Reset the filter elements with textInput refs to empty values
    */
   resetFilters() {
-    this.refs.mediaFilter.clearFilter();
+    this.filter.clearFilter();
   }
 
   /**
@@ -152,7 +162,7 @@ class MediaIndex extends React.Component {
             Module="media"
             name="media_filter"
             id="media_filter_form"
-            ref="mediaFilter"
+            ref={this.setFilterRef}
             columns={3}
             formElements={this.state.data.form}
             onUpdate={this.updateFilter}

@@ -25,7 +25,17 @@ class DataDictIndex extends React.Component {
       hiddenHeaders: []
     };
 
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -69,7 +79,7 @@ class DataDictIndex extends React.Component {
    * Reset the filter elements with textInput refs to empty values
    */
   resetFilters() {
-    this.dataDictFilter.clearFilter();
+    this.filter.clearFilter();
   }
 
   /**
@@ -116,18 +126,13 @@ class DataDictIndex extends React.Component {
       return <Loader/>;
     }
 
-    // TODO: deprecate use of refs in future refactoring.
-    const filterRef = function(f) {
-      this.dataDictFilter = f;
-    }.bind(this);
-
     return (
       <div>
         <FilterForm
           Module="datadict"
           name="data_dict_filter"
           id="data_dict_filter"
-          ref={filterRef}
+          ref={this.setFilterRef}
           columns={2}
           formElements={this.state.data.form}
           onUpdate={this.updateFilter}
