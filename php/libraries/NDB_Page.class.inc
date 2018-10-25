@@ -12,9 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-use \Psr\Http\Server\RequestHandlerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Base class that contains a number of wrapper functions for adding
@@ -26,7 +23,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface
+class NDB_Page
 {
     /**
      * The name of the test_name being accessed
@@ -41,7 +38,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Reference to the HTML QuickForm
      *
-     * @var \LorisForm
+     * @var LorisForm
      */
     var $form;
 
@@ -65,13 +62,6 @@ class NDB_Page implements RequestHandlerInterface
     var $skipTemplate = false;
 
     /**
-     * The format that the page content should be returned in. This is generally
-     * the value of the `?format=` GET parameter from the request, and is usually
-     * either 'json' or empty (for the default return value of HTML format).
-     */
-    protected $format = '';
-
-    /**
      * Template data to be passed to Smarty.
      *
      * FIXME: This should be private to ensure users go through the getter and setter
@@ -90,6 +80,8 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
+     *
+     * @return none
      */
     function __construct(
         \Module $module,
@@ -101,7 +93,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
-        $this->form       = new LorisForm();
+        $this->form       = new LorisForm($formname);
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
@@ -141,7 +133,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Options to pass to the form for this
      *                        file chooser.
      *
-     * @return void
+     * @return none
      */
     function addFile($name, $label, $options=array())
     {
@@ -158,7 +150,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $header The text to put in the header
      *
-     * @return void
+     * @return none
      */
     function addHeader($header)
     {
@@ -175,7 +167,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $optional Optional extra HTML attributes to add
      *                         to the select
      *
-     * @return void
+     * @return none
      */
     function addSelect($name, $label, $options, $optional=array())
     {
@@ -191,7 +183,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $label The text to add to the label.
      *
-     * @return void
+     * @return none
      */
     function addLabel($label)
     {
@@ -204,7 +196,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name  The name of the score column
      * @param string $label Label to attach to the score
      *
-     * @return void
+     * @return none
      */
     function addScoreColumn($name, $label)
     {
@@ -220,7 +212,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   Label to attach to the text element
      * @param array  $options QuickForm options to pass to addElement
      *
-     * @return void
+     * @return none
      */
     function addBasicText($field, $label, $options=array())
     {
@@ -236,7 +228,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label          Label to attach to the text area field
      * @param array  $specifications Extra HTML options to add to the textarea
      *
-     * @return void
+     * @return none
      */
     function addBasicTextArea(
         $field,
@@ -259,7 +251,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Options to pass to HTML_QuickForm
      * @param array  $attr    Extra HTML attributes to add to the date group.
      *
-     * @return void
+     * @return none
      */
     function addBasicDate(
         $field,
@@ -270,6 +262,9 @@ class NDB_Page implements RequestHandlerInterface
                'style' => 'max-width:33%; display:inline-block;',
               )
     ) {
+        if ($options === array() && !empty($this->dateOptions)) {
+            $options = $this->dateOptions;
+        }
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
 
@@ -283,7 +278,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $optional Optional extra HTML attributes to add
      *                         to the checkbox
      *
-     * @return void
+     * @return none
      */
     function addCheckbox($name, $label, $options, $optional=array())
     {
@@ -306,7 +301,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options    Options to pass to LorisForm for this
      *                           radio button. Do not pass value here.
      *
-     * @return void
+     * @return none
      */
     function addRadio($name, $groupLabel, $radios, $options=array())
     {
@@ -335,7 +330,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $value      The value of the hidden element to add
      * @param array  $attributes Additional html attributes for element
      *
-     * @return void
+     * @return none
      */
     function addHidden($name, $value=null, $attributes=array())
     {
@@ -351,7 +346,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $not_answered_options List of options to use in the "_status"
      *                                     dropdown.
      *
-     * @return void
+     * @return none
      */
     function addTextAreaGroup(
         $field,
@@ -381,7 +376,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to this element
      * @param array  $attr  List of extra HTML attributes to add to the element
      *
-     * @return void
+     * @return none
      */
     function addPassword(
         $field,
@@ -399,7 +394,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $type    The type of rule to add
      * @param string $format  See QuickForm documentation.
      *
-     * @return void
+     * @return none
      */
     function addRule($element, $message, $type, $format=null)
     {
@@ -415,11 +410,11 @@ class NDB_Page implements RequestHandlerInterface
      *                       See QuickForm documentation for details.
      * @param string $format The group format. (See QuickForm documentation)
      *
-     * @return void
+     * @return none
      */
     function addGroupRule($group, $arg1, $type='', $format=null)
     {
-        $this->form->addGroupRule($group, $arg1, $type);
+        $this->form->addGroupRule($group, $arg1, $type, $format);
     }
 
     /**
@@ -432,7 +427,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $separator  The separator to use between group elements
      * @param string $appendName ????
      *
-     * @return void
+     * @return none
      */
     function addGroup($elements, $name, $label, $separator, $appendName=null)
     {
@@ -447,7 +442,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Extra options to pass to QuickForm
      * @param array  $attr    Extra HTML attributes to add to the element
      *
-     * @return array representing select element
+     * @return HTML_QuickForm select element
      */
     function createSelect(
         $field,
@@ -463,7 +458,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $labelString The label to attach to the element
      *
-     * @return array representing label element
+     * @return HTML_QuickForm Label element
      */
     function createLabel(
         $labelString
@@ -482,7 +477,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to the element
      * @param array  $attribs Extra HTML attributes to add to the element
      *
-     * @return array representing text element
+     * @return HTML_QuickForm Text element
      */
     function createText(
         $field,
@@ -499,7 +494,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field The field name for the TextArea
      * @param string $label The label to attach to this TextArea
      *
-     * @return array representing textarea element
+     * @return HTML_QuickForm textarea element
      */
     function createTextArea($field, $label=null)
     {
@@ -520,7 +515,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $attr        List of HTML attributes to add to the date
      *                            group.
      *
-     * @return array representing date element
+     * @return HTML_QuickForm date element
      */
     function createDate(
         $field,
@@ -548,7 +543,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $options Options to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
-     * @return array representing checkbox
+     * @return QuickForm_Element representing checkbox
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
@@ -568,7 +563,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to LorisForm
      *
-     * @return array representing radio button
+     * @return QuickForm_Element representing radio button
      */
     function createRadio($field, $label, $options=null)
     {
@@ -588,7 +583,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to the form element
      * @param array  $attr  List of HTML attributes to add to the element
      *
-     * @return array representing form element
+     * @return QuickForm_Element Form element
      */
     function createPassword(
         $field,
@@ -599,78 +594,9 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
-     * An NDB_Page can act as both a middleware, or a handler, depending on the
-     * context. When treated as a middleware, the page is responsible for setting
-     * up any middleware required to access the page. By default, this will
-     * implement the page decoration middlewares which is responsible for adding
-     * the LORIS menu's/headers/footers/etc.
-     * This can be overridden by modules who don't want this behaviour (such
-     * as API endpoints).
-     *
-     * @param ServerRequestInterface  $request The PSR7 request being processed.
-     * @param RequestHandlerInterface $handler The handler to handle the request
-     *                                         after processing the middleware.
-     *
-     * @return ResponseInterface the PSR15 response that was generated by the
-     * middleware
-     */
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ) : ResponseInterface {
-        $user = $request->getAttribute("user");
-        if ($this->_hasAccess() !== true) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Permission Denied")
-                )->withStatus(403);
-        }
-
-        // The NDB_Page object itself is sometimes required by middleware,
-        // but since the PSR15 Middleware interface is fixed, it needs to be
-        // carried along with the request object. We use a pageclass attribute
-        // here so that middleware that needs it is able to access it.
-        //
-        // This is currently required by the page decoration middleware, because
-        // of the call to getControlPanel which is used in the main.tpl template,
-        // but may eventually be removed.
-        $request = $request->withAttribute("pageclass", $this);
-
-        // FIXME: For historical compatibility with NDB_Menu_Filter.
-        // Format should be deprecated and getting the page in different formats
-        // should be a different endpoint or use HTTP content negotiation headers.
-        $get = $request->getQueryParams();
-        if (isset($get['format'])) {
-            $this->format = $get['format'];
-            return $handler->handle($request)
-                ->withHeader("Content-Type", "application/json");
-        }
-        return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-            ->process($request, $handler)
-            ->withHeader("Content-Type", "text/html");
-    }
-
-    /**
-     * An NDB_Page can act as both a middleware, or a handler, depending on the
-     * context. When treated as a handler, an NDB_Page calls display() and
-     * converts the output to a PSR7 stream.
-     *
-     * @param ServerRequestInterface $request The PSR15 Request being handled
-     *
-     * @return ResponseInterface The PSR15 response for the page.
-     */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        $this->setup();
-        return (new \Zend\Diactoros\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display()));
-    }
-
-    /**
      * Displays the form
      *
-     * @return string of the content to be inserted into the template
+     * @return a string of the content to be inserted into the template
      */
     function display()
     {
@@ -805,7 +731,7 @@ class NDB_Page implements RequestHandlerInterface
      * Does any setup required for this page. This is generally overridden
      * by NDB_Page subtypes to add form elements.
      *
-     * @return void (but may have side-effects)
+     * @return none, but may have side-effects
      */
     function setup()
     {
@@ -831,28 +757,6 @@ class NDB_Page implements RequestHandlerInterface
     function _hasAccess()
     {
         return true;
-    }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        $label    = ucwords(str_replace('_', ' ', $this->name));
-        $sublabel = ucwords(str_replace('_', ' ', $this->page));
-
-        if ($label == $sublabel) {
-            return new \LORIS\BreadcrumbTrail(
-                new \LORIS\Breadcrumb($label, "/$this->name")
-            );
-        }
-
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
-            new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
-        );
     }
 }
 ?>
