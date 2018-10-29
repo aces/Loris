@@ -51,8 +51,7 @@ class Media extends \NDB_Menu_Filter
         // Set permission to access user-hidden files, currently based on superuser
         $this->hasHidePermission = $user->hasPermission("superuser");
 
-        return $this->hasPermission('media_read') ||  $this->hasWritePermission;
-            || $user->hasPermission('media_write');
+        return $this->hasPermission('media_read') || $this->hasWritePermission;
     }
 
     /**
