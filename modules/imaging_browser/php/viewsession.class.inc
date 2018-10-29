@@ -54,9 +54,11 @@ class ViewSession extends \NDB_Form
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
         return $user->hasAnyPermission(
-            'imaging_browser_view_allsites',
-            'imaging_browser_phantom_allsites',
-            'imaging_browser_phantom_ownsite'
+            array(
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite'
+            )
         )
         || (
             in_array(

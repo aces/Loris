@@ -41,9 +41,11 @@ class Imaging_Browser extends \NDB_Menu_Filter
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-            'imaging_browser_view_allsites',
-            'imaging_browser_phantom_allsites',
-            'imaging_browser_phantom_ownsite'
+            array(
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite'
+            )
         )
         || (
             $user->hasStudySite()
