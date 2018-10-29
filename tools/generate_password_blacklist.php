@@ -22,12 +22,10 @@ require_once 'generic_includes.php';
 // results from the `new` data that are password hashes i.e. those that begin
 // with the $ character.
 $sql = "select new as password from history where col like '%hash%' AND type='U' AND new NOT LIKE '\$%';";
-$result = $DB->pselect($sql, array());
+$result = $DB->pselectCol($sql, array());
 
 $passwords = array();
-foreach($result as $key => $value) {
-    array_push($passwords, ($value['password']));
-}
+$passwords = array_values($result);
 
 $base = \NDB_Config::singleton()->getSetting('paths')['base'];
 $dest = "$base/project/password_blacklist.lst";
