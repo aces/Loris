@@ -507,12 +507,12 @@ class User extends UserPermissions
      *
      * @return void
      */
-    function updatePassword($password, $expiry = null)
+    function updatePassword(string $password, string $expiry = '')
     {
-        if (is_null($expiry)) {
+        if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+                strtotime('+6 months')
             );
         }
 

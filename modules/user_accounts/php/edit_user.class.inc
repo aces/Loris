@@ -456,9 +456,10 @@ class Edit_User extends \NDB_Form
         // prepend two random characters
         if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
-            $expiry = isset($values['Password_expiry'])
-                ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_hash'], $expiry);
+            $user->updatePassword(
+                $set['Password_hash'],
+                $values['Password_expiry'] ?? ''
+            );
         }
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
