@@ -981,7 +981,7 @@ class Database
     private function _implodeAsPrepared(
         string $glue,
         array $dataArray,
-        array &$exec_vals = null,
+        ?array &$exec_vals = null,
         string $prefix = ''
     ): string {
 
