@@ -6,15 +6,15 @@
  * PHP Version 7
  *
  * The generate_tables_sql_and_testNames.php takes the {instrument_name}.linst file
- * from /instrument_manager and installs an instrument for the table of each
+ * from the /instrument_manager  module and installs an instrument for the table of each
  * instrument it finds in the {instrument_name}.linst file.
  * These sql files are output to the tables_sql/ subdirectory.
  *
  * Ex cmd with SQL execution:
- * php generate_tables_sql_and_testNames.php < ../instruments/[instrument_name].linst
+ * php generate_tables_sql_and_testNames.php ../instruments/[instrument_name].linst
  *
  * Ex cmd without SQL execution:
- * php generate_tables_sql_and_testNames.php <
+ * php generate_tables_sql_and_testNames.php
  * ../instruments/[instrument_name].linst false
  *
  * @category Tools
@@ -24,8 +24,8 @@
  * @link     https://github.com/aces/Loris
  */
 // require all relevant libraries
-require_once "./generic_includes.php";
-$execute_mysql_query = ($argv[2] ?? true) === true;
+require_once 'generic_includes.php';
+$execute_mysql_query = ($argv[2] ?? true) === true; 
 $data          = file_get_contents($argv[1]);
 $instruments   = explode("{-@-}", trim($data));
 $error_message = "";
@@ -102,13 +102,6 @@ if (!is_array($instruments)) {
                     $bits[0] = "varchar(255)";
                 } else if ($bits[0] == "static") {
                     $bits[0] = "varchar(255)";
-                } else if ($bits[0]=="date") {
-                    if (empty($bits[3])
-                        || empty($bits[4])
-                    ) {
-                        $error_message = "Instrument(s) file has invalid "
-                            . "instrument data.";
-                    }
                 } else {
                     // Sanitize $bits to mitigate SQL injection attacks.
                     $bits[0] = str_replace('`', '', $db->escape($bits[0]));
@@ -125,7 +118,7 @@ if (!is_array($instruments)) {
         fwrite($fp, $output);
         // Check if Table Name exists
         if (empty($sql_query_table_name)) {
-            $error_message = "Instrument(s) file has invalid instrument data.";
+            $error_message = "Table name does not exist";
         } else {
             fwrite(
                 $fp,
@@ -170,7 +163,7 @@ if (!is_array($instruments)) {
             $statement            = $db->prepare($sql_query_statement);
             $statement->execute();
         } else {
-            $error_message = "Instrument(s) file uses existing name.";
+            $error_message = "There is already an instrument installed with this name.";
         }
         $statement = $db->prepare(
             'REPLACE INTO test_names (Test_name, Full_name, Sub_group)'
@@ -205,7 +198,7 @@ if ($error_message) {
  *
  * @return string
  */
-function enumizeOptions(array $options): string
+function enumizeOptions(string $options): string
 {
     $enum    = array();
     $options = explode("{-}", $options);
