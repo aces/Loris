@@ -478,7 +478,7 @@
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
-                    Created by <a href="http://mcin-cnim.ca/" target="_blank" rel="noopener noreferrer">
+                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
                          MCIN
                     </a>
                 </div>
