@@ -190,7 +190,7 @@ class MediaIndex extends React.Component {
   }
 }
 
-window.onload = () => {
+window.addEventListener("load", () => {
   const mediaIndex = (
     <div className="page-media">
       <MediaIndex dataURL={`${loris.BaseURL}/media/?format=json`} />
