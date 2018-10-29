@@ -106,29 +106,79 @@ class UserPermissions
 
 
     /**
-     * Determines if the user has a permission
+     * Determines if the user has the permission to access a specific module
+     * or page.
      *
      * @param string $code The permission code
      *
-     * @return bool
+     * @return bool If the user has a permission.
      */
-    function hasPermission($code)
+    public function hasPermission(string $code): bool
+    {
+        return $this->_permissionTrueAndValid('superuser')
+            || $this->_permissionTrueAndValid($code);
+    }
+
+    /**
+     * Check if a given permission code is present in a user's list of
+     * permissions. Also validates that the permission code is real.
+     *
+     * @param string $code Permission code to test.
+     *
+     * @return bool The setting of permission code $permission
+     */
+    private function _permissionTrueAndValid(string $code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
         }
-        if ($this->permissions[$code] === true) {
-            return true;
-        }
+        return intval($this->permissions[$code]) === 1;
+    }
 
-        if (isset($this->permissions['superuser'])
-            && $this->permissions['superuser'] == true
-        ) {
-            return true;
+    /**
+     * Used to test whether a user has ALL of an array of specified permissions.
+     * Returns false on the first permission that the user doesn't have.
+     *
+     * @param string[] $permissions Array of permissions codes.
+     *
+     * @return bool Whether the user has all the permissions in $permissions.
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        if (count($permissions) === 0) {
+            throw new LorisException(
+                "Cannot call hasAllPermissions with an empty array!"
+            );
+        }
+        foreach ($permissions as $p) {
+            if (!$this->_permissionTrueAndValid($p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Used to test whether a user has ANY of an array of specified permissions.
+     *
+     * @param string[] $permissions Array of permissions codes.
+     *
+     * @return bool Whether the user has any of the permissions in $permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if (count($permissions) === 0) {
+            throw new LorisException(
+                "Cannot call hasAnyPermission with an empty array!"
+            );
+        }
+        foreach ($permissions as $p) {
+            if ($this->_permissionTrueAndValid($p)) {
+                return true;
+            }
         }
         return false;
     }
-
 
     /**
      * Returns the permissions array
