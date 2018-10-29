@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    var $userInfo = array();
+    private $_userInfo = array();
 
     /**
      * Constructor
@@ -41,12 +41,12 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    static function &factory(?string $username): \User
+    public static function &factory(?string $username): \User
     {
         $obj = new User;
 
         // right off, set the username
-        $obj->userInfo['UserID'] = $username;
+        $obj->_userInfo['UserID'] = $username;
 
         // get the user's permissions
         if ($obj->select($username) === false) {
@@ -113,7 +113,7 @@ class User extends UserPermissions
         // store user data in object property
         $row['examiner']  = $examiner_info;
         $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
+        $obj->_userInfo    = $row;
         return $obj;
     }
 
@@ -128,7 +128,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function &singleton(?string $username = null): \User
+    public static function &singleton(?string $username = null): \User
     {
         static $instance;
         if (is_null($instance)) {
@@ -147,7 +147,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function insert(array $set): bool
+    public function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -166,7 +166,7 @@ class User extends UserPermissions
      * @return bool True
      * @access public
      */
-    function update(array $set): bool
+    public function update(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -174,25 +174,27 @@ class User extends UserPermissions
         $DB->update(
             'users',
             $set,
-            array('UserID' => $this->userInfo['UserID'])
+            array('UserID' => $this->_userInfo['UserID'])
         );
 
         return true;
     }
 
     /**
-     * Gets user data
+     * Returns data from the _userInfo array according to the key provided
+     * as argument.
      *
-     * @param string|null $var Name of variable to get
+     * @param string $var Name of variable to get
      *
-     * @note   Call without any parameters to get the entire user data array
+     * @note   Call without any arguments to get the entire user data array
      * @return mixed
      * @access public
+     * @throws LorisException
      */
-    function getData(?string $var = null)
+    public function getData(string $var = '')
     {
-        if (is_null($var)) {
-            return $this->userInfo;
+        if ($var === '') {
+            return $this->_userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
                 "The function getData('CenterID')
@@ -206,7 +208,7 @@ class User extends UserPermissions
                                         with getData('Sites')"
             );
         } else {
-            return $this->userInfo[$var];
+            return $this->_userInfo[$var];
         }
     }
 
@@ -217,7 +219,7 @@ class User extends UserPermissions
      */
     function getFullname(): string
     {
-        return $this->userInfo['Real_name'];
+        return $this->_userInfo['Real_name'];
     }
 
     /**
@@ -227,7 +229,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->userInfo['ID'];
+        return $this->_userInfo['ID'];
     }
 
     /**
@@ -237,7 +239,7 @@ class User extends UserPermissions
      */
     function getUsername(): string
     {
-        return $this->userInfo['UserID'];
+        return $this->_userInfo['UserID'];
     }
 
     /**
@@ -289,7 +291,7 @@ class User extends UserPermissions
      */
     function getCenterIDs(): array
     {
-        return $this->userInfo['CenterIDs'];
+        return $this->_userInfo['CenterIDs'];
     }
 
     /**
@@ -299,7 +301,7 @@ class User extends UserPermissions
      */
     function getLanguagePreference(): int
     {
-        return $this->userInfo['language_preference'];
+        return $this->_userInfo['language_preference'];
     }
 
 
@@ -310,7 +312,7 @@ class User extends UserPermissions
      */
     function getExaminerSites(): array
     {
-        $site_list = $this->userInfo['examiner'];
+        $site_list = $this->_userInfo['examiner'];
         unset($site_list['pending']);
         natcasesort($site_list);
         return $site_list;
@@ -358,9 +360,9 @@ class User extends UserPermissions
      * @return boolean
      * @access public
      */
-    function isEmailValid(): bool
+    public function isEmailValid(): bool
     {
-        if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($this->_userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
             return false;
         };
         return true;
@@ -375,7 +377,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function newPassword($length = 8): string
+    public static function newPassword($length = 8): string
     {
         // start with a blank password
         $password = '';
@@ -429,7 +431,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function isPasswordStrong(
+    public static function isPasswordStrong(
         $password,
         $values = array(),
         $operators = array()
@@ -497,7 +499,7 @@ class User extends UserPermissions
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID'] == 1);
+        return ($this->_userInfo['CenterID'] == 1);
     }
 
     /**
@@ -578,7 +580,7 @@ class User extends UserPermissions
                UserID = :v_userid AND
                Success = 'Y'
             ",
-            array('v_userid' => $this->userInfo['UserID'])
+            array('v_userid' => $this->_userInfo['UserID'])
         );
         return $count > 0;
     }
