@@ -198,4 +198,4 @@ window.addEventListener("load", () => {
   );
 
   ReactDOM.render(mediaIndex, document.getElementById("lorisworkspace"));
-};
+});
