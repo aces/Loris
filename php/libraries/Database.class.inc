@@ -965,7 +965,7 @@ class Database
      * or delete query. Generates the string in a prepared statement format.
      *
      * @param string     $glue      The glue used to combine parts of the
-     *                          dataArray (ie " AND ")
+     *                          dataArray (ie " AND ").
      * @param array      $dataArray The array representing the WHERE condition
      *                          to be glued together into a string.
      * @param array|null $exec_vals The values which are being bound to the
