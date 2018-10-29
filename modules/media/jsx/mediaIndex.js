@@ -12,7 +12,12 @@ class MediaIndex extends React.Component {
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
+      headers: {
+        all: ['File Name', 'PSCID', 'Visit Label', 'Language', 'Instrument', 'Site',
+        'Uploaded By', 'Date Taken', 'Comments', 'Date Uploaded', 'File Type',
+        'Cand ID', 'Session ID', 'Hide File'],
+        hidden: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
+      }
     };
 
     /**
@@ -33,7 +38,9 @@ class MediaIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}))
+      .catch(error => console.error(error));
   }
 
   /**
@@ -42,20 +49,14 @@ class MediaIndex extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
-      method: "GET",
-      dataType: 'json',
-      success: data => {
+    return fetch(this.props.dataURL, {credentials: 'include'})
+      .then(resp => resp.json())
+      .then(data => {
         // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
-        this.setState({
-          data: data,
-          isLoaded: true
-        });
-      },
-      error: error => console.error(error)
-    });
+        loris.hiddenHeaders = this.state.headers.hidden;
+        this.setState({data});
+      })
   }
 
   /**
@@ -87,7 +88,7 @@ class MediaIndex extends React.Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
+    if (this.state.headers.hidden.indexOf(column) > -1) {
       return null;
     }
 
@@ -177,7 +178,7 @@ class MediaIndex extends React.Component {
           </FilterForm>
           <StaticDataTable
             Data={this.state.data.Data}
-            Headers={this.state.data.Headers}
+            Headers={this.state.headers.all}
             Filter={this.state.filter}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
@@ -189,12 +190,12 @@ class MediaIndex extends React.Component {
   }
 }
 
-$(function() {
+window.onload = () => {
   const mediaIndex = (
     <div className="page-media">
-      <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`} />
+      <MediaIndex dataURL={`${loris.BaseURL}/media/?format=json`} />
     </div>
   );
 
   ReactDOM.render(mediaIndex, document.getElementById("lorisworkspace"));
-});
+};

@@ -188,22 +188,6 @@ class Media extends \NDB_Menu_Filter
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';
-        $this->headers  = [
-                           'File Name',
-                           'PSCID',
-                           'Visit Label',
-                           'Language',
-                           'Instrument',
-                           'Site',
-                           'Uploaded By',
-                           'Date Taken',
-                           'Comments',
-                           'Date Uploaded',
-                           'File Type',
-                           'Cand ID',
-                           'Session ID',
-                           'Hide File',
-                          ];
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
