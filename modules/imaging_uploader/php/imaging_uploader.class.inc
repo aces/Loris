@@ -382,7 +382,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             array('ul' => "%$file_name")
         );
 
-        if (!$updateFile && !empty($id)) {
+        $uploadPath = $config->getSetting('MRIUploadIncomingPath') . $file_name;
+
+        if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
                 $errors['mri_file'],
                 "This file has already been uploaded! Please refresh your browser."
