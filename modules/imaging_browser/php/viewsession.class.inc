@@ -48,18 +48,21 @@ class ViewSession extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        // allow only to view own site data
+        /* User has access if they have an 'all site' permission or if they are
+        * part of a study site and are permitted to view their own site.
+         */
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
-        return ($user->hasPermission('imaging_browser_view_allsites')
-                || ((in_array(
-                    $timePoint->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                ))
-                     && $user->hasPermission('imaging_browser_view_site')
-                   )
-                || $user->hasPermission('imaging_browser_phantom_allsites')
-                || $user->hasPermission('imaging_browser_phantom_ownsite')
+        return $user->hasAnyPermission(
+            'imaging_browser_view_allsites',
+            'imaging_browser_phantom_allsites',
+            'imaging_browser_phantom_ownsite'
+        )
+        || (
+            in_array(
+                $timePoint->getData('CenterID'),
+                $user->getData('CenterIDs')
+            ) && $user->hasPermission('imaging_browser_view_site')
         );
     }
 
@@ -70,9 +73,7 @@ class ViewSession extends \NDB_Form
      */
     function _hasQCPerm()
     {
-        $user =& \User::singleton();
-
-        return $user->hasPermission('imaging_browser_qc');
+        return \User::singleton()->hasPermission('imaging_browser_qc');
     }
 
     /**
