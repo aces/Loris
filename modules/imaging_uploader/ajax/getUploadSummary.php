@@ -21,7 +21,7 @@ if (!\User::singleton()->hasPermission('imaging_uploader')) {
     http_response_code(403);
     return;
 }
-if (!validRequest()){
+if (!validRequest()) {
     http_response_code(400);
     return;
 }
