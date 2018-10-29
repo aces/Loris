@@ -967,7 +967,7 @@ class Database
      * @param string     $glue      The glue used to combine parts of the
      *                          dataArray (ie " AND ")
      * @param array      $dataArray The array representing the WHERE condition
-     *                          to be glued together into a string
+     *                          to be glued together into a string.
      * @param array|null $exec_vals The values which are being bound to the
      *                          query. Used to generate the prepared variable
      *                          name.
