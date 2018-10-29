@@ -511,7 +511,7 @@ class User extends UserPermissions
         if (is_null($expiry)) {
             $expiry = date(
                 'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+                mktime(0, 0, 0, intval(date('n') + 6), date('j'), date('Y'))
             );
         }
 
