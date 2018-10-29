@@ -9,7 +9,7 @@ CREATE TABLE `visit_project_subproject_rel` (
   `VisitID` int(10) unsigned NOT NULL,
   `ProjectID` int(2) NOT NULL,
   `SubprojectID` int(10) unsigned NOT NULL,
-  CONSTRAINT visit_project_subprojet_rel_PK PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
+  CONSTRAINT visit_project_subproject_rel_PK PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
   CONSTRAINT visit_project_subproject_rel_VisitID_visit_VisitID_FK FOREIGN KEY (`VisitID`) 
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT visit_project_subproject_ProjectID_visit_ProjectID_FK FOREIGN KEY (`ProjectID`)
