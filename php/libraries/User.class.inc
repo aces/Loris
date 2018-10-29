@@ -76,7 +76,8 @@ class User extends UserPermissions
         );
         $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
-            $user_cid[$key] =$val['CenterID'];
+            // Convert string representation of ID to int
+            $user_cid[$key] = intval($val['CenterID']);
         }
 
         // Get examiner information
@@ -532,7 +533,7 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenter($center_id)
+    public function hasCenter(int $center_id) : bool
     {
         return in_array(
             $center_id,
@@ -540,6 +541,7 @@ class User extends UserPermissions
             true
         );
     }
+
     /**
      * Determines if the user has a permission
      * for a center
