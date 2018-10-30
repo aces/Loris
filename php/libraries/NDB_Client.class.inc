@@ -133,9 +133,11 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start(
-            ['cookie_httponly' => true]
-        );
+        if (!isset($_SESSION)) {
+            session_start(
+                ['cookie_httponly' => true]
+            );
+        }
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
