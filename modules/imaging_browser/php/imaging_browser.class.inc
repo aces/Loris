@@ -42,9 +42,9 @@ class Imaging_Browser extends \NDB_Menu_Filter
          */
         return $user->hasAnyPermission(
             array(
-                'imaging_browser_view_allsites',
-                'imaging_browser_phantom_allsites',
-                'imaging_browser_phantom_ownsite'
+             'imaging_browser_view_allsites',
+             'imaging_browser_phantom_allsites',
+             'imaging_browser_phantom_ownsite',
             )
         )
         || (
