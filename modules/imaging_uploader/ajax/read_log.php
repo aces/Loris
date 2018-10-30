@@ -53,11 +53,11 @@ echo $contents;
  * Get the last changed log file using in the
  * $paths['base'] . "/" . $paths['log'] . "/MRI_upload" directory
 
- * @return The name of the last log file modified in the log directory.
+ * @return string The name of the last log file modified in the log directory.
  */
 function getLatestLogFile(): string
 {
-    $paths  = NDB_Config::singleton()->getSetting('paths');
+    $paths = NDB_Config::singleton()->getSetting('paths');
     // Get the path from the config file.
     if (empty($paths)) {
         throw new ConfigurationException(

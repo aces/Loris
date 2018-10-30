@@ -27,12 +27,12 @@ if (!validRequest()) {
 }
 
 $uploadId = $_POST['uploadId'];
-$summary = $_POST['summary'] === 'true';
+$summary  = $_POST['summary'] === 'true';
 
 /* Fetch columns Inserting and InsertionComplete from table mri_upload
  * create Database object
  */
-$DB =& Database::singleton();
+$DB    =& Database::singleton();
 $query = "SELECT Inserting, InsertionComplete 
           FROM mri_upload
           WHERE UploadId =:uploadId";
@@ -77,10 +77,10 @@ echo json_encode(
  */
 function validRequest(): bool
 {
-    if (empty($_POST['uploadId']) 
+    if (empty($_POST['uploadId'])
         || !is_numeric($_POST['uploadId'])
         || ($_POST['summary'] !== 'true' && $_POST['summary'] !== 'false')
-    {
+    ) {
         return false;
     }
     return true;
