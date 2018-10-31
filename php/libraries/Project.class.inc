@@ -3,7 +3,7 @@
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -91,13 +91,12 @@ class Project
         return self::$_instances[$projectName];
     }
 
-
     /**
      * This does the work of creating a new Project by inserting a new entry in the
      * Project table and return the object instance of the newly created project.
      *
-     * @param string  $projectName       The project name
-     * @param integer $recruitmentTarget The number of expected participants
+     * @param string       $projectName       The project name
+     * @param integer|null $recruitmentTarget The number of expected participants
      *
      * @note If the recruitmentTarget is missing or null, this project
      * recruitmentTarget will be the sum of all its subprojects recruitmentTarget
@@ -106,8 +105,10 @@ class Project
      * @return Project the Project object
      * @throws DatabaseException | LorisException
      */
-    static public function createNew($projectName, $recruitmentTarget = null)
-    {
+    static public function createNew(
+        string $projectName,
+        ?int $recruitmentTarget = null
+    ): \Project {
 
         // TODO :: Add not null constraint to the name column of the Project table
         if (empty($projectName)) {
@@ -149,7 +150,7 @@ class Project
      *
      * @return integer This project's id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->_projectId;
     }
@@ -161,7 +162,7 @@ class Project
      *
      * @return void
      */
-    public function setId($projectId)
+    public function setId(int $projectId): void
     {
         $this->_projectId = $projectId;
     }
@@ -171,7 +172,7 @@ class Project
      *
      * @return string This project's name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_projectName;
     }
@@ -183,7 +184,7 @@ class Project
      *
      * @return void
      */
-    public function setName($projectName)
+    public function setName(string $projectName): void
     {
         $this->_projectName = $projectName;
     }
@@ -210,7 +211,7 @@ class Project
             // database.
             $this->_recruitmentTarget = $total;
         }
-        return (int )$this->_recruitmentTarget;
+        return (int)$this->_recruitmentTarget;
     }
 
     /**
@@ -218,7 +219,7 @@ class Project
      *
      * @return array A list of object representation of subprojects
      */
-    public function getSubprojects()
+    public function getSubprojects(): array
     {
         $factory        = \NDB_Factory::singleton();
         $subProjectData = $factory->database()->pselect(
@@ -258,7 +259,7 @@ class Project
      *
      * @return array A list of object representation of a basic candidates
      */
-    public function getCandidateIds()
+    public function getCandidateIds(): array
     {
         $factory = \NDB_Factory::singleton();
 
