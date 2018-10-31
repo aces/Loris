@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1)
 /**
  * This file contains any static helper functions used by Loris that don't
  * fit elsewhere or are used in many different modules.
