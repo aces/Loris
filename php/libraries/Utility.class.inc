@@ -770,7 +770,7 @@ class Utility
         ?string $commentID = null,
         ?string $name = null
     ): array {
-    
+
         $DB =& \Database::singleton();
         //get sourcefield using instrument
         if (!is_null($instrument)) {
@@ -804,7 +804,7 @@ class Utility
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @param integer|null $projectID Limit visit labels to labels used by this 
+     * @param integer|null $projectID Limit visit labels to labels used by this
      *                                  project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
