@@ -199,7 +199,7 @@ class ProbandInfo extends React.Component {
         let value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
-          case "enu":
+          case "enu": {
             let types = extraParameters[key2].Type.substring(5);
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
@@ -222,8 +222,9 @@ class ProbandInfo extends React.Component {
                   disabled={disabled}
                   key={key2}
               />
-          );
+            );
             break;
+          }
           case "dat":
             extraParameterFields.push(
               <DateElement

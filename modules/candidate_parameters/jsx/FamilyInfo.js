@@ -18,7 +18,7 @@ class FamilyInfo extends React.Component {
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0 
+      loadedData: 0
     };
 
     /**
@@ -125,7 +125,7 @@ class FamilyInfo extends React.Component {
         // Rerender components
         this.forceUpdate();
       },
-      error: error =>{
+      error: error => {
         let errorMessage = JSON.parse(error.responseText).message;
         this.setState({
           updateResult: "error",

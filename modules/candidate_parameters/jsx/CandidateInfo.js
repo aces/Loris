@@ -20,7 +20,7 @@ class CandidateInfo extends React.Component {
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0 
+      loadedData: 0
     };
 
     /**
@@ -217,7 +217,7 @@ class CandidateInfo extends React.Component {
         let value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
-          case "enu":
+          case "enu": {
             let types = extraParameters[key2].Type.substring(5);
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
@@ -242,6 +242,7 @@ class CandidateInfo extends React.Component {
               />
             );
             break;
+          }
           case "dat":
             extraParameterFields.push(
               <DateElement

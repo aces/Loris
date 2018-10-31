@@ -198,7 +198,7 @@ class ConsentStatus extends React.Component {
                 });
               });
   }
-  
+
   render() {
     if (!this.state.isLoaded) {
       return <Loader />;
