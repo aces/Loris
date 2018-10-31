@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * The UserPermissions class manages checking of user permissions
  *
@@ -72,10 +72,10 @@ class UserPermissions
     /**
      * Loads the users's permissions
      *
-     * @return void
+     * @return bool
      * @access private
      */
-    function setPermissions(): void
+    function setPermissions(): bool
     {
         // create DB object
         $DB =& Database::singleton();
