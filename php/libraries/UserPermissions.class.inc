@@ -196,10 +196,10 @@ class UserPermissions
      *
      * @param array $set Array of permission IDs to add
      *
-     * @return void
+     * @return bool
      * @note   If saving permissions, remove all permissions first
      */
-    function addPermissions(array $set): void
+    function addPermissions(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
