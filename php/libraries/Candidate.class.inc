@@ -852,11 +852,12 @@ class Candidate
      * This parses the PSCID format in the config file into a format that
      * can be converted into a regex for validation.
      *
-     * @param array  $idStructure The structure defined in the config file in the
+     * @param array       $idStructure The structure defined in the config file
+     *                          in the array format returned by NDB_Config.
      *                            array format returned by NDB_Config.
-     * @param string $siteAbbrev  The candidate being validate's site abbreviation,
-     *                            so that it can be inserted into relevant "site"
-     *                            parts of the regex generated.
+     * @param string|null $siteAbbrev  The candidate being validate's site
+     *                  abbreviation, so that it can be inserted into relevant
+     *                            "site" parts of the regex generated.
      *
      * @return array An array of regular expressions defining each section of
      *               the PSCID as defined in config.xml
