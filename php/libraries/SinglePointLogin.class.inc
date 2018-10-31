@@ -237,7 +237,7 @@ class SinglePointLogin
      * Checks whether a given username and password are valid
      *
      * @param string $username The username to validate
-     * @param string $password The username to validate
+     * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
      *                         out a login or password expiry
