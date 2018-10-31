@@ -93,10 +93,10 @@ class SinglePointLogin
     /**
      * Saves the new password if last was expired
      *
-     * @return void
+     * @return bool
      * @access public
      */
-    function save(): void
+    function save(): bool
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
