@@ -387,7 +387,11 @@ class TimePoint
      */
     function getSessionID(): int
     {
-        return $this->_timePointInfo["SessionID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["SessionID"]);
     }
 
     /**
@@ -407,7 +411,11 @@ class TimePoint
      */
     function getCenterID(): int
     {
-        return $this->_timePointInfo['CenterID'];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo['CenterID']);
     }
 
     /**
@@ -417,7 +425,11 @@ class TimePoint
      */
     function getVisitNo(): int
     {
-        return $this->_timePointInfo["VisitNo"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["VisitNo"]);
     }
 
     /**
@@ -437,7 +449,15 @@ class TimePoint
      */
     function getSubprojectID(): ?int
     {
-        return $this->_timePointInfo["SubprojectID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        if (is_numeric($this->_timePointInfo["SubprojectID"])
+        {
+            return intval($this->_timePointInfo["SubprojectID"]);
+        }
+        return null;
     }
 
     /**
