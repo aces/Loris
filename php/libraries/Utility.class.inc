@@ -690,10 +690,10 @@ class Utility
      *
      * @param string $Cand_id candidate ID
      *
-     * @return array
+     * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID(string $Cand_id): array
+    static function getStageUsingCandID(string $Cand_id): string
     {
         $db    =& \Database::singleton();
         $query = "select DISTINCT Current_stage from session where ".
@@ -994,11 +994,11 @@ class Utility
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
      *
-     * @param array $dateElement The date element in QuickForm array format.
+     * @param string $dateElement The date element in QuickForm array format.
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    static function _checkDate(array $dateElement): bool
+    static function _checkDate(string $dateElement): bool
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
