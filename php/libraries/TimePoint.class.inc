@@ -326,9 +326,9 @@ class TimePoint
      *
      * @param string|null $var The variable to retrieve about this timepoint.
      *
-     * @return string The value of $var for this timepoint.
+     * @return mixed The value of $var for this timepoint, or all values.
      */
-    function getData(?string $var = null): string
+    function getData(?string $var = null)
     {
         if (is_null($var)) {
             return $this->_timePointInfo;
@@ -433,9 +433,9 @@ class TimePoint
     /**
      * Returns the SubprojectID of this timepoint.
      *
-     * @return integer the SubprojectID
+     * @return int|null the SubprojectID, or null
      */
-    function getSubprojectID(): int
+    function getSubprojectID(): ?int
     {
         return $this->_timePointInfo["SubprojectID"];
     }
@@ -473,9 +473,9 @@ class TimePoint
     /**
      * Returns the date of screening for this session.
      *
-     * @return string of form "YYYY-MM-DD" (or null)
+     * @return string|null of form "YYYY-MM-DD" (or null)
      */
-    function getDateOfScreening(): string
+    function getDateOfScreening(): ?string
     {
         return $this->_timePointInfo["Date_screening"];
     }
@@ -483,9 +483,9 @@ class TimePoint
     /**
      * Returns the date of visit for this session.
      *
-     * @return string of form "YYYY-MM-DD" (or null)
+     * @return string|null of form "YYYY-MM-DD" (or null)
      */
-    function getDateOfVisit(): string
+    function getDateOfVisit(): ?string
     {
         return $this->_timePointInfo["Date_visit"];
     }
