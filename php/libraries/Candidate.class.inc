@@ -3,7 +3,7 @@
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -54,7 +54,7 @@ class Candidate
      * @return Candidate the Candidate object
      * @static
      */
-    static public function &singleton($candID)
+    static public function &singleton(int $candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
@@ -72,11 +72,11 @@ class Candidate
      *
      * @param integer $candID The 6 digit Loris CandID
      *
-     * @return null As a side-effect loads candidate into current
+     * @return void As a side-effect loads candidate into current
      *              object
      * @throws DatabaseException | LorisException
      */
-    public function select($candID)
+    public function select(int $candID): void
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -186,20 +186,25 @@ class Candidate
     /**
      * Creates a new candidate, assigning CandID and PSCID
      *
-     * @param int    $centerID    centerID of the site to which the candidate will
-     *                            belong
-     * @param string $dateOfBirth date of birth written as YYYY-MM-DD
-     * @param string $edc         estimated date of confinement written as YYYY-MM-DD
-     * @param string $gender      gender, either 'Male' or 'Female'
-     * @param string $PSCID       PSCID specified by the user, if available
+     * @param int         $centerID    centerID of the site to which the
+     *                                  candidate will belong
+     * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
+     * @param string      $edc         estimated date of confinement written as
+     *                                      YYYY-MM-DD
+     * @param string      $gender      gender, either 'Male' or 'Female'
+     * @param string|null $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
     static public function createNew(
-        $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
-    ) {
+        int $centerID,
+        string $dateOfBirth,
+        string $edc,
+        string $gender,
+        ?string $PSCID = null
+    ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
@@ -288,7 +293,7 @@ class Candidate
      * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
      * @throws DatabaseException
      */
-    static function candidateExists($candID, $PSCID)
+    static function candidateExists(int $candID, string $PSCID): bool
     {
         // make a local reference to the Database object
         $factory = NDB_Factory::singleton();
@@ -316,7 +321,7 @@ class Candidate
      * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
-    function getListOfTimePoints()
+    function getListOfTimePoints(): array
     {
         return $this->listOfTimePoints;
     }
@@ -329,7 +334,7 @@ class Candidate
      *
      * @return int SessionID of candidate's nth visit, NULL if none found
      */
-    function getSessionID($visitNo)
+    function getSessionID(int $visitNo): int
     {
         if (isset($this->listOfTimePoints[$visitNo-1]) ) {
             return $this->listOfTimePoints[$visitNo-1];
@@ -341,12 +346,12 @@ class Candidate
     /**
      * Return a piece of data about this candidate
      *
-     * @param string $var The type of data about the Candidate
+     * @param string|null $var The type of data about the Candidate
      *                    to be returned
      *
      * @return mixed The info requested
      */
-    public function getData($var = null)
+    public function getData(?string $var = null)
     {
         if (is_null($var)) {
             return $this->candidateInfo;
@@ -368,7 +373,7 @@ class Candidate
      * @return true on success
      * @throws DatabaseException
      */
-    public function setData($var, $value=null)
+    public function setData(string $var, $value=null): bool
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -395,7 +400,7 @@ class Candidate
      *
      * @return integer CandID of candidate
      */
-    function getProjectID()
+    function getProjectID(): int
     {
         return $this->candidateInfo["ProjectID"];
     }
@@ -406,7 +411,7 @@ class Candidate
      *
      * @return string Project name
      */
-    function getProjectTitle()
+    function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
         return $ProjectList[$this->getProjectID()];
@@ -428,7 +433,7 @@ class Candidate
      *
      * @return string The PSCID identifier for candidate
      */
-    function getPSCID()
+    function getPSCID(): string
     {
         return $this->candidateInfo["PSCID"];
     }
@@ -438,7 +443,7 @@ class Candidate
      *
      * @return string Site name of this candidate's site
      */
-    function getCandidateSite()
+    function getCandidateSite(): string
     {
         return $this->candidateInfo["PSC"];
     }
@@ -449,7 +454,7 @@ class Candidate
      *
      * @return integer The numeric ID of the candidate's site
      */
-    function getCenterID()
+    function getCenterID(): int
     {
         return $this->candidateInfo["CenterID"];
     }
@@ -459,7 +464,7 @@ class Candidate
      *
      * @return string The DoB in YYYY-MM-DD format
      */
-    function getCandidateDoB()
+    function getCandidateDoB(): string
     {
         return $this->candidateInfo["DoB"];
     }
@@ -470,7 +475,7 @@ class Candidate
      *
      * @return string The DoB in YYYY-MM-DD format
      */
-    function getCandidateEDC()
+    function getCandidateEDC(): string
     {
         return $this->candidateInfo["EDC"];
     }
@@ -480,7 +485,7 @@ class Candidate
      *
      * @return string Male|Female String describing the gender
      */
-    function getCandidateGender()
+    function getCandidateGender(): string
     {
         return $this->candidateInfo["Gender"];
     }
@@ -491,7 +496,7 @@ class Candidate
      * @return     string The ethnicity of candidate
      * @deprecated
      */
-    function getCandidateEthnicity()
+    function getCandidateEthnicity(): string
     {
         return $this->candidateInfo["Ethnicity"];
     }
@@ -501,7 +506,7 @@ class Candidate
      *
      * @return string Y|N|null Active flag for this candidate
      */
-    function isActive()
+    function isActive(): string
     {
         return $this->candidateInfo["Active"];
     }
@@ -511,7 +516,7 @@ class Candidate
      *
      * @return string UserID of user who created this candidate.
      */
-    function registeredBy()
+    function registeredBy(): string
     {
         return $this->candidateInfo["RegisteredBy"];
     }
@@ -521,7 +526,7 @@ class Candidate
      *
      * @return string UserID of user who last changed this candidate
      */
-    function lastRecordChangeBy()
+    function lastRecordChangeBy(): string
     {
         return $this->candidateInfo["UserID"];
     }
@@ -532,7 +537,7 @@ class Candidate
      * @return array Associative array in the format SessionID=>Visit_label
      * @throws DatabaseException
      */
-    public function getListOfVisitLabels()
+    public function getListOfVisitLabels(): array
     {
         $factory = NDB_Factory::singleton();
         //make sure it returns an array
@@ -562,7 +567,7 @@ class Candidate
      * @return     integer Next visit number for candidate
      * @deprecated
      */
-    function getNextVisitNo()
+    function getNextVisitNo(): int
     {
         $candID = $this->getCandID();
 
@@ -588,7 +593,7 @@ class Candidate
      *               or NULL if none exist
      * @throws DatabaseException
      */
-    public function getValidSubprojects()
+    public function getValidSubprojects(): array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -615,7 +620,7 @@ class Candidate
      *
      * @return string The visit label for the candidate's first visit
      */
-    public function getFirstVisit()
+    public function getFirstVisit(): string
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -638,7 +643,7 @@ class Candidate
      * @return array List of consents and their associated values for this candidate
      *               The keys of the arrays are the IDs of the consents
      */
-    public function getConsents()
+    public function getConsents(): array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -661,7 +666,7 @@ class Candidate
     *
     * @return integer An unused random 6 digit candidate id
     */
-    static function _generateCandID()
+    static function _generateCandID(): int
     {
         // get a database connection
         $factory = NDB_Factory::singleton();
@@ -689,7 +694,7 @@ class Candidate
     *
     * @return string Project candidate id in format defined by config.xml
     */
-    static function _generatePSCID($prefix)
+    static function _generatePSCID(string $prefix): string
     {
         // get a database connection
         $factory = NDB_Factory::singleton();
@@ -737,7 +742,7 @@ class Candidate
      *
      * @return string Anonymized ExternalID for distributing data
      */
-    static function _generateExternalID()
+    static function _generateExternalID(): string
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -778,15 +783,18 @@ class Candidate
      * Validate's that a PSCID matches the format defined by project
      * config
      *
-     * @param string $PSCID      The PSCID to validate
-     * @param string $siteAbbrev (optional) The site of the candidate
+     * @param string      $PSCID      The PSCID to validate
+     * @param string|null $siteAbbrev (optional) The site of the candidate
      *                           being validated to check against appropriate
      *                           parts of PSCID definition
      *
      * @return boolean True if PSCID is valid
      */
-    static public function validatePSCID($PSCID, $siteAbbrev=null)
-    {
+    static public function validatePSCID(
+        string $PSCID,
+        ?string $siteAbbrev = null
+    ): bool {
+
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
@@ -808,7 +816,7 @@ class Candidate
      *
      * @return string A random string matching format from arrays
      */
-    static function generateRandomStringFromArrays($arrays)
+    static function generateRandomStringFromArrays(array $arrays): string
     {
         $string = "";
         foreach ($arrays AS $array) {
@@ -830,7 +838,7 @@ class Candidate
      *
      * @return string The first string to be used for the PSCID
      */
-    static function generateFirstStringFromArrays($arrays)
+    static function generateFirstStringFromArrays(array $arrays): string
     {
         $string = "";
         foreach ($arrays AS $array) {
@@ -853,8 +861,11 @@ class Candidate
      * @return array An array of regular expressions defining each section of
      *               the PSCID as defined in config.xml
      */
-    static function generateArrays($idStructure, $siteAbbrev=null)
-    {
+    static function generateArrays(
+        array $idStructure,
+        ?string $siteAbbrev = null
+    ): array {
+
         $idStructure = $idStructure['structure']['seq'];
 
         if (!$idStructure[0]) {
@@ -917,7 +928,7 @@ class Candidate
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    static function getParticipantStatusOptions()
+    static function getParticipantStatusOptions(): array
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
@@ -941,7 +952,7 @@ class Candidate
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    static function getParticipantStatusSubOptions($parentID)
+    static function getParticipantStatusSubOptions(int $parentID): array
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
@@ -958,4 +969,3 @@ class Candidate
     }
 
 }
-?>
