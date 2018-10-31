@@ -53,7 +53,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function showPasswordExpiryScreen()
+    function showPasswordExpiryScreen(): void
     {
         // FIXME: This is a temporary hack until the password reset logic is
         // refactored to be sane and keep a token that can be authenticated.
@@ -74,7 +74,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function isLoggedIn()
+    function isLoggedIn(): bool
     {
         return $this->_isLoggedIn;
     }
@@ -85,7 +85,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function passwordExpired()
+    function passwordExpired(): bool
     {
         return $this->_passwordExpired;
     }
@@ -96,7 +96,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function save()
+    function save(): void
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
@@ -141,9 +141,9 @@ class SinglePointLogin
     /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
-     * @return void (but may modified session state)
+     * @return bool Whether a user has successfully authenticated.
      */
-    function authenticate()
+    function authenticate(): bool
     {
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
@@ -154,7 +154,7 @@ class SinglePointLogin
              *
              * @return array headers
              */
-            function getallheaders()
+            function getallheaders(): array
             {
                 $headers = '';
                 foreach ($_SERVER as $name => $value) {
@@ -212,7 +212,7 @@ class SinglePointLogin
      *
      * @return true if the session is valid, false otherwise
      */
-    function JWTAuthenticate($token)
+    function JWTAuthenticate(string $token): bool
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -248,8 +248,12 @@ class SinglePointLogin
      * @return bool true if the username and password are valid
      * @access public
      */
-    function passwordAuthenticate($username, $password, $redirect = true)
-    {
+    function passwordAuthenticate(
+        string $username,
+        string $password,
+        bool $redirect = true
+    ): bool {
+
         $this->_lastError = '';
 
          ///////////////////////////
@@ -367,7 +371,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function setState()
+    function setState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = true;
@@ -386,7 +390,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function clearState()
+    function clearState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = false;
@@ -402,12 +406,12 @@ class SinglePointLogin
      /**
      * Inserts the login (or failed-login) detail into the user_login_history
      *
-     * @param String $description description for the failed-login
-     * @param Array  $setArray    contains data to be inserted
+     * @param string $description description for the failed-login
+     * @param array  $setArray    contains data to be inserted
      *
-     * @return null
+     * @return void
       */
-    function insertFailedDetail($description, $setArray)
+    function insertFailedDetail(string $description, array $setArray): void
     {
         // create DB object
         $DB =& Database::singleton();
@@ -424,13 +428,16 @@ class SinglePointLogin
      * As a side-effect, if true, will also set user field 'active' to 'N'
      * Need to have already confirmed valid user
      *
-     * @param String $username            username
-     * @param Int    $maximumDaysInactive Most allowable days for inactivity
+     * @param string $username            username
+     * @param int    $maximumDaysInactive Most allowable days for inactivity
      *
      * @return bool - true if the user has now been disabled
      */
-    function disabledDueToInactivity($username, $maximumDaysInactive)
-    {
+    function disabledDueToInactivity(
+        string $username,
+        int $maximumDaysInactive
+    ): bool {
+
         $DB    =& Database::singleton();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history 
@@ -452,4 +459,3 @@ class SinglePointLogin
         return false;
     }
 }
-?>
