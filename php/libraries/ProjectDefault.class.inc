@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS. This is a default project for studies that don't use projects.
