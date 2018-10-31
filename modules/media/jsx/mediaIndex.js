@@ -86,7 +86,7 @@ class MediaIndex extends React.Component {
   formElements() {
     const options = this.state.data.options;
     return [
-      <TextboxElement name='pscid' label='PSCID'/>,
+      <TextboxElement name='pSCID' label='PSCID'/>,
       <SelectElement name='visitLabel' label='Visit Label' options={options.visits}/>,
       <SelectElement name='instrument' label='Instrument' options={options.instruments}/>,
       <TextboxElement name='fileName' label='File Name'/>,

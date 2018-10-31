@@ -46,4 +46,7 @@ class FilterableDataTable extends Component {
   }
 }
 
+// Include defaultPops
+// Include propTypes
+
 export default FilterableDataTable;

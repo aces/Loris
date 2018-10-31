@@ -18,10 +18,6 @@ import Panel from 'Panel';
  *
  * Keeps track of filter object and sends it to parent on every update.
  *
- * //HACK/NOTE: Loris has special behaviour for `candID` attribute in the query string,
- * making it impossible to use it for selection filters. This components renames
- * all `candID` fields to `candidateID` automatically before appending them to URL.
- *
  */
 class FilterForm extends Component {
   constructor(props) {
