@@ -429,12 +429,19 @@ class StaticDataTable extends Component {
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
+          // create mapping between rowHeaders and rowData in a row Object
+          const row = {};
+          this.props.Headers.forEach((header, index) => {
+            row[header] = this.props.Data[index[i].RowIdx];
+          });
           data = this.props.getFormattedCell(
             this.props.Headers[j],
             data,
-            this.props.Data[index[i].RowIdx],
-            this.props.Headers
+            row
           );
+          if (this.props.hiddenHeaders.indexOf(this.props.Headers[j]) > -1) {
+            data = null;
+          }
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.

@@ -328,7 +328,7 @@ class SelectElement extends Component {
       }
     }
 
-    this.props.onUserInput(this.props.name, value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'select');
   }
 
   render() {
@@ -780,7 +780,7 @@ class TextboxElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, this.props.id, 'textbox');
   }
 
   handleBlur(e) {

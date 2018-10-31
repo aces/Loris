@@ -80,6 +80,7 @@ const config = [{
       util: path.resolve(__dirname, './htdocs/js/util'),
       jsx: path.resolve(__dirname, './jsx'),
       Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
+      FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
       DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
       FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
       Form: path.resolve(__dirname, './jsx/Form'),
