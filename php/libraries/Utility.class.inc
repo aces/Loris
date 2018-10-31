@@ -707,15 +707,15 @@ class Utility
      *
      * @param string $Cand_id candidate ID
      *
-     * @return array
+     * @return int
      * @throws DatabaseException
      */
-    static function getSubprojectIDUsingCandID(string $Cand_id): array
+    static function getSubprojectIDUsingCandID(string $Cand_id): int
     {
         $db    =& \Database::singleton();
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
-        return $stage[0]['SubprojectID'];
+        return intval($stage[0]['SubprojectID']);
     }
 
     /**
