@@ -365,15 +365,19 @@ class Candidate
 
     /**
      * Sets some data about the candidate and saves it into the
-     * database
+     * database.
      *
-     * @param string $var   The variable to be set
-     * @param mixed  $value The value to be set to
+     * @param mixed $var   Either a key-value pair passed as an array or just
+     *                          a key.
+     * @param mixed $value The value to be set to when $var is a string key.
      *
      * @return true on success
      * @throws DatabaseException
+     * @note   This function is sometimes called as a key-value array and other
+     * times with two separate key arguments. This should be refactored
+     * to enforce one standard way of calling the function.
      */
-    public function setData(string $var, $value=null): bool
+    public function setData($var, $value = null): bool
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
