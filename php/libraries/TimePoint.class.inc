@@ -351,7 +351,7 @@ class TimePoint
      *
      * @return void (side-effect modifies session table.)
      */
-    function setData(string $var, ?string $value = null): void
+    function setData($var, ?string $value = null): void
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
