@@ -196,7 +196,7 @@ class UserPermissions
      *
      * @param array $set Array of permission IDs to add
      *
-     * @return bool
+     * @return bool True
      * @note   If saving permissions, remove all permissions first
      */
     function addPermissions(array $set): bool
@@ -216,7 +216,7 @@ class UserPermissions
         }
 
         // refresh the user permissions
-        $success = $this->setPermissions();
+        $this->setPermissions();
 
         return true;
     }
@@ -227,10 +227,10 @@ class UserPermissions
      *
      * @param array|null $set Array of permission IDs to remove
      *
-     * @return void
+     * @return bool
      * @note   Passing no arguments deletes all permissions
      */
-    function removePermissions(?array $set = null): void
+    function removePermissions(?array $set = null): bool
     {
         // create DB object
         $DB =& Database::singleton();
