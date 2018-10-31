@@ -373,7 +373,11 @@ class TimePoint
      */
     function getCandID(): int
     {
-        return $this->_timePointInfo["CandID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["CandID"]);
     }
 
     /**
