@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
@@ -81,7 +81,6 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
