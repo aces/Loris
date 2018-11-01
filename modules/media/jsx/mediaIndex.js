@@ -18,7 +18,7 @@ class MediaIndex extends React.Component {
      */
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.formElements = this.formElements.bind(this);
+    this.renderFilterFormElements = this.renderFilterFormElements.bind(this);
   }
 
   componentDidMount() {
@@ -83,9 +83,14 @@ class MediaIndex extends React.Component {
     }
   }
 
-  formElements() {
+  /**
+   * Renders all Form Elements for the filter.
+   *
+   * @return {*} filterFormElements
+   */
+  renderFilterFormElements() {
     const options = this.state.data.options;
-    return [
+    const filterFormElements = [
       <TextboxElement name='pSCID' label='PSCID'/>,
       <SelectElement name='visitLabel' label='Visit Label' options={options.visits}/>,
       <SelectElement name='instrument' label='Instrument' options={options.instruments}/>,
@@ -94,10 +99,23 @@ class MediaIndex extends React.Component {
       <SelectElement name='language' label='Language' options={options.languages}/>,
       <SelectElement name='fileType' label='File Type' options={options.fileTypes}/>,
       <TextboxElement name='uploadedBy' label='Uploaded By'/>,
-      <TextboxElement name='hideFile' label='File Visibility'/>,
     ];
+    if (loris.userHasPermission('superUser')) {
+      filterFormElements.push(
+        <SelectElement name='hideFile' label='File Visibility' options={options.hidden}/>,
+      );
+    }
+    return filterFormElements;
   }
 
+  /**
+   * Returns headers for datatable
+   *
+   * XXX: Currently, the order of these headers MUST match the order of the
+   * queried columns in _setupVariables() in media.class.inc
+   *
+   * @return {object}
+   */
   headers() {
     return {
       all: [
@@ -111,17 +129,17 @@ class MediaIndex extends React.Component {
         'Date Taken',
         'Comments',
         'Date Uploaded',
-        'Edit Metadata',
         'File Type',
         'Cand ID',
         'Session ID',
         'Hide File',
+        'Edit Metadata',
       ],
       hidden: [
+        'File Type',
         'Cand ID',
         'Session ID',
         'Hide File',
-        'File Type',
       ],
     };
   }
@@ -158,7 +176,7 @@ class MediaIndex extends React.Component {
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
           >
-            {this.formElements()}
+            {this.renderFilterFormElements()}
           </FilterableDataTable>
         </TabPane>
         {uploadTab()}

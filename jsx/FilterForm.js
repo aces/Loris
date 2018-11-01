@@ -1,10 +1,3 @@
-/**
- * This file contains React component for FilterForm
- *
- * @author Loris Team
- * @version 1.1.0
- *
- */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
@@ -16,14 +9,12 @@ import Panel from 'Panel';
  * Adds necessary filter callbacks to all children and passes them to FormElement
  * for proper rendering.
  *
- * Keeps track of filter object and sends it to parent on every update.
+ * Alter the filter object and sends it to parent on every update.
  *
  */
 class FilterForm extends Component {
   constructor(props) {
     super(props);
-
-    // Bind component instance to custom methods
     this.onElementUpdate = this.onElementUpdate.bind(this);
   }
 
@@ -32,8 +23,8 @@ class FilterForm extends Component {
    *
    * @param {string} name - form element type (i.e component name)
    * @param {string} value - the name of the form element
-   * @param {string} id
-   * @param {string} type
+   * @param {string} id - id of the form element
+   * @param {string} type - type of the form element
    */
   onElementUpdate(name, value, id, type) {
     const filter = JSON.parse(JSON.stringify(this.props.filter));
@@ -41,9 +32,10 @@ class FilterForm extends Component {
     if (value === null || value === '') {
       delete filter[name];
     } else {
-      filter[name] = {};
-      filter[name]['value'] = value;
-      filter[name]['exactMatch'] = exactMatch;
+      filter[name] = {
+        value: value,
+        exactMatch: exactMatch,
+      };
     }
 
     this.props.updateFilter(filter);

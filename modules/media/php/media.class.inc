@@ -109,12 +109,22 @@ class Media extends \NDB_Menu_Filter
             $languageList[$language] = $language;
         }
 
+        $hiddenOptions = [];
+        if ($this->hasHidePermission) {
+            $hiddenOptions = array(
+                               0 => 'Visible only',
+                               1 => 'Hidden only',
+                             );
+        }
+
         $this->options = [
             'fileTypes'    => $fileTypeList,
             'visits'       => $visitList,
             'sites'        => $siteList,
             'instruments'  => $instrumentList,
             'languages'    => $languageList,
+            'hidden'       => $hiddenOptions,
+
         ];
 
         return true;

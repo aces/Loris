@@ -1,8 +1,17 @@
 import React, {Component} from 'react';
-
 import StaticDataTable from 'jsx/StaticDataTable';
 import FilterForm from 'jsx/FilterForm';
+import PropTypes from 'prop-types';
 
+/**
+ * FilterableDataTable component.
+ * A wrapper for all datatables that handles filtering.
+ *
+ * Handles the updating and clearing of the filter state based on changes sent
+ * from the FitlerForm.
+ *
+ * Passes the Filter to the Datatable.
+ */
 class FilterableDataTable extends Component {
   constructor(props) {
     super(props);
@@ -13,10 +22,18 @@ class FilterableDataTable extends Component {
     this.clearFilter = this.clearFilter.bind(this);
   }
 
+  /**
+   * Updates filter state
+   *
+   * @param {object} filter passed from FilterForm
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Sets Filter to empty object
+   */
   clearFilter() {
     this.updateFilter({});
   }
@@ -46,7 +63,12 @@ class FilterableDataTable extends Component {
   }
 }
 
-// Include defaultPops
-// Include propTypes
+FilterableDataTable.propTypes = {
+  name: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
+  data: PropTypes.object.isRequired,
+  headers: PropTypes.object.isRequired,
+  getFormattedCell: PropTypes.func,
+};
 
 export default FilterableDataTable;
