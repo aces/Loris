@@ -145,7 +145,7 @@ class MediaIndex extends Component {
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <div style={{height: 500}}><Loader/></div>;
     }
 
     const tabList = [{id: 'browse', label: 'Browse'}];
