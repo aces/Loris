@@ -1,10 +1,11 @@
+import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 
-class MediaIndex extends React.Component {
+class MediaIndex extends Component {
   constructor(props) {
     super(props);
 
