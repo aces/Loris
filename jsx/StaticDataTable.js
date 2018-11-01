@@ -310,7 +310,6 @@ class StaticDataTable extends Component {
 
     // Handle numeric inputs
     if (typeof filterData === 'number') {
-      console.error('number');
       let intData = Number.parseInt(data, 10);
       result = (filterData === intData);
     }
@@ -322,10 +321,6 @@ class StaticDataTable extends Component {
 
       if (exactMatch) {
         result = (searchString === searchKey);
-        console.error(searchString);
-        console.error(searchKey);
-
-        console.error(result);
       } else {
         result = (searchString.indexOf(searchKey) > -1);
       }
