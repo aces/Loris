@@ -28,8 +28,8 @@ class MediaIndex extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    *
    * @return {object}
@@ -147,17 +147,19 @@ class MediaIndex extends React.Component {
         );
       }
     };
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterableDataTable
             name="media_filter"
-            formElements={this.formElements()}
             data={this.state.data.Data}
             headers={this.headers()}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
-          />
+          >
+            {this.formElements()}
+          </FilterableDataTable>
         </TabPane>
         {uploadTab()}
       </Tabs>

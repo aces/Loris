@@ -55,7 +55,7 @@ class FilterForm extends Component {
         child,
         {
           ...child.props,
-          value: (this.props.filter[child.props.name]||{}).value,
+          value: (this.props.filter[child.props.name] || {}).value,
           onUserInput: this.onElementUpdate,
           key: child.props.name,
         },

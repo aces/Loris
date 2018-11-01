@@ -32,7 +32,7 @@ class FilterableDataTable extends Component {
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         >
-          {this.props.formElements}
+          {this.props.children}
         </FilterForm>
         <StaticDataTable
           Data={this.props.data}
