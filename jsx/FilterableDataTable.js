@@ -39,7 +39,7 @@ class FilterableDataTable extends Component {
           Headers={this.props.headers.all}
           hiddenHeaders={this.props.headers.hidden}
           Filter={this.state.filter}
-          getFormattedCell={this.props.formatColumn}
+          getFormattedCell={this.props.getFormattedCell}
           freezeColumn="File Name"
         />
       </div>);

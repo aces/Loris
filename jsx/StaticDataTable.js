@@ -429,18 +429,19 @@ class StaticDataTable extends Component {
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          // create mapping between rowHeaders and rowData in a row Object
-          const row = {};
-          this.props.Headers.forEach((header, index) => {
-            row[header] = this.props.Data[index[i].RowIdx];
-          });
-          data = this.props.getFormattedCell(
-            this.props.Headers[j],
-            data,
-            row
-          );
           if (this.props.hiddenHeaders.indexOf(this.props.Headers[j]) > -1) {
             data = null;
+          } else {
+            // create mapping between rowHeaders and rowData in a row Object
+            const row = {};
+            this.props.Headers.forEach((header, k) => {
+              row[header] = this.props.Data[index[i].RowIdx][k];
+            });
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              row
+            );
           }
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
