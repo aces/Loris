@@ -44,7 +44,7 @@ class FilterableDataTable extends Component {
         <Filter
           name={this.props.name + '_filter'}
           id={this.props.name + '_filter'}
-          columns={3}
+          columns={this.props.columns}
           filter={this.state.filter}
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
@@ -63,11 +63,16 @@ class FilterableDataTable extends Component {
   }
 }
 
+FilterableDataTable.defaultProps = {
+  columns: 3,
+};
+
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
   data: PropTypes.object.isRequired,
   headers: PropTypes.object.isRequired,
+  columns: PropTypes.integer,
   getFormattedCell: PropTypes.func,
 };
 

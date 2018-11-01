@@ -56,11 +56,14 @@ class Filter extends Component {
 
     return (
       <Panel
-        id={this.props.id}
         height={this.props.height}
         title={this.props.title}
       >
-        <FormElement {...this.props}>
+        <FormElement
+          id={this.props.id}
+          name={this.props.name}
+          columns={this.props.columns}
+        >
           {formChildren}
           <ButtonElement
             label="Clear Filters"
