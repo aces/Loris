@@ -112,20 +112,20 @@ class Media extends \NDB_Menu_Filter
         $hiddenOptions = [];
         if ($this->hasHidePermission) {
             $hiddenOptions = array(
-                               0 => 'Visible only',
-                               1 => 'Hidden only',
+                              0 => 'Visible only',
+                              1 => 'Hidden only',
                              );
         }
 
         $this->options = [
-            'fileTypes'    => $fileTypeList,
-            'visits'       => $visitList,
-            'sites'        => $siteList,
-            'instruments'  => $instrumentList,
-            'languages'    => $languageList,
-            'hidden'       => $hiddenOptions,
+                          'fileTypes'   => $fileTypeList,
+                          'visits'      => $visitList,
+                          'sites'       => $siteList,
+                          'instruments' => $instrumentList,
+                          'languages'   => $languageList,
+                          'hidden'      => $hiddenOptions,
 
-        ];
+                         ];
 
         return true;
     }
@@ -188,7 +188,7 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result = $this->toArray();
+        $result            = $this->toArray();
         $result['options'] = $this->options;
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);

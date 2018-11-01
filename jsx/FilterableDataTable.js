@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import StaticDataTable from 'jsx/StaticDataTable';
-import FilterForm from 'jsx/FilterForm';
+import Filter from 'jsx/Filter';
 import PropTypes from 'prop-types';
 
 /**
@@ -41,16 +41,16 @@ class FilterableDataTable extends Component {
   render() {
     return (
       <div>
-        <FilterForm
+        <Filter
           name={this.props.name + '_filter'}
-          id={this.props.name + '_filter_form'}
+          id={this.props.name + '_filter'}
           columns={3}
           filter={this.state.filter}
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         >
           {this.props.children}
-        </FilterForm>
+        </Filter>
         <StaticDataTable
           Data={this.props.data}
           Headers={this.props.headers.all}

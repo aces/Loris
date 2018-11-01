@@ -13,12 +13,9 @@ class MediaIndex extends React.Component {
       isLoaded: false,
     };
 
-    /**
-     * Bind component instance to custom methods
-     */
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.renderFilterFormElements = this.renderFilterFormElements.bind(this);
+    this.renderFilterElements = this.renderFilterElements.bind(this);
   }
 
   componentDidMount() {
@@ -84,11 +81,11 @@ class MediaIndex extends React.Component {
   }
 
   /**
-   * Renders all Form Elements for the filter.
+   * Renders all elements for the filter.
    *
    * @return {*} filterFormElements
    */
-  renderFilterFormElements() {
+  renderFilterElements() {
     const options = this.state.data.options;
     const filterFormElements = [
       <TextboxElement name='pSCID' label='PSCID'/>,
@@ -170,13 +167,13 @@ class MediaIndex extends React.Component {
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterableDataTable
-            name="media_filter"
+            name="media"
             data={this.state.data.Data}
             headers={this.headers()}
             getFormattedCell={this.formatColumn}
             freezeColumn="File Name"
           >
-            {this.renderFilterFormElements()}
+            {this.renderFilterElements()}
           </FilterableDataTable>
         </TabPane>
         {uploadTab()}
