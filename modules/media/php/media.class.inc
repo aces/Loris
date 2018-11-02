@@ -33,7 +33,7 @@ class Media extends \NDB_Menu_Filter
     public $hasHidePermission  = false;
     public $AjaxModule         = true;
     public $skipTemplate       = true;
-    public $options;
+    public $fieldOptions;
 
     /**
      * Check user permissions
@@ -117,7 +117,7 @@ class Media extends \NDB_Menu_Filter
                              );
         }
 
-        $this->options = [
+        $this->fieldOptions = [
                           'fileTypes'   => $fileTypeList,
                           'visits'      => $visitList,
                           'sites'       => $siteList,
