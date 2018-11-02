@@ -92,6 +92,7 @@ const config = [{
       Panel: path.resolve(__dirname, './jsx/Panel'),
       ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
       StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
+      DataTable: path.resolve(__dirname, './jsx/DataTable'),
       Tabs: path.resolve(__dirname, './jsx/Tabs'),
     },
     extensions: ['*', '.js', '.jsx', '.json'],

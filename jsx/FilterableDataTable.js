@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 import PropTypes from 'prop-types';
 
@@ -51,7 +51,7 @@ class FilterableDataTable extends Component {
         >
           {this.props.children}
         </Filter>
-        <StaticDataTable
+        <DataTable
           Data={this.props.data}
           Headers={this.props.headers.all}
           hiddenHeaders={this.props.headers.hidden}

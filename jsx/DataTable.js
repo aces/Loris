@@ -1,7 +1,5 @@
-/* exported RStaticDataTable */
-
 /**
- * This file contains React component for Static Data Table
+ * This file contains React component for Data Table
  *
  * @author Loris Team
  * @version 1.0.0
@@ -14,10 +12,10 @@ import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 
 /**
- * Static Data Table component
+ * Data Table component
  * Displays a set of data that is receives via props.
  */
-class StaticDataTable extends Component {
+class DataTable extends Component {
   constructor(props) {
     super(props);
 
@@ -429,12 +427,20 @@ class StaticDataTable extends Component {
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          data = this.props.getFormattedCell(
-            this.props.Headers[j],
-            data,
-            this.props.Data[index[i].RowIdx],
-            this.props.Headers
-          );
+          if (this.props.hiddenHeaders.indexOf(this.props.Headers[j]) > -1) {
+            data = null;
+          } else {
+            // create mapping between rowHeaders and rowData in a row Object
+            const row = {};
+            this.props.Headers.forEach((header, k) => {
+              row[header] = this.props.Data[index[i].RowIdx][k];
+            });
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              row
+            );
+          }
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.
@@ -547,7 +553,7 @@ class StaticDataTable extends Component {
     );
   }
 }
-StaticDataTable.propTypes = {
+DataTable.propTypes = {
   Headers: PropTypes.array.isRequired,
   Data: PropTypes.array.isRequired,
   RowNumLabel: PropTypes.string,
@@ -557,7 +563,7 @@ StaticDataTable.propTypes = {
   onSort: PropTypes.func,
   Hide: PropTypes.object,
 };
-StaticDataTable.defaultProps = {
+DataTable.defaultProps = {
   Headers: [],
   Data: {},
   RowNumLabel: 'No.',
@@ -569,9 +575,4 @@ StaticDataTable.defaultProps = {
   },
 };
 
-let RStaticDataTable = React.createFactory(StaticDataTable);
-
-window.StaticDataTable = StaticDataTable;
-window.RStaticDataTable = RStaticDataTable;
-
-export default StaticDataTable;
+export default DataTable;
