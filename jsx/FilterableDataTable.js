@@ -72,7 +72,7 @@ FilterableDataTable.propTypes = {
   children: PropTypes.element.isRequired,
   data: PropTypes.object.isRequired,
   headers: PropTypes.object.isRequired,
-  columns: PropTypes.integer,
+  columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
 };
 
