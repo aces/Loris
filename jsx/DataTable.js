@@ -32,7 +32,6 @@ class DataTable extends Component {
     this.changeRowsPerPage = this.changeRowsPerPage.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
     this.countFilteredRows = this.countFilteredRows.bind(this);
-    this.toCamelCase = this.toCamelCase.bind(this);
     this.getSortedRows = this.getSortedRows.bind(this);//
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
   }
@@ -90,7 +89,7 @@ class DataTable extends Component {
         this.state.SortOrder !== prevState.SortOrder)
     ) {
       let index = this.getSortedRows();
-      this.props.onSort(index, this.props.data, this.props.headers);
+      this.props.onSort(index, this.props.data, this.props.fields);
     }
   }
 
@@ -149,7 +148,7 @@ class DataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    const headerList = this.props.headers.map((header) => header.label);
+    const headerList = this.props.fields.map((field) => field.header);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
@@ -166,7 +165,7 @@ class DataTable extends Component {
         0
     );
     let tableData = this.props.data;
-    let headersData = this.props.headers;
+    let headersData = this.props.fields;
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -181,7 +180,7 @@ class DataTable extends Component {
       let keywordMatch = 0;
       for (let j = 0; j < headersData.length; j++) {
         let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword(headersData[j].label, data)) {
+        if (this.hasFilterKeyword(headersData[j].header, data)) {
           headerCount++;
         }
         if (useKeyword) {
@@ -204,13 +203,6 @@ class DataTable extends Component {
     }
 
     return (filterMatchCount === 0) ? tableData.length : filterMatchCount;
-  }
-
-  toCamelCase(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-      if (Number(match) === 0) return '';
-      return index === 0 ? match.toLowerCase() : match.toUpperCase();
-    });
   }
 
   getSortedRows() {
@@ -285,22 +277,21 @@ class DataTable extends Component {
    *
    * Note: Search is case-insensitive.
    *
-   * @param {string} headerData column name
+   * @param {string} index column name
    * @param {string} data search string
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword(headerData, data) {
-    let header = this.toCamelCase(headerData);
+  hasFilterKeyword(index, data) {
     let filterData = null;
     let exactMatch = false;
     let result = false;
     let searchKey = null;
     let searchString = null;
 
-    if (this.props.filter[header]) {
-      filterData = this.props.filter[header].value;
-      exactMatch = this.props.filter[header].exactMatch;
+    if (this.props.filter[index]) {
+      filterData = this.props.filter[index].value;
+      exactMatch = this.props.filter[index].exactMatch;
     }
 
     // Handle null inputs
@@ -341,6 +332,7 @@ class DataTable extends Component {
     }
     return result;
   }
+
   render() {
     if (this.props.data === null || this.props.data.length === 0) {
       return (
@@ -356,20 +348,20 @@ class DataTable extends Component {
       </th>,
     ];
 
-    for (let i = 0; i < this.props.headers.length; i += 1) {
-      if (this.props.headers[i].display === true) {
+    for (let i = 0; i < this.props.fields.length; i += 1) {
+      if (this.props.fields[i].display === true) {
         let colIndex = i + 1;
-        if (this.props.headers[i].freezeColumn === true) {
+        if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.headers[i].label}
+              {this.props.fields[i].header}
             </th>
           );
         } else {
           headers.push(
             <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.headers[i].label}
+              {this.props.fields[i].header}
             </th>
           );
         }
@@ -402,7 +394,7 @@ class DataTable extends Component {
 
       // Iterates through headers to populate row columns
       // with corresponding data
-      for (let j = 0; j < this.props.headers.length; j += 1) {
+      for (let j = 0; j < this.props.fields.length; j += 1) {
         let data = 'Unknown';
 
         // Set column data
@@ -410,9 +402,11 @@ class DataTable extends Component {
           data = this.props.data[index[i].RowIdx][j];
         }
 
-        if (this.hasFilterKeyword(this.props.headers[j].label, data)) {
-          filterMatchCount++;
-          filteredData.push(this.props.data[index[i].RowIdx]);
+        if (this.props.fields[j].filter) {
+          if (this.hasFilterKeyword(this.props.fields[j].filter.name, data)) {
+            filterMatchCount++;
+            filteredData.push(this.props.data[index[i].RowIdx]);
+          }
         }
 
         if (useKeyword === true) {
@@ -428,16 +422,16 @@ class DataTable extends Component {
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          if (this.props.headers[j].display === false) {
+          if (this.props.fields[j].display === false) {
             data = null;
           } else {
             // create mapping between rowHeaders and rowData in a row Object
             const row = {};
-            this.props.headers.forEach((header, k) => {
-              row[header.label] = this.props.data[index[i].RowIdx][k];
+            this.props.fields.forEach((field, k) => {
+              row[field.header] = this.props.data[index[i].RowIdx][k];
             });
             data = this.props.getFormattedCell(
-              this.props.headers[j].label,
+              this.props.fields[j].header,
               data,
               row
             );

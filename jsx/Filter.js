@@ -14,7 +14,7 @@ import Panel from 'Panel';
 class Filter extends Component {
   constructor(props) {
     super(props);
-    this.onElementUpdate = this.onElementUpdate.bind(this);
+    this.onFieldUpdate = this.onFieldUpdate.bind(this);
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
@@ -26,7 +26,7 @@ class Filter extends Component {
    * @param {string} id - id of the form element
    * @param {string} type - type of the form element
    */
-  onElementUpdate(name, value, id, type) {
+  onFieldUpdate(name, value, id, type) {
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = type === 'textbox' ? false : true;
     if (value === null || value === '') {
@@ -42,36 +42,34 @@ class Filter extends Component {
   }
 
   renderFilterFields() {
-    return this.props.fields.map((field) => {
-      if (field.hide === true) {
-        return null;
-      }
-      switch (field.type) {
-      case 'text':
-        return (
-          <TextboxElement
-            name={field.name}
-            key={field.name}
-            label={field.label}
-            value={(this.props.filter[field.name] || {}).value}
-            onUserInput={this.onElementUpdate}
-          />
-        );
-      case 'select':
-        return (
-          <SelectElement
-            name={field.name}
-            key={field.name}
-            label={field.label}
-            value={(this.props.filter[field.name] || {}).value}
-            options={field.options}
-            onUserInput={this.onElementUpdate}
-          />
-        );
+    return this.props.fields.reduce((result, field) => {
+      const filter = field.filter;
+      if (filter && filter.hide !== true) {
+        let element;
+        switch (filter.type) {
+        case 'text':
+          element = <TextboxElement key={filter.name}/>;
+          break;
+        case 'select':
+          element = <SelectElement key={filter.name} options={filter.options}/>;
+          break;
+        default:
+          element = <TextboxElement key={filter.name}/>;
+        }
+
+        result.push(React.cloneElement(
+          element,
+          {
+            name: filter.name,
+            label: filter.label,
+            value: (this.props.filter[filter.name] || {}).value,
+            onUserInput: this.onFieldUpdate,
+          }
+        ));
       }
 
-      return null;
-    });
+      return result;
+    }, []);
   }
 
   render() {

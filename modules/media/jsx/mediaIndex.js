@@ -55,12 +55,13 @@ class MediaIndex extends Component {
     // Set class to 'bg-danger' if file is hidden.
     const style = (row['Hide File'] === '1') ? 'bg-danger' : '';
 
+    let result = <td className={style}>{cell}</td>;
     switch (column) {
     case 'File Name':
       if (this.props.hasPermission('media_write')) {
         const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
           encodeURIComponent(row['File Name']);
-        return (
+        result = (
           <td className={style}>
             <a href={downloadURL} target="_blank" download={row['File Name']}>
               {cell}
@@ -73,16 +74,16 @@ class MediaIndex extends Component {
       if (row['Cand ID'] !== null && row['Session ID']) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
           row['Cand ID'] + '&sessionID=' + row['Session ID'];
-        return <td className={style}><a href={sessionURL}>{cell}</a></td>;
+        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
     case 'Edit Metadata':
       const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-      return <td className={style}><a href={editURL}>Edit</a></td>;
+      result = <td className={style}><a href={editURL}>Edit</a></td>;
       break;
     }
 
-    return <td className={style}>{cell}</td>;
+    return result;
   }
 
   render() {
@@ -96,45 +97,124 @@ class MediaIndex extends Component {
       return <Loader/>;
     }
 
-    const options = this.state.data.fieldOptions;
-    const fields = [
-      {name: 'pSCID', label: 'PSCID', type: 'text'},
-      {name: 'visitLabel', label: 'Visit Label', type: 'select',
-        options: options.visits},
-      {name: 'instrument', label: 'Instrument', type: 'select',
-        options: options.instruments},
-      {name: 'fileName', label: 'File Name', type: 'text'},
-      {name: 'site', label: 'For Site', type: 'select',
-        options: options.sites},
-      {name: 'language', label: 'Language', type: 'select',
-        options: options.languages},
-      {name: 'fileType', label: 'File Type', type: 'select',
-        options: options.fileTypes},
-      {name: 'uploadedBy', label: 'Uploaded By', type: 'text'},
-      {name: 'hideFile', label: 'File Visibility', type: 'select',
-        options: options.hidden, hide: !this.props.hasPermission('superUser')},
-    ];
-
    /**
     * XXX: Currently, the order of these headers MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
-    const headers = [
-     {label: 'File Name', display: true},
-     {label: 'PSCID', display: true},
-     {label: 'Visit Label', display: true},
-     {label: 'Language', display: true},
-     {label: 'Instrument', display: true},
-     {label: 'Site', display: true},
-     {label: 'Uploaded By', display: true},
-     {label: 'Date Taken', display: true},
-     {label: 'Comments', display: true},
-     {label: 'Date Uploaded', display: true},
-     {label: 'File Type', display: false},
-     {label: 'Cand ID', display: false},
-     {label: 'Session ID', display: false},
-     {label: 'Hide File', display: false},
-     {label: 'Edit Metadata', display: true},
+    const options = this.state.data.fieldOptions;
+    const fields = [
+      {
+        header: 'File Name',
+        display: true,
+        filter: {
+          name: 'fileName',
+          label: 'File Name',
+          type: 'text',
+        },
+      },
+      {
+        header: 'PSCID',
+        display: true,
+        filter: {
+          name: 'pscid',
+          label: 'PSCID',
+          type: 'text',
+        },
+      },
+      {
+        header: 'Visit Label',
+        display: true,
+        filter: {
+          name: 'visitLabel',
+          label: 'Visit Label',
+          type: 'select',
+          options: options.visits,
+        },
+      },
+      {
+        header: 'Language',
+        display: true,
+        filter: {
+          name: 'language',
+          label: 'Language',
+          type: 'select',
+          options: options.languages,
+        },
+      },
+      {
+        header: 'Instrument',
+        display: true,
+        filter: {
+          name: 'instrument',
+          label: 'Instrument',
+          type: 'select',
+          options: options.instruments,
+        },
+      },
+      {
+        header: 'Site',
+        display: true,
+        filter: {
+          name: 'site',
+          label: 'For Site',
+          type: 'select',
+          options: options.sites,
+        },
+      },
+      {
+        header: 'Uploaded By',
+        display: true,
+        filter: {
+          name: 'uploadedBy',
+          label: 'Uploaded By',
+          type: 'text',
+        },
+      },
+      {
+        header: 'Date Taken',
+        display: true,
+      },
+      {
+        header: 'Comments',
+        display: true,
+      },
+      {
+        header: 'Date Uploaded',
+        display: true,
+      },
+      {
+        header: 'File Type',
+        display: false,
+        filter: {
+          name: 'fileType',
+          label: 'File Type',
+          type: 'select',
+          options: options.fileTypes,
+        },
+      },
+      {
+        header: 'Cand ID',
+        display: false,
+      },
+      {
+        header: 'Session ID',
+        display: false,
+      },
+      {
+        header: 'Hide File',
+        display: false,
+        filter: {
+          name: 'hideFile',
+          label: 'File Visibility',
+          type: 'select',
+          options: options.hidden,
+          hide: !this.props.hasPermission('superUser'),
+        },
+      },
+      {
+        header: 'Edit Metadata',
+        display: true,
+      },
     ];
     const tabList = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
@@ -158,7 +238,6 @@ class MediaIndex extends Component {
           <FilterableDataTable
             name="media"
             data={this.state.data.Data}
-            headers={headers}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />

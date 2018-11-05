@@ -54,7 +54,7 @@ class FilterableDataTable extends Component {
         />
         <DataTable
           data={this.props.data}
-          headers={this.props.headers}
+          fields={this.props.fields}
           filter={this.state.filter}
           getFormattedCell={this.props.getFormattedCell}
         />
