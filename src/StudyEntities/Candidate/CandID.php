@@ -1,6 +1,6 @@
 <?php
 namespace LORIS\StudyEntities\Candidate;
-class CandID extends ValidatableIdentifier 
+class CandID extends ValidatableIdentifier
 {
     public function getType(): string
     {

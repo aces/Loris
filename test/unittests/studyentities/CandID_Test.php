@@ -42,12 +42,12 @@ class CandID_Test extends TestCase
     public function invalidValues(): array
     {
         return array(
-            ['A'],
-            [1],
-            [000000],
-            ['11111a'],
-            [' 11111'],
-        );
+                ['A'],
+                [1],
+                [000000],
+                ['11111a'],
+                [' 11111'],
+               );
     }
 
     /**
