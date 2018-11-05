@@ -161,3 +161,6 @@ $smarty->assign($tpl_data);
 $smarty->display('feedback_mri_popup.tpl');
 
 ob_end_flush();
+
+exit;
+
