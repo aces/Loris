@@ -200,9 +200,9 @@ class UserPermissions
      * @note   If saving permissions, remove all permissions first
      */
     function addPermissions(array $set): bool
-    
+    {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // add the permissions
         foreach ($set as $value) {
