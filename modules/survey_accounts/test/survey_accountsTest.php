@@ -50,11 +50,11 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
           $this->DB->insert(
               "candidate",
               array(
-               'CandID'    => '999888',
-               'CenterID'  => '55',
-               'UserID'    => '1',
-               'PSCID'     => '8888',
-               'ProjectID' => '7777',
+               'CandID'               => '999888',
+               'RegistrationCenterID' => '55',
+               'UserID'               => '1',
+               'PSCID'                => '8888',
+               'ProjectID'            => '7777',
               )
           );
           $this->DB->insert(
@@ -72,11 +72,11 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
           $this->DB->insert(
               "candidate",
               array(
-               'CandID'    => '999999',
-               'CenterID'  => '55',
-               'UserID'    => '1',
-               'PSCID'     => '8889',
-               'ProjectID' => '7777',
+               'CandID'               => '999999',
+               'RegistrationCenterID' => '55',
+               'UserID'               => '1',
+               'PSCID'                => '8889',
+               'ProjectID'            => '7777',
               )
           );
           $this->DB->insert(

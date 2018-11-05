@@ -108,12 +108,12 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '900001',
-             'PSCID'       => 'TST0002',
-             'CenterID'    => 1,
-             'Active'      => 'Y',
-             'UserID'      => 1,
-             'Entity_type' => 'Human',
+             'CandID'               => '900001',
+             'PSCID'                => 'TST0002',
+             'RegistrationCenterID' => 1,
+             'Active'               => 'Y',
+             'UserID'               => 1,
+             'Entity_type'          => 'Human',
             )
         );
 

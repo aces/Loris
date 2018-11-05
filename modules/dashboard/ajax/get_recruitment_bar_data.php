@@ -24,14 +24,14 @@ foreach ($list_of_sites as $siteID => $siteName) {
     $sexData['datasets']['female'][] = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         WHERE c.CenterID=:Site AND c.Sex='female' AND c.Active='Y'
+         WHERE c.RegistrationCenterID=:Site AND c.Sex='female' AND c.Active='Y'
          AND c.Entity_type='Human'",
         array('Site' => $siteID)
     );
     $sexData['datasets']['male'][]   = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         WHERE c.CenterID=:Site AND c.Sex='male' AND c.Active='Y'
+         WHERE c.RegistrationCenterID=:Site AND c.Sex='male' AND c.Active='Y'
          AND c.Entity_type='Human'",
         array('Site' => $siteID)
     );

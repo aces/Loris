@@ -44,14 +44,14 @@ class Timepoint_List extends \NDB_Menu
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
             || (in_array(
-                $candidate->getData('CenterID'),
+                $candidate->getData('RegistrationCenterID'),
                 $user->getData('CenterIDs')
             ))
         ) {
             return true;
         }
 
-        // if the candidate.CenterID does not match the users.CenterID
+        // if the candidate.RegistrationCenterID does not match the users.CenterID
         // then check if any of the timepoints belong to the user's site
         $listOfTimePoints = $candidate->getListOfTimePoints();
 

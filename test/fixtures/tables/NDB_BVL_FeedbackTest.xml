@@ -10,7 +10,7 @@
 		<field name="DoB">2008-12-18</field>
 		<field name="EDC" xsi:nil="true" />
 		<field name="Sex">Female</field>
-		<field name="CenterID">2</field>
+		<field name="RegistrationCenterID">2</field>
 		<field name="ProjectID">2</field>
 		<field name="Ethnicity" xsi:nil="true" />
 		<field name="Active">Y</field>
@@ -35,7 +35,7 @@
 		<field name="DoB">2009-05-02</field>
 		<field name="EDC" xsi:nil="true" />
 		<field name="Sex">Female</field>
-		<field name="CenterID">2</field>
+		<field name="RegistrationCenterID">2</field>
 		<field name="ProjectID">1</field>
 		<field name="Ethnicity" xsi:nil="true" />
 		<field name="Active">Y</field>
@@ -60,7 +60,7 @@
 		<field name="DoB">2008-01-20</field>
 		<field name="EDC" xsi:nil="true" />
 		<field name="Sex">Female</field>
-		<field name="CenterID">2</field>
+		<field name="RegistrationCenterID">2</field>
 		<field name="ProjectID">1</field>
 		<field name="Ethnicity" xsi:nil="true" />
 		<field name="Active">Y</field>
@@ -85,7 +85,7 @@
 		<field name="DoB">2007-03-02</field>
 		<field name="EDC" xsi:nil="true" />
 		<field name="Sex">Male</field>
-		<field name="CenterID">2</field>
+		<field name="RegistrationCenterID">2</field>
 		<field name="ProjectID" xsi:nil="true" />
 		<field name="Ethnicity" xsi:nil="true" />
 		<field name="Active">Y</field>

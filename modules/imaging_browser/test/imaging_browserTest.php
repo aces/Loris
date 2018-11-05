@@ -76,22 +76,22 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '000002',
-             'PSCID'       => 'AOL0002',
-             'CenterID'    => 253,
-             'Active'      => 'Y',
-             'Entity_type' => 'Human',
+             'CandID'               => '000002',
+             'PSCID'                => 'AOL0002',
+             'RegistrationCenterID' => 253,
+             'Active'               => 'Y',
+             'Entity_type'          => 'Human',
             )
         );
 
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => 000003,
-             'PSCID'       => 'BOL0003',
-             'CenterID'    => 254,
-             'Active'      => 'Y',
-             'Entity_type' => 'Human',
+             'CandID'               => 000003,
+             'PSCID'                => 'BOL0003',
+             'RegistrationCenterID' => 254,
+             'Active'               => 'Y',
+             'Entity_type'          => 'Human',
             )
         );
 

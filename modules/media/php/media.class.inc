@@ -168,7 +168,7 @@ class Media extends \NDB_Menu_Filter
 
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND s.CenterID IN (" . $site_arr . ")";
         }
 
         if (!$user->hasPermission("superuser")) {

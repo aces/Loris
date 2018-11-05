@@ -6,11 +6,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Xavier <xavierlb.mavan@gmail.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Xavier <xavierlb.mavan@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class CpG_Browser extends \NDB_Menu_Filter
 {
 
@@ -60,7 +60,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
@@ -145,7 +145,7 @@ class CpG_Browser extends \NDB_Menu_Filter
                     from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc
-                ON (psc.CenterID = candidate.CenterID)
+                ON (psc.CenterID = candidate.RegistrationCenterID)
             LEFT JOIN genomic_sample_candidate_rel gscr
                 ON (gscr.CandID = candidate.CandID)
             LEFT JOIN genomic_cpg cpg
@@ -171,7 +171,7 @@ class CpG_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
                                'candidate.Sex',
@@ -203,7 +203,7 @@ class CpG_Browser extends \NDB_Menu_Filter
                               );
 
         $this->formToFilter = array(
-                               'centerID'           => 'candidate.CenterID',
+                               'centerID'           => 'candidate.RegistrationCenterID',
                                'DCCID'              => 'candidate.CandID',
                                'PSCID'              => 'candidate.PSCID',
                                'sex'                => 'candidate.Sex',
@@ -440,7 +440,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      * @note overloaded function
      *
      * @return string
-    */
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = ''; //initialize

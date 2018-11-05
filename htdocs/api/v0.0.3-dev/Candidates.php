@@ -74,7 +74,7 @@ class Candidates extends APIBase
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
                     EDC, DoB, Sex
-                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
+                FROM candidate c JOIN psc s on (s.CenterID=c.RegistrationCenterID)
              WHERE Active='Y'
                 ",
             []

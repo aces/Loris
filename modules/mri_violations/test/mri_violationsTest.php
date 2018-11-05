@@ -50,21 +50,21 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'    => '999888',
-             'CenterID'  => '55',
-             'UserID'    => '1',
-             'PSCID'     => '8888',
-             'ProjectID' => '7777',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
+             'UserID'               => '1',
+             'PSCID'                => '8888',
+             'ProjectID'            => '7777',
             )
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'    => '999777',
-             'CenterID'  => '55',
-             'UserID'    => '2',
-             'PSCID'     => '6666',
-             'ProjectID' => '5555',
+             'CandID'               => '999777',
+             'RegistrationCenterID' => '55',
+             'UserID'               => '2',
+             'PSCID'                => '6666',
+             'ProjectID'            => '5555',
             )
         );
         $this->DB->insert(
@@ -220,15 +220,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'   => '999888',
-             'CenterID' => '55',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'   => '999777',
-             'CenterID' => '55',
+             'CandID'               => '999777',
+             'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(

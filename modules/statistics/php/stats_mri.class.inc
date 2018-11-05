@@ -256,7 +256,7 @@ class Stats_MRI extends \NDB_Form
         }
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
-            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $Param_Site          ='AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
             $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
         } else {
             $Param_Site = '';
@@ -361,7 +361,7 @@ class Stats_MRI extends \NDB_Form
 
         $result = $DB->pselect(
             "SELECT s.SubprojectID,
-                    c.CenterID,
+                    s.CenterID,
                     s.Visit_label as VLabel,
                     $CaseStatement as Subcat,
                     COUNT(*) as val
@@ -379,7 +379,7 @@ class Stats_MRI extends \NDB_Form
                     $Param_Project
               GROUP BY Subcat,
                     s.SubprojectID,
-                    c.CenterID,
+                    s.CenterID,
                     s.Visit_label",
             $bigTable_params
         );

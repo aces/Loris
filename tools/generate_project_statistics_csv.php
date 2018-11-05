@@ -52,7 +52,7 @@ $number_instruments = $db->pselect("select count(*) from test_names", array());
 // Total number of visits (for all candidates)
 $number_visits = $db->pselect("select count(*) from session where Active='Y' AND Current_stage <> 'Not Started'", array());
 // Number of candidates
-$number_candidates = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.CenterID <> 1 and c.Entity_type != 'Scanner'", array());
+$number_candidates = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.RegistrationCenterID <> 1 and c.Entity_type != 'Scanner'", array());
 // GB of imaging data (raw and processed)
 $dir_path = $config->getSetting('imagePath');
 $gb_imaging_data_array = NULL;

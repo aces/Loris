@@ -2,7 +2,10 @@
 
 1.  **Module access permissions**
     - For a candidate of the same site as your user, accessing the timepoint_list module should not require any permission.
-    - For a candidate of a different site than your user, ensure that `access_all_profiles` permission is required.
+    - For a candidate of a different site than your user, ensure that either 
+        - `access_all_profiles` permission is required 
+        - or that at least one of the candidate's sessions was performed at the 
+        user's site allowing the candidate to be shown.
 2. **Action buttons** 
     - For a candidate of a different site than your user, ensure that the only button available is "View Imaging datasets".
     - For a candidate of the same site as your user, there should be 2 additional buttons: 
