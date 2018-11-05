@@ -195,6 +195,7 @@ class SearchableDropdown extends Component {
   render() {
     let required = this.props.required ? 'required' : null;
     let disabled = this.props.disabled ? 'disabled' : null;
+    let sortByValue = this.props.sortByValue;
     let options = this.props.options;
     let strictMessage = 'Entry must be included in provided list of options.';
     let errorMessage = null;
@@ -232,6 +233,27 @@ class SearchableDropdown extends Component {
       }
     }
 
+    let newOptions = {};
+    let optionList = [];
+    if (sortByValue) {
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          newOptions[options[key]] = key;
+        }
+      }
+      optionList = Object.keys(newOptions).sort().map(function(option) {
+        return (
+          <option value={option} key={newOptions[option]}/>
+        );
+      });
+    } else {
+      optionList = Object.keys(options).map(function(option) {
+        return (
+          <option value={options[option]} key={option}/>
+        );
+      });
+    }
+
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -253,11 +275,7 @@ class SearchableDropdown extends Component {
             required={required}
           />
           <datalist id={this.props.name + '_list'}>
-            {Object.keys(options).map(function(option) {
-              return (
-                <option value={options[option]} key={option}/>
-              );
-            })}
+            {optionList}
           </datalist>
           {errorMessage}
         </div>
@@ -296,6 +314,7 @@ SearchableDropdown.defaultProps = {
   class: '',
   disabled: false,
   required: false,
+  sortByValue: true,
   errorMessage: '',
   placeHolder: '',
   onUserInput: function() {
@@ -335,13 +354,14 @@ class SelectElement extends Component {
     let multiple = this.props.multiple ? 'multiple' : null;
     let required = this.props.required ? 'required' : null;
     let disabled = this.props.disabled ? 'disabled' : null;
+    let sortByValue = this.props.sortByValue;
     let options = this.props.options;
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
 
-    // Add required asterix
+    // Add required asterisk
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
@@ -355,6 +375,27 @@ class SelectElement extends Component {
     if (this.props.hasError || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
+    }
+
+    let newOptions = {};
+    let optionList = [];
+    if (sortByValue) {
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          newOptions[options[key]] = key;
+        }
+      }
+      optionList = Object.keys(newOptions).sort().map(function(option) {
+        return (
+          <option value={newOptions[option]} key={newOptions[option]}>{option}</option>
+        );
+      });
+    } else {
+      optionList = Object.keys(options).map(function(option) {
+        return (
+          <option value={option} key={option}>{options[option]}</option>
+        );
+      });
     }
 
     // Default to empty string for regular select and to empty array for 'multiple' select
@@ -378,11 +419,7 @@ class SelectElement extends Component {
             disabled={disabled}
           >
             {emptyOptionHTML}
-            {Object.keys(options).map(function(option) {
-              return (
-                <option value={option} key={option}>{options[option]}</option>
-              );
-            })}
+            {optionList}
           </select>
           {errorMessage}
         </div>
@@ -420,6 +457,7 @@ SelectElement.defaultProps = {
   multiple: false,
   disabled: false,
   required: false,
+  sortByValue: true,
   emptyOption: true,
   hasError: false,
   errorMessage: 'The field is required!',
