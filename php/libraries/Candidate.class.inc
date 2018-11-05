@@ -331,9 +331,9 @@ class Candidate
      * @param integer $visitNo The visit number for which you
      *                         want the SessionID
      *
-     * @return int SessionID of candidate's nth visit, NULL if none found
+     * @return int|null SessionID of candidate's nth visit, NULL if none found
      */
-    function getSessionID(int $visitNo): int
+    function getSessionID(int $visitNo): ?int
     {
         if (isset($this->listOfTimePoints[$visitNo-1]) ) {
             return $this->listOfTimePoints[$visitNo-1];
@@ -859,8 +859,8 @@ class Candidate
      *                          in the array format returned by NDB_Config.
      *                            array format returned by NDB_Config.
      * @param string|null $siteAbbrev  The candidate being validate's site
-     *                  abbreviation, so that it can be inserted into relevant
-     *                            "site" parts of the regex generated.
+     *                            abbreviation, so that it can be inserted into
+     *                            relevant "site" parts of the regex generated.
      *
      * @return array An array of regular expressions defining each section of
      *               the PSCID as defined in config.xml
