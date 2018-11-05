@@ -42,7 +42,7 @@ class Utility
      *               computed age
      * @throws LorisException
      */
-    static function calculateAge($dob, $testdate): array
+    static function calculateAge(string $dob, string $testdate): array
     {
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -435,7 +435,7 @@ class Utility
      *
      * @return array list of instruments
      */
-    static function lookupBattery(int $age, string $stage = null): array
+    static function lookupBattery(int $age, ?string $stage = null): array
     {
         $DB =& \Database::singleton();
 
