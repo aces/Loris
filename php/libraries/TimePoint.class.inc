@@ -365,7 +365,7 @@ class TimePoint
 
         $db =& Database::singleton();
         $db->update('session', $setData, array('ID' => $this->getData('SessionID')));
-        $this->select($this->getData('SessionID'));
+        $this->select(intval($this->getData('SessionID')));
     }
 
     /**
