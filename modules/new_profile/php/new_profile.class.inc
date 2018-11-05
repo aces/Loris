@@ -306,7 +306,7 @@ class New_Profile extends \NDB_Form
         }
 
         // validate site entered
-        $psc = $values['psc'];
+        $psc = $values['psc'] ?? '';
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
