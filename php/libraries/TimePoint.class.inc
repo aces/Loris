@@ -191,7 +191,7 @@ class TimePoint
      * @param integer     $candID         6 digit CandID having a timepoint created.
      * @param integer     $SubprojectID   The subprojectID of the new timepoint
      * @param string|null $nextVisitLabel The visit label of the timepoint
-     *                                              being created
+     *                                    being created
      * @param string|null $psc            The centre of the timepoint
      *
      * @throws DatabaseException
@@ -455,8 +455,7 @@ class TimePoint
          * which returns values in string format. Intval is used here to
          * ensure we return a numerical ID instead of its string representation.
          */
-        if (is_numeric($this->_timePointInfo["SubprojectID"]))
-        {
+        if (is_numeric($this->_timePointInfo["SubprojectID"])) {
             return intval($this->_timePointInfo["SubprojectID"]);
         }
         return null;
