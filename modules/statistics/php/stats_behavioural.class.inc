@@ -112,22 +112,24 @@ class Stats_Behavioural extends \NDB_Form
             $currentProject = '';
             $Param_Project  = '';
         }
-
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
-
-        $this->tpl_data['Subprojects'] = $subprojects;
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
+        //
+        //SUBPROJECTS
+        $suproject_query = '';
+        // Only search for subprojects if $currentProject is a positive int.
+        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+            $subprojList ="";
+            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            foreach ($subprojects as $key=>$val) {
+                $subprojList .= $key.",";
+            }
+            $subprojList = substr($subprojList, 0, -1);
+            if (!empty($subprojList)) {
+                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+            }
+            $Visits = \Utility::getExistingVisitLabels($currentProject);
         }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
-        }
 
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['Visits'] = $Visits;
+        $this->tpl_data['Visits'] = $Visits ?? '';
 
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(

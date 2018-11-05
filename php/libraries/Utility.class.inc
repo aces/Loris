@@ -249,13 +249,16 @@ class Utility
     /**
      * Returns a list of study Subprojects associated with a project
      *
-     * @param integer $projectID The project for which you would like
+     * @param integer|null $projectID The project for which you would like
      *                           to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject(int $projectID): array
+    static function getSubprojectsForProject(?int $projectID): array
     {
+        if (is_null($projectID)) {
+            return array();
+        }
         return self::getSubprojectList($projectID);
     }
 
