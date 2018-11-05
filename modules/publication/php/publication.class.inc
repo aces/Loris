@@ -53,9 +53,9 @@ class Publication extends \NDB_Menu_Filter_Form
     /**
      * Sets up the Filter Variables
      *
-     * @return boolean
+     * @return void
      */
-    function _setupVariables() : bool
+    function _setupVariables() : void
     {
         $user  = \User::singleton();
         $query = " FROM publication p ".
@@ -150,9 +150,9 @@ class Publication extends \NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items for publication
      *
-     * @return bool
+     * @return void
      */
-    function setup() : bool
+    function setup() : void
     {
         parent::setup();
 

@@ -35,13 +35,13 @@ function uploadPublication() : void
     if (!$user->hasPermission('publication_propose')
         || !$user->hasPermission('publication_view')
     ) {
-        showError("You do not have permission to propose a project", 403);
+        showPublicationError("You do not have permission to propose a project", 403);
         exit;
     }
 
     $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
     if (!$titleRaw) {
-        showError('Title is empty', 400);
+        showPublicationError('Title is empty', 400);
     }
     // title that gets inserted is run through htmlspecialchars()
     // so need to query based on Processed title
@@ -56,7 +56,7 @@ function uploadPublication() : void
     );
 
     if ($exists) {
-        showError('Submitted title already exists', 400);
+        showPublicationError('Submitted title already exists', 400);
     }
     $desc            = isset($_REQUEST['description'])
         ? $_REQUEST['description'] : null;
@@ -88,7 +88,7 @@ function uploadPublication() : void
         $leadInvID = $db->getLastInsertId();
     }
     if (!isset($desc, $leadInvest, $leadInvestEmail)) {
-        showError('A mandatory field is missing!', 400);
+        showPublicationError('A mandatory field is missing!', 400);
     }
     // INSERT INTO publication ...
     $uid   = $user->getId();
@@ -118,7 +118,7 @@ function uploadPublication() : void
         insertVOIs($pubID);
     } catch (Exception $e) {
         cleanup($pubID);
-        showError($e->getMessage(), $e->getCode());
+        showPublicationError($e->getMessage(), $e->getCode());
     }
 
     notify($pubID, 'submission');
@@ -504,13 +504,13 @@ function editProject() : void
             && !in_array($uid, $editors)
             && !$user->hasPermission('publication_approve')
         ) {
-            showError(
+            showPublicationError(
                 "You do not have edit or approval access for this project!",
                 403
             );
         }
     } else {
-        showError('No Publication ID provided');
+        showPublicationError('No Publication ID provided');
     }
 
     $title            = isset($_REQUEST['title'])
@@ -885,7 +885,7 @@ function editUploads($id) : void
  *
  * @return void
  */
-function showError($message, $code = 500) : void
+function showPublicationError($message, $code = 500) : void
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';

@@ -55,19 +55,11 @@ class View_Project extends \NDB_Form
      * Checks if project id is provided and otherwise
      * redirects to /publications/ page
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return void
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname) : void
+    function _setupPage() : void
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
-
-        $db      =& \Database::singleton();
+        $db      = \Database::singleton();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
