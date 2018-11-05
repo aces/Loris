@@ -12,6 +12,14 @@ class DocIndex extends React.Component {
       hiddenHeaders: ['Category', 'Data Dir'],
     };
 
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = (element) => {
+      this.filter = element;
+    };
+
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
@@ -50,7 +58,7 @@ class DocIndex extends React.Component {
   }
 
   resetFilters() {
-    this.refs.documentFilter.clearFilter();
+    this.filter.clearFilter();
   }
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -145,7 +153,7 @@ function() {
             Module="document_repository"
             name="document_filter"
             id="document_filter_form"
-            ref="documentFilter"
+            ref={this.setFilterRef}
             columns={2}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
