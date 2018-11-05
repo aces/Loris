@@ -143,8 +143,6 @@ class Publication extends \NDB_Menu_Filter_Form
                                'variablesOfInterest' => 'pt.Name',
                                'leadInvestigator'    => 'pcli.Name',
                               );
-
-        return true;
     }
 
     /**
@@ -197,8 +195,6 @@ class Publication extends \NDB_Menu_Filter_Form
             'variablesOfInterest',
             'Variables of Interest'
         );
-
-        return true;
     }
 
 
