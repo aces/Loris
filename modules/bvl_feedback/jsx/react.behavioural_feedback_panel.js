@@ -97,7 +97,7 @@ var FeedbackPanelContent = React.createClass({
 
       return (
         <div className="panel-collapse collapse in">
-          <div className="panel-body">
+          <div className="panel-body" style={{overflowX: 'auto'}}>
             {table}
           </div>
         </div>
@@ -494,7 +494,7 @@ var FeedbackSummaryPanel = React.createClass({
     }
 
     return (
-      <div className="panel-body">
+      <div className="panel-body" style={{overflowX: 'auto'}}>
         <table
           className="table table-hover table-bordered dynamictable">
           <thead>

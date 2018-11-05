@@ -178,10 +178,16 @@ var ViewDataTabPane = React.createClass({
     downloadData: function() {
         // Download the downloadable fields into a ZIP folder
         // Makes use of a web worker to format and download the data
-        var zip = new JSZip(),
+        let zip = new JSZip(),
             i = 0,
-            FileList = this.props.FileData,
-            CompleteMask = new Array(FileList.length),
+            FileList = this.props.FileData;
+
+        if (FileList === undefined) {
+          alert('No Data is available to download');
+          return;
+        }
+
+        let CompleteMask = new Array(FileList.length),
             saveworker,
             dataURLs = [],
             that = this,
