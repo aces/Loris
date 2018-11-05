@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
  * from the FitlerForm.
  *
  * Passes the Filter to the Datatable.
+ *
+ * Deprecates Filter Form.
  */
 class FilterableDataTable extends Component {
   constructor(props) {

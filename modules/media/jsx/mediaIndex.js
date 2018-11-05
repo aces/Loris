@@ -12,6 +12,7 @@ class MediaIndex extends Component {
 
     this.state = {
       data: {},
+      error: null,
       isLoaded: false,
     };
 
@@ -21,8 +22,7 @@ class MediaIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}))
-      .catch((error) => console.error(error));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -35,7 +35,11 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}));
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: error.error});
+        console.error(error);
+      });
   }
 
   /**
@@ -82,6 +86,11 @@ class MediaIndex extends Component {
   }
 
   render() {
+    // If error occurs, return it.
+    if (this.state.error) {
+      return this.state.error;
+    }
+
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -90,14 +99,20 @@ class MediaIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {name: 'pSCID', label: 'PSCID', type: 'text'},
-      {name: 'visitLabel', label: 'Visit Label', type: 'select', options: options.visits},
-      {name: 'instrument', label: 'Instrument', type: 'select', options: options.instruments},
+      {name: 'visitLabel', label: 'Visit Label', type: 'select',
+        options: options.visits},
+      {name: 'instrument', label: 'Instrument', type: 'select',
+        options: options.instruments},
       {name: 'fileName', label: 'File Name', type: 'text'},
-      {name: 'site', label: 'For Site', type: 'select', options: options.sites},
-      {name: 'language', label: 'Language', type: 'select', options: options.languages},
-      {name: 'fileType', label: 'File Type', type: 'select', options: options.fileTypes},
+      {name: 'site', label: 'For Site', type: 'select',
+        options: options.sites},
+      {name: 'language', label: 'Language', type: 'select',
+        options: options.languages},
+      {name: 'fileType', label: 'File Type', type: 'select',
+        options: options.fileTypes},
       {name: 'uploadedBy', label: 'Uploaded By', type: 'text'},
-      {name: 'hideFile', label: 'File Visibility', type: 'select', options: options.hidden, hide: this.props.hasPermission('superUser')},
+      {name: 'hideFile', label: 'File Visibility', type: 'select',
+        options: options.hidden, hide: !this.props.hasPermission('superUser')},
     ];
 
    /**

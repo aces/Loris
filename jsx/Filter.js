@@ -6,10 +6,9 @@ import Panel from 'Panel';
  * Filter component.
  * A wrapper for form elements inside a selection filter.
  *
- * Adds necessary filter callbacks to all children and passes them to FormElement
- * for proper rendering.
+ * Constructs filter fields based on this.props.fields configuration object
  *
- * Alter the filter object and sends it to parent on every update.
+ * Alters the filter object and sends it to parent on every update.
  *
  */
 class Filter extends Component {
@@ -20,7 +19,7 @@ class Filter extends Component {
   }
 
   /**
-   * Sets filter object and querystring to reflect values of input fields
+   * Sets filter object to reflect values of input fields.
    *
    * @param {string} name - form element type (i.e component name)
    * @param {string} value - the name of the form element
