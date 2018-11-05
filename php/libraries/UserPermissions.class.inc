@@ -200,13 +200,13 @@ class UserPermissions
      * @note   If saving permissions, remove all permissions first
      */
     function addPermissions(array $set): bool
-    {
+    
         // create DB object
         $DB =& Database::singleton();
 
         // add the permissions
         foreach ($set as $value) {
-            $success = $DB->insert(
+            $DB->insert(
                 'user_perm_rel',
                 array(
                  'userID' => $this->userID,
