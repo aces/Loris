@@ -455,7 +455,7 @@ class TimePoint
          * which returns values in string format. Intval is used here to
          * ensure we return a numerical ID instead of its string representation.
          */
-        if (is_numeric($this->_timePointInfo["SubprojectID"])
+        if (is_numeric($this->_timePointInfo["SubprojectID"]))
         {
             return intval($this->_timePointInfo["SubprojectID"]);
         }
