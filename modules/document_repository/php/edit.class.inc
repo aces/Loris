@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_Form_media class
+ * This file contains the NDB_Form_document_repository class
  *
  * PHP Version 7
  *
@@ -13,11 +13,10 @@
 namespace LORIS\document_repository;
 
 /**
- * Creates the form for NDB_Form_media
+ * Creates the form for NDB_Form_document_repository
  *
  * @category Loris
  * @package  Document_Repository
- * @author   Alex Ilea <ailea.mcin@gmail.com>
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -27,8 +26,8 @@ class Edit extends \NDB_Form
     public $skipTemplate = true;
 
     /**
-     * Entry point for /media/edit/
-     * Checks if file id is provided and otherwise redirects to /media/ page
+     * Entry point for /document_repository/edit/
+     * Checks if file id is provided and otherwise redirects to /document_repository/ page
      *
      * @return void
      */
@@ -42,7 +41,7 @@ class Edit extends \NDB_Form
 
         $idDocFile = $_GET['id'];
 
-        // Check if media file exists, if not redirect to /media/ page
+        // Check if document file exists, if not redirect to /document_repository/ page
         if (isset($idDocFile)) {
             $result = $db->pselectRow(
                 "SELECT record_id FROM document_repository WHERE record_id = :mid",
@@ -58,7 +57,7 @@ class Edit extends \NDB_Form
 
     /**
      * Include additional JS files:
-     *  1. editForm.js - reactified form to update media
+     *  1. editForm.js - reactified form to update repository
      *
      * @return array of javascript to be inserted
      */
