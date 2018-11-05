@@ -61,7 +61,7 @@ class Edit extends \NDB_Form
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

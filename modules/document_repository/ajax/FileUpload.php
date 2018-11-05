@@ -2,7 +2,7 @@
 /**
  * Document Repository.
  *
- * Handles media upload and update actions received from a front-end ajax call
+ * Handles document upload and update actions received from a front-end ajax call
  *
  * PHP Version 7
  *
@@ -29,19 +29,19 @@ if (isset($_GET['action'])) {
 }
 
 /**
- * Handles the media update/edit process
+ * Handles the document update/edit process
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editFile()
+function editFile(): void
 {
     $db   = \Database::singleton();
     $user = \User::singleton();
-    if (!$user->hasPermission('media_write')) {
+    if (!$user->hasPermission('document_repository_delete')) {
         header("HTTP/1.1 403 Forbidden");
-        exit;
+        return;
     }
 
     // Read JSON from STDIN
@@ -77,7 +77,7 @@ function editFile()
 
 
 /**
- * Handles the media upload process
+ * Handles the document upload process
  *
  * @throws DatabaseException
  *
@@ -204,7 +204,7 @@ function viewCategory()
     $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
         header("HTTP/1.1 403 Forbidden");
-        exit;
+        return null;
     }
     echo json_encode(getCategoryFields());
 }
@@ -214,7 +214,7 @@ function viewCategory()
  * @return array
  * @throws DatabaseException
  */
-function getCategoryFields()
+function getCategoryFields(): array
 {
     $db    = \Database::singleton();
     $query = $db->pselect(
@@ -239,12 +239,12 @@ function getCategoryFields()
  * @return void
  * @throws DatabaseException
  */
-function viewData()
+function viewData() 
 {
     $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
         header("HTTP/1.1 403 Forbidden");
-        exit;
+        return null;
     }
     echo json_encode(getUploadFields());
 }
@@ -255,7 +255,7 @@ function viewData()
  * @return array
  * @throws DatabaseException
  */
-function getUploadFields()
+function getUploadFields(): array
 {
 
     $db    = \Database::singleton();
@@ -276,7 +276,7 @@ function getUploadFields()
 
     $instruments     = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
+        array()
     );
     $instrumentsList = toSelect($instruments, "Test_name", null);
     //docFile
@@ -296,16 +296,16 @@ function getUploadFields()
             "version " .
             "FROM document_repository " .
             " WHERE record_id = $idDocFile",
-            []
+            array()
         );
     }
 
-    $result = [
+    $result = array(
                'categories'  => $categoriesList,
                'sites'       => $siteList,
                'instruments' => $instrumentsList,
                'docData'     => $docData,
-              ];
+              );
 
     return $result;
 }
@@ -316,7 +316,7 @@ function getUploadFields()
  *
  * @return array
  */
-function parseCategory($value)
+function parseCategory($value): array
 {
         $id    = $value['id'];
         $depth = 0;
@@ -339,23 +339,6 @@ function parseCategory($value)
 }
 
 /**
- * Utility function to return errors from the server
- *
- * @param string $message error message to display
- *
- * @return void
- */
-function showMediaError($message)
-{
-    if (!isset($message)) {
-        $message = 'An unknown error occurred!';
-    }
-    header('HTTP/1.1 500 Internal Server Error');
-    header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
-}
-
-/**
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
@@ -365,9 +348,9 @@ function showMediaError($message)
  *
  * @return array
  */
-function toSelect($options, $item, $item2)
+function toSelect($options, $item, $item2): array 
 {
-    $selectOptions = [];
+    $selectOptions = array();
 
     $optionsValue = $item;
     if (isset($item2)) {
@@ -379,24 +362,5 @@ function toSelect($options, $item, $item2)
     }
 
     return $selectOptions;
-}
-
-/**
- * Returns an array of (id, file_name) pairs from media table
- *
- * @return array
- * @throws DatabaseException
- */
-function getFilesList()
-{
-    $db       = \Database::singleton();
-    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
-
-    $mediaFiles = [];
-    foreach ($fileList as $row) {
-        $mediaFiles[$row['id']] = $row['file_name'];
-    }
-
-    return $mediaFiles;
 }
 
