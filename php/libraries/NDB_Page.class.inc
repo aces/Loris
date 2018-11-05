@@ -270,6 +270,9 @@ class NDB_Page implements RequestHandlerInterface
                'style' => 'max-width:33%; display:inline-block;',
               )
     ) {
+        if ($options === array() && !empty($this->dateOptions)) {
+            $options = $this->dateOptions;
+        }
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
 
