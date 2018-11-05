@@ -595,4 +595,4 @@ class NDB_Config
     }
 
 }
-?>
+

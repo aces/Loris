@@ -539,4 +539,4 @@ class NDB_Caller
         $this->DataEntry = $type;
     }
 }
-?>
+

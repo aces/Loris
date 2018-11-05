@@ -209,4 +209,4 @@ class NDB_Client
         return $login->isLoggedIn();
     }
 }
-?>
+

@@ -1059,4 +1059,4 @@ class Utility
         return $languages;
     }
 }
-?>
+

@@ -940,3 +940,6 @@ class TimePoint
         return $candidate->getCandidateDoB();
     }
 }
+
+} // end class
+
