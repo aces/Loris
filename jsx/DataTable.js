@@ -74,6 +74,7 @@ class DataTable extends Component {
     // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   }
+
   componentDidUpdate(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
@@ -89,7 +90,7 @@ class DataTable extends Component {
         this.state.SortOrder !== prevState.SortOrder)
     ) {
       let index = this.getSortedRows();
-      this.props.onSort(index, this.props.Data, this.props.Headers);
+      this.props.onSort(index, this.props.data, this.props.headers);
     }
   }
 
@@ -148,10 +149,11 @@ class DataTable extends Component {
         document.body.removeChild(link);
       }
     });
+    const headerList = this.props.headers.map((header) => header.label);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
-      headers: this.props.Headers,
+      headers: headerList,
       identifiers: this.props.RowNameMap,
     });
   }
@@ -159,14 +161,14 @@ class DataTable extends Component {
   countFilteredRows() {
     let useKeyword = false;
     let filterMatchCount = 0;
-    let filterValuesCount = (this.props.Filter ?
-        Object.keys(this.props.Filter).length :
+    let filterValuesCount = (this.props.filter ?
+        Object.keys(this.props.filter).length :
         0
     );
-    let tableData = this.props.Data;
-    let headersData = this.props.Headers;
+    let tableData = this.props.data;
+    let headersData = this.props.headers;
 
-    if (this.props.Filter.keyword) {
+    if (this.props.filter.keyword) {
       useKeyword = true;
     }
 
@@ -179,7 +181,7 @@ class DataTable extends Component {
       let keywordMatch = 0;
       for (let j = 0; j < headersData.length; j++) {
         let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword(headersData[j], data)) {
+        if (this.hasFilterKeyword(headersData[j].label, data)) {
           headerCount++;
         }
         if (useKeyword) {
@@ -214,8 +216,8 @@ class DataTable extends Component {
   getSortedRows() {
     const index = [];
 
-    for (let i = 0; i < this.props.Data.length; i += 1) {
-      let val = this.props.Data[i][this.state.SortColumn] || undefined;
+    for (let i = 0; i < this.props.data.length; i += 1) {
+      let val = this.props.data[i][this.state.SortColumn] || undefined;
       // If SortColumn is equal to default No. column, set value to be
       // index + 1
       if (this.state.SortColumn === -1) {
@@ -296,9 +298,9 @@ class DataTable extends Component {
     let searchKey = null;
     let searchString = null;
 
-    if (this.props.Filter[header]) {
-      filterData = this.props.Filter[header].value;
-      exactMatch = this.props.Filter[header].exactMatch;
+    if (this.props.filter[header]) {
+      filterData = this.props.filter[header].value;
+      exactMatch = this.props.filter[header].exactMatch;
     }
 
     // Handle null inputs
@@ -340,7 +342,7 @@ class DataTable extends Component {
     return result;
   }
   render() {
-    if (this.props.Data === null || this.props.Data.length === 0) {
+    if (this.props.data === null || this.props.data.length === 0) {
       return (
         <div className='alert alert-info no-result-found-panel'>
           <strong>No result found.</strong>
@@ -354,21 +356,20 @@ class DataTable extends Component {
       </th>,
     ];
 
-    for (let i = 0; i < this.props.Headers.length; i += 1) {
-      if (typeof this.props.hiddenHeaders === 'undefined' ||
-        this.props.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+    for (let i = 0; i < this.props.headers.length; i += 1) {
+      if (this.props.headers[i].display === true) {
         let colIndex = i + 1;
-        if (this.props.Headers[i] === this.props.freezeColumn) {
+        if (this.props.headers[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.Headers[i]}
+              {this.props.headers[i].label}
             </th>
           );
         } else {
           headers.push(
             <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.Headers[i]}
+              {this.props.headers[i].label}
             </th>
           );
         }
@@ -383,13 +384,13 @@ class DataTable extends Component {
     let filteredData = [];
     let useKeyword = false;
 
-    if (this.props.Filter.keyword) {
+    if (this.props.filter.keyword) {
       useKeyword = true;
     }
 
     // Push rows to data table
     for (let i = 0;
-         (i < this.props.Data.length) && (rows.length < rowsPerPage);
+         (i < this.props.data.length) && (rows.length < rowsPerPage);
          i++
     ) {
       curRow = [];
@@ -401,42 +402,42 @@ class DataTable extends Component {
 
       // Iterates through headers to populate row columns
       // with corresponding data
-      for (let j = 0; j < this.props.Headers.length; j += 1) {
+      for (let j = 0; j < this.props.headers.length; j += 1) {
         let data = 'Unknown';
 
         // Set column data
-        if (this.props.Data[index[i].RowIdx]) {
-          data = this.props.Data[index[i].RowIdx][j];
+        if (this.props.data[index[i].RowIdx]) {
+          data = this.props.data[index[i].RowIdx][j];
         }
 
-        if (this.hasFilterKeyword(this.props.Headers[j], data)) {
+        if (this.hasFilterKeyword(this.props.headers[j].label, data)) {
           filterMatchCount++;
-          filteredData.push(this.props.Data[index[i].RowIdx]);
+          filteredData.push(this.props.data[index[i].RowIdx]);
         }
 
         if (useKeyword === true) {
-          filterLength = Object.keys(this.props.Filter).length - 1;
+          filterLength = Object.keys(this.props.filter).length - 1;
           if (this.hasFilterKeyword('keyword', data)) {
             keywordMatch++;
           }
         } else {
-          filterLength = Object.keys(this.props.Filter).length;
+          filterLength = Object.keys(this.props.filter).length;
         }
 
         let key = 'td_col_' + j;
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          if (this.props.hiddenHeaders.indexOf(this.props.Headers[j]) > -1) {
+          if (this.props.headers[j].display === false) {
             data = null;
           } else {
             // create mapping between rowHeaders and rowData in a row Object
             const row = {};
-            this.props.Headers.forEach((header, k) => {
-              row[header] = this.props.Data[index[i].RowIdx][k];
+            this.props.headers.forEach((header, k) => {
+              row[header.label] = this.props.data[index[i].RowIdx][k];
             });
             data = this.props.getFormattedCell(
-              this.props.Headers[j],
+              this.props.headers[j].label,
               data,
               row
             );
@@ -484,8 +485,8 @@ class DataTable extends Component {
     );
 
     // Include only filtered data if filters were applied
-    let csvData = this.props.Data;
-    if (this.props.Filter && filteredData.length > 0) {
+    let csvData = this.props.data;
+    if (this.props.filter && filteredData.length > 0) {
       csvData = filteredData;
     }
 
@@ -554,8 +555,8 @@ class DataTable extends Component {
   }
 }
 DataTable.propTypes = {
-  Headers: PropTypes.array.isRequired,
-  Data: PropTypes.array.isRequired,
+  headers: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   RowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
   // parameters of the form: func(ColumnName, CellData, EntireRowData)
@@ -564,10 +565,10 @@ DataTable.propTypes = {
   Hide: PropTypes.object,
 };
 DataTable.defaultProps = {
-  Headers: [],
-  Data: {},
+  headers: [],
+  data: {},
   RowNumLabel: 'No.',
-  Filter: {},
+  filter: {},
   Hide: {
     rowsPerPage: false,
     downloadCSV: false,

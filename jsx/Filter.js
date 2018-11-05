@@ -16,6 +16,7 @@ class Filter extends Component {
   constructor(props) {
     super(props);
     this.onElementUpdate = this.onElementUpdate.bind(this);
+    this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
   /**
@@ -41,19 +42,40 @@ class Filter extends Component {
     this.props.updateFilter(filter);
   }
 
-  render() {
-    const formChildren = React.Children.map(this.props.children, (child) => {
-      return React.cloneElement(
-        child,
-        {
-          ...child.props,
-          value: (this.props.filter[child.props.name] || {}).value,
-          onUserInput: this.onElementUpdate,
-          key: child.props.name,
-        },
-      );
-    });
+  renderFilterFields() {
+    return this.props.fields.map((field) => {
+      if (field.hide === true) {
+        return null;
+      }
+      switch (field.type) {
+      case 'text':
+        return (
+          <TextboxElement
+            name={field.name}
+            key={field.name}
+            label={field.label}
+            value={(this.props.filter[field.name] || {}).value}
+            onUserInput={this.onElementUpdate}
+          />
+        );
+      case 'select':
+        return (
+          <SelectElement
+            name={field.name}
+            key={field.name}
+            label={field.label}
+            value={(this.props.filter[field.name] || {}).value}
+            options={field.options}
+            onUserInput={this.onElementUpdate}
+          />
+        );
+      }
 
+      return null;
+    });
+  }
+
+  render() {
     return (
       <Panel
         height={this.props.height}
@@ -64,7 +86,7 @@ class Filter extends Component {
           name={this.props.name}
           columns={this.props.columns}
         >
-          {formChildren}
+          {this.renderFilterFields()}
           <ButtonElement
             label="Clear Filters"
             type="reset"

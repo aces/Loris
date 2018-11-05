@@ -46,18 +46,15 @@ class FilterableDataTable extends Component {
           id={this.props.name + '_filter'}
           columns={this.props.columns}
           filter={this.state.filter}
+          fields={this.props.fields}
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
-        >
-          {this.props.children}
-        </Filter>
+        />
         <DataTable
-          Data={this.props.data}
-          Headers={this.props.headers.all}
-          hiddenHeaders={this.props.headers.hidden}
-          Filter={this.state.filter}
+          data={this.props.data}
+          headers={this.props.headers}
+          filter={this.state.filter}
           getFormattedCell={this.props.getFormattedCell}
-          freezeColumn="File Name"
         />
       </div>);
   }

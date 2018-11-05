@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import {Tabs, TabPane} from 'Tabs';
@@ -16,7 +17,6 @@ class MediaIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.renderFilterElements = this.renderFilterElements.bind(this);
   }
 
   componentDidMount() {
@@ -53,7 +53,7 @@ class MediaIndex extends Component {
 
     switch (column) {
     case 'File Name':
-      if (loris.userHasPermission('media_write')) {
+      if (this.props.hasPermission('media_write')) {
         const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
           encodeURIComponent(row['File Name']);
         return (
@@ -81,76 +81,49 @@ class MediaIndex extends Component {
     return <td className={style}>{cell}</td>;
   }
 
-  /**
-   * Renders all elements for the filter.
-   *
-   * @return {*} filterFormElements
-   */
-  renderFilterElements() {
-    const options = this.state.data.fieldOptions;
-    const filterFormElements = [
-      <TextboxElement name='pSCID' label='PSCID'/>,
-      <SelectElement name='visitLabel' label='Visit Label' options={options.visits}/>,
-      <SelectElement name='instrument' label='Instrument' options={options.instruments}/>,
-      <TextboxElement name='fileName' label='File Name'/>,
-      <SelectElement name='site' label='For Site' options={options.sites}/>,
-      <SelectElement name='language' label='Language' options={options.languages}/>,
-      <SelectElement name='fileType' label='File Type' options={options.fileTypes}/>,
-      <TextboxElement name='uploadedBy' label='Uploaded By'/>,
-    ];
-    if (loris.userHasPermission('superUser')) {
-      filterFormElements.push(
-        <SelectElement name='hideFile' label='File Visibility' options={options.hidden}/>,
-      );
-    }
-    return filterFormElements;
-  }
-
-  /**
-   * Returns headers for datatable
-   *
-   * XXX: Currently, the order of these headers MUST match the order of the
-   * queried columns in _setupVariables() in media.class.inc
-   *
-   * @return {object}
-   */
-  headers() {
-    return {
-      all: [
-        'File Name',
-        'PSCID',
-        'Visit Label',
-        'Language',
-        'Instrument',
-        'Site',
-        'Uploaded By',
-        'Date Taken',
-        'Comments',
-        'Date Uploaded',
-        'File Type',
-        'Cand ID',
-        'Session ID',
-        'Hide File',
-        'Edit Metadata',
-      ],
-      hidden: [
-        'File Type',
-        'Cand ID',
-        'Session ID',
-        'Hide File',
-      ],
-    };
-  }
-
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
+    const options = this.state.data.fieldOptions;
+    const fields = [
+      {name: 'pSCID', label: 'PSCID', type: 'text'},
+      {name: 'visitLabel', label: 'Visit Label', type: 'select', options: options.visits},
+      {name: 'instrument', label: 'Instrument', type: 'select', options: options.instruments},
+      {name: 'fileName', label: 'File Name', type: 'text'},
+      {name: 'site', label: 'For Site', type: 'select', options: options.sites},
+      {name: 'language', label: 'Language', type: 'select', options: options.languages},
+      {name: 'fileType', label: 'File Type', type: 'select', options: options.fileTypes},
+      {name: 'uploadedBy', label: 'Uploaded By', type: 'text'},
+      {name: 'hideFile', label: 'File Visibility', type: 'select', options: options.hidden, hide: this.props.hasPermission('superUser')},
+    ];
+
+   /**
+    * XXX: Currently, the order of these headers MUST match the order of the
+    * queried columns in _setupVariables() in media.class.inc
+    */
+    const headers = [
+     {label: 'File Name', display: true},
+     {label: 'PSCID', display: true},
+     {label: 'Visit Label', display: true},
+     {label: 'Language', display: true},
+     {label: 'Instrument', display: true},
+     {label: 'Site', display: true},
+     {label: 'Uploaded By', display: true},
+     {label: 'Date Taken', display: true},
+     {label: 'Comments', display: true},
+     {label: 'Date Uploaded', display: true},
+     {label: 'File Type', display: false},
+     {label: 'Cand ID', display: false},
+     {label: 'Session ID', display: false},
+     {label: 'Hide File', display: false},
+     {label: 'Edit Metadata', display: true},
+    ];
     const tabList = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
-      if (loris.userHasPermission('media_write')) {
+      if (this.props.hasPermission('media_write')) {
         tabList.push({id: 'upload', label: 'Upload'});
         return (
           <TabPane TabId={tabList[1].id}>
@@ -170,12 +143,10 @@ class MediaIndex extends Component {
           <FilterableDataTable
             name="media"
             data={this.state.data.Data}
-            headers={this.headers()}
+            headers={headers}
+            fields={fields}
             getFormattedCell={this.formatColumn}
-            freezeColumn="File Name"
-          >
-            {this.renderFilterElements()}
-          </FilterableDataTable>
+          />
         </TabPane>
         {uploadTab()}
       </Tabs>
@@ -183,9 +154,17 @@ class MediaIndex extends Component {
   }
 }
 
+MediaIndex.propTypes = {
+  dataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
+};
+
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <MediaIndex dataURL={`${loris.BaseURL}/media/?format=json`} />,
+    <MediaIndex
+      dataURL={`${loris.BaseURL}/media/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />,
     document.getElementById('lorisworkspace')
   );
 });
