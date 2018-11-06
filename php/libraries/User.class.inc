@@ -113,7 +113,7 @@ class User extends UserPermissions
         // store user data in object property
         $row['examiner']  = $examiner_info;
         $row['CenterIDs'] = $user_cid;
-        $obj->_userInfo    = $row;
+        $obj->_userInfo   = $row;
         return $obj;
     }
 
