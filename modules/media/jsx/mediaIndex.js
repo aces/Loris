@@ -98,7 +98,7 @@ class MediaIndex extends Component {
     }
 
    /**
-    * XXX: Currently, the order of these headers MUST match the order of the
+    * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
     const options = this.state.data.fieldOptions;
