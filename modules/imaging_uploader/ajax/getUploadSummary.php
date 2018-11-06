@@ -79,6 +79,7 @@ function validRequest(): bool
 {
     if (empty($_POST['uploadId'])
         || !is_numeric($_POST['uploadId'])
+        || intval($_POST['uploadId'] < 0)
         || ($_POST['summary'] !== 'true' && $_POST['summary'] !== 'false')
     ) {
         return false;
