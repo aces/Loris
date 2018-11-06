@@ -239,7 +239,7 @@ function getCategoryFields(): array
  * @return void
  * @throws DatabaseException
  */
-function viewData() 
+function viewData()
 {
     $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
@@ -348,7 +348,7 @@ function parseCategory($value): array
  *
  * @return array
  */
-function toSelect($options, $item, $item2): array 
+function toSelect($options, $item, $item2): array
 {
     $selectOptions = array();
 
