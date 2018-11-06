@@ -118,14 +118,13 @@ class Media extends \NDB_Menu_Filter
         }
 
         $this->fieldOptions = [
-                          'fileTypes'   => $fileTypeList,
-                          'visits'      => $visitList,
-                          'sites'       => $siteList,
-                          'instruments' => $instrumentList,
-                          'languages'   => $languageList,
-                          'hidden'      => $hiddenOptions,
-
-                         ];
+                               'fileTypes'   => $fileTypeList,
+                               'visits'      => $visitList,
+                               'sites'       => $siteList,
+                               'instruments' => $instrumentList,
+                               'languages'   => $languageList,
+                               'hidden'      => $hiddenOptions,
+                              ];
 
         return true;
     }
