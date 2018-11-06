@@ -71,7 +71,7 @@ echo json_encode(
 /**
  * Ensure that the POST request sent to this script is well-formed:
  * - uploadID must be present and be a positive integer
- * - summary must be equak to 'true' or 'false' when present.
+ * - summary must be equal to 'true' or 'false' when present.
  *
  * @return bool Whether the above conditions apply.
  */
