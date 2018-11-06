@@ -25,7 +25,6 @@ return [
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
-		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",
         "PhanTypeSuspiciousStringExpression",
