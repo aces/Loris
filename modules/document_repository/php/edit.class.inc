@@ -27,7 +27,8 @@ class Edit extends \NDB_Form
 
     /**
      * Entry point for /document_repository/edit/
-     * Checks if file id is provided and otherwise redirects to /document_repository/ page
+     * Checks if file id is provided and otherwise redirects to
+     * /document_repository/ page
      *
      * @return void
      */
@@ -41,7 +42,8 @@ class Edit extends \NDB_Form
 
         $idDocFile = $_GET['id'];
 
-        // Check if document file exists, if not redirect to /document_repository/ page
+        // Check if document file exists,
+        //if not redirect to /document_repository/ page
         if (isset($idDocFile)) {
             $result = $db->pselectRow(
                 "SELECT record_id FROM document_repository WHERE record_id = :mid",
