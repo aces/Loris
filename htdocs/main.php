@@ -127,8 +127,7 @@ if (!empty($TestName)) {
         try {
             $timePoint = TimePoint::singleton($_REQUEST['sessionID']);
         } catch (Exception $e) {
-            $tpl_data['error_message'][]
-                = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
+            $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
         }
     }
 
@@ -153,10 +152,7 @@ if (!empty($TestName)) {
             }
             $tpl_data['timePoint'] = $timePoint->getData();
         } catch(Exception $e) {
-            $tpl_data['error_message'][]
-                = htmlspecialchars(
-                    "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage()
-                );
+            $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
         }
     }
 }

@@ -105,6 +105,13 @@ class MriUploadServerProcess extends AbstractServerProcess
             throw $exception;
         }
 
+        // Check that paths exist before using.
+        if (!is_dir($this->_mriCodePath)) {
+            throw new \ConfigurationException(
+                "Value for MRI code path is not a directory!"
+            );
+        }
+
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
 
@@ -130,10 +137,17 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
-        return "source {$this->_mriCodePath}/" . self::ENVIRONMENT_BASENAME . " ; "
-               . "{$this->_mriCodePath}/" . self::IMAGING_UPLOAD_FILE_PATH
-               . " -upload_id "    . escapeshellarg($this->_mriUploadId)
-               . " -profile prod " . escapeshellarg($this->_sourceLocation);
+        // Sanitize variables before using in exec statement.
+        $env            = $this->_mriCodePath . '/' . self::ENVIRONMENT_BASENAME;
+        $env            = escapeshellarg($env);
+        $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
+        $uploadScript   = escapeshellarg($uploadScript);
+        $uploadId       = escapeshellarg($this->_mriUploadId);
+        $sourceLocation = escapeshellarg($this->_sourceLocation);
+        return "source $env ;"
+               . " $uploadScript"
+               . " -upload_id $uploadId"
+               . " -profile prod $sourceLocation";
     }
 
     /**
