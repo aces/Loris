@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
-import PropTypes from 'prop-types';
 
 /**
  * FilterableDataTable component.
@@ -68,9 +69,9 @@ FilterableDataTable.defaultProps = {
 
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
   data: PropTypes.object.isRequired,
-  headers: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired,
+  fields: PropTypes.object.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
 };

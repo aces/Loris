@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 
@@ -12,7 +13,7 @@ class MediaIndex extends Component {
 
     this.state = {
       data: {},
-      error: null,
+      error: false,
       isLoaded: false,
     };
 
@@ -37,7 +38,7 @@ class MediaIndex extends Component {
       .then((resp) => resp.json())
       .then((data) => this.setState({data}))
       .catch((error) => {
-        this.setState({error: error.error});
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -47,7 +48,7 @@ class MediaIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {object} row
+   * @param {object} row - row content indexed by column
    *
    * @return {*} a formated table cell for a given column
    */
@@ -71,9 +72,9 @@ class MediaIndex extends Component {
       }
       break;
     case 'Visit Label':
-      if (row['Cand ID'] !== null && row['Session ID']) {
+      if (row['CandID'] !== null && row['SessionID']) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-          row['Cand ID'] + '&sessionID=' + row['Session ID'];
+          row['CandID'] + '&sessionID=' + row['SessionID'];
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
@@ -87,9 +88,10 @@ class MediaIndex extends Component {
   }
 
   render() {
-    // If error occurs, return it.
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return this.state.error;
+      return <h3>An error occured while loading the page.</h3>;
     }
 
     // Waiting for async data to load
@@ -103,123 +105,60 @@ class MediaIndex extends Component {
     */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {
-        header: 'File Name',
-        display: true,
-        filter: {
-          name: 'fileName',
-          label: 'File Name',
-          type: 'text',
-        },
-      },
-      {
-        header: 'PSCID',
-        display: true,
-        filter: {
-          name: 'pscid',
-          label: 'PSCID',
-          type: 'text',
-        },
-      },
-      {
-        header: 'Visit Label',
-        display: true,
-        filter: {
-          name: 'visitLabel',
-          label: 'Visit Label',
-          type: 'select',
-          options: options.visits,
-        },
-      },
-      {
-        header: 'Language',
-        display: true,
-        filter: {
-          name: 'language',
-          label: 'Language',
-          type: 'select',
-          options: options.languages,
-        },
-      },
-      {
-        header: 'Instrument',
-        display: true,
-        filter: {
-          name: 'instrument',
-          label: 'Instrument',
-          type: 'select',
-          options: options.instruments,
-        },
-      },
-      {
-        header: 'Site',
-        display: true,
-        filter: {
-          name: 'site',
-          label: 'For Site',
-          type: 'select',
-          options: options.sites,
-        },
-      },
-      {
-        header: 'Uploaded By',
-        display: true,
-        filter: {
-          name: 'uploadedBy',
-          label: 'Uploaded By',
-          type: 'text',
-        },
-      },
-      {
-        header: 'Date Taken',
-        display: true,
-      },
-      {
-        header: 'Comments',
-        display: true,
-      },
-      {
-        header: 'Date Uploaded',
-        display: true,
-      },
-      {
-        header: 'File Type',
-        display: false,
-        filter: {
-          name: 'fileType',
-          label: 'File Type',
-          type: 'select',
-          options: options.fileTypes,
-        },
-      },
-      {
-        header: 'Cand ID',
-        display: false,
-      },
-      {
-        header: 'Session ID',
-        display: false,
-      },
-      {
-        header: 'Hide File',
-        display: false,
-        filter: {
-          name: 'hideFile',
-          label: 'File Visibility',
-          type: 'select',
-          options: options.hidden,
-          hide: !this.props.hasPermission('superUser'),
-        },
-      },
-      {
-        header: 'Edit Metadata',
-        display: true,
-      },
+      {label: 'File Name', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
+      {label: 'PSCID', show: true, filter: {
+        name: 'pscid',
+        type: 'text',
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visits,
+      }},
+      {label: 'Language', show: true, filter: {
+        name: 'language',
+        type: 'select',
+        options: options.languages,
+      }},
+      {label: 'Instrument', show: true, filter: {
+        name: 'instrument',
+        type: 'select',
+        options: options.instruments,
+      }},
+      {label: 'Site', show: true, filter: {
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'Uploaded By', show: true, filter: {
+        name: 'uploadedBy',
+        type: 'text',
+        }},
+      {label: 'Date Taken', show: true},
+      {label: 'Comments', show: true},
+      {label: 'Date Uploaded', show: true},
+      {label: 'File Type', show: false, filter: {
+        name: 'fileType',
+        type: 'select',
+        options: options.fileTypes,
+      }},
+      {label: 'CandID', show: false},
+      {label: 'SessionID', show: false},
+      {label: 'File Visibility', show: false, filter: {
+        name: 'hideFile',
+        type: 'select',
+        options: options.hidden,
+        hide: !this.props.hasPermission('superUser'),
+      }},
+      {label: 'Edit Metadata', show: true},
     ];
-    const tabList = [{id: 'browse', label: 'Browse'}];
+    const tabs = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
-        tabList.push({id: 'upload', label: 'Upload'});
+        tabs.push({id: 'upload', label: 'Upload'});
         return (
           <TabPane TabId={tabList[1].id}>
             <MediaUploadForm
@@ -233,8 +172,8 @@ class MediaIndex extends Component {
     };
 
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabList[0].id}>
+      <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
+        <TabPane TabId={tabs[0].id}>
           <FilterableDataTable
             name="media"
             data={this.state.data.Data}

@@ -162,7 +162,6 @@ class Media extends \NDB_Menu_Filter
                's.CandID as cand_id',
                's.ID as session_id',
                'm.hide_file',
-               'm.id',
               ];
 
         $this->query = $query;

@@ -61,7 +61,7 @@ class Filter extends Component {
           element,
           {
             name: filter.name,
-            label: filter.label,
+            label: field.label,
             value: (this.props.filter[filter.name] || {}).value,
             onUserInput: this.onFieldUpdate,
           }
@@ -98,6 +98,7 @@ class Filter extends Component {
 Filter.defaultProps = {
   height: '100%',
   title: 'Selection Filter',
+  id: null,
   clearFilter: function() {
     console.warn('onUpdate() callback is not set!');
   },
@@ -105,7 +106,7 @@ Filter.defaultProps = {
 Filter.propTypes = {
   filter: PropTypes.object.isRequired,
   clearFilter: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
 };

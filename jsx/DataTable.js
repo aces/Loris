@@ -148,7 +148,7 @@ class DataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    const headerList = this.props.fields.map((field) => field.header);
+    const headerList = this.props.fields.map((field) => field.label);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
@@ -180,7 +180,7 @@ class DataTable extends Component {
       let keywordMatch = 0;
       for (let j = 0; j < headersData.length; j++) {
         let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword(headersData[j].header, data)) {
+        if (this.hasFilterKeyword(headersData[j].label, data)) {
           headerCount++;
         }
         if (useKeyword) {
@@ -349,19 +349,19 @@ class DataTable extends Component {
     ];
 
     for (let i = 0; i < this.props.fields.length; i += 1) {
-      if (this.props.fields[i].display === true) {
+      if (this.props.fields[i].show === true) {
         let colIndex = i + 1;
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.fields[i].header}
+              {this.props.fields[i].label}
             </th>
           );
         } else {
           headers.push(
             <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.fields[i].header}
+              {this.props.fields[i].label}
             </th>
           );
         }
@@ -422,16 +422,16 @@ class DataTable extends Component {
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          if (this.props.fields[j].display === false) {
+          if (this.props.fields[j].show === false) {
             data = null;
           } else {
             // create mapping between rowHeaders and rowData in a row Object
             const row = {};
             this.props.fields.forEach((field, k) => {
-              row[field.header] = this.props.data[index[i].RowIdx][k];
+              row[field.label] = this.props.data[index[i].RowIdx][k];
             });
             data = this.props.getFormattedCell(
-              this.props.fields[j].header,
+              this.props.fields[j].label,
               data,
               row
             );
@@ -549,7 +549,6 @@ class DataTable extends Component {
   }
 }
 DataTable.propTypes = {
-  headers: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   RowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
@@ -559,8 +558,6 @@ DataTable.propTypes = {
   Hide: PropTypes.object,
 };
 DataTable.defaultProps = {
-  headers: [],
-  data: {},
   RowNumLabel: 'No.',
   filter: {},
   Hide: {
