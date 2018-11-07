@@ -86,6 +86,13 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                        "Length"   => $this->getHeader("time:length"),
                        "StepSize" => $this->getHeader("time:step"),
                       ];
+
+        $Manufacturer    = $this->getHeader("study:manufacturer");
+        $Model           = $this->getHeader("study:device_model");
+        $SoftwareVersion = $this->getHeader("study:software_version");
+        $SerialNumber    = $this->getHeader("study:serial_no");
+        $FieldStrength   = $this->getHeader("study:field_value");
+
         $this->JSON = [
                        'Meta'        => [
                                          'CandID'   => $this->CandID,
@@ -108,7 +115,13 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                                          "ZSpace"        => $ZSpace,
                                          "TimeDimension" => $TimeD,
                                         ],
-
+                       'ScannerInfo' => [
+                                         "Manufacturer"    => $Manufacturer,
+                                         "Model"           => $Model,
+                                         "SoftwareVersion" => $SoftwareVersion,
+                                         "SerialNumber"    => $SerialNumber,
+                                         "FieldStrength"   => $FieldStrength,
+                                        ],
                       ];
     }
 
