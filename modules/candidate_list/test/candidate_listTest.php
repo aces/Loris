@@ -274,6 +274,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _assertSearchBy(array $criteria, $expectedResults)
     {
+
         foreach ($criteria as $elementName => $elementValue) {
             $element = $this->webDriver->findElement(
                 WebDriverBy::Name($elementName)
@@ -332,6 +333,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testPageUIs()
     {
         $this->safeGet($this->url . "/candidate_list/");
+        $bodyText = $this->webDriver->getPageSource();
+        print_r($bodyText);
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
