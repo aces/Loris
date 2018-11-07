@@ -625,7 +625,7 @@ class Candidate
         $query  = "SELECT Visit_label
             FROM session s JOIN candidate c ON (c.CandID = s.CandID)
             WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-            ORDER BY Date_Visit";
+            ORDER BY Date_Visit LIMIT 1";
         $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where, false);
 
