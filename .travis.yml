@@ -27,7 +27,7 @@ before_install:
 
 install:
     - npm install
-    - make 
+    - make dev 
     - phpenv rehash
 
     # Download a Selenium Web Driver release
