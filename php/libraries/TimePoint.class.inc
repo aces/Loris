@@ -367,7 +367,6 @@ class TimePoint
             );
             return false;
         }
-        $this->candidateInfo = array_merge($this->candidateInfo, $newData);
 
         \Database::singleton()->update(
             'session',
