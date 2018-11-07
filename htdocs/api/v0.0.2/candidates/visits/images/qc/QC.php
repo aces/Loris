@@ -64,12 +64,8 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $factory    = \NDB_Factory::singleton();
         $DB         = $factory->Database();
         $QCStatus   = $DB->pselectRow(
-            "SELECT QCStatus, 
-                pf.Value as Selected FROM files f
+            "SELECT QCStatus, Selected FROM files f
                 LEFT JOIN files_qcstatus fqc ON (f.FileID=fqc.FileID)
-                LEFT JOIN parameter_file pf ON (f.FileID=pf.FileID)
-                LEFT JOIN parameter_type pt 
-                    ON (pf.ParameterTypeID=pt.ParameterTypeID AND pt.Name='Selected')
                 WHERE f.File LIKE CONCAT('%', :FName)",
             array('FName' => $this->Filename)
         );
