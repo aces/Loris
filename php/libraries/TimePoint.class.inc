@@ -352,9 +352,10 @@ class TimePoint
      * @param array $newData Key-value pair(s) of the field(s) to change and its
      *                              new value(s).
      *
-     * @return bool true
+     * @return bool
      *
      * @throws DatabaseException
+     * @throws LorisException
      */
     public function setData(array $newData): bool
     {
@@ -375,6 +376,7 @@ class TimePoint
              'ID' => $this->getData('SessionID'),
             )
         );
+        return true;
     }
 
     /**

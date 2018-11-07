@@ -379,12 +379,10 @@ class Candidate
      * @param array $newData Key-value pair(s) of the field(s) to change and the
      *                              new value(s).
      *
-     * @return bool true
+     * @return bool
      *
      * @throws DatabaseException
-     * @note   This function is sometimes called as a key-value array and other
-     * times with two separate key arguments. This should be refactored
-     * to enforce one standard way of calling the function.
+     * @throws LorisException
      */
     public function setData(array $newData): bool
     {
