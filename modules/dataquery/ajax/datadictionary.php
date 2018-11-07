@@ -56,4 +56,4 @@ if ($_REQUEST['category']) {
 }
 
 print json_encode($results);
-?>
+

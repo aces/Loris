@@ -104,4 +104,4 @@ function getLatestLogFile()
     }
     return $data_source_file;
 }
-?>
+

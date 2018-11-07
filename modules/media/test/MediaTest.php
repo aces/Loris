@@ -62,4 +62,4 @@ class MediaTest extends LorisIntegrationTest
     }
 
 }
-?>
+

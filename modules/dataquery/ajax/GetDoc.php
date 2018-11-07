@@ -37,4 +37,4 @@ $results = $cdb->getDoc(
 );
 
 print json_encode($results);
-?>
+

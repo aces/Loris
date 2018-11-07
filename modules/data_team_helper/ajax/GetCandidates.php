@@ -61,4 +61,4 @@ $response["suggestions"] = $flattened_result;
 print json_encode($response);
 
 
-?>
+

@@ -62,4 +62,4 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
     }
 }
 
-?>
+

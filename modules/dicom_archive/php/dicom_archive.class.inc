@@ -134,4 +134,4 @@ class Dicom_Archive extends \NDB_Menu_Filter
         );
     }
 }
-?>
+

@@ -177,4 +177,4 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->resetPermissions();
     }
 }
-?>
+
