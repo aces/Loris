@@ -27,7 +27,7 @@ before_install:
 
 install:
     - npm install
-    - make dev
+    - make 
     - phpenv rehash
 
     # Download a Selenium Web Driver release
@@ -85,11 +85,10 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
-    - make
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
