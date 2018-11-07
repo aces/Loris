@@ -160,7 +160,7 @@ class MediaIndex extends Component {
       if (this.props.hasPermission('media_write')) {
         tabs.push({id: 'upload', label: 'Upload'});
         return (
-          <TabPane TabId={tabList[1].id}>
+          <TabPane TabId={tabs[1].id}>
             <MediaUploadForm
               DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
               action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
