@@ -89,7 +89,8 @@ class DataTable extends Component {
         this.state.SortOrder !== prevState.SortOrder)
     ) {
       let index = this.getSortedRows();
-      this.props.onSort(index, this.props.data, this.props.fields);
+      const headerList = this.props.fields.map((field) => field.label);
+      this.props.onSort(index, this.props.data, headerList);
     }
   }
 
@@ -165,7 +166,7 @@ class DataTable extends Component {
         0
     );
     let tableData = this.props.data;
-    let headersData = this.props.fields;
+    let fieldData = this.props.fields;
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -178,9 +179,9 @@ class DataTable extends Component {
     for (let i = 0; i < tableData.length; i++) {
       let headerCount = 0;
       let keywordMatch = 0;
-      for (let j = 0; j < headersData.length; j++) {
+      for (let j = 0; j < fieldData.length; j++) {
         let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword(headersData[j].label, data)) {
+        if (this.hasFilterKeyword((fieldData[j].filter || {}).name, data)) {
           headerCount++;
         }
         if (useKeyword) {
@@ -277,21 +278,21 @@ class DataTable extends Component {
    *
    * Note: Search is case-insensitive.
    *
-   * @param {string} index column name
+   * @param {string} name field name
    * @param {string} data search string
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword(index, data) {
+  hasFilterKeyword(name, data) {
     let filterData = null;
     let exactMatch = false;
     let result = false;
     let searchKey = null;
     let searchString = null;
 
-    if (this.props.filter[index]) {
-      filterData = this.props.filter[index].value;
-      exactMatch = this.props.filter[index].exactMatch;
+    if (this.props.filter[name]) {
+      filterData = this.props.filter[name].value;
+      exactMatch = this.props.filter[name].exactMatch;
     }
 
     // Handle null inputs
@@ -330,6 +331,7 @@ class DataTable extends Component {
         }
       }
     }
+
     return result;
   }
 
