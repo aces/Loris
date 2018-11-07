@@ -5,8 +5,8 @@ cache:
     directories:
         - vendor
 php:
-    - "7.1"
     - "7.2"
+    - "7.3"
 
 addons:
     firefox: "44.0"
