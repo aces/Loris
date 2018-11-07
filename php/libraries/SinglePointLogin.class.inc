@@ -443,7 +443,15 @@ class SinglePointLogin
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row        = $DB->pselectRow($query, array('username' => $username));
+        $row = $DB->pselectRow($query, array('username' => $username));
+
+        /* If the login timestamp is null then this is the user's first time
+         * logging in. This will always be the case in our CI environment.
+         * The user should not be disabled in this case.
+         */
+        if (is_null($row['Login_timestamp'])) {
+            return false;
+        }
         $last_login = new DateTime($row['Login_timestamp']);
         $time_now   = new DateTime("now");
         $interval   = $last_login->diff($time_now);
