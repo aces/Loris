@@ -81,7 +81,7 @@ class Next_Stage extends \NDB_Form
         // set the date for the new stage
         $timePoint->setData(
             array(
-                "Date_".$newStage => $values['date1']
+             "Date_".$newStage => $values['date1'],
             )
         );
 
@@ -89,7 +89,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['SubprojectID'])) {
             $timePoint->setData(
                 array(
-                    'SubprojectID' => $values['SubprojectID']
+                 'SubprojectID' => $values['SubprojectID'],
                 )
             );
         }
@@ -98,7 +98,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['scan_done'])) {
             $timePoint->setData(
                 array(
-                    'Scan_done' => $values['scan_done']
+                 'Scan_done' => $values['scan_done'],
                 )
             );
         }

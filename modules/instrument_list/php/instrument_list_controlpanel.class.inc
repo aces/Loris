@@ -105,7 +105,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 array(
-                    $currentStage => $_REQUEST['setStageUpdate']
+                 $currentStage => $_REQUEST['setStageUpdate'],
                 )
             );
             return;
@@ -173,7 +173,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // Send to DCC - set Submitted to Y
             $this->setData(
                 array(
-                    'Submitted' => $_REQUEST['setSubmitted']
+                 'Submitted' => $_REQUEST['setSubmitted'],
                 )
             );
             // move to next stage (approval or the bin)
@@ -237,7 +237,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             $this->setData(
                 array(
-                    'Submitted' => $_REQUEST['setSubmitted']
+                 'Submitted' => $_REQUEST['setSubmitted'],
                 )
             );
 
@@ -297,15 +297,13 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 array(
-                    'BVLQCStatus' => $_REQUEST['setBVLQCStatus']
+                 'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
                 )
             );
             return;
         } else {
             $this->setData(
-                array(
-                    'BVLQCStatus' => null
-                )
+                array('BVLQCStatus' => null)
             );
             return;
         }
@@ -314,15 +312,13 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 array(
-                    'BVLQCType' => $_REQUEST['setBVLQCType']
+                 'BVLQCType' => $_REQUEST['setBVLQCType'],
                 )
             );
             return;
         } else {
             $this->setData(
-                array(
-                    'BVLQCType' => null
-                )
+                array('BVLQCType' => null)
             );
             return;
         }
