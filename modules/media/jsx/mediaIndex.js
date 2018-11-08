@@ -55,7 +55,6 @@ class MediaIndex extends Component {
   formatColumn(column, cell, row) {
     // Set class to 'bg-danger' if file is hidden.
     const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
-
     let result = <td className={style}>{cell}</td>;
     switch (column) {
     case 'File Name':
