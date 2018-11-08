@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\new_profile1;
+namespace LORIS\new_profile;
 
 /**
  * New_profile
@@ -23,7 +23,7 @@ namespace LORIS\new_profile1;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class New_Profile1 extends \NDB_Form
+class New_Profile extends \NDB_Form
 {
     /**
      * Tie the access to a data_entry permission
