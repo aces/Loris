@@ -69,7 +69,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                 WHERE f.File LIKE CONCAT('%', :FName)",
             array('FName' => $this->Filename)
         );
-        $Caveats = $this->getImageCaveats();
+        $Caveats    = $this->getImageCaveats();
         $this->JSON = [
                        'Meta'     => [
                                       'CandID' => $this->CandID,
