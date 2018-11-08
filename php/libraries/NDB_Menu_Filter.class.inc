@@ -766,6 +766,7 @@ class NDB_Menu_Filter extends NDB_Menu
         return array(
                 'Headers' => $headers,
                 'Data'    => $MappedData,
+                'fieldOptions' => $this->fieldOptions,
                );
     }
 

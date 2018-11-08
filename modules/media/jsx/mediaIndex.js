@@ -33,7 +33,7 @@ class MediaIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.getData, {credentials: 'include'})
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data}));
   }
@@ -76,9 +76,8 @@ class MediaIndex extends Component {
       const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
       return <td className={style}><a href={editURL}>Edit</a></td>;
       break;
-    default:
-      return <td className={style}>{cell}</td>;
     }
+    return <td className={style}>{cell}</td>;
   }
 
   /**
@@ -87,7 +86,7 @@ class MediaIndex extends Component {
    * @return {*} filterFormElements
    */
   renderFilterElements() {
-    const options = this.state.data.options;
+    const options = this.state.data.fieldOptions;
     const filterFormElements = [
       <TextboxElement name='pSCID' label='PSCID'/>,
       <SelectElement name='visitLabel' label='Visit Label' options={options.visits}/>,
@@ -145,7 +144,7 @@ class MediaIndex extends Component {
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <div style={{height: 500}}><Loader/></div>;
+      return <Loader/>;
     }
 
     const tabList = [{id: 'browse', label: 'Browse'}];
@@ -184,11 +183,8 @@ class MediaIndex extends Component {
 }
 
 window.addEventListener('load', () => {
-  const mediaIndex = (
-    <div className="page-media">
-      <MediaIndex getData={`${loris.BaseURL}/media/?format=json`} />
-    </div>
+  ReactDOM.render(
+    <MediaIndex dataURL={`${loris.BaseURL}/media/?format=json`} />,
+    document.getElementById('lorisworkspace')
   );
-
-  ReactDOM.render(mediaIndex, document.getElementById('lorisworkspace'));
 });
