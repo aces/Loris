@@ -28,6 +28,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
 {
 
     var $AjaxModule = true;
+    public $fieldOptions;
 
     /**
      * Overloading this method to allow access to site users (own site only)

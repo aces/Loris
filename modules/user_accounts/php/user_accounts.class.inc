@@ -26,6 +26,8 @@ namespace LORIS\user_accounts;
 
 class User_Accounts extends \NDB_Menu_Filter
 {
+    public $fieldOptions;
+
     /**
      * Overloading this method to allow access to users account
      *
