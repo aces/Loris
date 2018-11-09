@@ -356,30 +356,27 @@ class Imaging_Browser extends \NDB_Menu_Filter
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects);
         }
 
-        $this->addSelect('SiteID', 'Site', $list_of_sites);
-        $this->addSelect(
-            'VisitQCStatus',
-            'Visit QC Status',
-            array(
+            $VisitQCStatus = array(
              ''     => 'All',
              'Pass' => 'Pass',
              'Fail' => 'Fail',
-            )
-        );
+            );
 
-        $this->addSelect(
-            'Pending',
-            'Pending and New',
-            array(
+           $Pending= array(
              ''   => 'All',
              'P'  => 'Pending',
              'N'  => 'New',
              'PN' => 'Pending or New',
-            )
-        );
+            );
+
+        $this->fieldOptions = [
+            'sites'       => $list_of_sites,
+            'projects' => $list_of_projects,
+            'visitQCStatus' => $VisitQCStatus,
+
+        ];
 
         //query to get scan types that exist for the project
         $types_q    = $DB->pselect(
@@ -513,6 +510,9 @@ class Imaging_Browser extends \NDB_Menu_Filter
     }
 
 
+
+
+
     /**
      * Include the column formatter
      *
@@ -525,8 +525,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/imaging_browser/js/columnFormatter.js",
-             $baseurl . "/imaging_browser/js/onSort.js",
+             $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
             )
         );
     }
