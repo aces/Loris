@@ -310,12 +310,26 @@ class DataTable extends Component {
     // Handle string inputs
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
-      searchString = data.toLowerCase();
-
-      if (exactMatch) {
-        result = (searchString === searchKey);
-      } else {
-        result = (searchString.indexOf(searchKey) > -1);
+      switch (typeof data) {
+        case 'object':
+          // Handles the case where the data is an array (typeof 'object')
+          // and you want to search through it for
+          // the string you are filtering by
+          let searchArray = data.map((e) => e.toLowerCase());
+          if (exactMatch) {
+            result = searchArray.includes(searchKey);
+          } else {
+            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
+          }
+          break;
+        default:
+            searchString = data.toLowerCase();
+            if (exactMatch) {
+              result = (searchString === searchKey);
+            } else {
+              result = (searchString.indexOf(searchKey) > -1);
+            }
+          break;
       }
     }
 
@@ -552,7 +566,7 @@ class DataTable extends Component {
     );
 
     return (
-      <div style={{margin: '14px'}}>
+      <div name={this.props.name} style={{margin: '14px'}}>
         {header}
         <table className="table table-hover table-primary table-bordered" id="dynamictable">
           <thead>
@@ -568,6 +582,7 @@ class DataTable extends Component {
   }
 }
 DataTable.propTypes = {
+  name: PropTypes.string,
   data: PropTypes.array.isRequired,
   RowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
