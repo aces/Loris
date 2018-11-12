@@ -134,8 +134,8 @@ class NDB_Client
         // start php session
         session_start(
             array(
-                'cookie_httponly' => true,
-                'cookie_samesite' => true,
+             'cookie_httponly' => true,
+             'cookie_samesite' => true,
             )
         );
 
@@ -146,8 +146,8 @@ class NDB_Client
             header("Location: /");
             session_start(
                 array(
-                    'cookie_httponly' => true,
-                    'cookie_samesite' => true,
+                 'cookie_httponly' => true,
+                 'cookie_samesite' => true,
                 )
             );
         }
