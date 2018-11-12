@@ -21,12 +21,12 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
-     * @param  string $commentID the CommentID identifying the data to load
-     * @param  string $page if a multipage form, the page to show
+     * @param  string|null $commentID the CommentID identifying the data to load
+     * @param  string|null $page if a multipage form, the page to show
      * @return void
      * @access public
      */
-    function setup($commentID = NULL, $page = NULL)
+    function setup(?string $commentID = null, ?string $page = null)
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm();
