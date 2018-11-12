@@ -87,11 +87,11 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                        "StepSize" => $this->getHeader("time:step"),
                       ];
 
-        $Manufacturer    = $this->getHeader("study:manufacturer");
-        $Model           = $this->getHeader("study:device_model");
-        $SoftwareVersion = $this->getHeader("study:software_version");
-        $SerialNumber    = $this->getHeader("study:serial_no");
-        $FieldStrength   = $this->getHeader("study:field_value");
+        $manufacturer    = $this->getHeader("study:manufacturer");
+        $model           = $this->getHeader("study:device_model");
+        $softwareVersion = $this->getHeader("study:software_version");
+        $serialNumber    = $this->getHeader("study:serial_no");
+        $fieldStrength   = $this->getHeader("study:field_value");
 
         $this->JSON = [
                        'Meta'        => [
@@ -116,11 +116,11 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                                          "TimeDimension" => $TimeD,
                                         ],
                        'ScannerInfo' => [
-                                         "Manufacturer"    => $Manufacturer,
-                                         "Model"           => $Model,
-                                         "SoftwareVersion" => $SoftwareVersion,
-                                         "SerialNumber"    => $SerialNumber,
-                                         "FieldStrength"   => $FieldStrength,
+                                         "Manufacturer"    => $manufacturer,
+                                         "Model"           => $model,
+                                         "SoftwareVersion" => $softwareVersion,
+                                         "SerialNumber"    => $serialNumber,
+                                         "FieldStrength"   => $fieldStrength,
                                         ],
                       ];
     }

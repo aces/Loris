@@ -64,12 +64,16 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $factory    = \NDB_Factory::singleton();
         $DB         = $factory->Database();
         $QCStatus   = $DB->pselectRow(
-            "SELECT QCStatus, Selected FROM files f
-                LEFT JOIN files_qcstatus fqc ON (f.FileID=fqc.FileID)
-                WHERE f.File LIKE CONCAT('%', :FName)",
+            "SELECT QCStatus, Selected 
+             FROM files_qcstatus
+             WHERE FileID in (
+                SELECT FileID
+                FROM files
+                WHERE File LIKE CONCAT('%', :FName)
+            )",
             array('FName' => $this->Filename)
         );
-        $Caveats    = $this->getImageCaveats();
+        $caveats    = $this->getImageCaveats();
         $this->JSON = [
                        'Meta'     => [
                                       'CandID' => $this->CandID,
@@ -78,7 +82,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                                      ],
                        'QC'       => $QCStatus['QCStatus'],
                        'Selected' => $QCStatus['Selected'],
-                       'Caveats'  => $Caveats,
+                       'Caveats'  => $caveats,
                       ];
     }
 
