@@ -752,7 +752,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $values = Utility::nullifyEmpty($values, $key);
         }
         $db     = \Database::singleton();
-        $result = $db->update(
+        $db->update(
             $this->table,
             $values,
             array('CommentID' => $this->getCommentID())
@@ -1695,10 +1695,10 @@ class NDB_BVL_Instrument extends NDB_Page
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
      *
      * @param string      $field        Name given to the HTML QuickForm Element
-     *                             being created
+     *                                  being created
      * @param string      $label        The question text to display
      * @param array       $rules        Additional rules to apply to the element
-     *                             being added,{@} delimited
+     *                                  being added,{@} delimited
      * @param string|null $rule_message Message to display upon rule violation.
      *
      * @return void
@@ -2071,7 +2071,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * field in the database.
      *
      * @param array $date (optional) The date that the age is to
-     *                          be calculated based on.
+     *                    be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
