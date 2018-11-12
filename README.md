@@ -1,8 +1,11 @@
 # [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) LORIS Neuroimaging Platform 
 
----
-
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
+
+This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
+([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
+
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 <hr>
 Try LORIS on Heroku</b> before installing it on your system<br>
@@ -11,13 +14,6 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <hr>
-
-| Branch | Status |
-
-This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
-([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
-
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 # Prerequisites for Installation
 
