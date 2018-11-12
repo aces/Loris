@@ -70,22 +70,22 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $SeriesName        =  $this->getHeader("acquisition:protocol");
         $SeriesDescription = $this->getHeader("acquisition:series_description");
 
-        $XSpace     = [
-                       "Length"   => $this->getHeader("xspace:length"),
-                       "StepSize" => $this->getHeader("xspace:step"),
-                      ];
-        $YSpace     = [
-                       "Length"   => $this->getHeader("yspace:length"),
-                       "StepSize" => $this->getHeader("yspace:step"),
-                      ];
-        $ZSpace     = [
-                       "Length"   => $this->getHeader("zspace:length"),
-                       "StepSize" => $this->getHeader("zspace:step"),
-                      ];
-        $TimeD      = [
-                       "Length"   => $this->getHeader("time:length"),
-                       "StepSize" => $this->getHeader("time:step"),
-                      ];
+        $XSpace = [
+                   "Length"   => $this->getHeader("xspace:length"),
+                   "StepSize" => $this->getHeader("xspace:step"),
+                  ];
+        $YSpace = [
+                   "Length"   => $this->getHeader("yspace:length"),
+                   "StepSize" => $this->getHeader("yspace:step"),
+                  ];
+        $ZSpace = [
+                   "Length"   => $this->getHeader("zspace:length"),
+                   "StepSize" => $this->getHeader("zspace:step"),
+                  ];
+        $TimeD  = [
+                   "Length"   => $this->getHeader("time:length"),
+                   "StepSize" => $this->getHeader("time:step"),
+                  ];
 
         $manufacturer    = $this->getHeader("study:manufacturer");
         $model           = $this->getHeader("study:device_model");
