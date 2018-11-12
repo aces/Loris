@@ -41,7 +41,7 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    public static function &factory(?string $username): \User
+    public static function &factory(?string $username = null): \User
     {
         $obj = new User;
 
