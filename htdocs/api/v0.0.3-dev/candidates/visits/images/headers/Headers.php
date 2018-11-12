@@ -62,27 +62,27 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     public function handleGET()
     {
-        $TE = $this->getHeader('acquisition:echo_time');
-        $TR = $this->getHeader('acquisition:repetition_time');
-        $TI = $this->getHeader('acquisition:inversion_time');
-        $ST = $this->getHeader('acquisition:slice_thickness');
+        $te = $this->getHeader('acquisition:echo_time');
+        $tr = $this->getHeader('acquisition:repetition_time');
+        $ti = $this->getHeader('acquisition:inversion_time');
+        $st = $this->getHeader('acquisition:slice_thickness');
 
-        $SeriesName        =  $this->getHeader("acquisition:protocol");
-        $SeriesDescription = $this->getHeader("acquisition:series_description");
+        $seriesName        =  $this->getHeader("acquisition:protocol");
+        $seriesDescription = $this->getHeader("acquisition:series_description");
 
-        $XSpace = [
+        $xspace = [
                    "Length"   => $this->getHeader("xspace:length"),
                    "StepSize" => $this->getHeader("xspace:step"),
                   ];
-        $YSpace = [
+        $yspace = [
                    "Length"   => $this->getHeader("yspace:length"),
                    "StepSize" => $this->getHeader("yspace:step"),
                   ];
-        $ZSpace = [
+        $zspace = [
                    "Length"   => $this->getHeader("zspace:length"),
                    "StepSize" => $this->getHeader("zspace:step"),
                   ];
-        $TimeD  = [
+        $timeD  = [
                    "Length"   => $this->getHeader("time:length"),
                    "StepSize" => $this->getHeader("time:step"),
                   ];
@@ -100,20 +100,20 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                                          'Filename' => $this->Filename,
                                         ],
                        'Physical'    => [
-                                         "TE"             => $TE,
-                                         "TR"             => $TR,
-                                         "TI"             => $TI,
-                                         "SliceThickness" => $ST,
+                                         "TE"             => $te,
+                                         "TR"             => $tr,
+                                         "TI"             => $ti,
+                                         "SliceThickness" => $st,
                                         ],
                        'Description' => [
-                                         "SeriesName"        => $SeriesName,
-                                         "SeriesDescription" => $SeriesDescription,
+                                         "SeriesName"        => $seriesName,
+                                         "SeriesDescription" => $seriesDescription,
                                         ],
                        'Dimensions'  => [
-                                         "XSpace"        => $XSpace,
-                                         "YSpace"        => $YSpace,
-                                         "ZSpace"        => $ZSpace,
-                                         "TimeDimension" => $TimeD,
+                                         "XSpace"        => $xspace,
+                                         "YSpace"        => $yspace,
+                                         "ZSpace"        => $zspace,
+                                         "TimeDimension" => $timeD,
                                         ],
                        'ScannerInfo' => [
                                          "Manufacturer"    => $manufacturer,
