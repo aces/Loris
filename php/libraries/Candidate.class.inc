@@ -596,7 +596,7 @@ class Candidate
      *               or NULL if none exist
      * @throws DatabaseException
      */
-    public function getValidSubprojects(): array
+    public function getValidSubprojects(): ?array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -791,7 +791,7 @@ class Candidate
      *                           being validated to check against appropriate
      *                           parts of PSCID definition
      *
-     * @return boolean True if PSCID is valid
+     * @return boolean True if PSCID is valid, false otherwise
      */
     static public function validatePSCID(
         string $PSCID,
@@ -806,7 +806,8 @@ class Candidate
             $PSCIDSettings['structure'],
             $siteAbbrev
         );
-        return preg_match($regex, $PSCID);
+        //preg_match returns 1 on success.
+        return preg_match($regex, $PSCID) === 1;
     }
 
 
