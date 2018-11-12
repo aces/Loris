@@ -39,12 +39,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     /**
      * Sets up the variables required for a LINST instrument to load
      *
-     * @param string $commentID The CommentID being loaded
-     * @param string $page      The page being loaded
+     * @param string|null $commentID The CommentID being loaded
+     * @param string|null $page      The page being loaded
      *
      * @return void
      */
-    function setup(string $commentID = null, string $page = null): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->commentID = $commentID;
         $this->page      = $page;
@@ -375,10 +375,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return void
+     * @return bool true
      */
-    function XINRegisterRule(string $elname, array $rules, $message="", $group="")
-    {
+    function XINRegisterRule(
+        string $elname,
+        array $rules,
+        string $message="",
+        string $group=""
+    ): bool {
         // I'm not sure if these are logically the same. I think they should be, but
         // there was a bug introduced by the LINST changes to XINRules to old
         // instruments so I'm making sure that the old code is followed exactly
@@ -633,14 +637,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'numeric':
                     if ($addElements) {
-                        $options = array();
-                        if (!empty($pieces[3])) {
-                            $options['min'] = $pieces[3];
-                        }
-                        if (!empty($pieces[4])) {
-                            $options['max'] = $pieces[4];
-                        }
-                        $this->addNumericElement($pieces[1], $pieces[2], $options);
+                        $this->addNumericElement($pieces[1], $pieces[2]);
                     }
                     $this->LinstQuestions[$pieces[1]]
                         = array(

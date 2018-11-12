@@ -26,7 +26,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup(?string $commentID = null, ?string $page = null)
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm();
@@ -49,7 +49,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _setupForm()
+    function _setupForm(): void
     {
         //determine page to display
         if (preg_match("/testtest(_page[0-9]+)/", $this->page, $matches)) {
@@ -89,7 +89,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return string The HTML to be inserted into the review section of
      *                the final page of the survey module for this instrument.
      */
-    function getReview()
+    function getReview(): string
     {
         return;
     }
