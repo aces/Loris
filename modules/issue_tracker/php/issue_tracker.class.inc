@@ -242,48 +242,15 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                         'addEmptyOption' => true,
                        );
 
-        $this->addBasicText(
-            'keyword',
-            'Keyword',
-            array(
-             "size"      => 10,
-             "maxlength" => 50,
-            )
-        );
-        $this->addBasicText(
-            'issueID',
-            'Issue ID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addSelect('module', 'Module', $modules);
-        $this->addSelect('category', 'Category', $categories);
-        $this->addBasicText(
-            'PSCID',
-            'PSCID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addBasicText(
-            'visitLabel',
-            'Visit Label',
-            array(
-             'size'      => "5",
-             "maxlength" => "15",
-            )
-        );
-        $this->addSelect('site', 'Site', $list_of_sites);
-        $this->addSelect('reporter', 'Reporter', $reporters);
-        $this->addSelect('assignee', 'Assignee', $assignees);
-        $this->addSelect('priority', 'Priority', $priorities);
-        $this->addSelect('status', 'Status', $statuses);
-        $this->addBasicDate('minDate', 'Created After', $dateOptions);
-        $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
-        $this->addCheckbox('watching', 'Watching', array('value' => '1'));
+        $this->fieldOptions = [
+            'modules' => $modules,
+            'categories' => $categories,
+            'reporters' => $reporters,
+            'assignees' => $assignees,
+            'statuses' => $statuses,
+            'priorities' => $priorities,
+            'sites' => $list_of_sites,
+        ];
     }
 
 
@@ -386,7 +353,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            array($baseurl . "/issue_tracker/js/issueTrackerIndex.js")
         );
     }
 }
