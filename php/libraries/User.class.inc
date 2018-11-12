@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    private $_userInfo = array();
+    protected $_userInfo = array();
 
     /**
      * Constructor
