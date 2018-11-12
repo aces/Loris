@@ -397,7 +397,7 @@ class Candidate
         }
         $this->candidateInfo = array_merge($this->candidateInfo, $newData);
 
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'candidate',
             $newData,
             array(
