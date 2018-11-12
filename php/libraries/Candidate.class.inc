@@ -596,17 +596,14 @@ class Candidate
      *               or NULL if none exist
      * @throws DatabaseException
      */
-    public function getValidSubprojects(): ?array
+    public function getValidSubprojects(): array
     {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $subprojList = null;
+        $subprojList = array();
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
         $params  = array('prj' => $projID);
-        $subproj = $db->pselect($query, $params);
+        $subproj = \Database::singleton()->pselect($query, $params);
 
         foreach ($subproj as $row) {
             foreach ($row as $key =>$val) {
