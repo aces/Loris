@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    protected $_userInfo = array();
+    protected $userInfo = array();
 
     /**
      * Constructor
@@ -46,7 +46,7 @@ class User extends UserPermissions
         $obj = new User;
 
         // right off, set the username
-        $obj->_userInfo['UserID'] = $username;
+        $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
         if ($obj->select($username) === false) {
@@ -113,7 +113,7 @@ class User extends UserPermissions
         // store user data in object property
         $row['examiner']  = $examiner_info;
         $row['CenterIDs'] = $user_cid;
-        $obj->_userInfo   = $row;
+        $obj->userInfo    = $row;
         return $obj;
     }
 
@@ -174,14 +174,14 @@ class User extends UserPermissions
         $DB->update(
             'users',
             $set,
-            array('UserID' => $this->_userInfo['UserID'])
+            array('UserID' => $this->userInfo['UserID'])
         );
 
         return true;
     }
 
     /**
-     * Returns data from the _userInfo array according to the key provided
+     * Returns data from the userInfo array according to the key provided
      * as argument.
      *
      * @param string $var Name of variable to get
@@ -194,7 +194,7 @@ class User extends UserPermissions
     public function getData(string $var = '')
     {
         if ($var === '') {
-            return $this->_userInfo;
+            return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
                 "The function getData('CenterID')
@@ -208,7 +208,7 @@ class User extends UserPermissions
                                         with getData('Sites')"
             );
         } else {
-            return $this->_userInfo[$var];
+            return $this->userInfo[$var];
         }
     }
 
@@ -219,7 +219,7 @@ class User extends UserPermissions
      */
     function getFullname(): string
     {
-        return $this->_userInfo['Real_name'];
+        return $this->userInfo['Real_name'];
     }
 
     /**
@@ -229,7 +229,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->_userInfo['ID'];
+        return $this->userInfo['ID'];
     }
 
     /**
@@ -239,7 +239,7 @@ class User extends UserPermissions
      */
     function getUsername(): string
     {
-        return $this->_userInfo['UserID'];
+        return $this->userInfo['UserID'];
     }
 
     /**
@@ -291,7 +291,7 @@ class User extends UserPermissions
      */
     function getCenterIDs(): array
     {
-        return $this->_userInfo['CenterIDs'];
+        return $this->userInfo['CenterIDs'];
     }
 
     /**
@@ -301,7 +301,7 @@ class User extends UserPermissions
      */
     function getLanguagePreference(): int
     {
-        return $this->_userInfo['language_preference'];
+        return $this->userInfo['language_preference'];
     }
 
 
@@ -312,7 +312,7 @@ class User extends UserPermissions
      */
     function getExaminerSites(): array
     {
-        $site_list = $this->_userInfo['examiner'];
+        $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
         natcasesort($site_list);
         return $site_list;
@@ -362,7 +362,7 @@ class User extends UserPermissions
      */
     public function isEmailValid(): bool
     {
-        if (!filter_var($this->_userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
             return false;
         };
         return true;
@@ -499,7 +499,7 @@ class User extends UserPermissions
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->_userInfo['CenterID'] == 1);
+        return ($this->userInfo['CenterID'] == 1);
     }
 
     /**
@@ -580,7 +580,7 @@ class User extends UserPermissions
                UserID = :v_userid AND
                Success = 'Y'
             ",
-            array('v_userid' => $this->_userInfo['UserID'])
+            array('v_userid' => $this->userInfo['UserID'])
         );
         return $count > 0;
     }
