@@ -224,7 +224,7 @@ class Utility
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList(int $projectID = null): array
+    static function getSubprojectList(?int $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -254,7 +254,7 @@ class Utility
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject(?int $projectID): array
+    static function getSubprojectsForProject(?int $projectID = null): array
     {
         if (is_null($projectID)) {
             return array();
