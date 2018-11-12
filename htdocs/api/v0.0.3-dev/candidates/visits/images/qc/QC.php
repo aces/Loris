@@ -74,16 +74,16 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             array('FName' => $this->Filename)
         );
         $caveats    = $this->getImageCaveats();
-        $this->JSON = [
-                       'Meta'     => [
+        $this->JSON = array(
+                       'Meta'     => array(
                                       'CandID' => $this->CandID,
                                       'Visit'  => $this->VisitLabel,
                                       'File'   => $this->Filename,
-                                     ],
+                                     ),
                        'QC'       => $QCStatus['QCStatus'],
                        'Selected' => $QCStatus['Selected'],
                        'Caveats'  => $caveats,
-                      ];
+                      );
     }
 
     /**
@@ -91,7 +91,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      *
      * @return an array with list of caveats for the file
      */
-    function getImageCaveats()
+    function getImageCaveats(): array
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->Database();

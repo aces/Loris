@@ -70,22 +70,22 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $seriesName        =  $this->getHeader("acquisition:protocol");
         $seriesDescription = $this->getHeader("acquisition:series_description");
 
-        $xspace = [
+        $xspace = array(
                    "Length"   => $this->getHeader("xspace:length"),
                    "StepSize" => $this->getHeader("xspace:step"),
-                  ];
-        $yspace = [
+                  );
+        $yspace = array(
                    "Length"   => $this->getHeader("yspace:length"),
                    "StepSize" => $this->getHeader("yspace:step"),
-                  ];
-        $zspace = [
+                  );
+        $zspace = array(
                    "Length"   => $this->getHeader("zspace:length"),
                    "StepSize" => $this->getHeader("zspace:step"),
-                  ];
-        $timeD  = [
+                  );
+        $timeD  = array(
                    "Length"   => $this->getHeader("time:length"),
                    "StepSize" => $this->getHeader("time:step"),
-                  ];
+                  );
 
         $manufacturer    = $this->getHeader("study:manufacturer");
         $model           = $this->getHeader("study:device_model");
@@ -93,36 +93,36 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $serialNumber    = $this->getHeader("study:serial_no");
         $fieldStrength   = $this->getHeader("study:field_value");
 
-        $this->JSON = [
-                       'Meta'        => [
+        $this->JSON = array(
+                       'Meta'        => array(
                                          'CandID'   => $this->CandID,
                                          'Visit'    => $this->VisitLabel,
                                          'Filename' => $this->Filename,
-                                        ],
-                       'Physical'    => [
+                                        ),
+                       'Physical'    => array(
                                          "TE"             => $te,
                                          "TR"             => $tr,
                                          "TI"             => $ti,
                                          "SliceThickness" => $st,
-                                        ],
-                       'Description' => [
+                                        ),
+                       'Description' => array(
                                          "SeriesName"        => $seriesName,
                                          "SeriesDescription" => $seriesDescription,
-                                        ],
-                       'Dimensions'  => [
+                                        ),
+                       'Dimensions'  => array(
                                          "XSpace"        => $xspace,
                                          "YSpace"        => $yspace,
                                          "ZSpace"        => $zspace,
                                          "TimeDimension" => $timeD,
-                                        ],
-                       'ScannerInfo' => [
+                                        ),
+                       'ScannerInfo' => array(
                                          "Manufacturer"    => $manufacturer,
                                          "Model"           => $model,
                                          "SoftwareVersion" => $softwareVersion,
                                          "SerialNumber"    => $serialNumber,
                                          "FieldStrength"   => $fieldStrength,
-                                        ],
-                      ];
+                                        ),
+                      );
     }
 
     /**
