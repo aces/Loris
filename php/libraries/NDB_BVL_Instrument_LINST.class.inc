@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return void
      */
-    function setup($commentID = null, $page = null)
+    function setup(string $commentID = null, string $page = null): void
     {
         $this->commentID = $commentID;
         $this->page      = $page;
@@ -58,7 +58,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _addMetadataFields()
+    function _addMetadataFields(): void
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return string the full name of the instrument
      */
-    function getFullName()
+    function getFullName(): string
     {
         $db =& Database::singleton();
 
@@ -121,7 +121,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return array
      */
-    function getSubtestList()
+    function getSubtestList(): array
     {
         // get a database connection
         $db =& \Database::singleton();
@@ -147,7 +147,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @return array associative array of errors (fieldname => errormessage) or true
      *         if no errors.
      */
-    function XINValidate($elements)
+    function XINValidate(array $elements): array
     {
         unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug = false;  //Turn this on to see rules debuggin output
@@ -323,8 +323,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return boolean true if the element passes, false if it fails a rule.
      */
-    function DINRunElementRules($elname, $elements, $registered)
-    {
+    function DINRunElementRules(
+        string $elname,
+        array $elements,
+        bool $registered
+    ): bool {
         foreach ($registered['rules'] AS $rule) {
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
@@ -361,20 +364,20 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     }
 
     /**
-    * Attaches a user defined rule (conditions) to a form element (grouped or not).
-    *
-    * @param string $elname  Name of element registering the rule
-    * @param array  $rules   Array of rules to apply in an AND fashion.
-    *                        Rules are written in rose ({@}) format
-    *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
-    *                        ORs may be written within the same array value.
-    * @param string $message Message to print upon rule violation
-    * @param string $group   Empty if a non-grouped element is registering the rule.
-    *                        Otherwise, name of the group registering the rule.
-    *
-    * @return void
-    */
-    function XINRegisterRule($elname, $rules, $message="", $group="")
+     * Attaches a user defined rule (conditions) to a form element (grouped or not).
+     *
+     * @param string $elname  Name of element registering the rule
+     * @param array  $rules   Array of rules to apply in an AND fashion.
+     *                        Rules are written in rose ({@}) format
+     *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
+     *                        ORs may be written within the same array value.
+     * @param string $message Message to print upon rule violation
+     * @param string $group   Empty if a non-grouped element is registering the rule.
+     *                        Otherwise, name of the group registering the rule.
+     *
+     * @return void
+     */
+    function XINRegisterRule(string $elname, array $rules, $message="", $group="")
     {
         // I'm not sure if these are logically the same. I think they should be, but
         // there was a bug introduced by the LINST changes to XINRules to old
@@ -416,7 +419,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return void (but as a side effect displays the Instrument page)
      */
-    function loadInstrumentFile($filename, $base64 = false)
+    function loadInstrumentFile(string $filename, bool $base64 = false): void
     {
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
@@ -770,7 +773,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return void but registers all instrument rules as a side-effect.
      */
-    function loadInstrumentRules($filename, $base64 = false)
+    function loadInstrumentRules(string $filename, bool $base64 = false): void
     {
         if (file_exists($filename) || $base64 === true) {
             $fp = fopen($filename, "r");
@@ -827,7 +830,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return string containing valid JSON
      */
-    function toJSON()
+    function toJSON(): string
     {
         $jsonObject = array(
                        'Meta'     => array(

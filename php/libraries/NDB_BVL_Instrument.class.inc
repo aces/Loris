@@ -2,11 +2,11 @@
 /**
  * This file contains the base class for instruments in Loris
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
- * @author   Unknown <example@example.com>
+ * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
@@ -18,7 +18,7 @@
  *
  * @category Main
  * @package  Behavioural
- * @author   Unknown <example@example.com>
+ * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
@@ -160,7 +160,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *                                  will silently return if the instrument is
      *                                  missing.
      *
-     * @return object the new object of $instrument type
+     * @return object|null the new object of $instrument type
      * @access public
      */
     static function factory(
@@ -325,8 +325,8 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Sets up basic data, such as the HTML_Quickform object, and so on.
      *
-     * @param string $commentID The CommentID identifying the data to load
-     * @param string $page      If a multipage form, the page to show
+     * @param string|null $commentID The CommentID identifying the data to load
+     * @param string|null $page      If a multipage form, the page to show
      *
      * @return   void
      * @access   public
@@ -1694,12 +1694,12 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
      *
-     * @param string $field        Name given to the HTML QuickForm Element
+     * @param string      $field        Name given to the HTML QuickForm Element
      *                             being created
-     * @param string $label        The question text to display
-     * @param array  $rules        Additional rules to apply to the element
+     * @param string      $label        The question text to display
+     * @param array       $rules        Additional rules to apply to the element
      *                             being added,{@} delimited
-     * @param string $rule_message Message to display upon rule violation.
+     * @param string|null $rule_message Message to display upon rule violation.
      *
      * @return void
      * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
@@ -1708,7 +1708,7 @@ class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules = array(),
-        string $rule_message = null
+        ?string $rule_message = null
     ): void {
         if ($rule_message === null) {
             $rule_message = "You are required to select a status "
@@ -1754,10 +1754,13 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    function addDateElement(string $name, string $label, array $options = null): void
-    {
+    function addDateElement(
+        string $name,
+        string $label,
+        array $options = array()
+    ): void {
 
-        if ($options === null) {
+        if (empty($options)) {
             $options = $this->dateOptions;
         }
 
@@ -2067,13 +2070,13 @@ class NDB_BVL_Instrument extends NDB_Page
      * the date will be calculated based on the value of the Date_taken
      * field in the database.
      *
-     * @param array|null $Date_taken (optional) The date that the age is to
+     * @param array $date (optional) The date that the age is to
      *                          be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
-    function getCandidateAge(?array $date = null): array
+    function getCandidateAge(array $date = array()): array
     {
         $CommentID = $this->getCommentID();
 
@@ -2087,13 +2090,13 @@ class NDB_BVL_Instrument extends NDB_Page
         );
 
         $age = array();
-        if (is_null($date)) {
+        if (empty($date)) {
             $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
         } else {
             $age = Utility::calculateAge($result['DoB'], $date);
         }
         //Format: array with keys 'year', 'mon', 'day'
-        return $age; 
+        return $age;
     }
 
     /**
