@@ -133,7 +133,10 @@ class NDB_Client
         );
         // start php session
         session_start(
-            ['cookie_httponly' => true]
+            array(
+                'cookie_httponly' => true,
+                'cookie_samesite' => true,
+            )
         );
 
         // if exiting, destroy the php session
@@ -142,7 +145,10 @@ class NDB_Client
             header("HTTP/1.1 303 See Other");
             header("Location: /");
             session_start(
-                ['cookie_httponly' => true]
+                array(
+                    'cookie_httponly' => true,
+                    'cookie_samesite' => true,
+                )
             );
         }
 
