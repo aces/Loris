@@ -183,15 +183,23 @@ class Candidate
     }
 
     /**
-     * Creates a new candidate, assigning CandID and PSCID
+     * Creates a new candidate, assigning CandID and PSCID.
+     *
+     * FIXME Ideally the signature of this function should be changed so that
+     * $useEDC is the second-to-last parameter. This would add some clarity as
+     * both it and $useProjects are optional parameters based on configuration
+     * settings. However, this will not be backward compatiable.
      *
      * @param int         $centerID    centerID of the site to which the
      *                                  candidate will belong
      * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
-     * @param string      $edc         estimated date of confinement written as
-     *                                      YYYY-MM-DD
+     * @param string|null $edc         estimated date of confinement written as
+     *                                      YYYY-MM-DD. Value should be null
+     *                                      unless the useEDC setting is
+     *                                      configured to be true.
      * @param string      $gender      gender, either 'Male' or 'Female'
      * @param string|null $PSCID       PSCID specified by the user, if available
+     * @param int|null    $projectID   The project ID, if available
      *
      * @return int   $candID      candidate id of the new candidate
      * @throws Exception
@@ -200,9 +208,10 @@ class Candidate
     static public function createNew(
         int $centerID,
         string $dateOfBirth,
-        string $edc,
+        ?string $edc,
         string $gender,
-        ?string $PSCID = null
+        ?string $PSCID = null,
+        ?int $projectID = null
     ): int {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -263,6 +272,7 @@ class Candidate
                      'DoB'             => $dateOfBirth,
                      'EDC'             => $edc,
                      'Gender'          => $gender,
+                     'ProjectID'       => $projectID,
                      'Date_active'     => date('Y-m-d'),
                      'Date_registered' => date('Y-m-d'),
                      'Entity_type'     => 'Human',
