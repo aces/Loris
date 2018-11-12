@@ -555,9 +555,9 @@ class TimePoint
     /**
      * Returns BVLQC status (Y-hardcopy QC, N-no QC, V-visual QC)
      *
-     * @return string
+     * @return string|null
      */
-    function getBVLQCStatus(): string
+    function getBVLQCStatus(): ?string
     {
         return $this->_timePointInfo['BVLQCStatus'];
     }
@@ -605,7 +605,7 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return ?string status of current stage or null
+     * @return string|null status of current stage
      */
     function getCurrentStatus(): ?string
     {
@@ -620,16 +620,15 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return string of the form "YYYY-MM-DD"
+     * @return string|null "YYYY-MM-DD"
      */
-    function getCurrentDate(): string
+    function getCurrentDate(): ?string
     {
         $getDateMethod = "getDateOf" . $this->getCurrentStage();
         if (method_exists($this, $getDateMethod)) {
             return $this->$getDateMethod();
-        } else {
-            return false;
         }
+        return null;
     }
 
     /**
@@ -927,9 +926,9 @@ class TimePoint
      * Returns either EDC or DOB depending on the settings of the subproject
      * that this timepoint belongs to.
      *
-     * @return string of the date in YYYY-MM-DD
+     * @return string|null date YYYY-MM-DD
      */
-    function getEffectiveDateOfBirth(): string
+    function getEffectiveDateOfBirth(): ?string
     {
         $config    = NDB_Config::singleton();
         $candidate = Candidate::singleton($this->getCandID());
