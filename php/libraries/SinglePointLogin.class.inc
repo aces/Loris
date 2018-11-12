@@ -321,7 +321,7 @@ class SinglePointLogin
          * attempts before actually trying to authenticate their credentials.
          * Doing so can help mititgate timing attacks against the server.
          */
-        if ($this->accountLocked($_POST['username'])){
+        if ($this->accountLocked($_POST['username'])) {
             $this->_lastError = 'This account is currently suspended due '
                 . 'to too many bad login attempts.';
             $this->insertFailedDetail('Account locked', $setArray);
