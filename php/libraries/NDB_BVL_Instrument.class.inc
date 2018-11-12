@@ -2060,26 +2060,25 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Calculates the candidate's age at the time of this instrument.
-     * If Date_taken was based in, it will calculate the age as of
-     * the date passed as a parameter (this is used, for instance, in
+     * If Date_taken is passed, this function  will calculate the age as of
+     * the value of that argument. This is used, for instance, in
      * _saveValues when we want to calculate the age based on the new
-     * value and not based on the age saved in the database), otherwise
-     * it will calculate based on the date saved into the Date_taken
-     * field from the database.
+     * value and not based on the age saved in the database. Otherwise
+     * the date will be calculated based on the value of the Date_taken
+     * field in the database.
      *
-     * @param array $Date_taken (optional) The date that the age is to
+     * @param array|null $Date_taken (optional) The date that the age is to
      *                          be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
-    function getCandidateAge(array $Date_taken = false): array
+    function getCandidateAge(?array $date = null): array
     {
-        $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
 
-        $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->table i
+        $result = \Database::singleton()->pselectRow(
+            "SELECT i.Date_taken, c.DoB FROM $this->testName i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2087,15 +2086,14 @@ class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $CommentID)
         );
 
-        if ($Date_taken == false) {
-            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
+        $age = array();
+        if (is_null($date)) {
+            $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
         } else {
-            $age = Utility::calculateAge($dates['DoB'], $Date_taken);
+            $age = Utility::calculateAge($result['DoB'], $date);
         }
-        if (!empty($age)) {
-            return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
-        }
-        return;
+        //Format: array with keys 'year', 'mon', 'day'
+        return $age; 
     }
 
     /**
