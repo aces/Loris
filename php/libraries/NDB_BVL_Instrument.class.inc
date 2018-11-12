@@ -776,7 +776,7 @@ class NDB_BVL_Instrument extends NDB_Page
         //
         // json_encode ensures that this is safe. If we use the safe wrapper,
         // HTML encoding the quotation marks will make it invalid JSON.
-        $result = $db->unsafeUpdate(
+        $db->unsafeUpdate(
             "flag",
             array("Data" => json_encode($newData)),
             array('CommentID' => $this->getCommentID())
@@ -1411,19 +1411,22 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return Integer The sessionID
+     * @return int The sessionID if found, or -1 if not found
      */
-    function getSessionID(): Integer
+    function getSessionID(): int
     {
-        $db = \Database::singleton();
-
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
+        $fieldValue = \Database::singleton()->pselectOne(
+            $query,
+            array(
+             'CID' => $this->getCommentID(),
+            )
+        );
 
         if (!empty($fieldValue)) {
             return $fieldValue;
         }
-        return false;
+        return -1;
     }
 
     /**
@@ -1431,7 +1434,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @return String for the VisitLabel
      */
-    function getVisitLabel(): String
+    function getVisitLabel(): string
     {
         $sessionID = $this->getSessionID();
 
@@ -2229,12 +2232,12 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Function that displays the html the fetch feedback panel.
      *
-     * @param candidateID $candID    The candidate ID for the panel.
-     * @param timepointID $sessionID The session ID for the panel.
+     * @param int $candID    The candidate ID for the panel.
+     * @param int $sessionID The session ID for the panel.
      *
      * @return string
      */
-    function getFeedbackPanel(candidateID $candID, timepointID $sessionID): string
+    function getFeedbackPanel(int $candID, int $sessionID): string
     {
 
         $commentID = $this->getCommentID();
@@ -2396,7 +2399,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if (isset($this->WrapperTextElements[$elementName])) {
                 // Convert text elements created by wrapper into
                 // the native type.
-                $mapFunc = function (&$el) use ($name, $elementName): void {
+                $mapFunc = function (&$el) use ($name, $elementName) : void {
                     if ($el['name'] === $name) {
                         $el['name'] = $elementName;
                         $elObj      = $this->WrapperTextElements[$elementName];
@@ -2415,7 +2418,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             if (isset($this->WrapperNumericElements[$elementName])) {
-                $mapFunc = function (&$el) use ($name, $elementName): void {
+                $mapFunc = function (&$el) use ($name, $elementName) : void {
                     if ($el['name'] === $name) {
                         $el['name'] = $elementName;
                         $el['type'] = 'numeric';
@@ -2428,7 +2431,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if (isset($this->WrapperDateWithStatusElements[$elementName])) {
                 // Convert date elements created by wrapper into
                 // the native type.
-                $mapFunc = function (&$el) use ($name, $elementName): void {
+                $mapFunc = function (&$el) use ($name, $elementName) : void {
 
                     if ($el['name'] === $name) {
                         $el['name'] = $elementName;
