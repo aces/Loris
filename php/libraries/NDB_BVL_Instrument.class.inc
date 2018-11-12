@@ -189,7 +189,7 @@ class NDB_BVL_Instrument extends NDB_Page
             && !file_exists($base."project/instruments/$instrument.linst")
             && $guarantee_exists==false
         ) {
-            return;
+            return null;
         }
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
