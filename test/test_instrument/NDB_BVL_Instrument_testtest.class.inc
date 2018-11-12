@@ -91,6 +91,6 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      */
     function getReview(): string
     {
-        return;
+        return '';
     }
 }
