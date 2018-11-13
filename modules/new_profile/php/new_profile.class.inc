@@ -2,11 +2,11 @@
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -15,19 +15,19 @@ require_once "Utility.class.inc";
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class New_Profile extends \NDB_Menu_Filter
 {
     public $result;
-    public $AjaxModule         = true;
-    public $skipTemplate       = true;
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
     /**
      * Tie the access to a data_entry permission
      *
@@ -55,22 +55,25 @@ class New_Profile extends \NDB_Menu_Filter
     function setup()
     {
         parent::setup();
-               $DB   = \Database::singleton();
-        $config =& \NDB_Config::singleton();
-        $user = \User::singleton();
-        $this->result['startYear'] = $config->getSetting('startYear');
-        $this->result['endYear']   = $config->getSetting('endYear');
-        $this->result['ageMax']    = $config->getSetting('ageMax');
-        $this->result['ageMin']    = $config->getSetting('ageMin');
-        $this->result['dobFormat'] = $config->getSetting('dobFormat');
-        $this->result['edc']       = $config->getSetting('useEDC');
-        $this->result['useProject']= $config->getSetting('useProjects');
-        $this->result['gender']    = ['male' =>  "Male",'female' =>  "Female"];
-        $this->result['pscidSet']  = "false";
-        //get sites for the select dropdown  
+               $DB = \Database::singleton();
+        $config    =& \NDB_Config::singleton();
+        $user      = \User::singleton();
+        $this->result['startYear']  = $config->getSetting('startYear');
+        $this->result['endYear']    = $config->getSetting('endYear');
+        $this->result['ageMax']     = $config->getSetting('ageMax');
+        $this->result['ageMin']     = $config->getSetting('ageMin');
+        $this->result['dobFormat']  = $config->getSetting('dobFormat');
+        $this->result['edc']        = $config->getSetting('useEDC');
+        $this->result['useProject'] = $config->getSetting('useProjects');
+        $this->result['gender']     = [
+                                       'male'   => "Male",
+                                       'female' => "Female",
+                                      ];
+        $this->result['pscidSet']   = "false";
+        //get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
-         if ($num_sites >1) {
+        if ($num_sites >1) {
             foreach ($user_list_of_sites as $key => $siteID) {
                 $center = $DB->pselectRow(
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
@@ -79,19 +82,19 @@ class New_Profile extends \NDB_Menu_Filter
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
         } else {
-          $psc_labelOptions = array(null => '');
+            $psc_labelOptions = array(null => '');
         }
-         $this->result['site']       = $psc_labelOptions;
+         $this->result['site'] = $psc_labelOptions;
          //get projects for the select dropdown
-        $projects         = \Utility::getProjectList();
+        $projects = \Utility::getProjectList();
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
         }
-        $this->result['project']       = $list_of_projects;
+        $this->result['project'] = $list_of_projects;
          //get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $result['pscidSet']  = "true";
+            $result['pscidSet'] = "true";
         }
         return true;
     }
@@ -103,7 +106,7 @@ class New_Profile extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $results            = $this->result;
+        $results = $this->result;
         return json_encode($results);
     }
     /**
