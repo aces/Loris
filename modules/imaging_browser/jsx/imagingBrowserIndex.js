@@ -55,29 +55,42 @@ class ImagingBrowserIndex extends Component {
         const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
         let result = <td className={style}>{cell}</td>;
         switch (column) {
-            case 'File Name':
-                if (this.props.hasPermission('media_write')) {
-                    const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
-                        encodeURIComponent(row['File Name']);
+            case 'New Data':
+                if (cell === 'new') {
                     result = (
-                        <td className={style}>
-                            <a href={downloadURL} target="_blank" download={row['File Name']}>
-                                {cell}
-                            </a>
+                        <td className="newdata">
+                            NEW
                         </td>
                     );
                 }
                 break;
-            case 'Visit Label':
-                if (row['CandID'] !== null && row['SessionID']) {
-                    const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-                        row['CandID'] + '&sessionID=' + row['SessionID'];
-                    result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
+            case 'Links':
+                let cellTypes = cell.split(',');
+                let cellLinks = [];
+                for (let i = 0; i < cellTypes.length; i += 1) {
+                    cellLinks.push(<a key={i} href={loris.BaseURL +
+                    '/imaging_browser/viewSession/?sessionID=' +
+                    row.SessionID + '&outputType=' +
+                    cellTypes[i] + '&backURL=/imaging_browser/'}>
+                        {cellTypes[i]}
+                    </a>);
+                    cellLinks.push(' | ');
                 }
-                break;
-            case 'Edit Metadata':
-                const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-                result = <td className={style}><a href={editURL}>Edit</a></td>;
+                cellLinks.push(<a key="selected" href={loris.BaseURL +
+                '/imaging_browser/viewSession/?sessionID=' +
+                row.SessionID +
+                '&selectedOnly=1&backURL=/imaging_browser/'}>
+                    selected
+                </a>);
+
+                cellLinks.push(' | ');
+                cellLinks.push(<a key="all" href={loris.BaseURL +
+                '/imaging_browser/viewSession/?sessionID=' +
+                row.SessionID +
+                '&backURL=/imaging_browser/'}>
+                    all types
+                </a>);
+                result = (<td>{cellLinks}</td>);
                 break;
         }
 
@@ -103,7 +116,7 @@ class ImagingBrowserIndex extends Component {
         const options = this.state.data.fieldOptions;
         const fields = [
             {label: 'Site', show: true, filter: {
-                    name: 'MRI_alias',
+                    name: 'site',
                     type: 'select',
                     options: options.sites,
                 }},
@@ -112,20 +125,20 @@ class ImagingBrowserIndex extends Component {
                     type: 'text',
                 }},
             {label: 'DCCID', show: true, filter: {
-                    name: 'pscid',
+                    name: 'DCCID',
                     type: 'text',
                 }},
             {label: 'Project', show: true, filter: {
-                    name: 'Project',
+                    name: 'project',
                     type: 'select',
                     options: options.projects,
                 }},
             {label: 'Vist Label', show: true, filter: {
-                    name: 'visit_label',
+                    name: 'visitLabel',
                     type: 'text',
         }},
             {label: 'Visit QC Status', show: true, filter: {
-                    name: 'MRIQCStatus',
+                    name: 'visitQCStatus',
                     type: 'select',
                     options: options.visitQCStatus,
                 }},
@@ -134,10 +147,18 @@ class ImagingBrowserIndex extends Component {
             {label: 'Last QC', show: true},
             {label: 'New Data', show: true},
             {label: 'Links', show: true},
-            {label: '', show: true, filter: {
-                name: 'MRI_alias',
+            {label: 'T1 QC Status', show: true},
+            {label: 'T2 QC Status', show: true},
+            {label: 'SessionID', show: false},
+            {label: 'Sequence Type', show: false, filter: {
+                name: 'sequenceType',
                 type: 'select',
-                options: options.sites,
+                options: options.sequenceTypes,
+            }},
+            {label: 'Pending New', show: false, filter: {
+                name: 'pendingNew',
+                type: 'select',
+                options: options.pendingNew,
             }},
         ];
         const tabs = [{id: 'browse', label: 'Browse'}];

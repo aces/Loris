@@ -227,23 +227,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
 
-        $this->headers = array(
-                          'Site',
-                          'PSCID',
-                          'DCCID',
-                          'Visit_Label',
-                          'Visit_QC_Status',
-                          'First_Acquisition',
-                          'First_Insertion',
-                          'Last_QC',
-                          'New_Data',
-                          'Links',
-                         );
-        $this->headers = array_merge(
-            $this->headers,
-            $as,
-            array('sessionID')
-        );
+
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
@@ -304,79 +288,93 @@ class Imaging_Browser extends \NDB_Menu_Filter
         parent::setup();
         // create user object
         $user          =& \User::singleton();
-        $list_of_sites = array();
+        $siteList  = array();
 
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')
             || $user->hasPermission('imaging_browser_phantom_allsites')
         ) {
-            // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
+            // get the list of study sites
+            $siteList = \Utility::getSiteList();
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
             }
         } else {
-            // allow only to view own site data
-            $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site =& \Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
         }
 
         $DB    = \Database::singleton();
         $allAr = array('' => 'All');
 
-        $this->addBasicText(
-            'pscid',
-            'PSCID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addBasicText(
-            'VL',
-            'Visit Label',
-            array(
-             'size'      => "10",
-             "maxlength" => "25",
-            )
-        );
-        $this->addBasicText(
-            'DCCID',
-            'DCCID',
-            array(
-             'size'      => 10,
-             "maxlength" => 25,
-            )
-        );
 
         $config =& \NDB_Config::singleton();
+
+        $toTable_scan_types = $config->getSetting('tblScanTypes');
+
+        $all_scan_types_2d = $DB->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri",
+            array()
+        );
+
+        foreach ($all_scan_types_2d as $row) {
+            $type = $row['Scan_type'];
+            $all_scan_types[$row['ID']] = $type;
+        }
+
+        // Get the intersection between all the scan types and those
+        // that are desired to go into imaging browser table, based on
+        // array values rather than keys (hence the array_flip), then flip
+        // the resulting array back to revert it to a key/value (i.e.
+        // acquisition protocol ID/scan type) combination.
+
+        $scan_id_types =array_flip(
+            array_intersect_key(
+                array_flip($all_scan_types),
+                array_flip($toTable_scan_types)
+            )
+        );
+        $modalities_subquery_as = array();
+        $as = array();
+
+        foreach( $scan_id_types as $key => $value) {
+            $modalities_subquery[$key] = $value;
+            $as[$key] = $scan_id_types[$key] . '_QC_Status';
+            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
+                ' as ' .
+                $as[$key];
+        }
+
         if ($config->getSetting('useProjects') === "true") {
             $list_of_projects = $allAr;
             $projectList      = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] =$value;
+            foreach ($projectList as $key => $project) {
+                unset($projectList[$key]);
+                $list_of_projects[$project] = $project;
             }
         }
 
-            $VisitQCStatus = array(
+            $visitQCStatus = array(
              ''     => 'All',
              'Pass' => 'Pass',
              'Fail' => 'Fail',
             );
 
-           $Pending= array(
+           $pending= array(
              ''   => 'All',
              'P'  => 'Pending',
              'N'  => 'New',
              'PN' => 'Pending or New',
             );
 
-        $this->fieldOptions = [
-            'sites'       => $list_of_sites,
-            'projects' => $list_of_projects,
-            'visitQCStatus' => $VisitQCStatus,
 
-        ];
 
         //query to get scan types that exist for the project
         $types_q    = $DB->pselect(
@@ -385,11 +383,10 @@ class Imaging_Browser extends \NDB_Menu_Filter
             array()
         );
         $scan_types = $allAr;
-        foreach ($types_q as $row) {
-            $type = $row['Scan_type'];
-            $scan_types[$row['ID']] = $type;
-        }
-        $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
+        foreach ($types_q as $key=>$sequenceType) {
+                $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
+            }
+
 
         $outputTypes = $DB->pselect(
             "SELECT DISTINCT OutputType AS outputType 
@@ -414,6 +411,13 @@ class Imaging_Browser extends \NDB_Menu_Filter
              "maxlength" => 25,
             )
         );
+        $this->fieldOptions = [
+            'sites'       => $siteList,
+            'projects' => $list_of_projects,
+            'visitQCStatus' => $visitQCStatus,
+            'sequenceTypes' => $scan_types,
+            'pendingNew' => $pending,
+        ];
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
