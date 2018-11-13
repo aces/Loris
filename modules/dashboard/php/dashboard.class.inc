@@ -144,7 +144,7 @@ class Dashboard extends \NDB_Form
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
 		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
-                     WHERE FIND_IN_SET(c.CenterID, :siteID) 
+                     WHERE c.CenterID IN (:siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );
