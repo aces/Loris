@@ -168,7 +168,7 @@ class NDB_BVL_Instrument extends NDB_Page
         string $commentID,
         string $page,
         bool $guarantee_exists = true
-    ): ?\Loris\Behavioural\NDB_BVL_Instrument_LINST {
+    ): ?\Loris\Behavioural\NDB_BVL_Instrument {
 
         $class = "NDB_BVL_Instrument_$instrument";
 
