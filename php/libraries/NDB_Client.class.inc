@@ -25,28 +25,28 @@
 class NDB_Client
 {
     /**
-    * Defines whether session management and user authentication is performed
-    */
+     * Defines whether session management and user authentication is performed
+     */
     var $_isWebClient = true;
 
     /**
-    * Defines that the client is a command line client
-    *
-    * @return void
-    */
-    function makeCommandLine()
+     * Defines that the client is a command line client
+     *
+     * @return void
+     */
+    function makeCommandLine(): void
     {
         $this->_isWebClient = false;
     }
 
     /**
-    * Initializes the environment
-    *
-    * @param string $configFile Path on filesystem to config.xml file to use
-    *
-    * @return true on success
-    */
-    function initialize($configFile = null)
+     * Initializes the environment
+     *
+     * @param string $configFile Path on filesystem to config.xml file to use
+     *
+     * @return true on success
+     */
+    function initialize(string $configFile = null)
     {
         // Load the config file.
         $factory = NDB_Factory::singleton();
