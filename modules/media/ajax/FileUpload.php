@@ -4,7 +4,7 @@
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
@@ -196,20 +196,31 @@ function viewData()
 function getUploadFields()
 {
 
-    $db =& Database::singleton();
+    $db   = \NDB_Factory::singleton()->database();
+    $user = \User::singleton();
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name",
         []
     );
-    $candidates  = $db->pselect(
-        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
-        []
+    // Select only candidates that have had visit at user's sites
+    $qparam    = array();
+    $candquery = "SELECT DISTINCT PSCID FROM candidate c
+                  LEFT JOIN session s USING (CandID)";
+
+    if (!$user->hasPermission('access_all_profiles')) {
+        $candquery    .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY PSCID";
+        $qparam['cid'] = implode(",", $user->getCenterIDs());
+    } else {
+        $candquery    .= " ORDER BY PSCID";
+    }
+    $candidates = $db->pselect(
+        $candquery,
+        $qparam
     );
 
     $instrumentsList = toSelect($instruments, "Test_name", null);
     $candidatesList  = toSelect($candidates, "PSCID", null);
-    $candIdList      = toSelect($candidates, "CandID", "PSCID");
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
@@ -312,7 +323,6 @@ function getUploadFields()
 
     $result = [
                'candidates'  => $candidatesList,
-               'candIDs'     => $candIdList,
                'visits'      => $visitList,
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
