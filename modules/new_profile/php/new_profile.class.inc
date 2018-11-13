@@ -11,7 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\new_profile;
-require_once "Utility.class.inc";
 /**
  * New_profile
  *
