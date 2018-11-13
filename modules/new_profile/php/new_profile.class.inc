@@ -65,10 +65,10 @@ class New_Profile extends \NDB_Form
             $values['psc'] = $centerIDs[0];
         }
 
-        /* Create the candidate and retrive its ID to display on the front-end.
+        /* Create the candidate and retrive its ID.
          * Use form values when present, otherwise default to null.
          */
-        $this->tpl_data['candID']  = \Candidate::createNew(
+        $candID = \Candidate::createNew(
             $values['psc'],
             $values['dob1'],
             $values['edc1'] ?? null,
@@ -76,6 +76,10 @@ class New_Profile extends \NDB_Form
             $values['PSCID'] ?? null,
             intval($values['ProjectID']) ?? null
         );
+        /* Update front-end data. Use passed PSCID when present, otherwise
+         * retrieve it from the newly-created candidate.
+         */
+        $this->tpl_data['candID']  = $candID;
         $this->tpl_data['PSCID']   = $values['PSCID']
             ?? \Candidate::singleton($candID)->getPSCID();
         $this->tpl_data['success'] = true;
