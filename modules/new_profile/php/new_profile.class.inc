@@ -57,9 +57,11 @@ class New_Profile extends \NDB_Form
                 $values[$key] = null;
             }
         }
-        // When a user has multiple centers, choose the first one.
+        /* When a user has multiple centers, or when a centerID has not been
+         * passed, choose the first one in the User's centerID list.
+         */
         $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) > 1) {
+        if (count($centerIDs) > 1 || !isset($values['psc'])) {
             $values['psc'] = $centerIDs[0];
         }
 
