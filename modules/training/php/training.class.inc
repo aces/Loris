@@ -156,7 +156,7 @@ class Training extends \NDB_Form
              LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
              LEFT JOIN examiners_psc_rel epr ON (epr.examinerId=e.examinerID)
              WHERE e.full_name=:name 
-             AND FIND_IN_SET(epr.centerID,:CID) AND c.testID=:TID",
+             AND epr.centerID IN (:CID) AND c.testID=:TID",
             array(
              'name' => $userFullName,
              'CID'  => implode(',', $userCenter),

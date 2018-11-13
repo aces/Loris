@@ -201,7 +201,7 @@ class Visit extends \Loris\API\Candidates\Candidate
                 );
                 $allUserSiteNames = $this->DB->pselectColWithIndexKey(
                     "SELECT CenterID, Name FROM psc ".
-                    "WHERE FIND_IN_SET(CenterID, :cid)",
+                    "WHERE CenterID IN (:cid)",
                     array('cid' => implode(',', $centerIDs)),
                     "CenterID"
                 );

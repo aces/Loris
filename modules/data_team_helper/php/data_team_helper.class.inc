@@ -245,7 +245,7 @@ class Data_Team_Helper extends \NDB_Form
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $where         .= " AND psc.CenterID IN (:CID)";
                 $qparams['CID'] = implode(',', $siteID);
             } else {
                 $where         .= " AND s.CenterID = :CID";
@@ -402,7 +402,7 @@ class Data_Team_Helper extends \NDB_Form
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $where         .= " AND psc.CenterID IN (:CID)";
                 $qparams['CID'] = implode(',', $siteID);
             } else {
                 $where         .= " AND s.CenterID = :CID";
@@ -545,7 +545,7 @@ class Data_Team_Helper extends \NDB_Form
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $where         .= " AND psc.CenterID IN (:CID)";
                 $qparams['CID'] = implode(',', $siteID);
             } else {
                 $where         .= " AND s.CenterID = :CID";
@@ -619,7 +619,7 @@ class Data_Team_Helper extends \NDB_Form
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $where         .= " AND psc.CenterID IN (:CID)";
                 $qparams['CID'] = implode(',', $siteID);
             } else {
                 $where         .= " AND s.CenterID = :CID";
@@ -691,7 +691,7 @@ class Data_Team_Helper extends \NDB_Form
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $where         .= " AND psc.CenterID IN (:CID)";
                 $qparams['CID'] = implode(',', $siteID);
             } else {
                 $where         .= " AND s.CenterID = :CID";

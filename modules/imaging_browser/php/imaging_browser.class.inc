@@ -87,10 +87,10 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $acqpif       = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
-                    $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif = "IF({$key} IN (GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
                 } else {
-                    $acqpif .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif .= "OR {$key} IN (GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
                 }
                 $isFirst = false;

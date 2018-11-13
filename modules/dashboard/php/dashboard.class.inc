@@ -170,7 +170,7 @@ class Dashboard extends \NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' 
-                    AND FIND_IN_SET(psc.CenterID, :siteID)
+                    AND psc.CenterID IN (:siteID)
 			          AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );

@@ -54,7 +54,7 @@ class User_Accounts extends \NDB_Menu_Filter
             WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
             $site_arr = implode(",", $user->getCenterIDs());
-            $query   .= " AND FIND_IN_SET(user_psc_rel.CenterID,'$site_arr')";
+            $query   .= " AND user_psc_rel.CenterID IN ('$site_arr')";
         }
 
         // set the class variables

@@ -266,7 +266,7 @@ function validateInput($values)
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
-            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
+            $query .= " AND CenterID IN (:CenterID)";
         }
 
         $candidate = $db->pSelectOne($query, $params);
@@ -581,7 +581,7 @@ function getIssueFields()
         $assignee_expanded = $db->pselect(
             "SELECT DISTINCT u.Real_name, u.UserID FROM users u
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+WHERE upr.CenterID IN (:CenterID) OR (upr.CenterID=:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,

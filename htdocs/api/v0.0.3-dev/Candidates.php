@@ -132,7 +132,7 @@ class Candidates extends APIBase
                 "CenterID"
             );
             $allUserSiteNames = $this->DB->pselectColWithIndexKey(
-                "SELECT CenterID, Name FROM psc WHERE FIND_IN_SET(CenterID, :cid)",
+                "SELECT CenterID, Name FROM psc WHERE CenterID IN (:cid)",
                 array('cid' => implode(',', $centerIDs)),
                 "CenterID"
             );

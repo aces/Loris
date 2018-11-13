@@ -79,7 +79,7 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                        WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
+                        WHERE epr.centerID IN ('$centerIDs')";
         }
 
         // set the class variables

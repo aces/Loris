@@ -262,7 +262,7 @@ abstract class NDB_Notifier_Abstract
                   );
 
         if (!$this->_asAdmin) {
-            $query        .=" AND (FIND_IN_SET(upsc.CenterID,:cid) > 0 
+            $query        .=" AND upsc.CenterID IN (:cid) > 0 
                             OR upr.permID=(SELECT permID 
                                             FROM permissions 
                                             WHERE code='access_all_profiles')
