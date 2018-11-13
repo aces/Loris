@@ -332,7 +332,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
-    function setup(string $commentID = null, string $page = null): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->commentID = $commentID;
         $this->page      = $page;
@@ -985,10 +985,10 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the current object instance CommentID
      *
-     * @return string          the CommentID
+     * @return string|null          the CommentID of this instrument.
      * @access public
      */
-    function getCommentID(): string
+    function getCommentID(): ?string
     {
         return $this->commentID;
     }
@@ -2386,14 +2386,14 @@ class NDB_BVL_Instrument extends NDB_Page
      * Parses and element that came from HTML_QuickForm_Renderer_Array
      * and converts it to a format useable by instrument_json.tpl
      *
-     * @param string $element   The element from the QuickForm array renderer
-     * @param array  $formArray The currently existing form that was converted
+     * @param array $element   The element from the QuickForm array renderer
+     * @param array $formArray The currently existing form that was converted
      *                          to instrument_json.tpl format.
      *
      * @return void (but side-effect modified $formArray to populate the element
      *         with the appropriate format needed for JSON serialization.)
      */
-    function _toJSONParsePageElement(string &$element, array &$formArray): void
+    function _toJSONParsePageElement(array &$element, array &$formArray): void
     {
         $name = isset($element['name']) ? $element['name'] : '';
         if ($element['type'] === 'group') {
