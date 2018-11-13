@@ -212,7 +212,7 @@ function getUploadFields()
         $candquery    .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY PSCID";
         $qparam['cid'] = implode(",", $user->getCenterIDs());
     } else {
-        $candquery    .= " ORDER BY PSCID";
+        $candquery .= " ORDER BY PSCID";
     }
     $candidates = $db->pselect(
         $candquery,
