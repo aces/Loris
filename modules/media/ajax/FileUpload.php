@@ -199,43 +199,32 @@ function getUploadFields()
     $db   = \NDB_Factory::singleton()->database();
     $user = \User::singleton();
 
-    $instruments = $db->pselect(
-        "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
-    );
     // Select only candidates that have had visit at user's sites
-    $qparam    = array();
-    $candquery = "SELECT DISTINCT PSCID FROM candidate c
-                  LEFT JOIN session s USING (CandID)";
+    $qparam       = array();
+    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
+                      FROM candidate c
+                      LEFT JOIN session s USING (CandID)
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
-        $candquery    .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY PSCID";
+        $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
         $qparam['cid'] = implode(",", $user->getCenterIDs());
     } else {
-        $candquery .= " ORDER BY PSCID";
+        $sessionQuery .= " ORDER BY c.PSCID ASC";
     }
-    $candidates = $db->pselect(
-        $candquery,
+    $sessionRecords = $db->pselect(
+        $sessionQuery,
         $qparam
     );
 
-    $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList  = toSelect($candidates, "PSCID", null);
+    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
+    $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData    = [];
-    $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
-        "FROM candidate c ".
-        "LEFT JOIN session s USING(CandID) ".
-        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
-        "ORDER BY c.PSCID ASC",
-        []
-    );
-
+    $sessionData = [];
     foreach ($sessionRecords as $record) {
 
         // Populate sites
