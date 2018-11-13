@@ -42,11 +42,11 @@ class NDB_Client
     /**
      * Initializes the environment
      *
-     * @param string $configFile Path on filesystem to config.xml file to use
+     * @param string|null $configFile Path on filesystem to config.xml file
      *
      * @return true on success
      */
-    function initialize(string $configFile = null)
+    function initialize(?string $configFile = null)
     {
         // Load the config file.
         $factory = NDB_Factory::singleton();
