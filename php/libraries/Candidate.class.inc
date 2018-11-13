@@ -475,9 +475,9 @@ class Candidate
     /**
      * Returns the date of birth of this candidate
      *
-     * @return string The DoB in YYYY-MM-DD format
+     * @return string|null The DoB in YYYY-MM-DD format
      */
-    function getCandidateDoB(): string
+    function getCandidateDoB(): ?string
     {
         return $this->candidateInfo["DoB"];
     }
