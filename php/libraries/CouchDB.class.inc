@@ -4,22 +4,22 @@
  *
  * PHP Version 5
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 /**
  * Wrapper around PHP IO functions (fopen/close/get/etc)
  * so that a mock can be used for testing HTTP requests
  *
- *  @category Testing
- *  @package  Test
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Testing
+ * @package  Test
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class SocketWrapper
 {
@@ -44,7 +44,7 @@ class SocketWrapper
      *
      * @return void
      */
-    function setHost($host)
+    function setHost(string $host): void
     {
         $this->host = $host;
     }
@@ -57,7 +57,7 @@ class SocketWrapper
      *
      * @return void
      */
-    function setPort($port)
+    function setPort(int $port): void
     {
         $this->port = $port;
     }
@@ -68,7 +68,7 @@ class SocketWrapper
      *
      * @return void
      */
-    function open()
+    function open(): void
     {
         $this->socket = fsockopen($this->host, $this->port);
         if ($this->socket === false) {
@@ -83,7 +83,7 @@ class SocketWrapper
      *
      * @return void
      */
-    function close()
+    function close(): void
     {
         $status = fclose($this->socket);
         if ($status === false) {
@@ -96,7 +96,7 @@ class SocketWrapper
      *
      * @return boolean Directly pass return value of feof()
      */
-    function eof()
+    function eof(): bool
     {
         if ($this->socket) {
             return feof($this->socket);
@@ -131,7 +131,7 @@ class SocketWrapper
      *
      * @return void
      */
-    function write($str)
+    function write(string $str): void
     {
         $status = fwrite($this->socket, $str);
         if ($status === false) {
@@ -144,11 +144,11 @@ class SocketWrapper
  * Implementation of a wrapper around CouchDB's APIs, so that Loris can access
  * a CouchDB database programmatically.
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class CouchDB
 {
@@ -243,7 +243,7 @@ class CouchDB
         int    $port = 0,
         string $user = "",
         string $password = ""
-    ) {
+    ): CouchDB {
 
         if (empty(self::$_instances[$database])) {
             if (empty($database)
@@ -319,7 +319,7 @@ class CouchDB
      *
      * @return string The complete low level HTTP request to pass to CouchDB
      */
-    function _constructURL($op, $doc)
+    function _constructURL(string $op, string $doc): string
     {
         return "$op /$this->_database/$doc";
     }
@@ -334,8 +334,11 @@ class CouchDB
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getURL($url, $op = 'GET', $headers = array())
-    {
+    function _getURL(
+        string $url,
+        string $op = 'GET',
+        array $headers = array()
+    ): string {
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
         $handler->setPort($this->_port);
@@ -366,7 +369,7 @@ class CouchDB
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getRelativeURL($url, $op = 'GET')
+    function _getRelativeURL(string $url, string $op = 'GET'): string
     {
         $this->validHostAndPort();
 
@@ -426,8 +429,12 @@ class CouchDB
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $headers = array(), $printValue = false)
-    {
+    function _postURL(
+        string $url,
+        array $data,
+        array $headers = array(),
+        bool $printValue = false
+    ): string {
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
         $handler->setPort($this->_port);
@@ -488,8 +495,12 @@ class CouchDB
      * @return The page content (Without headers) returned by the
      *         CouchDB web server.
      */
-    function _postRelativeURL($url, $data, $op = 'POST', $printValue = false)
-    {
+    function _postRelativeURL(
+        string $url,
+        string $data,
+        string $op = 'POST',
+        bool $printValue = false
+    ) {
         return $this->_postURL(
             $this->_constructURL($op, $url),
             $data,
@@ -506,7 +517,7 @@ class CouchDB
      *
      * @return array An associative array representing the document
      */
-    function getDoc($id, $options = array())
+    function getDoc(string $id, array $options = array()): array
     {
         $json = $this->_getRelativeURL($id);
 
@@ -536,7 +547,7 @@ class CouchDB
      *
      * @return boolean True if delete was successful
      */
-    function deleteDoc($id)
+    function deleteDoc(string $id): bool
     {
         $getjson = $this->_getRelativeURL($id);
         $getdata = json_decode($getjson, true);
@@ -564,7 +575,7 @@ class CouchDB
      * @return string The JSON string returned by the CouchDB server, or
      *                null if in bulk mode.
      */
-    function putDoc($id, $doc)
+    function putDoc(string $id, array $doc): string
     {
         $encoded = json_encode($doc);
 
@@ -587,7 +598,7 @@ class CouchDB
      *
      * @return string the JSON string returned by the CouchDB server
      */
-    function postDoc($doc)
+    function postDoc(array $doc): string
     {
         $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
         return $json;
@@ -605,7 +616,7 @@ class CouchDB
      *
      * @return string|FALSE id of created document or FALSE if creation failed.
      */
-    function createDoc($doc)
+    function createDoc(array $doc)
     {
         $json = $this->postDoc($doc);
         $data = json_decode($json, true);
@@ -630,7 +641,7 @@ class CouchDB
      *
      * @return string The status of how the document was modified.
      */
-    function replaceDoc($id, $doc)
+    function replaceDoc(string $id, array $doc): string
     {
         $original_doc = $this->getDoc($id);
         if ($original_doc === array() ) {
@@ -667,8 +678,12 @@ class CouchDB
      *
      * @return array An array of the rows returned by the view
      */
-    function queryView($designdoc, $viewname, $params, $full_json=false)
-    {
+    function queryView(
+        string $designdoc,
+        string $viewname,
+        array $params,
+        bool $full_json = false
+    ): array {
         $keys = null;
         if (isset($params['keys'])) {
 
@@ -714,7 +729,7 @@ class CouchDB
      *
      * @return void
      */
-    function beginBulkTransaction()
+    function beginBulkTransaction(): void
     {
         $this->bulk = true;
     }
@@ -725,7 +740,7 @@ class CouchDB
      *
      * @return string The string that was returned by CouchDB
      */
-    function commitBulkTransaction()
+    function commitBulkTransaction(): string
     {
         if ($this->bulk !== true) {
             return false;
@@ -746,7 +761,7 @@ class CouchDB
      *
      * @return void
      */
-    function validHostAndPort()
+    function validHostAndPort(): void
     {
         $config       = NDB_Config::singleton();
         $couch_config = $config->getSetting('CouchDB');
