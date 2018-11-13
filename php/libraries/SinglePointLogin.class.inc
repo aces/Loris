@@ -472,38 +472,8 @@ class SinglePointLogin
         $shortLockoutThreshold = 10;
         $longLockoutThreshold  = 15;
 
-        $shortFailCount = $this->countFailedLogins(
-            $username,
-            $shortWindowInMinutes
-        );
-        $longFailCount  = $this->countFailedLogins(
-            $username,
-            $longWindowInMinutes
-        );
-        return $shortFailCount > $shortLockoutThreshold
-            || $longFailCount > $longLockoutThreshold;
-    }
-
-    /**
-     * Gives the number of failed login attempts that occurred in the last
-     * $timeWindowInMinutes minutes. Used to determine whether a user's login
-     * request should be denied as a security precaution.
-     *
-     * @param string $username            The user account to check.
-     * @param int    $timeWindowInMinutes This value is subtracted from the
-     *                          current timestamp to find relevant failed
-     *                          login attempts. Only more recent failed
-     *                          attempts are considered relevant here.
-     *
-     * @return int The number of failed attempts in the time window.
-     */
-    function countFailedLogins(
-        string $username,
-        int $timeWindowInMinutes
-    ): int {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-        $query   = "SELECT COUNT(loginhistoryID)" .
+        // SQL code to run.
+        $query  = "SELECT COUNT(loginhistoryID)" .
             "FROM user_login_history " .
             "WHERE userID = :username " .
             "AND Success = 'N' " .
@@ -517,16 +487,39 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        $result  = $db->pselect(
-            $query,
-            array(
-             "username"            => $username,
-             "timeWindowInMinutes" => $timeWindowInMinutes,
-            )
-        );
-        $failedLoginAttempts = intval($result[0]["COUNT(loginhistoryID)"]);
-        return $failedLoginAttempts;
+        $params = array(
+                   'username'            => $username,
+                   'timeWindowInMinutes' => $shortWindowInMinutes,
+                  );
+
+        $shortFailCount = $this->_getFailedLoginCount($query, $params);
+
+        $params['timeWindowInMinutes'] = $longWindowInMinutes;
+        $longFailCount = $this->_getFailedLoginCount($query, $params);
+
+        return $shortFailCount > $shortLockoutThreshold
+            || $longFailCount > $longLockoutThreshold;
     }
+
+    /**
+     * Gives the number of failed login attempts that occurred in within the
+     * time window specified in $params. Used to determine whether a user's
+     * login request should be denied as a security precaution.
+     *
+     * @param string $query  The DB query.
+     * @param array  $params Username and time window.
+     *
+     * @return int The number of failed login attempts that occurred during the
+     *              time window
+     */
+    private function _getFailedLoginCount(
+        string $query,
+        array $params
+    ): int {
+        $result = \Database::singleton()->pselect($query, $params);
+        return intval($result[0]["COUNT(loginhistoryID)"]);
+    }
+
     /**
      * Sets the session data (State object)
      *
