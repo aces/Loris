@@ -39,7 +39,7 @@ $comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID']);
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away'] && $user->hasPermission('imaging_browser_qc')) {
+if ($_POST['fire_away']) {
     // clear all predefined comments
     $comments->clearAllComments();
 
@@ -154,13 +154,10 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 }
 
 //Output template using Smarty
-$config          =& NDB_Config::singleton();
-$tpl_data['css'] =$config->getSetting('css');
+$config          = \NDB_Config::singleton();
+$tpl_data['css'] = $config->getSetting('css');
 $smarty          = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('feedback_mri_popup.tpl');
 
 ob_end_flush();
-
-exit;
-?>
