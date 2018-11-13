@@ -165,17 +165,11 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory(
         string $instrument,
-        string $commentID,
-        string $page,
+        string $commentID = '',
+        string $page = '',
         bool $guarantee_exists = true
-    ): ?\Loris\Behavioural\NDB_BVL_Instrument {
-
+    ) {
         $class = "NDB_BVL_Instrument_$instrument";
-
-        // Ensure 'page' is a string.
-        $page = $page ?? '';
-        // Ensure 'commentID' is a string.
-        $commentID = $commentID ?? '';
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
@@ -2388,7 +2382,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param array $element   The element from the QuickForm array renderer
      * @param array $formArray The currently existing form that was converted
-     *                          to instrument_json.tpl format.
+     *                         to instrument_json.tpl format.
      *
      * @return void (but side-effect modified $formArray to populate the element
      *         with the appropriate format needed for JSON serialization.)
