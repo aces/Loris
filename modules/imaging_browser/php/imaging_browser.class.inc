@@ -221,11 +221,13 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             $modalities_subquery_as,
-            array('s.ID as sessionID')
+            array('s.ID as sessionID',
+                'f.AcquisitionProtocolID as sequenceType',
+            )
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
-        $this->group_by = 's.ID';
+        $this->group_by = 's.ID,f.AcquisitionProtocolID';
 
 
 
