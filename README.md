@@ -84,7 +84,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 ## Create an Issue
 Please don't hesitate to create an issue if you're stuck with something. Please
 include details such as the version of LORIS you're using as well as information
-about your OS, PHP and Apache versions, etc.
+such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
@@ -92,4 +92,4 @@ Please feel free to subscribe to the [LORIS Developers mailing list](http://www.
 # Contributing
 
 If you would like to contribue to LORIS development, please consult our
-[Contributing Guide](./CONTRIBUTING.md)
+[Contributing Guide](./CONTRIBUTING.md).
