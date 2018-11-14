@@ -327,7 +327,7 @@ class Candidate
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array Non-associative array of SessionIDs 1st Time Point
+     * @return arraya|null Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
     function getListOfTimePoints(): ?array
@@ -613,7 +613,9 @@ class Candidate
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
         $params  = array('prj' => $projID);
-        $subproj = \Database::singleton()->pselect($query, $params);
+        $subproj = \NDB_Factory::singleton()
+            ->database()
+            ->pselect($query, $params);
 
         foreach ($subproj as $row) {
             foreach ($row as $key =>$val) {
