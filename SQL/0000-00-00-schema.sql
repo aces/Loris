@@ -359,7 +359,7 @@ CREATE TABLE `test_subgroups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments');
+INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments'),('Imaging');
 
 CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
