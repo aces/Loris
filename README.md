@@ -18,17 +18,21 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <br>
 
-<<<<<<< HEAD
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
  * PHP <b>7.2</b> or higher
  * [Composer](https://getcomposer.org/)
 
 _Composer should be run with --no-dev option unless you are an active LORIS developer._
+## Installation
+
+
+These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
+>>>>>>> e0bb1ce7e... Normalize headings and reword prereqs
+
+### Install Steps
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
-
-## Install Steps
 
 1. Set up LINUX user lorisadmin and create LORIS base directory:
 
@@ -80,21 +84,21 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
-# Help
+## Help
 
-## Create an Issue
+### Create an Issue
 Please don't hesitate to create an issue if you're stuck with something. Please
 include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
 
-## Community
+### Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions. We may also be able to provide you with installation guidance not covered in the Wiki.
 
-# Contributing
+## Contributing
 
-## Contributing Code
+### Contributing Code
 If you would like to contribue to LORIS development, please consult our
 [Contributing Guide](./CONTRIBUTING.md).
 
-## Contributing Documentation
+### Contributing Documentation
 We love suggestions for our documentation! If you notice any inaccuracies, typos, etc. please open a GitHub Issue and we'll address it. 
