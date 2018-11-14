@@ -91,5 +91,9 @@ Please feel free to subscribe to the [LORIS Developers mailing list](http://www.
 
 # Contributing
 
+## Contributing Code
 If you would like to contribue to LORIS development, please consult our
 [Contributing Guide](./CONTRIBUTING.md).
+
+## Contributing Documentation
+We love suggestions for our documentation! If you notice any inaccuracies, typos, etc. please open a GitHub Issue and we'll address it. 
