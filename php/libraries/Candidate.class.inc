@@ -330,7 +330,7 @@ class Candidate
      * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
-    function getListOfTimePoints(): array
+    function getListOfTimePoints(): ?array
     {
         return $this->listOfTimePoints;
     }
@@ -415,7 +415,7 @@ class Candidate
      */
     function getProjectID(): int
     {
-        return $this->candidateInfo["ProjectID"];
+        return intval($this->candidateInfo["ProjectID"]);
     }
 
     /**
