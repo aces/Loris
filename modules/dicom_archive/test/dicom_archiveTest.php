@@ -88,16 +88,16 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testDicomArchivePermission()
     {
-         $this->setupPermissions(array("dicom_archive_view_allsites"));
-         $this->safeGet($this->url . "/dicom_archive/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-          $this->assertNotContains(
-              "You do not have access to this page.",
-              $bodyText
-          );
-          $this->resetPermissions();
+        $this->setupPermissions(array("dicom_archive_view_allsites"));
+        $this->safeGet($this->url . "/dicom_archive/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests clear button in the form
@@ -109,33 +109,38 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-        $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
+        // $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
         $this-> _filter(
             'patientName',
             "MTL022_300022_V1",
             self::$PatientName,
-            "ibis"
+            "1 rows displayed of 1"
         );
-        $this-> _filter('site', "2", self::$site, "ibis");
-        $this-> _filter('gender', "M", self::$Gender, "D568405");
+        $this-> _filter('site', "2", self::$site, "3 rows displayed of 3");
+        $this-> _filter('gender', "M", self::$Gender, "11 rows displayed of 11");
         $this-> _filter(
             'dateOfBirth',
             '2011-10-20',
             self::$dateOfBirth,
-            "LIVING_PHANTOM_UNC_SD_HOS_20111020"
+            "1 rows displayed of 1"
         );
-        $this-> _filter('acquisition', '2009-06-09', self::$Acquisition, "ibis");
+        $this-> _filter(
+            'acquisition',
+            '2009-06-09',
+            self::$Acquisition,
+            "1 rows displayed of 1"
+        );
         $this-> _filter(
             'archiveLocation',
             "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",
             self::$Archive,
-            "ibis"
+            "1 rows displayed of 1"
         );
         $this-> _filter(
             'seriesuid',
             "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",
             self::$SeriesUID,
-            "ibis"
+            "1 rows displayed of 1"
         );
     }
     /**
@@ -169,10 +174,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         //make sure that filter table works well
         $text = $this->webDriver->executescript(
             "return document.querySelector(".
-                "'#dynamictable > tbody > tr:nth-child(1) >".
-                " td:nth-child(2)').textContent"
+            "'.table-header > div:nth-child(1) > div:nth-child(1)').textContent"
         );
-         $this->assertEquals($text, $expect);
+        $this->assertContains($expect, $text);
     }
     /**
      * Tests clear button
@@ -253,8 +257,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testLinksViewImages()
     {
+        $this->markTestSkipped(
+            'Imaging is not set'
+        );
         $this->safeGet($this->url . "/dicom_archive/");
-        $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(9) > a";
+        $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(10) > a";
         $text     = $this->webDriver->executescript(
             "return document.querySelector('$location').textContent"
         );

@@ -311,8 +311,10 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function resetStudySite()
     {
+        $this->DB->run('SET foreign_key_checks =0');
         $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
         $this->DB->delete("psc", array("CenterID" => 99));
+        $this->DB->run('SET foreign_key_checks =1');
     }
 
     /**
