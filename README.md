@@ -16,9 +16,7 @@ You can try LORIS on Heroku before installing it on your system. The project man
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
-
 <br>
-
 # Prerequisites for Installation
 
  * Apache **2.4** or higher
