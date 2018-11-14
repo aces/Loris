@@ -10,7 +10,7 @@
  *
  * Used by MRI Browser and (old) Data Query GUI.
  *
- * TODO Most of the code in this class should soon be replaced by a file 
+ * TODO Most of the code in this class should soon be replaced by a file
  * download validator. This class is currently in development.
  *
  * PHP Version 5
@@ -50,12 +50,12 @@ $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
 if (!validConfigPaths(
     array(
-        $imagePath,
-        $DownloadPath,
-        $mincPath,
-        $tarchivePath
+     $imagePath,
+     $DownloadPath,
+     $mincPath,
+     $tarchivePath,
     )
-) {
+)) {
     http_response_code(500);
     return;
 }
@@ -90,21 +90,21 @@ if (strpos($FileBase, "DCM_") === 0) {
     $FileExt = "DICOMTAR";
 }
 
+/* Determine and construct the appropriate download path for the requested file
+ * name based on its extension.
+ */
 switch($FileExt) {
 case 'mnc':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-minc";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-minc";
     break;
 case 'nii':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-nifti";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti";
     break;
 case 'nii.gz':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-nifti-gz";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti-gz";
     break;
 case 'png':
     $FullPath = $imagePath . '/' . $File;
@@ -122,36 +122,34 @@ case 'raw_byte.gz':
     $MimeType = 'application/octet-stream';
     break;
 case 'xml':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'application/xml';
-    $DownloadFilename = basename($File);
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'application/xml';
     break;
 case 'nrrd':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'image/vnd.nrrd';
-    $DownloadFilename = basename($File);
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'image/vnd.nrrd';
     break;
 case 'DICOMTAR':
     // ADD case for DICOMTAR
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
-    $DownloadFilename = basename($File);
     $PatientName      = $_GET['patientName'] ?? '';
     break;
 default:
-    $FullPath         = $DownloadPath . '/' . $File;
-    $MimeType         = 'application/octet-stream';
-    $DownloadFilename = basename($File);
+    $FullPath = $DownloadPath . '/' . $File;
+    $MimeType = 'application/octet-stream';
     break;
 }
 
 // Make sure file exists.
 if (!file_exists($FullPath)) {
-    error_log("ERROR: Requested file $File does not exist");
+    error_log("ERROR: Requested file $FullPath does not exist");
     http_response_code(404);
     return;
 }
 
+// Build and send the response with the file data.
+$DownloadFilename = basename($File);
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
     // Prepend the patient name to the beginning of the file name.
@@ -169,8 +167,8 @@ if (!empty($DownloadFilename)) {
             pathinfo($DownloadFilename, PATHINFO_EXTENSION);
 
     }
-    header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
+header("Content-Disposition: attachment; filename=$DownloadFilename");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
@@ -182,8 +180,9 @@ fclose($fp);
  *
  * @return bool
  */
-function validConfigPaths(array $paths): bool {
-    foreach($paths as $p) {
+function validConfigPaths(array $paths): bool
+{
+    foreach ($paths as $p) {
         if (empty($p)) {
             throw new \LorisException(
                 'Config paths are not initialized. Please ensure that valid ' .
@@ -212,18 +211,19 @@ function validConfigPaths(array $paths): bool {
  *
  * @return bool Whether the path passes the validation criteria.
  */
-function validDownloadPath($path): bool {
-    // Extra sanity checks, just in case something went wrong with path 
+function validDownloadPath($path): bool
+{
+    // Extra sanity checks, just in case something went wrong with path
     // resolution.
-    if (strpos($File, '.') === false) {
-        error_log('ERROR: Invalid filename. Could not determine file type.');
+    if (strpos($path, '.') === false) {
+        error_log('ERROR: Invalid filename. Could not determine file type');
         return false;
     }
     // Make sure that the user isn't trying to break out of the $path by
     // using a relative filename.
     // No need to check for '/' since all downloads are relative to $imagePath,
     // $DownloadPath or $mincPath
-    if (strpos($File, "..") !== false) {
+    if (strpos($path, "..") !== false) {
         error_log(
             'ERROR: Invalid filename. Contains path traversal characters'
         );
