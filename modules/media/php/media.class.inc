@@ -33,7 +33,6 @@ class Media extends \NDB_Menu_Filter
     public $hasHidePermission  = false;
     public $AjaxModule         = true;
     public $skipTemplate       = true;
-    public $fieldOptions;
 
     /**
      * Check user permissions
