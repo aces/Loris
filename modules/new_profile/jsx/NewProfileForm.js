@@ -92,6 +92,7 @@ class NewProfileForm extends React.Component {
             this.setState(
                 {
                     errMessage: 'Date of birth fields must match',
+                    isCreated: false,
                 }
             );
         }
@@ -100,10 +101,11 @@ class NewProfileForm extends React.Component {
             {
                 method: 'POST',
                 data: JSON.stringify(this.state.formData),
+                dataType: 'json',
                 success: (data) => {
                     // FIXME: Remove the following line of code as soon as hiddenHeaders is
                     // accepted as a prop by the StaticDataTable Component.
-                    data = JSON.parse(data);
+                    data = data;
                     this.setState(
                         {
                             newData: data,
@@ -237,7 +239,7 @@ class NewProfileForm extends React.Component {
                  />
                  {pscid}
                  {project}
-                 <ButtonElement label ="Create" />
+                 <ButtonElement label ="Create" id="button"/>
                 </FormElement>;
             } else {
                 profile =
