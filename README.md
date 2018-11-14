@@ -20,6 +20,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 <br>
 
 ## Installation
+### Prerequisites for Installation
 
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
