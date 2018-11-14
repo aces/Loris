@@ -1,19 +1,23 @@
 # [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) LORIS Neuroimaging Platform 
 
-LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
+LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
+
+A demo instance is available at https://demo.loris.ca.
 
 This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
-<hr>
-Try LORIS on Heroku</b> before installing it on your system<br>
-Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
+#### Heroku
+
+You can try LORIS on Heroku before installing it on your system. The project management and clinical data management functions of LORIS are available for experimenting with. Imaging functionality is not yet available.
+
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
-<hr>
+
+<br>
 
 # Prerequisites for Installation
 
@@ -22,8 +26,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
  * PHP <b>7.2</b> or higher
  * [Composer](https://getcomposer.org/)
 
-<b>Note:</b>
- * Composer should be run with --no-dev option unless you are an active LORIS developer. 
+_Composer should be run with --no-dev option unless you are an active LORIS developer._
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
@@ -87,7 +90,7 @@ include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Community
-Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
+Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions. We may also be able to provide you with installation guidance not covered in the Wiki.
 
 # Contributing
 
