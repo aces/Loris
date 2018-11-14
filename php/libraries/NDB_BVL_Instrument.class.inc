@@ -2096,9 +2096,9 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates PSCID.
      *
-     * @return string The candidate's PSCID.
+     * @return string|null The candidate's PSCID.
      */
-    function getPSCID(): string
+    function getPSCID(): ?string
     {
         $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
