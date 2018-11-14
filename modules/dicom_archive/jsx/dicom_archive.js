@@ -1,8 +1,8 @@
-import FilterForm from 'FilterForm';
-import formatColumn from './columnFormatter';
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
 
 /**
  * DICOM Archive Page.
@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
  * Renders DICOM Archive main page consisting of FilterTable and
  * DataTable components.
  *
- * @author Alex Ilea
+ * @author LORIS Team
  * @version 1.0.0
  *
  * */
@@ -22,116 +22,160 @@ class DicomArchive extends Component {
     super(props);
 
     this.state = {
+      data: {},
+      error: false,
       isLoaded: false,
-      filter: {},
     };
 
-    // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
    * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
+   *
+   * @return {object}
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: true});
         console.error(error);
-      },
-    });
+      });
   }
 
-  updateFilter(filter) {
-    this.setState({filter});
-  }
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {object} row - row content indexed by column
+   *
+   * @return {*} a formated table cell for a given column
+   */
+  formatColumn(column, cell, row) {
+    let result = <td>{cell}</td>;
+    switch (column) {
+      case 'Archive Location': {
+        const downloadURL = '/mri/jiv/get_file.php?file=' + cell;
+        result =
+          <td>
+            <a href={downloadURL}>
+              <span className="glyphicon glyphicon-cloud-download"/>
+              &nbsp;
+              {cell}
+            </a>
+          </td>;
+      }
+      break;
+      case 'Metadata': {
+        const metadataURL = loris.BaseURL +
+          '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
+        result = <td><a href={metadataURL}>{cell}</a></td>;
+      }
+      break;
+      case 'MRI Browser': {
+        if (row.SessionID === null || row.SessionID === '') {
+          result = <td>&nbsp;</td>;
+        } else {
+          let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+            row.SessionID;
+          result = <td><a href={mrlURL}>{cell}</a></td>;
+        }
+      break;
+      }
+      case 'INVALID - HIDDEN':
+        result = <td className="text-danger">{cell}</td>;
+      break;
+    }
 
-  resetFilters() {
-    this.refs.dicomFilter.clearFilter();
+    return result;
   }
 
   render() {
-    // Waiting for async data to load
-    if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
-      );
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
     }
 
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in media.class.inc
+     */
+    const options = this.state.data.fieldOptions;
+    const fields = [
+      {label: 'Patient ID', show: true, filter: {
+        name: 'patientID',
+        type: 'text',
+      }},
+      {label: 'Patient Name', show: true, filter: {
+        name: 'patientName',
+        type: 'text',
+      }},
+      {label: 'Gender', show: true, filter: {
+        name: 'gender',
+        type: 'text',
+      }},
+      {label: 'Date of Birth', show: true, filter: {
+        name: 'dateOfBirth',
+        type: 'date',
+      }},
+      {label: 'Acquisition Date', show: true, filter: {
+        name: 'acquisitionDate',
+        type: 'date',
+      }},
+      {label: 'Archive Location', show: true, filter: {
+        name: 'archiveLocation',
+        type: 'text',
+      }},
+      {label: 'Metadata', show: true},
+      {label: 'MRI Browser', show: true},
+      {label: 'Series UID', show: false, filter: {
+        name: 'seriesUID',
+        type: 'text',
+      }},
+      {label: 'Site', show: false, filter: {
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'TarchiveID', show: false},
+      {label: 'SessionID', show: false},
+    ];
+
     return (
-      <div>
-        <FilterForm
-          Module="dicom_archive"
-          name="dicom_filter"
-          id="dicom_filter"
-          ref="dicomFilter"
-          columns={2}
-          formElements={this.state.Data.form}
-          onUpdate={this.updateFilter}
-          filter={this.state.filter}
-        >
-          <ButtonElement
-            label="Clear Filters"
-            type="reset"
-            onUserInput={this.resetFilters}
-          />
-        </FilterForm>
-        <StaticDataTable
-          Data={this.state.Data.Data}
-          Headers={this.state.Data.Headers}
-          Filter={this.state.filter}
-          getFormattedCell={formatColumn}
-        />
-      </div>
+      <FilterableDataTable
+        name="dicom_filter"
+        data={this.state.data.data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }
 
 DicomArchive.propTypes = {
-  Module: PropTypes.string.isRequired,
-  DataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
 };
 
-/**
- * Render dicom_page on page load
- */
-window.onload = function() {
-  let dataURL = loris.BaseURL + '/dicom_archive/?format=json';
-  let dicomArchive = (
-    <DicomArchive
-      Module="dicom_archive"
-      DataURL={dataURL}
-    />
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>,
+    document.getElementById('lorisworkspace')
   );
-
-  // Create a wrapper div in which react component will be loaded
-  const dicomArchiveDOM = document.createElement('div');
-  dicomArchiveDOM.id = 'page-dicom-archive';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById('lorisworkspace');
-  rootDOM.appendChild(dicomArchiveDOM);
-
-  ReactDOM.render(dicomArchive, document.getElementById('page-dicom-archive'));
-};
+});

@@ -33,8 +33,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
-     * @param \User $user The user whose access is being checked
-     *
      * @return bool whether the user has access
      */
     function _hasAccess(\User $user) : bool
@@ -56,7 +54,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->skipTemplate = true;
 
         $this->columns = [];
-
     }
 
     /**
@@ -78,26 +75,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
         return $provisioner;
     }
-    /**
-     * Create a form to filter media by various criteria
-     *
-     * @return void
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
-     * @throws \Exception
-     */
-    function _setFilterForm()
-    {
-        $this->addBasicText('patientID', 'Patient ID');
-        $this->addBasicText('patientName', 'Patient Name');
-        $this->addSelect('site', 'Site', \Utility::getSiteList());
-        $this->addBasicText('gender', 'Gender');
-        $this->addBasicDate('dateOfBirth', 'Date of Birth');
-        $this->addBasicDate('acquisition', 'Acquisition Date');
-        $this->addBasicText('archiveLocation', 'Archive Location');
-        $this->addBasicText('seriesuid', 'Series UID');
-    }
-
 
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
@@ -115,33 +92,11 @@ class Dicom_Archive extends \NDB_Menu_Filter
             },
             json_decode($table->toJSON(\User::singleton()), true)
         );
+        $options = array('sites' => \Utility::getSiteList());
         return json_encode(
             [
-             'Headers'       => [
-                                 'Patient ID',
-                                 'Patient Name',
-                                 'Gender',
-                                 'Date Of Birth',
-                                 'Acquisition',
-                                 'Archive Location',
-                                 'Metadata',
-                                 'MRI Browser',
-                                 'Seriesuid',
-                                 'Site',
-                                 'TarchiveID',
-                                 'SessionID',
-                                ],
-             'Data'          => $arr,
-             /* FIXME: These lines are really stupid, but left over from a
-              * previous incarnation of this module and the js front-end
-              * requires them to be returned in the JSON response. */
-             'hiddenHeaders' => [
-                                 'Seriesuid',
-                                 'Site',
-                                 'TarchiveID',
-                                 'SessionID',
-                                ],
-             'form'          => $this->form->form,
+             'data'         => $arr,
+             'fieldOptions' => $options,
             ]
         );
     }
