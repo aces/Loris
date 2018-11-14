@@ -19,8 +19,9 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <br>
 
-## Installation
-### Prerequisites for Installation
+# Installation
+
+### System Requirements
 
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
@@ -31,9 +32,7 @@ _Composer should be run with --no-dev option unless you are an active LORIS deve
 
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
 
-### Install Steps
-
-Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
+## Install Steps
 
 1. Set up LINUX user lorisadmin and create LORIS base directory:
 
