@@ -177,7 +177,7 @@ class Candidate
 
         // store user data in object property
         foreach ($row AS $value) {
-            $this->listOfTimePoints[] = $value["ID"];
+            $this->listOfTimePoints[] = intval($value["ID"]);
         }
 
     }
@@ -346,7 +346,7 @@ class Candidate
     function getSessionID(int $visitNo): ?int
     {
         if (isset($this->listOfTimePoints[$visitNo-1]) ) {
-            return $this->listOfTimePoints[$visitNo-1];
+            return intval($this->listOfTimePoints[$visitNo-1]);
         }
 
         return null;
