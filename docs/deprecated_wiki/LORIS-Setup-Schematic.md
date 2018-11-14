@@ -1,0 +1,1 @@
+[Loris Setup schematic (PDF)](https://demo.loris.ca/docs/LORIS_Installation_schematic.14-10.PDF)
