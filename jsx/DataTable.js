@@ -519,7 +519,7 @@ DataTable.defaultProps = {
   rowNumLabel: 'No.',
   filter: {},
   hide: {
-    rowsPerPage: false,
+    rowsPerPage: true,
     downloadCSV: false,
     defaultColumn: false,
   },

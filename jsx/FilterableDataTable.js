@@ -93,15 +93,34 @@ class FilterableDataTable extends Component {
       if (this.props.filterPresets) {
         return this.props.filterPresets.map((preset) => {
           return (
-            <ButtonElement
-              label={preset.label}
-              onUserInput={() => {
+            <button
+              type='button'
+              className='btn btn-light'
+              onClick={() => {
                 this.updateFilter(preset.filter);
               }}
-            />
+            >
+              {preset.label}
+            </button>
           );
         });
       };
+    };
+
+    const actions = () => {
+      if (this.props.actions) {
+        return this.props.actions.map((action) => {
+          return (
+            <button
+              type='button'
+              className='btn btn-success'
+              onClick={action.action}
+            >
+              {action.label}
+            </button>
+          );
+        });
+      }
     };
 
     return (
@@ -137,10 +156,6 @@ class FilterableDataTable extends Component {
     );
   }
 }
-
-FilterableDataTable.defaultProps = {
-  columns: 3,
-};
 
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,

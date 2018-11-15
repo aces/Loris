@@ -211,12 +211,22 @@ class IssueTrackerIndex extends Component {
       {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
     ];
 
+    const addIssue = () => {
+      window.location.replace(
+        loris.BaseURL+'/issue_tracker/issue/?issueID=0'
+      );
+    };
+    const actions = [
+      {label: 'New Issue', action: addIssue},
+    ];
+
     return (
       <FilterableDataTable
         name="issuesTracker"
         data={this.state.data.data}
         fields={fields}
         filterPresets={filterPresets}
+        actions={actions}
         getFormattedCell={this.formatColumn}
       />
     );
