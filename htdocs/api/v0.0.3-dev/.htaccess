@@ -15,7 +15,7 @@ RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/images(/*)$ projects/Images.php?project_name=$1 [QSA,L]
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true&PrintProjectJSON=true [L]
 
-RewriteRule ^projects(/*)$ Projects.php?PrintProjects=true [L]
+RewriteRule ^projects/$ /index.php?lorispath=api/v0.0.3-dev/projects/ [QSA,END]
 
 # Candidates API rewrite rules
 
