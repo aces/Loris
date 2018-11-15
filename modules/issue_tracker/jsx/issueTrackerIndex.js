@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -51,80 +50,77 @@ class IssueTrackerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'Title') {
-      let cellLinks = [];
-      cellLinks.push(
-        <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
-        row['Issue ID']}>
+    let result = <td>{cell}</td>;
+    let link;
+    switch (column) {
+    case 'Title':
+      link = (
+        <a
+          href={loris.BaseURL+'/issue_tracker/issue/?issueID='+row['Issue ID']}
+        >
           {row.Title}
         </a>
       );
-      return (
-        <td>
-          {cellLinks}
-        </td>
-      );
-    }
-
-    if (column === 'Issue ID') {
-      let cellLinks = [];
-      cellLinks.push(
-        <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
-        row['Issue ID']}>
+      result = <td>{link}</td>;
+      break;
+    case 'Issue ID':
+      link = (
+        <a
+          href={loris.BaseURL+'/issue_tracker/issue/?issueID='+row['Issue ID']}
+        >
           {cell}
         </a>
       );
-      return (<td>{cellLinks}</td>);
-    }
-
-    if (column === 'Priority') {
+      result = <td>{link}</td>;
+      break;
+    case 'Priority':
       switch (cell) {
-        case 'normal':
-          return <td style={{background: '#CCFFCC'}}>Normal</td>;
-        case 'high':
-          return <td style={{background: '#EEEEAA'}}>High</td>;
-        case 'urgent':
-          return <td style={{background: '#CC6600'}}>Urgent</td>;
-        case 'immediate':
-          return <td style={{background: '#E4A09E'}}>Immediate</td>;
-        case 'low':
-          return <td style={{background: '#99CCFF'}}>Low</td>;
-        default:
-          return <td>None</td>;
+      case 'normal':
+        result = <td style={{background: '#CCFFCC'}}>Normal</td>;
+        break;
+      case 'high':
+        result = <td style={{background: '#EEEEAA'}}>High</td>;
+        break;
+      case 'urgent':
+        result = <td style={{background: '#CC6600'}}>Urgent</td>;
+        break;
+      case 'immediate':
+        result = <td style={{background: '#E4A09E'}}>Immediate</td>;
+        break;
+      case 'low':
+        result = <td style={{background: '#99CCFF'}}>Low</td>;
+        break;
+      default:
+        result = <td>None</td>;
+      };
+      break;
+    case 'Site':
+      result = <td>{this.state.data.fieldOptions.sites[cell]}</td>;
+      break;
+    case 'PSCID':
+      if (row.PSCID !== null) {
+        link = (
+          <a href={loris.BaseURL+'/'+row.CandID + '/'}>
+            {cell}
+          </a>
+        );
+        result = <td>{link}</td>;
       }
+      break;
+    case 'Visit Label':
+      if (row['Visit Label'] !== null) {
+        link =(
+          <a href={loris.BaseURL + '/instrument_list/?candID=' +
+                  row.CandID + '&sessionID=' + row.SessionID }>
+            {cell}
+          </a>
+        );
+        result = <td>{link}</td>;
+      }
+      break;
     }
 
-    if (column === 'PSCID' && row.PSCID !== null) {
-      let cellLinks = [];
-      cellLinks.push(
-        <a href={loris.BaseURL + '/' +
-        row.CandID + '/'}>
-          {cell}
-        </a>
-      );
-      return (
-        <td>
-          {cellLinks}
-        </td>
-      );
-    }
-
-    if (column === 'Visit Label' && row['Visit Label'] !== null) {
-      let cellLinks = [];
-      cellLinks.push(
-        <a href={loris.BaseURL + '/instrument_list/?candID=' +
-                row.CandID + '&sessionID=' + row.SessionID }>
-          {cell}
-        </a>
-      );
-      return (
-        <td>
-          {cellLinks}
-        </td>
-      );
-    }
-
-    return <td>{cell}</td>;
+    return result;
   }
 
   render() {
@@ -196,27 +192,33 @@ class IssueTrackerIndex extends Component {
         name: 'visitLabel',
         type: 'text',
         }},
+      {label: 'Date Created', show: false, filter: {
+        name: 'dateCreated',
+        type: 'date',
+      }},
       {label: 'Last Update', show: true},
       {label: 'SessionID', show: false},
       {label: 'CandID', show: false},
+      {label: 'Watching', show: false, filter: {
+        name: 'watching',
+        type: 'checkbox',
+        }},
     ];
-    const tabs = [
-      {id: 'allActiveIssues', label: 'All Active Issues'},
-      {id: 'closedIssues', label: 'Closed Issues'},
-      {id: 'myIssues', label: 'My Issues'},
+
+    const filterPresets = [
+      {label: 'Active', filter: {status: {value: 'closed', opposite: true},
+      {label: 'Closed', filter: {status: {value: 'closed', exactMatch: true}}},
+      {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
     ];
 
     return (
-      <Tabs tabs={tabs} defaultTab="allActiveIssues" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
-          <FilterableDataTable
-            name="issuesTracker"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
-        </TabPane>
-      </Tabs>
+      <FilterableDataTable
+        name="issuesTracker"
+        data={this.state.data.data}
+        fields={fields}
+        filterPresets={filterPresets}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }

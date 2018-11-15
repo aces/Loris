@@ -1,11 +1,3 @@
-/**
- * This file contains React component for Data Table
- *
- * @author Loris Team
- * @version 1.0.0
- *
- */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
@@ -19,17 +11,7 @@ class DataTable extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      PageNumber: 1,
-      SortColumn: -1,
-      SortOrder: 'ASC',
-      RowsPerPage: 20,
-      Hide: this.props.Hide,
-    };
-
-    this.changePage = this.changePage.bind(this);
     this.setSortColumn = this.setSortColumn.bind(this);
-    this.changeRowsPerPage = this.changeRowsPerPage.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
     this.countFilteredRows = this.countFilteredRows.bind(this);
     this.getSortedRows = this.getSortedRows.bind(this);//
@@ -37,98 +19,12 @@ class DataTable extends Component {
     this.renderActions = this.renderActions.bind(this);
   }
 
-  componentDidMount() {
-    if (jQuery.fn.DynamicTable) {
-      if (this.props.freezeColumn) {
-        $('#dynamictable').DynamicTable({
-          freezeColumn: this.props.freezeColumn,
-        });
-      } else {
-        $('#dynamictable').DynamicTable();
-      }
-      if (this.state.Hide.defaultColumn) {
-        $('#dynamictable').find('tbody td:eq(0)').hide();
-      }
+  setSortColumn(column) {
+    if (this.props.sort.column = column) {
+      this.props.toggleSortOrder();
+    } else {
+      this.props.updateSortColumn(column);
     }
-
-    // Retrieve module preferences
-    let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
-
-    // Init modulePrefs object
-    if (modulePrefs === null) {
-      modulePrefs = {};
-    }
-
-    // Init modulePrefs for current module
-    if (modulePrefs[loris.TestName] === undefined) {
-      modulePrefs[loris.TestName] = {};
-      modulePrefs[loris.TestName].rowsPerPage = this.state.RowsPerPage;
-    }
-
-    // Set rows per page
-    let rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
-    this.setState({
-      RowsPerPage: rowsPerPage,
-    });
-
-    // Make prefs accesible within component
-    this.modulePrefs = modulePrefs;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (jQuery.fn.DynamicTable) {
-      if (this.props.freezeColumn) {
-        $('#dynamictable').DynamicTable({
-          freezeColumn: this.props.freezeColumn,
-        });
-      } else {
-        $('#dynamictable').DynamicTable();
-      }
-    }
-    if (this.props.onSort &&
-      (this.state.SortColumn !== prevState.SortColumn ||
-        this.state.SortOrder !== prevState.SortOrder)
-    ) {
-      let index = this.getSortedRows();
-      const headerList = this.props.fields.map((field) => field.label);
-      this.props.onSort(index, this.props.data, headerList);
-    }
-  }
-
-  changePage(pageNo) {
-    this.setState({
-      PageNumber: pageNo,
-    });
-  }
-
-  setSortColumn(colNumber) {
-    return function(e) {
-      if (this.state.SortColumn === colNumber) {
-        this.setState({
-          SortOrder: this.state.SortOrder === 'ASC' ? 'DESC' : 'ASC',
-        });
-      } else {
-        this.setState({
-          SortColumn: colNumber,
-        });
-      }
-    };
-  }
-
-  changeRowsPerPage(val) {
-    let rowsPerPage = val.target.value;
-    let modulePrefs = this.modulePrefs;
-
-    // Save current selection
-    modulePrefs[loris.TestName].rowsPerPage = rowsPerPage;
-
-    // Update localstorage
-    localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
-
-    this.setState({
-      RowsPerPage: rowsPerPage,
-      PageNumber: 1,
-    });
   }
 
   downloadCSV(csvData) {
@@ -211,10 +107,10 @@ class DataTable extends Component {
     const index = [];
 
     for (let i = 0; i < this.props.data.length; i += 1) {
-      let val = this.props.data[i][this.state.SortColumn] || undefined;
-      // If SortColumn is equal to default No. column, set value to be
+      let val = this.props.data[i][this.props.sort.column] || undefined;
+      // If sortColumn is equal to default No. column, set value to be
       // index + 1
-      if (this.state.SortColumn === -1) {
+      if (this.props.sort.column === -1) {
         val = i + 1;
       }
       const isString = (typeof val === 'string' || val instanceof String);
@@ -240,8 +136,8 @@ class DataTable extends Component {
       }
     }
 
-    index.sort(function(a, b) {
-      if (this.state.SortOrder === 'ASC') {
+    index.sort((a, b) => {
+      if (this.props.sort.ascending) {
         if (a.Value === b.Value) {
           // If all values are equal, sort by rownum
           if (a.RowIdx < b.RowIdx) return -1;
@@ -270,7 +166,7 @@ class DataTable extends Component {
       }
       // They're equal..
       return 0;
-    }.bind(this));
+    });
     return index;
   }
 
@@ -333,6 +229,11 @@ class DataTable extends Component {
       }
     }
 
+    // Handle boolean inputs
+    if (typeof filterData === 'boolean') {
+      result = filterData;
+    }
+
     // Handle array inputs for multiselects
     if (typeof filterData === 'object') {
       let match = false;
@@ -383,10 +284,12 @@ class DataTable extends Component {
         </div>
       );
     }
-    let rowsPerPage = this.state.RowsPerPage;
-    let headers = this.state.Hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' onClick={this.setSortColumn(-1).bind(this)}>
-        {this.props.RowNumLabel}
+    let rowsPerPage = this.props.page.rows;
+    let headers = this.props.hide.defaultColumn === true ? [] : [
+      <th key='th_col_0' onClick={() => {
+        this.setSortColumn(-1);
+      }}>
+        {this.props.rowNumLabel}
       </th>,
     ];
 
@@ -396,13 +299,17 @@ class DataTable extends Component {
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                onClick={this.setSortColumn(i).bind(this)}>
+                onClick={() => {
+                  this.setSortColumn(i);
+                }}>
               {this.props.fields[i].label}
             </th>
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
+            <th key={'th_col_' + colIndex} onClick={() => {
+              this.setSortColumn(i);
+            }}>
               {this.props.fields[i].label}
             </th>
           );
@@ -414,7 +321,7 @@ class DataTable extends Component {
     let index = this.getSortedRows();
     let matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     let filteredRows = this.countFilteredRows();
-    let currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
+    let currentPageRow = (rowsPerPage * (this.props.page.number - 1));
     let filteredData = [];
     let useKeyword = false;
 
@@ -505,11 +412,11 @@ class DataTable extends Component {
       }
     }
 
-    let RowsPerPageDropdown = (
+    let rowsPerPageDropdown = (
       <select
         className="input-sm perPage"
-        onChange={this.changeRowsPerPage}
-        value={this.state.RowsPerPage}
+        onChange={this.props.updateRowsPerPage}
+        value={this.props.page.rows}
       >
         <option>20</option>
         <option>50</option>
@@ -526,8 +433,8 @@ class DataTable extends Component {
       csvData = filteredData;
     }
 
-    let header = this.state.Hide.rowsPerPage === true ? '' : (
-      <div className="table-header">
+    let header = this.props.hide.rowsPerPage === true ? '' : (
+      <div className="table-header panel-heading">
         <div className="row">
           <div className="col-xs-12">
             <div>
@@ -555,20 +462,23 @@ class DataTable extends Component {
     );
 
     let footer = this.state.Hide.downloadCSV === true ? '' : (
-      <div>
+      <div className="panel-footer table-footer">
         <div className="row">
           <div className="col-xs-12" style={{marginTop: '10px'}}>
             <div className="footerText">
               {rows.length} rows displayed of {filteredRows}.
-              (Maximum rows per page: {RowsPerPageDropdown})
+              (Maximum rows per page: {rowsPerPageDropdown})
+            </div>
+            <div className="col-xs-6">
+              <button
+                className="btn btn-primary downloadCSV"
+                onClick={this.downloadCSV.bind(null, csvData)}
+              >
+                Download Table as CSV
+              </button>
             </div>
             <div className="pull-right" style={{marginTop: '-23px'}}>
-              <PaginationLinks
-                Total={filteredRows}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
-              />
+              {pagination}
             </div>
           </div>
         </div>
@@ -593,19 +503,21 @@ class DataTable extends Component {
 }
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
-  RowNumLabel: PropTypes.string,
+  rowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
   // parameters of the form: func(ColumnName, CellData, EntireRowData)
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
-  Hide: PropTypes.object,
   actions: PropTypes.object,
+  hide: PropTypes.object,
 };
 DataTable.defaultProps = {
-  RowNumLabel: 'No.',
+  headers: [],
+  data: {},
+  rowNumLabel: 'No.',
   filter: {},
-  Hide: {
-    rowsPerPage: false,
+  hide: {
+    rowsPerPage: true,
     downloadCSV: false,
     defaultColumn: false,
   },

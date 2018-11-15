@@ -21,9 +21,21 @@ class FilterableDataTable extends Component {
     super(props);
     this.state = {
       filter: {},
+      page: {
+        number: 1,
+        rows: 20,
+      },
+      sort: {
+        column: 0,
+        ascending: true,
+      },
     };
     this.updateFilter = this.updateFilter.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
+    this.updatePageNumber = this.updatePageNumber.bind(this);
+    this.updatePageRows = this.updatePageRows.bind(this);
+    this.updateSortColumn = this.updateSortColumn.bind(this);
+    this.toggleSortOrder = this.toggleSortOrder.bind(this);
   }
 
   /**
@@ -42,7 +54,56 @@ class FilterableDataTable extends Component {
     this.updateFilter({});
   }
 
+  /**
+   * Updates page state
+   *
+   * @param {int} number of page
+   */
+  updatePageNumber(number) {
+    const page = this.state.page;
+    page.number = number;
+    this.setState({page});
+  }
+
+  /**
+   * Updates number of rows per page
+   *
+   * @param {object} e event from which to abstract value
+   */
+  updatePageRows(e) {
+    const page = this.state.page;
+    page.rows = e.target.value;
+    this.setState({page});
+  }
+
+  updateSortColumn(column) {
+    const sort = this.state.sort;
+    sort.column = column;
+    this.setState({sort});
+  }
+
+  toggleSortOrder() {
+    const sort = this.state.sort;
+    sort.ascending = !sort.ascending;
+    this.setState({sort});
+  }
+
   render() {
+    const filterPresets = () => {
+      if (this.props.filterPresets) {
+        return this.props.filterPresets.map((preset) => {
+          return (
+            <ButtonElement
+              label={preset.label}
+              onUserInput={() => {
+                this.updateFilter(preset.filter);
+              }}
+            />
+          );
+        });
+      };
+    };
+
     return (
       <Panel
         title={this.props.title}
@@ -57,12 +118,18 @@ class FilterableDataTable extends Component {
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         />
+        {filterPresets()}
         <DataTable
           data={this.props.data}
           fields={this.props.fields}
           filter={this.state.filter}
+          page={this.state.page}
+          sort={this.state.sort}
           getFormattedCell={this.props.getFormattedCell}
           actions={this.props.actions}
+          updatePageNumber={this.updatePage}
+          updateSortColumn={this.updateSortColumn}
+          toggleSortOrder={this.toggleSortOrder}
         />
       </Panel>
     );
@@ -77,7 +144,6 @@ FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string,
   data: PropTypes.object.isRequired,
-  filter: PropTypes.object.isRequired,
   fields: PropTypes.object.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
