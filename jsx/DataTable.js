@@ -183,6 +183,7 @@ class DataTable extends Component {
   hasFilterKeyword(name, data) {
     let filterData = null;
     let exactMatch = false;
+    let opposite = false;
     let result = false;
     let searchKey = null;
     let searchString = null;
@@ -190,6 +191,7 @@ class DataTable extends Component {
     if (this.props.filter[name]) {
       filterData = this.props.filter[name].value;
       exactMatch = this.props.filter[name].exactMatch;
+      opposite = this.props.filter[name].opposite;
     }
 
     // Handle null inputs
@@ -517,7 +519,7 @@ DataTable.defaultProps = {
   rowNumLabel: 'No.',
   filter: {},
   hide: {
-    rowsPerPage: true,
+    rowsPerPage: false,
     downloadCSV: false,
     defaultColumn: false,
   },

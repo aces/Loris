@@ -76,15 +76,19 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $sites = array();
         if ($user->hasPermission('access_all_profiles')) {
             $sites = \Utility::getSiteList();
-        } else {// allow only to view own site data
+        } else {
+            // allow only to view own site data
             $sites = $user->getStudySites();
         }
 
         //reporters
-        $reporters         = array('' => 'All');
+        $reporters         = array();
         $reporter_expanded = $db->pselect(
-            "SELECT u.UserID, u.Real_name FROM issues i " .
-            "INNER JOIN users u ON(i.assignee=u.UserID)",
+            "SELECT u.UserID,
+                    u.Real_name
+             FROM issues i
+             INNER JOIN users u
+               ON(i.assignee=u.UserID)",
             array()
         );
         foreach ($reporter_expanded as $r_row) {
@@ -92,10 +96,13 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         //assignees
-        $assignees         = array('' => 'All');
+        $assignees         = array();
         $assignee_expanded = $db->pselect(
-            "SELECT u.UserID, u.Real_name FROM issues i " .
-            "INNER JOIN users u ON(i.assignee=u.UserID)",
+            "SELECT u.UserID,
+                    u.Real_name
+             FROM issues i
+             INNER JOIN users u
+               ON(i.assignee=u.UserID)",
             array()
         );
         foreach ($assignee_expanded as $a_row) {
@@ -105,8 +112,11 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         //modules
         $modules = [];
         $modules_expanded = $db->pselect(
-            "SELECT DISTINCT Label, ID FROM LorisMenu 
-WHERE Parent IS NOT NULL ORDER BY Label",
+            "SELECT DISTINCT Label,
+                    ID 
+             FROM LorisMenu 
+             WHERE Parent IS NOT NULL
+             ORDER BY Label",
             []
         );
         foreach ($modules_expanded as $r_row) {
@@ -117,8 +127,6 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         }
 
         $priorities = array(
-                       ''          => 'All',
-                       'low'       => 'Low',
                        'normal'    => 'Normal',
                        'high'      => 'High',
                        'urgent'    => 'Urgent',
@@ -126,7 +134,6 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                       );
 
         $statuses = array(
-                     ''             => 'All',
                      'new'          => 'New',
                      'acknowledged' => 'Acknowledged',
                      'feedback'     => 'Feedback',
@@ -137,10 +144,10 @@ WHERE Parent IS NOT NULL ORDER BY Label",
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
-        FROM issues_categories",
+             FROM issues_categories",
             []
         );
-        $categories      = array('' => "All");
+        $categories      = array();
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -162,6 +169,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
             'statuses' => $statuses,
             'priorities' => $priorities,
             'sites' => $sites,
+            'userID' => $user->getUsername(),
         ];
 
         $table = (new \LORIS\Data\Table())

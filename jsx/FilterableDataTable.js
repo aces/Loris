@@ -118,7 +118,9 @@ class FilterableDataTable extends Component {
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         />
-        {filterPresets()}
+        <div style={{display: 'inline-block'}}>
+          {filterPresets()}
+        </div>
         <DataTable
           data={this.props.data}
           fields={this.props.fields}
