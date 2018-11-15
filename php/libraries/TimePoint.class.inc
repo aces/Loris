@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
@@ -23,6 +23,9 @@
  */
 class TimePoint
 {
+    /* NOTE If these are private variables then they should probably be
+     * declared and scoped as such. var is equivalent to public.
+     */
     var $_timePointInfo;
 
     var $_stageOptions = array(
@@ -76,7 +79,7 @@ class TimePoint
      *
      * @return TimePoint object representing $sessionID
      */
-    static function &singleton($sessionID)
+    static function &singleton(int $sessionID)
     {
         // instantiate new TimePoint object
         static $timePointList = array();
@@ -104,7 +107,7 @@ class TimePoint
      *
      * @return void (but side-effect loads current object.)
      */
-    function select($sessionID)
+    function select(int $sessionID): void
     {
         $config         =& NDB_Config::singleton();
         $useScreening   = $config->getSetting('useScreening');
@@ -185,16 +188,22 @@ class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer $candID         6 digit CandID having a timepoint created.
-     * @param integer $SubprojectID   The subprojectID of the new timepoint
-     * @param string  $nextVisitLabel The visit label of the timepoint being created
-     * @param string  $psc            The centre of the timepoint
+     * @param integer     $candID         6 digit CandID having a timepoint created.
+     * @param integer     $SubprojectID   The subprojectID of the new timepoint
+     * @param string|null $nextVisitLabel The visit label of the timepoint
+     *                                    being created
+     * @param string|null $psc            The centre of the timepoint
+     *
+     * @throws DatabaseException
      *
      * @return void
      */
-    static function createNew($candID, $SubprojectID,
-        $nextVisitLabel = null, $psc = null
-    ) {
+    static function createNew(
+        int $candID,
+        int $SubprojectID,
+        ?string $nextVisitLabel = null,
+        ?string $psc = null
+    ): void {
 
         // insert into session set CandID=$candID,
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
@@ -261,8 +270,12 @@ class TimePoint
      *
      * @return void
      */
-    static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
-    {
+    static function isValidVisitLabel(
+        int $candid,
+        int $subprojectID,
+        string $visitLabel
+    ): void {
+
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
@@ -313,11 +326,11 @@ class TimePoint
      * use one of the get* methods below, but in cases where it does not
      * exist you can use this function directly.
      *
-     * @param string $var The variable to retrieve about this timepoint.
+     * @param string|null $var The variable to retrieve about this timepoint.
      *
-     * @return string The value of $var for this timepoint.
+     * @return mixed The value of $var for this timepoint, or all values.
      */
-    function getData($var = null)
+    function getData(?string $var = null)
     {
         if (is_null($var)) {
             return $this->_timePointInfo;
@@ -335,12 +348,12 @@ class TimePoint
      * methods below. However, there are cases where it may be easier to directly
      * use setData.
      *
-     * @param string $var   The variable to set for this timepoint.
-     * @param string $value The value to set $var to.
+     * @param string      $var   The variable to set for this timepoint.
+     * @param string|null $value The value to set $var to.
      *
      * @return void (side-effect modifies session table.)
      */
-    function setData($var, $value = null)
+    function setData($var, ?string $value = null): void
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -352,7 +365,7 @@ class TimePoint
 
         $db =& Database::singleton();
         $db->update('session', $setData, array('ID' => $this->getData('SessionID')));
-        $this->select($this->getData('SessionID'));
+        $this->select(intval($this->getData('SessionID')));
     }
 
     /**
@@ -360,9 +373,13 @@ class TimePoint
      *
      * @return integer (6 digit) CandID for this timepoint.
      */
-    function getCandID()
+    function getCandID(): int
     {
-        return $this->_timePointInfo["CandID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["CandID"]);
     }
 
     /**
@@ -370,9 +387,13 @@ class TimePoint
      *
      * @return integer The ID for this session.
      */
-    function getSessionID()
+    function getSessionID(): int
     {
-        return $this->_timePointInfo["SessionID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["SessionID"]);
     }
 
     /**
@@ -380,7 +401,7 @@ class TimePoint
      *
      * @return string The center of this visit
      */
-    function getPSC()
+    function getPSC(): string
     {
         return $this->_timePointInfo["PSC"];
     }
@@ -390,9 +411,13 @@ class TimePoint
      *
      * @return integer the ID representing the PSC for this visit
      */
-    function getCenterID()
+    function getCenterID(): int
     {
-        return $this->_timePointInfo['CenterID'];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo['CenterID']);
     }
 
     /**
@@ -400,9 +425,13 @@ class TimePoint
      *
      * @return integer the number of this visit.
      */
-    function getVisitNo()
+    function getVisitNo(): int
     {
-        return $this->_timePointInfo["VisitNo"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        return intval($this->_timePointInfo["VisitNo"]);
     }
 
     /**
@@ -410,7 +439,7 @@ class TimePoint
      *
      * @return string the visit label
      */
-    function getVisitLabel()
+    function getVisitLabel(): string
     {
         return $this->_timePointInfo["Visit_label"];
     }
@@ -418,11 +447,18 @@ class TimePoint
     /**
      * Returns the SubprojectID of this timepoint.
      *
-     * @return integer the SubprojectID
+     * @return int|null the SubprojectID, or null
      */
-    function getSubprojectID()
+    function getSubprojectID(): ?int
     {
-        return $this->_timePointInfo["SubprojectID"];
+        /* _timePointInfo contains information that comes from the database
+         * which returns values in string format. Intval is used here to
+         * ensure we return a numerical ID instead of its string representation.
+         */
+        if (is_numeric($this->_timePointInfo["SubprojectID"])) {
+            return intval($this->_timePointInfo["SubprojectID"]);
+        }
+        return null;
     }
 
     /**
@@ -430,7 +466,7 @@ class TimePoint
      *
      * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getScreeningStatus()
+    function getScreeningStatus(): string
     {
         return $this->_timePointInfo["Screening"];
     }
@@ -440,7 +476,7 @@ class TimePoint
      *
      * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getVisitStatus()
+    function getVisitStatus(): string
     {
         return $this->_timePointInfo["Visit"];
     }
@@ -450,7 +486,7 @@ class TimePoint
      *
      * @return string 'In Progress', 'Pass' or 'Failure'
      */
-    function getApprovalStatus()
+    function getApprovalStatus(): string
     {
         return $this->_timePointInfo["Approval"];
     }
@@ -458,9 +494,9 @@ class TimePoint
     /**
      * Returns the date of screening for this session.
      *
-     * @return string of form "YYYY-MM-DD" (or null)
+     * @return string|null of form "YYYY-MM-DD" (or null)
      */
-    function getDateOfScreening()
+    function getDateOfScreening(): ?string
     {
         return $this->_timePointInfo["Date_screening"];
     }
@@ -468,9 +504,9 @@ class TimePoint
     /**
      * Returns the date of visit for this session.
      *
-     * @return string of form "YYYY-MM-DD" (or null)
+     * @return string|null of form "YYYY-MM-DD" (or null)
      */
-    function getDateOfVisit()
+    function getDateOfVisit(): ?string
     {
         return $this->_timePointInfo["Date_visit"];
     }
@@ -478,9 +514,9 @@ class TimePoint
     /**
      * Returns the date of approval of this session.
      *
-     * @return string of form "YYYY-MM-DD" (or null)
+     * @return string|null of form "YYYY-MM-DD" (or null)
      */
-    function getDateOfApproval()
+    function getDateOfApproval(): ?string
     {
         return $this->_timePointInfo["Date_approval"];
     }
@@ -490,7 +526,7 @@ class TimePoint
      *
      * @return true if submitted
      */
-    function isSubmitted()
+    function isSubmitted(): bool
     {
         return $this->_timePointInfo["Submitted"] == 'Y';
     }
@@ -500,7 +536,7 @@ class TimePoint
      *
      * @return boolean true if active.
      */
-    function isActive()
+    function isActive(): bool
     {
         return $this->_timePointInfo["Active"] == 'Y';
     }
@@ -511,7 +547,7 @@ class TimePoint
      *
      * @return string 'Y' if a scan was done 'N' if not.
      */
-    function getScanDone()
+    function getScanDone(): string
     {
         return $this->_timePointInfo["Scan_done"];
     }
@@ -519,9 +555,9 @@ class TimePoint
     /**
      * Returns BVLQC status (Y-hardcopy QC, N-no QC, V-visual QC)
      *
-     * @return string
+     * @return string|null
      */
-    function getBVLQCStatus()
+    function getBVLQCStatus(): ?string
     {
         return $this->_timePointInfo['BVLQCStatus'];
     }
@@ -531,7 +567,7 @@ class TimePoint
      *
      * @return string
      */
-    function getBVLQCType()
+    function getBVLQCType(): string
     {
         return $this->_timePointInfo['BVLQCType'];
     }
@@ -541,7 +577,7 @@ class TimePoint
      *
      * @return string
      */
-    function getBVLQCExclusion()
+    function getBVLQCExclusion(): string
     {
         return $this->_timePointInfo['BVLQCExclusion'];
     }
@@ -551,7 +587,7 @@ class TimePoint
      *
      * @return string
      */
-    function getBVLQCExclusionStatusList()
+    function getBVLQCExclusionStatusList(): string
     {
         return $this->bvlQcExclusionStatuses;
     }
@@ -561,7 +597,7 @@ class TimePoint
      *
      * @return string the current stage
      */
-    function getCurrentStage()
+    function getCurrentStage(): string
     {
         return $this->_timePointInfo["Current_stage"];
     }
@@ -569,9 +605,9 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return ?string status of current stage or null
+     * @return string|null status of current stage
      */
-    function getCurrentStatus()
+    function getCurrentStatus(): ?string
     {
         $method = 'get' . $this->getCurrentStage() . 'Status';
         if (method_exists($this, $method)) {
@@ -584,16 +620,15 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return string of the form "YYYY-MM-DD"
+     * @return string|null "YYYY-MM-DD"
      */
-    function getCurrentDate()
+    function getCurrentDate(): ?string
     {
         $getDateMethod = "getDateOf" . $this->getCurrentStage();
         if (method_exists($this, $getDateMethod)) {
             return $this->$getDateMethod();
-        } else {
-            return false;
         }
+        return null;
     }
 
     /**
@@ -601,7 +636,7 @@ class TimePoint
      *
      * @return string study stage title
      */
-    function getNextStage()
+    function getNextStage(): string
     {
         if ($this->getData('Current_stage') == 'Approval'
             && $this->getData('Approval') != 'Pass'
@@ -631,7 +666,7 @@ class TimePoint
      *
      * @return bool
      */
-    function isStudyStageDynamic($stage)
+    function isStudyStageDynamic(string $stage): bool
     {
         // if not $stage is passed, evaluate the current stage
         if (empty($stage)) {
@@ -657,7 +692,7 @@ class TimePoint
      *
      * @return boolean true if stage is dynamic.
      */
-    function isNextStageDynamic()
+    function isNextStageDynamic(): bool
     {
         return $this->isStudyStageDynamic($this->getNextStage());
     }
@@ -668,7 +703,7 @@ class TimePoint
      *
      * @return void
      */
-    function setCurrentStage()
+    function setCurrentStage(): void
     {
         $db =& Database::singleton();
 
@@ -727,22 +762,6 @@ class TimePoint
     }
 
     /**
-     * THIS FUNCTION DOES NOTHING. IT SHOULD BE REMOVED.
-     *
-     * @deprecated
-     *
-     * @return void
-     */
-    function startNextStage()
-    {
-        // figure out what the next stage should be
-        // start that stage
-        // set the date for the new stage
-        // set SubprojectID if applicable
-        // set scan done if applicable
-    }
-
-    /**
      * Starts a stage.
      *
      * @param string $stage The stage which is being started.
@@ -751,7 +770,7 @@ class TimePoint
      *
      * @return void (but as a side-effect modifies database.)
      */
-    function startStage($stage)
+    function startStage(string $stage): void
     {
         $setArray = array(
                      'Current_stage'     => $stage,
@@ -781,7 +800,7 @@ class TimePoint
      *
      * @return void
      */
-    function setBVLQCType($type)
+    function setBVLQCType(string $type): void
     {
         $db =& Database::singleton();
 
@@ -810,7 +829,7 @@ class TimePoint
      *
      * @return void
      */
-    function setBVLQCStatus($status)
+    function setBVLQCStatus(string $status): void
     {
         $db =& Database::singleton();
 
@@ -847,7 +866,7 @@ class TimePoint
      *
      * @return true on success
      */
-    function setBVLQCExclusion($status)
+    function setBVLQCExclusion(string $status): bool
     {
         $db =& Database::singleton();
 
@@ -885,9 +904,9 @@ class TimePoint
      *         3. If the stage to be started is not a testing stage, the the
      *            current stage status cannot be "In Progress".
      *
-     * @return boolean
+     * @return bool
      */
-    function isStartable()
+    function isStartable(): bool
     {
         $currentStage = $this->getData('Current_stage');
 
@@ -907,9 +926,9 @@ class TimePoint
      * Returns either EDC or DOB depending on the settings of the subproject
      * that this timepoint belongs to.
      *
-     * @return string of the date in YYYY-MM-DD
+     * @return string|null date YYYY-MM-DD
      */
-    function getEffectiveDateOfBirth()
+    function getEffectiveDateOfBirth(): ?string
     {
         $config    = NDB_Config::singleton();
         $candidate = Candidate::singleton($this->getCandID());
@@ -920,6 +939,4 @@ class TimePoint
 
         return $candidate->getCandidateDoB();
     }
-
-} // end class
-?>
+}
