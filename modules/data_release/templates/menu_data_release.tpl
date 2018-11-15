@@ -1,3 +1,6 @@
+{if $err}
+  <label class="error col-sm-12">{$err}</label>
+{/if}
 {if $superuser}
 
 <button type="button" name = "upload" class = "btn btn-sm btn-primary" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
@@ -54,7 +57,6 @@
                             <label class="col-xs-4" for="userid">User ID</label>
                             <div class="col-xs-8">
                                 <select name="userid" id = "userid" class = "form-fields form-control input-sm">
-                                <option value=""> </option>
                                     {foreach from = $userids item=val key=k}
                                         <option value={$k}>{$val}</option>
                                     {/foreach}
@@ -65,7 +67,6 @@
                             <label class="col-xs-4" for="data_release_id">Data Release ID</label>
                             <div class="col-xs-8">
                                 <select name="data_release_id" id = "data_release_id" class = "form-fields form-control input-sm">
-                                <option value=""> </option>
                                     {foreach from = $data_release_ids item=val key=k}
                                         <option value={$k}>{$val}</option>
                                     {/foreach}

@@ -13,10 +13,19 @@
  */
 
 $DB =& Database::singleton();
-
 if ($_POST['action'] == 'addpermission') {
     $userid          = $_POST['userid'];
     $data_release_id = $_POST['data_release_id'];
+
+        $result = $DB->pselectOne(
+            "SELECT COUNT(*) FROM data_release_permissions WHERE userid = :userid and data_release_id = :data_release_id",
+            array('userid' => $data_release_id,'data_release_id' => $data_release_id)
+        );
+
+    $factory  = NDB_Factory::singleton();
+    $settings = $factory->settings();
+    $baseURL = $settings->getBaseURL();
+    if ($result != '1'){
     $success         = $DB->insert(
         'data_release_permissions',
         array(
@@ -24,13 +33,20 @@ if ($_POST['action'] == 'addpermission') {
          'data_release_id' => $data_release_id,
         )
     );
-
     $factory  = NDB_Factory::singleton();
     $settings = $factory->settings();
 
-    $baseURL = $settings->getBaseURL();
-
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
+    } else {
+    // return username and file with permisson.
+            $file = $DB->pselectOne(
+            "SELECT file_name FROM data_release WHERE id = :data_release_id",
+            array('data_release_id' => $data_release_id)
+        );
+    header("Location: {$baseURL}/data_release/?addpermissionSuccess=false&user=&file={$file}");
+    }
+
+
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
