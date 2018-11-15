@@ -128,47 +128,13 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that page returns error if the dates dont match
-     *
-     * @return void
-     */
-    function testNewProfileCheckDateError()
-    {
-        $this->webDriver->get($this->url . "/new_profile/");
-
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dateTaken').value='2009-05-05'"
-        );
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dtc').value='2000-05-11'"
-        );
-        // send a key to gender
-        $this->webDriver->executescript(
-            "document.querySelector('$this->gender').value='male'"
-        );
-        // send a key to site
-        $this->webDriver->executescript(
-            "document.querySelector('$this->site').value='1'"
-        );
-
-        $startVisit =  $this->webDriver->executescript(
-            "document.querySelector('button.btn').click()"
-        );sleep(10);
-        $err = $this->webDriver->executescript(
-            "return document.querySelector('#lorisworkspace').textContent"
-        );
-        $this->assertContains("Date of birth fields must match", $err);
-
-    }
-
-    /**
      * Tests that candidate is created
      *
      * @return void
      */
     function testNewProfileCreateCandidate()
     {
-        $this->webDriver->get($this->url . "/new_profile/");sleep(200);
+        $this->webDriver->get($this->url . "/new_profile/");
         // send a key to gender
         $this->webDriver->executescript(
             "document.querySelector('$this->gender').value='male'"
@@ -195,85 +161,5 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
     }
 
-    /**
-     * Tests that candidate is created
-     *
-     * @return void
-     */
-    function testNewProfilePSCIDSequential()
-    {
-        $this->DB->delete("psc", array("CenterID" => 99));
-        $this->DB->insert(
-            "psc",
-            array(
-             "CenterID" => 99,
-             "Name"     => "testPSC",
-             "Alias"    => "BBQ",
-            )
-        );
-        $this->DB->update(
-            "user_psc_rel",
-            array("CenterID" => 99),
-            array("UserID" => 999990)
-        );
-
-        $this->webDriver->get($this->url . "/new_profile/");
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dateTaken').value='2009-05-05'"
-        );
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dtc').value='2009-05-05'"
-        );
-
-        $this->webDriver->executescript(
-            "document.querySelector('$this->gender').value='male'"
-        );
-        // send a key to site
-        $this->webDriver->executescript(
-            "document.querySelector('$this->site').value='99'"
-        );
-
-        $startVisit =  $this->webDriver->executescript(
-            "document.querySelector('$this->btn').click()"
-        );
-        $bodyText   = $this->webDriver->executescript(
-            "return document.querySelector('#lorisworkspace').textContent"
-        );
-        $this->assertContains("PSCID: BBQ0000", $bodyText);
-
-        $this->webDriver->get($this->url . "/new_profile/");
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dateTaken').value='2009-05-05'"
-        );
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dtc').value='2009-05-05'"
-        );
-
-        $this->webDriver->executescript(
-            "document.querySelector('$this->gender').value='male'"
-        );
-        // send a key to site
-        $this->webDriver->executescript(
-            "document.querySelector('$this->site').value='1'"
-        );
-
-        $startVisit =  $this->webDriver->executescript(
-            "document.querySelector('$this->btn').click()"
-        );
-        $bodyText   = $this->webDriver->executescript(
-            "return document.querySelector('#lorisworkspace').textContent"
-        );
-
-        $this->assertContains("PSCID: BBQ0001", $bodyText);
-
-        $this->deleteCandidate("BBQ0000");
-        $this->deleteCandidate("BBQ0001");
-        $this->DB->update(
-            "user_psc_rel",
-            array("CenterID" => 1),
-            array("UserID" => 999990)
-        );
-        $this->DB->delete("psc", array("CenterID" => 99));
-    }
 }
 ?>
