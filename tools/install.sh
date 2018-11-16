@@ -146,15 +146,9 @@ chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
-if type "lsb_release" > /dev/null 2>&1; then
-    os_distro=$(lsb_release -si)
-elif type "facter" > /dev/null 2>&1; then
-    os_distro=$(facter operatingsystem)
-else
-    os_distro="unknown"
-fi
+os_distro=$(awk -F= '/^ID_LIKE/{print $2}' /etc/os-release)
 
-if [ $os_distro = "Ubuntu" ]; then
+if [ $os_distro = "debian" ]; then
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -162,7 +156,7 @@ if [ $os_distro = "Ubuntu" ]; then
     # can write the config.xml file.
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
-elif [ $os_distro = "CentOS" ]; then
+elif [ "$os_distro" == \""rhel fedora\"" ]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
