@@ -94,12 +94,9 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        $this->addBasicText('pid', 'PID:');
-        $this->addBasicText('type', 'Type:');
-        $this->addBasicText('userid', 'UserId:');
-
         return;
     }
+
     /**
      * Gathers JS dependecies and merge them with the parent
      *
@@ -112,8 +109,16 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/server_processes_manager/js/columnFormatter.js")
+            [
+             $baseURL . "/server_processes_manager/js/columnFormatter.js",
+             $baseURL . "/server_processes_manager/js/server_processes_managerIndex.js",
+            ]
         );
+    }
+
+    function toJSON()
+    {
+        json_encode($this->toArray());
     }
 
 }
