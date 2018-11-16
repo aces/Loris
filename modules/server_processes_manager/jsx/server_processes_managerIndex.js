@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -52,36 +51,7 @@ class ServerProcessesManagerIndex extends Component {
    */
   formatColumn(column, cell, row) {
     // Set class to 'bg-danger' if file is hidden.
-    const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
-    let result = <td className={style}>{cell}</td>;
-    switch (column) {
-    case 'File Name':
-      if (this.props.hasPermission('media_write')) {
-        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
-          encodeURIComponent(row['File Name']);
-        result = (
-          <td className={style}>
-            <a href={downloadURL} target="_blank" download={row['File Name']}>
-              {cell}
-            </a>
-          </td>
-        );
-      }
-      break;
-    case 'Visit Label':
-      if (row['CandID'] !== null && row['SessionID']) {
-        const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-          row['CandID'] + '&sessionID=' + row['SessionID'];
-        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
-      }
-      break;
-    case 'Edit Metadata':
-      const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-      result = <td className={style}><a href={editURL}>Edit</a></td>;
-      break;
-    }
-
-    return result;
+    return (<td>{cell}</td>);
   }
 
   render() {
@@ -100,84 +70,48 @@ class ServerProcessesManagerIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
-    const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'File Name', show: true, filter: {
-        name: 'fileName',
+      {label: 'PID', show: true, filter: {
+        name: 'pid',
         type: 'text',
       }},
-      {label: 'PSCID', show: true, filter: {
-        name: 'pscid',
+      {label: 'Type', show: true, filter: {
+        name: 'type',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
-        name: 'visitLabel',
-        type: 'select',
-        options: options.visits,
-      }},
-      {label: 'Language', show: true, filter: {
-        name: 'language',
-        type: 'select',
-        options: options.languages,
-      }},
-      {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'select',
-        options: options.instruments,
-      }},
-      {label: 'Site', show: true, filter: {
-        name: 'site',
-        type: 'select',
-        options: options.sites,
-      }},
-      {label: 'Uploaded By', show: true, filter: {
-        name: 'uploadedBy',
+      {label: 'UserId', show: true, filter: {
+        name: 'userid',
         type: 'text',
-        }},
-      {label: 'Date Taken', show: true},
-      {label: 'Comments', show: true},
-      {label: 'Date Uploaded', show: true},
-      {label: 'File Type', show: false, filter: {
-        name: 'fileType',
-        type: 'select',
-        options: options.fileTypes,
       }},
-      {label: 'CandID', show: false},
-      {label: 'SessionID', show: false},
-      {label: 'File Visibility', show: false, filter: {
-        name: 'fileVisibility',
-        type: 'select',
-        options: options.hidden,
-        hide: !this.props.hasPermission('superUser'),
-      }},
+      {label: 'stdout_file', show: true},
+      {label: 'stderr_file', show: true},
+      {label: 'exit_code_file', show: true},
+      {label: 'exit_code', show: true},
+      {label: 'start_time', show: true},
+      {label: 'end_time', show: true},
+      {label: 'exit_text', show: true},
     ];
-    const tabs = [{id: 'browse', label: 'Browse'}];
 
     return (
-      <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
           <FilterableDataTable
-            name="media"
+            name="server_processes_manager"
             data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />
-        </TabPane>
-        {uploadTab()}
-      </Tabs>
     );
   }
 }
 
-MediaIndex.propTypes = {
+ServerProcessesManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <MediaIndex
-      dataURL={`${loris.BaseURL}/media/?format=json`}
+    <ServerProcessesManagerIndex
+      dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
       hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
