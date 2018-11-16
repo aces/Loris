@@ -1,7 +1,7 @@
 <?php
 /**
- * This class implements a data mapper which anonymizes User ID in the Issue
- * Tracker.
+ * This class implements a data mapper which converts User ID to a boolean 
+ * in the Issue Tracker.
  *
  * PHP Version 7
  *
@@ -13,11 +13,10 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\issue_tracker;
-use \LORIS\Data\{Mapper, DataInstance
-};
+use \LORIS\Data\{Mapper, DataInstance};
 
 /**
- * A IssueWatcherAnonymizer is a \LORIS\Data\Mapper which anonymize User ID
+ * A IssueWatcherAnonymizer is a \LORIS\Data\Mapper which maps User ID
  * by setting it to true if it belongs to the current user and false if not.
  *
  * @category   Behavioural
@@ -27,7 +26,7 @@ use \LORIS\Data\{Mapper, DataInstance
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class IssueWatcherAnonymizer implements Mapper
+class IssueWatcherMapper implements Mapper
 {
     /**
      * Maps the User ID to 'true' if it belongs to the current user and to 'false'

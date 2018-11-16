@@ -57,7 +57,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
-        $provisioner = $provisioner->map(new IssueWatcherAnonymizer());
+        $provisioner = $provisioner->map(new IssueWatcherMapper());
         return $provisioner;
     }
 

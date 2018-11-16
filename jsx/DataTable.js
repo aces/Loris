@@ -417,7 +417,7 @@ class DataTable extends Component {
     let rowsPerPageDropdown = (
       <select
         className="input-sm perPage"
-        onChange={this.props.updateRowsPerPage}
+        onChange={this.props.updatePageRows}
         value={this.props.page.rows}
       >
         <option>20</option>

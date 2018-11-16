@@ -206,8 +206,9 @@ class IssueTrackerIndex extends Component {
     ];
 
     const filterPresets = [
-      {label: 'Active', filter: {status: {value: 'closed', opposite: true}}},
-      {label: 'Closed', filter: {status: {value: 'closed', exactMatch: true}}},
+      {label: 'All Issues', filter: {}},
+      {label: 'Active Issues', filter: {status: {value: 'closed', opposite: true}}},
+      {label: 'Closed Issues', filter: {status: {value: 'closed', exactMatch: true}}},
       {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
     ];
 
