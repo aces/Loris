@@ -33,6 +33,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
     function _hasAccess(\User $user) : bool
