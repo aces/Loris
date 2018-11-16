@@ -30,8 +30,8 @@ class AnonymousUser extends \User
      *
      * @return string The empty string
      */
-    public function getSiteNames() : string
+    public function getSiteNames() : array
     {
-        return "";
+        return array();
     }
 }
