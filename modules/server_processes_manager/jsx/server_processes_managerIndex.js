@@ -68,7 +68,7 @@ class ServerProcessesManagerIndex extends Component {
 
    /**
     * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in media.class.inc
+    * queried columns in _setupVariables() in server_processes_manager.class.inc
     */
     const fields = [
       {label: 'PID', show: true, filter: {
@@ -79,14 +79,14 @@ class ServerProcessesManagerIndex extends Component {
         name: 'type',
         type: 'text',
       }},
-      {label: 'UserId', show: true, filter: {
-        name: 'userid',
-        type: 'text',
-      }},
       {label: 'stdout_file', show: true},
       {label: 'stderr_file', show: true},
       {label: 'exit_code_file', show: true},
       {label: 'exit_code', show: true},
+      {label: 'UserId', show: true, filter: {
+        name: 'userid',
+        type: 'text',
+      }},
       {label: 'start_time', show: true},
       {label: 'end_time', show: true},
       {label: 'exit_text', show: true},
