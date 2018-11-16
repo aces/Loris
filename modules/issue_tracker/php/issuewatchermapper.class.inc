@@ -1,6 +1,6 @@
 <?php
 /**
- * This class implements a data mapper which converts User ID to a boolean 
+ * This class implements a data mapper which converts User ID to a boolean
  * in the Issue Tracker.
  *
  * PHP Version 7
@@ -13,7 +13,8 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\issue_tracker;
-use \LORIS\Data\{Mapper, DataInstance};
+use \LORIS\Data\{Mapper, DataInstance
+};
 
 /**
  * A IssueWatcherAnonymizer is a \LORIS\Data\Mapper which maps User ID
@@ -54,7 +55,7 @@ class IssueWatcherMapper implements Mapper
         } else {
             $newrow['userID'] = false;
         }
-        
+
         return new IssueRow($newrow, $resource->getCenterID());
     }
 }

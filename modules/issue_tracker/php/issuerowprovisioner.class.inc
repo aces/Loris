@@ -35,7 +35,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct()
     {
-        $user = \User::singleton();
+        $user   = \User::singleton();
         $userID = $user->getUsername();
         //note that this needs to be in the same order as the headers array
         parent::__construct(

@@ -110,7 +110,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         //modules
-        $modules = [];
+        $modules          = [];
         $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label,
                     ID 
@@ -162,15 +162,15 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                        );
 
         $fieldOptions = [
-            'modules' => $modules,
-            'categories' => $categories,
-            'reporters' => $reporters,
-            'assignees' => $assignees,
-            'statuses' => $statuses,
-            'priorities' => $priorities,
-            'sites' => $sites,
-            'userID' => $user->getUsername(),
-        ];
+                         'modules'    => $modules,
+                         'categories' => $categories,
+                         'reporters'  => $reporters,
+                         'assignees'  => $assignees,
+                         'statuses'   => $statuses,
+                         'priorities' => $priorities,
+                         'sites'      => $sites,
+                         'userID'     => $user->getUsername(),
+                        ];
 
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
@@ -182,8 +182,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
         return json_encode(
             [
-                'data' => $arr,
-                'fieldOptions' => $fieldOptions,
+             'data'         => $arr,
+             'fieldOptions' => $fieldOptions,
             ]
         );
     }
@@ -201,7 +201,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Overrides base getJSDependencies() to add support for issue tracker 
+     * Overrides base getJSDependencies() to add support for issue tracker
      * specific React Index file.
      *
      * @return array of extra JS files that this page depends on
