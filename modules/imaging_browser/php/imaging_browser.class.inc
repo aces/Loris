@@ -136,7 +136,14 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 ELSE s.MRIQCStatus
             END 
             ";
-
+        //implementing the pending filter query from overridden _addValidFilters
+        $PendingNewquery = "
+            CASE
+                WHEN s.MRIQCPending='Y' THEN 'P'
+                WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'N'
+                WHEN (s.MRIQCPending ='Y' AND (fqc.QCFirstChangeTime IS NULL $this->acqpid)) THEN 'PN'
+            END
+            ";
         $this->query = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
@@ -220,14 +227,15 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
-            $modalities_subquery_as,
             array('s.ID as sessionID',
                 'f.AcquisitionProtocolID as sequenceType',
-            )
+                "$PendingNewquery as pending"
+            ),
+            $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
-        $this->group_by = 's.ID,f.AcquisitionProtocolID';
+        $this->group_by = 's.ID,f.AcquisitionProtocolID,fqc.QCFirstChangeTime';
 
 
 
@@ -419,6 +427,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             'visitQCStatus' => $visitQCStatus,
             'sequenceTypes' => $scan_types,
             'pendingNew' => $pending,
+            'configLabels' => $scan_id_types,
         ];
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
@@ -461,7 +470,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
                     $query .= " AND fqc.QCFirstChangeTime IS NULL " . $this->acqpid;
                     break;
                 case "PN":
-                    $query .= " AND (s.MRIQCPending='Y' 
+                    $query .= " AND (s.MRIQCPending ='Y' 
                         OR (fqc.QCFirstChangeTime IS NULL ". $this->acqpid ."))";
                     break;
                 }

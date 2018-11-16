@@ -110,10 +110,11 @@ class ImagingBrowserIndex extends Component {
         }
 
         /**
-         * XXX: Currently, the order of these fields MUST match the order of the
-         * queried columns in _setupVariables() in media.class.inc
+         * Currently, the order of these fields MUST match the order of the
+         * queried columns in _setupVariables() in imaging_browser.class.inc
          */
         const options = this.state.data.fieldOptions;
+        const configLabels = options.configLabels;
         const fields = [
             {label: 'Site', show: true, filter: {
                     name: 'site',
@@ -147,8 +148,6 @@ class ImagingBrowserIndex extends Component {
             {label: 'Last QC', show: true},
             {label: 'New Data', show: true},
             {label: 'Links', show: true},
-            {label: 'T1 QC Status', show: true},
-            {label: 'T2 QC Status', show: true},
             {label: 'SessionID', show: false},
             {label: 'Sequence Type', show: false, filter: {
                 name: 'sequenceType',
@@ -161,6 +160,11 @@ class ImagingBrowserIndex extends Component {
                 options: options.pendingNew,
             }},
         ];
+        Object.values(configLabels).forEach((label)=> {
+            fields.push({label: label + ' QC Status', show: true}
+            );
+          });
+
         const tabs = [{id: 'browse', label: 'Browse'}];
 
 
