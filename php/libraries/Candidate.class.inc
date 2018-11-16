@@ -327,7 +327,7 @@ class Candidate
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return arraya|null Non-associative array of SessionIDs 1st Time Point
+     * @return array|null Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
     function getListOfTimePoints(): ?array
