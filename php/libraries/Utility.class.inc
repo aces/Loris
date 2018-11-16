@@ -949,30 +949,6 @@ class Utility
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
-    static function arrayToCSV(array $array): string
-    {
-        $fp = fopen("php://temp", 'w+');
-
-        fputcsv($fp, $array['headers']);
-        foreach ($array['data'] as $item) {
-            fputcsv($fp, $item);
-        }
-
-        // Read what we have written.
-        rewind($fp);
-        $csv_string = stream_get_contents($fp);
-
-        fclose($fp);
-        return $csv_string;
-    }
-
-    /**
      * QuickForm rule to check that a date is valid.
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
