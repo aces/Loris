@@ -513,7 +513,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $field => $val) {
-                $prepared_key = Utility::getCleanString($field);
+                $prepared_key = $this->getCleanString($field);
                 $query_piece  = $this->_addValidFilters($prepared_key, $field, $val);
                 if (!empty($query_piece)) {
                     $WhereClause .= $query_piece;
@@ -557,7 +557,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = true;
             foreach ($this->having as $key => $val) {
                 if ($val !== '' and $val != null) {
-                    $prepared_key = Utility::getCleanString($key);
+                    $prepared_key = $this->getCleanString($key);
                     if ($first == false) {
                         $WhereClause .= ' AND ';
                     } else {
@@ -735,6 +735,26 @@ class NDB_Menu_Filter extends NDB_Menu
         $list['headers'] = $this->headers;
 
         return Utility::arrayToCSV($list);
+    }
+
+    /**
+     * Cleans a string to make it safe for variables and such
+     *
+     * @param string $string the string to clean
+     *
+     * @return string The string cleaned up enough to be used as a
+     *                variable name
+     */
+    function getCleanString(string $string): string
+    {
+        $string = trim($string);
+        $string = str_replace('  ', ' ', $string);
+        $string = str_replace(' ', '_', $string);
+        $string = str_replace("'", '', $string);
+        $string = str_replace('"', '', $string);
+        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
+        $string = strtolower($string);
+        return $string;
     }
 
     /**

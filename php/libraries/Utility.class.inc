@@ -284,26 +284,6 @@ class Utility
     }
 
     /**
-     * Cleans a string to make it safe for variables and such
-     *
-     * @param string $string the string to clean
-     *
-     * @return string The string cleaned up enough to be used as a
-     *                variable name
-     */
-    static function getCleanString(string $string): string
-    {
-        $string = trim($string);
-        $string = str_replace('  ', ' ', $string);
-        $string = str_replace(' ', '_', $string);
-        $string = str_replace("'", '', $string);
-        $string = str_replace('"', '', $string);
-        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
-        $string = strtolower($string);
-        return $string;
-    }
-
-    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
