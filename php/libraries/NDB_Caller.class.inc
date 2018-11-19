@@ -65,13 +65,12 @@ class NDB_Caller
     /**
      * Renders the called menu, form or the instrument into html
      *
-     * @param string $test_name The object type to load.  The test_name of the
-     *                          menu, form or instrument
-     * @param string $subtest   The subpage of the module to load.
-     * @param string $CommentID The CommentID identifier to load the page with
-     * @param string $nextpage  The page to go to after submitting this page (surveys
-     *                          only)
-     * @param string $anonymous True if the user has not logged in.
+     * @param string      $test_name The object type to load.  The test_name of the
+     *                               menu, form or instrument
+     * @param string      $subtest   The subpage of the module to load.
+     * @param string      $CommentID The CommentID identifier to load the page with
+     * @param string|null $nextpage  The page to go to after submitting this
+     * @param string      $anonymous True if the user has not logged in.
      *
      * @return string rendered object, as html
      */
@@ -79,7 +78,7 @@ class NDB_Caller
         string $test_name,
         string $subtest,
         string $CommentID='',
-        string $nextpage=null,
+        ?string $nextpage=null,
         string $anonymous=true
     ) {
         $factory  = NDB_Factory::singleton();
@@ -372,11 +371,11 @@ class NDB_Caller
     /**
      * Renders html for an Instrument
      *
-     * @param string $instrumentName      Name of the instrument to load
-     * @param string $page                Page (subtest) of the instrument
-     * @param string $commentID           CommentID of the instrument to load
-     * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
-     *                                    successfully.
+     * @param string      $instrumentName      Name of the instrument to load
+     * @param string      $page                Page (subtest) of the instrument
+     * @param string      $commentID           CommentID of the instrument to load
+     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
+     *                                         loaded successfully.
      *
      * @return string HTML of the page to render.
      */
@@ -384,7 +383,7 @@ class NDB_Caller
         string $instrumentName,
         string $page,
         string $commentID,
-        string $redirectToOnSuccess=null
+        ?string $redirectToOnSuccess=null
     ): string {
         if ($page === 'finalpage') {
             $instrument = NDB_BVL_Instrument::factory(
@@ -460,11 +459,11 @@ class NDB_Caller
     /**
      * Renders html for a direct data entry Instrument
      *
-     * @param string $instrumentName      Name of the instrument to load
-     * @param string $page                Page (subtest) of the instrument
-     * @param string $commentID           CommentID of the instrument to load
-     * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
-     *                                    successfully.
+     * @param string      $instrumentName      Name of the instrument to load
+     * @param string      $page                Page (subtest) of the instrument
+     * @param string      $commentID           CommentID of the instrument to load
+     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
+     *                                         loaded successfully.
      *
      * @return string HTML of the page to render.
      */
@@ -472,7 +471,7 @@ class NDB_Caller
         string $instrumentName,
         string $page,
         string $commentID,
-        string $redirectToOnSuccess=null
+        ?string $redirectToOnSuccess=null
     ): string {
         if ($page === 'finalpage') {
             $instrument = NDB_BVL_Instrument::factory(
