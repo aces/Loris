@@ -17,7 +17,7 @@ use \LORIS\Data\{Mapper, DataInstance
 };
 
 /**
- * A IssueWatcherAnonymizer is a \LORIS\Data\Mapper which maps User ID
+ * A IssueWatcherMapper is a \LORIS\Data\Mapper which maps User ID
  * by setting it to true if it belongs to the current user and false if not.
  *
  * @category   Behavioural
@@ -35,9 +35,9 @@ class IssueWatcherMapper implements Mapper
      *
      * @param \User                    $user     The user this data is being mapped
      *                                           for.
-     * @param \LORIS\Data\DataInstance $resource The unanonymized data being mapped.
+     * @param \LORIS\Data\DataInstance $resource The data instance being mapped.
      *
-     * @return \LORIS\Data\DataInstance the anonymized data
+     * @return \LORIS\Data\DataInstance the mapped data
      */
     public function map(
         \User $user,
