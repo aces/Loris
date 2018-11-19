@@ -25,8 +25,6 @@ namespace LORIS\help_editor;
  */
 class Help_Editor extends \NDB_Menu_Filter
 {
-    public $fieldOptions;
-
     /**
      *  Checking user permissions
      *
