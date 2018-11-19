@@ -82,21 +82,6 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
 
     }
 
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-
-        return;
-    }
-
     /**
      * Gathers JS dependecies and merge them with the parent
      *
