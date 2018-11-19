@@ -89,7 +89,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 ## Community
 
-### Create an Issue
+### GitHub Issues
 Please don't hesitate to create an issue if you're stuck with something. Please
 include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
