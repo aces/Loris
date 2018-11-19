@@ -89,9 +89,9 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
         case "projects":
         case "projects/":
             $projects = $this->_getProjectList();
-            return (new \LORIS\HTTP\Response())
+            return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
-                ->withBody(new \LORIS\HTTP\StringStream(json_encode($projects)));
+                ->withBody(new \LORIS\Http\StringStream(json_encode($projects)));
         // FIXME: Delegate to other endpoints under /projects/ for other paths.
         default:
             return (new \LORIS\Http\Response())
