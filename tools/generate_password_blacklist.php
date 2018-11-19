@@ -5,7 +5,13 @@
  * upon password changes. If a user tries to use a password that appears in the
  * list of hashes in this text file, it will be rejected.
  *
- * This script should be run BEFORE `2018-10-22-ExpireAllPasswords.sql` OR
+ * SQL:
+ * - This script should be run AFTER 
+ * `2018-10-22-CreatePasswordBlacklistTable.sql` OR
+ * before upgrading to 20.1 from 20.0 OR 20.0.x to 21. This SQL file will
+ * create the table containing the blacklist entries.
+ *
+ * - This script should be run BEFORE `2018-10-22-ExpireAllPasswords.sql` OR
  * before upgrading to 20.1 from 20.0 OR 20.0.x to 21. This SQL file will
  * delete the password entries which prevents the blacklist from being
  * generated.
@@ -14,20 +20,23 @@
  * have potentially been viewed by administrators or could be read in the event
  * of a data breach, we have chosen to reject them in this way.
  */
-<?php declare(strict_types=1);
+<?php
 require_once 'generic_includes.php';
+sleep(5);
 
 /* This script will write the password blacklist to a table in the DB. Fail if
  * the user has not applied the patch yet.
  */
 try {
-    $sql = "SELECT 1 FROM testtable LIMIT 1;"
+    $sql = "SELECT 1 FROM password_blacklist LIMIT 1;";
     $DB->pselectOne($sql, array());
-} catch \DatabaseException $e {
-    die '`password_blacklist` table not found. Please run SQL patch ' .
+} catch (\DatabaseException $e) {
+    die(
+        '`password_blacklist` table not found. Please run SQL patch ' .
         '`2018-10-22-CreatePasswordBlacklistTable.sql` or the appropriate ' .
         'release patch.' .
-        PHP_EOL;
+        PHP_EOL
+    );
 }
 
 // Query DB for burned passwords. The bug caused passwords to be stored on 
@@ -37,26 +46,18 @@ try {
 $sql = "select new as password from history where col like '%hash%' AND type='U' AND new NOT LIKE '\$%';";
 $result = $DB->pselectCol($sql, array());
 
-$passwords = array();
-$passwords = array_values($result);
-
-$base = \NDB_Config::singleton()->getSetting('paths')['base'];
-$dest = "$base/project/password_blacklist.lst";
-// Write result to file
-file_put_contents(
-    $dest,
-    // Hash each password and join the result with new lines
-    implode(
-        "\n", 
-        array_map(
-            'hash_password',
-            $passwords
-        )
-    ),
-    FILE_APPEND
+// Hash all the passwords.
+$password_hashes = array_map(
+    'hash_password',
+    array_values($result)
 );
+// Add hashes to blacklist table.
+foreach ($password_hashes as $password_hash) {
+    $DB->insert('password_blacklist', array('password_hash' => $password_hash));
+}
 
-/* Function exists because array_map doesn't support multiple arguments */
-function hash_password($password) {
+// Function exists because array_map doesn't support multiple arguments.
+function hash_password($password): string
+{
     return password_hash($password, PASSWORD_DEFAULT);
 }
