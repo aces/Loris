@@ -64,8 +64,11 @@ class LorisForm
      *
      * @return array describing the form element
      */
-    protected function &createBase(string $name, string $label, array $attribs=array()): array
-    {
+    protected function &createBase(
+        string $name,
+        string $label,
+        array $attribs=array()
+    ): array {
         $el = array('label' => $label);
 
         if (!empty($name)) {
@@ -121,8 +124,11 @@ class LorisForm
      *
      * @return array A reference to the array that was added to $this->form
      */
-    protected function &addBase(string $name, string $label, array $attribs = array()): array
-    {
+    protected function &addBase(
+        string $name,
+        string $label,
+        array $attribs = array()
+    ): array {
         $el   = $this->createBase($name, $label, $attribs);
         $name = $this->_generateName($name);
         $this->form[$name] =& $el;
@@ -142,8 +148,12 @@ class LorisForm
      *
      * @return &array
      */
-    public function addSelect(string $name, string $label, array $options, array $attribs = array()): array
-    {
+    public function addSelect(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs = array()
+    ): array {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
@@ -182,8 +192,11 @@ class LorisForm
      *
      * @return array
      */
-    public function addPassword(string $name, string $label, array $options=array()): array
-    {
+    public function addPassword(
+        string $name,
+        string $label,
+        array $options=array()
+    ): array {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
         return $el;
@@ -198,8 +211,11 @@ class LorisForm
      *
      * @return array
      */
-    public function addHidden(string $name, string $value, array $attributes=array()): array
-    {
+    public function addHidden(
+        string $name,
+        string $value,
+        array $attributes=array()
+    ): array {
         $el         =& $this->addBase(
             $name,
             null,
@@ -220,8 +236,11 @@ class LorisForm
      *
      * @return array
      */
-    public function addText(string $name, string $label, array $options=array()): array
-    {
+    public function addText(
+        string $name,
+        string $label,
+        array $options=array()
+    ): array {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
         return $el;
@@ -239,8 +258,11 @@ class LorisForm
      *
      * @return array
      */
-    public function addTextArea(string $elname, string $label, array $options=array()): array
-    {
+    public function addTextArea(
+        string $elname,
+        string $label,
+        array $options=array()
+    ): array {
         $el         =& $this->addBase($elname, $label, $options);
         $el['type'] = 'textarea';
         if (isset($options['cols'])) {
@@ -267,8 +289,12 @@ class LorisForm
      *
      * @return array
      */
-    public function addDate(string $name, string $label, array $options, array $attribs = array()): array
-    {
+    public function addDate(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs = array()
+    ): array {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
@@ -328,8 +354,12 @@ class LorisForm
      *
      * @return array
      */
-    function &addRadio(string $name, string $label, array $options, array $attribs): array
-    {
+    function &addRadio(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs
+    ): array {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'radio';
         $el['options'] = $options;
@@ -362,8 +392,12 @@ class LorisForm
      *
      * @return &array
      */
-    public function addLink(string $name, string $label, array $url, array $link): array
-    {
+    public function addLink(
+        string $name,
+        string $label,
+        array $url,
+        array $link
+    ): array {
         $el         =& $this->addBase($name, $label);
         $el['type'] = 'link';
         $el['url']  = $url;
@@ -494,8 +528,11 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText(string $elname, string $label, array $attribs = array()): array
-    {
+    function createText(
+        string $elname,
+        string $label,
+        array $attribs = array()
+    ): array {
         $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
         return $el;
@@ -516,8 +553,11 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createSubmit(string $elname, string $value, array $attribs = array()): array
-    {
+    function createSubmit(
+        string $elname,
+        string $value,
+        array $attribs = array()
+    ): array {
         $attribs['value'] = $value;
         $el         =& $this->createBase($elname, null, $attribs);
         $el['type'] = 'submit';
@@ -1898,8 +1938,13 @@ class LorisForm
      *
      * @return void
      */
-    function addGroup(array $array, string $name, string $label, string $delimiter, array $options = array()): void
-    {
+    function addGroup(
+        array $array,
+        string $name,
+        string $label,
+        string $delimiter,
+        array $options = array()
+    ): void {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
              $group_key = $value['name'] ?? $this->_generateName('');
@@ -2032,8 +2077,12 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    public function createSelect(string $name, string $label, array $options, array $attribs = array()): array
-    {
+    public function createSelect(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs = array()
+    ): array {
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
@@ -2156,9 +2205,9 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * @return void
+     * @return array
      */
-    function getSubmitValues(): void
+    function getSubmitValues(): array
     {
         $retVal     = array();
         $submitKeys = $_POST + $_FILES;
@@ -2174,11 +2223,11 @@ class LorisForm
      *
      * @param string $name The name of the element to extract.
      *
-     * @return useless object which has the same methods as
+     * @return \LorisFormElement useless object which has the same methods as
      *         those used by QuickForm, so that the LorisForm
      *         is API compatible.
      */
-    function getElement(string $name): useless
+    function getElement(string $name): \LorisFormElement
     {
         if ($this->form[$name]['type'] === 'file') {
             return new LorisFormFileElement($this->form[$name]);
@@ -2320,8 +2369,10 @@ class LorisFormFileElement extends LorisFormElement
      *
      * @return void
      */
-    function moveUploadedFile(string $destinationDir, string $destinationFileName): void
-    {
+    function moveUploadedFile(
+        string $destinationDir,
+        string $destinationFileName
+    ): void {
         return move_uploaded_file(
             $this->file['tmp_name'],
             $destinationDir . $destinationFileName
