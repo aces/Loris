@@ -129,11 +129,6 @@ class ImagingBrowserIndex extends Component {
                     name: 'DCCID',
                     type: 'text',
                 }},
-            {label: 'Project', show: true, filter: {
-                    name: 'project',
-                    type: 'select',
-                    options: options.projects,
-                }},
             {label: 'Vist Label', show: true, filter: {
                     name: 'visitLabel',
                     type: 'text',
@@ -164,6 +159,14 @@ class ImagingBrowserIndex extends Component {
             fields.push({label: label + ' QC Status', show: true}
             );
           });
+        console.error(loris.config('useProjects'));
+        if (loris.config('useProband') === 'true') {
+            fields.splice(3, 0, {label: 'Project', show: true, filter: {
+                name: 'project',
+                type: 'select',
+                options: options.projects,
+            }});
+        }
 
         const tabs = [{id: 'browse', label: 'Browse'}];
 
