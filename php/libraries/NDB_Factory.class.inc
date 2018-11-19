@@ -7,7 +7,7 @@
  * If the Factory is in testing mode (setTesting(true) was called), a mock will
  * be returned. Otherwise, the normal NDB_ prefixed object will be returned.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -67,7 +67,7 @@ class NDB_Factory
      *
      * @return NDB_Factory A single instance of NDB_Factory
      */
-    static function singleton(): NDB_Factory
+    static function singleton(): \NDB_Factory
     {
         static $self = null;
         if ($self === null) {
@@ -102,11 +102,11 @@ class NDB_Factory
      * Return either a real or mock NDB_Config object depending on testing
      * status of this factory object.
      *
-     * @param string $configfile Location of XML file to parse config from
+     * @param string|null $configfile Location of XML file to parse config from
      *
      * @return NDB_Config A config singleton
      */
-    function config(string $configfile = "../project/config.xml"): NDB_Config
+    function config(?string $configfile = "../project/config.xml"): NDB_Config
     {
         if (self::$config !== null) {
             return self::$config;
