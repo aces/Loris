@@ -95,7 +95,8 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/server_processes_manager/js/server_processes_managerIndex.js",
+             $baseURL . 
+             "/server_processes_manager/js/server_processes_managerIndex.js",
             ]
         );
     }
