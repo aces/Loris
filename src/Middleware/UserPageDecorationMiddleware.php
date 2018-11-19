@@ -99,6 +99,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         // Variables that get passed along to the LorisHelper javascript object.
         $tpl_data['studyParams'] = array(
                                     'useEDC'      => $this->Config->getSetting('useEDC'),
+                                    'useProjects'  => $this->Config->getSetting(
+                                        'useProjects'
+                                    ),
                                     'useProband'  => $this->Config->getSetting(
                                         'useProband'
                                     ),
