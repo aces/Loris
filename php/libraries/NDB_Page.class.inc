@@ -40,8 +40,6 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Reference to the HTML QuickForm
-     *
-     * @var \LorisForm
      */
     var $form;
 
