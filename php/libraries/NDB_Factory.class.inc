@@ -9,21 +9,21 @@
  *
  * PHP Version 5
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 
 /**
  * Implementation of factory class described in this file's file comment
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class NDB_Factory
 {
@@ -55,7 +55,7 @@ class NDB_Factory
      *
      * @return void
      */
-    function setTesting($val)
+    function setTesting(bool $val): void
     {
         $this->Testing = $val;
     }
@@ -67,7 +67,7 @@ class NDB_Factory
      *
      * @return NDB_Factory A single instance of NDB_Factory
      */
-    static function singleton()
+    static function singleton(): NDB_Factory
     {
         static $self = null;
         if ($self === null) {
@@ -82,7 +82,7 @@ class NDB_Factory
      *
      * @return void
      */
-    function reset()
+    function reset(): void
     {
         self::$testdb = null;
         self::$db     = null;
@@ -106,7 +106,7 @@ class NDB_Factory
      *
      * @return NDB_Config A config singleton
      */
-    function config($configfile = "../project/config.xml")
+    function config(string $configfile = "../project/config.xml"): NDB_Config
     {
         if (self::$config !== null) {
             return self::$config;
@@ -134,7 +134,7 @@ class NDB_Factory
      *
      * @return NDB_Config config object which was passed in
      */
-    public function setConfig(NDB_Config $config)
+    public function setConfig(NDB_Config $config): NDB_Config
     {
         self::$config = $config;
         return $config;
@@ -145,7 +145,7 @@ class NDB_Factory
      *
      * @return User A user singleton
      */
-    function user()
+    function user(): User
     {
         if (self::$_user !== null) {
             return self::$_user;
@@ -167,7 +167,7 @@ class NDB_Factory
      *
      * @return User The same user that was passed in.
      */
-    public function setUser(User $user)
+    public function setUser(User $user): User
     {
         self::$_user = $user;
         return $user;
@@ -179,7 +179,7 @@ class NDB_Factory
      *
      * @return Database A DB reference
      */
-    function database()
+    function database(): Database
     {
         $db_ref = null;
         if ($this->Testing) {
@@ -216,7 +216,7 @@ class NDB_Factory
      *
      * @return Database same Database object which was passed in
      */
-    public function setDatabase(Database $db)
+    public function setDatabase(Database $db): Database
     {
         self::$db     = $db;
         self::$testdb = $db;
@@ -241,7 +241,7 @@ class NDB_Factory
         int $port = 0,
         string $user = "",
         string $password = ""
-    ) {
+    ): CouchDB {
         if (empty($database)
             && empty($host)
             && ($port === 0)
@@ -335,7 +335,7 @@ class NDB_Factory
      *
      * @return CouchDB
      */
-    public function setCouchDB(CouchDB $couchDB)
+    public function setCouchDB(CouchDB $couchDB): CouchDB
     {
         self::$_couchdb = $couchDB;
         return $couchDB;
@@ -348,7 +348,7 @@ class NDB_Factory
      *
      * @return Settings setting object
      */
-    public function settings($configfile = "../project/config.xml")
+    public function settings(string $configfile = "../project/config.xml"): Settings
     {
         if (self::$_settings !== null) {
             return self::$_settings;
@@ -364,7 +364,7 @@ class NDB_Factory
      *
      * @return Project object
      */
-    public function project($projectName)
+    public function project(string $projectName): Project
     {
         $project = null;
 
@@ -384,7 +384,7 @@ class NDB_Factory
      *
      * @return Candidate object
      */
-    public function candidate($CandID)
+    public function candidate(int $CandID): Candidate
     {
         if (isset(self::$_candidates[$CandID])) {
             return self::$_candidates[$CandID];
@@ -406,7 +406,7 @@ class NDB_Factory
      *
      * @return TimePoint object for $sessionID
      */
-    function timepoint($sessionID)
+    function timepoint(int $sessionID): TimePoint
     {
         if (isset(self::$_timepoints[$sessionID])) {
             return self::$_timepoints[$sessionID];
