@@ -14,7 +14,6 @@ import swal from 'sweetalert2';
  * ================================================
  * Usage:
  * - Wrap the contents to be displayed by the Modal Window by the Modal Component.
- * - Use the 'show' prop to toggle the Modal Component's presentation.
  * - Use the 'title' prop to set a title for the Modal Component.
  * - Use the 'onSubmit' prop to set a submission function for the Modal's contents.
  * - Use the 'closeModal' prop to set the function that will trigger upon the
@@ -26,6 +25,9 @@ import swal from 'sweetalert2';
 class Modal extends React.Component {
   constructor() {
     super();
+    this.state = {
+      open: false,
+    }
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -40,11 +42,11 @@ class Modal extends React.Component {
         cancelButtonText: 'Cancel'
       }).then(result => {
         if (result.value) {
-          this.props.closeModal();
+          this.setState({open: false});
         }
       });
     } else {
-      this.props.closeModal();
+      this.setState({open: false});
     }
   }
 
@@ -69,9 +71,9 @@ class Modal extends React.Component {
       padding: 15
     };
 
-    const children = () => this.props.show && this.props.children;
+    const children = () => this.state.open && this.props.children;
 
-    const display = () => this.props.show ? {display: 'block'} : {display: 'none'};
+    const display = () => this.state.open ? {display: 'block'} : {display: 'none'};
 
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
@@ -100,6 +102,13 @@ class Modal extends React.Component {
       }
     };
 
+    const trigger = () => {
+      return React.cloneElement(
+        this.props.renderTrigger,
+        { onClick : () => this.setState({open: true})}
+      );
+    }
+
     let modal = (
       <div className="modal" style={display()} onClick={this.closeModal}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -119,20 +128,23 @@ class Modal extends React.Component {
       </div>
     );
 
-    return modal;
+    return (
+      <div>
+        {trigger()}
+        {modal}
+      </div>
+    );
   }
 }
 
 Modal.propTypes = {
   title: React.PropTypes.string,
-  show: React.PropTypes.bool.isRequired,
   onSubmit: React.PropTypes.func,
   closeModal: React.PropTypes.func.isRequired,
   throwWarning: React.PropTypes.bool
 };
 
 Modal.defaultProps = {
-  show: false,
   throwWarning: true
 };
 
