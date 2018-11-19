@@ -624,30 +624,18 @@ class Candidate
         // Visits may occur on the same date, so ordering by Date_Visit
         // or selecting by MIN(Date_Visit) will not produce a unique result
         // as required by pselectOne
-        // This query creates a row_num variable and simply selects whichever
-        // one comes first
-        /*$query = "SELECT Visit_label FROM (
-                    SELECT Visit_label,
-                    @r:=@r + 1 AS row_num
-                    FROM session s
-                    JOIN candidate c ON (c.CandID = s.CandID)
-                    CROSS JOIN (SELECT @r:=0)t
-                    WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-                    ORDER BY Date_Visit
-                    ) t1
-                    where row_num <= 1";*/
-        print_r($candID . "\n");
+        // This selects the smallest session ID, in the event that there
+        // are multiple visits starting on the same day
         $query  = "SELECT Visit_label
              FROM session 
-             WHERE ID = 
-             (SELECT MIN(ID) FROM 
-              (SELECT ID FROM session
+             WHERE ID =  
+              (SELECT MIN(ID) FROM session
                 WHERE Date_Visit =
                   (SELECT MIN(Date_Visit) FROM session s 
                     JOIN candidate c ON s.CandID = c.CandID
                     WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-                  ) AS T1 
-              ) AS T2 
+                  ) 
+                AND CandID=:cid
              )";
         $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where);
