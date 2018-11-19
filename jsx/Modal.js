@@ -16,7 +16,9 @@ import swal from 'sweetalert2';
  * - Wrap the contents to be displayed by the Modal Window by the Modal Component.
  * - Use the 'show' prop to toggle the Modal Component's presentation.
  * - Use the 'title' prop to set a title for the Modal Component.
- * - Use the 'onSubmit' prop set a submission function for the Modal's contents.
+ * - Use the 'onSubmit' prop to set a submission function for the Modal's contents.
+ * - Use the 'closeModal' prop to set the function that will trigger upon the
+ *   Modal's closure. This function should toggle the value 
  * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window
  * =================================================
  *
