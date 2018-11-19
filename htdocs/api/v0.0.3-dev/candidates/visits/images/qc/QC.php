@@ -89,7 +89,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Gets the list of Caveats for the file.
      *
-     * @return an array with list of caveats for the file
+     * @return array A list of caveats for the file
      */
     function getImageCaveats(): array
     {
