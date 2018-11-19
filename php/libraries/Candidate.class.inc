@@ -631,9 +631,9 @@ class Candidate
              WHERE ID =  
               (SELECT MIN(ID) FROM session
                 WHERE Date_Visit =
-                  (SELECT MIN(Date_Visit) FROM session s 
-                    JOIN candidate c ON s.CandID = c.CandID
-                    WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
+                  (SELECT MIN(Date_Visit) FROM session 
+                    WHERE CandID=:cid 
+                    AND Date_Visit IS NOT NULL
                   ) 
                 AND CandID=:cid
              )";
