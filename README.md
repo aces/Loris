@@ -84,14 +84,14 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
-## Help
+## Community
 
-### Create an Issue
+### GitHub Issues
 Please don't hesitate to create an issue if you're stuck with something. Please
 include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
 
-### Community
+### Get in touch
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions. We may also be able to provide you with installation guidance not covered in the Wiki.
 
 ## Contributing
