@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Contains NDB_Caller class to dispatch to the appropriate library
  * for the URL being loaded.
@@ -70,7 +70,7 @@ class NDB_Caller
      * @param string      $subtest   The subpage of the module to load.
      * @param string      $CommentID The CommentID identifier to load the page with
      * @param string|null $nextpage  The page to go to after submitting this
-     * @param string      $anonymous True if the user has not logged in.
+     * @param bool        $anonymous True if the user has not logged in.
      *
      * @return string rendered object, as html
      */
@@ -79,7 +79,7 @@ class NDB_Caller
         string $subtest,
         string $CommentID='',
         ?string $nextpage=null,
-        string $anonymous=true
+        bool $anonymous=true
     ) {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
