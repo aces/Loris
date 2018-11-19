@@ -14,8 +14,21 @@
  * have potentially been viewed by administrators or could be read in the event
  * of a data breach, we have chosen to reject them in this way.
  */
-<?php
+<?php declare(strict_types=1);
 require_once 'generic_includes.php';
+
+/* This script will write the password blacklist to a table in the DB. Fail if
+ * the user has not applied the patch yet.
+ */
+try {
+    $sql = "SELECT 1 FROM testtable LIMIT 1;"
+    $DB->pselectOne($sql, array());
+} catch \DatabaseException $e {
+    die '`password_blacklist` table not found. Please run SQL patch ' .
+        '`2018-10-22-CreatePasswordBlacklistTable.sql` or the appropriate ' .
+        'release patch.' .
+        PHP_EOL;
+}
 
 // Query DB for burned passwords. The bug caused passwords to be stored on 
 // update so we'll limit the query to that. Additionally we will filter out
