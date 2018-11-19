@@ -44,7 +44,7 @@ class BVL_Feedback_Panel
      * @param null $sessionID The session ID for a given visit. Optional.
      * @param null $commentID The comment ID for a given instrument. Optional.
      */
-    function __construct($candID, $sessionID=null, $commentID=null)
+    function __construct(int $candID, $sessionID=null, $commentID=null)
     {
         $user     =& User::singleton();
         $username = $user->getUsername();
@@ -65,7 +65,7 @@ class BVL_Feedback_Panel
      * @throws Exception
      * @throws SmartyException
      */
-    function display()
+    function display(): string
     {
         $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
         $candidateID     = $feedbackProfile["CandID"];
