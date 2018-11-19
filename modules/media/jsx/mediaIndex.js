@@ -1,8 +1,10 @@
 import Loader from 'Loader';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
+import Modal from 'Modal';
 
 import MediaUploadForm from './uploadForm';
+import MediaEditForm from './editForm';
 
 class MediaIndex extends React.Component {
 
@@ -127,8 +129,20 @@ class MediaIndex extends React.Component {
     }
 
     if (column === 'Edit Metadata') {
-      const editURL = loris.BaseURL + "/media/edit/?id=" + row['Edit Metadata'];
-      return <td className={classes}><a href={editURL}>Edit</a></td>;
+      var editURL = loris.BaseURL + "/media/edit/?id=" + row['Edit Metadata'];
+      let editButton = (
+        <Modal
+          title='Edit Media File'
+          trigger={<button>Edit</button>}
+          throwWarning={true}
+        >
+          <MediaEditForm
+            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+          />
+        </Modal>
+      );
+      return <td className={classes}>{editButton}</td>;
     }
 
     return <td className={classes}>{cell}</td>;

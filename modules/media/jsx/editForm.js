@@ -109,8 +109,6 @@ class MediaEditForm extends React.Component {
           onSubmit={this.handleSubmit}
           ref="form"
         >
-          <h3>Edit Media File</h3>
-          <br />
           <SelectElement
             name="pscid"
             label="PSCID"

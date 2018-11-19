@@ -15,9 +15,9 @@ import swal from 'sweetalert2';
  * Usage:
  * - Wrap the contents to be displayed by the Modal Window by the Modal Component.
  * - Use the 'title' prop to set a title for the Modal Component.
+ * - Use the 'trigger' prop to set the component that will act as a trigger to
+ *   open the Modal window.
  * - Use the 'onSubmit' prop to set a submission function for the Modal's contents.
- * - Use the 'closeModal' prop to set the function that will trigger upon the
- *   Modal's closure. This function should toggle the value 
  * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window
  * =================================================
  *
@@ -28,10 +28,10 @@ class Modal extends React.Component {
     this.state = {
       open: false,
     }
-    this.closeModal = this.closeModal.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
-  closeModal() {
+  onClose() {
     if (this.props.throwWarning) {
       swal({
         title: "Are You Sure?",
@@ -40,11 +40,7 @@ class Modal extends React.Component {
         showCancelButton: true,
         confirmButtonText: 'Proceed',
         cancelButtonText: 'Cancel'
-      }).then(result => {
-        if (result.value) {
-          this.setState({open: false});
-        }
-      });
+      }).then(result => result.value && this.setState({open: false}));
     } else {
       this.setState({open: false});
     }
@@ -102,19 +98,19 @@ class Modal extends React.Component {
       }
     };
 
-    const trigger = () => {
+    const renderTrigger = () => {
       return React.cloneElement(
-        this.props.renderTrigger,
+        this.props.trigger,
         { onClick : () => this.setState({open: true})}
       );
     }
 
-    let modal = (
-      <div className="modal" style={display()} onClick={this.closeModal}>
+    const modal = (
+      <div className="modal" style={display()} onClick={this.onClose}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
           <div style={headerStyle}>
             {this.props.title}
-            <span style={glyphStyle} onClick={this.closeModal}>
+            <span style={glyphStyle} onClick={this.onClose}>
               ×
             </span>
           </div>
@@ -130,7 +126,7 @@ class Modal extends React.Component {
 
     return (
       <div>
-        {trigger()}
+        {renderTrigger()}
         {modal}
       </div>
     );
@@ -139,8 +135,8 @@ class Modal extends React.Component {
 
 Modal.propTypes = {
   title: React.PropTypes.string,
+  trigger: React.PropTypes.element.isRequired,
   onSubmit: React.PropTypes.func,
-  closeModal: React.PropTypes.func.isRequired,
   throwWarning: React.PropTypes.bool
 };
 
