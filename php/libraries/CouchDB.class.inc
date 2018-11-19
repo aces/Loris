@@ -743,7 +743,7 @@ class CouchDB
     function commitBulkTransaction(): string
     {
         if ($this->bulk !== true) {
-            return false;
+            return '';
         }
         $docs = json_encode(array('docs' => $this->bulkDocuments));
 
