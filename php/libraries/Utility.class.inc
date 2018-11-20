@@ -492,25 +492,6 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection elements, not just a single element
-     * Not the same as toArray, apparently.
-     * Note: This function should be used for tags without attributes
-     *
-     * @param mixed $var The variable to be converted to an array.
-     *
-     * @return  array If $var is an array, var, otherwise an array containing $var
-     * @cleanup This should be removed and all uses converted to toArray
-     *          (or vice versa, but toArray seems to be more common in the code)
-     */
-    static function asArray($var): array
-    {
-        if (!is_array($var)) {
-            return array($var);
-        }
-        return $var;
-    }
-
-    /**
      * Replace the empty string with null in specified field
      * in an array passed in as an argument. This undoes the
      * damage that Smarty causes by making nulls in a dropdown

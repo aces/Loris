@@ -295,7 +295,7 @@ class NDB_BVL_Instrument extends NDB_Page
             foreach ($instrumentPermissions["instrument"] as $instrument) {
                 if ($instrument["Test_name"] == $this->testName) {
                     $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
+                    $instrumentPerms  = Utility::toArray($instrument["permission"]);
                 }
             }
 
