@@ -31,7 +31,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string The HTML to render to the client
      */
-    function display()
+    function display(): string
     {
         if (empty($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -127,7 +127,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function save()
+    function save(): void
     {
         $hasAccess = $this->_hasAccess();
         // don't do anything if the instrument is locked
@@ -180,7 +180,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string
      */
-    function _displayDataEntry()
+    function _displayDataEntry(): string
     {
         $hasAccess = $this->_hasAccess();
 
@@ -243,7 +243,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string
      */
-    function _displayAdministration()
+    function _displayAdministration(): string
     {
         $hasAccess = $this->_hasAccess();
 
@@ -287,7 +287,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string
      */
-    function _displayValidity()
+    function _displayValidity(): string
     {
         $hasAccess = $this->_hasAccess();
 
@@ -324,7 +324,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string
      */
-    function _displayExclusion()
+    function _displayExclusion(): string
     {
         $hasAccess = $this->_hasAccess();
 
@@ -356,7 +356,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(): bool
     {
         // get user object
         $user =& User::singleton();
