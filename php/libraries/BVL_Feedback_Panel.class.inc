@@ -48,7 +48,8 @@ class BVL_Feedback_Panel
         int $candID,
         ?int $sessionID=null,
         ?int $commentID=null
-    ): void {
+    ) {
+
         $this->_feedbackThread
             = \NDB_BVL_Feedback::singleton(
                 \User::singleton()->getUsername(),
