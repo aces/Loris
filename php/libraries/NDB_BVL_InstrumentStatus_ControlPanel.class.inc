@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -38,19 +38,15 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
 
         $this->tpl_data['candID']    = isset($_REQUEST['candID'])
-            ? $_REQUEST['candID']
+            ? intval($_REQUEST['candID'])
             : '';
-        $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
-        $this->tpl_data['commentID'] = $_REQUEST['commentID'];
+        $this->tpl_data['sessionID'] = intval($_REQUEST['sessionID']);
+        $this->tpl_data['commentID'] = intval($_REQUEST['commentID']);
         $this->tpl_data['test_name'] = $_REQUEST['test_name'];
-        if (isset($_REQUEST['subtest'])) {
-            $this->tpl_data['subtest'] = $_REQUEST['subtest'];
-        } else {
-            $this->tpl_data['subtest'] = '';
-        }
+        $this->tpl_data['subtest']   = $_REQUEST['subtest'] ?? '';
 
         // get the files path
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $base   = $config->getSetting('base');
 
         // the instrument exists
@@ -125,9 +121,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Saves changes to the flags based on interaction with the control panel
      *
-     * @return void
+     * @return bool
      */
-    function save(): void
+    function save(): bool
     {
         $hasAccess = $this->_hasAccess();
         // don't do anything if the instrument is locked
