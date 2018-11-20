@@ -139,13 +139,12 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
         $PendingNewquery = "
             CASE
-                WHEN s.MRIQCPending='Y' THEN
-                CASE WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'PN'
-                ELSE 'P' END
+                WHEN s.MRIQCPending='Y' THEN 'P'
                 WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'N' 
+                ELSE 'PN'
             END
             ";
-        $this->query = " FROM psc AS p 
+        $this->query     = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
@@ -229,17 +228,16 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
-            array('s.ID as sessionID',
-                'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
-                "$PendingNewquery as pending"
+            array(
+             's.ID as sessionID',
+             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
+             "$PendingNewquery as pending",
             ),
             $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
-
-
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
@@ -262,8 +260,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
         // create user object
-        $user          =& \User::singleton();
-        $siteList  = array();
+        $user     =& \User::singleton();
+        $siteList = array();
 
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')
@@ -289,7 +287,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $DB    = \Database::singleton();
         $allAr = array();
 
-
         $config =& \NDB_Config::singleton();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
@@ -310,7 +307,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         // the resulting array back to revert it to a key/value (i.e.
         // acquisition protocol ID/scan type) combination.
 
-        $scan_id_types =array_flip(
+        $scan_id_types          =array_flip(
             array_intersect_key(
                 array_flip($all_scan_types),
                 array_flip($toTable_scan_types)
@@ -319,7 +316,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $modalities_subquery_as = array();
         $as = array();
 
-        foreach( $scan_id_types as $key => $value) {
+        foreach ($scan_id_types as $key => $value) {
             $modalities_subquery[$key] = $value;
             $as[$key] = $scan_id_types[$key] . '_QC_Status';
             $modalities_subquery_as[$key] = $modalities_subquery[$key] .
@@ -337,56 +334,52 @@ class Imaging_Browser extends \NDB_Menu_Filter
         }
 
             $visitQCStatus = array(
-             'Pass' => 'Pass',
-             'Fail' => 'Fail',
-            );
+                              'Pass' => 'Pass',
+                              'Fail' => 'Fail',
+                             );
 
-           $pending= array(
-             'P'  => 'Pending',
-             'N'  => 'New',
-             'PN' => 'Pending and New',
-            );
+            $pending = array(
+                        'P'  => 'Pending',
+                        'N'  => 'New',
+                        'PN' => 'Pending and New',
+                       );
 
-
-
-
-        $types_q    = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri
+            $types_q    = $DB->pselect(
+                "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
-        $scan_types = $allAr;
-        foreach ($types_q as $key=>$sequenceType) {
+                array()
+            );
+            $scan_types = $allAr;
+            foreach ($types_q as $key=>$sequenceType) {
                 $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
             }
 
-
-        $outputTypes = $DB->pselect(
-            "SELECT DISTINCT OutputType AS outputType 
+            $outputTypes          = $DB->pselect(
+                "SELECT DISTINCT OutputType AS outputType 
             FROM files WHERE FileType='mnc' AND OutputType!='native'",
-            array()
-        );
-        $all_scan_types_exist = $DB->pselect(
-        //query to get scan types that exist for the project
-            "SELECT mri.Scan_type FROM mri_scan_type mri JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
-        $all_scan_types = array();
-        foreach ($all_scan_types_exist as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$type] = $type;
-        }
+                array()
+            );
+            $all_scan_types_exist = $DB->pselect(
+                //query to get scan types that exist for the project
+                "SELECT mri.Scan_type FROM mri_scan_type mri JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+                array()
+            );
+            $all_scan_types = array();
+            foreach ($all_scan_types_exist as $row) {
+                $type = $row['Scan_type'];
+                $all_scan_types[$type] = $type;
+            }
 
-        $this->fieldOptions = [
-            'sites'       => $siteList,
-            'projects' => $list_of_projects,
-            'visitQCStatus' => $visitQCStatus,
-            'sequenceTypes' => $all_scan_types,
-            'pendingNew' => $pending,
-            'configLabels' => $scan_id_types,
-        ];
+            $this->fieldOptions = [
+                                   'sites'         => $siteList,
+                                   'projects'      => $list_of_projects,
+                                   'visitQCStatus' => $visitQCStatus,
+                                   'sequenceTypes' => $all_scan_types,
+                                   'pendingNew'    => $pending,
+                                   'configLabels'  => $scan_id_types,
+                                  ];
 
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+            $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
     /**
      * Converts this menu filter to an array of the form
