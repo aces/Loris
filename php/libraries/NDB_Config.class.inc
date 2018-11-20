@@ -53,7 +53,7 @@ class NDB_Config
      *
      * @return NDB_Config object
      */
-    static function &singleton($configFile = null)
+    static function &singleton(string $configFile = null): NDB_Config
     {
         static $config = null;
         if (is_null($config)) {
@@ -90,7 +90,7 @@ class NDB_Config
      *
      * @throws Exception
      */
-    function load($configFile = "../project/config.xml")
+    function load(string $configFile = "../project/config.xml"): void
     {
         // load the configuration data into a global variable $config
         $newroot = simplexml_load_file($configFile);
@@ -114,7 +114,7 @@ class NDB_Config
      *
      * @throws LorisException when any config file is missing
      */
-    function configFilePath($pathToFile = "config.xml")
+    function configFilePath(string $pathToFile = "config.xml"): string
     {
         // first check for a project/config.xml, then check for the config
         // file in a standard unix filesystem location ->  /etc/loris/config.xml
@@ -156,7 +156,7 @@ class NDB_Config
      *
      * @return array of XML configuration
      */
-    static function convertToArray(SimpleXMLElement $xml)
+    static function convertToArray(SimpleXMLElement $xml): array
     {
         $retVal   = array();
         $children = $xml->children();
@@ -232,6 +232,44 @@ class NDB_Config
     }
 
     /**
+     * Attempts to determine the site of the user currently logged in and uses
+     * that to get site specific settings and override study defaults,
+     * building the _siteSettings property
+     *
+     * @return void (but modifies $this->siteSettings)
+     */
+    function mergeSettings(): void
+    {
+        // make sure this is a web client
+        if (!class_exists("User") || !isset($_SESSION['State'])) {
+            return;
+        }
+
+        // make sure a user has logged in
+        $username = $_SESSION['State']->getUsername();
+        if (empty($username)) {
+            $this->_siteSettings =& $this->_settings;
+        } else {
+            $user     =& User::singleton($username);
+            $siteName = Utility::getCleanString($user->getSiteNames());
+            if (isset($this->_settings['sites'][$siteName])
+                && is_array($this->_settings['sites'][$siteName])
+            ) {
+                $this->_siteSettings          = $this->_settings;
+                $this->_siteSettings['study']
+                    = Utility::arrayMergeRecursiveOverwriting(
+                        $this->_settings['study'],
+                        $this->_settings['sites'][$siteName]
+                    );
+                unset($this->_siteSettings['sites']);
+            } else {
+                $this->_siteSettings =& $this->_settings;
+            }
+        }
+    }
+
+    /**
+>>>>>>> a728a40ab... Add type declarations using PHPCBF
      * Gets a setting from the database config tables
      *
      * @param string  $name The name of the config setting to get
@@ -240,7 +278,7 @@ class NDB_Config
      *
      * @return string The value from the database, or null if nothing found.
      */
-    function getSettingFromDB($name, $id=null)
+    function getSettingFromDB(string $name, int $id=null): string
     {
         // These should never come from the DB
         switch($name) {
@@ -344,7 +382,7 @@ class NDB_Config
      *
      * @return string The value from the config.xml
      */
-    function getSettingFromXML($name)
+    function getSettingFromXML(string $name): string
     {
         // loop over the settings, and find the node
         foreach ($this->_settings as $key => $value) {
@@ -363,13 +401,13 @@ class NDB_Config
     }
 
     /**
-    * Gets a setting by name
-    *
-    * @param string $name The name of the setting to retrieve
-    *
-    * @return mixed The contents of the node identified by $name
-    */
-    function getSetting($name)
+     * Gets a setting by name
+     *
+     * @param string $name The name of the setting to retrieve
+     *
+     * @return mixed The contents of the node identified by $name
+     */
+    function getSetting(string $name)
     {
         try {
             $XMLValue = $this->getSettingFromXML($name);
@@ -390,22 +428,22 @@ class NDB_Config
     }
 
     /**
-    * Get list of projects for this projects, given a ProjectID.
-    *
-    * @param integer $ProjectID The ProjectID we want settings for
-    *
-    * @return array of settings for this project.
-    */
-    function getProjectSettings($ProjectID)
+     * Get list of projects for this projects, given a ProjectID.
+     *
+     * @param integer $ProjectID The ProjectID we want settings for
+     *
+     * @return array of settings for this project.
+     */
+    function getProjectSettings(int $ProjectID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
         try
         {
-             $info =$DB->pselectRow(
-                 "SELECT * FROM Project WHERE ProjectID=:sp",
-                 array('sp' => $ProjectID)
-             );
+            $info =$DB->pselectRow(
+                "SELECT * FROM Project WHERE ProjectID=:sp",
+                array('sp' => $ProjectID)
+            );
         } catch (DatabaseException $e)
         {
             return null;
@@ -429,7 +467,7 @@ class NDB_Config
      *
      * @return array of settings for this subprojectID
      */
-    function getSubprojectSettings($subprojectID)
+    function getSubprojectSettings(int $subprojectID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -468,7 +506,7 @@ class NDB_Config
      *
      * @return boolean true if the user can access the menu item
      */
-    static function checkMenuPermission($menuID)
+    static function checkMenuPermission(int $menuID): bool
     {
         $DB   = Database::singleton();
         $user = User::singleton();
@@ -504,7 +542,7 @@ class NDB_Config
      * @return array          Label, Visible, Link, and ID to build the menu
      *                        for the currently logged in user
      */
-    static function getMenuTabs($parent = null)
+    static function getMenuTabs(int $parent = null): array
     {
         $DB = Database::singleton();
         if ($parent === null) {
@@ -561,7 +599,7 @@ class NDB_Config
      *
      * @return array of Label => URL
      */
-    function getExternalLinks($type)
+    function getExternalLinks(string $type): array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
