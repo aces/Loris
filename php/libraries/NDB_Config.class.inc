@@ -152,6 +152,12 @@ class NDB_Config
      * and this gets it into the same format that was previously used
      * for backwards compatibility.
      *
+     * FIXME Despite the name, this function does not just return arrays, but
+     * also returns a string. Crucially, this is done in the process of creating
+     * a DB connection and so we cannot add a return type to this function. 
+     * Future refactoring should be done to better encapsulate this logic to
+     * allow for strong typing.
+     *
      * @param SimpleXMLElement $xml The root element of the parsed XML.
      *
      * @return array of XML configuration
@@ -270,6 +276,10 @@ class NDB_Config
 
     /**
      * Gets a setting from the database config tables
+     *
+     * FIXME This function currently returns a string, array, or null. 
+     * Refactoring should be done to better encapsulate the logic in this 
+     * function to allow for strong typing.
      *
      * @param string   $name The name of the config setting to get
      * @param int|null $id   (optional) The ID of the config setting we're
