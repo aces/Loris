@@ -595,7 +595,7 @@ class LorisForm
      *
      * @return string The value to use for the form element.
      */
-    function getValue(string $name): string
+    function getValue(string $name): ?string
     {
         // Not all elements of the form go into $_REQUEST, thus the isset test
         if (isset($_REQUEST[$name])) {
