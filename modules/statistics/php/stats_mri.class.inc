@@ -86,7 +86,10 @@ class Stats_MRI extends \NDB_Form
     ) {
 
         $tpl_data = array();
-        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
+        // Sanitize test name if present. Otherwise use empty string.
+        $tpl_data['test_name']  = isset($_REQUEST['test_name'])
+            ? htmlspecialchars($_REQUEST['test_name'])
+            : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb("statistics");
@@ -110,42 +113,121 @@ class Stats_MRI extends \NDB_Form
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
             ) {
+                /* FIXME The below is an unholy mess. The isset checks were
+                 * added to do a quick bugfix to prevent PHP Notices from
+                 * cluttering the logs. However this next section of the code
+                 * is very difficult to read and debug.
+                 * We should come up with a better way to do this.
+                 */
                 $C = 'C' . $center;
-                $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
-                $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+                if (isset($tpl_data['data'][$subproj][$vl][$subcat])) {
+                    $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$vl][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$subproj][$vl]['total'])) {
+                    $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$vl]['total'] = $row['val'];
+                }
+
                 if (isset($tpl_data['data'][$subproj][$subcat])) {
                     $tpl_data['data'][$subproj][$subcat] += $row['val'];
                 } else {
                     $tpl_data['data'][$subproj][$subcat] = $row['val'];
                 }
+
                 if (isset($tpl_data['data'][$subproj]['total'])) {
                     $tpl_data['data'][$subproj]['total'] += $row['val'];
                 } else {
                     $tpl_data['data'][$subproj]['total'] = $row['val'];
                 }
-                $tpl_data['data'][$vl][$subcat] += $row['val'];
-                $tpl_data['data'][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
-                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
+
+                if (isset($tpl_data['data'][$vl][$subcat])) {
+                    $tpl_data['data'][$vl][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$vl][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$vl]['total'])) {
+                    $tpl_data['data'][$vl]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$vl]['total'] = $row['val'];
+                }
+
+                $tpl_data['data'][$subproj][$C][$vl][$subcat] = $row['val'];
+
+                if (isset($tpl_data['data'][$subproj][$C][$vl]['total'])) {
+                    $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$C][$vl]['total'] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$subproj][$C][$subcat])) {
+                    $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$subproj][$C][$subcat])) {
+                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$subproj][$C]['total'])) {
+                    $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subproj][$C]['total'] = $row['val'];
+                }
+
                 if (isset($tpl_data['data'][$C][$vl][$subcat])) {
                     $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
                 } else {
                     $tpl_data['data'][$C][$vl][$subcat] = $row['val'];
                 }
-                $tpl_data['data'][$C][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$C][$subcat]      += $row['val'];
-                $tpl_data['data'][$C]['total']      += $row['val'];
-                $tpl_data['data'][$subcat]          += $row['val'];
-                $tpl_data['data']['total']          += $row['val'];
-            }
 
+                if (isset($tpl_data['data'][$C][$vl]['total'])) {
+                    $tpl_data['data'][$C][$vl]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$C][$vl]['total'] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$C][$subcat])) {
+                    $tpl_data['data'][$C][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$C][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$C]['total'])) {
+                    $tpl_data['data'][$C]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$C]['total'] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$C]['total'])) {
+                    $tpl_data['data'][$C]['total'] += $row['val'];
+                } else {
+                    $tpl_data['data'][$C]['total'] = $row['val'];
+                }
+
+                if (isset($tpl_data['data'][$subcat])) {
+                    $tpl_data['data'][$subcat] += $row['val'];
+                } else {
+                    $tpl_data['data'][$subcat] = $row['val'];
+                }
+
+                if (isset($tpl_data['data']['total'])) {
+                    $tpl_data['data']['total'] += $row['val'];
+                } else {
+                    $tpl_data['data']['total'] = $row['val'];
+                }
+            }
         }
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
-
     }
 
     /**
@@ -278,7 +360,7 @@ class Stats_MRI extends \NDB_Form
 
         //Check if a specific scan is requested otherwise display first
         //available scan
-        if (!$_REQUEST['mri_type']) {
+        if (empty($_REQUEST['mri_type'])) {
             $MRI_Type = current($scan_types);
         } else {
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
@@ -338,7 +420,7 @@ class Stats_MRI extends \NDB_Form
             $M_Visits,
             "mri_type",
             $scan_types,
-            $_REQUEST['mri_type'],
+            $_REQUEST['mri_type'] ?? '',
             $centers,
             $result,
             "mri",
