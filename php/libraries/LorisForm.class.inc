@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class represents an attempt to re-implement the API for
  * HTML_QuickForm (Version 1) in Loris since QuickForm1 isn't
@@ -1235,7 +1235,7 @@ class LorisForm
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
-     * @return true if all registered rules passed
+     * @return bool Whether all registed rules are passed.
      */
     function validate()
     {
@@ -2266,7 +2266,7 @@ class LorisForm
             return $this->errors[$el];
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -2343,8 +2343,10 @@ class LorisFormFileElement extends LorisFormElement
      *
      * @param array $el The element from $this->form which
      *                  we need an object wrapper around.
+     *
+     * @return void
      */
-    function __construct(array $el)
+    function __construct(array $el): void
     {
         $this->el   = $el;
         $this->file = $_FILES[$this->el['name']];
