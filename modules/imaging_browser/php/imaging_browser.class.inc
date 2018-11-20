@@ -136,13 +136,13 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 ELSE s.MRIQCStatus
             END 
             ";
-        //implementing the pending filter query from overridden _addValidFilters
+
         $PendingNewquery = "
             CASE
                 WHEN s.MRIQCPending='Y' THEN
-                CASE WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'PN'
+                CASE WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'PN'
                 ELSE 'P' END
-                WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'N' 
+                WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'N' 
             END
             ";
         $this->query = " FROM psc AS p 
@@ -150,7 +150,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            LEFT JOIN mri_scan_type modality ON (f.AcquisitionProtocolID=modality.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -168,7 +169,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.FileType='mnc' and f.AcquisitionProtocolID IS NOT NULL";
+            f.FileType='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -229,14 +230,14 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             array('s.ID as sessionID',
-                'f.AcquisitionProtocolID as sequenceType',
+                'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
                 "$PendingNewquery as pending"
             ),
             $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
-        $this->group_by = 's.ID,f.AcquisitionProtocolID,fqc.QCFirstChangeTime';
+        $this->group_by = 's.ID';
 
 
 
@@ -348,7 +349,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
 
 
-        //query to get scan types that exist for the project
+
         $types_q    = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
@@ -365,12 +366,22 @@ class Imaging_Browser extends \NDB_Menu_Filter
             FROM files WHERE FileType='mnc' AND OutputType!='native'",
             array()
         );
+        $all_scan_types_exist = $DB->pselect(
+        //query to get scan types that exist for the project
+            "SELECT mri.Scan_type FROM mri_scan_type mri JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+        $all_scan_types = array();
+        foreach ($all_scan_types_exist as $row) {
+            $type = $row['Scan_type'];
+            $all_scan_types[$type] = $type;
+        }
 
         $this->fieldOptions = [
             'sites'       => $siteList,
             'projects' => $list_of_projects,
             'visitQCStatus' => $visitQCStatus,
-            'sequenceTypes' => $scan_types,
+            'sequenceTypes' => $all_scan_types,
             'pendingNew' => $pending,
             'configLabels' => $scan_id_types,
         ];
