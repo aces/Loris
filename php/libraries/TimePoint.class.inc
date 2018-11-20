@@ -565,9 +565,9 @@ class TimePoint
     /**
      * Returns BVLQC exclusion type
      *
-     * @return string
+     * @return string|null
      */
-    function getBVLQCType(): string
+    function getBVLQCType(): ?string
     {
         return $this->_timePointInfo['BVLQCType'];
     }
