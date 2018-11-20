@@ -49,11 +49,11 @@ class NDB_Config
     /**
      * The singleton design pattern - autoloads config file
      *
-     * @param string $configFile the neurodb config.xml config file
+     * @param string|null $configFile the neurodb config.xml config file
      *
      * @return NDB_Config object
      */
-    static function &singleton(string $configFile = null): NDB_Config
+    static function &singleton(?string $configFile = null)
     {
         static $config = null;
         if (is_null($config)) {
@@ -271,7 +271,7 @@ class NDB_Config
     /**
      * Gets a setting from the database config tables
      *
-     * @param string  $name The name of the config setting to get
+     * @param string   $name The name of the config setting to get
      * @param int|null $id   (optional) The ID of the config setting we're
      *                      getting to avoid ambiguity.
      *
@@ -534,16 +534,16 @@ class NDB_Config
      * of using $this->getSetting() to give more options for how to load
      * the menus, exactly (config.xml, different database tables, etc..)
      *
-     * @param integer $parent The parent ID of the tree. This should not
+     * @param int|null $parent The parent ID of the tree. This should not
      *                        be passed. It's used to build the tree recursively
      *                        from the LorisMenu table.
      *
      * @return array          Label, Visible, Link, and ID to build the menu
      *                        for the currently logged in user
      */
-    static function getMenuTabs(int $parent = null): array
+    static function getMenuTabs(?int $parent = null): array
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         if ($parent === null) {
             $thisLevel = $DB->pselect(
                 "SELECT Label,
