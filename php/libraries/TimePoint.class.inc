@@ -137,7 +137,7 @@ class TimePoint
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                $row['SubprojectID']
+                intval($row['SubprojectID'])
             );
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {

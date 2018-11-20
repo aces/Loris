@@ -154,7 +154,7 @@ class NDB_Config
      *
      * FIXME Despite the name, this function does not just return arrays, but
      * also returns a string. Crucially, this is done in the process of creating
-     * a DB connection and so we cannot add a return type to this function. 
+     * a DB connection and so we cannot add a return type to this function.
      * Future refactoring should be done to better encapsulate this logic to
      * allow for strong typing.
      *
@@ -238,47 +238,10 @@ class NDB_Config
     }
 
     /**
-     * Attempts to determine the site of the user currently logged in and uses
-     * that to get site specific settings and override study defaults,
-     * building the _siteSettings property
-     *
-     * @return void (but modifies $this->siteSettings)
-     */
-    function mergeSettings(): void
-    {
-        // make sure this is a web client
-        if (!class_exists("User") || !isset($_SESSION['State'])) {
-            return;
-        }
-
-        // make sure a user has logged in
-        $username = $_SESSION['State']->getUsername();
-        if (empty($username)) {
-            $this->_siteSettings =& $this->_settings;
-        } else {
-            $user     =& User::singleton($username);
-            $siteName = Utility::getCleanString($user->getSiteNames());
-            if (isset($this->_settings['sites'][$siteName])
-                && is_array($this->_settings['sites'][$siteName])
-            ) {
-                $this->_siteSettings          = $this->_settings;
-                $this->_siteSettings['study']
-                    = Utility::arrayMergeRecursiveOverwriting(
-                        $this->_settings['study'],
-                        $this->_settings['sites'][$siteName]
-                    );
-                unset($this->_siteSettings['sites']);
-            } else {
-                $this->_siteSettings =& $this->_settings;
-            }
-        }
-    }
-
-    /**
      * Gets a setting from the database config tables
      *
-     * FIXME This function currently returns a string, array, or null. 
-     * Refactoring should be done to better encapsulate the logic in this 
+     * FIXME This function currently returns a string, array, or null.
+     * Refactoring should be done to better encapsulate the logic in this
      * function to allow for strong typing.
      *
      * @param string   $name The name of the config setting to get
