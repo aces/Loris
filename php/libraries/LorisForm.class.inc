@@ -116,9 +116,9 @@ class LorisForm
      * of any shared attributes that are shared between different
      * element types.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
+     * @param string      $name    The element name.
+     * @param string|null $label   The label to attach to this element.
+     * @param array       $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
@@ -593,7 +593,7 @@ class LorisForm
      * @param string $name The form element name to retrieve the value
      *                     for.
      *
-     * @return string The value to use for the form element.
+     * @return string|null The value to use for the form element.
      */
     function getValue(string $name): ?string
     {
