@@ -57,16 +57,16 @@ class LorisForm
      * things specific to one type of element X should go in
      * the createX function.
      *
-     * @param string $name    The form name of the element being added
-     * @param string $label   The label to attach to the GUI in the form
-     * @param array  $attribs An array of extra HTML attributes to be
+     * @param string      $name    The form name of the element being added
+     * @param string|null $label   The label to attach to the GUI in the form
+     * @param array       $attribs An array of extra HTML attributes to be
      *                        added to this element.
      *
      * @return array describing the form element
      */
     protected function &createBase(
         string $name,
-        string $label,
+        ?string $label,
         array $attribs=array()
     ): array {
         $el = array('label' => $label);
@@ -126,7 +126,7 @@ class LorisForm
      */
     protected function &addBase(
         string $name,
-        string $label,
+        ?string $label,
         array $attribs = array()
     ): array {
         $el   = $this->createBase($name, $label, $attribs);
@@ -2369,12 +2369,12 @@ class LorisFormFileElement extends LorisFormElement
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return void
+     * @return bool The result of built-in move_uploaded_file
      */
     function moveUploadedFile(
         string $destinationDir,
         string $destinationFileName
-    ): void {
+    ): bool {
         return move_uploaded_file(
             $this->file['tmp_name'],
             $destinationDir . $destinationFileName
