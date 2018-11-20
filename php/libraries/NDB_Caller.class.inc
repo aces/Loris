@@ -386,7 +386,7 @@ class NDB_Caller
         ?string $redirectToOnSuccess=null
     ): string {
         if ($page === 'finalpage') {
-            $instrument = NDB_BVL_Instrument::factory(
+            $instrument = \NDB_BVL_Instrument::factory(
                 $instrumentName,
                 $commentID,
                 $page
@@ -399,7 +399,9 @@ class NDB_Caller
         $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
-            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            $timepoint = \TimePoint::singleton(
+                intval($_REQUEST['sessionID'])
+            );
         }
 
         // make an instance of the instrument's object
@@ -416,8 +418,8 @@ class NDB_Caller
         }
         if (method_exists($instrument, 'getFeedbackPanel')) {
             $this->feedbackPanel = $instrument->getFeedbackPanel(
-                $_REQUEST['candID'],
-                $_REQUEST['sessionID']
+                intval($_REQUEST['candID']),
+                intval($_REQUEST['sessionID'])
             );
         }
 
