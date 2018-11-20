@@ -896,28 +896,6 @@ class Utility
     }
 
     /**
-     * Determine whether an array is a numeric (normal) array or an
-     * associative (hashtable) array.
-     *
-     * @param array $arr The array to be checked for numeric keys.
-     *
-     * @return boolean True if the given parameter is an array with
-     *                 numeric keys, false otherwise.
-     * @note   Fix this in future, checking $arr[0] is naive
-     */
-    static function numericArray(array $arr): bool
-    {
-        if (!is_array($arr)) {
-            return false;
-        }
-        $keys = array_keys($arr);
-        if (count($keys) === 0) {
-            return false;
-        }
-        return isset($arr[0]);
-    }
-
-    /**
      * This function takes two strings. If one string has a
      * suffix which is a prefix of the other, it will return
      * the part of the second string minus the common

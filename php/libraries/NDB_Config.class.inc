@@ -165,13 +165,8 @@ class NDB_Config
                 $name      = $child->getName();
                 $tagExists = isset($retVal[$name]);
 
-                $numericArrayExists
-                    = isset($retVal[$name])
-                    && is_array($retVal[$name])
-                    && Utility::NumericArray($retVal[$name]);
-
                 if ($tagExists) {
-                    if (!$numericArrayExists) {
+                    if (!self::isNumericArray($retVal[$name])) {
                         // The tag is duplicated in the XML, so it should
                         // be stored in an array. Create a new array and replace
                         // the tag with what was already parsed before appending
@@ -229,6 +224,24 @@ class NDB_Config
             return $retVal;
         }
         return $retVal;
+    }
+
+    /**
+     * Determine whether an array is a numeric (normal) array, i.e. its keys
+     * are 0, 1, ..., n - 1.
+     * If an empty array is passed as $arr, this function will return true.
+     *
+     * @param array $arr The array to be checked for numeric keys.
+     *
+     * @return boolean True if the given parameter is an array with
+     *                 numeric keys, false otherwise.
+     */
+    static function isNumericArray(array $arr): bool
+    {
+        if ($arr === array()) {
+            return true;
+        }
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 
     /**
