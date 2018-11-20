@@ -156,7 +156,7 @@ class NDB_Config
      *
      * @return array of XML configuration
      */
-    static function convertToArray(SimpleXMLElement $xml): array
+    static function convertToArray(SimpleXMLElement $xml)
     {
         $retVal   = array();
         $children = $xml->children();
@@ -269,16 +269,15 @@ class NDB_Config
     }
 
     /**
->>>>>>> a728a40ab... Add type declarations using PHPCBF
      * Gets a setting from the database config tables
      *
      * @param string  $name The name of the config setting to get
-     * @param integer $id   (optional) The ID of the config setting we're
+     * @param int|null $id   (optional) The ID of the config setting we're
      *                      getting to avoid ambiguity.
      *
-     * @return string The value from the database, or null if nothing found.
+     * @return mixed The value from the database, or null if nothing found.
      */
-    function getSettingFromDB(string $name, int $id=null): string
+    function getSettingFromDB(string $name, ?int $id = null)
     {
         // These should never come from the DB
         switch($name) {
@@ -380,9 +379,9 @@ class NDB_Config
      *
      * @param string $name The name of the XML node to retrieve.
      *
-     * @return string The value from the config.xml
+     * @return mixed The value from the config.xml
      */
-    function getSettingFromXML(string $name): string
+    function getSettingFromXML(string $name)
     {
         // loop over the settings, and find the node
         foreach ($this->_settings as $key => $value) {
@@ -588,7 +587,7 @@ class NDB_Config
             if (!empty($LevelWithPerm)) {
                 return $LevelWithPerm;
             }
-            return;
+            return array();
         }
     }
 
