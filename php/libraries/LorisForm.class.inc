@@ -1237,7 +1237,7 @@ class LorisForm
      *
      * @return bool Whether all registed rules are passed.
      */
-    function validate()
+    function validate(): bool
     {
         if (!$this->isSubmitted()) {
             return false;
