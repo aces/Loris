@@ -52,7 +52,7 @@ class ImagingBrowserIndex extends Component {
      */
     formatColumn(column, cell, row) {
         // Set class to 'bg-danger' if file is hidden.
-        const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
+        const style = '';
         let result = <td className={style}>{cell}</td>;
         switch (column) {
             case 'New Data':
@@ -117,27 +117,32 @@ class ImagingBrowserIndex extends Component {
         const configLabels = options.configLabels;
         const fields = [
             {label: 'Site', show: true, filter: {
-                    name: 'site',
-                    type: 'select',
-                    options: options.sites,
-                }},
+                name: 'site',
+                type: 'select',
+                options: options.sites,
+            }},
             {label: 'PSCID', show: true, filter: {
-                    name: 'PSCID',
-                    type: 'text',
-                }},
+                name: 'PSCID',
+                type: 'text',
+            }},
             {label: 'DCCID', show: true, filter: {
                     name: 'DCCID',
                     type: 'text',
-                }},
+            }},
+            {label: 'Project', show: true, filter: {
+                name: 'project',
+                type: 'select',
+                options: options.projects,
+            }},
             {label: 'Vist Label', show: true, filter: {
                     name: 'visitLabel',
                     type: 'text',
-        }},
+            }},
             {label: 'Visit QC Status', show: true, filter: {
                     name: 'visitQCStatus',
                     type: 'select',
                     options: options.visitQCStatus,
-                }},
+            }},
             {label: 'First Acquisition', show: true},
             {label: 'First Insertion', show: true},
             {label: 'Last QC', show: true},
@@ -158,15 +163,7 @@ class ImagingBrowserIndex extends Component {
         Object.values(configLabels).forEach((label)=> {
             fields.push({label: label + ' QC Status', show: true}
             );
-          });
-        console.error(loris.config('useProjects'));
-        if (loris.config('useProband') === 'true') {
-            fields.splice(3, 0, {label: 'Project', show: true, filter: {
-                name: 'project',
-                type: 'select',
-                options: options.projects,
-            }});
-        }
+        });
 
         const tabs = [{id: 'browse', label: 'Browse'}];
 

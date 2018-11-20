@@ -139,9 +139,10 @@ class Imaging_Browser extends \NDB_Menu_Filter
         //implementing the pending filter query from overridden _addValidFilters
         $PendingNewquery = "
             CASE
-                WHEN s.MRIQCPending='Y' THEN 'P'
-                WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'N'
-                WHEN (s.MRIQCPending ='Y' AND (fqc.QCFirstChangeTime IS NULL $this->acqpid)) THEN 'PN'
+                WHEN s.MRIQCPending='Y' THEN
+                CASE WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'PN'
+                ELSE 'P' END
+                WHEN fqc.QCFirstChangeTime IS NULL $this->acqpid THEN 'N' 
             END
             ";
         $this->query = " FROM psc AS p 
@@ -160,14 +161,14 @@ class Imaging_Browser extends \NDB_Menu_Filter
             JOIN files_qcstatus USING (FileID) 
             WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
             AND files_qcstatus.QCStatus IN (1, 2) 
-            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . "
+            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . " 
             ON (" . $DB->escape($pass[$key]) . ".SessionID=f.SessionID) ";
         }
 
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.FileType='mnc'";
+            f.FileType='mnc' and f.AcquisitionProtocolID IS NOT NULL";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -249,43 +250,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             );
             array_splice($this->headers, 3, 0, 'Project');
         }
-
-        $this->validFilters = array(
-                               'c.PSCID',
-                               's.Visit_label',
-                               'c.CandID',
-                               'c.ProjectID',
-                               's.CenterID',
-                               's.MRIQCStatus',
-                               'pending',
-                               'f.AcquisitionProtocolID',
-                              );
-
-        $this->formToFilter    = array(
-                                  'pscid'         => 'c.PSCID',
-                                  'VL'            => 's.Visit_label',
-                                  'DCCID'         => 'c.CandID',
-                                  'ProjectID'     => 'c.ProjectID',
-                                  'SiteID'        => 's.CenterID',
-                                  'VisitQCStatus' => 's.MRIQCStatus',
-                                  'Pending'       => 'pending',
-                                  'Scan_type'     => 'f.AcquisitionProtocolID',
-                                 );
-        $this->EqualityFilters = array('f.AcquisitionProtocolID');
-        $this->searchKeyword   = array();
-
-        $this->tpl_data['numTimepoints'] = 0;
-
-        // This variable will be used by the columnFormatter javascript
-        // to set the default hidden columns in the data table.
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            array_map(
-                function ($header) {
-                    return ucwords(str_replace('_', ' ', $header));
-                },
-                array('sessionID')
-            )
-        );
     }
 
     /**
@@ -322,7 +286,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         }
 
         $DB    = \Database::singleton();
-        $allAr = array('' => 'All');
+        $allAr = array();
 
 
         $config =& \NDB_Config::singleton();
@@ -372,16 +336,14 @@ class Imaging_Browser extends \NDB_Menu_Filter
         }
 
             $visitQCStatus = array(
-             ''     => 'All',
              'Pass' => 'Pass',
              'Fail' => 'Fail',
             );
 
            $pending= array(
-             ''   => 'All',
              'P'  => 'Pending',
              'N'  => 'New',
-             'PN' => 'Pending or New',
+             'PN' => 'Pending and New',
             );
 
 
@@ -404,23 +366,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             array()
         );
 
-        $this->tpl_data['outputTypes'] = array_merge(
-            array(
-             array('outputType' => 'native'),
-             array('outputType' => 'selected'),
-            ),
-            $outputTypes
-        );
-
-        $this->tpl_data['numOutputTypes'] = count($outputTypes);
-        $this->addBasicText(
-            'keyword',
-            'Search keyword in Comments',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
         $this->fieldOptions = [
             'sites'       => $siteList,
             'projects' => $list_of_projects,
@@ -432,55 +377,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
-
-    /**
-     * Overwrites the function to add a customized filter
-     * for Pending and New
-     *
-     * @param string $prepared_key filter key
-     * @param string $field        filter field
-     * @param string $val          filter value
-     *
-     * @return string the new query
-     */
-    function _addValidFilters($prepared_key, $field, $val)
-    {
-        $query = '';
-        if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'pending' && $field !='AcquisitionProtocolID') {
-                if (in_array($field, $this->CheckboxFilters) && $val) {
-                    $query .= " AND $field";
-                } elseif (strtolower(substr($field, -8)) == 'centerid'
-                    || strtolower(substr($field, -10)) == 'categoryid'
-                    || strtolower(substr($field, -6)) == 'gender'
-                    || (isset($this->EqualityFilters)
-                    && in_array($field, $this->EqualityFilters))
-                ) {
-                    $query .= " AND $field = :v_$prepared_key";
-                    // $qparams["v_$prepared_key"] = $val;
-                } else {
-                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
-                }
-            } else if ($field == 'pending') {
-                switch ($val) {
-                case "P":
-                    $query .= " AND s.MRIQCPending='Y'";
-                    break;
-                case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $this->acqpid;
-                    break;
-                case "PN":
-                    $query .= " AND (s.MRIQCPending ='Y' 
-                        OR (fqc.QCFirstChangeTime IS NULL ". $this->acqpid ."))";
-                    break;
-                }
-            } else if ($field == 'AcquisitionProtocolID') {
-                $query .= " AND $field = :v_$prepared_key";
-            }
-        }
-        return $query;
-    }
-
     /**
      * Converts this menu filter to an array of the form
      *
@@ -523,8 +419,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             [$baseURL . "/imaging_browser/css/imaging_browser.css"]
         );
     }
-
-
 
 
 
