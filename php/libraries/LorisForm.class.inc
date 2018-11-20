@@ -1783,15 +1783,15 @@ class LorisForm
      * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
-     * @param string $element The element name to add the rule to.
+     * @param string|array $element The element name to add the rule to.
      *                        If this is a 'compare' rule, it will
      *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
+     * @param string       $message The message to display if the rule is violated
+     * @param string       $type    The rule type. 'compare', 'required' or 'numeric'
      *
      * @return void
      */
-    function addRule(string $element, string $message, string $type): void
+    function addRule($element, string $message, string $type): void
     {
         if (!in_array($type, $this->allowedRules)) {
             throw new LorisException(
@@ -1997,7 +1997,7 @@ class LorisForm
     function createElement(
         string $type,
         string $elname,
-        string $label='',
+        string $label = '',
         array $options=array(),
         array $attribs=array()
     ): array {

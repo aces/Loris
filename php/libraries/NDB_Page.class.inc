@@ -175,7 +175,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addSelect($name, $label, $options, $optional=array())
+    function addSelect($name, $label, $options = array(), $optional=array())
     {
         $optional = array_merge(
             array('class' => 'form-control input-sm'),
@@ -432,8 +432,14 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addGroup($elements, $name, $label, $separator, $appendName=null)
-    {
+    function addGroup(
+        $elements,
+        $name = '',
+        $label = '',
+        $separator = '',
+        $appendName=null
+    ) {
+
         $this->form->addGroup($elements, $name, $label, $separator, $appendName);
     }
 
@@ -468,8 +474,8 @@ class NDB_Page implements RequestHandlerInterface
     ) {
         return $this->form->createElement(
             "static",
-            null,
-            null,
+            '',
+            array(),
             $labelString
         );
     }
@@ -543,12 +549,12 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $options Options to pass to HTML_QuickForm
+     * @param array  $options Options to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
      * @return array representing checkbox
      */
-    function createCheckbox($field, $label, $options=null, $closer='</label>')
+    function createCheckbox($field, $label, $options = array(), $closer='</label>')
     {
         return $this->form->createElement(
             "advcheckbox",
@@ -564,11 +570,11 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
      *
      * @return array representing radio button
      */
-    function createRadio($field, $label, $options=null)
+    function createRadio($field, $label, $options = array())
     {
         return $this->form->createElement(
             "radio",
