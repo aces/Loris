@@ -44,52 +44,23 @@ class Utility
      */
     static function calculateAge(string $dob, string $testdate): array
     {
-        if (!preg_match(
-            "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
-            $dob,
-            $matches
-        )) {
-            throw new \LorisException(
-                "Argument 1 does not match expected date format (YYYY-MM-DD)"
+        try {
+            $interval = date_diff(
+                date_create($dob),
+                date_create($testdate)
             );
-        }
-        $dob = array(
-                'year' => $matches[1],
-                'mon'  => $matches[2],
-                'day'  => $matches[3],
-               );
-
-        if (!preg_match(
-            "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
-            $testdate,
-            $matches
-        )) {
+        } catch (Exception $e) {
             throw new \LorisException(
-                "Argument 2 does not match expected date format (YYYY-MM-DD)"
+                'Arguments to calculateAge function are not valid date strings.'
             );
-        }
-        $testdate = array(
-                     'year' => $matches[1],
-                     'mon'  => $matches[2],
-                     'day'  => $matches[3],
-                    );
-
-        if ($testdate['day'] < $dob['day']) {
-            $testdate['day'] += 30;
-            $testdate['mon']--;
-        }
-        if ($testdate['mon'] < $dob['mon']) {
-            $testdate['mon'] += 12;
-            $testdate['year']--;
+            return array();
         }
 
-        $age = array(
-                'year' => $testdate['year'] - $dob['year'],
-                'mon'  => $testdate['mon'] - $dob['mon'],
-                'day'  => $testdate['day'] - $dob['day'],
+        return array(
+                'year' => $interval->y,
+                'mon'  => $interval->m,
+                'day'  => $interval->d,
                );
-
-        return $age;
     }
     /**
      * Returns list of consents in the database
