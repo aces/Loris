@@ -109,67 +109,63 @@ class Stats_MRI extends \NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
+            /* Calculate the totals for each element of the stats table. Each
+             * node of this nested array contains a key-value array consisting
+             * of the subcategories as they keys and the totals as values. 
+             * There is one additional key, 'total'.
+             * E.g.
+             *      array(
+             *          'total' = x;
+             *          $subcategory1 = y;
+             *          $subcategory2 = z;
+             *          ...
+             *      )
+             */
             if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
             ) {
                 $C = 'C' . $center;
-                // Initialize values of all the nested arrays
+                /* This array contains all the $subcategories as keys as well
+                * as 'total'. All values are 0.
+                */
+                $blankStatsArray = $this->initializeStatsArray($subcats);
+                /* Initialize values for all of the endpoints using the array
+                 * just created. This step is done to prevent undefined index
+                 * notices from appearing in the PHP logs for uninitialzed keys.
+                 */
+                
                 // Data
                 if (!isset($tpl_data['data'])) {
-                    $tpl_data['data'] = array(
-                        $subcat => 0,
-                        'total' => 0,
-                    );
+                    $tpl_data['data'] = $blankStatsArray;
                 }
                 // Data => Visit_Label
                 if (!isset($tpl_data['data'][$vl])) {
-                    $tpl_data['data'][$vl] = array(
-                        $subcat => 0,
-                        'total' => 0,
-                    );
+                    $tpl_data['data'][$vl] = $blankStatsArray; 
                 }
                 // Data => Subproject
                 if (!isset($tpl_data['data'][$subproj])) {
-                    $tpl_data['data'][$subproj] = array(
-                        'total' => 0,
-                        $subcat => 0,
-                    );
+                    $tpl_data['data'][$subproj] = $blankStatsArray;
                 }
                 // Data => Subproject => Visit_label
                 if (!isset($tpl_data['data'][$subproj][$vl])) {
-                    $tpl_data['data'][$subproj][$vl] = array(
-                        $subcat => 0,
-                        'total' => 0,
-                    );
+                    $tpl_data['data'][$subproj][$vl] = $blankStatsArray;
                 }
                 // Data => Subproject => Center
                 if (!isset($tpl_data['data'][$subproj][$C])) {
-                    $tpl_data['data'][$subproj][$C] = array(
-                        'total' => 0,
-                        $subcat => 0,
-                    );
+                    $tpl_data['data'][$subproj][$C] = $blankStatsArray;
                 }
                 // Data => Subproject => Center => Visit_Label
-                if (!isset($tpl_data['data'][$subproj][$C])) {
-                    $tpl_data['data'][$subproj][$C][$vl] = array(
-                        'total' => 0,
-                        $subcat => 0,
-                    );
+                if (!isset($tpl_data['data'][$subproj][$C][$vl])) {
+                    $tpl_data['data'][$subproj][$C][$vl] = $blankStatsArray;
                 }
                 // Data => Center
                 if (!isset($tpl_data['data'][$C])) {
-                    $tpl_data['data'][$C][$vl] = array(
-                        $subcat => 0,
-                        'total' => 0,
-                    );
+                    $tpl_data['data'][$C] = $blankStatsArray;
                 }
                 // Data => Center => Visit_Label
                 if (!isset($tpl_data['data'][$C][$vl])) {
-                    $tpl_data['data'][$C][$vl] = array(
-                        $subcat => 0,
-                        'total' => 0,
-                    );
+                    $tpl_data['data'][$C][$vl] = $blankStatsArray;
                 }
 
                 // Update the $subcat and total values for each element.
@@ -179,6 +175,9 @@ class Stats_MRI extends \NDB_Form
                 // Data => Visit_Label
                 $tpl_data['data'][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$vl]['total'] += $row['val'];
+                // Data => Subproject
+                $tpl_data['data'][$subproj][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj]['total'] += $row['val'];
                 // Data => Subproject => Visit_Label
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
@@ -557,7 +556,26 @@ class Stats_MRI extends \NDB_Form
                   $Scan_data_results[$key]['qc_fail_count']['total'];
         }
         $this->tpl_data['scan_data_results'] = $Scan_data_results;
+    }
 
+    /**
+     * Create an associative array where the keys are all the subcategories
+     * as well as 'total'. This is used to intialize the arrays keeping track
+     * of statistics totals. They will eventually be passed to tpl_data.
+     *
+     * @param array $subcategories The subcategories being tracked by this 
+     *                              module. Keys of the returned array.
+     * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
+     */
+    function initializeStatsArray(array $subcategories): array {
+        $to_ret = array(
+            'total' => 0
+        );
+        // Initialize all values to 0.
+        foreach ($subcategories as $subcat) {
+            $to_ret[$subcat] = 0;
+        } 
+        return $to_ret;
     }
 
     /**
