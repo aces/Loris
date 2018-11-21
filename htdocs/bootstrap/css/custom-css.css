@@ -112,24 +112,6 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     cursor: pointer;
 }
 
-.navbar-nav > li > .dropdown-menu {
-    margin-top: -1px;
-    margin-left: -1px;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    background-color: white;
-}
-
-.navbar-nav > li > .dropdown-menu > li > a,
-.navbar-nav > li > .dropdown-menu > li > a:focus {
-    color: #064785;
-    padding: 3px 19px;
-}
-
-.navbar-nav > li > .dropdown-menu > li > a:hover {
-    color: #E89A0C;
-}
-
 /* Question mark */
 .nav > li > a > img {
     padding-bottom: 3px;
