@@ -113,116 +113,87 @@ class Stats_MRI extends \NDB_Form
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
             ) {
-                /* FIXME The below is an unholy mess. The isset checks were
-                 * added to do a quick bugfix to prevent PHP Notices from
-                 * cluttering the logs. However this next section of the code
-                 * is very difficult to read and debug.
-                 * We should come up with a better way to do this.
-                 */
                 $C = 'C' . $center;
-                if (isset($tpl_data['data'][$subproj][$vl][$subcat])) {
-                    $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$vl][$subcat] = $row['val'];
+                // Initialize values of all the nested arrays
+                // Data
+                if (!isset($tpl_data['data'])) {
+                    $tpl_data['data'] = array(
+                        $subcat => 0,
+                        'total' => 0,
+                    );
+                }
+                // Data => Visit_Label
+                if (!isset($tpl_data['data'][$vl])) {
+                    $tpl_data['data'][$vl] = array(
+                        $subcat => 0,
+                        'total' => 0,
+                    );
+                }
+                // Data => Subproject
+                if (!isset($tpl_data['data'][$subproj])) {
+                    $tpl_data['data'][$subproj] = array(
+                        'total' => 0,
+                        $subcat => 0,
+                    );
+                }
+                // Data => Subproject => Visit_label
+                if (!isset($tpl_data['data'][$subproj][$vl])) {
+                    $tpl_data['data'][$subproj][$vl] = array(
+                        $subcat => 0,
+                        'total' => 0,
+                    );
+                }
+                // Data => Subproject => Center
+                if (!isset($tpl_data['data'][$subproj][$C])) {
+                    $tpl_data['data'][$subproj][$C] = array(
+                        'total' => 0,
+                        $subcat => 0,
+                    );
+                }
+                // Data => Subproject => Center => Visit_Label
+                if (!isset($tpl_data['data'][$subproj][$C])) {
+                    $tpl_data['data'][$subproj][$C][$vl] = array(
+                        'total' => 0,
+                        $subcat => 0,
+                    );
+                }
+                // Data => Center
+                if (!isset($tpl_data['data'][$C])) {
+                    $tpl_data['data'][$C][$vl] = array(
+                        $subcat => 0,
+                        'total' => 0,
+                    );
+                }
+                // Data => Center => Visit_Label
+                if (!isset($tpl_data['data'][$C][$vl])) {
+                    $tpl_data['data'][$C][$vl] = array(
+                        $subcat => 0,
+                        'total' => 0,
+                    );
                 }
 
-                if (isset($tpl_data['data'][$subproj][$vl]['total'])) {
-                    $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$vl]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subproj][$subcat])) {
-                    $tpl_data['data'][$subproj][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subproj]['total'])) {
-                    $tpl_data['data'][$subproj]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$vl][$subcat])) {
-                    $tpl_data['data'][$vl][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$vl][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$vl]['total'])) {
-                    $tpl_data['data'][$vl]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$vl]['total'] = $row['val'];
-                }
-
-                $tpl_data['data'][$subproj][$C][$vl][$subcat] = $row['val'];
-
-                if (isset($tpl_data['data'][$subproj][$C][$vl]['total'])) {
-                    $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$C][$vl]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subproj][$C][$subcat])) {
-                    $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subproj][$C][$subcat])) {
-                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$C][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subproj][$C]['total'])) {
-                    $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subproj][$C]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$C][$vl][$subcat])) {
-                    $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$C][$vl][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$C][$vl]['total'])) {
-                    $tpl_data['data'][$C][$vl]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$C][$vl]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$C][$subcat])) {
-                    $tpl_data['data'][$C][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$C][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$C]['total'])) {
-                    $tpl_data['data'][$C]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$C]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$C]['total'])) {
-                    $tpl_data['data'][$C]['total'] += $row['val'];
-                } else {
-                    $tpl_data['data'][$C]['total'] = $row['val'];
-                }
-
-                if (isset($tpl_data['data'][$subcat])) {
-                    $tpl_data['data'][$subcat] += $row['val'];
-                } else {
-                    $tpl_data['data'][$subcat] = $row['val'];
-                }
-
-                if (isset($tpl_data['data']['total'])) {
-                    $tpl_data['data']['total'] += $row['val'];
-                } else {
-                    $tpl_data['data']['total'] = $row['val'];
-                }
+                // Update the $subcat and total values for each element.
+                // Data
+                $tpl_data['data'][$subcat] += $row['val'];
+                $tpl_data['data']['total'] += $row['val'];
+                // Data => Visit_Label
+                $tpl_data['data'][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$vl]['total'] += $row['val'];
+                // Data => Subproject => Visit_Label
+                $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+                // Data => Subproject => Center
+                $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
+                // Data => Subproject => Center => Visit_Label
+                $tpl_data['data'][$subproj][$C][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                // Data => Center
+                $tpl_data['data'][$C][$subcat] = $row['val'];
+                $tpl_data['data'][$C]['total'] += $row['val'];
+                // Data => Center => Visit_Label
+                $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$C][$vl]['total'] += $row['val'];
             }
         }
         $smarty->assign($tpl_data);
