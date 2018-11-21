@@ -105,15 +105,15 @@ class NDB_BVL_InstrumentStatus
      */
     function getSessionID(): int
     {
-        return $this->_status['SessionID'];
+        return intval($this->_status['SessionID']);
     }
 
     /**
      * Gets the current data entry status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getDataEntryStatus(): string
+    function getDataEntryStatus(): ?string
     {
         return $this->_status['Data_entry'];
     }
