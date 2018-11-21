@@ -530,7 +530,7 @@ class NDB_Config
             );
 
             foreach ($thisLevel as &$thisRow) {
-                $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
+                $nextLevel = NDB_Config::getMenuTabs(intval($thisRow['ID']));
 
                 if (!empty($nextLevel)) {
                     $thisRow['subtabs'] = $nextLevel;
@@ -553,7 +553,7 @@ class NDB_Config
             $LevelWithPerm = array_filter(
                 $thisLevel,
                 function ($el) {
-                    return NDB_Config::checkMenuPermission($el['ID']);
+                    return NDB_Config::checkMenuPermission(intval($el['ID']));
                 }
             );
 
