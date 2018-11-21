@@ -77,10 +77,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     )
                 );
         }
-
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
-        $instrument    = basename($filename);
+        $instrument    = pathinfo($filename)['filename'];
 
         if ($this->instrumentExists($instrument)) {
             return (new \Zend\Diactoros\Response())
@@ -124,7 +123,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // structure of the uploaded .linst file.
         exec(
             'php generate_tables_sql_and_testNames.php < '
-            . escapeshellarg($file_path)
+            . escapeshellarg($fullpath)
         );
 
         if (!$this->isQuatUserConfigured()) {
@@ -147,8 +146,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instument, '', '')->table();
-        $db_config  = $this->factory->config->getSetting('database');
+        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        $db_config  = $this->factory->config()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).

@@ -72,18 +72,42 @@ class InstrumentManagerIndex extends Component {
     }
 
     const fields = [
-      {label: 'Instrument', show: true},
-      {label: 'Instrument Type', show: true},
-      {label: 'Table Installed', show: true},
-      {label: 'Table Valid', show: true},
-      {label: 'Pages Valid', show: true},
+      {label: 'Instrument', show: true, filter: {
+        name: 'instrument',
+        type: 'text',
+      }},
+      {label: 'Instrument Type', show: true, filter: {
+        name: 'instrument_type',
+        type: 'select',
+        options: {
+          'Instrument Builder': 'Instrument Builder',
+          'PHP': 'PHP',
+          'Missing': 'Missing',
+        },
+      }},
+      {label: 'Table Installed', show: true, filter: {
+        name: 'table_installed',
+        type: 'select',
+        options: {
+          'Exists': 'Exists',
+          'Missing': 'Missing',
+        },
+      }},
+      {label: 'Table Valid', show: true, filter: {
+        name: 'table_valid',
+        type: 'text',
+      }},
+      {label: 'Pages Valid', show: true, filter: {
+        name: 'pages_valid',
+        type: 'text',
+      }},
     ];
 
     const tabs = [{id: 'browse', label: 'Browse'}];
 
     const uploadTab = () => {
       if (this.state.data.writable) {
-        let url = loris.BaseURL.concat('/instrument_manager/');
+        let url = loris.BaseURL.concat('/instrument_manager/?format=json');
         tabs.push({
           id: 'upload',
           label: 'Upload',
