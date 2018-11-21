@@ -390,44 +390,6 @@ class Utility
     }
 
     /**
-     * Merges two arrays recursively, overwriting values of the first
-     * with the second.  the one "strange" bit is that if there exists
-     * a set of 2 or more sibling elements with the same name, then
-     * the entire set will be replaced rather than recursively merged.
-     *
-     * @param array      $array1       The first array to be merged
-     * @param array      $array2       The second array to be merged
-     * @param array|null $merged_array A reference to an array to merge
-     *                            the parameters into. If not specified,
-     *                            a new array will be created
-     *
-     * @return array with the two parameters recursively merged
-     */
-    static function arrayMergeRecursiveOverwriting(
-        array $array1,
-        array $array2,
-        ?array &$merged_array = null
-    ): array {
-        if (empty($merged_array)) {
-            $merged_array = $array1;
-        }
-        foreach ($array2 AS $key=>$value) {
-            if (is_array($array1[$key]) && isset($array1[$key][0])) {
-                $merged_array[$key] = $value;
-            } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::arrayMergeRecursiveOverwriting(
-                    $array1[$key],
-                    $array2[$key],
-                    $merged_array[$key]
-                );
-            } else {
-                $merged_array[$key] = $value;
-            }
-        }
-        return $merged_array;
-    }
-
-    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
