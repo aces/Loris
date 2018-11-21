@@ -39,7 +39,7 @@ class NDB_Page implements RequestHandlerInterface
     var $page;
 
     /**
-     * Reference to the HTML QuickForm
+     * Reference to the LorisForm
      */
     var $form;
 
@@ -442,7 +442,7 @@ class NDB_Page implements RequestHandlerInterface
         $name = '',
         $label = '',
         $separator = '',
-        $appendName=null
+        $appendName = array()
     ) {
 
         $this->form->addGroup($elements, $name, $label, $separator, $appendName);
@@ -480,7 +480,6 @@ class NDB_Page implements RequestHandlerInterface
         return $this->form->createElement(
             "static",
             '',
-            array(),
             $labelString
         );
     }
@@ -495,7 +494,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function createText(
         $field,
-        $label=null,
+        $label='',
         $attribs=array()
     ) {
         $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
@@ -601,7 +600,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function createPassword(
         $field,
-        $label=null,
+        $label = '',
         $attr=array('class' => 'form-control input-sm')
     ) {
         return $this->form->createElement('password', $field, $label, $attr);

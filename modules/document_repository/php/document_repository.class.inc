@@ -171,10 +171,14 @@ class Document_Repository extends \NDB_Menu_Filter
         $this->addBasicText('version', 'Version:');
 
         $this->addSelect('File_type', 'File type:', $fileTypes);
-        $this->addSelect('File_category', 'File category:', $fileCategories);
+        $this->addSelect(
+            'File_category',
+            'File category:',
+            $fileCategories ?? array()
+        );
         $this->tpl_data['Sites']       = $list_of_sites;
         $this->tpl_data['Instruments'] = $list_of_instruments;
-        $user   =& \User::singleton();
+        $user   = \User::singleton();
         $userID = $user->getData('UserID');
         $this->tpl_data['User'] = $userID;
         $this->addSelect('For_site', 'For Site:', $list_of_sites);
