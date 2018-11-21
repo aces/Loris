@@ -111,7 +111,7 @@ class Stats_MRI extends \NDB_Form
 
             /* Calculate the totals for each element of the stats table. Each
              * node of this nested array contains a key-value array consisting
-             * of the subcategories as they keys and the totals as values. 
+             * of the subcategories as they keys and the totals as values.
              * There is one additional key, 'total'.
              * E.g.
              *      array(
@@ -134,14 +134,14 @@ class Stats_MRI extends \NDB_Form
                  * just created. This step is done to prevent undefined index
                  * notices from appearing in the PHP logs for uninitialzed keys.
                  */
-                
+
                 // Data
                 if (!isset($tpl_data['data'])) {
                     $tpl_data['data'] = $blankStatsArray;
                 }
                 // Data => Visit_Label
                 if (!isset($tpl_data['data'][$vl])) {
-                    $tpl_data['data'][$vl] = $blankStatsArray; 
+                    $tpl_data['data'][$vl] = $blankStatsArray;
                 }
                 // Data => Subproject
                 if (!isset($tpl_data['data'][$subproj])) {
@@ -188,7 +188,7 @@ class Stats_MRI extends \NDB_Form
                 $tpl_data['data'][$subproj][$C][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
                 // Data => Center
-                $tpl_data['data'][$C][$subcat] = $row['val'];
+                $tpl_data['data'][$C][$subcat]  = $row['val'];
                 $tpl_data['data'][$C]['total'] += $row['val'];
                 // Data => Center => Visit_Label
                 $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
@@ -563,18 +563,18 @@ class Stats_MRI extends \NDB_Form
      * as well as 'total'. This is used to intialize the arrays keeping track
      * of statistics totals. They will eventually be passed to tpl_data.
      *
-     * @param array $subcategories The subcategories being tracked by this 
+     * @param array $subcategories The subcategories being tracked by this
      *                              module. Keys of the returned array.
+     *
      * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
      */
-    function initializeStatsArray(array $subcategories): array {
-        $to_ret = array(
-            'total' => 0
-        );
+    function initializeStatsArray(array $subcategories): array
+    {
+        $to_ret = array('total' => 0);
         // Initialize all values to 0.
         foreach ($subcategories as $subcat) {
             $to_ret[$subcat] = 0;
-        } 
+        }
         return $to_ret;
     }
 
