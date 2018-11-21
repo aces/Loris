@@ -63,6 +63,17 @@ class New_Profile extends \NDB_Form
         $centerIDs = \User::singleton()->getData('CenterIDs');
         if (count($centerIDs) > 1 || !isset($values['psc'])) {
             $values['psc'] = $centerIDs[0];
+
+        // get the candidate
+        $candidate =& \Candidate::singleton($candID);
+
+        if ($config->getSetting('useProjects') == "true") {
+            $candidate->setData(
+                array(
+                    'ProjectID' => $values['ProjectID']
+                )
+            );
+
         }
 
         /* Create the candidate and retrive its ID.

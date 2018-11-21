@@ -79,16 +79,28 @@ class Next_Stage extends \NDB_Form
         $timePoint->startStage($newStage);
 
         // set the date for the new stage
-        $timePoint->setData("Date_".$newStage, $values['date1']);
+        $timePoint->setData(
+            array(
+                "Date_".$newStage => $values['date1']
+            )
+        );
 
         // set SubprojectID if applicable
         if (isset($values['SubprojectID'])) {
-            $timePoint->setData('SubprojectID', $values['SubprojectID']);
+            $timePoint->setData(
+                array(
+                    'SubprojectID' => $values['SubprojectID']
+                )
+            );
         }
 
         // set scan done if applicable
         if (isset($values['scan_done'])) {
-            $timePoint->setData('Scan_done', $values['scan_done']);
+            $timePoint->setData(
+                array(
+                    'Scan_done' => $values['scan_done']
+                )
+            );
         }
 
         // create a new battery object && new battery

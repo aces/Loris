@@ -235,7 +235,13 @@ class CandidateTest extends TestCase
                 array('CandID' => $this->_candidateInfo['CandID'])
             );
 
-        $this->assertTrue($this->_candidate->setData('RegisteredBy', 'TestUser'));
+        $this->assertTrue(
+            $this->_candidate->setData(
+                array(
+                    'RegisteredBy' => 'TestUser'
+                )
+            )
+        );
         $this->assertEquals(
             $data['RegisteredBy'],
             $this->_candidate->getData('RegisteredBy')
