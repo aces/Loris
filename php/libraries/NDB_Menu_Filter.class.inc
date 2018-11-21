@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
@@ -134,10 +134,10 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
      * Calls other member functions to do all the work necessary to create the menu
      *
-     * @return void
+     * @return bool True
      * @access public
      */
-    function setup(): void
+    public function setup(): bool
     {
         parent::setup();
 
@@ -173,7 +173,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * @return void
      * @access public
      */
-    function registerDefaultFilter(): void
+    public function registerDefaultFilter(): void
     {
         $this->form->applyFilter('__ALL__', 'trim');
     }
