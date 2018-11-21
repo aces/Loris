@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
-import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -58,9 +56,7 @@ class ImagingBrowserIndex extends Component {
             case 'New Data':
                 if (cell === 'new') {
                     result = (
-                        <td className="newdata">
-                            NEW
-                        </td>
+                        <td className="newdata">NEW</td>
                     );
                 }
                 break;
@@ -160,25 +156,23 @@ class ImagingBrowserIndex extends Component {
                 options: options.pendingNew,
             }},
         ];
+        /**
+         * Adding columns based on the Imaging Browser Tabulated Scan Types
+         * configured and stored in database
+         */
         Object.values(configLabels).forEach((label)=> {
             fields.push({label: label + ' QC Status', show: true}
             );
         });
 
-        const tabs = [{id: 'browse', label: 'Browse'}];
-
-
         return (
-            <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
-                <TabPane TabId={tabs[0].id}>
                     <FilterableDataTable
                         name="imaging_browser"
                         data={this.state.data.Data}
                         fields={fields}
                         getFormattedCell={this.formatColumn}
                     />
-                </TabPane>
-            </Tabs>
+
         );
     }
 }
