@@ -454,7 +454,6 @@ class NDB_Config
                 'While attempting to get Subproject config settings, caught ' .
                 "DatabaseException: `$e`"
             );
-            return array();
         }
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
