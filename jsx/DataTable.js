@@ -10,8 +10,22 @@ import createFragment from 'react-addons-create-fragment';
 class DataTable extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      page: {
+        number: 1,
+        rows: 20,
+      },
+      sort: {
+       column: 0,
+       ascending: true,
+      },
+    };
 
     this.setSortColumn = this.setSortColumn.bind(this);
+    this.updateSortColumn = this.updateSortColumn.bind(this);
+    this.toggleSortOrder = this.toggleSortOrder.bind(this);
+    this.updatePageNumber = this.updatePageNumber.bind(this);
+    this.updatePageRows = this.updatePageRows.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
     this.countFilteredRows = this.countFilteredRows.bind(this);
     this.getSortedRows = this.getSortedRows.bind(this);//
@@ -20,11 +34,45 @@ class DataTable extends Component {
   }
 
   setSortColumn(column) {
-    if (this.props.sort.column = column) {
+    if (this.state.sort.column === column) {
       this.props.toggleSortOrder();
     } else {
-      this.props.updateSortColumn(column);
+      this.updateSortColumn(column);
     }
+  }
+
+  updateSortColumn(column) {
+    const sort = this.state.sort;
+    sort.column = column;
+    this.setState({sort});
+  }
+
+  toggleSortOrder() {
+    const sort = this.state.sort;
+    sort.ascending = !sort.ascending;
+    this.setState({sort});
+  }
+
+  /**
+   * Updates page state
+   *
+   * @param {int} number of page
+   */
+  updatePageNumber(number) {
+    const page = this.sate.page;
+    page.number = number;
+    this.setState({page});
+  }
+
+  /**
+   * Update number of rows per page
+   *
+   * @param {object} e event from which to abstract value
+   */
+  updatePageRows(e) {
+    const page = this.state.page;
+    page.rows = e.target.value;
+    this.setState({page});
   }
 
   downloadCSV(csvData) {
@@ -107,10 +155,10 @@ class DataTable extends Component {
     const index = [];
 
     for (let i = 0; i < this.props.data.length; i += 1) {
-      let val = this.props.data[i][this.props.sort.column] || undefined;
+      let val = this.props.data[i][this.state.sort.column] || undefined;
       // If sortColumn is equal to default No. column, set value to be
       // index + 1
-      if (this.props.sort.column === -1) {
+      if (this.state.sort.column === -1) {
         val = i + 1;
       }
       const isString = (typeof val === 'string' || val instanceof String);
@@ -137,7 +185,7 @@ class DataTable extends Component {
     }
 
     index.sort((a, b) => {
-      if (this.props.sort.ascending) {
+      if (this.state.sort.ascending) {
         if (a.Value === b.Value) {
           // If all values are equal, sort by rownum
           if (a.RowIdx < b.RowIdx) return -1;
@@ -286,7 +334,7 @@ class DataTable extends Component {
         </div>
       );
     }
-    let rowsPerPage = this.props.page.rows;
+    let rowsPerPage = this.state.page.rows;
     let headers = this.props.hide.defaultColumn === true ? [] : [
       <th key='th_col_0' onClick={() => {
         this.setSortColumn(-1);
@@ -323,7 +371,7 @@ class DataTable extends Component {
     let index = this.getSortedRows();
     let matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     let filteredRows = this.countFilteredRows();
-    let currentPageRow = (rowsPerPage * (this.props.page.number - 1));
+    let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
     let filteredData = [];
     let useKeyword = false;
 
@@ -418,7 +466,7 @@ class DataTable extends Component {
       <select
         className="input-sm perPage"
         onChange={this.props.updatePageRows}
-        value={this.props.page.rows}
+        value={this.state.page.rows}
       >
         <option>20</option>
         <option>50</option>
