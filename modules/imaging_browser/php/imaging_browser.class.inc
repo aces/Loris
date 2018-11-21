@@ -61,6 +61,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $this->skipTemplate = true;
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
