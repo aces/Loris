@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Provides an interface to the NeuroDB configuration
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
