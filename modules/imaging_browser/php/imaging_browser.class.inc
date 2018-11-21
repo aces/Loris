@@ -150,7 +150,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN mri_scan_type modality ON (f.AcquisitionProtocolID=modality.ID)";
+            LEFT JOIN mri_scan_type modality ON 
+            (f.AcquisitionProtocolID=modality.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -230,7 +231,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             array(
              's.ID as sessionID',
-             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
+             'GROUP_CONCAT(DISTINCT modality.ID) as sequenceType',
              "$PendingNewquery as pending",
             ),
             $modalities_subquery_as
@@ -341,7 +342,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $pending = array(
                         'P'  => 'Pending',
                         'N'  => 'New',
-                        'PN' => 'Pending and New',
+                        'PN' => 'Pending Or New',
                        );
 
             $types_q    = $DB->pselect(
@@ -354,27 +355,17 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
             }
 
-            $outputTypes          = $DB->pselect(
+            $outputTypes = $DB->pselect(
                 "SELECT DISTINCT OutputType AS outputType 
             FROM files WHERE FileType='mnc' AND OutputType!='native'",
                 array()
             );
-            $all_scan_types_exist = $DB->pselect(
-                //query to get scan types that exist for the project
-                "SELECT mri.Scan_type FROM mri_scan_type mri JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-                array()
-            );
-            $all_scan_types = array();
-            foreach ($all_scan_types_exist as $row) {
-                $type = $row['Scan_type'];
-                $all_scan_types[$type] = $type;
-            }
 
             $this->fieldOptions = [
                                    'sites'         => $siteList,
                                    'projects'      => $list_of_projects,
                                    'visitQCStatus' => $visitQCStatus,
-                                   'sequenceTypes' => $all_scan_types,
+                                   'sequenceTypes' => $scan_types,
                                    'pendingNew'    => $pending,
                                    'configLabels'  => $scan_id_types,
                                   ];
