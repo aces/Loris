@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class over-rides the NDB_Menu_Filter class by including the functionality
  * of saving/processing the form.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
@@ -40,7 +40,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      * @return void
      * @access public
      */
-    function save()
+    function save(): void
     {
         if (!isset($_REQUEST['filter'])
             && isset($_REQUEST['fire_away'])
@@ -58,12 +58,12 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      * Preprocesses the array of values to be saved into the database
      *
      * @param array $values the array of values ready to be passed to
-                             a Database::replace call as the set array
+                   a Database::replace call as the set array
      *
      * @return void
      * @access private
      */
-    function _save($values)
+    function _save(array $values): void
     {
         unset(
             $values['test_name'],
@@ -90,7 +90,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      *
      * @return bool true if successful
      */
-    function _process($values)
+    function _process(array $values): bool
     {
         return true;
     }
