@@ -338,7 +338,10 @@ class NDB_Config
             foreach ($configSetting as $childSetting) {
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
-                $childValue       = $this->getSettingFromDB($childName, $childID);
+                $childValue       = $this->getSettingFromDB(
+                    $childName, 
+                    intval($childID)
+                );
                 $tree[$childName] = $childValue;
             }
             return $tree;
@@ -444,17 +447,10 @@ class NDB_Config
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        try {
-            $info = $DB->pselectRow(
-                "SELECT * FROM subproject WHERE SubprojectID=:sp",
-                array('sp' => $subprojectID)
-            );
-        } catch(DatabaseException $e) {
-            throw new LorisException(
-                'While attempting to get Subproject config settings, caught ' .
-                "DatabaseException: `$e`"
-            );
-        }
+        $info = $DB->pselectRow(
+            "SELECT * FROM subproject WHERE SubprojectID=:sp",
+            array('sp' => $subprojectID)
+        );
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
         // a way around this, please correct it
