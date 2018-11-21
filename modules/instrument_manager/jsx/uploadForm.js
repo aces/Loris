@@ -1,16 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * Media Upload Form
- *
- * Fetches data from Loris backend and displays a form allowing
- * to upload a media file attached to a specific instrument
- *
- * @author Alex Ilea
- * @version 1.0.0
- *
- * */
 class InstrumentUploadForm extends Component {
   constructor(props) {
     super(props);
