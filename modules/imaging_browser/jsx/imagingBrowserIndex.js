@@ -179,14 +179,12 @@ class ImagingBrowserIndex extends Component {
 
 ImagingBrowserIndex.propTypes = {
     dataURL: PropTypes.string.isRequired,
-    hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
     ReactDOM.render(
         <ImagingBrowserIndex
             dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
-            hasPermission={loris.userHasPermission}
         />,
         document.getElementById('lorisworkspace')
     );
