@@ -450,7 +450,11 @@ class NDB_Config
                 array('sp' => $subprojectID)
             );
         } catch(DatabaseException $e) {
-            return null;
+            throw new LorisException(
+                'While attempting to get Subproject config settings, caught ' .
+                "DatabaseException: `$e`"
+            );
+            return array();
         }
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
@@ -467,6 +471,7 @@ class NDB_Config
                     'RecruitmentTarget' => $info['RecruitmentTarget'],
                    );
         }
+        return array();
     }
 
     /**
