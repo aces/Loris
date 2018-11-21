@@ -121,7 +121,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Saves changes to the flags based on interaction with the control panel
      *
-     * @return bool
+     * @return bool Whether a user has access to the module and the instrument
+     *              is not locked.
      */
     function save(): bool
     {
@@ -144,11 +145,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     return false;
                 } else {
                     return false;
-                    //print "No permissions to delete";
                 }
             } else {
                 return false;
-                //print "Delete not confirmed.";
             }
             return false;
         }
@@ -237,9 +236,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the administration flag
      *
-     * @return string
+     * @return bool Whether a user has access
      */
-    function _displayAdministration(): string
+    function _displayAdministration(): bool
     {
         $hasAccess = $this->_hasAccess();
 
