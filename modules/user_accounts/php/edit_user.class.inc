@@ -598,7 +598,7 @@ class Edit_User extends \NDB_Form
                 'UserID_Group',
                 'User name',
                 $this->_GUIDelimiter,
-                false
+                array()
             );
             unset($group);
 
@@ -616,7 +616,7 @@ class Edit_User extends \NDB_Form
             'Password_Group',
             'Password',
             $this->_GUIDelimiter,
-            false
+            array()
         );
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
@@ -681,7 +681,7 @@ class Edit_User extends \NDB_Form
             'Email_Group',
             'Email address',
             $this->_GUIDelimiter,
-            false
+            array()
         );
         unset($group);
 
@@ -757,14 +757,14 @@ class Edit_User extends \NDB_Form
                 'examiner_sites',
                 'Examiner At:',
                 $this->_GUIDelimiter,
-                false
+                array()
             );
             $this->addGroup(
                 $groupB,
                 'examiner_group',
                 'Examiner Status',
                 $this->_GUIDelimiter,
-                false
+                array()
             );
             unset($groupA);
             unset($groupB);
@@ -827,7 +827,7 @@ class Edit_User extends \NDB_Form
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', '', array());
         unset($group);
 
         //getting users name and emails to create checkboxes
@@ -862,7 +862,7 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
+        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', '', array());
         unset($group);
 
         if (!$this->isCreatingNewUser()) {

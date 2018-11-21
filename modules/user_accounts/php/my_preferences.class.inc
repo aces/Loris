@@ -318,7 +318,7 @@ class My_Preferences extends \NDB_Form
             "notification_headers",
             null,
             $this->_GUIDelimiter,
-            false
+            array()
         );
         unset($nGroup);
 
@@ -360,7 +360,7 @@ class My_Preferences extends \NDB_Form
                     "row_".$module."_".$operation,
                     null,
                     $this->_GUIDelimiter,
-                    false
+                    array()
                 );
                 $notification_rows[] ="row_".$module."_".$operation;
                 unset($nGroup);

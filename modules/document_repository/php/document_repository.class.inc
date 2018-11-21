@@ -340,6 +340,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $tmpIDCategories  = json_decode(json_encode($tree), true);
         $categoryOrdering = $this->parseTree($tmpIDCategories);
 
+        $fileCategories = array();
         foreach ($categoryOrdering as $order) {
             foreach ($IDCategories as $key=>$value) {
                 $CategoryID = $value['id'];

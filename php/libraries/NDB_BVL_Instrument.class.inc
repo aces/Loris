@@ -403,7 +403,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 array('class' => 'button')
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, '', '', "&nbsp;");
         }
 
         // get saved data to pre-populate form
@@ -1567,7 +1567,7 @@ class NDB_BVL_Instrument extends NDB_Page
             array('class' => 'form-control input-sm not-answered')
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '', array());
         unset($group);
         $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1611,7 +1611,7 @@ class NDB_BVL_Instrument extends NDB_Page
             )
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '', array());
         unset($group);
         $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1654,7 +1654,7 @@ class NDB_BVL_Instrument extends NDB_Page
             ),
             array('class' => 'form-control input-sm not-answered')
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '', array());
         unset($group);
         $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule(
@@ -1707,7 +1707,7 @@ class NDB_BVL_Instrument extends NDB_Page
              'not_answered' => 'Not Answered',
             )
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '', array());
         $this->XINRegisterRule(
             $field,
             array_merge($rules, array($field . '_status{@}=={@}')),
@@ -1764,7 +1764,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
+            array()
         );
 
         unset($group);
@@ -1829,7 +1829,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
+            array()
         );
         unset($group);
         $this->XINRegisterRule(
@@ -1873,7 +1873,7 @@ class NDB_BVL_Instrument extends NDB_Page
             ),
             array('class' => 'form-control input-sm not-answered')
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '', array());
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -1910,7 +1910,7 @@ class NDB_BVL_Instrument extends NDB_Page
             ),
             array('class' => 'form-control input-sm not-answered')
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '', array());
         unset($group);
         $this->addGroupRule(
             $field . "_group",
