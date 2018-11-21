@@ -339,7 +339,7 @@ class NDB_Config
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
                 $childValue       = $this->getSettingFromDB(
-                    $childName, 
+                    $childName,
                     intval($childID)
                 );
                 $tree[$childName] = $childValue;
