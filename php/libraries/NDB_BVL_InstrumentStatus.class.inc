@@ -103,7 +103,7 @@ class NDB_BVL_InstrumentStatus
      * @return int
      * @access public
      */
-    function getSessionID(): int
+    public function getSessionID(): int
     {
         return intval($this->_status['SessionID']);
     }
@@ -121,9 +121,9 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current administration status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getAdministrationStatus(): string
+    function getAdministrationStatus(): ?string
     {
         return $this->_status['Administration'];
     }
