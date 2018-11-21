@@ -31,7 +31,7 @@ class IssueRow implements \LORIS\Data\DataInstance
     protected $CenterID;
 
     /**
-     * Create a new DICOMArchiveRow
+     * Create a new IssueRow
      *
      * @param array   $row The row (in the same format as \Database::pselectRow
      *                     returns
