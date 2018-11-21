@@ -146,9 +146,12 @@ chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
-os_distro=$(awk -F= '/^ID_LIKE/{print $2}' /etc/os-release)
+os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
 
-if [ $os_distro = "debian" ]; then
+debian=("Debian" "Ubuntu")
+redhat=("Red" "CentOS" "Fedora") 
+
+if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -156,7 +159,7 @@ if [ $os_distro = "debian" ]; then
     # can write the config.xml file.
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
-elif [ "$os_distro" == \""rhel fedora\"" ]; then
+elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
@@ -168,14 +171,13 @@ else
     echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp to the web server user in: the user_uploads directory in ../modules/data_release/ and ../modules/document_repository/, as well as ../smarty/templates_c/"
 fi
 
-
 # Set the proper permission for the tools/logs directory:
 if [ -d logs ]; then
     chmod 770 logs
     # Set the group to 'www-data' or 'apache' for tools/logs directory:
-    if [ $os_distro = "Ubuntu" ]; then
+    if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
         sudo chgrp www-data logs
-    elif [ $os_distro = "CentOS" ]; then
+    elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
         sudo chgrp apache logs
     else
         echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for the directory tools/logs/"
@@ -189,7 +191,7 @@ eval $composer_scr
 cd tools
 
 
-if [ $os_distro = "Ubuntu" ]; then
+if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
 echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
@@ -219,7 +221,7 @@ echo "Ubuntu distribution detected."
             * ) echo "Please enter 'y' or 'n'."
         esac
     done;
-elif [ $os_distro = "CentOS" ]; then
+elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
 echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
 logdirectory=/var/log/httpd
