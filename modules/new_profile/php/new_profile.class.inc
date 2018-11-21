@@ -70,7 +70,7 @@ class New_Profile extends \NDB_Form
         if ($config->getSetting('useProjects') == "true") {
             $candidate->setData(
                 array(
-                    'ProjectID' => $values['ProjectID']
+                 'ProjectID' => $values['ProjectID'],
                 )
             );
 
