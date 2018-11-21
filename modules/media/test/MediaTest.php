@@ -61,5 +61,25 @@ class MediaTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
 
+    function upload()
+    {
+        $this->safeGet($this->url . "/media/edit/?id=1");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print_r($bodyText);
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
+    function ajx()
+    {
+        $this->safeGet($this->url . "/media/ajax/FileUpload.php?action=getData&idMediaFile=1");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print_r($bodyText);
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
 }
 ?>
