@@ -870,54 +870,25 @@ class Utility
     }
 
     /**
-     * This function takes two strings. If one string has a
-     * suffix which is a prefix of the other, it will return
-     * the part of the second string minus the common
-     * suffix/prefix.
+     * Determine whether an array is a numeric (normal) array or an
+     * associative (hashtable) array.
      *
-     * This is mostly used for removing pieces of a relative
-     * URL in a way that can be concatinated to an absolute
-     * URL without duplicating components. ie.
+     * @param array $arr The array to be checked for numeric keys.
      *
-     * removeCommonAffix("http://localhost/foo", "/foo/bar")
-     *
-     * would return "/bar", which can then be concatenated
-     * to "http://localhost/foo" to form the URL
-     * "http://loclahost/foo/bar"
-     *
-     * @param string $suffixStr The string which may contain a common affix
-     *                          at the end of the string
-     * @param string $prefixStr The string to compare the suffix string to
-     *
-     * @return string $prefixStr minus the largest common piece of $suffixStr
+     * @return boolean True if the given parameter is an array with
+     *                 numeric keys, false otherwise.
+     * @note   Fix this in future, checking $arr[0] is naive
      */
-    static function removeCommonAffix(
-        string $suffixStr,
-        string $prefixStr
-    ): string {
-        $lastFound = '';
-        // Start from the end of $suffixStr and work backwords, to make sure
-        // it fails fast in the event that there's nothing in common.
-        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
-            $piece = substr($suffixStr, $i);
-            $found = strpos($prefixStr, $piece);
-            if ($found === 0) {
-                // The current substring starts at index 0 in prefixStr, so we
-                // know that it's a prefix. Keep track of it.
-                $lastFound = $piece;
-            } else if ($found === false) {
-                // The current substring doesn't appear anywhere in
-                // $prefixStr, so return the last known complete prefix.
-                // There's no chance that a larger string is going to
-                // be a prefix either.
-                return substr($prefixStr, strlen($lastFound));
-            } else {
-                // Otherwise, the string appears somewhere, but isn't at the
-                // beginning of the string. Keep going because this might be
-                // the middle of a larger prefix.
-            }
+    static function numericArray(array $arr): bool
+    {
+        if (!is_array($arr)) {
+            return false;
         }
-        return $prefixStr;
+        $keys = array_keys($arr);
+        if (count($keys) === 0) {
+            return false;
+        }
+        return isset($arr[0]);
     }
 
     /**
