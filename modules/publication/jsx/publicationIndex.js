@@ -1,7 +1,6 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
-import formatColumn from './columnFormatter';
 
 class PublicationIndex extends React.Component {
   constructor() {
@@ -109,13 +108,40 @@ class PublicationIndex extends React.Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
-            getFormattedCell={formatColumn}
+            getFormattedCell={this.formatColumn}
           />
         </TabPane>
         {proposalTab}
       </Tabs>
     );
   }
+
+  formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column if set as hidden, don't display it
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+  // Create the mapping between rowHeaders and rowData in a row object.
+  let row = {};
+  rowHeaders.forEach(function(header, index) {
+    row[header] = rowData[index];
+  }, this);
+
+  let classes = [];
+  if (column === 'Title') {
+    let pubID = row['Publication ID'];
+    let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
+
+    return (
+      <td>
+        <a href={viewURL}>
+          {cell}
+        </a>
+      </td>
+    );
+  }
+  return <td className={classes}>{cell}</td>;
+}
 }
 
 $(function() {
