@@ -67,7 +67,7 @@ function uploadPublication() : void
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Name = :n AND Email = :e',
+        'WHERE Name = :n OR Email = :e',
         array(
          'n' => $leadInvest,
          'e' => $leadInvestEmail,
@@ -114,8 +114,7 @@ function uploadPublication() : void
         // INSERT INTO publication_parameter_type_rel
         insertVOIs($pubID);
     } catch (Exception $e) {
-        cleanup($pubID);
-        showPublicationError($e->getMessage(), $e->getCode());
+        showPublicationError($e->getMessage(), 500, $pubID);
     }
 
     notify($pubID, 'submission');
@@ -138,41 +137,33 @@ function processFiles($pubID) : void
 
     $publicationPath = $config->getSetting('publication_uploads');
 
-    if (!isset($publicationPath)) {
-        throw new LorisException(
-            "Error! Publication path is not set in Loris Settings!",
-            500
-        );
-    }
-
     if (!is_dir($publicationPath)) {
-        throw new LorisException(
+        showPublicationError(
             "Error! The upload folder '$publicationPath' does not exist!",
-            500
+            500,
+            $pubID
         );
     }
 
     foreach ($_FILES as $name => $values) {
         $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
-            throw new LorisException("File $fileName already exists!", 409);
+            showPublicationError("File $fileName already exists!", 409, $pubID);
         }
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            throw new LorisException(
+            showPublicationError(
                 "Please make sure your file has a valid extension: " .
                 $values['name'],
-                400
+                400,
+                $pubID
             );
         }
-        $pubTypeID       = isset($_REQUEST['publicationType_'.$index]) ?
-            $_REQUEST['publicationType_'.$index] : null;
-        $pubCitation     = isset($_REQUEST['publicationCitation_'.$index]) ?
-            $_REQUEST['publicationCitation_'.$index] : null;
-        $pubVersion      = isset($_REQUEST['publicationVersion_'.$index]) ?
-            $_REQUEST['publicationVersion_'.$index] : null;
+        $pubTypeID       = $_REQUEST['publicationType_'.$index] ?? null;
+        $pubCitation     = $_REQUEST['publicationCitation_'.$index] ?? null;
+        $pubVersion      = $_REQUEST['publicationVersion_'.$index] ?? null;
         $pubUploadInsert = array(
                             'PublicationID'           => $pubID,
                             'PublicationUploadTypeID' => $pubTypeID,
@@ -184,9 +175,10 @@ function processFiles($pubID) : void
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
         } else {
-            throw new LorisException(
+            showPublicationError(
                 "Could not upload the file. Please try again!",
-                500
+                500,
+                $pubID
             );
         }
     }
@@ -368,7 +360,7 @@ function insertVOIs(int $pubID) : void
                 $pubParamTypeRelInsert
             );
         } else {
-            throw new LorisException("Unknown variable of interest: $vf");
+            showPublicationError("Unknown variable of interest: $vf", 400, $pubID);
         }
     }
 }
@@ -428,7 +420,7 @@ function notify($pubID, $type) : void
                      );
 
     if (!in_array($type, $acceptedTypes)) {
-        throw new LorisException("Unexpected notification type: $type");
+        showPublicationError("Unexpected notification type: $type", 400, $pubID);
     }
 
     $db        = \Database::singleton();
@@ -510,11 +502,11 @@ function editProject() : void
         showPublicationError('No Publication ID provided');
     }
 
-    $title                 = $_REQUEST['title'] ?? null;
-    $statusID              = $_REQUEST['status'] ?? null;
-    $rejectedReason        = $_REQUEST['rejectedReason'] ?? null;
-    $description           = $_REQUEST['description'] ?? null;
-    $leadInvestigator      = $_REQUEST['leadInvestigator'] ?? null;
+    $title            = $_REQUEST['title'] ?? null;
+    $statusID         = $_REQUEST['status'] ?? null;
+    $rejectedReason   = $_REQUEST['rejectedReason'] ?? null;
+    $description      = $_REQUEST['description'] ?? null;
+    $leadInvestigator = $_REQUEST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_REQUEST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
@@ -873,27 +865,20 @@ function editUploads($id) : void
  *
  * @param string $message error message to display
  * @param int    $code    HTTP response code
+ * @param int    $pubID   publication ID for cleanup of bad posts
  *
  * @return void
  */
-function showPublicationError($message, $code = 500) : void
+function showPublicationError($message, $code = 500, $pubID = null) : void
 {
+    if (isset($pubID)) {
+        cleanup($pubID);
+    }
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
-    $resp = '';
-    switch ($code) {
-    case 400:
-        $resp = "400 Bad Request";
-        break;
-    case 403:
-        $resp = "403 Forbidden";
-        break;
-    default:
-        $resp = '500 Internal Server Error';
-        break;
-    }
-    header("HTTP/1.1 $resp");
+
+    http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(['message' => $message]));
 }
