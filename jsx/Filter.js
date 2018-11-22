@@ -56,9 +56,6 @@ class Filter extends Component {
         case 'multiselect':
           element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
           break;
-        case 'date':
-          element = <DateElement key={filter.name}/>;
-          break;
         default:
           element = <TextboxElement key={filter.name}/>;
         }
