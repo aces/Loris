@@ -24,7 +24,18 @@ if ($request != '/'
     return false;
 }
 if (preg_match(
-    '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#',
+    // 
+
+    how to match ? 
+/media/ajax/FileUpload.php?action=getData
+/media/ajax/FileUpload.php?action=getData&fjdks=jfkdls
+
+
+
+
+
+    // 
+    '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9?_.-/]+)#',
     $url
 )) {
     // RewriteRule
@@ -36,7 +47,7 @@ if (preg_match(
 
     $_GET["Module"] = $getParams[0];
     $_GET['script'] = $getParams[2];
-
+    
     include_once __DIR__ . "/AjaxHelper.php";
 } else if (preg_match(
     '#^(/*)instruments/(.+)/#',
