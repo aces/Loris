@@ -1559,7 +1559,6 @@ CREATE TABLE `parameter_type` (
   `SourceField` text,
   `SourceFrom` text,
   `SourceCondition` text,
-  `CurrentGUITable` varchar(255) default NULL,
   `Queryable` tinyint(1) default '1',
   `IsFile` tinyint(1) default '0',
   PRIMARY KEY  (`ParameterTypeID`),
@@ -1567,21 +1566,21 @@ CREATE TABLE `parameter_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
 
-INSERT INTO `parameter_type` VALUES
-  (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0),
-  (8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
+INSERT INTO `parameter_type` (ParameterTypeID, Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, SourceCondition, Queryable, IsFile) VALUES
+  (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,1,0),
+  (8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 
 
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES
-  ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null),
-  ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null),
-  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+INSERT INTO `parameter_type` (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, Queryable, SourceCondition) VALUES
+  ('candidate_label','text','Identifier_of_candidate',NULL,NULL,'PSCID','candidate',1,NULL),
+  ('Visit_label','varchar(255)','Visit_label',NULL,NULL,'visit_label','session',1,NULL),
+  ('candidate_dob','date','Candidate_Dob',NULL,NULL,'DoB','candidate',1,NULL);
 
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
