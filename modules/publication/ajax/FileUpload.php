@@ -254,7 +254,7 @@ function insertCollaborators($pubID) : void
  *
  * @return void
  */
-function insertEditors($pubID) : void
+function insertEditors(int $pubID) : void
 {
     if (empty($_REQUEST['usersWithEditPerm'])) {
         return;
