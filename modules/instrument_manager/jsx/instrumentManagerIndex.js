@@ -53,7 +53,6 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    // Set class to 'bg-danger' if file is hidden.
     return (
       <td>{cell}</td>
     );
