@@ -251,7 +251,7 @@ function insertCollaborators($pubID) : void
  *
  * @return void
  */
-function insertEditors($pubID) : void
+function insertEditors(int $pubID) : void
 {
     if (empty($_REQUEST['usersWithEditPerm'])) {
         return;
@@ -279,7 +279,7 @@ function insertEditors($pubID) : void
  *
  * @return void
  */
-function insertKeywords($pubID) : void
+function insertKeywords(int $pubID) : void
 {
     if (empty($_REQUEST['keywords'])) {
         return;
@@ -325,7 +325,7 @@ function insertKeywords($pubID) : void
  *
  * @return void
  */
-function insertVOIs($pubID) : void
+function insertVOIs(int $pubID) : void
 {
 
     if (empty($_REQUEST['voiFields'])) {
@@ -379,7 +379,7 @@ function insertVOIs($pubID) : void
  *
  * @return void
  */
-function cleanup($pubID) : void
+function cleanup(int $pubID) : void
 {
     $db    = Database::singleton();
     $where = array('PublicationID' => $pubID);
