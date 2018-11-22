@@ -36,7 +36,7 @@ function uploadPublication() : void
         || !$user->hasPermission('publication_view')
     ) {
         showPublicationError("You do not have permission to propose a project", 403);
-        exit;
+        return;
     }
 
     $titleRaw = $_REQUEST['title'] ?? null;
