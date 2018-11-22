@@ -27,7 +27,9 @@ namespace LORIS\imaging_browser;
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
-    var $AjaxModule = true;
+    var $AjaxModule      = true;
+    public $skipTemplate = true;
+    public $fieldOptions;
     /**
      * Determine whether the user has permission to view this page
      *
@@ -61,7 +63,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->skipTemplate = true;
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
@@ -262,7 +263,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
         // create user object
-        $user     =& \User::singleton();
+        $user     = \User::singleton();
         $siteList = array();
 
         // PSC
@@ -289,7 +290,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $DB    = \Database::singleton();
         $allAr = array();
 
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 

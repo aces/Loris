@@ -14,7 +14,6 @@ class ImagingBrowserIndex extends Component {
         };
 
         this.fetchData = this.fetchData.bind(this);
-        this.formatColumn = this.formatColumn.bind(this);
     }
 
     componentDidMount() {
@@ -24,8 +23,6 @@ class ImagingBrowserIndex extends Component {
 
     /**
      * Retrieve data from the provided URL and save it in state
-     * Additionally add hiddenHeaders to global loris variable
-     * for easy access by columnFormatter.
      *
      * @return {object}
      */
