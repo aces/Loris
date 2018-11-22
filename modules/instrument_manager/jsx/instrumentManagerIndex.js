@@ -103,42 +103,45 @@ class InstrumentManagerIndex extends Component {
       }},
     ];
 
-    const tabs = [{id: 'browse', label: 'Browse'}];
+    const tabs = [
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
+    ];
 
-    const uploadTab = () => {
-      if (this.state.data.writable) {
-        let url = loris.BaseURL.concat('/instrument_manager/?format=json');
-        tabs.push({
-          id: 'upload',
-          label: 'Upload',
-        });
+    const feedback = () => {
+      if (!this.state.data.caninstall) {
         return (
-          <TabPane TabId='upload'>
-            <InstrumentUploadForm action={url}/>
-          </TabPane>
-        );
-      }
-    };
-
-    const feedbacks = () => {
-      if (this.state.data.feedback.length > 0) {
-        let items = this.state.data.feedback.map(function(f, i) {
-          return (
-            <span key={i}>{f}</span>
-          );
-        });
-        feedback = (
-          <div class="alert alert-warning">
-            {items}
+          <div className='alert alert-warning'>
+            Instrument installation is not possible given the current server
+            configuration; the LORIS 'quatUser' is not configured properly.
+            File upload is still possible but instruments will need to be
+            installed manually
           </div>
         );
       }
     };
 
+    const uploadTab = () => {
+      let content = null;
+      if (this.state.data.writable) {
+        let url = loris.BaseURL.concat('/instrument_manager/?format=json');
+        content = (
+          <InstrumentUploadForm action={url}/>
+        );
+      } else {
+        content = (
+          <div className='alert alert-warning'>
+            Installation is not possiblegiven the current server configuration.
+            Please contact your administrator if you require this functionality
+          </div>
+        );
+      }
+      return content;
+    };
+
     return (
       <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabs[0].id}>
-          {feedbacks()}
           <FilterableDataTable
             name="instrument_manager"
             data={this.state.data.Data}
@@ -146,7 +149,10 @@ class InstrumentManagerIndex extends Component {
             getFormattedCell={this.formatColumn}
           />
         </TabPane>
-        {uploadTab()}
+        <TabPane TabId='upload'>
+          {feedback()}
+          {uploadTab()}
+        </TabPane>
       </Tabs>
     );
   }
