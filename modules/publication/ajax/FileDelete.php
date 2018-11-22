@@ -24,7 +24,7 @@ $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 
 if (empty($uploadData)) {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    return;
 }
 
 $origUser = $db->pselectOne(
