@@ -317,12 +317,13 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getValidSubprojects returns NULL when there are no subprojects in DB
+     * Test getValidSubprojects returns array() when there are no subprojects 
+     * in DB.
      *
      * @covers Candidate::getValidSubprojects
      * @return void
      */
-    public function testGetValidSubprojectsReturnsNull()
+    public function testGetValidSubprojectsReturnsEmptyArray(): void
     {
         $subprojects = array();
         $this->_setUpTestDoublesForSelectCandidate();
@@ -335,7 +336,7 @@ class CandidateTest extends TestCase
 
         $this->_candidate->select(969664);
 
-        $this->assertNull($this->_candidate->getValidSubprojects());
+        $this->assertEquals($this->_candidate->getValidSubprojects(), array());
     }
 
     /**
