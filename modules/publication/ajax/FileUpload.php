@@ -148,7 +148,7 @@ function processFiles($pubID) : void
         );
     }
 
-    if (!file_exists($publicationPath)) {
+    if (!is_dir($publicationPath)) {
         throw new LorisException(
             "Error! The upload folder '$publicationPath' does not exist!",
             500
