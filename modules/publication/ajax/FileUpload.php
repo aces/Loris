@@ -192,7 +192,7 @@ function processFiles($pubID) : void
  *
  * @return void
  */
-function insertCollaborators($pubID) : void
+function insertCollaborators(int $pubID) : void
 {
     if (!$_REQUEST['collaborators']) {
         return;
