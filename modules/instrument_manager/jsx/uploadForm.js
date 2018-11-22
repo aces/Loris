@@ -65,7 +65,7 @@ class InstrumentUploadForm extends Component {
   }
 
   render() {
-    const disabled = () => this.state.selectedFile == null;
+    const disabled = () => this.state.selectedFile === null;
 
     return (
       <div className="row">

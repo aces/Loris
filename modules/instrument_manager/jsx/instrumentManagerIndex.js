@@ -77,7 +77,7 @@ class InstrumentManagerIndex extends Component {
         type: 'text',
       }},
       {label: 'Instrument Type', show: true, filter: {
-        name: 'instrument_type',
+        name: 'instrumentType',
         type: 'select',
         options: {
           'Instrument Builder': 'Instrument Builder',
@@ -86,7 +86,7 @@ class InstrumentManagerIndex extends Component {
         },
       }},
       {label: 'Table Installed', show: true, filter: {
-        name: 'table_installed',
+        name: 'tableInstalled',
         type: 'select',
         options: {
           'Exists': 'Exists',
@@ -94,11 +94,11 @@ class InstrumentManagerIndex extends Component {
         },
       }},
       {label: 'Table Valid', show: true, filter: {
-        name: 'table_valid',
+        name: 'tableValid',
         type: 'text',
       }},
       {label: 'Pages Valid', show: true, filter: {
-        name: 'pages_valid',
+        name: 'pagesValid',
         type: 'text',
       }},
     ];
@@ -131,7 +131,7 @@ class InstrumentManagerIndex extends Component {
       } else {
         content = (
           <div className='alert alert-warning'>
-            Installation is not possiblegiven the current server configuration.
+            Installation is not possible given the current server configuration.
             Please contact your administrator if you require this functionality
           </div>
         );
