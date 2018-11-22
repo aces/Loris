@@ -113,7 +113,7 @@ class DicomArchive extends Component {
 
     /**
      * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in media.class.inc
+     * queried columns in _setupVariables() in dicom_archive.class.inc
      */
     const options = this.state.data.fieldOptions;
     const fields = [
