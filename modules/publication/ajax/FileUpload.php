@@ -39,7 +39,7 @@ function uploadPublication() : void
         exit;
     }
 
-    $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
+    $titleRaw = $_REQUEST['title'] ?? null;
     if (!$titleRaw) {
         showPublicationError('Title is empty', 400);
     }
