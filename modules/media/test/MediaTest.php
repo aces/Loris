@@ -37,7 +37,7 @@ class MediaTest extends LorisIntegrationTest
 
     function testUpload()
     {
-        $this->safeGet($this->url . "/media/#upload");
+        $this->safeGet($this->url . "/media/ajax/FileUpload.php?action=getData");sleep(30);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();

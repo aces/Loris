@@ -51,7 +51,7 @@ class NDB_Config
      *
      * @access public
      */
-    var $configFilePath;
+    var $configFilePath="/app/project/config.xml";
 
     /**
      * The singleton design pattern - autoloads config file
@@ -72,10 +72,16 @@ class NDB_Config
                 // in PHP < 5.5, need to assign to a variable first
                 $configFile = $config->configFilePath();
             }
-
             // Load the file
-            $config->load($configFile);
+        $env = getenv('LORIS_DB_CONFIG');
+        if (!empty($env)) {
+            $file = $env;
+             $config->load($file);
+        } else {
+ 
+                   $config->load($configFile);
 
+        }
             if (!empty($config->_settings['include'])) {
                 // Load all includes found in the config
                 $includes = Utility::asArray($config->_settings['include']);
@@ -97,7 +103,7 @@ class NDB_Config
      *
      * @throws Exception
      */
-    function load($configFile = "../project/config.xml")
+    function load($configFile = "/app/project/config.xml")
     {
         // load the configuration data into a global variable $config
         $newroot = simplexml_load_file($configFile);
@@ -147,7 +153,6 @@ class NDB_Config
                 "Config file $pathToFile does not exist in the defined locations."
             );
         }
-
         return $file;
     }
 
