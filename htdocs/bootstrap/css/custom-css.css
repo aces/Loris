@@ -42,7 +42,7 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-default {
     background-color: #064785;
     border: none !important;
-    box-shadow: 4px 8px 8px 2px rgba(0,0,0,0.175);
+    box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
 }
 
 .navbar-default a {
