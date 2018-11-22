@@ -39,7 +39,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                                   'administrator if you require this ' .
                                   'functionality';
 
-    const FILES_ALREADY_EXISTS = 'This file has already been uploaded. ' .
+    const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
                                   'install the instrument';
 
@@ -156,7 +156,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => self::ILES_ALREADY_EXISTS)
+                            array('error' => self::FILE_ALREADY_EXISTS)
                         )
                     )
                 );
