@@ -328,7 +328,7 @@ function insertKeywords($pubID) : void
  *
  * @return void
  */
-function insertVOIs($pubID) : void
+function insertVOIs(int $pubID) : void
 {
 
     if (empty($_REQUEST['voiFields'])) {
