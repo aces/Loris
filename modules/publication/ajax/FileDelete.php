@@ -39,7 +39,7 @@ $editors = $db->pselectCol(
 
 if ($user->getId() !== $origUser && !in_array($user->getId(), $editors)) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    return;
 }
 
 $db->delete(
