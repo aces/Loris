@@ -418,7 +418,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     *
     * @return string
     */
-    protected function checkType($tablename, $columnname, $type): string
+    protected function checkType($tablename, $columnname, $type): ?string
     {
         $db           = $this->factory->database();
         $sqlSelectOne = "SELECT count(*)".
