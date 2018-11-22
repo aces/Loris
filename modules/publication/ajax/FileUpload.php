@@ -58,12 +58,9 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc            = isset($_REQUEST['description'])
-        ? $_REQUEST['description'] : null;
-    $leadInvest      = isset($_REQUEST['leadInvestigator'])
-        ? $_REQUEST['leadInvestigator'] : null;
-    $leadInvestEmail = isset($_REQUEST['leadInvestigatorEmail'])
-        ? $_REQUEST['leadInvestigatorEmail'] : null;
+    $desc            = $_REQUEST['description'] ?? null;
+    $leadInvest      = $_REQUEST['leadInvestigator'] ?? null;
+    $leadInvestEmail = $_REQUEST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
@@ -513,18 +510,12 @@ function editProject() : void
         showPublicationError('No Publication ID provided');
     }
 
-    $title            = isset($_REQUEST['title'])
-        ? $_REQUEST['title'] : null;
-    $statusID         = isset($_REQUEST['status'])
-        ? $_REQUEST['status'] : null;
-    $rejectedReason   = isset($_REQUEST['rejectedReason'])
-        ? $_REQUEST['rejectedReason'] : null;
-    $description      = isset($_REQUEST['description'])
-        ? $_REQUEST['description'] : null;
-    $leadInvestigator = isset($_REQUEST['leadInvestigator'])
-        ? $_REQUEST['leadInvestigator'] : null;
-    $leadInvestigatorEmail = isset($_REQUEST['leadInvestigatorEmail'])
-        ? $_REQUEST['leadInvestigatorEmail'] : null;
+    $title                 = $_REQUEST['title'] ?? null;
+    $statusID              = $_REQUEST['status'] ?? null;
+    $rejectedReason        = $_REQUEST['rejectedReason'] ?? null;
+    $description           = $_REQUEST['description'] ?? null;
+    $leadInvestigator      = $_REQUEST['leadInvestigator'] ?? null;
+    $leadInvestigatorEmail = $_REQUEST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
         'SELECT p.*, pc.Name as LeadInvestigator, ' .
@@ -856,8 +847,8 @@ function editUploads($id) : void
         $citationIndex = 'existingUpload_publicationCitation_' . $puid;
         $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
-        $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
-        $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;
+        $cit = $_REQUEST[$citationIndex] ?? null;
+        $ver = $_REQUEST[$versionIndex] ?? null;
 
         if (htmlspecialchars($cit) !== $data['Citation']) {
             $toUpdate[$puid]['Citation'] = $cit;
