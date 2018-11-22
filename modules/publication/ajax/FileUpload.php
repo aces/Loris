@@ -282,7 +282,7 @@ function insertEditors($pubID) : void
  *
  * @return void
  */
-function insertKeywords($pubID) : void
+function insertKeywords(int $pubID) : void
 {
     if (empty($_REQUEST['keywords'])) {
         return;
