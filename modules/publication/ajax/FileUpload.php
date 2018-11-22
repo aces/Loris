@@ -382,7 +382,7 @@ function insertVOIs($pubID) : void
  *
  * @return void
  */
-function cleanup($pubID) : void
+function cleanup(int $pubID) : void
 {
     $db    = Database::singleton();
     $where = array('PublicationID' => $pubID);
