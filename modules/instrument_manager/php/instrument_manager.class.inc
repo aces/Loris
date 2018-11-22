@@ -14,7 +14,6 @@
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \LORIS\Http\EmptyStream;
 
 /**
@@ -338,7 +337,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @param string $instrument The instrument name
      *
-     * @return bool True if subtests exists
+     * @return string An evocative answer
      */
     protected function checkPagesValid(string $instrument): string
     {
@@ -355,7 +354,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @param string $instrument The instrument name
      *
-     * @return bool True if a table exists
+     * @return string An evocative answer
      */
     protected function checkTableValid(string $instrument): string
     {
@@ -372,7 +371,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @param string $instrument The instrument name
      *
-     * @return bool True if a table exists
+     * @return string An evocative answer
      */
     protected function checkTableInstalled(string $instrument): string
     {
@@ -418,7 +417,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     *
     * @return string
     */
-    protected function checkType($tablename, $columnname, $type): ?string
+    protected function checkType($tablename, $columnname, $type)
     {
         $db           = $this->factory->database();
         $sqlSelectOne = "SELECT count(*)".
@@ -447,7 +446,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     *
     * @param string $instname the value of instname
     *
-    * @return bool
+    * @return string An evocative answer
     */
     protected function checkTable($instname): string
     {
