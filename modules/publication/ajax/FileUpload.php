@@ -36,10 +36,10 @@ function uploadPublication() : void
         || !$user->hasPermission('publication_view')
     ) {
         showPublicationError("You do not have permission to propose a project", 403);
-        exit;
+        return;
     }
 
-    $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
+    $titleRaw = $_REQUEST['title'] ?? null;
     if (!$titleRaw) {
         showPublicationError('Title is empty', 400);
     }
@@ -148,7 +148,7 @@ function processFiles($pubID) : void
         );
     }
 
-    if (!file_exists($publicationPath)) {
+    if (!is_dir($publicationPath)) {
         throw new LorisException(
             "Error! The upload folder '$publicationPath' does not exist!",
             500
