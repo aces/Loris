@@ -34,26 +34,32 @@ class MediaTest extends LorisIntegrationTest
      *
      * @return void
      */
+    function testLoadsWithPermissionRead()
+    {
+        $this->setupPermissions(array("media_read"));
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testDoesNotLoadWithoutPermission()
+    {
+        $this->setupPermissions(array());
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
 
-    function testUpload()
-    {
-        $this->safeGet($this->url . "/media/ajax/FileUpload.php?action=getData");sleep(30);
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        print_r($bodyText);
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-    }
-    function testAajx()
-    {
-        $this->safeGet($this->url . "/media/ajax/FileUpload.php?action=getData&idMediaFile=1");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        print_r($bodyText);
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-    }
 }
 ?>
