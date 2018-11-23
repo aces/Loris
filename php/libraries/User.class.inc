@@ -255,14 +255,17 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's sites' names, concatenated with
-     * a semi-colon if the User is at more than one site
+     * Returns an array of sites a user belongs to.
      *
-     * @return string
+     * @return array
      */
-    function getSiteNames()
+    function getSiteNames(): array
     {
-        return $this->userInfo['Sites'];
+        /* The original query to fetch userInfo in the factory() function CONCAT
+         * CONCATs the site names together in a string using semi-colons.
+         * Therefore this string must be split and returned as an array.
+         */
+        return explode(';', $this->userInfo['Sites']);
     }
 
     /**

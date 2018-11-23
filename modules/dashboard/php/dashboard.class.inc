@@ -37,7 +37,7 @@ class Dashboard extends \NDB_Form
         $DB     = \Database::singleton();
         $user   = \User::singleton();
         $config = \NDB_Config::singleton();
-        $site   = explode(';', $user->getSiteNames());
+        $site   = $user->getSiteNames();
 
         $userID     = $user->getUsername();
         $last_login = $DB->pselectOne(

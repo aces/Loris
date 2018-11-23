@@ -187,16 +187,18 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //SUBPROJECTS
-        $subprojList ="";
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
-        }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
+        $suproject_query = '';
+        // Only search for subprojects if $currentProject is a positive int.
+        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+            $subprojList ="";
+            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            foreach ($subprojects as $key=>$val) {
+                $subprojList .= $key.",";
+            }
+            $subprojList = substr($subprojList, 0, -1);
+            if (!empty($subprojList)) {
+                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+            }
         }
 
         //SITES
