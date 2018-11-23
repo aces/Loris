@@ -6,7 +6,7 @@ cache:
         - vendor
 php:
     - "7.2"
-
+    - "7.3"
 addons:
     firefox: "44.0"
 
@@ -87,6 +87,6 @@ env:
     - TRAVIS_CI=true LORIS_DB_CONFIG=/../test/config.xml
 
 script:
-    - vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
