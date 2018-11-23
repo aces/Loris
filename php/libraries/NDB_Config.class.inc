@@ -51,7 +51,7 @@ class NDB_Config
      *
      * @access public
      */
-    var $configFilePath ="";
+    var $configFilePath;
 
     /**
      * The singleton design pattern - autoloads config file
