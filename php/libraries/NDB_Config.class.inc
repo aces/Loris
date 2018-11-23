@@ -51,7 +51,7 @@ class NDB_Config
      *
      * @access public
      */
-    var $configFilePath="";
+    var $configFilePath ="";
 
     /**
      * The singleton design pattern - autoloads config file
@@ -73,24 +73,22 @@ class NDB_Config
                 $configFile = $config->configFilePath();
             }
             // Load the file
-//  load config in test
-        $env = getenv('LORIS_DB_CONFIG');
-        $travis = getenv('TRAVIS');
-        if (!empty($env)) {
-                  if (!empty($travis)){
-                        $file = dirname(__DIR__);
-                        $file.= $env; 
-   //                     $file = "/home/travis/build/kongtiaowang/Loris/php/../test/config.xml";
+            //  load config in test
+            $env    = getenv('LORIS_DB_CONFIG');
+            $travis = getenv('TRAVIS');
+            if (!empty($env)) {
+                if (!empty($travis)) {
+                      $file  = dirname(__DIR__);
+                      $file .= $env;
+                } else {
+                    $file = $env;
+                }
+                 $config->load($file);
+            } else {
 
-                       }else {
-            $file = $env;
-                  }
-             $config->load($file);
-        } else {
- 
-            $config->load($configFile);
+                $config->load($configFile);
 
-        }
+            }
             if (!empty($config->_settings['include'])) {
                 // Load all includes found in the config
                 $includes = Utility::asArray($config->_settings['include']);
