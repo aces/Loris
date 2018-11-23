@@ -101,8 +101,8 @@ if ($anonymous === true && $m->isPublicModule() === false) {
 }
 
 // Also check the module directory for PHP files
-// remove query string from url after '?' like: ajax/test.php?name=test 
-$File = explode("?",$File)[0];
+// remove query string from url after '?' like: ajax/test.php?name=test
+$File     = explode("?", $File)[0];
 $FullPath = "$ModuleDir/ajax/$File";
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");

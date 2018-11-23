@@ -31,7 +31,7 @@ if (preg_match(
     //      ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$
     //      /AjaxHelper.php?Module=$1&script=$2 [QSA]
     // NOT SURE IF THIS WORKS IF FILE IS NOT SPECIFIED
-    $getParams = explode("/", $url);
+    $getParams      = explode("/", $url);
     $_GET["Module"] = $getParams[0];
     $_GET['script'] = $getParams[2];
     include_once __DIR__ . "/AjaxHelper.php";
