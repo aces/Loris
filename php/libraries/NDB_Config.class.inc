@@ -74,13 +74,21 @@ class NDB_Config
             }
             // Load the file
         print_r(getcwd());
+//  load config in test
         $env = getenv('LORIS_DB_CONFIG');
+        $travis = getenv('TRAVIS');
         if (!empty($env)) {
+                  if (!empty($travis)){
+                        $file = getcwd()+$env; 
+
+
+                       }else {
             $file = $env;
+                  }
              $config->load($file);
         } else {
  
-                   $config->load($configFile);
+            $config->load($configFile);
 
         }
             if (!empty($config->_settings['include'])) {
