@@ -902,7 +902,8 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload runner',1,'Validation of DICOMS before uploading'),
-    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
+    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader'),
+    ('imaging non minc file insertion', 1, 'Insertion of non-minc files into the mri-table');
 
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
