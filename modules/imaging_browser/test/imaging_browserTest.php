@@ -558,7 +558,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $SiteFilterText = $this->webDriver->findElement(
-            WebDriverBy::Name("SiteID")
+            WebDriverBy::Name("site")
         )->getText();
         $this->assertContains("All User Sites", $SiteFilterText);
 
@@ -569,7 +569,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $SiteFilterText     = $this->webDriver->findElement(
-            WebDriverBy::Name("SiteID")
+            WebDriverBy::Name("site")
         )->getText();
         $this->assertContains("All", $SiteFilterText);
     }
