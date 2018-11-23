@@ -37,7 +37,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client    = new NDB_Client();
-$anonymous = ($client->initialize("../project/config.xml") === false);
+$anonymous = ($client->initialize("/var/www/loris/project/config.xml") === false);
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
@@ -101,12 +101,8 @@ if ($anonymous === true && $m->isPublicModule() === false) {
 }
 
 // Also check the module directory for PHP files
-$FullPath = "$ModuleDir/ajax/$File";
-
+$FullPath = "$ModuleDir/ajax/FileUpload.php";
 if (!file_exists($FullPath)) {
-    error_log("ERROR: File $File does not exist");
-    header("HTTP/1.1 404 Not Found");
-    exit(5);
 }
 
 require $FullPath;

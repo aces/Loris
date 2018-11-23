@@ -24,30 +24,16 @@ if ($request != '/'
     return false;
 }
 if (preg_match(
-    // 
-
-    how to match ? 
-/media/ajax/FileUpload.php?action=getData
-/media/ajax/FileUpload.php?action=getData&fjdks=jfkdls
-
-
-
-
-
-    // 
-    '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9?_.-/]+)#',
+    '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)#',
     $url
 )) {
     // RewriteRule
     //      ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$
     //      /AjaxHelper.php?Module=$1&script=$2 [QSA]
     // NOT SURE IF THIS WORKS IF FILE IS NOT SPECIFIED
-
     $getParams = explode("/", $url);
-
     $_GET["Module"] = $getParams[0];
     $_GET['script'] = $getParams[2];
-    
     include_once __DIR__ . "/AjaxHelper.php";
 } else if (preg_match(
     '#^(/*)instruments/(.+)/#',
@@ -72,7 +58,6 @@ if (preg_match(
     // RewriteRule
     //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$
     //      /main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
-
     $getParams = explode("/", $url);
 
     $_REQUEST["test_name"] = $getParams[2];
