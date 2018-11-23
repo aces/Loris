@@ -85,7 +85,7 @@ before_script:
     - mysql LorisTest < project/tables_sql/testtest.sql
     - echo TRAVIS_BUILD_DIR
 env:
-    - LORIS_DB_CONFIG= ../test/config.xml
+    - LORIS_DB_CONFIG= fjdklsjfdjsaflkjkldsjfkladsjklfdfljdsfkljlkdsfjkljfdfklsdjflkalkfj
 
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml
