@@ -51,7 +51,7 @@ class NDB_Config
      *
      * @access public
      */
-    var $configFilePath="/app/project/config.xml";
+    var $configFilePath="";
 
     /**
      * The singleton design pattern - autoloads config file
@@ -103,7 +103,7 @@ class NDB_Config
      *
      * @throws Exception
      */
-    function load($configFile = "/app/project/config.xml")
+    function load($configFile = "../project/config.xml")
     {
         // load the configuration data into a global variable $config
         $newroot = simplexml_load_file($configFile);
