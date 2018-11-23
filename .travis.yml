@@ -83,9 +83,8 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
-    - echo TRAVIS_BUILD_DIR
 env:
-    - LORIS_DB_CONFIG= fjdklsjfdjsaflkjkldsjfkladsjklfdfljdsfkljlkdsfjkljfdfklsdjflkalkfj
+    - LORIS_DB_CONFIG=fjdklsjfdjsaflkjkldsjfkladsjklfdfljdsfkljlkdsfjkljfdfklsdjflkalkfj
 
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml

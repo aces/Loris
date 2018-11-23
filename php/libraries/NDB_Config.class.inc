@@ -73,7 +73,7 @@ class NDB_Config
                 $configFile = $config->configFilePath();
             }
             // Load the file
-        echo getcwd() . "\n";
+        print_r(getcwd());
         $env = getenv('LORIS_DB_CONFIG');
         if (!empty($env)) {
             $file = $env;
