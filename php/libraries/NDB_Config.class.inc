@@ -78,7 +78,7 @@ class NDB_Config
         $travis = getenv('TRAVIS');
         if (!empty($env)) {
                   if (!empty($travis)){
-                        $file = getcwd();
+                        $file = dirname(__DIR__);
                         $file.= $env; 
                         
 
