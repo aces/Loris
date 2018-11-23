@@ -6,7 +6,9 @@
     "doc": "docs",
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-core": "^6.26.3"
+  },
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-eslint": "8.2.6",
