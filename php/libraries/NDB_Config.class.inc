@@ -78,9 +78,9 @@ class NDB_Config
         $travis = getenv('TRAVIS');
         if (!empty($env)) {
                   if (!empty($travis)){
-                       // $file = dirname(__DIR__);
-                       // $file.= $env; 
-                        $file = "/home/travis/build/kongtiaowang/Loris/php/../test/config.xml";
+                        $file = dirname(__DIR__);
+                        $file.= $env; 
+   //                     $file = "/home/travis/build/kongtiaowang/Loris/php/../test/config.xml";
 
                        }else {
             $file = $env;
