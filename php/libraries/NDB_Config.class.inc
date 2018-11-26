@@ -163,7 +163,7 @@ class NDB_Config
         if (count($children) > 0) {
             foreach ($children as $child) {
                 $name      = $child->getName();
-                $tagExists = isset($retVal[$name]);
+                $tagExists = isset($retVal[$name]) && is_array($retVal[$name]);
                 if ($tagExists) {
                     if (!self::isNumericArray($retVal[$name])) {
                         // The tag is duplicated in the XML, so it should
@@ -230,12 +230,12 @@ class NDB_Config
      * are 0, 1, ..., n - 1.
      * If an empty array is passed as $arr, this function will return true.
      *
-     * @param mixed $arr The array or string to be checked for numeric keys.
+     * @param  array $arr The array to be checked for numeric keys.
      *
      * @return boolean True if the given parameter is an array with
      *                 numeric keys, false otherwise.
      */
-    static function isNumericArray($arr): bool
+    static function isNumericArray(array $arr): bool
     {
         if ($arr === array()) {
             return true;
