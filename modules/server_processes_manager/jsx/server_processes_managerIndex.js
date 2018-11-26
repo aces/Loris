@@ -82,7 +82,7 @@ class ServerProcessesManagerIndex extends Component {
       {label: 'Stderr File', show: true},
       {label: 'Exit Code File', show: true},
       {label: 'Exit Code', show: true},
-      {label: 'UserId', show: true, filter: {
+      {label: 'Userid', show: true, filter: {
         name: 'userid',
         type: 'text',
       }},
