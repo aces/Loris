@@ -129,10 +129,9 @@ class MediaIndex extends React.Component {
     }
 
     if (column === 'Edit Metadata') {
-      var editURL = loris.BaseURL + "/media/edit/?id=" + row['Edit Metadata'];
       let editButton = (
         <Modal
-          title='Edit Media File'
+          title="Edit Media File"
           trigger={<button>Edit</button>}
           throwWarning={true}
         >
