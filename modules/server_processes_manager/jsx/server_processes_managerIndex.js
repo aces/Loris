@@ -70,7 +70,7 @@ class ServerProcessesManagerIndex extends Component {
     * queried columns in _setupVariables() in server_processes_manager.class.inc
     */
     const fields = [
-      {label: 'PID', show: true, filter: {
+      {label: 'Pid', show: true, filter: {
         name: 'pid',
         type: 'text',
       }},
