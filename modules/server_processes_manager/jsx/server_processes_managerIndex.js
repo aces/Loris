@@ -104,12 +104,14 @@ class ServerProcessesManagerIndex extends Component {
 
 ServerProcessesManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
   ReactDOM.render(
     <ServerProcessesManagerIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
+      hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
   );
