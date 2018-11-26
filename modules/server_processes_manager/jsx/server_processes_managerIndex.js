@@ -78,17 +78,17 @@ class ServerProcessesManagerIndex extends Component {
         name: 'type',
         type: 'text',
       }},
-      {label: 'stdout_file', show: true},
-      {label: 'stderr_file', show: true},
-      {label: 'exit_code_file', show: true},
-      {label: 'exit_code', show: true},
+      {label: 'Stdout File', show: true},
+      {label: 'Stderr File', show: true},
+      {label: 'Exit Code File', show: true},
+      {label: 'Exit Code', show: true},
       {label: 'UserId', show: true, filter: {
         name: 'userid',
         type: 'text',
       }},
-      {label: 'start_time', show: true},
-      {label: 'end_time', show: true},
-      {label: 'exit_text', show: true},
+      {label: 'Start Time', show: true},
+      {label: 'End Time', show: true},
+      {label: 'Exit Text', show: true},
     ];
 
     return (
