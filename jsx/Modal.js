@@ -26,17 +26,18 @@ class Modal extends React.Component {
   constructor() {
     super();
     this.state = {
-      open: false,
-    }
+      open: false
+    };
     this.onClose = this.onClose.bind(this);
   }
 
   onClose() {
     if (this.props.throwWarning) {
       swal({
-        title: "Are You Sure?",
-        text: "Leaving the form will result in the loss of any information entered.",
-        type: "warning",
+        title: 'Are You Sure?',
+        text: 'Leaving the form will result in the loss of any information'
+          +'entered.',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Proceed',
         cancelButtonText: 'Cancel'
@@ -47,6 +48,9 @@ class Modal extends React.Component {
   }
 
   render() {
+    const {open} = this.state;
+    const {children, onSubmit, trigger, title} = this.props;
+
     const headerStyle = {
       display: 'flex',
       flexDirection: 'row',
@@ -67,9 +71,9 @@ class Modal extends React.Component {
       padding: 15
     };
 
-    const children = () => this.state.open && this.props.children;
+    const renderChildren = () => open && children;
 
-    const display = () => this.state.open ? {display: 'block'} : {display: 'none'};
+    const display = () => open ? {display: 'block'} : {display: 'none'};
 
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
@@ -86,12 +90,12 @@ class Modal extends React.Component {
     };
 
     const submitButton = () => {
-      if (this.props.onSubmit) {
+      if (onSubmit) {
         return (
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={this.props.onSubmit}
+              onUserInput={onSubmit}
             />
           </div>
         );
@@ -100,22 +104,22 @@ class Modal extends React.Component {
 
     const renderTrigger = () => {
       return React.cloneElement(
-        this.props.trigger,
-        { onClick : () => this.setState({open: true})}
+        trigger,
+        {onClick: () => this.setState({open: true})}
       );
-    }
+    };
 
     const modal = (
       <div className="modal" style={display()} onClick={this.onClose}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
           <div style={headerStyle}>
-            {this.props.title}
+            {title}
             <span style={glyphStyle} onClick={this.onClose}>
               ×
             </span>
           </div>
           <div style={bodyStyle}>
-            {children()}
+            {renderChildren()}
           </div>
           <div style={footerStyle}>
             {submitButton()}

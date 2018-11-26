@@ -133,7 +133,6 @@ class MediaIndex extends React.Component {
         <Modal
           title="Edit Media File"
           trigger={<button>Edit</button>}
-          throwWarning={true}
         >
           <MediaEditForm
             DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
