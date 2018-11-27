@@ -932,7 +932,7 @@ class TimePoint
     {
         $candidate = \Candidate::singleton($this->getCandID());
         if (!is_null($this->getSubprojectID())) {
-            $settings  = \NDB_Config::singleton()
+            $settings = \NDB_Config::singleton()
                 ->getSubprojectSettings($this->getSubprojectID());
             if ($settings['options']['useEDC'] == "true") {
                 return $candidate->getCandidateEDC();
