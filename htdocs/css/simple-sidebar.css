@@ -1,5 +1,5 @@
 #sidebar-content {
-    padding-left: 10px;
+    padding-left: 25px;
 }
 
 .wrapper {
@@ -13,7 +13,8 @@
     left: 250px;
     width: 250px;
     top: 0;
-    background: #064785;
+    background: #E4EBF2;
+    border: 1px solid #C3D5DB;
     position: fixed;
     height: 100%;
     overflow-y: auto;
@@ -99,15 +100,15 @@
 }
 
 .sidebar-div {
-    color: white;
+    color: #064785;
 }
 
 .sidebar-div h3 {
-    color: white;
+    color: #064785;
 }
 
 .sidebar-div a {
-    color: white;
+    color: #064785;
 }
 
 @media (max-width: 884px) {
