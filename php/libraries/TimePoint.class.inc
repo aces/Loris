@@ -288,9 +288,9 @@ class TimePoint
         $config =& \NDB_Config::singleton();
         $visitLabelSettings = $config->getSetting('visitLabel');
         $isValid            = false;
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabelSetting) {
+        foreach (\Utility::associativeToNumericArray($visitLabelSettings) as $visitLabelSetting) {
             if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
-                $items = \Utility::toArray(
+                $items = \Utility::associativeToNumericArray(
                     $visitLabelSetting['labelSet']['item']
                 );
                 foreach ($items as $item) {

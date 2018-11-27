@@ -81,8 +81,8 @@ class VisitWindowPopulator
     {
         // Can't use Utility::getVisits() because that uses the Visit_Window table..
         $vls = $this->Config->getSetting("visitLabel");
-        foreach (Utility::toArray($vls) as $visits) {
-            foreach (Utility::toArray($visits['labelSet']['item']) as $item) {
+        foreach (Utility::associativeToNumericArray($vls) as $visits) {
+            foreach (Utility::associativeToNumericArray($visits['labelSet']['item']) as $item) {
                 $visit = $item['@']['value'];
                 if (!empty($visit)) {
                     $this->insertIfMissing($visit);

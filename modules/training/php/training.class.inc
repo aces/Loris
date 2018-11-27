@@ -120,7 +120,7 @@ class Training extends \NDB_Form
 
         if (isset($certificationInstruments['test'])) {
             $certificationInstruments['test']
-                = \Utility::toArray($certificationInstruments['test']);
+                = \Utility::associativeToNumericArray($certificationInstruments['test']);
             foreach ($certificationInstruments['test'] as $certificationInstrument) {
                 $test_key = $certificationInstrument['@']['value'];
                 $testID   = $DB->pselectOne(
