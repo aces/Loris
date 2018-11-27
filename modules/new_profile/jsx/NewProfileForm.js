@@ -26,8 +26,6 @@ class NewProfileForm extends React.Component {
 
     /**
    * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
-   * for easy access by columnFormatter.
    */
     fetchData() {
         $.ajax(
@@ -36,8 +34,6 @@ class NewProfileForm extends React.Component {
                 method: 'GET',
                 dataType: 'json',
                 success: (data) => {
-                    // FIXME: Remove the following line of code as soon as hiddenHeaders is
-                    // accepted as a prop by the StaticDataTable Component.
                     this.setState(
                         {
                             configData: data,
@@ -103,8 +99,6 @@ class NewProfileForm extends React.Component {
                 data: JSON.stringify(this.state.formData),
                 dataType: 'json',
                 success: (data) => {
-                    // FIXME: Remove the following line of code as soon as hiddenHeaders is
-                    // accepted as a prop by the StaticDataTable Component.
                     data = data;
                     this.setState(
                         {

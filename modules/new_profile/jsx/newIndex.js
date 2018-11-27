@@ -2,9 +2,7 @@ import NewProfileForm from './NewProfileForm';
  class NewIndex extends React.Component {
         render() {
                 return (
-                  <div>
-              <NewProfileForm />
-                  </div>
+                  <div><NewProfileForm /></div>
                 );
         }
     }
