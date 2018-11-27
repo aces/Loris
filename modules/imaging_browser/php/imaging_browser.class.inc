@@ -114,6 +114,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             COALESCE(Max(fqc.QCLastChangeTime), 'new')
             WHEN 'new' THEN {$acqpif}
             WHEN ''    THEN {$acqpif}
+            WHEN NULL  THEN {$acqpif}
             ELSE ''
             END";
 
@@ -134,18 +135,16 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 WHEN 'Fail' THEN
                     IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
                 WHEN 'Pass' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
+                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass') 
                 ELSE s.MRIQCStatus
             END 
             ";
 
-        $PendingNewquery = "
-            CASE
-                WHEN s.MRIQCPending='Y' THEN 'P'
-                WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'N' 
-                ELSE 'PN'
-            END
-            ";
+        $PendingNewquery = "CASE 
+    WHEN s.MRIQCPending='Y' THEN 'P'
+    WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'N'
+      
+END";
         $this->query     = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
@@ -218,7 +217,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         }
 
         $this->columns = array(
-                          'p.MRI_alias as Site',
+                          'p.Name as Site',
                           'c.PSCID as PSCID',
                           'c.CandID as DCCID',
                           's.visit_label as Visit_Label',
@@ -342,9 +341,9 @@ class Imaging_Browser extends \NDB_Menu_Filter
                              );
 
             $pending = array(
-                        'P'  => 'Pending',
-                        'N'  => 'New',
-                        'PN' => 'Pending Or New',
+                '' => 'All',
+                      'P' => 'Pending',
+                      'N' => 'New',
                        );
 
             $types_q    = $DB->pselect(
