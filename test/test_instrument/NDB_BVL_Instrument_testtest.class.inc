@@ -68,7 +68,8 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _main(){
+    function _main(): void
+    {
 
       $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
       $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
