@@ -325,10 +325,6 @@ class SinglePointLogin
             $this->_lastError = 'This account is currently suspended due '
                 . 'to too many bad login attempts.';
             $this->insertFailedDetail('Account locked', $setArray);
-            error_log(
-                "The acccount for $username is locked out. Potential "
-                . "brute force login attempt"
-            );
             return false;
         }
         // Validate passsword
@@ -473,10 +469,11 @@ class SinglePointLogin
         $longLockoutThreshold  = 15;
 
         // SQL code to run.
-        $query  = "SELECT COUNT(loginhistoryID)" .
+        $query  = "SELECT COUNT(loginhistoryID) " .
             "FROM user_login_history " .
             "WHERE userID = :username " .
             "AND Success = 'N' " .
+            "AND IP_address = :ip " .
             "AND Login_timestamp > ( " .
             "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(), ".
             "INTERVAL :timeWindowInMinutes MINUTE), " .
@@ -490,6 +487,7 @@ class SinglePointLogin
         $params = array(
                    'username'            => $username,
                    'timeWindowInMinutes' => $shortWindowInMinutes,
+                   'ip' => $_SERVER['REMOTE_ADDR'],
                   );
 
         $shortFailCount = $this->_getFailedLoginCount($query, $params);
