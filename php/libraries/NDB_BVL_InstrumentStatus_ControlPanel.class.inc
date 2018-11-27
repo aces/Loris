@@ -176,7 +176,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      * @return bool The value of $this->_hasAccess(). Has the side-effect of
      *                  modifying front-end content.
      */
-    function _displayDataEntry(): string
+    function _displayDataEntry(): bool
     {
         $hasAccess = $this->_hasAccess();
 
