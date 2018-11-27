@@ -51,9 +51,9 @@ class NDB_Config
      *
      * @param string|null $configFile the neurodb config.xml config file
      *
-     * @return NDB_Config object
+     * @return \NDB_Config object
      */
-    static function &singleton(?string $configFile = null)
+    static function &singleton(?string $configFile = null): \NDB_Config
     {
         static $config = null;
         if (is_null($config)) {
@@ -355,7 +355,7 @@ class NDB_Config
      *
      * @param string $name The name of the XML node to retrieve.
      *
-     * @return mixed The value from the config.xml
+     * @return array|string The value from the config.xml
      */
     function getSettingFromXML(string $name)
     {
