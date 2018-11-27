@@ -427,7 +427,8 @@ class CouchDB
      *                            having to parse it server-side if the request is
      *                            expected to be directly interpreted by javascript.
      *
-     * @return string A string representation of the JSON return value from CouchDB
+     * @return string|null A string representation of the JSON return value
+     *                      from CouchDB
      */
     function _postURL(
         string $url,
@@ -492,7 +493,7 @@ class CouchDB
      *                            having to parse it server-side if the request is
      *                            expected to be directly interpreted by javascript.
      *
-     * @return The page content (Without headers) returned by the
+     * @return string|null The page content (Without headers) returned by the
      *         CouchDB web server.
      */
     function _postRelativeURL(
