@@ -930,11 +930,13 @@ class TimePoint
      */
     function getEffectiveDateOfBirth(): ?string
     {
-        $config    = NDB_Config::singleton();
-        $candidate = Candidate::singleton($this->getCandID());
-        $settings  = $config->getSubprojectSettings($this->getSubprojectID());
-        if ($settings['options']['useEDC'] == "true") {
-            return $candidate->getCandidateEDC();
+        $candidate = \Candidate::singleton($this->getCandID());
+        if (!is_null($this->getSubprojectID())) {
+            $settings  = \NDB_Config::singleton()
+                ->getSubprojectSettings($this->getSubprojectID());
+            if ($settings['options']['useEDC'] == "true") {
+                return $candidate->getCandidateEDC();
+            }
         }
 
         return $candidate->getCandidateDoB();
