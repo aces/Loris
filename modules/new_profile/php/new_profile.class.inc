@@ -63,41 +63,29 @@ class New_Profile extends \NDB_Form
         $centerIDs = \User::singleton()->getData('CenterIDs');
         if (count($centerIDs) > 1 || !isset($values['psc'])) {
             $values['psc'] = $centerIDs[0];
-
-            // get the candidate
-            $candidate =& \Candidate::singleton($candID);
-
-            if ($config->getSetting('useProjects') == "true") {
-                $candidate->setData(
-                    array(
-                        'ProjectID' => $values['ProjectID'],
-                    )
-                );
-
-            }
-
-            /* Create the candidate and retrive its ID.
-             * Use form values when present, otherwise default to null.
-             */
-            $candID = \Candidate::createNew(
-                $values['psc'],
-                $values['dob1'],
-                $values['edc1'] ?? null,
-                $values['gender'],
-                $values['PSCID'] ?? null,
-                intval($values['ProjectID']) ?? null
-            );
-            /* Update front-end data. Use passed PSCID when present, otherwise
-             * retrieve it from the newly-created candidate.
-             */
-            $this->tpl_data['candID']  = $candID;
-            $this->tpl_data['PSCID']   = $values['PSCID']
-                ?? \Candidate::singleton($candID)->getPSCID();
-            $this->tpl_data['success'] = true;
-
-            // freeze it, just in case
-            $this->form->freeze();
         }
+
+        /* Create the candidate and retrive its ID.
+         * Use form values when present, otherwise default to null.
+         */
+        $candID = \Candidate::createNew(
+            $values['psc'],
+            $values['dob1'],
+            $values['edc1'] ?? null,
+            $values['gender'],
+            $values['PSCID'] ?? null,
+            intval($values['ProjectID']) ?? null
+        );
+        /* Update front-end data. Use passed PSCID when present, otherwise
+         * retrieve it from the newly-created candidate.
+         */
+        $this->tpl_data['candID']  = $candID;
+        $this->tpl_data['PSCID']   = $values['PSCID']
+            ?? \Candidate::singleton($candID)->getPSCID();
+        $this->tpl_data['success'] = true;
+
+        // freeze it, just in case
+        $this->form->freeze();
     }
 
     /**
