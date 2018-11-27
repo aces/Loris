@@ -434,7 +434,7 @@ class CouchDB
         array $data,
         array $headers = array(),
         bool $printValue = false
-    ): string {
+    ): ?string {
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
         $handler->setPort($this->_port);
@@ -500,7 +500,7 @@ class CouchDB
         string $data,
         string $op = 'POST',
         bool $printValue = false
-    ) {
+    ): ?string {
         return $this->_postURL(
             $this->_constructURL($op, $url),
             $data,
