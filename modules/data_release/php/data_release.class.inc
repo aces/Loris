@@ -104,9 +104,12 @@ class Data_Release extends \NDB_Menu_Filter
         $this->tpl_data['superuser']        = $superuser;
         $this->tpl_data['userids']          = $userids;
         $this->tpl_data['data_release_ids'] = $data_release_ids;
-        if (isset($_GET['addpermissionSuccess']) && $_GET['addpermissionSuccess'] == "false") {
-        $this->tpl_data['err']          = "This user already has the permisson for ".$_GET['file'].".";
-        // todo add username
+        if (isset($_GET['addpermissionSuccess'])
+            && $_GET['addpermissionSuccess'] == "false"
+        ) {
+            $this->tpl_data['err'] = "This user already has the permisson for "
+                                     .$_GET['file'].".";
+            // todo add username
         }
 
     }

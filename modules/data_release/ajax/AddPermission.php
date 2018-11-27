@@ -12,39 +12,49 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$DB =& Database::singleton();
+$DB = \Database::singleton();
 if ($_POST['action'] == 'addpermission') {
     $userid          = $_POST['userid'];
     $data_release_id = $_POST['data_release_id'];
 
         $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM data_release_permissions WHERE userid = :userid and data_release_id = :data_release_id",
-            array('userid' => $data_release_id,'data_release_id' => $data_release_id)
+            "SELECT COUNT(*) FROM data_release_permissions
+             WHERE userid = :userid and
+             data_release_id = :data_release_id",
+            array(
+             'userid'          => $data_release_id,
+             'data_release_id' => $data_release_id,
+            )
         );
 
-    $factory  = NDB_Factory::singleton();
-    $settings = $factory->settings();
-    $baseURL = $settings->getBaseURL();
-    if ($result != '1'){
-    $success         = $DB->insert(
-        'data_release_permissions',
-        array(
-         'userid'          => $userid,
-         'data_release_id' => $data_release_id,
-        )
-    );
-    $factory  = NDB_Factory::singleton();
-    $settings = $factory->settings();
+        $factory  = \NDB_Factory::singleton();
+        $settings = $factory->settings();
+        $baseURL  = $settings->getBaseURL();
+        if ($result != '1') {
+            $success  = $DB->insert(
+                'data_release_permissions',
+                array(
+                 'userid'          => $userid,
+                 'data_release_id' => $data_release_id,
+                )
+            );
+            $factory  = NDB_Factory::singleton();
+            $settings = $factory->settings();
 
-    header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-    } else {
-    // return username and file with permisson.
+            header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
+        } else {
+            // return username and file with permisson.
             $file = $DB->pselectOne(
-            "SELECT file_name FROM data_release WHERE id = :data_release_id",
-            array('data_release_id' => $data_release_id)
-        );
-    header("Location: {$baseURL}/data_release/?addpermissionSuccess=false&user=&file={$file}");
-    }
+                "SELECT file_name FROM data_release WHERE id = :data_release_id",
+                array('data_release_id' => $data_release_id)
+            );
+            header(
+                "
+            Location:
+            {$baseURL}/data_release/?addpermissionSuccess=false&user=&file={$file}
+            "
+            );
+        }
 
 
 } else {
