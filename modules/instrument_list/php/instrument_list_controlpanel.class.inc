@@ -406,7 +406,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             // highlight the current option if it's the current status
             if ($currentStatus == $option) {
-                $this->tpl_data['status'][$i]['icon'] = 'selected';
+                $this->tpl_data['status'][$i]['icon'] = 'far fa-check-square';
             } elseif (in_array($currentStage, $this->_dynamicStageOptions)
                 && (!$this->isSubmitted()
                 || ($this->isSubmitted() && $hasAccess)                )
@@ -428,11 +428,11 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ) {
                     $this->tpl_data['status'][$i]['showlink'] = true;
                 } else {
-                    $this->tpl_data['status'][$i]['icon'] = 'locked';
+                    $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
                 }
 
             } else {
-                $this->tpl_data['status'][$i]['icon'] = 'locked';
+                $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -476,7 +476,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $type ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_type_'.$type]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_type_'.$type]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
@@ -508,7 +509,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $status ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_status_'.$status]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_status_'.$status]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
@@ -548,7 +550,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         if ($this->isSubmitted()) {
-            $this->tpl_data['send_to_dcc']['icon']    = 'selected';
+            $this->tpl_data['send_to_dcc']['icon']    = 'far fa-check-square';
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 
