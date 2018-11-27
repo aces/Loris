@@ -341,9 +341,8 @@ END";
                              );
 
             $pending = array(
-                '' => 'All',
-                      'P' => 'Pending',
-                      'N' => 'New',
+                        'P' => 'Pending',
+                        'N' => 'New',
                        );
 
             $types_q    = $DB->pselect(
