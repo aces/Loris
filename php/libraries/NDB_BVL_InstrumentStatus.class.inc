@@ -131,9 +131,9 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current validity status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getValidityStatus(): string
+    function getValidityStatus(): ?string
     {
         return $this->_status['Validity'];
     }
