@@ -447,7 +447,7 @@ class Utility
      *
      * @return array If $var is an array, var, otherwise an array containing $var
      */
-    static function toArray(array $array): array
+    static function toArray($var)
     {
         throw new DeprecatedException(
             'Utility::toArray() is deprecated and should not be used. ' .
