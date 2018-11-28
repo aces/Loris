@@ -77,7 +77,9 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     . ".class.inc";
                     if (!file_exists($fpath)) {
                         throw new \LorisException(
-                            "Could not resolve $fpath to a LORIS module."
+                            "Could not resolve $fpath to a LORIS module. " .
+                            "Note that PHP filenames within modules must be " .
+                            "entirely lowercase."
                         );
                     }
                     include $fpath;
