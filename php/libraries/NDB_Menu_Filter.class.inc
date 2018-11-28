@@ -148,7 +148,7 @@ class NDB_Menu_Filter extends NDB_Menu
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
                 if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
-                $this->headers[] = $match[0];
+                    $this->headers[] = $match[0];
                 }
             }
         }
