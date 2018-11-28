@@ -173,7 +173,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the data entry flag
      *
-     * @return bool The value of $this->_hasAccess(). Has the side-effect of
+     * @return bool Whether a user has access, Has the side-effect of
      *                  modifying front-end content.
      */
     function _displayDataEntry(): bool
@@ -237,7 +237,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the administration flag
      *
-     * @return bool The value of $this->_hasAccess(). Has the side-effect of
+     * @return bool Whether a user has access, Has the side-effect of
      *                  modifying front-end content.
      */
     function _displayAdministration(): bool
@@ -282,7 +282,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the validity flag
      *
-     * @return bool The value of $this->_hasAccess(). Has the side-effect of
+     * @return bool Whether a user has access, Has the side-effect of
      *                  modifying front-end content.
      */
     function _displayValidity(): bool
@@ -320,7 +320,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the exclusion flag
      *
-     * @return bool The value of $this->_hasAccess(). Has the side-effect of
+     * @return bool Whether a user has access, Has the side-effect of
      *                  modifying front-end content.
      */
     function _displayExclusion(): bool
