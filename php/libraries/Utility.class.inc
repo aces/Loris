@@ -477,6 +477,11 @@ class Utility
      */
     static function toArray($var)
     {
+        error_log(
+            'Note: Utility::toArray() will be deprecated in LORIS ' .
+            'version 21.'
+        );
+
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
