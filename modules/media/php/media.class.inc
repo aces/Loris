@@ -11,7 +11,10 @@
  * @link     https://www.github.com/aces/CCNA/
  */
 namespace LORIS\media;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
+#require_once __DIR__ . '/MediaFileDownloadValidator.class.inc';
 /**
  * Main class for media module corresponding to /media/ URL
  * Child or Clinical section of the LorisMenu.
@@ -176,6 +179,41 @@ class Media extends \NDB_Menu_Filter
         }
 
         return true;
+    }
+
+    /**
+     * This acts as an AJAX endpoint that serves an attachment to the user based
+     * on the uploads to the media module.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        error_log('in handle');
+        // The parent handles things like hasAccess checks.
+        $resp = parent::handle($request);
+        // Ensure filepath is passed.
+        $gets = $request->getQueryParams();
+        if (isset($gets['File'])) {
+            error_log('I see the file');
+            $this->handleDownload($gets['File']);
+        }
+        return $resp;
+    }
+
+    function handleDownload(string $file) {
+        error_log('in handle download');
+        $file = new php\MediaFileDownloadValidator($gets['File']);
+        return (new \Zend\Diactoros\Response())
+            ->withStatus(200)
+            ->withBody(new \LORIS\Http\StringStream("hello"))
+            ->withHeader("Content-Type", "text/plain")
+            ->withHeader(
+                'Content-Disposition', 'attachment; filename=' . 
+                $file->getFilename()
+            );
     }
 
     /**

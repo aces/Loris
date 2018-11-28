@@ -19,8 +19,7 @@ namespace LORIS\media;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-
-require_once __DIR__ . '/MediaFileDownloadValidator.class.inc';
+#require_once __DIR__ . '/MediaFileDownloadValidator.class.inc';
 
 /**
  * Implements the media file download endpoint.
