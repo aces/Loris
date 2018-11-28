@@ -153,7 +153,8 @@ case 'DICOMTAR':
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
-    $saveAs           = basename($_GET['saveAs']);
+    $PatientName      = $_GET['patientName'] ?? '';
+    error_log("Patient name is $PatientName`");
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
@@ -163,21 +164,30 @@ default:
 }
 
 if (!file_exists($FullPath)) {
-    error_log("ERROR: File $File does not exist");
+    error_log("ERROR: File $FullPath does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
 
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
+    // Append the patient name to the end of the file name.
+    error_log('Just before if');
+    if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
+        error_log('In IF');
+        // format: $Filename_$PatientName.extension
+        $DownloadFilename = 
+            pathinfo($DownloadFilename, PATHINFO_FILENAME) .
+            '_' . 
+            /* basename() is used here to prevent the use of relative path
+             * traversal characters.
+             */
+            basename($PatientName) . 
+            '.' .
+            pathinfo($DownloadFilename, PATHINFO_EXTENSION);
 
-    if ($FileExt === 'DICOMTAR' && !empty($saveAs)) {
-        header("Content-Disposition: attachment; filename=$saveAs");
-
-    } else {
-
-        header("Content-Disposition: attachment; filename=$DownloadFilename");
     }
+    header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
