@@ -175,14 +175,14 @@ if (!empty($DownloadFilename)) {
     error_log('Just before if');
     if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
         error_log('In IF');
-        // format: $Filename_$PatientName.extension
-        $DownloadFilename = 
-            pathinfo($DownloadFilename, PATHINFO_FILENAME) .
-            '_' . 
-            /* basename() is used here to prevent the use of relative path
-             * traversal characters.
-             */
-            basename($PatientName) . 
+        /* Format: $Filename_$PatientName.extension
+         *
+         * basename() is used around $PatientName to prevent the use of 
+         * relative path traversal characters.
+         */
+        $DownloadFilename = pathinfo($DownloadFilename, PATHINFO_FILENAME) .
+            '_' .
+            basename($PatientName) .
             '.' .
             pathinfo($DownloadFilename, PATHINFO_EXTENSION);
 

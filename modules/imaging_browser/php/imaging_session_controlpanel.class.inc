@@ -105,22 +105,20 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        $params['id'] = $ID;
 
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
         $qresult = $DB->pselect(
-            "SELECT TarchiveID, ArchiveLocation, 
-            FROM tarchive 
-            WHERE PatientName LIKE :id",
-            $params,
+            'SELECT TarchiveID, ArchiveLocation ' .
+            'FROM tarchive ' .
+            'WHERE PatientName = :id;',
+            array('id' => $ID)
         );
 
         $tarIDToTarLoc = array();
         foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
-            $tarIDToTarLoc[$tarchiveID]['ArchiveLocation']  = $v['ArchiveLocation'];
-            $tarIDToTarLoc[$tarchiveID]['originalFileName'] = $v['originalFileName'];
-            $tarIDToTarLoc[$tarchiveID]['PatientName']      = $v['PatientName'];
+            $tarIDToTarLoc[$tarchiveID]['ArchiveLocation'] = $v['ArchiveLocation'];
+            $tarIDToTarLoc[$tarchiveID]['PatientName']     = $v['PatientName'];
         }
         $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
 
