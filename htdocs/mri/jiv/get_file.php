@@ -177,7 +177,7 @@ if (!empty($DownloadFilename)) {
         error_log('In IF');
         /* Format: $Filename_$PatientName.extension
          *
-         * basename() is used around $PatientName to prevent the use of 
+         * basename() is used around $PatientName to prevent the use of
          * relative path traversal characters.
          */
         $DownloadFilename = pathinfo($DownloadFilename, PATHINFO_FILENAME) .
