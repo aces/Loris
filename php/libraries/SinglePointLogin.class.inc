@@ -487,7 +487,7 @@ class SinglePointLogin
         $params = array(
                    'username'            => $username,
                    'timeWindowInMinutes' => $shortWindowInMinutes,
-                   'ip' => $_SERVER['REMOTE_ADDR'],
+                   'ip'                  => $_SERVER['REMOTE_ADDR'],
                   );
 
         $shortFailCount = $this->_getFailedLoginCount($query, $params);
