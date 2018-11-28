@@ -5,13 +5,13 @@
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
+          <directory>./unittests/</directory>
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/training/test/</directory>
         </testsuite>
 
     </testsuites>
