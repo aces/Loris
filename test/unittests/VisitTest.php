@@ -18,7 +18,6 @@ require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 use \LORIS\Visit;
 //use \LORIS\VisitController;
 use \PHPUnit\Framework\TestCase;
-
 /**
  * Unit test for Candidate class
  *
@@ -50,14 +49,14 @@ class VisitTest extends TestCase
             $database['password'],
             $database['host'],
             1
-        );
+        ); 
         $this->_visitController = new \Loris\VisitController($this->DB);
 
 
 
-        $v1 = new \Loris\Visit('V1',99901);
-        $v2 = new \Loris\Visit('V2',99902);
-        $v3 = new \Loris\Visit('V3',99903);
+        $v1 = new \Loris\Visit('V1',1);
+        $v2 = new \Loris\Visit('V2',2);
+        $v3 = new \Loris\Visit('V3',3);
 
         $this->_listOfVisit = array($v1, $v2, $v3);
 
@@ -77,18 +76,6 @@ class VisitTest extends TestCase
        $visit_name = "Visit 1";
        $visit = new Visit($visit_name);
        $this->assertEquals($visit_name, $visit->getName(), "the name of the visit does not match");
-    }
-
-    function testAllVisit()
-    {
-        $visits = $this->_visitController->getAllVisits();
-        $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
-    }  
-
-    function testVisitsProjects()
-    {
-        $visits = $this->_visitController->getVisitsAndProject();
-        $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 
     /**
