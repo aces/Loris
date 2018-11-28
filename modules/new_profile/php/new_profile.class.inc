@@ -2,7 +2,7 @@
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -43,62 +43,46 @@ class New_Profile extends \NDB_Form
         return false;
     }
     /**
-     * Processes the values and saves to database
+     * Processes form data and creates a new candidate.
      *
      * @param array $values form values
      *
      * @return void
      */
-    function _process($values)
+    function _process($values): void
     {
-        // set up the arguments to Candidate::createNew
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
-        $dob    = empty($values['dob1']) ? null : $values['dob1'];
-
-        $edc = null;
-        if ($config->getSetting('useEDC') == "true") {
-            $edc = empty($values['edc1']) ? null : $values['edc1'];
+        // Change empty strings to null before passing as arguments.
+        foreach ($values as $key => $value) {
+            if ($value === '') {
+                $values[$key] = null;
+            }
+        }
+        /* When a user has multiple centers, or when a centerID has not been
+         * passed, choose the first one in the User's centerID list.
+         */
+        $centerIDs = \User::singleton()->getData('CenterIDs');
+        if (count($centerIDs) > 1 || !isset($values['psc'])) {
+            $values['psc'] = $centerIDs[0];
         }
 
-        // create the candidate
-        $DB        = \Database::singleton();
-        $site_arr  = $user->getData('CenterIDs');
-        $num_sites = count($site_arr);
-
-        if ($num_sites >1) {
-            $candID = \Candidate::createNew(
-                $values['psc'],
-                $dob,
-                $edc,
-                $values['gender'],
-                $values['PSCID'] ?? null
-            );
-        } else {
-            $centerIDs = $user->getData('CenterIDs');
-            $centerID  = $centerIDs[0];
-            $candID    = \Candidate::createNew(
-                $centerID,
-                $dob,
-                $edc,
-                $values['gender'],
-                $values['PSCID'] ?? null
-            );
-        }
-
-        // get the candidate
-        $candidate =& \Candidate::singleton($candID);
-
-        if ($config->getSetting('useProjects') == "true") {
-            $candidate->setData('ProjectID', $values['ProjectID']);
-
-        }
-
-        //------------------------------------------------------------
-
-        $this->tpl_data['success'] = true;
+        /* Create the candidate and retrive its ID.
+         * Use form values when present, otherwise default to null.
+         */
+        $candID = \Candidate::createNew(
+            $values['psc'],
+            $values['dob1'],
+            $values['edc1'] ?? null,
+            $values['gender'],
+            $values['PSCID'] ?? null,
+            intval($values['ProjectID']) ?? null
+        );
+        /* Update front-end data. Use passed PSCID when present, otherwise
+         * retrieve it from the newly-created candidate.
+         */
         $this->tpl_data['candID']  = $candID;
-        $this->tpl_data['PSCID']   = $candidate->getPSCID();
+        $this->tpl_data['PSCID']   = $values['PSCID']
+            ?? \Candidate::singleton($candID)->getPSCID();
+        $this->tpl_data['success'] = true;
 
         // freeze it, just in case
         $this->form->freeze();

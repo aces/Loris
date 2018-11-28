@@ -12,7 +12,6 @@
  */
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-
 /**
  * Automated integration tests for the dicom_archive module.
  *
@@ -27,15 +26,14 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter>div>div:nth-child(1)>div>div>input";
-    static $PatientName = "#dicom_filter>div>div:nth-child(2)>div>div>input";
-    static $site        = "select.form-control";
-    static $Gender      = "#dicom_filter>div>div:nth-child(4)>div>div>input";
-    static $dateOfBirth = "#dicom_filter>div>div:nth-child(5)>div>div>input";
-    static $Acquisition = "#dicom_filter>div>div:nth-child(6)>div>div>input";
-    static $Archive     = "#dicom_filter>div>div:nth-child(7)>div>div>input";
-    static $SeriesUID   = "#dicom_filter>div>div:nth-child(8)>div>div>input";
-    static $clearButton = "#dicom_filter>div>div:nth-child(9)>div>div>button";
+    static $patientID   = "#dicom_filter_filter>div>div:nth-child(1)>div>div>input";
+    static $patientName = "#dicom_filter_filter>div>div:nth-child(2)>div>div>input";
+    static $site        = "#dicom_filter_filter>div>div:nth-child(8)>div>div>select";
+    static $gender      = "#dicom_filter_filter>div>div:nth-child(3)>div>div>input";
+    static $dateOfBirth = "#dicom_filter_filter>div>div:nth-child(4)>div>div>input";
+    static $clearFilter = "#dicom_filter_filter>div>div:nth-child(9)>div>div>button";
+    // first row of react table
+    static $table = "#dynamictable > tbody > tr:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -54,20 +52,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
     }
-    /**
-     * Tests that, when loading the dicom_archive module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testdicomArchiveDoespageLoad()
-    {
-        $this->safeGet($this->url . "/dicom_archive/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertContains("Dicom Archive", $bodyText);
-    }
-
     /**
      * Tests that, when loading the dicom_archive module > viewDetails subtest, some
      * text appears in the body.
@@ -109,137 +93,79 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-        // $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
-        $this-> _filter(
-            'patientName',
-            "MTL022_300022_V1",
-            self::$PatientName,
-            "1 rows displayed of 1"
+        $this-> _testFilter(self::$patientID, self::$table, null, "ibis");
+        $this-> _testFilter(
+            self::$patientName,
+            self::$table,
+            null,
+            "MTL022_300022_V1"
         );
-        $this-> _filter('site', "2", self::$site, "3 rows displayed of 3");
-        $this-> _filter('gender', "M", self::$Gender, "11 rows displayed of 11");
-        $this-> _filter(
-            'dateOfBirth',
-            '2011-10-20',
-            self::$dateOfBirth,
-            "1 rows displayed of 1"
-        );
-        $this-> _filter(
-            'acquisition',
-            '2009-06-09',
-            self::$Acquisition,
-            "1 rows displayed of 1"
-        );
-        $this-> _filter(
-            'archiveLocation',
-            "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",
-            self::$Archive,
-            "1 rows displayed of 1"
-        );
-        $this-> _filter(
-            'seriesuid',
-            "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",
-            self::$SeriesUID,
-            "1 rows displayed of 1"
-        );
+        $this-> _testFilter(self::$gender, self::$table, null, "M");
+        $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
+        $this-> _testFilter(self::$site, self::$table, "4", "4");
     }
     /**
-     * Tests filter function
+     * Testing filter funtion and clear button
      *
-     * @param string $name     the name of this element in html
-     * @param string $key      the test key for query
-     * @param string $location the location of the element (css selector)
-     * @param string $expect   Key the expect result
+     * @param string $element The input element loaction
+     * @param string $table   The first row location in the table
+     * @param string $records The records number in the table
+     * @param string $value   The test value
      *
      * @return void
      */
-    function _filter($name, $key,$location,$expect)
+    function _testFilter($element,$table,$records,$value)
     {
-        $caught = false;
-        $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
-        $script = "return document.querySelector('$location').value";
-        try {
-            $text = $this->webDriver->executescript($script);
-            // something
-        } catch (Exception $e) {
-            $caught = true;
+        // get element from the page
+        if (strpos($element, "select") == false) {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);
+                "
+            );
+            $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('$table').textContent"
+            );
+            $this->assertContains($value, $bodyText);
+        } else {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+            );
+            $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('#lorisworkspace > div >".
+                " div.panel.panel-default > div.table-header.panel-heading".
+                " > div > div').textContent"
+            );
+            // 4 means there are 4 records under this site.
+            $this->assertContains($records, $bodyText);
         }
-
-        if ($caught) {
-            sleep(1);
-            $text = $this->webDriver->executescript($script);
-        }
-        //make sure that filter works well
-        $this->assertEquals($text, $key);
-        //make sure that filter table works well
-        $text = $this->webDriver->executescript(
-            "return document.querySelector(".
-            "'.table-header > div:nth-child(1) > div:nth-child(1)').textContent"
-        );
-        $this->assertContains($expect, $text);
-    }
-    /**
-     * Tests clear button
-     *
-     * @return void
-     */
-    function testClearBtn()
-    {
-        $this->safeGet($this->url . "/dicom_archive/");
-        $this->_clear('patientID', self::$patientID, 'testtesttest');
-        $this->_clear('patientName', self::$PatientName, 'testtesttest');
-        $this->_clear('site', self::$site, 'testtesttest');
-        $this->_clear('gender', self::$Gender, 'testtesttest');
-        $this->_clear('dateOfBirth', self::$dateOfBirth, 'testtesttest');
-        $this->_clear('acquisition', self::$Acquisition, 'testtesttest');
-        $this->_clear('archiveLocation', self::$Archive, 'testtesttest');
-        $this->_clear('seriesuid', self::$SeriesUID, 'testtesttest');
-    }
-    /**
-     * Clear function : Inputing 'testtesttest' into textarea, after clicking
-     * button, the textarea should be null.
-     *
-     * @param string $name     the name of this element in html
-     * @param string $location the location of the element (css selector)
-     * @param string $key      the test key for query
-     *
-     * @return void
-     */
-    function _clear($name,$location ,$key)
-    {
-        $caught = false;
-        $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
-        $script = "document.querySelector('".self::$clearButton."').click()";
-        try {
-            $this->webDriver->executescript($script);
-            // something
-        } catch (Exception $e) {
-            $caught = true;
-        }
-
-        if ($caught) {
-            sleep(1);
-            $this->webDriver->executescript($script);
-        }
-        $script = "document.querySelector('".self::$clearButton."').click()";
-
+        //test clear filter
+        $btn = self::$clearFilter;
         $this->webDriver->executescript(
-            $script
+            "document.querySelector('$btn').click();"
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('$location').value"
+        $inputText = $this->webDriver->executescript(
+            "return document.querySelector('$element').value"
         );
-        $this->assertEquals('', $text);
+        $this->assertEquals("", $inputText);
     }
     /**
-     * Tests that the (view-Details) link works
+     * Tests that the (view-details) link works
      *
      * @return void
      */
     function testLinksViewDetails()
     {
         $this->safeGet($this->url . "/dicom_archive/");
-        $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(8) > a";
+        $location = "#dynamictable>tbody>tr:nth-child(1)>td:nth-child(8)>a";
         $text     = $this->webDriver->executescript(
             "return document.querySelector('$location').textContent"
         );
@@ -275,7 +201,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );
         $this->assertEquals('View Session', $text);
-
     }
 }
 ?>

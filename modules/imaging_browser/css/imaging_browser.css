@@ -105,7 +105,11 @@ h3 {
 }
 
 .feedback-text {
-    color: #000;
+    color: #246EB6;
+}
+
+.feedback-text:hover {
+    color: white;
 }
 
 .visit-level-feedback {
@@ -113,10 +117,21 @@ h3 {
     margin-bottom: 9px;
 }
 
+.visit-level-feedback>a:hover .feedback-text {
+    color: white;
+}
+
 .btn-volume-viewer {
-    color: #fff;
-    background-color: #778;
-    border-color: #333;
+    color: #246EB6;
+    background-color: white;
+    border-color: #246EB6;
+    margin-bottom: 3px;
+}
+
+.btn-volume-viewer:hover {
+    background-color: #246EB6;
+    color: white;
+    border-color: #246EB6;
     margin-bottom: 3px;
 }
 

@@ -25,7 +25,7 @@
 class NDB_Menu_Filter extends NDB_Menu
 {
     var $AjaxModule = false;
-    var $TotalItems;
+
     /**
      * The columns to SELECT
      *
@@ -493,8 +493,6 @@ class NDB_Menu_Filter extends NDB_Menu
             $pageNum = $_REQUEST['pageID'];
         }
 
-        $this->_getNumberPages($query);
-
         $config         =& NDB_Config::singleton();
         $resultsPerPage = $config->getSetting('rowsPerPage');
         $limit          = " LIMIT $resultsPerPage"
@@ -583,27 +581,6 @@ class NDB_Menu_Filter extends NDB_Menu
                );
     }
 
-
-    /**
-     * Returns the number of pages that this menu has.
-     *
-     * @param string $query The query used to build the data in the table.
-     *
-     * @return integer The number of pages that the query returns
-     */
-    function _getNumberPages($query)
-    {
-        $wheredetails = $this->_getBaseFilter();
-        $db           = Database::singleton();
-        if (empty($this->group_by) && empty($this->having)) {
-            $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
-        } else {
-            $query = "SELECT COUNT(*) FROM ($query) as tmptable";
-        }
-        $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-        return $this->TotalItems;
-    }
-
     /**
      * Sets the template data for the list of candidates, users, etc.
      *
@@ -630,7 +607,6 @@ class NDB_Menu_Filter extends NDB_Menu
             'filterfieldOrder',
             $_GET['filter']['order']['fieldOrder'] ?? ''
         );
-        $this->setTemplateVar('TotalItems', $this->TotalItems);
 
         // print out column headings
         $i = 0;
@@ -819,8 +795,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // get the list
-        $this->_getNumberPages($query);
-
         $result = $DB->pselect($query, $qparams);
 
         return $result;
