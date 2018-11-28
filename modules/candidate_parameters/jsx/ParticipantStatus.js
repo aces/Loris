@@ -97,6 +97,8 @@ class ParticipantStatus extends Component {
           </div>
         );
       }
+    });
+  }
 
       return (
         <button className="btn-info has-spinner">

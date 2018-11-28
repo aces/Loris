@@ -9,12 +9,13 @@ import {Tabs, TabPane} from 'Tabs';
 class CandidateParameters extends Component {
   constructor(props) {
     super(props);
+    this.getTabPanes = this.getTabPanes.bind(this);
   }
 
   getTabPanes(tabList) {
     const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
     const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
-    const tabPanes = Object.keys(tabList).map(function(key) {
+    const tabPanes = Object.keys(tabList).map(key => {
       const TabContent = tabList[key].component;
       return (
         <TabPane TabId={tabList[key].id} key={key}>
@@ -64,7 +65,25 @@ class CandidateParameters extends Component {
   }
 }
 
-CandidateParameters.propTypes = {};
-CandidateParameters.defaultProps = {};
+CandidateParameters.propTypes = {
+  candID: React.PropTypes.string.isRequired
+};
 
-export default CandidateParameters;
+/**
+ * Render Candidate Parameters component on page load
+ */
+const args = QueryString.get(document.currentScript.src);
+
+window.addEventListener("load", () => {
+  const candidateParameters = (
+    <div className="page-candidate-parameters">
+      <CandidateParameters
+        Module="candidate_parameters"
+        candID={args.candID}
+      />
+    </div>
+  );
+
+  ReactDOM.render(candidateParameters, document.getElementById("lorisworkspace"));
+});
+

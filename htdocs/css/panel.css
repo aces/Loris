@@ -144,7 +144,6 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 @media (max-width: 884px) {
-
     .active_panel {
         right: 500px;
     }

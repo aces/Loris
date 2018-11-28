@@ -135,7 +135,7 @@ class FamilyInfo extends Component {
         // remove from list of candidates because it can only be added once
         delete candidateList[candID];
       }
-    }
+    });
 
     let alertMessage = '';
     let alertClass = 'alert text-center hide';
@@ -220,7 +220,6 @@ class FamilyInfo extends Component {
         }
       }
     }
-
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
 
@@ -232,7 +231,7 @@ class FamilyInfo extends Component {
 
     $.ajax({
       type: 'POST',
-      url: self.props.action,
+      url: this.props.action,
       data: formData,
       cache: false,
       contentType: false,
@@ -311,14 +310,13 @@ class FamilyInfo extends Component {
         }
       }
     }
-
     formData.append('tab', 'deleteFamilyMember');
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
 
     $.ajax({
       type: 'POST',
-      url: self.props.action,
+      url: this.props.action,
       data: formData,
       cache: false,
       contentType: false,
