@@ -37,6 +37,9 @@ class TrainingTest extends LorisIntegrationTest
     public function testBreadcrumbLoads()
     {
         $this->safeGet($this->url . "/training/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText);
         $breadcrumbText = $this->webDriver
             ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
         $this->assertContains("Training", $breadcrumbText);
