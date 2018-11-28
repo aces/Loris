@@ -417,12 +417,12 @@ class Utility
     }
 
     /**
-     * Converts an associative array to a numeric array consisting of the 
+     * Converts an associative array to a numeric array consisting of the
      * argument's value as its first and only element. This is adapted from the
-     * original functioning of toArray which was not type-safe. It is 
+     * original functioning of toArray which was not type-safe. It is
      * primarily used for extracting configuration settings.
      *
-     * @param $array An asssociative array.
+     * @param array $array An asssociative array.
      *
      * @return array The new numeric array, or $array if it was already numeric.
      */
