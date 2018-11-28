@@ -422,16 +422,16 @@ class Utility
      * original functioning of toArray which was not type-safe. It is
      * primarily used for extracting configuration settings.
      *
-     * @param array $array An asssociative array.
+     * @param array $associative_array An asssociative array.
      *
      * @return array The new numeric array, or $array if it was already numeric.
      */
-    static function associativeToNumericArray(array $array): array
+    static function associativeToNumericArray(array $associative_array): array
     {
-        if (!array_key_exists(0, $array)) {
-            return array($var);
+        if (!array_key_exists(0, $associative_array)) {
+            return array($associative_array);
         }
-        return $array;
+        return $associative_array;
     }
 
     /**
