@@ -163,7 +163,7 @@ class NDB_Config
         if (count($children) > 0) {
             foreach ($children as $child) {
                 $name      = $child->getName();
-                $tagExists = isset($retVal[$name]);
+                $tagExists = isset($retVal[$name]) && is_array($retVal[$name]);
 
                 $numericArrayExists
                     = isset($retVal[$name])
