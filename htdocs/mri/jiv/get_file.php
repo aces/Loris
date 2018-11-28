@@ -153,7 +153,7 @@ case 'DICOMTAR':
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
-    $saveAs           = $_GET['saveAs'];
+    $saveAs           = basename($_GET['saveAs']);
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
