@@ -10,38 +10,36 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
 */
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
-ini_set('default_charset', 'utf-8');
-ob_start('ob_gzhandler');
-require_once "NDB_Client.class.inc";
 $client = new NDB_Client;
 if ($client->initialize() == false) {
-    $login = $_SESSION['State']->getProperty('login');
-    $login->showLoginScreen();
-    return false;
+    http_response_code(401);
+    echo "User not authenticated.";
+    return;
 }
 
 require_once "FeedbackMRI.class.inc";
 
 // create DB object
-$DB =& Database::singleton();
+$DB = \Database::singleton();
 
 // user is logged in, let's continue with the show...
-$user =& User::singleton($_SESSION['State']->getUsername());
+$user = \User::singleton($_SESSION['State']->getUsername());
 
 // check permissions
-if ($user->hasPermission('imaging_browser_qc')) {
-    $tpl_data['has_permission'] = true;
+if (!$user->hasPermission('imaging_browser_qc')) {
+    http_response_code(403);
+    return;
 }
 
+$tpl_data['has_permission'] = true;
 // instantiate feedback mri object
 $comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID']);
 
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away'] && $user->hasPermission('imaging_browser_qc')) {
+if ($_POST['fire_away']) {
     // clear all predefined comments
     $comments->clearAllComments();
 
@@ -156,13 +154,10 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 }
 
 //Output template using Smarty
-$config          =& NDB_Config::singleton();
-$tpl_data['css'] =$config->getSetting('css');
+$config          = \NDB_Config::singleton();
+$tpl_data['css'] = $config->getSetting('css');
 $smarty          = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('feedback_mri_popup.tpl');
 
 ob_end_flush();
-
-exit;
-?>

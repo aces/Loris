@@ -35,6 +35,10 @@ class Utility
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
+     * NOTE This function assumes 1 month = 30 days. Although this is not really
+     * accurate, it should not be changed as it impacts the reproducibility of
+     * the analysis of data in LORIS.
+     *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
      * @param string $testdate date of testing (or second date), formatted YYYY-MM-DD
      *
@@ -160,7 +164,7 @@ class Utility
             $query .= "WHERE Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
+            $query .= " AND CenterID <> 1";
         }
 
         $result = $DB->pselect($query, array());
@@ -1070,13 +1074,13 @@ class Utility
 
         switch($last) {
         case 'g':
-            return $val * 1024 * 1024 * 1024;
+            return (int)$val * 1024 * 1024 * 1024;
         case 'm':
-            return $val * 1024 * 1024;
+            return (int)$val * 1024 * 1024;
         case 'k':
-            return $val * 1024;
+            return (int)$val * 1024;
         default:
-            return $val;
+            return (int)$val;
         }
     }
 

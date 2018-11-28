@@ -103,7 +103,7 @@ var DataQueryApp = React.createClass({
         var promises = [];
         var that = this;
         for(var key in this.state.queryIDs){
-            console.log(this.state.queryIDs[key][0]);
+            //console.log(this.state.queryIDs[key][0]);
             for (var i = 0; i < this.state.queryIDs[key].length; i += 1) {
                 var curRequest;
                 curRequest = Promise.resolve(

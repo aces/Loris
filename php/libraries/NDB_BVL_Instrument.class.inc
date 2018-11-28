@@ -2115,7 +2115,7 @@ class NDB_BVL_Instrument extends NDB_Page
             switch ($row['COLUMN_NAME']) {
             case 'CommentID':
             case 'UserID':
-                continue;
+                continue 2;
             case 'Data_entry_completion_status':
                 $values[$row['COLUMN_NAME']] = 'Incomplete';
                 break;
