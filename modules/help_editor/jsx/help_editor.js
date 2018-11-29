@@ -1,6 +1,6 @@
 import FilterForm from 'FilterForm';
 import Loader from 'Loader';
-
+import PropTypes from 'prop-types';
 /**
  * Help Editor Archive Page.
  *
