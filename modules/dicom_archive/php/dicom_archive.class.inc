@@ -14,7 +14,6 @@
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\dicom_archive;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
