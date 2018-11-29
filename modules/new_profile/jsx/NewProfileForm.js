@@ -99,7 +99,6 @@ class NewProfileForm extends React.Component {
                 data: JSON.stringify(this.state.formData),
                 dataType: 'json',
                 success: (data) => {
-                    data = data;
                     this.setState(
                         {
                             newData: data,
