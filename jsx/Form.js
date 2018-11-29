@@ -1390,14 +1390,14 @@ class CheckboxElement extends React.Component {
 }
 
 CheckboxElement.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  label: React.PropTypes.string.isRequired,
-  value: React.PropTypes.string,
-  id: React.PropTypes.string,
-  disabled: React.PropTypes.bool,
-  required: React.PropTypes.bool,
-  errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
 };
 
 CheckboxElement.defaultProps = {
