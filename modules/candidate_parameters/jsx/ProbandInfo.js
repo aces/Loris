@@ -325,9 +325,9 @@ class ProbandInfo extends React.Component {
 }
 
 ProbandInfo.propTypes = {
-  dataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
-  tabName: React.PropTypes.string,
+  dataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
+  tabName: PropTypes.string,
 };
 
 export default ProbandInfo;

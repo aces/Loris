@@ -251,7 +251,7 @@ class ImagingUploader extends Component {
 }
 
 ImagingUploader.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
 };
 
 export default ImagingUploader;

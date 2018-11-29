@@ -66,7 +66,7 @@ class CandidateParameters extends Component {
 }
 
 CandidateParameters.propTypes = {
-  candID: React.PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
 };
 
 /**
