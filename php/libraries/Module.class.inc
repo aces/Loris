@@ -26,7 +26,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
 {
-    const GENERIC_500_ERROR = "We're sorry, LORIS has encountered an internal "
+    const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
         . "server error. Please contact your project administrator for more "
         . "information.";
     const CONFIGURATION_ERROR = "LORIS configuration settings are invalid or "
@@ -284,14 +284,14 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     )
                 )
             );
-        /* Catch more specific errors that may be thrown in the codebase.
-         * Without handling these exceptions explicitly, LORIS will display
-         * a 404 error and swallow the exception, hindering debugging efforts.
-         *
-         * NOTE The order of these catch statements matter and should go from
-         * most to least specific. Otherwise all Exceptions will be caught 
-         * as their more generic parent class which reduces precision.
-         */
+            /* Catch more specific errors that may be thrown in the codebase.
+            * Without handling these exceptions explicitly, LORIS will display
+            * a 404 error and swallow the exception, hindering debugging efforts.
+            *
+            * NOTE The order of these catch statements matter and should go from
+            * most to least specific. Otherwise all Exceptions will be caught
+            * as their more generic parent class which reduces precision.
+            */
         } catch (\DatabaseException $e) {
             error_log($e);
             return $this->responseStatus500(
@@ -328,11 +328,12 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
 
     /**
      * Return a properly-decorated response with status 500. Used to handle
-     * exceptions thrown within the codebase in a graceful way. 
+     * exceptions thrown within the codebase in a graceful way.
      *
      * @param ServerRequestInterface $request The request to process.
-     * @param \User $user The user to decorate the page with.
-     * @message string An error message explaining the 500 code to the user.
+     * @param \User                  $user    The user to decorate the page with.
+     * @param string                 $message An error message explaining the
+     *                                  500 code to the user.
      *
      * @return ResponseInterface A properly decorated 500 response.
      */
