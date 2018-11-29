@@ -154,7 +154,6 @@ case 'DICOMTAR':
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     $PatientName      = $_GET['patientName'] ?? '';
-    error_log("Patient name is $PatientName`");
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
@@ -172,9 +171,7 @@ if (!file_exists($FullPath)) {
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
     // Append the patient name to the end of the file name.
-    error_log('Just before if');
     if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
-        error_log('In IF');
         /* Format: $Filename_$PatientName.extension
          *
          * basename() is used around $PatientName to prevent the use of
