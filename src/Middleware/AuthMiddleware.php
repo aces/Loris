@@ -62,6 +62,13 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
             return $this->next->process($request, $handler);
         }
 
-        return (new \LORIS\Http\Error($request, 403, "Permission denied"));
+        return new \LORIS\Middleware\PageDecorationMiddleware(
+            $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+        ))->process(
+            $request,
+            new \LORIS\Router\NoopResponder(
+                new \LORIS\Http\Error($request, 403, "Permission denied")
+            )
+        );
     }
 }
