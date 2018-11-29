@@ -15,7 +15,7 @@ class CandidateParameters extends Component {
   getTabPanes(tabList) {
     const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
     const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
-    const tabPanes = Object.keys(tabList).map(key => {
+    const tabPanes = Object.keys(tabList).map((key) => {
       const TabContent = tabList[key].component;
       return (
         <TabPane TabId={tabList[key].id} key={key}>
@@ -66,7 +66,7 @@ class CandidateParameters extends Component {
 }
 
 CandidateParameters.propTypes = {
-  candID: React.PropTypes.string.isRequired
+  candID: React.PropTypes.string.isRequired,
 };
 
 /**
@@ -74,7 +74,7 @@ CandidateParameters.propTypes = {
  */
 const args = QueryString.get(document.currentScript.src);
 
-window.addEventListener("load", () => {
+window.addEventListener('load', () => {
   const candidateParameters = (
     <div className="page-candidate-parameters">
       <CandidateParameters
@@ -84,6 +84,6 @@ window.addEventListener("load", () => {
     </div>
   );
 
-  ReactDOM.render(candidateParameters, document.getElementById("lorisworkspace"));
+  ReactDOM.render(candidateParameters, document.getElementById('lorisworkspace'));
 });
 

@@ -15,14 +15,13 @@ import Loader from 'Loader';
  *
  * */
 class HelpEditor extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      data: {}
+      data: {},
     };
 
     // TODO: refs should be deprecated in future refactoring.
@@ -30,7 +29,7 @@ class HelpEditor extends React.Component {
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 
@@ -54,16 +53,16 @@ class HelpEditor extends React.Component {
     $.ajax(this.props.DataURL, {
       method: 'GET',
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         // FIXME: Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
         loris.hiddenHeaders = data.hiddenHeaders || [];
         this.setState({
           data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
-      error: error => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -157,7 +156,7 @@ class HelpEditor extends React.Component {
 
 HelpEditor.propTypes = {
   Module: React.PropTypes.string.isRequired,
-  DataURL: React.PropTypes.string.isRequired
+  DataURL: React.PropTypes.string.isRequired,
 };
 
 /**

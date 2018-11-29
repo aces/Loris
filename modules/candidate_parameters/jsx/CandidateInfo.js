@@ -89,7 +89,7 @@ class CandidateInfo extends Component {
           </div>
         );
       }
-    });
+    };
 
     let disabled = true;
     let updateButton = null;

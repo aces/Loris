@@ -28,7 +28,7 @@ class DataIntegrityFlag extends Component {
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 

@@ -1,5 +1,4 @@
 import FilterForm from 'FilterForm';
-import formatDataDictColumn from './columnFormatter';
 import StaticDataTable from 'jsx/StaticDataTable';
 
 import React, {Component} from 'react';
@@ -30,7 +29,7 @@ class DataDictIndex extends Component {
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 
@@ -56,12 +55,12 @@ class DataDictIndex extends Component {
     $.ajax(this.props.DataURL, {
       method: 'GET',
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         this.setState({
           Data: data,
           isLoaded: true,
         });
-      }.bind(this),
+      },
       error: function(error) {
         console.error(error);
       },
@@ -101,14 +100,14 @@ class DataDictIndex extends Component {
     }
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === 'Description' && hasEditPermission) {
-      let updateDict = name => {
-        return e => {
+      let updateDict = (name) => {
+        return (e) => {
           e.stopPropagation();
 
           let value = e.target.valueOf().innerText;
           $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
-            fieldname: name, description: value
-          }, data => {});
+            fieldname: name, description: value,
+          }, (data) => {});
         };
       };
       return (

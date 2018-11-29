@@ -1397,7 +1397,7 @@ CheckboxElement.propTypes = {
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 CheckboxElement.defaultProps = {
@@ -1409,7 +1409,7 @@ CheckboxElement.defaultProps = {
   inputClass: 'col-sm-9',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**

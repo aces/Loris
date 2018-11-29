@@ -5,21 +5,20 @@ import Loader from 'Loader';
  * Renders the contents of the ProbandInfo tab, consisting of the FormElement component
  */
 class ProbandInfo extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       genderOptions: {
-        Male: "Male",
-        Female: "Female"
+        Male: 'Male',
+        Female: 'Female',
       },
       Data: [],
       formData: {},
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
     };
 
     /**
@@ -42,11 +41,11 @@ class ProbandInfo extends React.Component {
     $.ajax(this.props.dataURL, {
       method: 'GET',
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         const formData = {
           ProbandGender: data.ProbandGender,
           ProbandDoB: data.ProbandDoB,
-          ProbandDoB2: data.ProbandDoB
+          ProbandDoB2: data.ProbandDoB,
         };
 
         // Add parameter values to formData
@@ -55,14 +54,14 @@ class ProbandInfo extends React.Component {
         this.setState({
           formData: formData,
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
-      error: error => {
+      error: (error) => {
         this.setState({
-          error: 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -76,7 +75,7 @@ class ProbandInfo extends React.Component {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -104,19 +103,19 @@ class ProbandInfo extends React.Component {
     let dob2 = myFormData.ProbandDoB2 ?
       myFormData.ProbandDoB2 : null;
     if (dob1 !== dob2) {
-      alert("DOB do not match!");
+      alert('DOB do not match!');
       return;
     }
 
     if (dob1 > today) {
-      alert("Proband date of birth cannot be later than today!");
+      alert('Proband date of birth cannot be later than today!');
       return;
     }
 
     // Set form data
     let formData = new FormData();
     for (let key in myFormData) {
-      if (myFormData[key] !== "") {
+      if (myFormData[key] !== '') {
         formData.append(key, myFormData[key]);
       }
     }
@@ -130,23 +129,23 @@ class ProbandInfo extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
-      success: data => {
+      success: (data) => {
         this.setState({
-          updateResult: "success"
+          updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
       },
-      error: error => {
-        if (error.responseText !== "") {
+      error: (error) => {
+        if (error.responseText !== '') {
           let errorMessage = JSON.parse(error.responseText).message;
           this.setState({
-            updateResult: "error",
-            errorMessage: errorMessage
+            updateResult: 'error',
+            errorMessage: errorMessage,
           });
           this.showAlertMessage();
         }
-      }
+      },
     });
   }
 
@@ -154,16 +153,16 @@ class ProbandInfo extends React.Component {
    * Display a success/error alert message after form submission
    */
   showAlertMessage() {
-    if (this.refs["alert-message"] === null) {
+    if (this.refs['alert-message'] === null) {
       return;
     }
 
-    let alertMsg = this.refs["alert-message"];
+    let alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
       500,
       () => {
         this.setState({
-          updateResult: null
+          updateResult: null,
         });
       }
     );
@@ -198,7 +197,7 @@ class ProbandInfo extends React.Component {
         let value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
-          case "enu": {
+          case 'enu': {
             let types = extraParameters[key2].Type.substring(5);
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
@@ -224,7 +223,7 @@ class ProbandInfo extends React.Component {
             );
             break;
           }
-          case "dat":
+          case 'dat':
             extraParameterFields.push(
               <DateElement
                   label={extraParameters[key2].Description}
@@ -253,16 +252,16 @@ class ProbandInfo extends React.Component {
       }
     }
 
-    let alertMessage = "";
-    let alertClass = "alert text-center hide";
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
     if (this.state.updateResult) {
-      if (this.state.updateResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.updateResult === "error") {
+      if (this.state.updateResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = 'Update Successful!';
+      } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Failed to update!";
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
       }
     }
 
@@ -328,7 +327,7 @@ class ProbandInfo extends React.Component {
 ProbandInfo.propTypes = {
   dataURL: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired,
-  tabName: React.PropTypes.string
+  tabName: React.PropTypes.string,
 };
 
 export default ProbandInfo;

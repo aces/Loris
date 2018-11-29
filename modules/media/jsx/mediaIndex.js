@@ -7,8 +7,6 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import MediaUploadForm from './uploadForm';
 
-class MediaIndex extends React.Component {
-
 class MediaIndex extends Component {
   constructor(props) {
     super(props);

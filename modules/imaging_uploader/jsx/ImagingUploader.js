@@ -5,8 +5,6 @@ import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
-import formatColumn from './columnFormatter';
-import Loader from 'jsx/Loader';
 
 class ImagingUploader extends Component {
   constructor(props) {
@@ -21,7 +19,7 @@ class ImagingUploader extends Component {
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 
@@ -47,7 +45,7 @@ class ImagingUploader extends Component {
     $.ajax(this.props.DataURL, {
       method: 'GET',
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         // FIXME: Remove the following line of code, add ['PatientName'] to the
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
@@ -57,7 +55,7 @@ class ImagingUploader extends Component {
           Data: data,
           isLoaded: true,
         });
-      }.bind(this),
+      },
       error: function(error) {
         console.error(error);
       },
@@ -135,14 +133,9 @@ class ImagingUploader extends Component {
     }
 
     if (column === 'Tarchive Info') {
-      if (!cell || cell === "0") {
+      if (!cell || cell === '0') {
         return (<td></td>);
       }
-
-      const url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
-      return (
-        <Loader/>
-      );
     }
 
     if (column === 'Number Of MincInserted') {
@@ -187,7 +180,7 @@ class ImagingUploader extends Component {
    */
   handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser/', {
-      DCCID: dccid
+      DCCID: dccid,
     })(e);
   }
 
@@ -199,7 +192,7 @@ class ImagingUploader extends Component {
    */
   openViolatedScans(patientName, e) {
     loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName
+      PatientName: patientName,
     })(e);
   }
 
@@ -258,7 +251,7 @@ class ImagingUploader extends Component {
 }
 
 ImagingUploader.propTypes = {
-  DataURL: React.PropTypes.string.isRequired
+  DataURL: React.PropTypes.string.isRequired,
 };
 
 export default ImagingUploader;

@@ -90,32 +90,32 @@ class UploadForm extends Component {
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
       const pcvu = pcv + '_';
-      const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
-      const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
+      const properName = new RegExp('^' + pcv + '.(zip|tgz|tar.gz)');
+      const properNameExt = new RegExp('^' + pcvu + '.*(.(zip|tgz|tar.gz))');
       if (!fileName.match(properName) && !fileName.match(properNameExt)) {
         swal({
-          title: "Filename does not match other fields!",
-          text: "Filename and values in the PSCID, CandID " +
-          "and Visit Label fields of the form do not match. Please " +
-          "verify that the information entered in the " +
-          "fields or the filename are correct.",
-          type: "error",
-          confirmButtonText: "OK"
+          title: 'Filename does not match other fields!',
+          text: 'Filename and values in the PSCID, CandID ' +
+          'and Visit Label fields of the form do not match. Please ' +
+          'verify that the information entered in the ' +
+          'fields or the filename are correct.',
+          type: 'error',
+          confirmButtonText: 'OK',
         });
-        let fieldMsg = "Field does not match the filename!";
+        let fieldMsg = 'Field does not match the filename!';
 
         let errorMessage = {
-          mriFile: "Filename does not match other fields!",
+          mriFile: 'Filename does not match other fields!',
           candID: undefined,
           pSCID: undefined,
-          visitLabel: undefined
+          visitLabel: undefined,
         };
 
         let hasError = {
           mriFile: true,
           candID: false,
           pSCID: false,
-          visitLabel: false
+          visitLabel: false,
         };
 
         // check filename fields individually to decide
