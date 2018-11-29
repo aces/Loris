@@ -36,10 +36,8 @@ class ValidateIDs extends \NDB_Page
      *
      * @return bool true iff the user has access to this page.
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return (
             $user->hasPermission('access_all_profiles')
             || ($user->hasStudySite() && $user->hasPermission('data_entry'))

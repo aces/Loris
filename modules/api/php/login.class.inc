@@ -32,7 +32,7 @@ class Login extends APIEndpoint
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         // Anyone can try and login. Even you.
         return true;

@@ -39,9 +39,8 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return !($user instanceof \LORIS\AnonymousUser);
     }
 

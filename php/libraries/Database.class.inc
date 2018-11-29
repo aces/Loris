@@ -384,7 +384,8 @@ class Database
         string $table,
         array  $set,
         bool   $autoescape = true,
-        bool   $ignore = false
+        bool   $ignore = false,
+        bool   $onDuplicateUpdate
     ): bool {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
