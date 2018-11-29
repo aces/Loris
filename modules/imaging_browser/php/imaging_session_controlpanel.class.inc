@@ -83,6 +83,7 @@ class Imaging_Session_ControlPanel
                  'v_sessions_id' => $this->sessionID,
                 )
             );
+            print_r($qresult);
             $links[] = array(
                         "FEName"    => $qresult['Full_name'],
                         "BEName"    => $v,
@@ -94,7 +95,13 @@ class Imaging_Session_ControlPanel
 
         $candidate =& \Candidate::singleton($timePoint->getCandID());
 
+        /* Note: the if statement below prepares parameters to use in an SQL
+        * query. The $ID variable is appended directly to a SQL query string;
+        * therefore it should NEVER consist of data that can be supplied in
+        * any way by any user.
+         */
         $params     = array();
+        $ID         = 'NULL';
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";
@@ -108,11 +115,13 @@ class Imaging_Session_ControlPanel
 
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
         $qresult = $DB->pselect(
-            'SELECT TarchiveID, ArchiveLocation ' .
+            'SELECT TarchiveID, ArchiveLocation, PatientName ' .
             'FROM tarchive ' .
-            'WHERE PatientName = :id;',
-            array('id' => $ID)
+            'WHERE PatientName LIKE ' . $ID,
+            $params
         );
+        print_r($ID);
+        print_r($qresult);
 
         $tarIDToTarLoc = array();
         foreach ($qresult as $v) {
