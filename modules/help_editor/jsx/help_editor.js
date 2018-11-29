@@ -155,8 +155,8 @@ class HelpEditor extends React.Component {
 }
 
 HelpEditor.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  DataURL: React.PropTypes.string.isRequired,
+  Module: PropTypes.string.isRequired,
+  DataURL: PropTypes.string.isRequired,
 };
 
 /**
