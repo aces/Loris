@@ -3,7 +3,7 @@
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -271,7 +271,6 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 );
             }
         } catch (\NotFound $e) {
-            error_log("IN the NotFound exception");
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
             ))->process(
@@ -284,14 +283,10 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     )
                 )
             );
-            /* Catch more specific errors that may be thrown in the codebase.
-            * Without handling these exceptions explicitly, LORIS will display
-            * a 404 error and swallow the exception, hindering debugging efforts.
-            *
-            * NOTE The order of these catch statements matter and should go from
-            * most to least specific. Otherwise all Exceptions will be caught
-            * as their more generic parent class which reduces precision.
-            */
+            /* The order of these catch statements matter and should go from
+             * most to least specific. Otherwise all Exceptions will be caught
+             * as their more generic parent class which reduces precision.
+             */
         } catch (\DatabaseException $e) {
             error_log($e);
             return $this->responseStatus500(
@@ -301,7 +296,6 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             );
         } catch (\ConfigurationException $e) {
             error_log($e);
-            error_log(self::CONFIGURATION_ERROR);
             return $this->responseStatus500(
                 $request,
                 $user,
