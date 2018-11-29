@@ -34,6 +34,8 @@ class ValidateIDs extends \NDB_Page
     /**
      * Same as the permissions for the main menu filter page.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true iff the user has access to this page.
      */
     function _hasAccess(\User $user) : bool

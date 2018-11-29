@@ -25,7 +25,7 @@ namespace LORIS\datadict;
 
 class Datadict extends \NDB_Menu_Filter
 {
-    var $AjaxModule = true;
+    var $AjaxModule   = true;
     var $skipTemplate = true;
 
     /**
