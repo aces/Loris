@@ -47,7 +47,6 @@ class Error extends HtmlResponse
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
 
-
         $tpl_data = array(
                      'message' => $message,
                      'baseurl' => $baseurl,
@@ -58,7 +57,6 @@ class Error extends HtmlResponse
         $body = (new \Smarty_neurodb())
             ->assign($tpl_data)
             ->fetch($template_file);
-        print_r($body);
 
         parent::__construct(
             (new \LORIS\Http\StringStream($body)),
