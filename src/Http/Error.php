@@ -52,7 +52,7 @@ class Error extends HtmlResponse
                      'baseurl' => $baseurl,
                     );
 
-        $template_file = "$status.tpl";
+        $template_file = (string) $status . '.tpl';
 
         $body = (new \Smarty_neurodb())
             ->assign($tpl_data)
