@@ -1,7 +1,5 @@
 import FilterForm from 'FilterForm';
-import StaticDataTable from 'jsx/StaticDataTable';
-
-import React, {Component} from 'react';
+import Loader from 'Loader';
 
 /**
  * Data Dictionary Page.
@@ -16,13 +14,14 @@ import React, {Component} from 'react';
  * @version 1.0.0
  *
  * */
-class DataDictIndex extends Component {
+class DataDictIndex extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
+      hiddenHeaders: [],
     };
 
     /**
@@ -57,13 +56,11 @@ class DataDictIndex extends Component {
       dataType: 'json',
       success: (data) => {
         this.setState({
-          Data: data,
+          data: data,
           isLoaded: true,
         });
       },
-      error: function(error) {
-        console.error(error);
-      },
+      error: (error) => console.error(error),
     });
   }
 
@@ -158,10 +155,10 @@ class DataDictIndex extends Component {
 
 $(function() {
   const dataDictIndex = (
-        <div className="page-datadict">
-            <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
-        </div>
-    );
+    <div className="page-datadict">
+        <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
+    </div>
+  );
   ReactDOM.render(dataDictIndex, document.getElementById('lorisworkspace'));
 });
 
