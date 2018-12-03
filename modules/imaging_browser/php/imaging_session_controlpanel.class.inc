@@ -83,7 +83,6 @@ class Imaging_Session_ControlPanel
                  'v_sessions_id' => $this->sessionID,
                 )
             );
-            print_r($qresult);
             $links[] = array(
                         "FEName"    => $qresult['Full_name'],
                         "BEName"    => $v,
@@ -120,8 +119,6 @@ class Imaging_Session_ControlPanel
             'WHERE PatientName LIKE ' . $ID,
             $params
         );
-        print_r($ID);
-        print_r($qresult);
 
         $tarIDToTarLoc = array();
         foreach ($qresult as $v) {
