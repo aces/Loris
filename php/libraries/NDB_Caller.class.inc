@@ -80,13 +80,13 @@ class NDB_Caller
         string $CommentID='',
         ?string $nextpage=null,
         bool $anonymous=true
-    ) {
+    ): string {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
         $settings = $factory->settings();
         // if no first argument, return
         if (empty($test_name)) {
-            return;
+            return '';
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['login']) && $test_name != 'login'
@@ -96,7 +96,7 @@ class NDB_Caller
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
-            return;
+            return '';
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
