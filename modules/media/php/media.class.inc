@@ -186,8 +186,7 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result            = $this->toArray();
-        $result['options'] = $this->options;
+        $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }
