@@ -177,9 +177,10 @@ if (!empty($DownloadFilename)) {
          * basename() is used around $PatientName to prevent the use of
          * relative path traversal characters.
          */
-        $DownloadFilename = pathinfo($DownloadFilename, PATHINFO_FILENAME) .
+            
+        $DownloadFilename = basename($PatientName) . 
             '_' .
-            basename($PatientName) .
+            pathinfo($DownloadFilename, PATHINFO_FILENAME) .
             '.' .
             pathinfo($DownloadFilename, PATHINFO_EXTENSION);
 
