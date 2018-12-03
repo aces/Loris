@@ -67,7 +67,7 @@ class NDB_Caller
      *
      * @param string      $test_name The object type to load.  The test_name of the
      *                               menu, form or instrument
-     * @param string      $subtest   The subpage of the module to load.
+     * @param string      $subtest   The subpage of the module to load
      * @param string      $CommentID The CommentID identifier to load the page with
      * @param string|null $nextpage  The page to go to after submitting this
      * @param bool        $anonymous True if the user has not logged in.
