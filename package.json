@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "babel-core": "^6.26.3",
     "sweetalert2": "^7.28.4"
   },
   "devDependencies": {
