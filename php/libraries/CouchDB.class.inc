@@ -243,7 +243,7 @@ class CouchDB
         int    $port = 0,
         string $user = "",
         string $password = ""
-    ): CouchDB {
+    ):  \CouchDB {
 
         if (empty(self::$_instances[$database])) {
             if (empty($database)
