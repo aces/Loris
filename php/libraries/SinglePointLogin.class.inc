@@ -299,7 +299,10 @@ class SinglePointLogin
                         Password_expiry < NOW() as Expired,
                         Active,
                         Pending_approval,
-                        Password_hash
+                        Password_hash,
+			active_from,
+			active_to
+
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
@@ -326,6 +329,32 @@ class SinglePointLogin
                     );
 
                     return false;
+                }
+
+                // check if the account is longer active
+                $date       = new DateTime();
+                $currentDay = $date->getTimestamp();
+
+                if (($row['active_to'] != null)
+                    && ($currentDay > strtotime($row['active_to']))
+                ) {
+                    $this->_lastError = "Your account has expired."
+                        . " Please contact your project administrator to re-activate"
+                        . " this account.";
+                    return false;
+
+                }
+
+                // check if the account is active
+                if (($row['active_from'] != null)
+                    && ($currentDay < strtotime($row['active_from']))
+                ) {
+                    $this->_lastError = "Your account is not active yet."
+                        ." According to our records it will be active from 
+			{$row['active_from']}"
+                        . " Please contact your project administrator";
+                    return false;
+
                 }
 
                 if ($row['Pending_approval'] == 'Y') {
@@ -400,12 +429,12 @@ class SinglePointLogin
     }
 
      /**
-     * Inserts the login (or failed-login) detail into the user_login_history
-     *
-     * @param String $description description for the failed-login
-     * @param Array  $setArray    contains data to be inserted
-     *
-     * @return null
+      * Inserts the login (or failed-login) detail into the user_login_history
+      *
+      * @param String $description description for the failed-login
+      * @param Array  $setArray    contains data to be inserted
+      *
+      * @return null
       */
     function insertFailedDetail($description, $setArray)
     {

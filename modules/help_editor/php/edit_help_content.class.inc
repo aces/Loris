@@ -25,7 +25,6 @@ namespace LORIS\help_editor;
 
 class Edit_Help_Content extends \NDB_Form
 {
-    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
      /**
      * Determine if user has permission to access this page
      *
@@ -36,7 +35,7 @@ class Edit_Help_Content extends \NDB_Form
         // create user object
         $user = \User::singleton();
 
-            // check user permissions
+        // check user permissions
         return $user->hasPermission('context_help');
     }
      /**

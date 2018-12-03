@@ -102,7 +102,7 @@ infrastructure will be re-designed to follow this guideline.*
   `ON UPDATE` clause. Do not rely on default behavior.
 
 #### Naming
-- Although not an enforced rule, recommandation for naming constraint are 
+- Although not an enforced rule, recommendation for naming constraint are 
   as follow:
   - The constraint name should be **specifically declared**.
   - The constraint name should be in **singular form**.
