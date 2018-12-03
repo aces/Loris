@@ -3,7 +3,7 @@
  * Contains NDB_Caller class to dispatch to the appropriate library
  * for the URL being loaded.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
