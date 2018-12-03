@@ -125,7 +125,7 @@ class Candidate_Parameters extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_parameters/js/index.js",
+             $baseURL . "/candidate_parameters/js/CandidateParameters.js",
             )
         );
     }

@@ -85,6 +85,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDatadictDoespageLoad()
     {
         $this->webDriver->get($this->url . "/datadict/");
+
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
                         WebDriverBy::Name("keyword")
