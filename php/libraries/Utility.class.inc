@@ -455,9 +455,11 @@ class Utility
         //    'Instead use Utility::associativeToNumericArray() for converting ' .
         //    'arrays. Scalar values cannot be passed to this function.'
         //);
-        error_log('Utility::toArray() will be deprecated in LORIS ' .
+        error_log(
+            'Utility::toArray() will be deprecated in LORIS ' .
             'version 21. Please use Utility::associativeToNumericArray() ' .
-            'instead.');
+            'instead.'
+        );
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
