@@ -33,7 +33,6 @@ _Composer should be run with --no-dev option unless you are an active LORIS deve
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
 
 ### Install Steps
->>>>>>> e0bb1ce7e... Normalize headings and reword prereqs
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
