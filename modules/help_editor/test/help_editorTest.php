@@ -140,7 +140,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          )->sendKeys("Test Topic");
          //click the [show data] button
          $this->safeFindElement(
-             WebDriverBy::Name("filter")
+             WebDriverBy::Name("topic")
          )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
@@ -159,7 +159,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          )->sendKeys("test content");
          //click the [show data] button
          $this->safeFindElement(
-             WebDriverBy::Name("filter")
+             WebDriverBy::Name("keyword")
          )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
