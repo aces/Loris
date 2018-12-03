@@ -47,7 +47,7 @@ const config = [{
     './modules/user_accounts/js/columnFormatter.js': './modules/user_accounts/jsx/columnFormatter.js',
     './modules/conflict_resolver/js/resolved_conflicts_columnFormatter.js': './modules/conflict_resolver/jsx/resolved_conflicts_columnFormatter.js',
     './modules/conflict_resolver/js/unresolved_columnFormatter.js': './modules/conflict_resolver/jsx/unresolved_columnFormatter.js',
-    './modules/examiner/js/columnFormatter.js': './modules/examiner/jsx/columnFormatter.js',
+    './modules/examiner/js/examinerIndex.js': './modules/examiner/jsx/examinerIndex.js',
     './modules/help_editor/js/help_editor.js': './modules/help_editor/jsx/help_editor.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
