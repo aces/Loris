@@ -282,7 +282,7 @@ class NDB_Caller
      * @param string $menu The Menu being loaded
      * @param string $mode The Menu mode
      *
-     * @return string HTML for the menu to display.
+     * @return string HTML for the menu to display
      */
     function loadMenu(string $menu, string $mode): string
     {
