@@ -170,7 +170,7 @@ if (!file_exists($FullPath)) {
 
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
-    // Append the patient name to the end of the file name.
+    // Prepend the patient name to the beginning of the file name.
     if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
         /* Format: $Filename_$PatientName.extension
          *
