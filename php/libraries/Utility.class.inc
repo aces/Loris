@@ -449,11 +449,19 @@ class Utility
      */
     static function toArray($var)
     {
-        throw new DeprecatedException(
-            'Utility::toArray() is deprecated and should not be used. ' .
-            'Instead use Utility::associativeToNumericArray() for converting ' .
-            'arrays. Scalar values cannot be passed to this function.'
-        );
+        // TODO Uncomment the exception code below after LORIS 21 is released.
+        //throw new DeprecatedException(
+        //    'Utility::toArray() is deprecated and should not be used. ' .
+        //    'Instead use Utility::associativeToNumericArray() for converting ' .
+        //    'arrays. Scalar values cannot be passed to this function.'
+        //);
+        error_log('Utility::toArray() will be deprecated in LORIS ' .
+            'version 21. Please use Utility::associativeToNumericArray() ' .
+            'instead.');
+        if (is_array($var) && !array_key_exists(0, $var)) {
+            $var = array($var);
+        }
+        return $var;
     }
 
     /**
