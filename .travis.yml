@@ -74,6 +74,8 @@ before_script:
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+    - mkdir -p data/loris/bin/mri
+    - mysql LorisTest -e "UPDATE Config SET Value='data/loris/bin/mri' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
     # Set up the testing instrument environment
     - cp test/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc

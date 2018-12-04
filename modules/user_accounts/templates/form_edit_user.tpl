@@ -28,12 +28,13 @@
 });
 </script>
 {/literal}
-<form method="post" name="edit_user">
+<form method="post" name="edit_user" autocomplete="new-password">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors
     </div>
     {/if}
+
     <div class="panel panel-default">
       <div class="panel-body">
        <h3>Password Rules</h3>
@@ -352,6 +353,41 @@
               {$form.Active.html}
           </div>
       </div>
+
+
+	{if $form.errors.active_timeWindows}
+	    <div class="alert alert-danger" role="alert">
+		{$form.errors.active_timeWindows}
+	    </div>
+    	{/if}
+
+
+	
+	{if $form.errors.active_timeWindows}
+		<div class="row form-group form-inline form-inline has-error">
+	{else}
+		<div class="row form-group form-inline">
+	{/if}
+		<label class="col-sm-2">
+			{$form.active_from.label}
+		 </label>
+		 <div class="col-sm-10">
+			{$form.active_from.html}
+		 </div>
+	</div>
+	{if $form.errors.active_timeWindows}
+		<div class="row form-group form-inline form-inline has-error">
+	{else}
+		<div class="row form-group form-inline">
+	{/if}
+		<label class="col-sm-2">
+			{$form.active_to.label}
+		 </label>
+		 <div class="col-sm-10">
+			{$form.active_to.html}
+		 </div>
+	</div>
+
       <div class="row form-group form-inline">
        <label class="col-sm-2">
           {$form.Pending_approval.label}
@@ -391,6 +427,7 @@
   <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
 </div>
 {if $can_reject}
+
 <div class="col-sm-2">
     <input type=hidden id ="UserID" value="{$form.UserID.html}">
     <input class="btn btn-sm btn-primary col-xs-12" value="Reject User" type="button" id="btn_reject"/>

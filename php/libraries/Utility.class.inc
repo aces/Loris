@@ -35,6 +35,10 @@ class Utility
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
+     * NOTE This function assumes 1 month = 30 days. Although this is not really
+     * accurate, it should not be changed as it impacts the reproducibility of
+     * the analysis of data in LORIS.
+     *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
      * @param string $testdate date of testing (or second date), formatted YYYY-MM-DD
      *
@@ -163,7 +167,7 @@ class Utility
             $query .= "WHERE Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
+            $query .= " AND CenterID <> 1";
         }
 
         $result = $DB->pselect($query, array());
@@ -281,26 +285,6 @@ class Utility
         $testName = $db->pselectOne($query, array('CID' => $commentID));
 
         return $testName;
-    }
-
-    /**
-     * Cleans a string to make it safe for variables and such
-     *
-     * @param string $string the string to clean
-     *
-     * @return string The string cleaned up enough to be used as a
-     *                variable name
-     */
-    static function getCleanString(string $string): string
-    {
-        $string = trim($string);
-        $string = str_replace('  ', ' ', $string);
-        $string = str_replace(' ', '_', $string);
-        $string = str_replace("'", '', $string);
-        $string = str_replace('"', '', $string);
-        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
-        $string = strtolower($string);
-        return $string;
     }
 
     /**
@@ -507,10 +491,10 @@ class Utility
      */
     static function getAllInstruments(): array
     {
-        $Factory       = NDB_Factory::singleton();
+        $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+            "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
             array()
         );
         $instruments   = array();
@@ -565,7 +549,8 @@ class Utility
         $DB            =& \Database::singleton();
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+             ORDER BY Full_name",
             array()
         );
         foreach ($instruments_q as $key) {
@@ -909,30 +894,6 @@ class Utility
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
-    static function arrayToCSV(array $array): string
-    {
-        $fp = fopen("php://temp", 'w+');
-
-        fputcsv($fp, $array['headers']);
-        foreach ($array['data'] as $item) {
-            fputcsv($fp, $item);
-        }
-
-        // Read what we have written.
-        rewind($fp);
-        $csv_string = stream_get_contents($fp);
-
-        fclose($fp);
-        return $csv_string;
-    }
-
-    /**
      * QuickForm rule to check that a date is valid.
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
@@ -1022,13 +983,13 @@ class Utility
 
         switch($last) {
         case 'g':
-            return $val * 1024 * 1024 * 1024;
+            return (int)$val * 1024 * 1024 * 1024;
         case 'm':
-            return $val * 1024 * 1024;
+            return (int)$val * 1024 * 1024;
         case 'k':
-            return $val * 1024;
+            return (int)$val * 1024;
         default:
-            return $val;
+            return (int)$val;
         }
     }
 

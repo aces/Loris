@@ -89,16 +89,7 @@ class CandidateInfo extends Component {
           </div>
         );
       }
-
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-            </span>
-        </button>
-      );
-    }
+    };
 
     let disabled = true;
     let updateButton = null;

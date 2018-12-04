@@ -1,7 +1,8 @@
 /* This is a custom css file made to override some bootstrap elements. Likely will change the structure of this come production.
 Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 
-.info {
+.info,
+.info:hover {
     color: #fff;
 }
 
@@ -61,17 +62,11 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     font-family: 'Glyphicons Halflings', serif;
     content: "\e114";
     float: right;
-    color: #FFF;
+    color: #064785;
 }
 
 .panel-heading a.collapsed:after {
     content: "\e080";
-}
-
-.panel-default .panel-heading {
-    color: #FFF;
-    background-color: #1C70B6;
-    border-color: #ddd;
 }
 
 .navbar {
@@ -149,7 +144,6 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 @media (max-width: 884px) {
-
     .active_panel {
         right: 500px;
     }
