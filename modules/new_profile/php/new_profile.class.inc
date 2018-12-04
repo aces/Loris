@@ -121,7 +121,7 @@ class New_Profile extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/new_profile/js/newIndex.js"]
+            [$baseURL . "/new_profile/js/NewProfileIndex.js"]
         );
     }
 
