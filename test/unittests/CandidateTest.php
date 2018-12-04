@@ -610,6 +610,17 @@ class CandidateTest extends TestCase
     public function testCreateNew()
     {
         $this->markTestIncomplete("Test not implemented!");
+        
+        $this->_dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn(array('CandID' => 969664));
+        $this->_candidate = new Candidate("1","1988-08-08","M");
+$mock = $this->getMockBuilder('Candidate')
+    ->setMethods(array('handleValue'))
+    ->getMock();
+
+
+
     }
 
     /**
