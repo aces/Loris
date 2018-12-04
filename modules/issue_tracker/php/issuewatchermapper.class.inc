@@ -13,7 +13,8 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\issue_tracker;
-use \LORIS\Data\{Mapper, DataInstance};
+use \LORIS\Data\{Mapper, DataInstance
+};
 
 /**
  * A IssueWatcherMapper is a \LORIS\Data\Mapper which maps User ID
