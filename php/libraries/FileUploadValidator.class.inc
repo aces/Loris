@@ -3,7 +3,14 @@
 use \Psr\Http\Message\UploadedFileInterface;
 use \Zend\Diactoros\UploadedFile;
 
-class FileUploadValidator {
+/**
+ * This class provides validation for files being uploaded to LORIS. It should
+ * serve as the ONLY way that files are uploaded so that all file uploading
+ * functionality can occur on a well-tested foundation.
+ *
+ */
+class FileUploadValidator
+{
 
     public $uploadDirectory;
     public $permittedMIMETypes;
@@ -13,10 +20,10 @@ class FileUploadValidator {
      *
      */
     public function __construct(
-        string $uploadDirectory, 
+        string $uploadDirectory,
         array $permittedMIMETypes = array()
-    ){
-        $this->uploadDirectory = $uploadDirectory;
+    ) {
+        $this->uploadDirectory    = $uploadDirectory;
         $this->permittedMIMETypes = $permittedMIMETypes;
         $this->_validate();
     }
@@ -29,7 +36,8 @@ class FileUploadValidator {
      *
      * @return void
      */
-    protected function _validate(): void {
+    protected function _validate(): void
+    {
         if (! is_dir($this->uploadDirectory)) {
             $this->_responseCode = 500;
             throw new \LorisException(
@@ -51,18 +59,18 @@ class FileUploadValidator {
      * Given an array of files, validate them and upload them to the server.
      *
      * @param array $uploadedFiles
-     * @param int   $permissions A UNIX permissions string (e.g. 644). All files
+     * @param int   $permissions   A UNIX permissions string (e.g. 644). All files uploaded will have this permission string. If uploaded files are required to have  differing permissions, this must be done manually in the calling code after this  functions has executed.
      *                              uploaded will have this permission string.
-     *                              If uploaded files are required to have 
+     *                              If uploaded files are required to have
      *                              differing permissions, this must be done
-     *                              manually in the calling code after this 
+     *                              manually in the calling code after this
      *                              functions has executed.
-     * 
-     * @return bool Whether the file upload was successful. Modifies 
+     *
+     * @return bool Whether the file upload was successful. Modifies
      *                      $this->_responseCode as a side-effect.
      */
     public function upload(
-        array $uploadedFiles, 
+        array $uploadedFiles,
         int $permissions
     ) : bool {
         if (empty($uploadedFiles)) {
@@ -83,12 +91,11 @@ class FileUploadValidator {
             }
             // Validate theat the MIME type of the file is allowed
             if (!empty($this->permittedMIMETypes)) {
-                if (
-                    !in_array(
-                        $uploadedFile->getClientMediaType(),
-                        $this->permittedMIMETypes,
-                        true
-                    )
+                if (!in_array(
+                    $uploadedFile->getClientMediaType(),
+                    $this->permittedMIMETypes,
+                    true
+                )
                 ) {
                     $this->_responseCode = 400;
                     return false;
@@ -102,7 +109,7 @@ class FileUploadValidator {
                 /* If an error occurs during moving, set response code to
                  * 'Internal Server Error'.
                  *
-                 * This covers file size checks as well as other errors that 
+                 * This covers file size checks as well as other errors that
                  * can occur in the process of performing
                  * `move_uploaded_file().
                  *
@@ -122,7 +129,8 @@ class FileUploadValidator {
         return true;
     }
 
-    public function getResponseCode(): int {
+    public function getResponseCode(): int
+    {
         return $this->_responseCode;
     }
 }

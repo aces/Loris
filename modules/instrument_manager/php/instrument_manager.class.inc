@@ -43,7 +43,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
                                   'install the instrument';
-    const FILE_MUST_BE_LINST = 'Only LORIS instrument (LINST) files are can ' .
+    const FILE_MUST_BE_LINST  = 'Only LORIS instrument (LINST) files are can ' .
                                     'uploaded here.';
 
     const UPLOAD_INSTALL_FAILED = ' File upload is successful but the ' .
@@ -151,7 +151,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // Do pre-processing before uploading files.
         $err = '';
         if (!$this->canWriteFiles()) {
-            $err = self::CANNOT_WRITE_FILES;
+            $err    = self::CANNOT_WRITE_FILES;
             $status = 403;
         }
 
@@ -172,7 +172,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            $err = self::ALREADY_INSTALLED;
+            $err    = self::ALREADY_INSTALLED;
             $status = 409;
         }
 
@@ -185,11 +185,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
              */
             $validator = new \FileUploadValidator(
                 $this->path . 'project/instruments/',
-                array(
-                    'application/octet-stream'
-                )
+                array('application/octet-stream')
             );
-            $success = $validator->upload($request->getUploadedFiles(), 0644);
+            $success   = $validator->upload($request->getUploadedFiles(), 0644);
         }
 
         // Return appropriate error message if something has gone wrong.
@@ -208,7 +206,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                         /**
                          * This should only happen for users on a system where automatic
                          * installation is disabled (ie. has no quatUser), as the above
-                         * 409 error (the instrumentExists() check) will return before 
+                         * 409 error (the instrumentExists() check) will return before
                          * this one.
                          */
                         $err = self::FILE_ALREADY_EXISTS;
