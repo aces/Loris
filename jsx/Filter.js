@@ -15,6 +15,7 @@ class Filter extends Component {
     super(props);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
     this.renderFilterFields = this.renderFilterFields.bind(this);
+    this.renderActions = this.renderActions.bind(this);
   }
 
   /**
@@ -77,6 +78,14 @@ class Filter extends Component {
     }, []);
   }
 
+  renderActions() {
+    if (this.props.actions) {
+      return this.props.actions.map((action) => {
+        return <ButtonElement label={action.label} onUserInput={action.action}/>;
+      });
+    }
+  }
+
   render() {
     return (
       <FormElement
@@ -88,6 +97,7 @@ class Filter extends Component {
           legend={this.props.title}
         >
           {this.renderFilterFields()}
+          <br/>
           <ButtonElement
             label="Clear Filters"
             type="reset"
