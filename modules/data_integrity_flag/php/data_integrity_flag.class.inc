@@ -26,7 +26,8 @@ namespace LORIS\data_integrity_flag;
  */
 class Data_Integrity_Flag extends \NDB_Menu_Filter
 {
-    public $AjaxModule = true;
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
 
     /**
      * Check user permissions
@@ -125,16 +126,16 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->order_by     = 'dataflag_date desc';
         $this->validFilters = [];
         $this->formToFilter = [];
-        $flagStatusList = [
-                           '1' => '1 - Ready For Review',
-                           '2' => '2 - Review Completed',
-                           '3' => '3 - Feedbacks Closed',
-                           '4' => '4 - Finalization',
-                          ];
+        $flagStatusList     = [
+                               '1' => '1 - Ready For Review',
+                               '2' => '2 - Review Completed',
+                               '3' => '3 - Feedbacks Closed',
+                               '4' => '4 - Finalization',
+                              ];
         $this->fieldOptions = [
-                               'visits' => \Utility::getVisitList(),
-                               'instruments' => \Utility::getAllInstruments(),
-                               'users'       => ['admin' => 'admin'],
+                               'visits'         => \Utility::getVisitList(),
+                               'instruments'    => \Utility::getAllInstruments(),
+                               'users'          => ['admin' => 'admin'],
                                'flagStatusList' => $flagStatusList,
                               ];
     }
