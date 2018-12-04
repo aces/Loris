@@ -130,9 +130,7 @@ class DataIntegrityFlagIndex extends Component {
         </TabPane>
         <TabPane TabId={tabs[1].id}>
           <SetFlagForm
-            visits={this.state.data.visits}
-            instruments={this.state.data.instruments}
-            flagStatusList={this.state.data.flagStatusList}
+            fieldOptions={this.state.data.fieldOptions}
             updateData={this.fetchData}
           />
         </TabPane>

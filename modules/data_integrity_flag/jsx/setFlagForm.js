@@ -68,6 +68,8 @@ class SetFlagForm extends Component {
   }
 
   render() {
+    const {fieldOptions} = this.props;
+
     return (
       <div className='col-md-8 col-lg-6'>
       <FormElement name='flag_form' onSubmit={this.handleSubmit}>
@@ -75,7 +77,7 @@ class SetFlagForm extends Component {
         <SelectElement
           name='visitLabel'
           label='Visit Label'
-          options={this.props.visits}
+          options={fieldOptions.visits}
           onUserInput={this.setFormData}
           value={this.state.formData.visitLabel}
           required={true}
@@ -83,7 +85,7 @@ class SetFlagForm extends Component {
         <SelectElement
           name='instrument'
           label='Instrument'
-          options={this.props.instruments}
+          options={fieldOptions.instruments}
           onUserInput={this.setFormData}
           value={this.state.formData.instrument}
           required={true}
@@ -98,7 +100,7 @@ class SetFlagForm extends Component {
         <SelectElement
           name='flagStatus'
           label='Flag Status'
-          options={this.props.flagStatusList}
+          options={fieldOptions.flagStatusList}
           onUserInput={this.setFormData}
           value={this.state.formData.flagStatus}
           required={true}
