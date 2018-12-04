@@ -16,6 +16,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\EmptyStream;
 
+require_once __DIR__ . '/../../../php/libraries/FileUploadValidator.class.inc';
+
 /**
  * Instrument_manager
  *
@@ -166,8 +168,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 self::FILE_ALREADY_EXISTS
             );
         }
+        $validator = new \FileUploadValidator(
+            $this->path . 
+            'project/instruments/'
+        );
+        $validator->upload($request->getUploadedFiles());
 
-        $uploaded_file->moveTo($fullpath);
         chmod($fullpath, 0644);
 
         // Scripts in tools/ often make relative imports, so we must change
