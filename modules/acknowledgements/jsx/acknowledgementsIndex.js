@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+// import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -98,13 +99,42 @@ class AcknowledgementsIndex extends Component {
       }},
     ];
 
+    // const citationPolicy = (
+    //  <Panel
+    //    id="citationPolicy"
+    //    title="Citation Policy"
+    //  >
+    //    <div className="col-sm-12 col-md-12">
+    //      <span>{this.state.data.citation_policy}</span>
+    //    </div>
+    //  </Panel>
+    // );
+
+    const addButton = (
+      <ButtonElement
+        name="addAcknowledgement"
+        label="Add Acknowledgement"
+        type="button"
+        buttonClass="btn btn-sm btn-primary col-xs-12 addCTA"
+        columnSize="col-sm-3 col-md-2 col-xs-12 pull-right"
+        onUserInput={this.openModalForm}
+      />
+    );
+
     return (
+      <div id="acknowledgementsIndex">
+          <div id="addAcknowledgements">
+            {addButton}
+          </div>
+        <div id="acknowledgementsFilter">
           <FilterableDataTable
             name="acknowledgements"
             data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />
+        </div>
+      </div>
     );
   }
 }
@@ -114,4 +144,12 @@ AcknowledgementsIndex.propTypes = {
   hasPermission: PropTypes.func.isRequired,
 };
 
-export default AcknowledgementsIndex;
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <AcknowledgementsIndex
+      dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
+});
