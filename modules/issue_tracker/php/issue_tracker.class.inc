@@ -27,19 +27,8 @@ namespace LORIS\issue_tracker;
  */
 class Issue_Tracker extends \NDB_Menu_Filter_Form
 {
-    //aka building-table-using-react
-    var $AjaxModule = true;
-
-    /**
-     * Set up the variables required by NDB_Menu_Filter class for constructing
-     * a query
-     *
-     * @return void
-     */
-    function _setupVariables()
-    {
-        $this->skipTemplate = true;
-    }
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
 
     /**
      * Gets the data source for this menu filter.
