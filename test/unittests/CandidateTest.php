@@ -177,12 +177,11 @@ class CandidateTest extends TestCase
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
-        $this->markTestSkipped("setExpectedException has been deprecated! ");
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(false);
         
-        $this->setExpectedException('LorisException');
+        $this->expectedException('LorisException');
         $this->_candidate->select('invalid value');
 
     }
