@@ -25,7 +25,7 @@ namespace LORIS\survey_accounts;
 class Survey_Accounts extends \NDB_Menu_Filter
 {
     public $skipTemplate = true;
-        
+
     /**
      * Determine if user has permission to access this page
      *
@@ -65,8 +65,8 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->query        = $query;
         $this->order_by     = 'PSCID';
         $this->fieldOptions = [
-                                'visits'      => \Utility::getVisitList(),
-                                'instruments' => \Utility::getDirectInstruments(),
+                               'visits'      => \Utility::getVisitList(),
+                               'instruments' => \Utility::getDirectInstruments(),
                               ];
     }
 
