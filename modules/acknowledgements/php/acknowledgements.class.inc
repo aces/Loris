@@ -28,6 +28,8 @@ namespace LORIS\acknowledgements;
 
 class Acknowledgements extends \NDB_Menu_Filter_Form
 {
+    public $skipTemplate = true;
+
     /**
      * Determine whether user should be granted access.
      *
@@ -159,38 +161,23 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
+        $config      = \NDB_Config::singleton();
+        $startYear   = $config->getSetting('startYear');
+        $endYear     = $config->getSetting('endYear');
+
         // enums should match with acknowledgements table
         $present = array(
-                    ''    => '',
                     'Yes' => 'Yes',
                     'No'  => 'No',
                    );
 
-        // add filter elements
-        $this->addBasicText('ordering', 'Ordering:');
-        $this->addBasicText('full_name', 'Full Name:');
-        $this->addBasicText('citation_name', 'Citation Name:');
-        $config      =& \NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('end_date', 'End Date:', $dateOptions);
-        $this->addSelect('present', 'Present?', $present);
-
+        $this->fieldOptions = array(
+                                'presents' => $present,
+                              );
         // add form elements
         $this->addBasicText('addordering', 'Ordering:');
         $this->addBasicText('addfull_name', 'Full Name:');
         $this->addBasicText('addcitation_name', 'Citation Name:');
-        $config      =& \NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
@@ -218,8 +205,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
-             $baseurl . '/acknowledgements/js/columnFormatter.js',
+             $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
             )
         );
 
