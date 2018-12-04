@@ -52,7 +52,7 @@ const config = [{
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
-    './modules/new_profile/js/newIndex.js': './modules/new_profile/jsx/newIndex.js',
+    './modules/new_profile/js/NewProfileIndex.js': './modules/new_profile/jsx/NewProfileIndex.js',
   },
   output: {
     path: __dirname + '/',
