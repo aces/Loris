@@ -77,16 +77,78 @@ class UploadForm extends React.Component {
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
-    if (!data.mri_file || !data.IsPhantom) {
+
+    if (!data.mriFile || !data.IsPhantom) {
       return;
     }
 
-    if (data.IsPhantom === 'N' && (!data.candID || !data.pSCID || !data.visitLabel)) {
-      return;
+    const fileName = data.mriFile.name;
+    if (data.IsPhantom === 'N') {
+      if (!data.candID || !data.pSCID || !data.visitLabel) {
+        return;
+      }
+      // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
+      const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
+      const pcvu = pcv + '_';
+      const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
+      const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
+      if (!fileName.match(properName) && !fileName.match(properNameExt)) {
+        swal({
+          title: "Filename does not match other fields!",
+          text: "Filename and values in the PSCID, CandID " +
+          "and Visit Label fields of the form do not match. Please " +
+          "verify that the information entered in the " +
+          "fields or the filename are correct.",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        let fieldMsg = "Field does not match the filename!";
+
+        let errorMessage = {
+          mriFile: "Filename does not match other fields!",
+          candID: undefined,
+          pSCID: undefined,
+          visitLabel: undefined
+        };
+
+        let hasError = {
+          mriFile: true,
+          candID: false,
+          pSCID: false,
+          visitLabel: false
+        };
+
+        // check filename fields individually to decide
+        // which fields to apply error message
+        // use limit of 2 to avoid splitting the visit label
+        let fileNameParts = fileName.split('_', 2);
+        if (data.pSCID !== fileNameParts[0]) {
+          errorMessage.pSCID = fieldMsg;
+          hasError.pSCID = true;
+        }
+
+        if (data.candID !== fileNameParts[1]) {
+          errorMessage.candID = fieldMsg;
+          hasError.candID = true;
+        }
+
+        // offset for visit label is size of the two parts plus 2 _'s
+        let visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
+        let fileNameRemains = fileName.substr(visitLabelOffset);
+        // only check that this part of the filename begins with
+        // the field, last part of file name includes optional
+        // specifiers + file extension
+        if (fileNameRemains.indexOf(data.visitLabel) !== 0) {
+          errorMessage.visitLabel = fieldMsg;
+          hasError.visitLabel = true;
+        }
+
+        this.setState({errorMessage, hasError});
+        return;
+      }
     }
 
     // Checks if a file with a given fileName has already been uploaded
-    const fileName = data.mri_file.name;
     const mriFile = this.props.mriList.find(
       mriFile => mriFile.fileName.indexOf(fileName) > -1
     );
@@ -248,7 +310,7 @@ class UploadForm extends React.Component {
     form.candID.value = this.state.formData.candID;
     form.pSCID.value = this.state.formData.pSCID;
     form.visitLabel.value = this.state.formData.visitLabel;
-    form.mri_file.value = this.state.formData.mri_file;
+    form.mriFile.value = this.state.formData.mriFile;
 
     // Hide button when progress bar is shown
     const btnClass = (
@@ -323,13 +385,13 @@ class UploadForm extends React.Component {
               value={this.state.formData.visitLabel}
             />
             <FileElement
-              name="mri_file"
+              name="mriFile"
               label="File to Upload"
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.mri_file}
-              errorMessage={this.state.errorMessage.mri_file}
-              value={this.state.formData.mri_file}
+              hasError={this.state.hasError.mriFile}
+              errorMessage={this.state.errorMessage.mriFile}
+              value={this.state.formData.mriFile}
             />
             <StaticElement
               label="Notes"
