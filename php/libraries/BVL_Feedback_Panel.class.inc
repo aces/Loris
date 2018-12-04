@@ -72,7 +72,7 @@ class BVL_Feedback_Panel
 
         $this->tpl_data['candID'] = $candidateID;
 
-        $candidateObject         = Candidate::singleton($candidateID);
+        $candidateObject         = Candidate::singleton(int($candidateID));
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
         $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
