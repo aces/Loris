@@ -427,7 +427,7 @@ class Utility
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return array|string If $var is an array, $var, 
+     * @return array|string If $var is an array, $var,
      *                          otherwise an array containing $var
      */
     static function toArray($var)
