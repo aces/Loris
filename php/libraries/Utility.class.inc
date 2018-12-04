@@ -427,9 +427,10 @@ class Utility
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return array If $var is an array, var, otherwise an array containing $var
+     * @return array|string If $var is an array, $var, 
+     *                          otherwise an array containing $var
      */
-    static function toArray($var): array
+    static function toArray($var)
     {
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
