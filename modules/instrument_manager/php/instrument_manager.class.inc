@@ -32,24 +32,26 @@ require_once __DIR__ . '/../../../php/libraries/FileUploadValidator.class.inc';
 class Instrument_Manager extends \NDB_Menu_Filter
 {
     const ALREADY_INSTALLED = 'This instrument already exists in the ' .
-                                  'test battery';
+                                  'test battery.';
 
     const CANNOT_WRITE_FILES = 'Automatic installation of instruments is ' .
                                   'not possible given the current server ' .
                                   'configuration. Please contact your ' .
                                   'administrator if you require this ' .
-                                  'functionality';
+                                  'functionality.';
 
     const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
                                   'install the instrument';
+    const FILE_MUST_BE_LINST = 'Only LORIS instrument (LINST) files are can ' .
+                                    'uploaded here.';
 
-    const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
+    const UPLOAD_INSTALL_FAILED = ' File upload is successful but the ' .
                                   'installation failed. Please contact your ' .
-                                  'administrator';
+                                  'administrator.';
 
     const UPLOAD_NO_INSTALL = 'File upload is successful but the ' .
-                                  'instrument needs to be installed manually';
+                                  'instrument needs to be installed manually.';
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -146,6 +148,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
+        // Do pre-processing before uploading files.
+        $err = '';
+        if (!$this->canWriteFiles()) {
+            $err = self::CANNOT_WRITE_FILES;
+            $status = 403;
+        }
 
         if ($this->instrumentExists($instrument)) {
             return new \LORIS\Http\Response\Conflict(
@@ -164,22 +172,70 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            return new \LORIS\Http\Response\Conflict(
-                self::FILE_ALREADY_EXISTS
-            );
+            $err = self::ALREADY_INSTALLED;
+            $status = 409;
         }
-        $validator = new \FileUploadValidator(
-            $this->path . 
-            'project/instruments/'
-        );
-        $validator->upload($request->getUploadedFiles());
 
-        chmod($fullpath, 0644);
+        // Attempt file upload if no errors encountered so far.
+        $success = false;
+        if (empty($err)) {
+            /* Although only .linst files should be uploaded to this module, and
+             * they are just special text files, they are marked as
+             * application/octet-stream upon upload.
+             */
+            $validator = new \FileUploadValidator(
+                $this->path . 'project/instruments/',
+                array(
+                    'application/octet-stream'
+                )
+            );
+            $success = $validator->upload($request->getUploadedFiles(), 0644);
+        }
+
+        // Return appropriate error message if something has gone wrong.
+        if (! $success) {
+            if (empty($err)) {
+                $status = $validator->getResponseCode();
+                switch ($status) {
+                case 400:
+                    $err = self::FILE_MUST_BE_LINST;
+                    break;
+                case 403:
+                    $err = self::CANNOT_WRITE_FILES;
+                    break;
+                case 409:
+                    if (file_exists($fullpath)) {
+                        /**
+                         * This should only happen for users on a system where automatic
+                         * installation is disabled (ie. has no quatUser), as the above
+                         * 409 error (the instrumentExists() check) will return before 
+                         * this one.
+                         */
+                        $err = self::FILE_ALREADY_EXISTS;
+                    }
+                    break;
+                default:
+                    // 500 error message + any not specifically covered above.
+                    $err = 'Sorry, something went wrong.';
+                }
+            }
+            return (new \Loris\Http\Response())
+                ->withStatus(409, 'Conflict')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => $err)
+                        )
+                    )
+                );
+        }
+        // From here on we assume that file upload has completed successfully.
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
         chdir($this->path . "/tools");
         // Use tools/ script to generate an SQL patch file based on the
+        //
         // structure of the uploaded .linst file.
         exec(
             'php generate_tables_sql_and_testNames.php < '
