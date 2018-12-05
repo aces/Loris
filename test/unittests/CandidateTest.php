@@ -608,15 +608,7 @@ class CandidateTest extends TestCase
      */
     public function testCreateNew()
     {
-       $mock = $this->getMockBuilder('Candidate')
-                     ->setMethods(array('createNew'))
-                     ->getMock();
-       $mock->expects($this->once())
-            ->method('createNew')
-            ->will($this->returnValue(12345));
-        
-       $this->assertEquals('12345',$mock::createNew(1,"1980-01-01",null,"M"));
-
+        $this->markTestIncomplete("Test not implemented!");
     }
 
     /**
