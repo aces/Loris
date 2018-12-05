@@ -66,8 +66,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
-
-        $all_scan_types_2d = $DB->pselect(
+        $all_scan_types_2d  = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
@@ -94,20 +93,27 @@ class Imaging_Browser extends \NDB_Menu_Filter
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
             $acqpif       = '';
+            $newQueryCase = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
-                    $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
+                    $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))";
                 } else {
-                    $acqpif .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
+                    $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))";
                 }
                 $isFirst = false;
             }
-            $acqpif .= ",'new','')";
+            $acqpif       .= ",'new','')";
+            $newQueryCase .=")";
         } else {
             $this->acqpid = '';
             $acqpif       = "'new'";
+            $newQueryCase ='';
         }
 
         $NewDataSubquery = "CASE 
@@ -142,7 +148,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
         $PendingNewquery = "CASE 
     WHEN s.MRIQCPending='Y' THEN 'P'
-    WHEN MAX(fqc.QCFirstChangeTime) IS NULL THEN 'N'
+    WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'
       
 END";
         $this->query     = " FROM psc AS p 
