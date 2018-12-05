@@ -147,8 +147,9 @@ class NDB_Menu_Filter extends NDB_Menu
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
-                preg_match('/[0-9A-Za-z_]+$/', $value, $match);
-                $this->headers[] = $match[0];
+                if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
+                    $this->headers[] = $match[0];
+                }
             }
         }
 
@@ -517,7 +518,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $field => $val) {
-                $prepared_key = Utility::getCleanString($field);
+                $prepared_key = $this->getCleanString($field);
                 $query_piece  = $this->_addValidFilters($prepared_key, $field, $val);
                 if (!empty($query_piece)) {
                     $WhereClause .= $query_piece;
@@ -561,7 +562,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = true;
             foreach ($this->having as $key => $val) {
                 if ($val !== '' and $val != null) {
-                    $prepared_key = Utility::getCleanString($key);
+                    $prepared_key = $this->getCleanString($key);
                     if ($first == false) {
                         $WhereClause .= ' AND ';
                     } else {
@@ -716,7 +717,51 @@ class NDB_Menu_Filter extends NDB_Menu
         $list['data']    = $this->_getFullList();
         $list['headers'] = $this->headers;
 
-        return Utility::arrayToCSV($list);
+        return $this->arrayToCSV($list);
+    }
+
+    /**
+     * Cleans a string to make it safe for variables and such
+     *
+     * @param string $string the string to clean
+     *
+     * @return string The string cleaned up enough to be used as a
+     *                variable name
+     */
+    function getCleanString(string $string): string
+    {
+        $string = trim($string);
+        $string = str_replace('  ', ' ', $string);
+        $string = str_replace(' ', '_', $string);
+        $string = str_replace("'", '', $string);
+        $string = str_replace('"', '', $string);
+        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
+        $string = strtolower($string);
+        return $string;
+    }
+
+    /**
+    * Coverts array into CSV string
+    *
+    * @param array $array the array to be converted
+    *
+    * @return string CSV string of data
+    */
+    function arrayToCSV(array $array): string
+    {
+        $fp = fopen("php://temp", 'w+');
+
+        fputcsv($fp, $array['headers']);
+        foreach ($array['data'] as $item) {
+            fputcsv($fp, $item);
+        }
+
+        // Read what we have written.
+        rewind($fp);
+        $csv_string = stream_get_contents($fp);
+
+        fclose($fp);
+        return $csv_string;
     }
 
     /**
