@@ -588,7 +588,6 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
-
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA'),
@@ -609,17 +608,14 @@ class CandidateTest extends TestCase
      */
     public function testCreateNew()
     {
-        $this->markTestIncomplete("Test not implemented!");
+       $mock = $this->getMockBuilder('Candidate')
+                     ->setMethods(array('createNew'))
+                     ->getMock();
+       $mock->expects($this->once())
+            ->method('createNew')
+            ->will($this->returnValue(12345));
         
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn(array('CandID' => 969664));
-        $this->_candidate = new Candidate("1","1988-08-08","M");
-$mock = $this->getMockBuilder('Candidate')
-    ->setMethods(array('handleValue'))
-    ->getMock();
-
-
+       $this->assertEquals('12345',$mock::createNew(1,"1980-01-01",null,"M"));
 
     }
 
