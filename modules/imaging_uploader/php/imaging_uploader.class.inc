@@ -718,6 +718,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $result['form']    = $this->form->form;
         $result['mriList'] = $this->_getFileList($result['Data']);
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
+        $result['hiddenHeaders'] = [];
         return json_encode($result);
     }
 }

@@ -5,6 +5,7 @@ import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
+import PropTypes from 'prop-types';
 
 class ImagingUploader extends Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class ImagingUploader extends Component {
         // the StaticDataTable Component.
         loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
-          Data: data,
+          data: data,
           isLoaded: true,
         });
       },
@@ -91,7 +92,7 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
+    if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
@@ -215,13 +216,13 @@ class ImagingUploader extends Component {
                 Module='imaging_uploader'
                 name='imaging_filter'
                 id='imaging_filter'
-                ref={filterRef}
+                ref={this.setFilterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
-                <TextboxElement {... this.state.Data.form.candID} />
-                <TextboxElement {... this.state.Data.form.pSCID} />
-                <SelectElement {... this.state.Data.form.visitLabel} />
+                <TextboxElement {... this.state.data.form.candID} />
+                <TextboxElement {... this.state.data.form.pSCID} />
+                <SelectElement {... this.state.data.form.visitLabel} />
                 <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
