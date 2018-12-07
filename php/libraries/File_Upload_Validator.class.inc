@@ -16,9 +16,6 @@
  *  @link     https://www.github.com/aces/Loris
  */
 
-use \Psr\Http\Message\UploadedFileInterface;
-use \Zend\Diactoros\UploadedFile;
-
 /**
  * Class to validate file uploads to LORIS.
  *
@@ -108,7 +105,7 @@ class File_Upload_Validator
         foreach ($uploadedFiles as $uploadedFile) {
             //Ensure that the $uploadedFile uses the PSR-7 UploadedFile
             //interface
-            if (! $uploadedFile instanceof \UploadedFile) {
+            if (! $uploadedFile instanceof \Zend\Diactoros\UploadedFile) {
 
                 error_log(
                     'File uploaded to File_Upload_Validator is not an ' .
