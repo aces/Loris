@@ -109,7 +109,7 @@ class File_Upload_Validator
 
                 error_log(
                     'File uploaded to File_Upload_Validator is not an ' .
-                   'instance of PSR-7 UploadedFIle. Aborting upload.'
+                    'instance of PSR-7 UploadedFIle. Aborting upload.'
                 );
                 $this->_responseCode = 500;
                 return false;
