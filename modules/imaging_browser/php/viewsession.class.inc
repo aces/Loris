@@ -703,9 +703,7 @@ class ViewSession extends \NDB_Form
         $candidate            =& \Candidate::singleton($timePoint->getCandID());
         $subjectData['pscid'] = $candidate->getPSCID();
         $subjectData['dob']   = $candidate->getCandidateDoB();
-        if ($tpl_data['useEDC'] === 'true') {
-            $subjectData['edc'] = $candidate->getCandidateEDC();
-        }
+        $subjectData['edc']   = $candidate->getCandidateEDC();
         $subjectData['gender'] = $candidate->getCandidateGender();
 
         // This doesn't work.
