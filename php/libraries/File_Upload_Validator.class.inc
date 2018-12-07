@@ -1,23 +1,49 @@
 <?php declare(strict_types=1);
 
-use \Psr\Http\Message\UploadedFileInterface;
-use \Zend\Diactoros\UploadedFile;
-
 /**
+ * Class to upload files in a safe way.
+ *
  * This class provides validation for files being uploaded to LORIS. It should
  * serve as the ONLY way that files are uploaded so that all file uploading
  * functionality can occur on a well-tested foundation.
  *
+ * PHP Version 7
+ *
+ *  @category Main
+ *  @package  Behavioural
+ *  @author   John Saigle <john.saigle@mcin.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://www.github.com/aces/Loris
  */
-class FileUploadValidator
+
+use \Psr\Http\Message\UploadedFileInterface;
+use \Zend\Diactoros\UploadedFile;
+
+/**
+ * Class to validate file uploads to LORIS.
+ *
+ *  @category Main
+ *  @package  Behavioural
+ *  @author   John Saigle <john.saigle@mcin.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://www.github.com/aces/Loris
+ */
+class File_Upload_Validator
 {
 
     public $uploadDirectory;
     public $permittedMIMETypes;
-    private $responseCode = 500;
+    private $_responseCode = 500;
 
     /**
+     * Create new instance of a File Upload Validator.
      *
+     * @param string $uploadDirectory    The target parent directory of files
+     *                              uploaded using this instance.
+     * @param array  $permittedMIMETypes A whitelist of all MIME types that can
+     * be accepted by this instance. E.g. array('image/png', 'text/plain')
+     *
+     * @return void
      */
     public function __construct(
         string $uploadDirectory,
@@ -25,7 +51,7 @@ class FileUploadValidator
     ) {
         $this->uploadDirectory    = $uploadDirectory;
         $this->permittedMIMETypes = $permittedMIMETypes;
-        $this->_validate();
+        $this->validate();
     }
 
     /**
@@ -36,18 +62,18 @@ class FileUploadValidator
      *
      * @return void
      */
-    protected function _validate(): void
+    protected function validate(): void
     {
         if (! is_dir($this->uploadDirectory)) {
-            $this->_responseCode = 500;
+            $this->__responseCode = 500;
             throw new \LorisException(
                 'Upload directory is not a directory!'
             );
         }
         if (! is_writable($this->uploadDirectory)) {
-            // Set _responseCode anyway in case some calling code decides to
+            // Set __responseCode anyway in case some calling code decides to
             // catch this exception.
-            $this->_responseCode = 403;
+            $this->__responseCode = 403;
             throw new \LorisException(
                 'Upload directory is not writable!'
             );
@@ -58,8 +84,10 @@ class FileUploadValidator
     /**
      * Given an array of files, validate them and upload them to the server.
      *
-     * @param array $uploadedFiles
-     * @param int   $permissions   A UNIX permissions string (e.g. 644). All files uploaded will have this permission string. If uploaded files are required to have  differing permissions, this must be done manually in the calling code after this  functions has executed.
+     * @param array $uploadedFiles An array of files uploaded to the server.
+     *                              These files must implement the PSR-7
+     *                              UploadedFile interface.
+     * @param int   $permissions   A UNIX permissions string (e.g. 644). All files
      *                              uploaded will have this permission string.
      *                              If uploaded files are required to have
      *                              differing permissions, this must be done
@@ -67,7 +95,7 @@ class FileUploadValidator
      *                              functions has executed.
      *
      * @return bool Whether the file upload was successful. Modifies
-     *                      $this->_responseCode as a side-effect.
+     *                      $this->__responseCode as a side-effect.
      */
     public function upload(
         array $uploadedFiles,
@@ -78,15 +106,26 @@ class FileUploadValidator
         }
 
         foreach ($uploadedFiles as $uploadedFile) {
+            //Ensure that the $uploadedFile uses the PSR-7 UploadedFile
+            //interface
+            if (! $uploadedFile instanceof \UploadedFile) {
+
+                error_log(
+                    'File uploaded to File_Upload_Validator is not an ' .
+                    'instance of PSR-7 UploadedFIle. Aborting upload.'
+                );
+                $this->__responseCode = 500;
+                return false;
+            }
             /* basename() is used here to prevent path traversal characters
-            * from being used.
+             * from being used.
              */
             $targetPath = $this->uploadDirectory . basename(
                 $uploadedFile->getClientFilename()
             );
             // If file exists, set response code to 'Conflict'
             if (file_exists($targetPath)) {
-                $this->_responseCode = 409;
+                $this->__responseCode = 409;
                 return false;
             }
             // Validate theat the MIME type of the file is allowed
@@ -97,7 +136,7 @@ class FileUploadValidator
                     true
                 )
                 ) {
-                    $this->_responseCode = 400;
+                    $this->__responseCode = 400;
                     return false;
                 }
             }
@@ -117,7 +156,7 @@ class FileUploadValidator
                  * these errors.
                  */
                 error_log($e->getMessage());
-                $this->_responseCode = 500;
+                $this->__responseCode = 500;
                 return false;
             }
 
@@ -125,12 +164,17 @@ class FileUploadValidator
         }
 
         // If all goes well, set response code to 'Created'
-        $this->_responseCode = 201;
+        $this->__responseCode = 201;
         return true;
     }
 
+    /**
+     * Returns the value of private int $_responseCode
+     *
+     * @return int The HTTP repsonse code corresponding to the upload status.
+     */
     public function getResponseCode(): int
     {
-        return $this->_responseCode;
+        return $this->__responseCode;
     }
 }

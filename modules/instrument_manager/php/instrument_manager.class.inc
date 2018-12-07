@@ -16,7 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\EmptyStream;
 
-require_once __DIR__ . '/../../../php/libraries/FileUploadValidator.class.inc';
+require_once __DIR__ . '/../../../php/libraries/File_Upload_Validator.class.inc';
 
 /**
  * Instrument_manager
@@ -183,7 +183,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * they are just special text files, they are marked as
              * application/octet-stream upon upload.
              */
-            $validator = new \FileUploadValidator(
+            $validator = new \File_Upload_Validator(
                 $this->path . 'project/instruments/',
                 array('application/octet-stream')
             );
@@ -203,11 +203,11 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     break;
                 case 409:
                     if (file_exists($fullpath)) {
-                        /**
-                         * This should only happen for users on a system where automatic
-                         * installation is disabled (ie. has no quatUser), as the above
-                         * 409 error (the instrumentExists() check) will return before
-                         * this one.
+                        /* This should only happen for users on a system where
+                         * automatic installation is disabled (ie. has no
+                         * quatUser), as the above 409 error (the
+                         * instrumentExists() check) will return before this
+                         * one.
                          */
                         $err = self::FILE_ALREADY_EXISTS;
                     }
