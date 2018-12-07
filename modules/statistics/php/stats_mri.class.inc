@@ -185,7 +185,7 @@ class Stats_MRI extends \NDB_Form
                 $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
                 // Data => Subproject => Center => Visit_Label
-                $tpl_data['data'][$subproj][$C][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl][$subcat] = $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
                 // Data => Center
                 $tpl_data['data'][$C][$subcat]  = $row['val'];
