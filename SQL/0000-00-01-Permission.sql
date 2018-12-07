@@ -110,6 +110,7 @@ INSERT INTO `permissions` VALUES
     (48,'imaging_browser_phantom_ownsite', 'Can access only phantom data from own site in Imaging Browser', 2),
     (49,'data_release_upload', 'Data Release: Upload file', 2),
     (50,'data_release_edit_file_access', 'Data Release: Grant other users view-file permissions', 2);
+    (51,'instrument_manager', 'Instrument Manager: View module and upload instruments', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)

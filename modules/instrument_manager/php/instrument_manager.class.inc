@@ -79,7 +79,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('superuser');
+        return $user->hasPermission('instrument_manager');
     }
 
     /**
