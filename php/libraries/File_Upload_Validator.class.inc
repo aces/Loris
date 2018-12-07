@@ -62,7 +62,7 @@ class File_Upload_Validator
     protected function validate(): void
     {
         if (! is_dir($this->uploadDirectory)) {
-            $this->__responseCode = 500;
+            $this->_responseCode = 500;
             throw new \LorisException(
                 'Upload directory is not a directory!'
             );
@@ -70,7 +70,7 @@ class File_Upload_Validator
         if (! is_writable($this->uploadDirectory)) {
             // Set __responseCode anyway in case some calling code decides to
             // catch this exception.
-            $this->__responseCode = 403;
+            $this->_responseCode = 403;
             throw new \LorisException(
                 'Upload directory is not writable!'
             );
@@ -109,9 +109,9 @@ class File_Upload_Validator
 
                 error_log(
                     'File uploaded to File_Upload_Validator is not an ' .
-                    'instance of PSR-7 UploadedFIle. Aborting upload.'
+                   'instance of PSR-7 UploadedFIle. Aborting upload.'
                 );
-                $this->__responseCode = 500;
+                $this->_responseCode = 500;
                 return false;
             }
             /* basename() is used here to prevent path traversal characters
@@ -122,7 +122,7 @@ class File_Upload_Validator
             );
             // If file exists, set response code to 'Conflict'
             if (file_exists($targetPath)) {
-                $this->__responseCode = 409;
+                $this->_responseCode = 409;
                 return false;
             }
             // Validate theat the MIME type of the file is allowed
@@ -133,7 +133,7 @@ class File_Upload_Validator
                     true
                 )
                 ) {
-                    $this->__responseCode = 400;
+                    $this->_responseCode = 400;
                     return false;
                 }
             }
@@ -153,7 +153,7 @@ class File_Upload_Validator
                  * these errors.
                  */
                 error_log($e->getMessage());
-                $this->__responseCode = 500;
+                $this->_responseCode = 500;
                 return false;
             }
 
@@ -161,7 +161,7 @@ class File_Upload_Validator
         }
 
         // If all goes well, set response code to 'Created'
-        $this->__responseCode = 201;
+        $this->_responseCode = 201;
         return true;
     }
 
@@ -172,6 +172,6 @@ class File_Upload_Validator
      */
     public function getResponseCode(): int
     {
-        return $this->__responseCode;
+        return $this->_responseCode;
     }
 }
