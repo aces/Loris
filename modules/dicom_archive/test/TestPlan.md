@@ -33,5 +33,6 @@
     pages' or 'View own-site Imaging Browser pages' permission is set
     [Manual Testing]
 11. Ensure that clicking on any row in the 'Archive Location' column triggers a download of the corresponding 
-    archived DICOM study
+    archived DICOM study. Make sure that the copy of the file downloaded to
+    your system is prepended with the Patient Name field.
     [Manual Testing]
