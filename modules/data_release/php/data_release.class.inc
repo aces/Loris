@@ -174,9 +174,11 @@ class Data_Release extends \NDB_Menu_Filter
             if (isset($releaseFileName)) {
                 // check if file is versioned or not
                 if (isset($version) && $version !== '') {
-                    $uFAFormatted[$userID][$version][$releaseFileID] = $releaseFileName;
+                    $uFAFormatted[$userID][$version][$releaseFileID]
+                        = $releaseFileName;
                 } else {
-                    $uFAFormatted[$userID]['Unversioned'][$releaseFileID] = $releaseFileName;
+                    $uFAFormatted[$userID]['Unversioned'][$releaseFileID]
+                        = $releaseFileName;
                 }
             } else {
                 $uFAFormatted[$userID] = array();

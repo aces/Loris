@@ -73,7 +73,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     // on update the user will loose access to ALL files for that release.
 
     // Get permission list before any changes from main class
-    $data_release = new LORIS\data_release\data_release(
+    $data_release   = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
@@ -127,9 +127,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
                 // nothing changed
                 continue;
             }
-        }
-        // if user had associated version versions
-        else {
+        } else {
+            // if user had associated version versions
             // check if user still has any associated versions
             if (isset($postPermissions[$userNoDot])) {
                 $userid = $DB->pselectOne($query, $params);
