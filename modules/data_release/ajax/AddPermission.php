@@ -40,6 +40,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         $userid = $_POST['userid'];
         $data_release_version = $_POST['data_release_version'];
 
+        $data_release_version = 'Unversioned' ? '' : $data_release_version;
+
         $IDs = $DB->pselectCol(
             "SELECT id 
                     FROM data_release 
@@ -71,11 +73,15 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     // on update the user will loose access to ALL files for that release.
 
     // Get permission list before any changes from main class
-    $vFiles         = LORIS\data_release\data_release::getVersionedFiles($DB);
-    $prePermissions = LORIS\data_release\data_release::getUserVersionPermissions(
-        $vFiles,
-        $DB
+    $data_release = new LORIS\data_release\data_release(
+        \Module::factory('data_release'),
+        '',
+        '',
+        '',
+        ''
     );
+    $vFiles         = $data_release->getVersionedFiles($DB);
+    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
 
     $postPermissions = array();
     foreach ($_POST as $key => $value) {
