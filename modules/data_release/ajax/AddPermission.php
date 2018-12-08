@@ -20,7 +20,7 @@ $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
 $DB       = $factory->database();
 
-if ($_POST['action'] == 'addpermission'
+if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     && $user->hasPermission('data_release_edit_file_access')
 ) {
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
@@ -57,55 +57,129 @@ if ($_POST['action'] == 'addpermission'
             );
         }
     }
+    //addpermissionSuccess=true/false
+    //does not currently do anything on the front-end
+    //just a placeholder displaying if the operation succeeded or not
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-} elseif ($_POST['action'] == 'managepermissions'
+} elseif (isset($_POST['action']) && $_POST['action'] == 'managepermissions'
     && $user->hasPermission('data_release_edit_file_access')
 ) {
-    // 1) so with checkboxes it's not straightforward to figure out
-    //    which permissions were either set or unset during the save,
-    //    hence the TRUNCATE at the beginning
-    // 2) put it in a transaction to make sure it succeeds or not at all
-    // 3) some special characters become "_" so we wildcard match the username
-    try {
-        $DB->_PDO->beginTransaction();
-        $DB->run("TRUNCATE data_release_permissions");
-        foreach ($_POST as $key => $value) {
-            if (strpos($key, 'permissions') !== false) {
-                $parsed_user = str_replace(
-                    "_",
-                    "%",
-                    str_replace("permissions_", "", $key)
-                );
-                $userid      = $DB->pselectOne(
-                    "SELECT ID FROM users WHERE UserID LIKE :userid",
-                    array('userid' => $parsed_user)
-                );
-                foreach ($value as $k => $v) {
-                    $data_release_ids = $DB->pselect(
-                        "SELECT id FROM data_release WHERE version=:version",
-                        array('version' => $v)
-                    );
-                    foreach ($data_release_ids as $data_release_id) {
-                        $success = $DB->run(
-                            "INSERT IGNORE INTO data_release_permissions 
-                                    VALUES ($userid, {$data_release_id['id']})"
+    // It is important here to not truncate all current permissions and rebuild
+    // them but instead to only make modifications to specifically altered
+    // permissions from the front end by the user. Otherwise, if a user has
+    // access to SOME files for a version, the checkbox would not be checked and
+    // on update the user will loose access to ALL files for that release.
+
+    // Get permission list before any changes from main class
+    $vFiles         = LORIS\data_release\data_release::getVersionedFiles($DB);
+    $prePermissions = LORIS\data_release\data_release::getUserVersionPermissions(
+        $vFiles,
+        $DB
+    );
+
+    $postPermissions = array();
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'permissions') !== false) {
+            // at this stage each checked checkbox gets submitted as
+            // key: permission_USERID value: array(VERSION_NAME1, VERSION_NAME2)
+            $parsed_user = str_replace("permissions_", "", $key);
+            foreach ($value as $k => $v) {
+                $postPermissions[$parsed_user][] = $v;
+            }
+        }
+    }
+
+    // Compare pre and post and only update changed values
+    // prePermissions array contains all users in the database
+    // postPermissions contains only users with at least one checked version
+    foreach ($prePermissions as $user=>$oldVersions) {
+        // query to get user ID
+        $query  = "SELECT ID FROM users WHERE UserID LIKE :userid";
+        $params = array('userid' => $user);
+        // PHP replaces dots "." characters by underscores "_" in variables.
+        // to be able to compare below, do the same thing
+        $userNoDot = str_replace(".", "_", $user);
+        // if user did not have any associated versions
+        if (empty($oldVersions)) {
+            // check if user now has versions
+            if (isset($postPermissions[$userNoDot])) {
+                // all versions should be added to user
+                $userid = $DB->pselectOne($query, $params);
+                // go through each version and each file associated and insert it
+                foreach ($postPermissions[$userNoDot] as $version) {
+                    foreach ($vFiles[$version] as $fileID=>$fileName) {
+                        $DB->insert(
+                            'data_release_permissions',
+                            array(
+                             'userid'          => $userid,
+                             'data_release_id' => $fileID,
+                            )
+                        );
+                    }
+                }
+            } else {
+                // nothing changed
+                continue;
+            }
+        }
+        // if user had associated version versions
+        else {
+            // check if user still has any associated versions
+            if (isset($postPermissions[$userNoDot])) {
+                $userid = $DB->pselectOne($query, $params);
+
+                // versions should be compared individually and added or removed
+                $added   = array_diff($postPermissions[$userNoDot], $oldVersions);
+                $removed = array_diff($oldVersions, $postPermissions[$userNoDot]);
+
+                foreach ($added as $version) {
+                    foreach ($vFiles[$version] as $fileID=>$fileName) {
+                        $DB->insert(
+                            'data_release_permissions',
+                            array(
+                             'userid'          => $userid,
+                             'data_release_id' => $fileID,
+                            )
+                        );
+                    }
+                }
+
+                foreach ($removed as $version) {
+                    foreach ($vFiles[$version] as $fileID=>$fileName) {
+                        $DB->delete(
+                            'data_release_permissions',
+                            array(
+                             'userid'          => $userid,
+                             'data_release_id' => $fileID,
+                            )
+                        );
+                    }
+                }
+            } else {
+                // all version permissions should be removed
+                $userid = $DB->pselectOne($query, $params);
+
+                // go through each version and each file associated and delete it
+                foreach ($oldVersions as $version) {
+                    foreach ($vFiles[$version] as $fileID=>$fileName) {
+                        $DB->delete(
+                            'data_release_permissions',
+                            array(
+                             'userid'          => $userid,
+                             'data_release_id' => $fileID,
+                            )
                         );
                     }
                 }
             }
         }
-        $DB->_PDO->commit();
-        header("HTTP/1.1 303 See Other");
-        //addpermissionSuccess=true/false
-        //does not currently do anything on the front-end
-        //currently just a placeholder displaying if the operation succeeded or not
-        header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-    } catch (Exception $e) {
-        $DB->_PDO->rollback();
-        error_log("ERROR: Did not update Data Release permissions.");
-        header("HTTP/1.1 500 Internal Server Error");
-        header("Location: {$baseURL}/data_release/?addpermissionSuccess=false");
     }
+
+    //addpermissionSuccess=true/false
+    //does not currently do anything on the front-end
+    //just a placeholder displaying if the operation succeeded or not
+    header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
+
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
