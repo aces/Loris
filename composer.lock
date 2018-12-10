@@ -1227,16 +1227,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "1.1.5",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "f01c35538d0ccf26f33589d5961ea89a2aa1678f"
+                "reference": "190968d0fe0c8a93b06ba4bda5a53898b7b1b962"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/f01c35538d0ccf26f33589d5961ea89a2aa1678f",
-                "reference": "f01c35538d0ccf26f33589d5961ea89a2aa1678f",
+                "url": "https://api.github.com/repos/phan/phan/zipball/190968d0fe0c8a93b06ba4bda5a53898b7b1b962",
+                "reference": "190968d0fe0c8a93b06ba4bda5a53898b7b1b962",
                 "shasum": ""
             },
             "require": {
@@ -1289,7 +1289,7 @@
                 "php",
                 "static"
             ],
-            "time": "2018-11-29T17:34:43+00:00"
+            "time": "2018-12-09T04:12:16+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -1724,6 +1724,7 @@
                 "testing",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-01-23T13:32:26+00:00"
         },
         {
