@@ -486,9 +486,9 @@ class Candidate
      * Returns the expect date of confinement (due date)
      * of this candidate.
      *
-     * @return string The DoB in YYYY-MM-DD format
+     * @return string|null The DoB in YYYY-MM-DD format
      */
-    function getCandidateEDC(): string
+    function getCandidateEDC(): ?string
     {
         return $this->candidateInfo["EDC"];
     }
