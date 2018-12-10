@@ -177,13 +177,12 @@ class CandidateTest extends TestCase
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
-        $this->markTestSkipped("setExpectedException has been deprecated! ");
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
         
-        $this->setExpectedException('LorisException');
-        $this->_candidate->select('invalid value');
+        $this->expectException('LorisException');
+        $this->_candidate->select(88888);
 
     }
 
@@ -589,7 +588,6 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
-
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA'),
