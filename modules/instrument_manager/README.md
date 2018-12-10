@@ -32,8 +32,13 @@ The test battery is also managed separately directly from the database.
 
 ## Permissions
 
-The `instrument_manager` module requires the user to have the 
-`instrument_manager` permission. 
+Viewing the `instrument_manager` module requires the user to have one of the 
+following permissions:
+* `instrument_manager_read`
+* `instrument_manager_write`
+
+The write permission additionally allows a user to upload new LORIS 
+instrument. 
 
 ## Configurations
 

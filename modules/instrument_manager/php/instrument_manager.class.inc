@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -19,7 +19,7 @@ use \LORIS\Http\EmptyStream;
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -79,7 +79,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('instrument_manager');
+        return $user->hasAnyPermission(
+            array(
+             'instrument_manager_read',
+             'instrument_manager_write',
+            )
+        );
     }
 
     /**
@@ -613,7 +618,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $instrument_dir = $this->path . 'project/instruments';
         $table_dir      = $this->path . 'project/tables_sql';
 
-        return is_writable($instrument_dir) && is_writable($table_dir);
+        return is_writable($instrument_dir)
+            && is_writable($table_dir)
+            && \User::singleton()->hasPermission('instrument_manager_write');
     }
 
 
