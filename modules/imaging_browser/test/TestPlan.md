@@ -22,7 +22,7 @@
 
 ### C. Main panel:  per acquisition:
 
-16. Files can be downloaded (links clickable). Ensure that DICOM downloads are
+16. Files can be downloaded (links clickable) only IFF has permission. Ensure that DICOM downloads are
 prepended with the Patient Name.
 17. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission imaging_browser_qc. Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
 18. Selected:  can be set back to Null (blank)
