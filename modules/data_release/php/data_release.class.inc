@@ -107,7 +107,7 @@ class Data_Release extends \NDB_Menu_Filter
         if (isset($_GET['addpermissionSuccess'])
             && $_GET['addpermissionSuccess'] == "false"
         ) {
-            $this->tpl_data['err'] = "This user already has the permisson for "
+            $this->tpl_data['err'] = $_GET['user']." already has the permisson for "
                                      .$_GET['file'].".";
         }
 
