@@ -1,21 +1,69 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-// import Panel from 'Panel';
+import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * Acknowledgements Module page.
+ *
+ * Serves as an entry-point to the module, rendering the whole React
+ * component page on load.
+ *
+ * Renders main page consisting of FilterableDataTable, CitationPolicy
+ * and addAcknowledgement.
+ *
+ * @author Zaliqa Rosli
+ * @version 1.0.0
+ *
+ */
 class AcknowledgementsIndex extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: {},
+      formData: {},
       error: false,
       isLoaded: false,
+      affiliationsOptions: {
+        douglas: "Douglas",
+        mcgill: "McGill"
+      },
+      degreesOptions: {
+        bachelors: "Bachelors",
+        masters: "Masters",
+        phd: "PhD",
+        postdoc: "Postdoctoral",
+        md: "MD",
+        registeredNurse: "Registered Nurse"
+      },
+      rolesOptions: {
+        investigators: "Investigators",
+        projectAdministration: "Project Administration",
+        databaseManagement: "Database Management",
+        interviewDataCollection: "Interview Data Collection",
+        dataAnalyses: "Data Analyses",
+        mriAcquisition: "MRI Acquisition",
+        dataEntry: "Data Entry",
+        databaseProgramming: "Database Programming",
+        imagingProcessingAndEvaluation: "Imaging Processing and Evaluation",
+        geneticAnalysisAndBiochemicalAssays: "Genetic Analysis and Biochemical Assays",
+        randomizationAndPharmacyAllocation: "Randomization and Pharmacy Allocation",
+        consultants: "Consultants",
+        lpCsfCollection: "LP/CSF Collection"
+      },
+      presentOptions: {
+        yes: "Yes",
+        no: "No"
+      },
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.pickElements = this.pickElements.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
@@ -41,6 +89,63 @@ class AcknowledgementsIndex extends Component {
       });
   }
 
+  pickElements(formElement, keys) {
+    let subset = {};
+    keys.forEach((key) => {
+      if (formElement.hasOwnProperty(key)) {
+        subset[key] = formElement[key];
+      }
+    });
+    return subset;
+  }
+
+  /**
+   * Store the value of the element in this.state.formData
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
+  setFormData(formElement, value) {
+    const formData = this.state.formData;
+    formData[formElement] = value;
+    this.setState({
+      formData: formData
+    });
+  }
+
+  /**
+   * Handles the submission of the Add Acknowledgements form
+   *
+   * @param {event} e - event of the form
+   */
+  handleSubmit(e) {
+    let formData = this.state.formData;
+    let formObject = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
+      }
+    }
+    formObject.append('fire_away', 'Add');
+    $.ajax({
+      type: 'POST',
+      url: loris.BaseURL + '/acknowledgements/',
+      data: formObject,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: data => {
+        swal('Success!', 'Acknowledgement added.', 'success');
+        this.fetchData();
+      },
+      error: error => {
+        console.error(error);
+        let message = error.responseText;
+        swal('Error!', message, 'error');
+      }
+    });
+  }
+
   /**
    * Modify behaviour of specified column cells in the Data Table component
    *
@@ -52,6 +157,19 @@ class AcknowledgementsIndex extends Component {
    */
   formatColumn(column, cell, row) {
     return <td>{cell}</td>;
+  }
+
+  renderCitationPolicy() {
+    return (
+      <Panel
+        id="citationPolicy"
+        title="Citation Policy"
+      >
+        <div className="col-sm-12 col-md-12">
+          <span>{this.state.data.citation_policy}</span>
+        </div>
+      </Panel>
+    );
   }
 
   render() {
@@ -95,20 +213,9 @@ class AcknowledgementsIndex extends Component {
       {label: 'Present', show: true, filter: {
         name: 'present',
         type: 'select',
-        options: options.presents,
+        options: this.state.presentOptions,
       }},
     ];
-
-    // const citationPolicy = (
-    //  <Panel
-    //    id="citationPolicy"
-    //    title="Citation Policy"
-    //  >
-    //    <div className="col-sm-12 col-md-12">
-    //      <span>{this.state.data.citation_policy}</span>
-    //    </div>
-    //  </Panel>
-    // );
 
     const addButton = (
       <ButtonElement
