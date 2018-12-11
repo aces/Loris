@@ -14,7 +14,7 @@
 
 $factory  = \NDB_Factory::singleton();
 $settings = $factory->settings();
-$DB = $factory->database();
+$DB       = $factory->database();
 if ($_POST['action'] == 'addpermission') {
     $userid          = $_POST['userid'];
     $data_release_id = $_POST['data_release_id'];
@@ -29,9 +29,9 @@ if ($_POST['action'] == 'addpermission') {
             )
         );
 
-        $baseURL  = $settings->getBaseURL();
+        $baseURL = $settings->getBaseURL();
         if ($result != '1') {
-            $success  = $DB->insert(
+            $success = $DB->insert(
                 'data_release_permissions',
                 array(
                  'userid'          => $userid,
@@ -53,7 +53,8 @@ if ($_POST['action'] == 'addpermission') {
             );
 
             header(
-                "Location:{$baseURL}/data_release/?addpermissionSuccess=false&user={$username}&file={$file}"
+                "Location:{$baseURL}/data_release/".
+                "?addpermissionSuccess=false&user={$username}&file={$file}"
             );
         }
 
