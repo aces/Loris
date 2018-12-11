@@ -109,7 +109,6 @@ class Data_Release extends \NDB_Menu_Filter
         ) {
             $this->tpl_data['err'] = "This user already has the permisson for "
                                      .$_GET['file'].".";
-            // todo add username
         }
 
     }

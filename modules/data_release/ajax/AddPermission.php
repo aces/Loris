@@ -12,7 +12,9 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$DB = \Database::singleton();
+$factory  = \NDB_Factory::singleton();
+$settings = $factory->settings();
+$DB = $factory->database();
 if ($_POST['action'] == 'addpermission') {
     $userid          = $_POST['userid'];
     $data_release_id = $_POST['data_release_id'];
@@ -22,13 +24,11 @@ if ($_POST['action'] == 'addpermission') {
              WHERE userid = :userid and
              data_release_id = :data_release_id",
             array(
-             'userid'          => $data_release_id,
+             'userid'          => $userid,
              'data_release_id' => $data_release_id,
             )
         );
 
-        $factory  = \NDB_Factory::singleton();
-        $settings = $factory->settings();
         $baseURL  = $settings->getBaseURL();
         if ($result != '1') {
             $success  = $DB->insert(
@@ -38,8 +38,6 @@ if ($_POST['action'] == 'addpermission') {
                  'data_release_id' => $data_release_id,
                 )
             );
-            $factory  = NDB_Factory::singleton();
-            $settings = $factory->settings();
 
             header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
         } else {
@@ -48,11 +46,14 @@ if ($_POST['action'] == 'addpermission') {
                 "SELECT file_name FROM data_release WHERE id = :data_release_id",
                 array('data_release_id' => $data_release_id)
             );
+            //add username
+            $username = $DB->pselectOne(
+                "SELECT userid FROM users WHERE id = :id",
+                array('id' => $userid)
+            );
+
             header(
-                "
-            Location:
-            {$baseURL}/data_release/?addpermissionSuccess=false&user=&file={$file}
-            "
+                "Location:{$baseURL}/data_release/?addpermissionSuccess=false&user={$username}&file={$file}"
             );
         }
 
