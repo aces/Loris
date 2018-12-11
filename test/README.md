@@ -85,4 +85,3 @@ You must specify a remote host for XDebug to connect to via the `XDEBUG_REMOTE_H
 - By default npm will output some irrelevant info when a script returns a non-zero error code, as described [here](https://github.com/npm/npm/issues/8821). To prevent this pass `-s` or `--silent` to `npm run`, e.g. `npm run -s tests:unit`.
 
 - Running the entire integration test suite with XDebug enabled sometimes results in a segmentation fault. This appears to be an issue with XDebug itself.
-
