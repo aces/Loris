@@ -25,7 +25,7 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris
  */
-class File_Upload_Validator
+class FileUploadValidator
 {
 
     public $uploadDirectory;
@@ -61,18 +61,23 @@ class File_Upload_Validator
      */
     protected function validate(): void
     {
+        if (empty($this->uploadDirectory)) {
+            throw new \InvalidArgumentException(
+                'Upload directory cannot be empty'
+            );
+        }
         if (! is_dir($this->uploadDirectory)) {
             $this->_responseCode = 500;
             throw new \LorisException(
-                'Upload directory is not a directory!'
+                'Upload directory is not a directory'
             );
         }
         if (! is_writable($this->uploadDirectory)) {
             // Set __responseCode anyway in case some calling code decides to
             // catch this exception.
-            $this->_responseCode = 403;
+            $this->_responseCode = 500;
             throw new \LorisException(
-                'Upload directory is not writable!'
+                'Upload directory is not writable'
             );
         }
         return;
@@ -81,11 +86,11 @@ class File_Upload_Validator
     /**
      * Given an array of files, validate them and upload them to the server.
      *
-     * @param array $uploadedFiles An array of files uploaded to the server.
+     * @param UploadedFile[] $uploadedFiles An array of files uploaded to the server.
      *                              These files must implement the PSR-7
      *                              UploadedFile interface.
-     * @param int   $permissions   A UNIX permissions string (e.g. 644). All files
-     *                              uploaded will have this permission string.
+     * @param int   $permissions   A UNIX permissions octet (e.g. 0644). All files
+     *                              uploaded will use these permissions.
      *                              If uploaded files are required to have
      *                              differing permissions, this must be done
      *                              manually in the calling code after this
@@ -96,7 +101,8 @@ class File_Upload_Validator
      */
     public function upload(
         array $uploadedFiles,
-        int $permissions
+        int $permissions,
+        bool $overwrite = false
     ) : bool {
         if (empty($uploadedFiles)) {
             return false;
@@ -107,12 +113,11 @@ class File_Upload_Validator
             //interface
             if (! $uploadedFile instanceof \Zend\Diactoros\UploadedFile) {
 
-                error_log(
+                $this->_responseCode = 500;
+                throw new \LorisException(
                     'File uploaded to File_Upload_Validator is not an ' .
                     'instance of PSR-7 UploadedFIle. Aborting upload.'
                 );
-                $this->_responseCode = 500;
-                return false;
             }
             /* basename() is used here to prevent path traversal characters
              * from being used.
@@ -120,8 +125,10 @@ class File_Upload_Validator
             $targetPath = $this->uploadDirectory . basename(
                 $uploadedFile->getClientFilename()
             );
-            // If file exists, set response code to 'Conflict'
-            if (file_exists($targetPath)) {
+            /* If file exists, set response code to 'Conflict' unless the
+             * calling code wants to overwrite the file.
+             */
+            if (file_exists($targetPath) && $overwrite === false) {
                 $this->_responseCode = 409;
                 return false;
             }
@@ -138,24 +145,17 @@ class File_Upload_Validator
                 }
             }
 
-            // Try to move the file to $targetPath
-            try {
-                $uploadedFile->moveTo($targetPath);
-            } catch (\Exception $e) {
-                /* If an error occurs during moving, set response code to
-                 * 'Internal Server Error'.
-                 *
-                 * This covers file size checks as well as other errors that
-                 * can occur in the process of performing
-                 * `move_uploaded_file().
-                 *
-                 * See \Zend\Diactoros\UploadedFile for more information on
-                 * these errors.
-                 */
-                error_log($e->getMessage());
-                $this->_responseCode = 500;
+            // Check that the file size does not exceed the upload limit
+            $limit = $this->fileUploadMaxSize();
+            if ($uploadedFile->getSize() > $limit) {
+                error_log("Uploaded file size {$uploadedFile->getSize} exceeds "
+                    . "limit of $limit");
+                $this->_responseCode = 400;
                 return false;
             }
+
+            // Move the file to $targetPath
+            $uploadedFile->moveTo($targetPath);
 
             chmod($targetPath, $permissions);
         }
@@ -173,5 +173,41 @@ class File_Upload_Validator
     public function getResponseCode(): int
     {
         return $this->_responseCode;
+    }
+
+    /**
+     * Returns a file size limit in bytes based on the PHP upload_max_filesize
+     * and post_max_size
+     */
+    function fileUploadMaxSize() {
+        static $max_size = -1;
+
+        if ($max_size < 0) {
+            // Start with post_max_size.
+            $post_max_size = $this->parseSize(ini_get('post_max_size'));
+            if ($post_max_size > 0) {
+                $max_size = $post_max_size;
+            }
+
+            // If upload_max_size is less, then reduce. Except if upload_max_size is
+            // zero, which indicates no limit.
+            $upload_max = $this->parseSize(ini_get('upload_max_filesize'));
+            if ($upload_max > 0 && $upload_max < $max_size) {
+                $max_size = $upload_max;
+            }
+        }
+        return $max_size;
+    }
+
+    function parseSize($size) {
+        $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+        $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+        if ($unit) {
+            // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+            return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+        }
+        else {
+            return round($size);
+        }
     }
 }
