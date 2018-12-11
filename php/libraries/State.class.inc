@@ -50,11 +50,12 @@ class State
     /**
      * Sets the username
      *
-     * @param string $username the user's username
+     * @param string|null $username the user's username or null when clearing
+     *                      SESSION state.
      *
      * @return void
      */
-    function setUsername(string $username): void
+    function setUsername(?string $username): void
     {
         $this->_privateStateData['username'] = $username;
     }
