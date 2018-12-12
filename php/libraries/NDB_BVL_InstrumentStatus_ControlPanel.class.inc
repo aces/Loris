@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -31,26 +31,22 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string The HTML to render to the client
      */
-    function display()
+    function display(): string
     {
         if (empty($this->_commentID)) {
             throw new Exception("No instrument instance selected");
         }
 
         $this->tpl_data['candID']    = isset($_REQUEST['candID'])
-            ? $_REQUEST['candID']
+            ? intval($_REQUEST['candID'])
             : '';
-        $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
-        $this->tpl_data['commentID'] = $_REQUEST['commentID'];
+        $this->tpl_data['sessionID'] = intval($_REQUEST['sessionID']);
+        $this->tpl_data['commentID'] = intval($_REQUEST['commentID']);
         $this->tpl_data['test_name'] = $_REQUEST['test_name'];
-        if (isset($_REQUEST['subtest'])) {
-            $this->tpl_data['subtest'] = $_REQUEST['subtest'];
-        } else {
-            $this->tpl_data['subtest'] = '';
-        }
+        $this->tpl_data['subtest']   = $_REQUEST['subtest'] ?? '';
 
         // get the files path
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $base   = $config->getSetting('base');
 
         // the instrument exists
@@ -125,9 +121,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Saves changes to the flags based on interaction with the control panel
      *
-     * @return void
+     * @return bool Whether a user has access to the module and the instrument
+     *              is not locked.
      */
-    function save()
+    function save(): bool
     {
         $hasAccess = $this->_hasAccess();
         // don't do anything if the instrument is locked
@@ -148,11 +145,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     return false;
                 } else {
                     return false;
-                    //print "No permissions to delete";
                 }
             } else {
                 return false;
-                //print "Delete not confirmed.";
             }
             return false;
         }
@@ -178,9 +173,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the data entry flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayDataEntry()
+    function _displayDataEntry(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -241,9 +237,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the administration flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayAdministration()
+    function _displayAdministration(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -285,9 +282,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the validity flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayValidity()
+    function _displayValidity(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -322,9 +320,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the exclusion flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayExclusion()
+    function _displayExclusion(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -356,7 +355,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(): bool
     {
         // get user object
         $user =& User::singleton();
