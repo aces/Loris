@@ -35,6 +35,10 @@ class Utility
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
+     * NOTE This function assumes 1 month = 30 days. Although this is not really
+     * accurate, it should not be changed as it impacts the reproducibility of
+     * the analysis of data in LORIS.
+     *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
      * @param string $testdate date of testing (or second date), formatted YYYY-MM-DD
      *

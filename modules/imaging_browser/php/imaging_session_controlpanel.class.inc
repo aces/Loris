@@ -94,7 +94,13 @@ class Imaging_Session_ControlPanel
 
         $candidate =& \Candidate::singleton($timePoint->getCandID());
 
+        /* Note: the if statement below prepares parameters to use in an SQL
+        * query. The $ID variable is appended directly to a SQL query string;
+        * therefore it should NEVER consist of data that can be supplied in
+        * any way by any user.
+         */
         $params     = array();
+        $ID         = 'NULL';
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";
@@ -105,22 +111,22 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
+
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
         $qresult = $DB->pselect(
-            "SELECT TarchiveID, ArchiveLocation 
-            FROM tarchive 
-            WHERE PatientName LIKE $ID",
+            'SELECT TarchiveID, ArchiveLocation, PatientName ' .
+            'FROM tarchive ' .
+            'WHERE PatientName LIKE ' . $ID,
             $params
         );
 
-        $tarIDToTarLoc =array();
+        $tarIDToTarLoc = array();
         foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
-            $tarIDToTarLoc[$tarchiveID] = $v['ArchiveLocation'];
+            $tarIDToTarLoc[$tarchiveID]['ArchiveLocation'] = $v['ArchiveLocation'];
+            $tarIDToTarLoc[$tarchiveID]['PatientName']     = $v['PatientName'];
         }
         $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
-
-        $config =& \NDB_Config::singleton();
 
         //if table is not in database return false to not display in the template
         $this->tpl_data['mri_param_form_table_exists']
@@ -130,7 +136,8 @@ class Imaging_Session_ControlPanel
             'radiology_review'
         );
 
-        $issue_tracker_url = $config->getSetting("issue_tracker_url");
+        $issue_tracker_url = \NDB_Config::singleton()
+            ->getSetting("issue_tracker_url");
         $this->tpl_data['issue_tracker_url'] = $issue_tracker_url;
         $subjectData['issue_tracker_url']    = $issue_tracker_url;
 
@@ -168,7 +175,6 @@ class Imaging_Session_ControlPanel
         $NavBar = new MRINavigation($this->sessionID);
         $subjectData['nextTimepoint']['URL'] = $NavBar->nextLink();
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
-
         return $subjectData;
     }
     /**
