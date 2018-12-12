@@ -343,29 +343,40 @@ class TimePoint
 
     /**
      * Sets a piece of data for this timepoint and saves it to the session table.
+     * $newData should be in the form: array($key => $value).
      *
      * This should usually not be used directly but instead use one of the set*
      * methods below. However, there are cases where it may be easier to directly
      * use setData.
      *
-     * @param string      $var   The variable to set for this timepoint.
-     * @param string|null $value The value to set $var to.
+     * @param array $newData Key-value pair(s) of the field(s) to change and its
+     *                              new value(s).
      *
-     * @return void (side-effect modifies session table.)
+     * @return bool
+     *
+     * @throws DatabaseException
+     * @throws LorisException
      */
-    function setData($var, ?string $value = null): void
+    public function setData(array $newData): bool
     {
-        if (!is_array($var)) {
-            $setData = array($var => $value);
-        } else {
-            $setData = $var;
+        /* $newData should be in the form: array($key => $value). Count should
+         * equal 1 if this is the case.
+         */
+        if (empty($newData)) {
+            throw new LorisException(
+                'TimePoint::setData() cannot be called with an empty array!'
+            );
+            return false;
         }
 
-        //$this->_timePointInfo = array_merge($this->_timePointInfo, $setData);
-
-        $db =& Database::singleton();
-        $db->update('session', $setData, array('ID' => $this->getData('SessionID')));
-        $this->select(intval($this->getData('SessionID')));
+        \Database::singleton()->update(
+            'session',
+            $newData,
+            array(
+             'ID' => $this->getData('SessionID'),
+            )
+        );
+        return true;
     }
 
     /**
