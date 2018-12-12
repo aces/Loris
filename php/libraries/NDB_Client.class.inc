@@ -132,18 +132,40 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start(
-            array(
-             'cookie_httponly' => true,
-             'cookie_samesite' => true,
-            )
-        );
+        if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 3) {
+            session_start(
+                array(
+                 'cookie_httponly' => true,
+                 'cookie_samesite' => true,
+                )
+            );
+        } else {
+            // TODO Remove this branch when 7.3 is the minimum required
+            // version for LORIS.
+            session_start(
+                array('cookie_httponly' => true)
+            );
+        }
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             header("HTTP/1.1 303 See Other");
             header("Location: /");
+            if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 3) {
+                session_start(
+                    array(
+                     'cookie_httponly' => true,
+                     'cookie_samesite' => true,
+                    )
+                );
+            } else {
+                // TODO Remove this branch when 7.3 is the minimum required
+                // version for LORIS.
+                session_start(
+                    array('cookie_httponly' => true)
+                );
+            }
             session_start(
                 array(
                  'cookie_httponly' => true,
