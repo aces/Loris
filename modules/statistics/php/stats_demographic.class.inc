@@ -90,7 +90,10 @@ class Stats_Demographic extends \NDB_Form
         $disclamer='',
         $projectID=null
     ) {
-        $tpl_data = array();
+        // This line replaces the empty $projectID string with null
+        // `$projectID ?? null` would retain empty strings.
+        $projectID = empty($projectID) ? null : $projectID;
+        $tpl_data  = array();
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $subsection;
@@ -206,7 +209,7 @@ class Stats_Demographic extends \NDB_Form
             $this->params['sid'] = $demographicSite;
         }
 
-        $centers = $db->pselect(
+        $centers     = $db->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
@@ -216,17 +219,17 @@ class Stats_Demographic extends \NDB_Form
             AND Study_site = 'Y'",
             array()
         );
+        $sites[null] ='All sites';
 
-        $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if (isset($_REQUEST['DemographicSite'])
-                && $_REQUEST['DemographicSite'] == $row['NumericID']
-            ) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+        if (!empty($centers)) {
+            foreach ($centers as $row) {
+                $sites[$row['NumericID']] = $row['ShortName'];
+                if ($demographicSite == $row['NumericID']) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $row['NumericID'],
+                                                      'Name' => $row['LongName'],
+                                                     );
+                }
             }
         }
 
