@@ -849,7 +849,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if ($CertificationEnabled) {
             foreach (
-                Utility::toArray($CertificationConfig['CertificationProjects'])
+                Utility::associativeToNumericArray(
+                    $CertificationConfig['CertificationProjects']
+                )
                 as $value
             ) {
                 if (is_array($value['CertificationProject'])) {
@@ -860,10 +862,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
             foreach (
-                Utility::toArray($CertificationConfig['CertificationInstruments'])
+                Utility::associativeToNumericArray(
+                    $CertificationConfig['CertificationInstruments']
+                )
                 as $instrument
             ) {
-                foreach (Utility::toArray($instrument['test']) as $test) {
+                foreach (
+                    Utility::associativeToNumericArray($instrument['test'])
+                    as $test
+                ) {
                     $CertificationInstruments[] = $test['@']['value'];
                 }
             }
