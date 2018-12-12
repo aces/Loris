@@ -66,7 +66,6 @@ if ($imagePath === '/' || $DownloadPath === '/'
 // Now get the file and do file validation.
 // Resolve the filename before doing anything.
 $File = Utility::resolvePath($_GET['file']);
-
 // Extra sanity checks, just in case something went wrong with path resolution.
 // File validation
 if (strpos($File, ".") === false) {
@@ -154,6 +153,7 @@ case 'DICOMTAR':
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
+    $PatientName      = $_GET['patientName'] ?? '';
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
@@ -163,14 +163,28 @@ default:
 }
 
 if (!file_exists($FullPath)) {
-    error_log("ERROR: File $File does not exist");
+    error_log("ERROR: File $FullPath does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
 
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
+    // Prepend the patient name to the beginning of the file name.
+    if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
+        /* Format: $Filename_$PatientName.extension
+         *
+         * basename() is used around $PatientName to prevent the use of
+         * relative path traversal characters.
+         */
 
+        $DownloadFilename = basename($PatientName) .
+            '_' .
+            pathinfo($DownloadFilename, PATHINFO_FILENAME) .
+            '.' .
+            pathinfo($DownloadFilename, PATHINFO_EXTENSION);
+
+    }
     header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
 $fp = fopen($FullPath, 'r');
