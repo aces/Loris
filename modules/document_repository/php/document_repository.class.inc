@@ -19,10 +19,11 @@ namespace LORIS\document_repository;
  * @category Documentation
  * @package  Main
  * @author   Justin Kat <justinkat@gmail.com>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
 */
-class Document_Repository extends \NDB_Menu_Filter_Form
+class Document_Repository extends \NDB_Menu_Filter
 {
     var $AjaxModule      = true;
     public $skipTemplate = true;
@@ -95,12 +96,14 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $categoryList = $data;
         // Form Elements
 
-        $this->addBasicText('fileName', 'File Name');
-        $this->addBasicText('version', 'Version');
         $this->addSelect('fileType', 'File type', $fileTypeList);
         $this->addSelect('site', 'For Site', $siteList);
-        $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('category', 'File category', $categoryList);
+        $this->fieldOptions = [
+                               'fileTypes'   => $fileTypeList,
+                               'fileCategories'  => $categoryList,
+                               'sites'       => $siteList,
+                              ];
 
         return true;
     }
@@ -166,20 +169,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         }
         $this->group_by = '';
         $this->order_by = 'v.File_name';
-        $this->headers  = [
-                           'File_name',
-                           'version',
-                           'File_type',
-                           'Instrument',
-                           'uploaded_by',
-                           'Site',
-                           'comments',
-                           'Date_uploaded',
-                           'Edit',
-                           'Delete',
-                           'Category',
-                           'Data Dir',
-                          ];
         return true;
     }
 
@@ -192,7 +181,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function toJSON()
     {
         $result         = $this->toArray();
-        $result['form'] = $this->form->form;
         return json_encode($result);
     }
 

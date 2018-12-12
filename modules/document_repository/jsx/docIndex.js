@@ -1,15 +1,17 @@
-import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
+import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
+
 class DocIndex extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {},
-      hiddenHeaders: ['Category', 'Data Dir'],
+      data: {},
+      error: false,
     };
 
     /**
@@ -22,13 +24,12 @@ class DocIndex extends React.Component {
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -37,29 +38,15 @@ class DocIndex extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-          refresh: 1,
-        });
-      }.bind(this),
-      error: function(error) {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: true});
         console.error(error);
-      },
     });
   }
 
-  updateFilter(filter) {
-    this.setState({filter});
-  }
-
-  resetFilters() {
-    this.filter.clearFilter();
-  }
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -68,40 +55,25 @@ class DocIndex extends React.Component {
  * @param {arrray} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
- formatColumn(column, cell, rowData, rowHeaders) {
-  // If a column if set as hidden, don't display it
-  if (this.state.hiddenHeaders.indexOf(column) > -1) {
-    return null;
-  }
-
-  // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
-  rowHeaders.forEach(function(header, index) {
-    row[header] = rowData[index];
-  }, this);
-
-  // create array of classes to be added to td tag
-  let classes = [];
-    if (row['Hide File'] === '1') {
-      classes.push('bg-danger');
-    }
-  // convert array to string, with blank space separator
-  classes = classes.join(' ');
-  if (column === 'File Name') {
+ formatColumn(column, cell, row) {
+ const style = (row['Hide File'] === '1') ? 'bg-danger' : '';
+ let result = <td className={style}>{cell}</td>;
+    switch (column) {
+    case 'File Name':
     let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['Data Dir']);
-    return (
+    result = (
       <td className= {classes}>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
           {cell}
         </a>
       </td>
     );
-  }
-  if (column === 'Edit') {
+      break;
+    case 'Edit':
     let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
-    return <td className={classes}><a href={editURL}>Edit</a></td>;
-  }
-  if (column === 'Delete') {
+    result =  <td className={classes}><a href={editURL}>Edit</a></td>;
+      break;
+    case 'Delete':
     let id = row['Edit'];
 function click() {
 swal({
@@ -127,20 +99,54 @@ function() {
   });
 });
 }
-    return <td className={classes}><a onClick={click}>Delete</a></td>;
-  }
-  return <td className={classes}>{cell}</td>;
+    result =  <td className={classes}><a onClick={click}>Delete</a></td>
+      break;
+    }
+    return result;
 }
 
   render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
+    }
+
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-        </button>
-      );
+      return <Loader/>;
     }
+    const options = this.state.data.fieldOptions;
+    const fields = [
+      {label: 'File Name', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
+      {label: 'Version', show: true, filter: {
+        name: 'version',
+        type: 'text',
+      }},
+      {label: 'File Type', show: true, filter: {
+        name: 'fileTypes',
+        type: 'select',
+        options: options.fileType,
+      }},
+      {label: 'For Site', show: true, filter: {
+        name: 'sites',
+        type: 'select',
+        options: options.site,
+      }},
+      {label: 'Uploaded By', show: true, filter: {
+        name: 'uploadedBy',
+        type: 'text',
+        }},
+      {label: 'File Category', show: true, filter: {
+        name: 'fileCategories',
+        type: 'select',
+        options: options.fileCategory,
+      }},
+    ];
+
     let tabList = [
       {id: 'browse', label: 'Browse'},
       {id: 'upload', label: 'Upload'},
@@ -162,13 +168,11 @@ function() {
             <br/>
             <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
           </FilterForm>
-          <StaticDataTable
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
-            hiddenHeaders={this.state.hiddenHeaders}
-            Filter={this.state.filter}
+          <FilterableDataTable
+            Name = "document"
+            Data={this.state.data.Data}
+            fields={fields}
             getFormattedCell={this.formatColumn}
-            freezeColumn="File Name"
             refreshPage={this.fetchData}
           />
         </TabPane>
