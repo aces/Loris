@@ -30,6 +30,10 @@ if (isset($_POST['tab'])) {
         editParticipantStatusFields($db, $user);
     } else if ($tab == "consentStatus") {
         editConsentStatusFields($db, $user);
+    } else if ($tab == "externalIdentifier") {
+        editExternalIdentifierFields($db, $user);
+    } else if ($tab == "deleteExternalIdentifier") {
+        deleteExternalIdentifier($db, $user);
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;
@@ -467,3 +471,65 @@ function editConsentStatusFields($db, $user)
 
     }
 }
+
+/**
+ * Handles the updating of External Identifier
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editExternalIdentifierFields($db, $user)
+{
+    if (!$user->hasPermission('candidate_parameter_edit')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+
+    $candID = $_POST['candID'];
+
+    // Process posted data
+    $study      = isset($_POST['ProjectID']) ?
+        $_POST['ProjectID'] : null;
+    $extStudyID = isset($_POST['ExtStudyID']) ?
+        $_POST['ExtStudyID'] : null;
+
+    $insertValues = array(
+                     'CandID'            => $candID,
+                     'ProjectExternalID' => $study,
+                     'ExtStudyID'        => $extStudyID,
+                    );
+
+    $db->insert('candidate_project_external_rel', $insertValues);
+}
+
+/**
+ * Handles the deletion of an External Identifier
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function deleteExternalIdentifier($db, $user)
+{
+    if (!$user->hasPermission('candidate_parameter_edit')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    $candID = $_POST['candID'];
+    $study  = $_POST['project'];
+
+    $deleteValues = array(
+                     'CandID'            => $candID,
+                     'ProjectExternalID' => $study,
+                    );
+
+    $db->delete('candidate_project_external_rel', $deleteValues);
+}
+

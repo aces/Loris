@@ -24,6 +24,8 @@ if (isset($_GET['data'])) {
         echo json_encode(getParticipantStatusFields());
     } else if ($data == "consentStatus") {
         echo json_encode(getConsentStatusFields());
+    } else if ($data == "externalIdentifier") {
+        echo json_encode(getExternalIdentifierFields());
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;
@@ -469,4 +471,49 @@ function getConsentStatusHistory($pscid)
           $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
+}
+
+/**
+ * Handles the fetching of External Identifiers fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getExternalIdentifierFields()
+{
+    $candID = $_GET['candID'];
+
+    $db =& \Database::singleton();
+
+    // get pscid
+    $pscid = $db->pselectOne(
+        'SELECT PSCID FROM candidate where CandID = :candid',
+        array('candid' => $candID)
+    );
+
+    $externalStudies = $db->pselect(
+        "SELECT ProjectExternalID as ProjectID, ExtStudyID 
+         FROM candidate_project_external_rel 
+         WHERE CandId=:cid",
+        array("cid" => $candID)
+    );
+
+    $allStudiesUnformatted = $db->pselect(
+        "SELECT ProjectExternalID as ProjectID, Name FROM project_external",
+        array()
+    );
+    $allStudies            =array();
+    foreach ($allStudiesUnformatted as $k=>$row) {
+        $allStudies[$row['ProjectID']] =$row['Name'];
+    }
+
+    $result = [
+               'pscid'           => $pscid,
+               'candID'          => $candID,
+               'existingStudies' => $externalStudies,
+               'allStudies'      => $allStudies,
+              ];
+
+    return $result;
 }

@@ -3,7 +3,13 @@ import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
 import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
+import ExternalIdentifier from './ExternalIdentifier';
+
 import {Tabs, TabPane} from 'Tabs';
+import ClinicalTrial from "../../../project/modules/candidate_parameters2/jsx/ClinicalTrial";
+import DiagnosisReappraisal from "../../../project/modules/candidate_parameters2/jsx/DiagnosisReappraisal";
+import StudyWithdrawalForm from "../../../project/modules/candidate_parameters2/jsx/StudyWithdrawalForm";
+import AdverseEventReport from "../../../project/modules/candidate_parameters2/jsx/AdverseEventReport";
 
 /**
  * Candidate Parameters Module page.
@@ -64,6 +70,7 @@ class CandidateParameters extends React.Component {
     if (loris.config('useConsent') === "true") {
       tabList.push({id: "consentStatus", label: "Consent Status", component: ConsentStatus});
     }
+    tabList.push({id: "externalIdentifier", label: "External Identifiers", component: ExternalIdentifier});
 
     return (
       <div>
