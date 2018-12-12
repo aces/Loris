@@ -22,7 +22,6 @@ require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Caller.class.inc';
 require_once 'NDB_Client.class.inc';
 require_once 'NDB_BVL_Instrument.class.inc';
-require_once 'Log.class.inc';
 
 /**
  * Implements the survey page
@@ -316,26 +315,6 @@ class DirectDataEntryMainPage
     }
 
     /**
-     * Saves all aspects of current request to a log file so that we ensure
-     * that we never lose user data and can retrieve it in the event of an
-     * emergency
-     *
-     * @return void
-     */
-    function logRequest()
-    {
-        $log    = new Log("direct_entry");
-        $logmsg = $_SERVER['REMOTE_ADDR'];
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $logmsg .= " (" . $_SERVER['HTTP_X_FORWARDED_FOR'] . ")";
-        }
-
-        $logmsg .= substr(print_r($_REQUEST, true), 5);
-        $log->addLog($logmsg);
-
-    }
-
-    /**
      * Loads the correct page and renders it to the user
      *
      * @return void
@@ -344,8 +323,6 @@ class DirectDataEntryMainPage
     {
         $DB           = Database::singleton();
             $nextpage = null;
-
-        $this->logRequest();
 
         if (isset($_REQUEST['nextpage'])) {
             $nextpage = "survey.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]";

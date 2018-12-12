@@ -28,7 +28,6 @@ namespace LORIS\acknowledgements;
 
 class Acknowledgements extends \NDB_Menu_Filter_Form
 {
-
     /**
      * Determine whether user should be granted access.
      *

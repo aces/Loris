@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
@@ -53,7 +53,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function showPasswordExpiryScreen()
+    function showPasswordExpiryScreen(): void
     {
         // FIXME: This is a temporary hack until the password reset logic is
         // refactored to be sane and keep a token that can be authenticated.
@@ -74,7 +74,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function isLoggedIn()
+    function isLoggedIn(): bool
     {
         return $this->_isLoggedIn;
     }
@@ -85,7 +85,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function passwordExpired()
+    function passwordExpired(): bool
     {
         return $this->_passwordExpired;
     }
@@ -93,10 +93,10 @@ class SinglePointLogin
     /**
      * Saves the new password if last was expired
      *
-     * @return void
+     * @return bool
      * @access public
      */
-    function save()
+    function save(): bool
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
@@ -141,9 +141,9 @@ class SinglePointLogin
     /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
-     * @return void (but may modified session state)
+     * @return bool Whether a user has successfully authenticated.
      */
-    function authenticate()
+    function authenticate(): bool
     {
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
@@ -154,7 +154,7 @@ class SinglePointLogin
              *
              * @return array headers
              */
-            function getallheaders()
+            function getallheaders(): array
             {
                 $headers = '';
                 foreach ($_SERVER as $name => $value) {
@@ -212,7 +212,7 @@ class SinglePointLogin
      *
      * @return true if the session is valid, false otherwise
      */
-    function JWTAuthenticate($token)
+    function JWTAuthenticate(string $token): bool
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -237,7 +237,7 @@ class SinglePointLogin
      * Checks whether a given username and password are valid
      *
      * @param string $username The username to validate
-     * @param string $password The username to validate
+     * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
      *                         out a login or password expiry
@@ -245,11 +245,15 @@ class SinglePointLogin
      *                         If false, it won't provide any output
      *                         in those situation.
      *
-     * @return bool true if the username and password are valid
+     * @return bool False unless account is valid and password correct.
      * @access public
      */
-    function passwordAuthenticate($username, $password, $redirect = true)
-    {
+    function passwordAuthenticate(
+        string $username,
+        string $password,
+        bool $redirect = true
+    ): bool {
+
         $this->_lastError = '';
 
          ///////////////////////////
@@ -299,65 +303,105 @@ class SinglePointLogin
                         Password_expiry < NOW() as Expired,
                         Active,
                         Pending_approval,
-                        Password_hash
+                        Password_hash,
+			active_from,
+			active_to
+
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (($row['User_count'] ?? 0) == 1) {
-            // validate passsword
-            $oldhash = $row['Password_hash'];
-            if (password_verify($password, $oldhash)) {
-                if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                    $user =& User::factory($username);
-                    $user->updatePassword($password);
-                }
-
-                if ($row['Active'] == 'N'
-                    || $this->disabledDueToInactivity($username, 365)
-                ) {
-                    $this->_lastError = "Your account has been deactivated."
-                        . " Please contact your project administrator to"
-                        . " reactivate this account.";
-                    $this->insertFailedDetail(
-                        "user account not active",
-                        $setArray
-                    );
-
-                    return false;
-                }
-
-                if ($row['Pending_approval'] == 'Y') {
-                    $this->_lastError = "Your account has not yet been activated."
-                        . " Please contact your project administrator to activate"
-                        . " this account.";
-                    $this->insertFailedDetail("user account pending", $setArray);
-                    return false;
-                }
-
-                // save the new password if the last password expired
-                if ($row['Expired']) {
-                    $success = $this->save();
-
-                    if ($success == false) {
-                        if ($redirect) {
-                            $this->showPasswordExpiryScreen();
-                        }
-                        return false;
-                    }
-                }
-
-                // user is valid
-                $this->_username = $row['UserID'];
-
-                $DB->insert('user_login_history', $setArray);
-                return true;
-            }
+        if (intval($row['User_count'] ?? 0) !== 1) {
+            /* Display generic failure message to front-end so that an
+             * attacker will have a harder time knowing the difference
+             * between a bad username and a bad password.
+             */
+            $this->_lastError = "Incorrect username or password.";
+            return false;
         }
+        // Validate passsword
+        $oldhash = $row['Password_hash'];
+        if (password_verify($password, $oldhash)) {
+            // Rehash according to latest standards if necessary.
+            if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+                $user = \User::factory($username);
+                $user->updatePassword($password);
+            }
 
-        // bad usename or password
-        $this->_lastError = "Incorrect email or password";
+            // Check whether the account is expired.
+            $date       = new DateTime();
+            $currentDay = $date->getTimestamp();
+
+            if (($row['active_to'] != null)
+                && ($currentDay > strtotime($row['active_to']))
+            ) {
+                $this->_lastError = "Your account has expired."
+                    . " Please contact your project administrator to re-activate"
+                    . " this account.";
+                return false;
+            }
+
+            // Check if the account is active.
+            if (($row['active_from'] != null)
+                && ($currentDay < strtotime($row['active_from']))
+            ) {
+                $this->_lastError = "Your account is not active yet."
+                    ." According to our records it will be active from 
+            {$row['active_from']}"
+                . " Please contact your project administrator";
+                return false;
+            }
+
+            // Check whether account needs to be approved by an admin
+            if ($row['Pending_approval'] == 'Y') {
+                $this->_lastError = "Your account has not yet been activated."
+                    . " Please contact your project administrator to activate"
+                    . " this account.";
+                $this->insertFailedDetail("user account pending", $setArray);
+                return false;
+            }
+            if ($row['Active'] == 'N'
+                || $this->disabledDueToInactivity($username, 365)
+            ) {
+                $this->_lastError = "Your account has been deactivated."
+                    . " Please contact your project administrator to"
+                    . " reactivate this account.";
+                $this->insertFailedDetail(
+                    "user account not active",
+                    $setArray
+                );
+
+                return false;
+            }
+
+            // Save the new password if the last password expired
+            if ($row['Expired']) {
+                $success = $this->save();
+
+                if ($success == false) {
+                    if ($redirect) {
+                        $this->showPasswordExpiryScreen();
+                    }
+                    return false;
+                }
+            }
+            // Allow a user to login if none of the previous cases have occurred
+            $this->_username = $row['UserID'];
+
+            $DB->insert('user_login_history', $setArray);
+            return true;
+        }
+        /* When the password is wrong, log this detail for rate-limiting
+         * purposes.
+         */
+        $this->insertFailedDetail(
+            "Bad password",
+            $setArray
+        );
+
+        // Fail by default with a generic error message
+        $this->_lastError = "Incorrect username or password.";
         return false;
     }
 
@@ -367,7 +411,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function setState()
+    function setState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = true;
@@ -386,7 +430,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function clearState()
+    function clearState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = false;
@@ -399,15 +443,15 @@ class SinglePointLogin
         $_SESSION['State']->setUsername(null);
     }
 
-     /**
+    /**
      * Inserts the login (or failed-login) detail into the user_login_history
      *
-     * @param String $description description for the failed-login
-     * @param Array  $setArray    contains data to be inserted
+     * @param string $description description for the failed-login
+     * @param array  $setArray    contains data to be inserted
      *
-     * @return null
-      */
-    function insertFailedDetail($description, $setArray)
+     * @return void
+     */
+    function insertFailedDetail(string $description, array $setArray): void
     {
         // create DB object
         $DB =& Database::singleton();
@@ -424,19 +468,30 @@ class SinglePointLogin
      * As a side-effect, if true, will also set user field 'active' to 'N'
      * Need to have already confirmed valid user
      *
-     * @param String $username            username
-     * @param Int    $maximumDaysInactive Most allowable days for inactivity
+     * @param string $username            username
+     * @param int    $maximumDaysInactive Most allowable days for inactivity
      *
      * @return bool - true if the user has now been disabled
      */
-    function disabledDueToInactivity($username, $maximumDaysInactive)
-    {
+    function disabledDueToInactivity(
+        string $username,
+        int $maximumDaysInactive
+    ): bool {
+
         $DB    =& Database::singleton();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row        = $DB->pselectRow($query, array('username' => $username));
+        $row = $DB->pselectRow($query, array('username' => $username));
+
+        /* If the login timestamp is null then this is the user's first time
+         * logging in. This will always be the case in our CI environment.
+         * The user should not be disabled in this case.
+         */
+        if (is_null($row['Login_timestamp'])) {
+            return false;
+        }
         $last_login = new DateTime($row['Login_timestamp']);
         $time_now   = new DateTime("now");
         $interval   = $last_login->diff($time_now);
@@ -452,4 +507,3 @@ class SinglePointLogin
         return false;
     }
 }
-?>

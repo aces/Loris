@@ -76,7 +76,8 @@ class User extends UserPermissions
         );
         $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
-            $user_cid[$key] =$val['CenterID'];
+            // Convert string representation of ID to int
+            $user_cid[$key] = intval($val['CenterID']);
         }
 
         // Get examiner information
@@ -254,14 +255,17 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's sites' names, concatenated with
-     * a semi-colon if the User is at more than one site
+     * Returns an array of sites a user belongs to.
      *
-     * @return string
+     * @return array
      */
-    function getSiteNames()
+    function getSiteNames(): array
     {
-        return $this->userInfo['Sites'];
+        /* The original query to fetch userInfo in the factory() function CONCAT
+         * CONCATs the site names together in a string using semi-colons.
+         * Therefore this string must be split and returned as an array.
+         */
+        return explode(';', $this->userInfo['Sites']);
     }
 
     /**
@@ -506,12 +510,12 @@ class User extends UserPermissions
      *
      * @return void
      */
-    function updatePassword($password, $expiry = null)
+    function updatePassword(string $password, string $expiry = '')
     {
-        if (is_null($expiry)) {
+        if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+                strtotime('+6 months')
             );
         }
 
@@ -532,7 +536,7 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenter($center_id)
+    public function hasCenter(int $center_id) : bool
     {
         return in_array(
             $center_id,
@@ -540,6 +544,7 @@ class User extends UserPermissions
             true
         );
     }
+
     /**
      * Determines if the user has a permission
      * for a center

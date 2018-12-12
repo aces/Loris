@@ -103,7 +103,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($_REQUEST['setStageUpdate'], $this->_statusOptions)
             && in_array($currentStage, $this->_dynamicStageOptions)
         ) {
-            $this->setData($currentStage, $_REQUEST['setStageUpdate']);
+            $this->setData(
+                array(
+                 $currentStage => $_REQUEST['setStageUpdate'],
+                )
+            );
             return;
         }
 
@@ -167,7 +171,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
 
             // Send to DCC - set Submitted to Y
-            $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array(
+                 'Submitted' => $_REQUEST['setSubmitted'],
+                )
+            );
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
                 $nextStage = 'Approval';
@@ -227,7 +235,11 @@ class Instrument_List_ControlPanel extends \TimePoint
         // un-submit to dcc
         if ($condition1 && $condition2 && $condition3 && $condition4) {
 
-                $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array(
+                 'Submitted' => $_REQUEST['setSubmitted'],
+                )
+            );
 
                 // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
@@ -283,19 +295,31 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCStatus', $_REQUEST['setBVLQCStatus']);
+            $this->setData(
+                array(
+                 'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCStatus', null);
+            $this->setData(
+                array('BVLQCStatus' => null)
+            );
             return;
         }
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
+            $this->setData(
+                array(
+                 'BVLQCType' => $_REQUEST['setBVLQCType'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCType', null);
+            $this->setData(
+                array('BVLQCType' => null)
+            );
             return;
         }
     }
@@ -406,7 +430,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             // highlight the current option if it's the current status
             if ($currentStatus == $option) {
-                $this->tpl_data['status'][$i]['icon'] = 'selected';
+                $this->tpl_data['status'][$i]['icon'] = 'far fa-check-square';
             } elseif (in_array($currentStage, $this->_dynamicStageOptions)
                 && (!$this->isSubmitted()
                 || ($this->isSubmitted() && $hasAccess)                )
@@ -428,11 +452,11 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ) {
                     $this->tpl_data['status'][$i]['showlink'] = true;
                 } else {
-                    $this->tpl_data['status'][$i]['icon'] = 'locked';
+                    $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
                 }
 
             } else {
-                $this->tpl_data['status'][$i]['icon'] = 'locked';
+                $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -476,7 +500,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $type ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_type_'.$type]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_type_'.$type]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
@@ -508,7 +533,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $status ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_status_'.$status]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_status_'.$status]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
@@ -548,7 +574,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         if ($this->isSubmitted()) {
-            $this->tpl_data['send_to_dcc']['icon']    = 'selected';
+            $this->tpl_data['send_to_dcc']['icon']    = 'far fa-check-square';
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 

@@ -37,12 +37,19 @@ class Imaging_Browser extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('imaging_browser_view_allsites')
-               || ($user->hasStudySite()
-                   && $user->hasPermission('imaging_browser_view_site')
-                  )
-               || $user->hasPermission('imaging_browser_phantom_allsites')
-               || $user->hasPermission('imaging_browser_phantom_ownsite')
+        /* User has access if they have an 'all site' permission or if they are
+        * part of a study site and are permitted to view their own site.
+         */
+        return $user->hasAnyPermission(
+            array(
+             'imaging_browser_view_allsites',
+             'imaging_browser_phantom_allsites',
+             'imaging_browser_phantom_ownsite',
+            )
+        )
+        || (
+            $user->hasStudySite()
+            && $user->hasPermission('imaging_browser_view_site')
         );
     }
 

@@ -1,6 +1,6 @@
 /* exported FormElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
 TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
-ButtonElement, LorisElement
+CheckboxElement, ButtonElement, LorisElement
 */
 
 /**
@@ -195,6 +195,7 @@ class SearchableDropdown extends Component {
   render() {
     let required = this.props.required ? 'required' : null;
     let disabled = this.props.disabled ? 'disabled' : null;
+    let sortByValue = this.props.sortByValue;
     let options = this.props.options;
     let strictMessage = 'Entry must be included in provided list of options.';
     let errorMessage = null;
@@ -232,6 +233,27 @@ class SearchableDropdown extends Component {
       }
     }
 
+    let newOptions = {};
+    let optionList = [];
+    if (sortByValue) {
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          newOptions[options[key]] = key;
+        }
+      }
+      optionList = Object.keys(newOptions).sort().map(function(option) {
+        return (
+          <option value={option} key={newOptions[option]}/>
+        );
+      });
+    } else {
+      optionList = Object.keys(options).map(function(option) {
+        return (
+          <option value={options[option]} key={option}/>
+        );
+      });
+    }
+
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -253,11 +275,7 @@ class SearchableDropdown extends Component {
             required={required}
           />
           <datalist id={this.props.name + '_list'}>
-            {Object.keys(options).map(function(option) {
-              return (
-                <option value={options[option]} key={option}/>
-              );
-            })}
+            {optionList}
           </datalist>
           {errorMessage}
         </div>
@@ -296,6 +314,7 @@ SearchableDropdown.defaultProps = {
   class: '',
   disabled: false,
   required: false,
+  sortByValue: true,
   errorMessage: '',
   placeHolder: '',
   onUserInput: function() {
@@ -328,20 +347,21 @@ class SelectElement extends Component {
       }
     }
 
-    this.props.onUserInput(this.props.name, value);
+    this.props.onUserInput(this.props.name, value, e.target.id, 'select');
   }
 
   render() {
     let multiple = this.props.multiple ? 'multiple' : null;
     let required = this.props.required ? 'required' : null;
     let disabled = this.props.disabled ? 'disabled' : null;
+    let sortByValue = this.props.sortByValue;
     let options = this.props.options;
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
 
-    // Add required asterix
+    // Add required asterisk
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
@@ -355,6 +375,27 @@ class SelectElement extends Component {
     if (this.props.hasError || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
+    }
+
+    let newOptions = {};
+    let optionList = [];
+    if (sortByValue) {
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          newOptions[options[key]] = key;
+        }
+      }
+      optionList = Object.keys(newOptions).sort().map(function(option) {
+        return (
+          <option value={newOptions[option]} key={newOptions[option]}>{option}</option>
+        );
+      });
+    } else {
+      optionList = Object.keys(options).map(function(option) {
+        return (
+          <option value={option} key={option}>{options[option]}</option>
+        );
+      });
     }
 
     // Default to empty string for regular select and to empty array for 'multiple' select
@@ -378,11 +419,7 @@ class SelectElement extends Component {
             disabled={disabled}
           >
             {emptyOptionHTML}
-            {Object.keys(options).map(function(option) {
-              return (
-                <option value={option} key={option}>{options[option]}</option>
-              );
-            })}
+            {optionList}
           </select>
           {errorMessage}
         </div>
@@ -420,6 +457,7 @@ SelectElement.defaultProps = {
   multiple: false,
   disabled: false,
   required: false,
+  sortByValue: true,
   emptyOption: true,
   hasError: false,
   errorMessage: 'The field is required!',
@@ -780,7 +818,7 @@ class TextboxElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'textbox');
   }
 
   handleBlur(e) {
@@ -1295,6 +1333,86 @@ LinkElement.defaultProps = {
 };
 
 /**
+ * Checkbox Component
+ * React wrapper for a <input type="checkbox"> element.
+ */
+class CheckboxElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.checked);
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+    let label = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className={this.props.inputClass}>
+          <input
+            type="checkbox"
+            className="input-sm"
+            name={this.props.name}
+            id={this.props.id}
+            checked={this.props.value}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+CheckboxElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+
+CheckboxElement.defaultProps = {
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  inputClass: 'col-sm-9',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
+/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -1389,6 +1507,9 @@ class LorisElement extends Component {
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
+      case 'advcheckbox':
+        elementHtml = (<CheckboxElement {...elementProps} />);
+        break;
       default:
         console.warn(
           'Element of type ' + elementProps.type + ' is not currently implemented!'
@@ -1412,6 +1533,7 @@ window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
 window.LinkElement = LinkElement;
+window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -1428,6 +1550,7 @@ export default {
   FileElement,
   StaticElement,
   LinkElement,
+  CheckboxElement,
   ButtonElement,
   LorisElement,
 };

@@ -3,6 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
@@ -466,7 +467,7 @@
                         </li>
                         {foreach from=$links item=link}
                                 <li>
-                                    <a href="{$link.url}" target="{$link.windowName}">
+                                    <a href="{$link.url}" target="{$link.windowName}" rel="noopener noreferrer">
                                         {$link.label}
                                     </a>
                                     |

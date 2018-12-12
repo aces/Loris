@@ -6,8 +6,13 @@
     "doc": "docs",
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "prop-types": "^15.6.2",
+    "sweetalert2": "^7.28.4"
+  },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.5.0",
     "babel-cli": "6.26.0",
     "babel-eslint": "8.2.6",
     "babel-loader": "7.1.5",

@@ -401,7 +401,7 @@ class EditExaminer extends \NDB_Form
 
     /**
      * Grabs the certification instruments from the config and creates an array.
-     * The instrument id id the key, and the instrument label is the value.
+     * The instrument id is the key, and the instrument label is the value.
      *
      * @return array of instruments requiring certification
      */
@@ -414,8 +414,11 @@ class EditExaminer extends \NDB_Form
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
 
+        if (!isset($certificationInstruments['test'])) {
+            return array();
+        }
         $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
+            = \Utility::associativeToNumericArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {

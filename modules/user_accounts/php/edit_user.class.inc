@@ -456,9 +456,10 @@ class Edit_User extends \NDB_Form
         // prepend two random characters
         if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
-            $expiry = isset($values['Password_expiry'])
-                ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_hash'], $expiry);
+            $user->updatePassword(
+                $set['Password_hash'],
+                $values['Password_expiry'] ?? ''
+            );
         }
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
@@ -782,6 +783,30 @@ class Edit_User extends \NDB_Form
 
         //------------------------------------------------------------
 
+        // active time windows
+
+        $dateOptions = array(
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => 'true',
+                       );
+
+        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+
+        $this->addBasicDate(
+            'active_from',
+            'Active from',
+            $dateOptions,
+            $dateAttributes
+        );
+
+        $this->addBasicDate(
+            'active_to',
+            'Active to',
+            $dateOptions,
+            $dateAttributes
+        );
+
         // checking if the account can be rejected (no password hash
         // pending approval)
 
@@ -1084,6 +1109,22 @@ class Edit_User extends \NDB_Form
                 site or clear the 'Examiner status' fields below (i.e.
                 'Radiologist' and 'Pending Approval').";
             }
+        }
+
+        //======================================
+        //    Validate Active time Windows (from - to)
+        //
+        //    Note: the only validation included for the moment
+        //    is that the time form which the user is active
+        //    should be less or equal to the time to it will be active.
+        //======================================
+
+        if (($values['active_to'] != null)
+            && ($values['active_from'] > $values['active_to'])
+        ) {
+            $errors['active_timeWindows']
+                = 'Please notice that the "Active from" 
+                date should be lesser or equal to the "Active to" date.';
         }
         return $errors;
     }

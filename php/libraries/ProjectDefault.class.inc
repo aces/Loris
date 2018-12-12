@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS. This is a default project for studies that don't use projects.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -89,7 +89,7 @@ class ProjectDefault extends Project
      *
      * @return array A list of object representation of subprojects
      */
-    public function getSubprojects()
+    public function getSubprojects(): array
     {
         $factory        = \NDB_Factory::singleton();
         $subProjectData = $factory->database()->pselect(
