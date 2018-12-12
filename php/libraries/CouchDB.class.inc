@@ -573,10 +573,10 @@ class CouchDB
      * @param string $id  The document name to PUT
      * @param array  $doc An array representing the JSON document
      *
-     * @return string The JSON string returned by the CouchDB server, or
+     * @return string|null The JSON string returned by the CouchDB server, or
      *                null if in bulk mode.
      */
-    function putDoc(string $id, array $doc): string
+    function putDoc(string $id, array $doc): ?string
     {
         $encoded = json_encode($doc);
 
@@ -677,14 +677,15 @@ class CouchDB
      * @param boolean $full_json If true will include the full json returned,
      *                           and not just the parsed rows.
      *
-     * @return array An array of the rows returned by the view
+     * @return array|string An array of the rows returned by the view, or a
+     *                          JSON string.
      */
     function queryView(
         string $designdoc,
         string $viewname,
         array $params,
         bool $full_json = false
-    ): array {
+    ) {
         $keys = null;
         if (isset($params['keys'])) {
 
