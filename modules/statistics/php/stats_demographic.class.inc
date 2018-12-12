@@ -91,9 +91,13 @@ class Stats_Demographic extends \NDB_Form
         $disclamer='',
         $projectID=null
     ) {
-        $tpl_data = array();
-        $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
+        // This line replaces the empty $projectID string with null
+        // `$projectID ?? null` would retain empty strings.
+        $projectID = empty($projectID) ? null : $projectID;
+        $tpl_data  = array();
+        $tpl_data['test_name'] = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
+
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb('statistics');
@@ -221,16 +225,17 @@ class Stats_Demographic extends \NDB_Form
             array()
         );
 
-        $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if (isset($_REQUEST['DemographicSite'])
-                && $_REQUEST['DemographicSite'] == $row['NumericID']
-            ) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+        $sites[null] ='All sites';
+
+        if (!empty($centers)) {
+            foreach ($centers as $row) {
+                $sites[$row['NumericID']] = $row['ShortName'];
+                if ($demographicSite == $row['NumericID']) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $row['NumericID'],
+                                                      'Name' => $row['LongName'],
+                                                     );
+                }
             }
         }
 
