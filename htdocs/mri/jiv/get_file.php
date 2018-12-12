@@ -25,9 +25,6 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 ini_set("display_errors", "Off");
 
 // Ensures the user is logged in, and parses the config file.
-/* FIXME This should in theory be done by our PSR routing code but it's unclear
- * whether that's the case currently.
- */
 $client = new NDB_Client();
 if ($client->initialize("../../../project/config.xml") == false) {
     http_response_code(401);
