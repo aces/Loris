@@ -86,15 +86,20 @@ class FileUploadValidator
     /**
      * Given an array of files, validate them and upload them to the server.
      *
-     * @param UploadedFile[] $uploadedFiles An array of files uploaded to the server.
-     *                              These files must implement the PSR-7
+     * The permission paramaeter is a UNIX file permissions octet.
+     * All files uploaded will use these permissions. If uploaded files are
+     * required to have differing permissions, this must be done
+     * manually in the calling code after this function has executed.
+     *
+     * If the $overwrite parameter is set to true, existing files will be
+     * overwritten.
+     *
+     * @param UploadedFile[] $uploadedFiles An array of files uploaded to the
+     *                              server. These files must implement the PSR-7
      *                              UploadedFile interface.
-     * @param int   $permissions   A UNIX permissions octet (e.g. 0644). All files
-     *                              uploaded will use these permissions.
-     *                              If uploaded files are required to have
-     *                              differing permissions, this must be done
-     *                              manually in the calling code after this
-     *                              functions has executed.
+     * @param int            $permissions   A UNIX permissions octet (e.g. 0644)
+     * @param bool           $overwrite     Whether existing files should be
+     *                                      overwritten.
      *
      * @return bool Whether the file upload was successful. Modifies
      *                      $this->__responseCode as a side-effect.
@@ -148,8 +153,10 @@ class FileUploadValidator
             // Check that the file size does not exceed the upload limit
             $limit = $this->fileUploadMaxSize();
             if ($uploadedFile->getSize() > $limit) {
-                error_log("Uploaded file size {$uploadedFile->getSize} exceeds "
-                    . "limit of $limit");
+                error_log(
+                    "Uploaded file size {$uploadedFile->getSize} exceeds "
+                    . "limit of $limit"
+                );
                 $this->_responseCode = 400;
                 return false;
             }
@@ -177,9 +184,13 @@ class FileUploadValidator
 
     /**
      * Returns a file size limit in bytes based on the PHP upload_max_filesize
-     * and post_max_size
+     * and post_max_size.
+     *
+     * @return int The smaller of PHP's upload_max_filesize and post_max_size
+     *                  settings.
      */
-    function fileUploadMaxSize() {
+    function fileUploadMaxSize(): int
+    {
         static $max_size = -1;
 
         if ($max_size < 0) {
@@ -199,14 +210,31 @@ class FileUploadValidator
         return $max_size;
     }
 
-    function parseSize($size) {
-        $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
-        $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+    /**
+     * Parse a PHP size string such as "4G" into an integer equivalent to the
+     * number of bytes that string represents.
+     *
+     * @param string $size A string representing an amount of memory.
+     *
+     * @return int An integer corresponding to the number of bytes in the
+     *              byte string
+     */
+    function parseSize(string $size): int
+    {
+        // Remove the non-unit characters from the size.
+        $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+        // Remove the non-numeric characters from the size.
+        $size = preg_replace('/[^0-9\.]/', '', $size);
         if ($unit) {
-            // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+            /* Find the position of the unit in the ordered string which is
+             * the power of magnitude to multiply a kilobyte by.
+             *
+             * phan thinks that the arguments to stripos are in the wrong
+             * order but this is a false positive.
+             */
+            // @phan-suppress-next-line PhanParamSuspiciousOrder
             return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
-        }
-        else {
+        } else {
             return round($size);
         }
     }
