@@ -137,7 +137,7 @@ class TimePoint
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                $row['SubprojectID']
+                intval($row['SubprojectID'])
             );
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
@@ -941,11 +941,13 @@ class TimePoint
      */
     function getEffectiveDateOfBirth(): ?string
     {
-        $config    = NDB_Config::singleton();
-        $candidate = Candidate::singleton($this->getCandID());
-        $settings  = $config->getSubprojectSettings($this->getSubprojectID());
-        if ($settings['options']['useEDC'] == "true") {
-            return $candidate->getCandidateEDC();
+        $candidate = \Candidate::singleton($this->getCandID());
+        if (!is_null($this->getSubprojectID())) {
+            $settings = \NDB_Config::singleton()
+                ->getSubprojectSettings($this->getSubprojectID());
+            if ($settings['options']['useEDC'] == "true") {
+                return $candidate->getCandidateEDC();
+            }
         }
 
         return $candidate->getCandidateDoB();
