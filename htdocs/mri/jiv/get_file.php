@@ -10,9 +10,6 @@
  *
  * Used by MRI Browser and (old) Data Query GUI.
  *
- * TODO Most of the code in this class should soon be replaced by a file
- * download validator. This class is currently in development.
- *
  * PHP Version 5
  *
  *  @category Loris
