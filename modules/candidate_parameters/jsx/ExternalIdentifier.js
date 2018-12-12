@@ -232,7 +232,7 @@ var ExternalIdentifier = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function(data) {
+      success: data => {
         self.setState({
           updateResult: "success",
           formData: {}
@@ -249,27 +249,20 @@ var ExternalIdentifier = React.createClass({
         // rerender components
         self.forceUpdate();
       },
-      error: function(err) {
-        if (err.responseText !== "") {
-          var errorMessage = JSON.parse(err.responseText).message;
-          self.setState(
-            {
-              updateResult: "error",
-              errorMessage: errorMessage
-            });
-          self.showAlertMessage();
+      error: error => {
+        let errorMessage = "";
+        if (error.responseText === "") {
+          errorMessage = 'ERROR: Contact Administrator';
         } else {
-          var errorMessage = 'ERROR: Contact Administrator';
-          self.setState(
-            {
-              updateResult: "error",
-              errorMessage: errorMessage
-            });
-          self.showAlertMessage();
+          errorMessage = JSON.parse(error.responseText).message;
         }
-
+        this.setState(
+          {
+            updateResult: "error",
+            errorMessage: errorMessage
+          });
+        this.showAlertMessage();
       }
-
     });
   },
   /**
@@ -297,7 +290,6 @@ var ExternalIdentifier = React.createClass({
     var existingStudies = this.state.existingStudies;
     delete existingStudies[key];
 
-
     this.setState({
       existingStudies: existingStudies
     });
@@ -324,32 +316,26 @@ var ExternalIdentifier = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function(data) {
+      success: data => {
         self.setState(
           {
             updateResult: "success"
           });
         self.showAlertMessage();
       },
-      error: function(err) {
-        if (err.responseText !== "") {
-          var errorMessage = JSON.parse(err.responseText).message;
-          self.setState(
-            {
-              updateResult: "error",
-              errorMessage: errorMessage
-            });
-          self.showAlertMessage();
+      error: error => {
+        let errorMessage = "";
+        if (error.responseText === "") {
+          errorMessage = 'ERROR: Contact Administrator';
         } else {
-          var errorMessage = 'ERROR: Contact Administrator';
-          self.setState(
-            {
-              updateResult: "error",
-              errorMessage: errorMessage
-            });
-          self.showAlertMessage();
+          errorMessage = JSON.parse(error.responseText).message;
         }
-
+        this.setState(
+          {
+            updateResult: "error",
+            errorMessage: errorMessage
+          });
+        this.showAlertMessage();
       }
     });
   }
