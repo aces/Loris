@@ -63,9 +63,9 @@ class State
     /**
      * Gets the username
      *
-     * @return string the user's username
+     * @return string|null the user's username, or null if not set
      */
-    function getUsername(): string
+    function getUsername(): ?string
     {
         return $this->_privateStateData['username'];
     }
