@@ -898,11 +898,12 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('hardcopy request',0,'Hardcopy requests'),
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
     ('mri qc status',0,'MRI QC Status change'),
-    ('minc insertion',1,'Insertion of the mincs into the mri-table'),
+    ('minc insertion',1,'Insertion of a MINC file into the MRI tables (files/parameter_file)'),
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload runner',1,'Validation of DICOMS before uploading'),
-    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
+    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader'),
+    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)');
 
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
