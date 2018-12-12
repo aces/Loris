@@ -19,13 +19,12 @@ namespace LORIS\document_repository;
  * @category Documentation
  * @package  Main
  * @author   Justin Kat <justinkat@gmail.com>
- * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
 */
-class Document_Repository extends \NDB_Menu_Filter
+class Document_Repository extends \NDB_Menu_Filter_Form
 {
-    var $AjaxModule      = true;
+    public $AjaxModule      = true;
     public $skipTemplate = true;
 
     /**
@@ -63,81 +62,6 @@ class Document_Repository extends \NDB_Menu_Filter
         //        print_r($fileTypeList);
         $siteList = array();
         // allow to view all sites data through filter
-
-        $query  = " FROM document_repository v";
-        $query .= " WHERE COALESCE(v.hide_video, false)=false";
-
-        // set the class variables
-        $this->columns = array(
-                          'v.record_id',
-                          'v.File_name',
-                          'v.version',
-                          'v.File_size',
-                          'v.File_category',
-                          'v.File_type',
-                          'v.Instrument',
-                          'v.uploaded_by',
-                          'v.For_site',
-                          'v.comments',
-                          'v.Data_dir',
-                          'v.Date_uploaded',
-                         );
-
-        $openAccordion = !empty($_GET['openAccordion']);
-        $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = !empty($_GET['filtered']);
-        $this->tpl_data['filtered'] = $filtered;
-        $this->query        = $query;
-        $this->group_by     = '';
-        $this->order_by     = 'v.File_name';
-        $this->headers      = array(
-                               'File_name',
-                               'version',
-                               'File_type',
-                               'Instrument',
-                               'uploaded_by',
-                               'For_site',
-                               'comments',
-                               'Date_uploaded',
-                               'Edit',
-                               'Delete',
-                              );
-        $this->validFilters = array(
-                               'v.For_site',
-                               'v.File_name',
-                               'v.File_category',
-                               'v.File_type',
-                               'v.version',
-                               'v.uploaded_by',
-                              );
-
-        $this->formToFilter = array(
-                               'File_name'     => 'v.File_name',
-                               'File_type'     => 'v.File_type',
-                               'File_category' => 'v.File_category',
-                               'version'       => 'v.version',
-                               'Data_dir'      => 'v.Data_dir',
-                               'For_site'      => 'v.For_site',
-                               'uploaded_by'   => 'v.uploaded_by',
-                               'Date_uploaded' => 'v.Date_uploaded',
-                              );
-
-        $this->_setFilterForm();
-        return true;
-    }
-
-    /**
-     * Set filter form function
-     *
-     * @return void
-     */
-    function _setFilterForm()
-    {
-        // create user object
-        $user =& \User::singleton();
-
-        $list_of_sites = \Utility::getSiteList(true);
-           // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
             // Index sites using their names (used to filter react tables)
@@ -169,19 +93,10 @@ class Document_Repository extends \NDB_Menu_Filter
                $data[$id] =$name;
         }
         $categoryList = $data;
-        $fileTypes = array_merge(array(null => 'Any') + $fileTypes);
 
-        $sqlSelect      = "SELECT DISTINCT File_category".
-            " FROM document_repository ORDER BY File_category";
-        $fileCategories = $DB->pselectCol($sqlSelect, array());
-        // Form Elements
-
-        $this->addSelect('fileType', 'File type', $fileTypeList);
-        $this->addSelect('site', 'For Site', $siteList);
-        $this->addSelect('category', 'File category', $categoryList);
         $this->fieldOptions = [
                                'fileTypes'   => $fileTypeList,
-                               'fileCategories'  => $categoryList,
+                               'fileCategories'      => $categoryList,
                                'sites'       => $siteList,
                               ];
 
@@ -261,6 +176,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function toJSON()
     {
         $result         = $this->toArray();
+        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }
 

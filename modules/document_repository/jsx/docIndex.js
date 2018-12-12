@@ -32,27 +32,19 @@ class DocIndex extends React.Component {
       .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
-   * for easy access by columnFormatter.
-   */
   fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+    return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
-        console.error(error);
     });
   }
-
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {arrray} row - array of cell contents for a specific row
  * @return {*} a formated table cell for a given column
  */
  formatColumn(column, cell, row) {
@@ -62,7 +54,7 @@ class DocIndex extends React.Component {
     case 'File Name':
     let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['Data Dir']);
     result = (
-      <td className= {classes}>
+      <td className= {style}>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
           {cell}
         </a>
@@ -71,7 +63,7 @@ class DocIndex extends React.Component {
       break;
     case 'Edit':
     let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
-    result =  <td className={classes}><a href={editURL}>Edit</a></td>;
+    result = <td className={style}><a href={editURL}>Edit</a></td>;
       break;
     case 'Delete':
     let id = row['Edit'];
@@ -99,7 +91,7 @@ function() {
   });
 });
 }
-    result =  <td className={classes}><a onClick={click}>Delete</a></td>
+    result = <td className={style}><a onClick={click}>Delete</a></td>;
       break;
     }
     return result;
@@ -129,22 +121,29 @@ function() {
       {label: 'File Type', show: true, filter: {
         name: 'fileTypes',
         type: 'select',
-        options: options.fileType,
-      }},
-      {label: 'For Site', show: true, filter: {
-        name: 'sites',
-        type: 'select',
-        options: options.site,
-      }},
+        options: options.fileTypes,
+     }},
+      {label: 'Instrument', show: false},
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
         }},
+      {label: 'For Site', show: true, filter: {
+        name: 'sites',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'Comments', show: false},
+      {label: 'Date Upload', show: false},
+      {label: 'editID', show: false},
+      {label: 'deleteID', show: false},
       {label: 'File Category', show: true, filter: {
         name: 'fileCategories',
         type: 'select',
-        options: options.fileCategory,
+        options: options.fileCategories,
       }},
+      {label: 'Category', show: false},
+      {label: 'Data Dir', show: false},
     ];
 
     let tabList = [
@@ -155,32 +154,18 @@ function() {
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <FilterForm
-            Module="document_repository"
-            name="document_filter"
-            id="document_filter_form"
-            ref={this.setFilterRef}
-            columns={2}
-            formElements={this.state.Data.form}
-            onUpdate={this.updateFilter}
-            filter={this.state.filter}
-          >
-            <br/>
-            <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
-          </FilterForm>
           <FilterableDataTable
-            Name = "document"
-            Data={this.state.data.Data}
+            name = "document"
+            data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
-            refreshPage={this.fetchData}
           />
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
             DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
-            maxUploadSize={this.state.Data.maxUploadSize}
+            maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
           />
         </TabPane>

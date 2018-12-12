@@ -48,7 +48,7 @@ class DocCategoryForm extends React.Component {
     });
 }
   componentDidMount() {
-   this.fetchData();
+    this.fetchData();
   }
 
   render() {
@@ -167,10 +167,10 @@ class DocCategoryForm extends React.Component {
         return xhr;
       }.bind(this),
       success: function() {
-        // Trigger an update event to update all observers (i.e DataTable)
-        let event = new CustomEvent('update-datatable');
-        window.dispatchEvent(event);
         this.props.refreshPage();
+        this.fetchData();
+        // refresh the upload page
+
         this.setState({
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
@@ -213,7 +213,6 @@ class DocCategoryForm extends React.Component {
         isValidForm = false;
       }
     });
-    this.forceUpdate();
 
     return isValidForm;
   }
