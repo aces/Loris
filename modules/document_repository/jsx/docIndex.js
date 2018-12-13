@@ -12,6 +12,7 @@ class DocIndex extends React.Component {
       isLoaded: false,
       data: {},
       error: false,
+      newCategory: false,
     };
 
     /**
@@ -25,8 +26,11 @@ class DocIndex extends React.Component {
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.newCategoryState = this.newCategoryState.bind(this);
   }
-
+   newCategoryState() {
+        this.setState({newCategory: true});
+    }
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -36,6 +40,7 @@ class DocIndex extends React.Component {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data}))
+      .then(()=>this.setState({newCategory: false}))
       .catch((error) => {
         this.setState({error: true});
     });
@@ -167,6 +172,7 @@ function() {
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
+            category={this.state.newCategory}
           />
         </TabPane>
         <TabPane TabId={tabList[2].id}>
@@ -174,6 +180,7 @@ function() {
             DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getCategory`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
             refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
           />
         </TabPane>
       </Tabs>

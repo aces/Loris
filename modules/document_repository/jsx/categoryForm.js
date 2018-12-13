@@ -170,7 +170,7 @@ class DocCategoryForm extends React.Component {
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
-
+        this.props.newCategoryState();
         this.setState({
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
