@@ -72,6 +72,9 @@
             <fieldset>
                 <input type="hidden" name="subprojectID" value="new" class="subprojectID">
                 <div class="form-group">
+                    <div class="alert alert-warning">
+                          <strong>Note</strong> After adding a new subproject, Visit labels for this subproject can only be created by editing the configuration file, "config.xml". Please contact your administrator if you need more information.
+                    </div>
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the subproject'}">
                         <label class="col-sm-12 control-label">Subproject Name</label>
                     </div>
@@ -105,9 +108,6 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">
-                        <div class="alert alert-warning">
-                          <strong>Warning!</strong> After adding a new subproject, Visit labels for this subproject must be created by editing the config.xml back-end configuration file.
-                        </div>
                         <button id="savesubprojectnew" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
