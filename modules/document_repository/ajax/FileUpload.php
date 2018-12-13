@@ -21,7 +21,7 @@
  *
  * @return void
  */
-function editFile(): void
+function editDocFile(): void
 {
     $db   = \Database::singleton();
     $user = \User::singleton();
@@ -67,7 +67,7 @@ function editFile(): void
  *
  * @return void
  */
-function uploadFile()
+function uploadDocFile()
 {
     $editNotifier   = new NDB_Notifier(
         "document_repository",
@@ -161,7 +161,7 @@ function uploadFile()
  *
  * @return void
  */
-function uploadCategory()
+function uploadDocCategory()
 {
     $DB = \Database::singleton();
         $category_name = $_POST['category_name']; // required
@@ -181,7 +181,7 @@ function uploadCategory()
  *
  * @return void
  */
-function viewCategory()
+function viewDocCategory()
 {
     $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
@@ -221,7 +221,7 @@ function getCategoryFields(): array
  * @return void
  * @throws DatabaseException
  */
-function viewData()
+function viewDocData()
 {
     $user = \User::singleton();
     if (!$user->hasPermission('document_repository_view')) {
@@ -260,7 +260,7 @@ function getUploadFields(): array
         "SELECT Test_name FROM test_names ORDER BY Test_name",
         array()
     );
-    $instrumentsList = toSelect($instruments, "Test_name", null);
+    $instrumentsList = toDocSelect($instruments, "Test_name", null);
     //docFile
     $docData = null;
     if (isset($_GET['idDocFile'])) {
@@ -330,7 +330,7 @@ function parseCategory($value): array
  *
  * @return array
  */
-function toSelect($options, $item, $item2): array
+function toDocSelect($options, $item, $item2): array
 {
     $selectOptions = array();
 
@@ -349,14 +349,14 @@ function toSelect($options, $item, $item2): array
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
-        viewData();
+        viewDocData();
     } else if ($action == "upload") {
-        uploadFile();
+        uploadDocFile();
     } else if ($action == "edit") {
-        editFile();
+        editDocFile();
     } else if ($action == "getCategory") {
-        viewCategory();
+        viewDocCategory();
     } else if ($action == "uploadCategory") {
-        uploadCategory();
+        uploadDocCategory();
     }
 }
