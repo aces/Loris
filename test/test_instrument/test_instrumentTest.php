@@ -137,10 +137,15 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $textElement = $this->webDriver->findElement(
              WebDriverBy::Name("testCheckbox")
       )->click();
-
+      sleep(1);
       $this->webDriver->findElement(
              WebDriverBy::Name("fire_away")
       )->click();
+      sleep(1);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+       print_r($bodyText);
       $data =  $this->DB->pselectOne(
         'SELECT Data FROM flag where SessionID = 999999',array()
         );
