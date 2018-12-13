@@ -228,7 +228,7 @@ function viewDocData()
         header("HTTP/1.1 403 Forbidden");
         return null;
     }
-    echo json_encode(getUploadFields());
+    echo json_encode(getUploadDocFields());
 }
 
 /**
@@ -237,7 +237,7 @@ function viewDocData()
  * @return array
  * @throws DatabaseException
  */
-function getUploadFields(): array
+function getUploadDocFields(): array
 {
 
     $db    = \Database::singleton();
