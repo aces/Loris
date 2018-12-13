@@ -21,7 +21,6 @@ class DocUploadForm extends React.Component {
       isLoaded: false,
       loadedData: 0,
       uploadProgress: -1,
-      category: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,11 +52,9 @@ class DocUploadForm extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     // Any time props.email changes, update state.
-    this.setState({category: nextProps.category});
     if (nextProps.category) {
         this.fetchData();
       }
-    this.setState({category: false});
    }
 
   render() {
