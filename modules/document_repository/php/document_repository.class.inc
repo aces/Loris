@@ -24,7 +24,7 @@ namespace LORIS\document_repository;
 */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
-    public $AjaxModule      = true;
+    public $AjaxModule   = true;
     public $skipTemplate = true;
 
     /**
@@ -95,9 +95,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $categoryList = $data;
 
         $this->fieldOptions = [
-                               'fileTypes'   => $fileTypeList,
-                               'fileCategories'      => $categoryList,
-                               'sites'       => $siteList,
+                               'fileTypes'      => $fileTypeList,
+                               'fileCategories' => $categoryList,
+                               'sites'          => $siteList,
                               ];
 
         return true;
@@ -175,7 +175,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result         = $this->toArray();
+        $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }
