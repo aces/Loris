@@ -13,20 +13,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-    if ($action == "getData") {
-        viewData();
-    } else if ($action == "upload") {
-        uploadFile();
-    } else if ($action == "edit") {
-        editFile();
-    } else if ($action == "getCategory") {
-        viewCategory();
-    } else if ($action == "uploadCategory") {
-        uploadCategory();
-    }
-}
 
 /**
  * Handles the document update/edit process
@@ -364,3 +350,17 @@ function toSelect($options, $item, $item2): array
     return $selectOptions;
 }
 
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    if ($action == "getData") {
+        viewData();
+    } else if ($action == "upload") {
+        uploadFile();
+    } else if ($action == "edit") {
+        editFile();
+    } else if ($action == "getCategory") {
+        viewCategory();
+    } else if ($action == "uploadCategory") {
+        uploadCategory();
+    }
+}
