@@ -29,8 +29,6 @@ function editFile(): void
         header("HTTP/1.1 403 Forbidden");
         return;
     }
-
-    // Read JSON from STDIN
     $stdin     = file_get_contents('php://input');
     $req       = json_decode($stdin, true);
     $idDocFile = $req['idDocFile'];
@@ -180,8 +178,6 @@ function uploadCategory()
 }
 /**
  * Return a json string to view the category
- *
- * @throws DatabaseException
  *
  * @return void
  */
