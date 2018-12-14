@@ -24,7 +24,7 @@ $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 
 if (empty($uploadData)) {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    return;
 }
 
 $origUser = $db->pselectOne(
@@ -39,7 +39,7 @@ $editors = $db->pselectCol(
 
 if ($user->getId() !== $origUser && !in_array($user->getId(), $editors)) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    return;
 }
 
 $db->delete(
