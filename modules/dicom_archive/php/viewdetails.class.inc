@@ -178,12 +178,12 @@ class ViewDetails extends \NDB_Form
 
         if ($isPhantom === 'Y') {
              $isValid = preg_match(
-                    "/$legoPhanRegex/",
-                    $this->tpl_data['archive']['PatientName']
-                ) || preg_match(
-                     "/$livingPhanRegex/",
-                     $this->tpl_data['archive']['PatientName']
-                 );
+                 "/$legoPhanRegex/",
+                 $this->tpl_data['archive']['PatientName']
+             ) || preg_match(
+                 "/$livingPhanRegex/",
+                 $this->tpl_data['archive']['PatientName']
+             );
         } else if ($isPhantom === 'N') {
             $isValid = preg_match(
                 "/$pNameRegex/",
@@ -193,15 +193,15 @@ class ViewDetails extends \NDB_Form
             // if scan was uploaded via non-imaging uploader method
             // run patient name through all regex validations
             $isValid = (preg_match(
-                    "/$pNameRegex/",
-                    $this->tpl_data['archive']['PatientName']
-                )) || (preg_match(
-                    "/$legoPhanRegex/",
-                    $this->tpl_data['archive']['PatientName']
-                )) || (preg_match(
-                    "/$livingPhanRegex/",
-                    $this->tpl_data['archive']['PatientName']
-                ));
+                "/$pNameRegex/",
+                $this->tpl_data['archive']['PatientName']
+            )) || (preg_match(
+                "/$legoPhanRegex/",
+                $this->tpl_data['archive']['PatientName']
+            )) || (preg_match(
+                "/$livingPhanRegex/",
+                $this->tpl_data['archive']['PatientName']
+            ));
         }
 
         $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
