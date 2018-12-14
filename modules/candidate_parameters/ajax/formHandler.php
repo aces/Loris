@@ -516,7 +516,7 @@ function editExternalIdentifierFields($db, $user)
  *
  * @return void
  */
-function deleteExternalIdentifier($db, $user)
+function deleteExternalIdentifier($db, $user): void
 {
     if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
