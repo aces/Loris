@@ -1,5 +1,5 @@
 CREATE TABLE `project_external` (
-  `ProjectExternalID` int(2) NOT NULL AUTO_INCREMENT,
+  `ProjectExternalID` int(4) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ProjectExternalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
