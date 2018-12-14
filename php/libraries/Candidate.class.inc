@@ -621,24 +621,11 @@ class Candidate
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        // Visits may occur on the same date, so ordering by Date_Visit
-        // or selecting by MIN(Date_Visit) will not produce a unique result
-        // as required by pselectOne
-        // This selects the smallest session ID, in the event that there
-        // are multiple visits starting on the same day
-        $query  = "SELECT Visit_label
-             FROM session 
-             WHERE ID =  
-              (SELECT MIN(ID) FROM session
-                WHERE Date_Visit =
-                  (SELECT MIN(Date_Visit) FROM session 
-                    WHERE CandID=:cid 
-                    AND Date_Visit IS NOT NULL
-                  ) 
-                AND CandID=:cid
-             )";
+        $query  = "SELECT Visit_label FROM session 
+          WHERE CandID = :cid AND Date_visit IS NOT NULL 
+          ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
-        $vLabel = $db->pselectOne($query, $where);
+        $vLabel = $db->pselectCol($query, $where)[0] ?? null;
 
         return $vLabel;
     }
