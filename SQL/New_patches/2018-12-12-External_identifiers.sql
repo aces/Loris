@@ -1,6 +1,6 @@
 CREATE TABLE `project_external` (
   `ProjectExternalID` int(4) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) UNIQUE DEFAULT NULL,
   PRIMARY KEY (`ProjectExternalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
