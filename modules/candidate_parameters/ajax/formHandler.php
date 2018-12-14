@@ -520,7 +520,7 @@ function deleteExternalIdentifier($db, $user): void
 {
     if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
-        exit;
+        return;
     }
     $candID = $_POST['candID'];
     $study  = $_POST['project'];
