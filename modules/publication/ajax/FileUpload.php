@@ -39,7 +39,7 @@ function uploadPublication() : void
         return;
     }
 
-    $titleRaw = $_REQUEST['title'] ?? null;
+    $titleRaw = $_POST['title'] ?? null;
     if (!$titleRaw) {
         showPublicationError('Title is empty', 400);
     }
@@ -58,9 +58,9 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc            = $_REQUEST['description'] ?? null;
-    $leadInvest      = $_REQUEST['leadInvestigator'] ?? null;
-    $leadInvestEmail = $_REQUEST['leadInvestigatorEmail'] ?? null;
+    $desc            = $_POST['description'] ?? null;
+    $leadInvest      = $_POST['leadInvestigator'] ?? null;
+    $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
@@ -161,9 +161,9 @@ function processFiles($pubID) : void
                 $pubID
             );
         }
-        $pubTypeID       = $_REQUEST['publicationType_'.$index] ?? null;
-        $pubCitation     = $_REQUEST['publicationCitation_'.$index] ?? null;
-        $pubVersion      = $_REQUEST['publicationVersion_'.$index] ?? null;
+        $pubTypeID       = $_POST['publicationType_'.$index] ?? null;
+        $pubCitation     = $_POST['publicationCitation_'.$index] ?? null;
+        $pubVersion      = $_POST['publicationVersion_'.$index] ?? null;
         $pubUploadInsert = array(
                             'PublicationID'           => $pubID,
                             'PublicationUploadTypeID' => $pubTypeID,
@@ -194,12 +194,12 @@ function processFiles($pubID) : void
  */
 function insertCollaborators(int $pubID) : void
 {
-    if (!$_REQUEST['collaborators']) {
+    if (!$_POST['collaborators']) {
         return;
     }
     $db = Database::singleton();
 
-    $collaborators = json_decode($_REQUEST['collaborators'], true);
+    $collaborators = json_decode($_POST['collaborators'], true);
     foreach ($collaborators as $c) {
         $cid = $db->pselectOne(
             'SELECT PublicationCollaboratorID '.
@@ -245,12 +245,12 @@ function insertCollaborators(int $pubID) : void
  */
 function insertEditors(int $pubID) : void
 {
-    if (empty($_REQUEST['usersWithEditPerm'])) {
+    if (empty($_POST['usersWithEditPerm'])) {
         return;
     }
 
     $db = Database::singleton();
-    $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
+    $usersWithEditPerm = json_decode($_POST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $uid) {
         $insert = array(
                    'PublicationID' => $pubID,
@@ -273,11 +273,11 @@ function insertEditors(int $pubID) : void
  */
 function insertKeywords(int $pubID) : void
 {
-    if (empty($_REQUEST['keywords'])) {
+    if (empty($_POST['keywords'])) {
         return;
     }
     $db       = Database::singleton();
-    $keywords = json_decode($_REQUEST['keywords']);
+    $keywords = json_decode($_POST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
         $kwID = $db->pselectOne(
@@ -320,7 +320,7 @@ function insertKeywords(int $pubID) : void
 function insertVOIs(int $pubID) : void
 {
 
-    if (empty($_REQUEST['voiFields'])) {
+    if (empty($_POST['voiFields'])) {
         return;
     }
     $db        = Database::singleton();
@@ -336,7 +336,7 @@ function insertVOIs(int $pubID) : void
         'ParameterTypeID'
     );
 
-    $voiFields = json_decode($_REQUEST['voiFields']);
+    $voiFields = json_decode($_POST['voiFields']);
     foreach ($voiFields as $vf) {
         // search test_names for value
         if (in_array($vf, $testNames)) {
@@ -444,11 +444,11 @@ function notify($pubID, $type) : void
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
-    $sendTo = $_REQUEST['notifyLead'] === 'true'
+    $sendTo = $_POST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
     // get collaborators to notify
-    $collaborators = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators'], true) : null;
+    $collaborators = isset($_POST['collaborators'])
+        ? json_decode($_POST['collaborators'], true) : null;
 
     foreach ($collaborators as $c) {
         if ($c['notify']) {
@@ -502,12 +502,12 @@ function editProject() : void
         showPublicationError('No Publication ID provided');
     }
 
-    $title            = $_REQUEST['title'] ?? null;
-    $statusID         = $_REQUEST['status'] ?? null;
-    $rejectedReason   = $_REQUEST['rejectedReason'] ?? null;
-    $description      = $_REQUEST['description'] ?? null;
-    $leadInvestigator = $_REQUEST['leadInvestigator'] ?? null;
-    $leadInvestigatorEmail = $_REQUEST['leadInvestigatorEmail'] ?? null;
+    $title            = $_POST['title'] ?? null;
+    $statusID         = $_POST['status'] ?? null;
+    $rejectedReason   = $_POST['rejectedReason'] ?? null;
+    $description      = $_POST['description'] ?? null;
+    $leadInvestigator = $_POST['leadInvestigator'] ?? null;
+    $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
         'SELECT p.*, pc.Name as LeadInvestigator, ' .
@@ -580,8 +580,8 @@ function editProject() : void
 function editEditors($id) : void
 {
     $db = \Database::singleton();
-    $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
-        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
+    $usersWithEditPerm = isset($_POST['usersWithEditPerm'])
+        ? json_decode($_POST['usersWithEditPerm']) : null;
 
     $currentUWEP = $db->pselectCol(
         'SELECT UserID '.
@@ -623,8 +623,8 @@ function editEditors($id) : void
 function editCollaborators($id) : void
 {
     $db = \Database::singleton();
-    $submittedCollaborators = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators'], true) : null;
+    $submittedCollaborators = isset($_POST['collaborators'])
+        ? json_decode($_POST['collaborators'], true) : null;
 
     $currentCollabs       = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -708,8 +708,8 @@ function editCollaborators($id) : void
 function editKeywords($id) : void
 {
     $db       = \Database::singleton();
-    $keywords = isset($_REQUEST['keywords'])
-        ? json_decode($_REQUEST['keywords']) : null;
+    $keywords = isset($_POST['keywords'])
+        ? json_decode($_POST['keywords']) : null;
 
     $currentKW = $db->pselectCol(
         'SELECT Label FROM publication_keyword pk '.
@@ -757,8 +757,8 @@ function editKeywords($id) : void
 function editVOIs($id) : void
 {
     $db  = \Database::singleton();
-    $voi = isset($_REQUEST['voiFields'])
-        ? json_decode($_REQUEST['voiFields']) : null;
+    $voi = isset($_POST['voiFields'])
+        ? json_decode($_POST['voiFields']) : null;
 
     $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
@@ -839,8 +839,8 @@ function editUploads($id) : void
         $citationIndex = 'existingUpload_publicationCitation_' . $puid;
         $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
-        $cit = $_REQUEST[$citationIndex] ?? null;
-        $ver = $_REQUEST[$versionIndex] ?? null;
+        $cit = $_POST[$citationIndex] ?? null;
+        $ver = $_POST[$versionIndex] ?? null;
 
         if (htmlspecialchars($cit) !== $data['Citation']) {
             $toUpdate[$puid]['Citation'] = $cit;
