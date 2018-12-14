@@ -480,7 +480,7 @@ function getConsentStatusHistory($pscid)
  *
  * @return array
  */
-function getExternalIdentifierFields()
+function getExternalIdentifierFields(): array
 {
     $candID = $_GET['candID'];
 
