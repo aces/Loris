@@ -6,7 +6,7 @@ CREATE TABLE `project_external` (
 
 CREATE TABLE `candidate_project_external_rel` (
   `CandID` int(6) NOT NULL DEFAULT 0,
-  `ProjectExternalID` int(2) NOT NULL,
+  `ProjectExternalID` int(4) NOT NULL,
   `ExtStudyID` varchar(255) NOT NULL DEFAULT '',
   `DateUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`CandID`,`ProjectExternalID`),
