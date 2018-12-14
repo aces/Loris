@@ -65,13 +65,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
             // create an instance of the instrument
 
-            $instrument =& NDB_BVL_Instrument::factory(
+            $instrument = \NDB_BVL_Instrument::factory(
                 $_REQUEST['test_name'],
                 $_REQUEST['commentID'],
                 $this->tpl_data['subtest'] ?? ''
             );
 
-            $this->_instrument =& $instrument;
+            $this->_instrument = $instrument;
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
             $this->ValidityRequired = $instrument->ValidityRequired;
@@ -136,7 +136,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             if (isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
                 $user = User::singleton();
                 if ($user->hasPermission('send_to_dcc')) {
-                    $instrument =& NDB_BVL_Instrument::factory(
+                    $instrument = \NDB_BVL_Instrument::factory(
                         $_REQUEST['test_name'],
                         $_REQUEST['commentID'],
                         $_REQUEST['subtest']
@@ -358,10 +358,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _hasAccess(): bool
     {
         // get user object
-        $user =& User::singleton();
+        $user = \User::singleton();
 
         // make a timepoint object
-        $timePoint =& TimePoint::singleton($this->getSessionID());
+        $timePoint = \TimePoint::singleton($this->getSessionID());
 
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
@@ -374,7 +374,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
 
         // make a feedback object
-        $feedback =& NDB_BVL_Feedback::singleton(
+        $feedback = \NDB_BVL_Feedback::singleton(
             $user->getData('UserID'),
             null,
             null,

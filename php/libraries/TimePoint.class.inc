@@ -139,7 +139,8 @@ class TimePoint
             $subprojectSettings   = $config->getSubprojectSettings(
                 intval($row['SubprojectID'])
             );
-            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
+
+            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'] ?? '';
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
