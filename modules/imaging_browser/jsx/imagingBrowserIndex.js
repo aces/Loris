@@ -149,7 +149,7 @@ class ImagingBrowserIndex extends Component {
       }},
       {label: 'Pending New', show: false, filter: {
         name: 'pendingNew',
-        type: 'select',
+        type: 'multiselect',
         options: options.pendingNew,
       }},
     ];
