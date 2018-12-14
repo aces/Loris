@@ -117,31 +117,30 @@ class PublicationIndex extends React.Component {
   }
 
   formatColumn(column, cell, rowData, rowHeaders) {
-  // If a column if set as hidden, don't display it
-  if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
-  }
-  // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
-  rowHeaders.forEach(function(header, index) {
-    row[header] = rowData[index];
-  }, this);
+    // If a column if set as hidden, don't display it
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
+    // Create the mapping between rowHeaders and rowData in a row object.
+    let row = {};
+    rowHeaders.forEach(function(header, index) {
+      row[header] = rowData[index];
+    }, this);
+    let classes = [];
+    if (column === 'Title') {
+      let pubID = row['Publication ID'];
+      let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
 
-  let classes = [];
-  if (column === 'Title') {
-    let pubID = row['Publication ID'];
-    let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
-
-    return (
-      <td>
-        <a href={viewURL}>
-          {cell}
-        </a>
-      </td>
-    );
+      return (
+        <td>
+          <a href={viewURL}>
+            {cell}
+          </a>
+        </td>
+      );
+    }
+    return <td className={classes}>{cell}</td>;
   }
-  return <td className={classes}>{cell}</td>;
-}
 }
 
 $(function() {
