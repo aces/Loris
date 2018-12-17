@@ -102,7 +102,7 @@ class State
     /**
      * Gets the last URL that was access to use as a "back" link.
      *
-     * @return String URL suitable for adding to a link of for a "Back" link
+     * @return string|null URL suitable for adding to a link of for a "Back" link
      */
     function getLastURL(): ?string
     {
