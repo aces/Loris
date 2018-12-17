@@ -166,12 +166,6 @@ class NDB_Client
                     array('cookie_httponly' => true)
                 );
             }
-            session_start(
-                array(
-                 'cookie_httponly' => true,
-                 'cookie_samesite' => true,
-                )
-            );
         }
 
         /**
