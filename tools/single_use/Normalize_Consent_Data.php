@@ -37,7 +37,7 @@ $useConsent = $consentConfig['useConsent'];
 $consents = $consentConfig['Consent'];
 
 // Format array of consents
-foreach(\Utility::toArray($consents) as $consent) {
+foreach(\Utility::associativeToNumericArray($consents) as $consent) {
     $consentName = $consent['name'];
     $consentLabel = $consent['label'];
     $consentList[$consentName] = $consentLabel;
