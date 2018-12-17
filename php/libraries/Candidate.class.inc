@@ -613,7 +613,7 @@ class Candidate
     /**
      * Returns first visit for a candidate based on Date_visit
      *
-     * @return string The visit label for the candidate's first visit
+     * @return string|null The visit label for the candidate's first visit
      */
     public function getFirstVisit()
     {
@@ -626,7 +626,6 @@ class Candidate
           ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
         $vLabel = $db->pselectCol($query, $where)[0] ?? null;
-
         return $vLabel;
     }
 
