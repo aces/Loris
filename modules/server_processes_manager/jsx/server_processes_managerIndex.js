@@ -25,8 +25,6 @@ class ServerProcessesManagerIndex extends Component {
 
   /**
    * Retrieve data from the provided URL and save it in state
-   * Additionally add hiddenHeaders to global loris variable
-   * for easy access by columnFormatter.
    *
    * @return {object}
    */
