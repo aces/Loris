@@ -42,7 +42,7 @@ class BVL_Feedback_Panel
      *
      * @param int      $candID    The candidate ID.
      * @param int|null $sessionID The session ID for a given visit.
-     * @param int|null $commentID The comment ID for a given instrument.
+     * @param string|null $commentID The comment ID for a given instrument.
      */
     function __construct(
         int $candID,
