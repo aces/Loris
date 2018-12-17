@@ -47,7 +47,7 @@ class BVL_Feedback_Panel
     function __construct(
         int $candID,
         ?int $sessionID=null,
-        ?int $commentID=null
+        ?string $commentID=null
     ) {
 
         $this->_feedbackThread
