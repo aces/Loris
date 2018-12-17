@@ -104,7 +104,7 @@ class State
      *
      * @return String URL suitable for adding to a link of for a "Back" link
      */
-    function getLastURL(): string
+    function getLastURL(): ?string
     {
         $timepointSubMenus = array(
                               'instrument_list',
