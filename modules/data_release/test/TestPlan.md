@@ -32,7 +32,7 @@ permission was added for him/her.
 
 7. Try adding/removing permissions to specific release versions for specific users.
 
-8. Ensure that when a box is unchecked, the user's access to any of the release 
+8. Ensure that when a box is unchecked, the user's access to any of the released 
 files with that version is revoked.
 
 9. Ensure that when a box is checked, the user is granted access to all files with 
