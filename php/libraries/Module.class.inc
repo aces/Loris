@@ -247,6 +247,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         }
 
         try {
+            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             $page = $this->loadPage($pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
@@ -258,7 +259,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
 
             if ($page->_hasAccess() !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
-                    $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                    $user
                 ))->process(
                     $request,
                     new \LORIS\Router\NoopResponder(
@@ -272,7 +273,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             }
         } catch (\NotFound $e) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
-                $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                $user
             ))->process(
                 $request,
                 new \LORIS\Router\NoopResponder(
