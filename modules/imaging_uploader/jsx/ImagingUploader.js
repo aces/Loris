@@ -92,7 +92,8 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.data.hiddenHeaders.indexOf(column) > -1) {
+    if (loris.hiddenHeaders !== undefined &&
+        loris.hiddenHeaders.indexOf(column) > -1 ) {
       return null;
     }
 
