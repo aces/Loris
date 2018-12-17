@@ -51,7 +51,7 @@ class ServerProcessesMonitor
     /**
       * Accessor for field $databaseProvider.
       *
-      * @return string (value of field $databaseProvider)
+      * @return DefaultDatabaseProvider|IDatabaseProvider (value of field $databaseProvider)
       */
     public function getDatabaseProvider()
     {
