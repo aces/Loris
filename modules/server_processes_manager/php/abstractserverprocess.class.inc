@@ -299,9 +299,9 @@ abstract class AbstractServerProcess
      * Gets the task return code. Also syncs the class and database information to
      * reflect the task's actual state.
      *
-     * @return int|null the class $_returnCode attribute if it is set. If not, then read
-     *                $_returnCodeFile and return contents. If empty, then return
-     *             'unknown'. If the task is still running, return null.
+     * @return int|null the class $_returnCode attribute if it is set. If not, then
+     *                  read $_returnCodeFile and return contents. If empty, then
+     *                  return 'unknown'. If the task is still running, return null.
      */
     public function getExitCode()
     {
