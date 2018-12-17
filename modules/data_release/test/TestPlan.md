@@ -25,7 +25,7 @@ access to yet). Note that at least one file needs to be uploaded in the
 module to be able to set permissions to access a file, otherwise, the drop 
 down for 'Data Release File' will remain empty).
  
-5. ensure that this 'User' can now see the file now that the 
+5. Ensure that this 'User' can now see the file now that the 
 permission was added for him/her.
 
 6. Click on the 'Manage Permissions' button.
