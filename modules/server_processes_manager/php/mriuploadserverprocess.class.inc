@@ -155,7 +155,7 @@ class MriUploadServerProcess extends AbstractServerProcess
      * @param int    $exitCode process exit code.
      * @param string $endTime  time at which the process ended.
      *
-     * @return string process exit text.
+     * @return string|null process exit text.
      */
     public function computeExitText($exitCode, $endTime)
     {
