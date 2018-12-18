@@ -27,29 +27,18 @@ require_once __DIR__ .
  */
 class MediaTest extends LorisIntegrationTest
 {
-    /**
-     * UI elements and locations
-     * breadcrumb - 'Access Profile'
-     * Table headers
-     */
-    private $_loadingBrowseUI
-        =  array(
-            //Browse UIs
-            'Browse'        => '#tab-browse',
-            //Browse table header
-            'No.'           => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'File Name'     => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'PSCID'         => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Visit Label'   => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Instrument'    => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Language'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Site'          => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Uploaded By'   => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Date Taken'    => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Comments'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Date Uploaded' => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-            'Comments'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
-           );
+    //$location: css selector for react items
+    static $FileName    = "#media_filter > div > div:nth-child(1) > div > div > input";
+    static $PSCID       = "#media_filter > div > div:nth-child(2) > div > div > input";
+    static $VisitLabel  = "#media_filter > div > div:nth-child(3) > div > div > select";
+    static $Language    = "#media_filter > div > div:nth-child(4) > div > div > select";
+    static $Instrument  = "#media_filter > div > div:nth-child(5) > div > div > select";
+    static $Site        = "#media_filter > div > div:nth-child(6) > div > div > select";
+    static $clearFilter = "#media_filter > div > div:nth-child(10) > div > div > button";
+    // first row of react table
+    static $table = "#dynamictable > tbody > tr:nth-child(1)";
+    // rows displayed of
+    static $display = "#browse > div > div.panel.panel-default > div.table-header.panel-heading > div > div";
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -83,64 +72,19 @@ class MediaTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
-    function testPageBrowseUIs()
-    {
-        $this->safeGet($this->url . "/media/");
-        sleep(10);
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        print_r($bodyText);
-        foreach ($this->_loadingBrowseUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains($key, $text);
-        }
-    }
-    /**
       * Testing React filter in this page.
       *
       * @return void
       */
     function testBrowseFilter()
     {
-        $this->_testFilter("/media/", "pSCID", "MTL010", "1 rows");
-        $this->_testFilter("/media/", "fileName", "MTL010", "1 rows");
-        $this->_testFilter(
-            "/media/",
-            "fileType",
-            "text/plain",
-            "20 rows displayed of 26"
-        );
-        $this->_testFilter(
-            "/media/",
-            "visitLabel",
-            "V1",
-            "20 rows displayed of 26"
-        );
-        $this->_testFilter(
-            "/media/",
-            "site",
-            "Data Coordinating Center",
-            "20 rows displayed of 26"
-        );
-        $this->_testFilter(
-            "/media/",
-            "uploadedBy",
-            "admin",
-            "20 rows displayed of 26"
-        );
-        $this->_testFilter(
-            "/media/",
-            "instrument",
-            "BMI Calculator",
-            "20 rows displayed of 26"
-        );
+        $this->safeGet($this->url . "/media/");
+        $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
+        $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
+        $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
+        $this->_testFilter(self::$Language, self::$table, "26", "2");
+        $this->_testFilter(self::$Instrument, self::$table, "3 rows", "2");
+        $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
 
     }
     /**
@@ -148,50 +92,83 @@ class MediaTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testBrowseVisitLink()
+    function testVisitAndEditLink()
     {
+        $this->markTestSkipped(
+            'Skipping tests until Travis and Router get along better'
+        );
         $this->safeGet($this->url . "/media/");
-        sleep(10);
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        // click the file Name link
+        // click the Visit Label link
         $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
-               " > td:nth-child(4) > a').click()"
+            "document.querySelector('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a').click()"
         );
         $text = $this->webDriver->executescript(
-            "return document.querySelector('".
-            " #bc2 > a:nth-child(4) > div').textContent"
+            "return document.querySelector('body').textContent"
         );
         $this->assertContains("TimePoint", $text);
 
+        $this->safeGet($this->url . "/media/");
+        // click the Edit link
+        $this->webDriver->executescript(
+            "document.querySelector('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > a').click()"
+        );
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
+        );
+        $this->assertContains("Edit Media File", $text);
+
     }
     /**
-      * This function could test filter function in each Tabs.
-      *
-      * @param string $url            this is for the url which needs to be tested.
-      * @param string $filter         the filter which needs to be tested.
-      * @param string $testData       the test data.
-      * @param string $expectDataRows the expect rows in the table.
-      *
-      * @return void
-      */
-    function _testFilter($url,$filter,$testData,$expectDataRows)
+     * Testing filter funtion and clear button
+     *
+     * @param string $element The input element loaction
+     * @param string $table   The first row location in the table
+     * @param string $records The records number in the table
+     * @param string $value   The test value
+     *
+     * @return void
+     */
+    function _testFilter($element,$table,$records,$value)
     {
-        $this->safeGet($this->url . $url);sleep(3);
-        $this->safeFindElement(
-            WebDriverBy::Name($filter)
-        )->sendKeys($testData);
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('.table-header').textContent"
-        );
+        // get element from the page
+        if (strpos($element, "select") == false) {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);
+                "
+            );
+            $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('$table').textContent"
+            );
+            $this->assertContains($value, $bodyText);
+        } else {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+            );
+            $row      = self::$display;
+            $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('$row').textContent"
+            );
+            // 4 means there are 4 records under this site.
+            $this->assertContains($records, $bodyText);
+        }
+        //test clear filter
+        $btn = self::$clearFilter;
         $this->webDriver->executescript(
-            "document.querySelector('#media_filter_form > div >".
-            " div:nth-child(11) > div > div > button').click()"
+            "document.querySelector('$btn').click();"
         );
-
-        $this->assertContains($expectDataRows, $text);
+        $inputText = $this->webDriver->executescript(
+            "return document.querySelector('$element').value"
+        );
+        $this->assertEquals("", $inputText);
     }
 }
 ?>
