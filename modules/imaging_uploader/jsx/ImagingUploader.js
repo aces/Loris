@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
-import PropTypes from 'prop-types';
 
 class ImagingUploader extends Component {
   constructor(props) {
@@ -14,6 +14,7 @@ class ImagingUploader extends Component {
     this.state = {
       isLoaded: false,
       filter: {},
+      hiddenHeaders: ['PatientName'],
     };
 
     /**
@@ -51,7 +52,6 @@ class ImagingUploader extends Component {
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
         // the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
           data: data,
           isLoaded: true,
@@ -92,8 +92,7 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders !== undefined &&
-        loris.hiddenHeaders.indexOf(column) > -1 ) {
+    if (this.state.hiddenHeaders.indexOf(column) > -1 ) {
       return null;
     }
 
@@ -237,6 +236,7 @@ class ImagingUploader extends Component {
               Headers={this.state.data.Headers}
               getFormattedCell={this.formatColumn}
               Filter={this.state.filter}
+              hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
         </TabPane>
