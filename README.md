@@ -102,4 +102,3 @@ Please feel free to subscribe to the [LORIS Developers mailing list](http://www.
 If you would like to contribue to LORIS development, please consult our
 [Contributing Guide](./CONTRIBUTING.md).
 
-### Contributing Documentation
