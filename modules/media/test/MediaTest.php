@@ -28,17 +28,18 @@ require_once __DIR__ .
 class MediaTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $FileName    = "#media_filter > div > div:nth-child(1) > div > div > input";
-    static $PSCID       = "#media_filter > div > div:nth-child(2) > div > div > input";
-    static $VisitLabel  = "#media_filter > div > div:nth-child(3) > div > div > select";
-    static $Language    = "#media_filter > div > div:nth-child(4) > div > div > select";
-    static $Instrument  = "#media_filter > div > div:nth-child(5) > div > div > select";
-    static $Site        = "#media_filter > div > div:nth-child(6) > div > div > select";
-    static $clearFilter = "#media_filter > div > div:nth-child(10) > div > div > button";
+    static $FileName    = "#media_filter > div > div:nth-child(1) >div >div>input";
+    static $PSCID       = "#media_filter > div > div:nth-child(2) >div >div>input";
+    static $VisitLabel  = "#media_filter > div > div:nth-child(3) >div >div>select";
+    static $Language    = "#media_filter > div > div:nth-child(4) >div >div>select";
+    static $Instrument  = "#media_filter > div > div:nth-child(5) >div >div>select";
+    static $Site        = "#media_filter > div > div:nth-child(6) >div >div>select";
+    static $clearFilter = "#media_filter > div > div:nth-child(10) >div>div>button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
-    static $display = "#browse > div > div.panel.panel-default > div.table-header.panel-heading > div > div";
+    static $display = "#browse > div > div.panel.panel-default >".
+                      " div.table-header.panel-heading > div > div";
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -100,7 +101,8 @@ class MediaTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/media/");
         // click the Visit Label link
         $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a').click()"
+            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
+            " > td:nth-child(4) > a').click()"
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
@@ -110,7 +112,8 @@ class MediaTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/media/");
         // click the Edit link
         $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > a').click()"
+            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
+            " > td:nth-child(12) > a').click()"
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
