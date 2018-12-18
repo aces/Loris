@@ -60,4 +60,4 @@ if (!Edit_User::canRejectAccount($rejectee)) {
 
 (\Database::singleton())->delete('users', array("UserID" => $username));
 header("HTTP/1.1 204 No Content");
-?>
+

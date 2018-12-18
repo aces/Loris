@@ -796,4 +796,4 @@ class Instrument_List_ControlPanel extends \TimePoint
     }
 
 }
-?>
+

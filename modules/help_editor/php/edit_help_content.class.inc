@@ -151,4 +151,4 @@ class Edit_Help_Content extends \NDB_Form
     }
 }
 
-?>
+

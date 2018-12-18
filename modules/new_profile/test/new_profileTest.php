@@ -268,4 +268,4 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->resetStudySite();
     }
 }
-?>
+

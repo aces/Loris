@@ -88,4 +88,4 @@ function getFileLocation()
     return $image_path;
 }
 
-?>
+

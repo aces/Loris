@@ -149,4 +149,4 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->assertContains($expectDataRows, $text);
     }
 }
-?>
+

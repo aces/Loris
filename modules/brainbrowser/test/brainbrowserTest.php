@@ -40,4 +40,4 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Brainbrowser", $bodyText);
     }
 }
-?>
+

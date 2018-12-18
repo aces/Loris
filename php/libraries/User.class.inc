@@ -585,4 +585,4 @@ class User extends UserPermissions
         return $count > 0;
     }
 }
-?>
+

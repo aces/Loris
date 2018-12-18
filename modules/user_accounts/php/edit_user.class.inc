@@ -1230,4 +1230,4 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-?>
+

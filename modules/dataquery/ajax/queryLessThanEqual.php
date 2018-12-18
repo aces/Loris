@@ -51,4 +51,4 @@ $sessionResults = array_map(
 );
 
 print json_encode($sessionResults);
-?>
+

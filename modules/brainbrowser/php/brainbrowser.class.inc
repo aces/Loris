@@ -72,4 +72,4 @@ class Brainbrowser extends \NDB_Page
         );
     }
 }
-?>
+

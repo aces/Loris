@@ -233,4 +233,4 @@ class Training extends \NDB_Form
         );
     }
 }
-?>
+

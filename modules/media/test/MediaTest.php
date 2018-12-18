@@ -174,4 +174,4 @@ class MediaTest extends LorisIntegrationTest
         $this->assertEquals("", $inputText);
     }
 }
-?>
+

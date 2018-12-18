@@ -39,4 +39,4 @@ class SafeExitException extends \Exception
         $this->Object = $obj;
     }
 }
-?>
+

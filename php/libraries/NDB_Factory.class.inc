@@ -419,4 +419,4 @@ class NDB_Factory
         return self::$_timepoints[$sessionID];
     }
 }
-?>
+

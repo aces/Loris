@@ -239,4 +239,4 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         }
     }
 }
-?>
+

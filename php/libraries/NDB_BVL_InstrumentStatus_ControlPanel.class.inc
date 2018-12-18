@@ -389,4 +389,4 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return (!$timePoint->isSubmitted() || $maxThreadStatus == 'opened');
     }
 }
-?>
+

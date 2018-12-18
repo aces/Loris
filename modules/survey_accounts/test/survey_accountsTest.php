@@ -282,4 +282,4 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("TestTestTest@example.com", $bodyText);
     }
 }
-?>
+
