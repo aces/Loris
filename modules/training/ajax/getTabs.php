@@ -48,4 +48,4 @@ $smarty->assign($tpl_data);
 $html = $smarty->fetch('training_tabs.tpl');
 
 print $html;
-?>
+

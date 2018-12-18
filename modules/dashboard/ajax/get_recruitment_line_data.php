@@ -108,4 +108,4 @@ function getRecruitmentData($siteID, $labels)
     return $data;
 }
 
-?>
+

@@ -108,4 +108,4 @@ class Smarty_NeuroDB extends Smarty
     }
 }
 
-?>
+

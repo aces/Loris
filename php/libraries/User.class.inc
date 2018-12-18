@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the Loris user class
  *
@@ -29,19 +29,19 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    var $userInfo = array();
+    protected $userInfo = array();
 
     /**
      * Constructor
      *
      * Selects a user and its permissions
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return User
      * @access public
      */
-    static function &factory($username) : User
+    public static function &factory(?string $username = null): \User
     {
         $obj = new User;
 
@@ -122,13 +122,13 @@ class User extends UserPermissions
      * Singleton method. Retrieve the user passed as parameter, but only
      * 1 instance.
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return User
      * @access public
      * @static
      */
-    static function &singleton($username = null)
+    public static function &singleton(?string $username = null): \User
     {
         static $instance;
         if (is_null($instance)) {
@@ -143,11 +143,11 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return void
+     * @return bool True
      * @access public
      * @static
      */
-    function insert($set)
+    public function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -163,10 +163,10 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return void
+     * @return bool True
      * @access public
      */
-    function update($set)
+    public function update(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -181,17 +181,19 @@ class User extends UserPermissions
     }
 
     /**
-     * Gets user data
+     * Returns data from the userInfo array according to the key provided
+     * as argument.
      *
      * @param string $var Name of variable to get
      *
-     * @note   Call without any parameters to get the entire user data array
+     * @note   Call without any arguments to get the entire user data array
      * @return mixed
      * @access public
+     * @throws LorisException
      */
-    function getData($var = null)
+    public function getData(string $var = '')
     {
-        if (is_null($var)) {
+        if ($var === '') {
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
@@ -215,7 +217,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getFullname()
+    function getFullname(): string
     {
         return $this->userInfo['Real_name'];
     }
@@ -225,7 +227,7 @@ class User extends UserPermissions
      *
      * @return int
      */
-    function getId()
+    function getId(): int
     {
         return $this->userInfo['ID'];
     }
@@ -235,7 +237,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getUsername()
+    function getUsername(): string
     {
         return $this->userInfo['UserID'];
     }
@@ -245,7 +247,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getSiteName()
+    function getSiteName(): string
     {
         throw new \LorisException(
             "The function getSiteName
@@ -268,7 +270,7 @@ class User extends UserPermissions
         return explode(';', $this->userInfo['Sites']);
     }
 
-    /**
+     /**
      * Get the user's site's ID number
      *
      * @return array
@@ -287,7 +289,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getCenterIDs()
+    function getCenterIDs(): array
     {
         return $this->userInfo['CenterIDs'];
     }
@@ -297,7 +299,7 @@ class User extends UserPermissions
      *
      * @return int
      */
-    function getLanguagePreference()
+    function getLanguagePreference(): int
     {
         return $this->userInfo['language_preference'];
     }
@@ -308,7 +310,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getExaminerSites()
+    function getExaminerSites(): array
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
@@ -321,7 +323,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getStudySites()
+    function getStudySites(): array
     {
         $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
@@ -340,7 +342,7 @@ class User extends UserPermissions
      *
      * @return boolean
      */
-    function hasStudySite()
+    function hasStudySite(): bool
     {
         $site_arr = $this->getCenterIDs();
         foreach ($site_arr as $sitename) {
@@ -358,7 +360,7 @@ class User extends UserPermissions
      * @return boolean
      * @access public
      */
-    function isEmailValid()
+    public function isEmailValid(): bool
     {
         if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
             return false;
@@ -375,7 +377,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function newPassword($length = 8)
+    public static function newPassword($length = 8): string
     {
         // start with a blank password
         $password = '';
@@ -429,11 +431,11 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function isPasswordStrong(
+    public static function isPasswordStrong(
         $password,
         $values = array(),
         $operators = array()
-    ) {
+    ): bool {
         // FIXME: This should be cleaned up to more cleanly separate
         // concerns. The "values" and "operators" are the same at
         // every call site, and some of them are only required because
@@ -494,10 +496,10 @@ class User extends UserPermissions
      *
      * @return boolean
      */
-    function isUserDCC()
+    function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID']== 1);
+        return ($this->userInfo['CenterID'] == 1);
     }
 
     /**
@@ -510,7 +512,7 @@ class User extends UserPermissions
      *
      * @return void
      */
-    function updatePassword(string $password, string $expiry = '')
+    function updatePassword(string $password, string $expiry = ''): void
     {
         if ($expiry === '') {
             $expiry = date(
@@ -554,7 +556,7 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenterPermission($code, $center_id)
+    public function hasCenterPermission(string $code, int $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
@@ -583,4 +585,4 @@ class User extends UserPermissions
         return $count > 0;
     }
 }
-?>
+

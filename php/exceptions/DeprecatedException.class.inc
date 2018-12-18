@@ -26,4 +26,4 @@
 class DeprecatedException extends LorisException
 {
 }
-?>
+

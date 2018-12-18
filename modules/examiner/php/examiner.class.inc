@@ -345,4 +345,4 @@ class Examiner extends \NDB_Menu_Filter_Form
         );
     }
 }
-?>
+

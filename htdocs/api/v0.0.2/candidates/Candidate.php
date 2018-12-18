@@ -127,4 +127,4 @@ if (isset($_REQUEST['PrintCandidate'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

@@ -146,4 +146,4 @@ if (isset($_REQUEST['PrintDicomData'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

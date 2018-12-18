@@ -885,4 +885,4 @@ class NDB_Menu_Filter extends NDB_Menu
         );
     }
 }
-?>
+

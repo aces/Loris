@@ -73,4 +73,4 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     }
 
 }
-?>
+

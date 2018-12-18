@@ -37,4 +37,4 @@ $processesState         = $serverProcessesMonitor->getProcessesState(
 
 echo json_encode($processesState);
 
-?>
+

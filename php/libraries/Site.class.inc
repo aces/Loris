@@ -139,3 +139,4 @@ class Site
         return ($this->_siteInfo['Study_site'] == 'Y');
     }
 }
+

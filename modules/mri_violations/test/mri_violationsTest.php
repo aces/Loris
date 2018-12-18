@@ -561,4 +561,4 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         }
     }
 }
-?>
+

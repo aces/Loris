@@ -33,4 +33,4 @@ $minc_path = $config->getSetting("MINCToolsPath");
 putenv("PATH=" . $minc_path . "bin:" . $minc_path . "pipeline:" . getenv("PATH"));
 putenv("LD_LIBRARY_PATH=" . getenv("LD_LIBRARY_PATH") . ":" . $minc_path . "lib");
 
-?>
+

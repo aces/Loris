@@ -52,4 +52,4 @@ $sessionResults = array_map(
     $results
 );
 print json_encode($sessionResults);
-?>
+

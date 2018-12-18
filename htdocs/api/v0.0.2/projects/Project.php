@@ -170,4 +170,4 @@ if (isset($_REQUEST['PrintProjectJSON'])) {
 
     print $Proj->toJSONString();
 }
-?>
+

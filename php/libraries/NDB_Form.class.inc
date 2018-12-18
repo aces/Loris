@@ -194,4 +194,4 @@ class NDB_Form extends NDB_Page
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 }
-?>
+

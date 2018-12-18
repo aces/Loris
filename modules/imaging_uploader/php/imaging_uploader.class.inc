@@ -721,4 +721,4 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-?>
+

@@ -37,4 +37,4 @@ class DefaultDatabaseProvider implements IDatabaseProvider
     }
 }
 
-?>
+
