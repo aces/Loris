@@ -76,7 +76,10 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     . strtolower(substr($class, strlen("LORIS\\$name\\")))
                     . ".class.inc";
                     if (!file_exists($fpath)) {
-                        throw new \NotFound($name);
+                        throw new \NotFound(
+                            "Could not load module `$name`: file `$fpath` " .
+                            "does not exist"
+                        );
                     }
                     include $fpath;
                 }
