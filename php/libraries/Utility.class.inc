@@ -417,6 +417,24 @@ class Utility
     }
 
     /**
+     * Converts an associative array to a numeric array consisting of the
+     * argument's value as its first and only element. This is adapted from the
+     * original functioning of toArray which was not type-safe. It is
+     * primarily used for extracting configuration settings.
+     *
+     * @param array $associative_array An asssociative array.
+     *
+     * @return array The new numeric array, or $array if it was already numeric.
+     */
+    static function associativeToNumericArray(array $associative_array): array
+    {
+        if (!array_key_exists(0, $associative_array)) {
+            return array($associative_array);
+        }
+        return $associative_array;
+    }
+
+    /**
      * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
@@ -429,8 +447,19 @@ class Utility
      *
      * @return array If $var is an array, var, otherwise an array containing $var
      */
-    static function toArray($var): array
+    static function toArray($var)
     {
+        // TODO Uncomment the exception code below after LORIS 21 is released.
+        //throw new DeprecatedException(
+        //    'Utility::toArray() is deprecated and should not be used. ' .
+        //    'Instead use Utility::associativeToNumericArray() for converting ' .
+        //    'arrays. Scalar values cannot be passed to this function.'
+        //);
+        error_log(
+            'Utility::toArray() will be deprecated in LORIS ' .
+            'version 21. Please use Utility::associativeToNumericArray() ' .
+            'instead.'
+        );
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
@@ -438,15 +467,13 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection elements, not just a single element
-     * Not the same as toArray, apparently.
+     * Takes a scalar value and returns an array containing that value as its
+     * only element.
      * Note: This function should be used for tags without attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return  array If $var is an array, var, otherwise an array containing $var
-     * @cleanup This should be removed and all uses converted to toArray
-     *          (or vice versa, but toArray seems to be more common in the code)
+     * @return array If $var is an array, var, otherwise an array containing $var
      */
     static function asArray($var): array
     {

@@ -40,14 +40,14 @@ class BVL_Feedback_Panel
      * Creates the feedback thread for the given combination of candID,
      * sessionID and commentID.
      *
-     * @param int      $candID    The candidate ID.
-     * @param int|null $sessionID The session ID for a given visit.
-     * @param int|null $commentID The comment ID for a given instrument.
+     * @param int         $candID    The candidate ID.
+     * @param int|null    $sessionID The session ID for a given visit.
+     * @param string|null $commentID The comment ID for a given instrument.
      */
     function __construct(
         int $candID,
         ?int $sessionID=null,
-        ?int $commentID=null
+        ?string $commentID=null
     ) {
 
         $this->_feedbackThread
