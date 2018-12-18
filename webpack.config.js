@@ -74,6 +74,7 @@ var config = [{
       DynamicDataTable: 'jsx/DynamicDataTable',
       FilterForm: 'jsx/FilterForm',
       Form: 'jsx/Form',
+      Loader: 'jsx/Loader',
       Markdown: 'jsx/Markdown',
       PaginationLinks: 'jsx/PaginationLinks',
       Panel: 'jsx/Panel',

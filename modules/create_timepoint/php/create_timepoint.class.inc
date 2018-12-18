@@ -98,31 +98,43 @@ class Create_Timepoint extends \NDB_Form
         }
 
         // cand ID
-        $this->tpl_data['candID'] = $this->identifier;
+        $sanitizedIdentifier      = htmlentities(
+            $this->identifier,
+            ENT_QUOTES,
+            'UTF-8'
+        );
+        $this->tpl_data['candID'] = $sanitizedIdentifier;
 
-        $this->addHidden('candID', $this->identifier);
+        $this->addHidden('candID', $sanitizedIdentifier);
 
-        $candidate   =& \Candidate::singleton($this->identifier);
-        $subprojList = null;
+        $candidate =& \Candidate::singleton($this->identifier);
+        // List of all subprojects from config file
+        $allSubprojects = \Utility::getSubprojectList();
+        if (empty($allSubprojects)) {
+            $this->form->errors['subprojectID'] = "No subprojects have been defined 
+            for this study. If you are an administrator, please use the 
+            Configuration module to add new subprojects.";
+        }
+        $sp_labelOptions = array(null => '');
+        $subprojList     = null;
         //List of valid subprojects for a given project
         if ($config->getSetting('useProjects') === 'true') {
+            // If projects enabled, loop through and add valid subprojects only
             $subprojList = $candidate->getValidSubprojects();
-        }
-        // List of all subprojects from config file
-
-        // Loop through the subprojects to get an id out and to create
-        // the subproject drop down.
-        $allSubprojects  = \Utility::getSubprojectList();
-        $sp_labelOptions = array(null => '');
-
-        foreach ($allSubprojects as $subprojectID => $title) {
-            if (! empty($subprojList)) {
+            if (empty($subprojList)) {
+                $this->form->errors['subprojectID'] = "No subprojects have been 
+                defined for the project this candidate is affiliated with. 
+                If you are an administrator, please use the Configuration module to 
+                add new subprojects and associate them with projects.";
+            }
+            foreach ($allSubprojects as $subprojectID => $title) {
                 if (in_array($subprojectID, $subprojList)) {
                     $sp_labelOptions[$subprojectID] = $title;
                 }
-            } else {
-                $sp_labelOptions[$subprojectID] = $title;
             }
+        } else {
+            // If projects disabled, add all subprojects
+            $sp_labelOptions += $allSubprojects;
         }
 
         $attributes = array(
@@ -209,7 +221,7 @@ class Create_Timepoint extends \NDB_Form
         $errors = array();
 
         // validate site entered
-        $site = $val['psc'];
+        $site = $val['psc'] ?? '';
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
@@ -218,7 +230,7 @@ class Create_Timepoint extends \NDB_Form
 
         $candid       = $this->identifier;
         $subprojectID = $val['subprojectID'];
-        $visitLabel   = $val['visitLabel'];
+        $visitLabel   = $val['visitLabel'] ?? '';
 
         try {
             \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);

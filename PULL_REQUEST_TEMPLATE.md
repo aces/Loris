@@ -1,3 +1,15 @@
-This pull request `[DESCRIBE WHAT THIS PULL REQUEST IS TRYING TO ACCOMPLISH HERE]`. It `[DESCRIBE HOW IT ACCOMPLISHES THE GOAL HERE]`.
+### Brief summary of changes
 
-See also: `[PROVIDE REFERENCES TO OTHER TICKETS, PULL REQUESTS, OR MAILING LIST THREADS HERE. OPTIONAL.]`
+
+
+### This resolves issue...
+
+- [ ] Redmine? #
+
+- [ ] Github? #
+
+### To test this change...
+
+- [ ] 
+
+# If this sentence shows up it means I didn't read the instructions!

@@ -16,12 +16,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
+  const PATIENT_NAME = 1;
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'Archive Location') {
-    var downloadURL = '/mri/jiv/get_file.php?file=' + cell;
+    var downloadURL = '/mri/jiv/get_file.php?file=' +
+        cell +
+        '&patientName=' +
+        rowData[PATIENT_NAME];
     var toRet =
       <td>
         <a href={downloadURL}>

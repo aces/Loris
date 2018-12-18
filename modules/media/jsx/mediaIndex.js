@@ -1,3 +1,4 @@
+import Loader from 'Loader';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
@@ -27,8 +28,8 @@ class MediaIndex extends React.Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
    */
   fetchData() {
@@ -59,12 +60,7 @@ class MediaIndex extends React.Component {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 

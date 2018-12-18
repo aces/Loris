@@ -51,7 +51,7 @@ class Media extends \NDB_Menu_Filter
         // Set permission to access user-hidden files, currently based on superuser
         $this->hasHidePermission = $user->hasPermission("superuser");
 
-        return $user->hasPermission('media_read');
+        return $user->hasPermission('media_read') || $this->hasWritePermission;
     }
 
     /**
@@ -210,22 +210,6 @@ class Media extends \NDB_Menu_Filter
             array_push($this->headers, 'Edit Metadata');
         }
 
-        $this->validFilters = [
-                               'c.PSCID',
-                               'm.instrument',
-                               's.Visit_label',
-                               's.CenterID',
-                               'm.hide_file',
-                               'l.language_id',
-                              ];
-        $this->formToFilter = [
-                               'pscid'       => 'c.PSCID',
-                               'instrument'  => 'm.instrument',
-                               'visit_label' => 's.Visit_label',
-                               'for_site'    => 's.CenterID',
-                               'hide_file'   => 'm.hide_file',
-                               'language'    => 'l.language_id',
-                              ];
         return true;
     }
 
