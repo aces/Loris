@@ -187,6 +187,7 @@ class ExaminerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
+        $this->safeGet($this->url . "/examiner/");
         //search the examiner which inserted
         $this->webDriver->findElement(
             WebDriverBy::Name("examiner")

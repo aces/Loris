@@ -37,21 +37,19 @@ class Media extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
 
         // Set permission to access user-hidden files, currently based on superuser
         $this->hasHidePermission = $user->hasPermission("superuser");
 
-        return $user->hasPermission('media_read');
+        return $user->hasPermission('media_read') || $this->hasWritePermission;
     }
 
     /**
@@ -110,31 +108,22 @@ class Media extends \NDB_Menu_Filter
             $languageList[$language] = $language;
         }
 
-        // Form Elements
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('fileName', 'File Name');
-        $this->addSelect('fileType', 'File type', $fileTypeList);
-        $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('site', 'For Site', $siteList);
-        $this->addBasicText('uploadedBy', 'Uploaded By');
-        $this->addSelect('instrument', 'Instrument', $instrumentList);
-        $this->addSelect('language', 'Language', $languageList);
-
-        // Add hidden files filter is user is admin
+        $hiddenOptions = [];
         if ($this->hasHidePermission) {
-            // Unable to create checkbox using addCheckbox(), using addSelect for
-            // the time being
-            // select options
             $hiddenOptions = array(
-                              ""  => 'Both',
-                              "0" => 'Visible only',
-                              "1" => 'Hidden only',
+                              0 => 'Visible only',
+                              1 => 'Hidden only',
                              );
-            $this->addSelect('hideFile', 'File Visibility', $hiddenOptions);
         }
 
-        $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
-        $this->tpl_data["hasHidePermission"]  = $this->hasHidePermission;
+        $this->fieldOptions = [
+                               'fileTypes'   => $fileTypeList,
+                               'visits'      => $visitList,
+                               'sites'       => $siteList,
+                               'instruments' => $instrumentList,
+                               'languages'   => $languageList,
+                               'hidden'      => $hiddenOptions,
+                              ];
 
         return true;
     }
@@ -186,30 +175,6 @@ class Media extends \NDB_Menu_Filter
             $this->query .= " AND m.hide_file = FALSE";
         }
 
-        $this->group_by = '';
-        $this->order_by = 'm.instrument';
-        $this->headers  = [
-                           'File Name',
-                           'PSCID',
-                           'Visit Label',
-                           'Language',
-                           'Instrument',
-                           'Site',
-                           'Uploaded By',
-                           'Date Taken',
-                           'Comments',
-                           'Date Uploaded',
-                           'File Type',
-                           'Cand ID',
-                           'Session ID',
-                           'Hide File',
-                          ];
-
-        // Add Edit field if user has permissions
-        if ($this->hasWritePermission) {
-            array_push($this->headers, 'Edit Metadata');
-        }
-
         return true;
     }
 
@@ -221,8 +186,7 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
+        $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }

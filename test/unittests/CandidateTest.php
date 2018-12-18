@@ -177,13 +177,12 @@ class CandidateTest extends TestCase
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
-        $this->markTestSkipped("setExpectedException has been deprecated! ");
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
         
-        $this->setExpectedException('LorisException');
-        $this->_candidate->select('invalid value');
+        $this->expectException('LorisException');
+        $this->_candidate->select(88888);
 
     }
 
@@ -235,7 +234,13 @@ class CandidateTest extends TestCase
                 array('CandID' => $this->_candidateInfo['CandID'])
             );
 
-        $this->assertTrue($this->_candidate->setData('RegisteredBy', 'TestUser'));
+        $this->assertTrue(
+            $this->_candidate->setData(
+                array(
+                    'RegisteredBy' => 'TestUser'
+                )
+            )
+        );
         $this->assertEquals(
             $data['RegisteredBy'],
             $this->_candidate->getData('RegisteredBy')
@@ -317,12 +322,13 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getValidSubprojects returns NULL when there are no subprojects in DB
+     * Test getValidSubprojects returns array() when there are no subprojects 
+     * in DB.
      *
      * @covers Candidate::getValidSubprojects
      * @return void
      */
-    public function testGetValidSubprojectsReturnsNull()
+    public function testGetValidSubprojectsReturnsEmptyArray(): void
     {
         $subprojects = array();
         $this->_setUpTestDoublesForSelectCandidate();
@@ -335,7 +341,7 @@ class CandidateTest extends TestCase
 
         $this->_candidate->select(969664);
 
-        $this->assertNull($this->_candidate->getValidSubprojects());
+        $this->assertEquals($this->_candidate->getValidSubprojects(), array());
     }
 
     /**
@@ -412,7 +418,7 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
 
         $this->assertFalse(Candidate::candidateExists(123, 'Test'));
     }
@@ -588,7 +594,6 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
-
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA'),

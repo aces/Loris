@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains any static helper functions used by Loris that don't
  * fit elsewhere or are used in many different modules.
@@ -35,20 +35,25 @@ class Utility
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
+     * NOTE This function assumes 1 month = 30 days. Although this is not really
+     * accurate, it should not be changed as it impacts the reproducibility of
+     * the analysis of data in LORIS.
+     *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
      * @param string $testdate date of testing (or second date), formatted YYYY-MM-DD
      *
-     * @return mixed an array with keys 'year', 'mon', 'day' containing the
-     *               computed age, or a PEAR::Error object
+     * @return array containing keys 'year', 'mon', 'day' containing the
+     *               computed age
+     * @throws LorisException
      */
-    static function calculateAge($dob, $testdate)
+    static function calculateAge(string $dob, string $testdate): array
     {
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
             $dob,
             $matches
         )) {
-            throw new Exception(
+            throw new \LorisException(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }
@@ -63,7 +68,7 @@ class Utility
             $testdate,
             $matches
         )) {
-            throw new Exception(
+            throw new \LorisException(
                 "Argument 2 does not match expected date format (YYYY-MM-DD)"
             );
         }
@@ -96,7 +101,7 @@ class Utility
      * @return array An associative array of consents, with their names and labels.
      *               The keys of the arrays are the IDs of the consents
      */
-    static function getConsentList()
+    static function getConsentList(): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -117,9 +122,9 @@ class Utility
      *
      * @return array an associative array("center ID" => "site name")
      */
-    static function getSiteList($study_site = true)
+    static function getSiteList(bool $study_site = true): array
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -150,9 +155,11 @@ class Utility
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    static function getAssociativeSiteList($study_site = true, $DCC = true)
-    {
-        $DB =& Database::singleton();
+    static function getAssociativeSiteList(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        $DB =& \Database::singleton();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -160,7 +167,7 @@ class Utility
             $query .= "WHERE Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
+            $query .= " AND CenterID <> 1";
         }
 
         $result = $DB->pselect($query, array());
@@ -181,7 +188,7 @@ class Utility
      */
     static function getVisitList() : array
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
@@ -200,9 +207,9 @@ class Utility
      * @return array an associative array("projectID" => "project title")
      * @access public
      */
-    static function getProjectList()
+    static function getProjectList(): array
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // get the list of projects
         $projects = $DB->pselect("SELECT * FROM Project", array());
@@ -216,12 +223,12 @@ class Utility
     /**
      * Returns a list of study Subprojects
      *
-     * @param integer $projectID The project for which you would like
+     * @param integer|null $projectID The project for which you would like
      *                           to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList($projectID = null)
+    static function getSubprojectList(?int $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -246,13 +253,16 @@ class Utility
     /**
      * Returns a list of study Subprojects associated with a project
      *
-     * @param integer $projectID The project for which you would like
+     * @param integer|null $projectID The project for which you would like
      *                           to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject($projectID = null)
+    static function getSubprojectsForProject(?int $projectID = null): array
     {
+        if (is_null($projectID)) {
+            return array();
+        }
         return self::getSubprojectList($projectID);
     }
 
@@ -267,9 +277,9 @@ class Utility
      *       NDB_BVL_Instrument
      * @cleanup
      */
-    static function getTestNameByCommentID($commentID)
+    static function getTestNameByCommentID(string $commentID): string
     {
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $testName = $db->pselectOne($query, array('CID' => $commentID));
@@ -278,31 +288,11 @@ class Utility
     }
 
     /**
-     * Cleans a string to make it safe for variables and such
-     *
-     * @param string $string the string to clean
-     *
-     * @return string The string cleaned up enough to be used as a
-     *                variable name
-     */
-    static function getCleanString($string)
-    {
-        $string = trim($string);
-        $string = str_replace('  ', ' ', $string);
-        $string = str_replace(' ', '_', $string);
-        $string = str_replace("'", '', $string);
-        $string = str_replace('"', '', $string);
-        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
-        $string = strtolower($string);
-        return $string;
-    }
-
-    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array  $structure  the structure root
-     * @param string $siteAbbrev the site abbreviation, sometimes used as part
+     * @param array       $structure  the structure root
+     * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
      *                           of the PSCID
      *
      * @return string the regex pattern
@@ -312,8 +302,10 @@ class Utility
      * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
-    static function structureToPCRE($structure, $siteAbbrev=null)
-    {
+    static function structureToPCRE(
+        array $structure,
+        ?string $siteAbbrev = null
+    ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
         if (isset($seqs['#'])) {
@@ -382,57 +374,19 @@ class Utility
     }
 
     /**
-     * Merges two arrays recursively, overwriting values of the first
-     * with the second.  the one "strange" bit is that if there exists
-     * a set of 2 or more sibling elements with the same name, then
-     * the entire set will be replaced rather than recursively merged.
-     *
-     * @param array $array1       The first array to be merged
-     * @param array $array2       The second array to be merged
-     * @param array $merged_array A reference to an array to merge
-     *                            the parameters into. If not specified,
-     *                            a new array will be created
-     *
-     * @return array with the two parameters recursively merged
-     */
-    static function arrayMergeRecursiveOverwriting(
-        $array1,
-        $array2,
-        &$merged_array=null
-    ) {
-        if (empty($merged_array)) {
-            $merged_array = $array1;
-        }
-        foreach ($array2 AS $key=>$value) {
-            if (is_array($array1[$key]) && isset($array1[$key][0])) {
-                $merged_array[$key] = $value;
-            } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::arrayMergeRecursiveOverwriting(
-                    $array1[$key],
-                    $array2[$key],
-                    $merged_array[$key]
-                );
-            } else {
-                $merged_array[$key] = $value;
-            }
-        }
-        return $merged_array;
-    }
-
-    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
      * If no stage arg is passed, return the full list for all stages
      *
-     * @param integer $age   age in days
-     * @param string  $stage study stage (screening or visit)
+     * @param integer     $age   age in days
+     * @param string|null $stage study stage (screening or visit)
      *
      * @return array list of instruments
      */
-    static function lookupBattery($age, $stage=null)
+    static function lookupBattery(int $age, ?string $stage = null): array
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // craft the select query
         $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
@@ -463,6 +417,24 @@ class Utility
     }
 
     /**
+     * Converts an associative array to a numeric array consisting of the
+     * argument's value as its first and only element. This is adapted from the
+     * original functioning of toArray which was not type-safe. It is
+     * primarily used for extracting configuration settings.
+     *
+     * @param array $associative_array An asssociative array.
+     *
+     * @return array The new numeric array, or $array if it was already numeric.
+     */
+    static function associativeToNumericArray(array $associative_array): array
+    {
+        if (!array_key_exists(0, $associative_array)) {
+            return array($associative_array);
+        }
+        return $associative_array;
+    }
+
+    /**
      * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
@@ -477,6 +449,17 @@ class Utility
      */
     static function toArray($var)
     {
+        // TODO Uncomment the exception code below after LORIS 21 is released.
+        //throw new DeprecatedException(
+        //    'Utility::toArray() is deprecated and should not be used. ' .
+        //    'Instead use Utility::associativeToNumericArray() for converting ' .
+        //    'arrays. Scalar values cannot be passed to this function.'
+        //);
+        error_log(
+            'Utility::toArray() will be deprecated in LORIS ' .
+            'version 21. Please use Utility::associativeToNumericArray() ' .
+            'instead.'
+        );
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
@@ -484,17 +467,15 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection elements, not just a single element
-     * Not the same as toArray, apparently.
+     * Takes a scalar value and returns an array containing that value as its
+     * only element.
      * Note: This function should be used for tags without attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return  array If $var is an array, var, otherwise an array containing $var
-     * @cleanup This should be removed and all uses converted to toArray
-     *          (or vice versa, but toArray seems to be more common in the code)
+     * @return array If $var is an array, var, otherwise an array containing $var
      */
-    static function asArray($var)
+    static function asArray($var): array
     {
         if (!is_array($var)) {
             return array($var);
@@ -522,7 +503,7 @@ class Utility
      *
      * @return array The same array passed in, after modifications.
      */
-    public static function nullifyEmpty(&$arr, $field)
+    public static function nullifyEmpty(array &$arr, string $field): array
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
@@ -535,12 +516,12 @@ class Utility
      *
      * @return array of the form Test_name => Full Description
      */
-    static function getAllInstruments()
+    static function getAllInstruments(): array
     {
-        $Factory       = NDB_Factory::singleton();
+        $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+            "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
             array()
         );
         $instruments   = array();
@@ -558,11 +539,11 @@ class Utility
      *
      * @return array of the form Test_name => Full Description
      */
-    static function getAllDDEInstruments()
+    static function getAllDDEInstruments(): array
     {
-        $Factory       = NDB_Factory::singleton();
+        $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config        =& NDB_Config::singleton();
+        $config        =& \NDB_Config::singleton();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -590,12 +571,13 @@ class Utility
      *
      * @return array of test_names in a Test_Name => "Full Name"
      */
-    static function getDirectInstruments()
+    static function getDirectInstruments(): array
     {
-        $DB            =& Database::singleton();
+        $DB            =& \Database::singleton();
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+             ORDER BY Full_name",
             array()
         );
         foreach ($instruments_q as $key) {
@@ -611,13 +593,13 @@ class Utility
      *
      * @return array non-associative array of test_names
      */
-    static function getScoredInstruments()
+    static function getScoredInstruments(): array
     {
-        $All     = Utility::getAllInstruments();
+        $All     = \Utility::getAllInstruments();
         $Scored  = array();
         $Nothing = array();
         foreach (array_keys($All) as $Instrument) {
-            if (Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
+            if (\Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
                 $Scored[] = $Instrument;
             }
         }
@@ -632,7 +614,7 @@ class Utility
      *
      * @return array (non-associative) of scored columns for the instrument given
      */
-    static function getScoreColsForInstrument($inst)
+    static function getScoreColsForInstrument(string $inst): array
     {
         include_once "NDB_BVL_Instrument.class.inc";
         $i = NDB_BVL_Instrument::factory($inst, '', '', true);
@@ -662,14 +644,14 @@ class Utility
      * @return boolean true if the table has at least one NULL in the column
      * @note   This should really be in the Database.class.inc file... -anyhowstep
      */
-    static function columnsHasNull($table_name,$column)
+    static function columnsHasNull(string $table_name, string $column): bool
     {
         //$config   =& NDB_Config::singleton();
         //$database = $config->getSetting('database');
         $query    = "SELECT count(*)
             FROM {$table_name}
             WHERE {$column} is NULL";
-        $DB       =& Database::singleton();
+        $DB       =& \Database::singleton();
         $num_null = $DB->pselectOne(
             $query,
             array()
@@ -685,12 +667,12 @@ class Utility
      *
      * @param string $Cand_id candidate ID
      *
-     * @return array
+     * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID($Cand_id)
+    static function getStageUsingCandID(string $Cand_id): string
     {
-        $db    =& Database::singleton();
+        $db    =& \Database::singleton();
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
@@ -702,15 +684,15 @@ class Utility
      *
      * @param string $Cand_id candidate ID
      *
-     * @return array
+     * @return int
      * @throws DatabaseException
      */
-    static function getSubprojectIDUsingCandID($Cand_id)
+    static function getSubprojectIDUsingCandID(string $Cand_id): int
     {
-        $db    =& Database::singleton();
+        $db    =& \Database::singleton();
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
-        return $stage[0]['SubprojectID'];
+        return intval($stage[0]['SubprojectID']);
     }
 
     /**
@@ -724,17 +706,15 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
-    static function getTestNameUsingFullName($fullname)
+    static function getTestNameUsingFullName(string $fullname): string
     {
-        $test_name = '';
-        $db        =& Database::singleton();
-        //print_r($instument);
+        $test_name  = '';
+        $db         =& \Database::singleton();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
             array('fname' => $fullname)
         );
         if (is_array($instrument) && count($instrument)) {
-            //$full_name = $names[0]
             list(,$test_name) = each($instrument[0]);
         }
         return $test_name;
@@ -743,11 +723,11 @@ class Utility
     /**
      * Returns all the sourcefrom instruments from parameter_type
      *
-     * @param string $instrument If specified, return fields from this
+     * @param string|null $instrument If specified, return fields from this
      *                           test_name
-     * @param string $commentID  If specified, return fields for this
+     * @param string|null $commentID  If specified, return fields for this
      *                           commentid
-     * @param string $name       If specified, return fields for this
+     * @param string|null $name       If specified, return fields for this
      *                           parameter_type name
      *
      * @return  Array of the form array(
@@ -762,9 +742,13 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
-    static function getSourcefields($instrument=null,$commentID=null,$name=null)
-    {
-        $DB =& Database::singleton();
+    static function getSourcefields(
+        ?string $instrument = null,
+        ?string $commentID = null,
+        ?string $name = null
+    ): array {
+
+        $DB =& \Database::singleton();
         //get sourcefield using instrument
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
@@ -797,7 +781,8 @@ class Utility
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @param integer $projectID Limit visit labels to labels used by this project
+     * @param integer|null $projectID Limit visit labels to labels used by this
+     *                                  project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
@@ -809,9 +794,9 @@ class Utility
      * @vulnerable
      * @cleanup
      */
-    static function getExistingVisitLabels($projectID = null)
+    static function getExistingVisitLabels(int $projectID = null): array
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
         $qparams = array();
 
@@ -857,9 +842,9 @@ class Utility
      *      - data_team_helper/ajax/GetInstruments.php
      * @cleanup
      */
-    static function getVisitInstruments($visit_label)
+    static function getVisitInstruments(string $visit_label): array
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
@@ -885,28 +870,6 @@ class Utility
     }
 
     /**
-     * Determine whether an array is a numeric (normal) array or an
-     * associative (hashtable) array.
-     *
-     * @param array $arr The array to be checked for numeric keys.
-     *
-     * @return boolean True if the given parameter is an array with
-     *                 numeric keys, false otherwise.
-     * @note   Fix this in future, checking $arr[0] is naive
-     */
-    static function numericArray($arr)
-    {
-        if (!is_array($arr)) {
-            return false;
-        }
-        $keys = array_keys($arr);
-        if (count($keys) === 0) {
-            return false;
-        }
-        return isset($arr[0]);
-    }
-
-    /**
      * This function takes two strings. If one string has a
      * suffix which is a prefix of the other, it will return
      * the part of the second string minus the common
@@ -928,8 +891,10 @@ class Utility
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    static function removeCommonAffix($suffixStr, $prefixStr)
-    {
+    static function removeCommonAffix(
+        string $suffixStr,
+        string $prefixStr
+    ): string {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
         // it fails fast in the event that there's nothing in common.
@@ -956,39 +921,15 @@ class Utility
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
-    static function arrayToCSV($array)
-    {
-        $fp = fopen("php://temp", 'w+');
-
-        fputcsv($fp, $array['headers']);
-        foreach ($array['data'] as $item) {
-            fputcsv($fp, $item);
-        }
-
-        // Read what we have written.
-        rewind($fp);
-        $csv_string = stream_get_contents($fp);
-
-        fclose($fp);
-        return $csv_string;
-    }
-
-    /**
      * QuickForm rule to check that a date is valid.
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
      *
-     * @param array $dateElement The date element in QuickForm array format.
+     * @param string $dateElement The date element in QuickForm array format.
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    static function _checkDate($dateElement)
+    static function _checkDate(string $dateElement): bool
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
@@ -1015,7 +956,7 @@ class Utility
      *
      * @return string $resolvedPath a path containing no .. sequences
      */
-    static function resolvePath($path)
+    static function resolvePath(string $path): string
     {
         $resolvedPath = array();
         // do some normalization
@@ -1045,7 +986,7 @@ class Utility
      *
      * @return string smaller value of upload_max_filesize or post_max_size
      */
-    static function getMaxUploadSize()
+    static function getMaxUploadSize(): string
     {
         $umf = ini_get('upload_max_filesize');
         $pms = ini_get('post_max_size');
@@ -1062,20 +1003,20 @@ class Utility
      *
      * @note taken from http://php.net/manual/en/function.ini-get.php
      */
-    static function returnBytes($val)
+    static function returnBytes(string $val)
     {
         $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);
 
         switch($last) {
         case 'g':
-            return $val * 1024 * 1024 * 1024;
+            return (int)$val * 1024 * 1024 * 1024;
         case 'm':
-            return $val * 1024 * 1024;
+            return (int)$val * 1024 * 1024;
         case 'k':
-            return $val * 1024;
+            return (int)$val * 1024;
         default:
-            return $val;
+            return (int)$val;
         }
     }
 
@@ -1086,7 +1027,7 @@ class Utility
      *               array is of the form
      *               array($language_id => $language_label)
      */
-    static function getLanguageList()
+    static function getLanguageList(): array
     {
         $DB = \Database::singleton();
 

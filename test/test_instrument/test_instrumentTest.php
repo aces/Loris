@@ -137,7 +137,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $textElement = $this->webDriver->findElement(
              WebDriverBy::Name("testCheckbox")
       )->click();
-
       $this->webDriver->findElement(
              WebDriverBy::Name("fire_away")
       )->click();

@@ -237,7 +237,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         $path     = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
-            $pagename = explode("@", $path)[0];
+            $pagename = explode("/", $path)[0];
         }
 
         try {
@@ -250,9 +250,10 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 $_REQUEST['subtest'] = $pagename;
             }
 
-            if ($page->_hasAccess() !== true) {
+            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+            if ($page->_hasAccess($user) !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
-                    $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                    $user
                 ))->process(
                     $request,
                     new \LORIS\Router\NoopResponder(

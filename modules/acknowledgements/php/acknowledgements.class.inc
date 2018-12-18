@@ -28,17 +28,15 @@ namespace LORIS\acknowledgements;
 
 class Acknowledgements extends \NDB_Menu_Filter_Form
 {
-
     /**
-     * _has_access returns true
-     * if the user has the specific permission
+     * Determine whether user should be granted access.
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object and check appropriate permission
-        $user =& \User::singleton();
         return ($user->hasPermission('acknowledgements_view'));
     }
 

@@ -31,13 +31,18 @@ class Examiner extends \NDB_Menu_Filter_Form
     /**
      * Checks if the user has access to examiner menu filter
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
-        return $user->hasPermission('examiner_view')
-            || $user->hasPermission('examiner_multisite');
+        return $user->hasAnyPermission(
+            array(
+             'examiner_view',
+             'examiner_multisite',
+            )
+        );
     }
 
     /**

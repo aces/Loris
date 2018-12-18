@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Contains NDB_Caller class to dispatch to the appropriate library
  * for the URL being loaded.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
  * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
-*/
+ */
 
 /**
  * Caller class
@@ -53,7 +53,7 @@ class NDB_Caller
      * @access public
      * @static
      */
-    static function &singleton()
+    static function &singleton(): NDB_Caller
     {
         static $instance;
         if (is_null($instance)) {
@@ -63,31 +63,30 @@ class NDB_Caller
     }
 
     /**
-    * Renders the called menu, form or the instrument into html
-    *
-    * @param string $test_name The object type to load.  The test_name of the
-    *                          menu, form or instrument
-    * @param string $subtest   The subpage of the module to load.
-    * @param string $CommentID The CommentID identifier to load the page with
-    * @param string $nextpage  The page to go to after submitting this page (surveys
-    *                          only)
-    * @param string $anonymous True if the user has not logged in.
-    *
-    * @return string rendered object, as html
-    */
+     * Renders the called menu, form or the instrument into html
+     *
+     * @param string      $test_name The object type to load.  The test_name of the
+     *                               menu, form or instrument
+     * @param string      $subtest   The subpage of the module to load
+     * @param string      $CommentID The CommentID identifier to load the page with
+     * @param string|null $nextpage  The page to go to after submitting this
+     * @param bool        $anonymous True if the user has not logged in.
+     *
+     * @return string rendered object, as html
+     */
     function load(
-        $test_name,
-        $subtest,
-        $CommentID='',
-        $nextpage=null,
-        $anonymous=true
-    ) {
+        string $test_name,
+        string $subtest,
+        string $CommentID='',
+        ?string $nextpage=null,
+        bool $anonymous=true
+    ): string {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
         $settings = $factory->settings();
         // if no first argument, return
         if (empty($test_name)) {
-            return;
+            return '';
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['login']) && $test_name != 'login'
@@ -97,7 +96,7 @@ class NDB_Caller
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
-            return;
+            return '';
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
@@ -229,24 +228,6 @@ class NDB_Caller
             error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
-            // Reliability and instruments aren't "real" modules. They probably
-            // should be at some point in the future.
-            $proj_reliable = $base . "project/reliability/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            if ($this->existsAndRequire($proj_reliable)
-            ) {
-
-                $html = $this->loadReliability(
-                    $test_name,
-                    $subtest,
-                    $_REQUEST['identifier'],
-                    $_REQUEST['reliability_center_id']
-                );
-
-                $this->type = 'reliability';
-                return $html;
-            }
-
             // it is an instrument
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
@@ -296,14 +277,14 @@ class NDB_Caller
     }
 
     /**
-    * Renders html for a Menu
-    *
-    * @param string $menu The Menu being loaded
-    * @param string $mode The Menu mode
-    *
-    * @return string HTML for the menu to display.
-    */
-    function loadMenu($menu, $mode)
+     * Renders html for a Menu
+     *
+     * @param string $menu The Menu being loaded
+     * @param string $mode The Menu mode
+     *
+     * @return string HTML for the menu to display
+     */
+    function loadMenu(string $menu, string $mode): string
     {
         // make an instance of the menu's object
         $menu = NDB_Menu::factory($menu, $mode);
@@ -360,15 +341,15 @@ class NDB_Caller
     }
 
     /**
-    * Renders html for a Form
-    *
-    * @param string $class      The Form to load
-    * @param string $page       The page of the Form to load
-    * @param string $identifier The identifier of the Form
-    *
-    * @return string HTML to return to browser
-    */
-    function loadForm($class, $page, $identifier)
+     * Renders html for a Form
+     *
+     * @param string $class      The Form to load
+     * @param string $page       The page of the Form to load
+     * @param string $identifier The identifier of the Form
+     *
+     * @return string HTML to return to browser
+     */
+    function loadForm(string $class, string $page, string $identifier): string
     {
         // make an instance of the form's object
         $form = NDB_Form::factory($class, $page, $identifier);
@@ -388,53 +369,24 @@ class NDB_Caller
     }
 
     /**
-     * Renders html for a Reliability Form
+     * Renders html for an Instrument
      *
-     * @param string $class                 The Form to load
-     * @param string $page                  The page of the Form to load
-     * @param string $identifier            The identifier of the Form
-     * @param string $reliability_center_id The id of the center at which the
-     *                                      reliability test is being performed.
+     * @param string      $instrumentName      Name of the instrument to load
+     * @param string      $page                Page (subtest) of the instrument
+     * @param string      $commentID           CommentID of the instrument to load
+     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
+     *                                         loaded successfully.
      *
-     * @return string HTML to render to browser
+     * @return string HTML of the page to render.
      */
-    function loadReliability($class, $page, $identifier, $reliability_center_id)
-    {
-        // make an instance of the form's object
-        $form = NDB_Reliability::reliabilityfactory(
-            $class,
-            $page,
-            $identifier,
-            $reliability_center_id
-        );
-
-        $form->save();
-
-        $this->page = $form;
-        $html       = $form->display();
-
-        return $html;
-    }
-
-    /**
-    * Renders html for an Instrument
-    *
-    * @param string $instrumentName      Name of the instrument to load
-    * @param string $page                Page (subtest) of the instrument
-    * @param string $commentID           CommentID of the instrument to load
-    * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
-    *                                    successfully.
-    *
-    * @return string HTML of the page to render.
-    */
     function loadInstrument(
-        $instrumentName,
-        $page,
-        $commentID,
-        $redirectToOnSuccess=null
-    ) {
+        string $instrumentName,
+        string $page,
+        string $commentID,
+        ?string $redirectToOnSuccess=null
+    ): string {
         if ($page === 'finalpage') {
-            $instrument = NDB_BVL_Instrument::factory(
+            $instrument = \NDB_BVL_Instrument::factory(
                 $instrumentName,
                 $commentID,
                 $page
@@ -447,7 +399,9 @@ class NDB_Caller
         $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
-            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            $timepoint = \TimePoint::singleton(
+                intval($_REQUEST['sessionID'])
+            );
         }
 
         // make an instance of the instrument's object
@@ -464,8 +418,8 @@ class NDB_Caller
         }
         if (method_exists($instrument, 'getFeedbackPanel')) {
             $this->feedbackPanel = $instrument->getFeedbackPanel(
-                $_REQUEST['candID'],
-                $_REQUEST['sessionID']
+                intval($_REQUEST['candID']),
+                intval($_REQUEST['sessionID'])
             );
         }
 
@@ -507,20 +461,20 @@ class NDB_Caller
     /**
      * Renders html for a direct data entry Instrument
      *
-     * @param string $instrumentName      Name of the instrument to load
-     * @param string $page                Page (subtest) of the instrument
-     * @param string $commentID           CommentID of the instrument to load
-     * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
-     *                                    successfully.
+     * @param string      $instrumentName      Name of the instrument to load
+     * @param string      $page                Page (subtest) of the instrument
+     * @param string      $commentID           CommentID of the instrument to load
+     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
+     *                                         loaded successfully.
      *
      * @return string HTML of the page to render.
      */
     function loadInstrumentDirect(
-        $instrumentName,
-        $page,
-        $commentID,
-        $redirectToOnSuccess=null
-    ) {
+        string $instrumentName,
+        string $page,
+        string $commentID,
+        ?string $redirectToOnSuccess=null
+    ): string {
         if ($page === 'finalpage') {
             $instrument = NDB_BVL_Instrument::factory(
                 $instrumentName,
@@ -563,7 +517,7 @@ class NDB_Caller
      *
      * @return bool true if file exists, otherwise false
      */
-    function existsAndRequire($library)
+    function existsAndRequire(string $library): bool
     {
         if (stream_resolve_include_path($library) !== false) {
             include_once $library;
@@ -581,7 +535,7 @@ class NDB_Caller
      *
      * @return void
      */
-    function setDataEntryType($type)
+    function setDataEntryType(string $type): void
     {
         $this->DataEntry = $type;
     }

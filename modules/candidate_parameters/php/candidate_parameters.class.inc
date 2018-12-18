@@ -34,14 +34,12 @@ class Candidate_Parameters extends \NDB_Form
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         // Set global permission to control access
         // to different modules of candidate_parameters page
         $this->hasWritePermission = $user->hasPermission('candidate_parameter_edit');
@@ -127,7 +125,7 @@ class Candidate_Parameters extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_parameters/js/index.js",
+             $baseURL . "/candidate_parameters/js/CandidateParameters.js",
             )
         );
     }

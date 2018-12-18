@@ -39,15 +39,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     var $uploaded_file_path;
     /**
-     * The _has_access returns true
-     * if the user has the specific permission
+     * The hasAccess function ensures that the user has the imaging_uploader
+     * permission.
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return $user->hasPermission('imaging_uploader');
     }
     /**
@@ -114,7 +114,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->addBasicText('candID', 'CandID');
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
-        $this->addFile('mri_file', 'File to Upload');
+        $this->addFile('mriFile', 'File to Upload');
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                        'candID'     => array(),
                        'pSCID'      => array(),
                        'visitLabel' => array(),
-                       'mri_file'   => array($error_message),
+                       'mriFile'    => array($error_message),
                       );
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
@@ -203,7 +203,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler(
-            "mri_file",
+            "mriFile",
             $this
         );
         $user = \User::singleton();
@@ -244,7 +244,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                    'candID'     => array(),
                    'pSCID'      => array(),
                    'visitLabel' => array(),
-                   'mri_file'   => array(),
+                   'mriFile'    => array(),
                   );
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
@@ -364,9 +364,30 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
             array_push(
-                $errors["mri_file"],
+                $errors["mriFile"],
                 "The file $file_name is not of type".
                 " .tgz, .tar.gz or .zip."
+            );
+        }
+        ///////////////////////////////////////////////////////////////////////
+        //////// Make sure there's no existing identical entry ////////////////
+        //////// for "new" scans //////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        $updateFile = $args['values']['overwrite'] ? true : false;
+        $id         = $db->pselectOne(
+            "SELECT 
+                IF (InsertionComplete=0 AND 
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                FROM mri_upload WHERE UploadLocation LIKE :ul",
+            array('ul' => "%$file_name")
+        );
+
+        $uploadPath = $config->getSetting('MRIUploadIncomingPath') . $file_name;
+
+        if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
+            array_push(
+                $errors['mri_file'],
+                "This file has already been uploaded."
             );
         }
         // Loops through associative array of error messages
@@ -385,7 +406,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
         } else if (strlen($file_name_error) != 0) {
-            array_push($errors["mri_file"], $file_name_error);
+            array_push($errors["mriFile"], $file_name_error);
             http_response_code(400);
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));

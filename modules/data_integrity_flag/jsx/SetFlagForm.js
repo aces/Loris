@@ -7,13 +7,14 @@
  * @version 1.0.0
  *
  * */
-class SetFlagForm extends React.Component {
+import React, {Component} from 'react';
 
+class SetFlagForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      formData: {}
+      formData: {},
     };
 
     // Bind component instance to custom methods
@@ -35,7 +36,7 @@ class SetFlagForm extends React.Component {
 
   /**
    * Handles form submission
-   * @param {event} e - Form submition event
+   * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
@@ -49,8 +50,8 @@ class SetFlagForm extends React.Component {
       processData: false,
       success: function(data) {
         swal({
-          title: "Success!",
-          type: "success"
+          title: 'Success!',
+          type: 'success',
         });
         this.props.updateData();
         this.setState({formData: {}});
@@ -58,56 +59,56 @@ class SetFlagForm extends React.Component {
       error: function(err) {
         console.error(err);
         swal({
-          title: "Error!",
-          type: "error",
-          content: err.statusText
+          title: 'Error!',
+          type: 'error',
+          content: err.statusText,
         });
-      }
+      },
     });
   }
 
   render() {
     return (
-      <div className="col-md-8 col-lg-6">
-      <FormElement name="flag_form" onSubmit={this.handleSubmit}>
-        <h3 className="text-center">Update Instrument Status</h3><br />
+      <div className='col-md-8 col-lg-6'>
+      <FormElement name='flag_form' onSubmit={this.handleSubmit}>
+        <h3 className='text-center'>Update Instrument Status</h3><br />
         <SelectElement
-          name="visitLabel"
-          label="Visit Label"
+          name='visitLabel'
+          label='Visit Label'
           options={this.props.visits}
           onUserInput={this.setFormData}
           value={this.state.formData.visitLabel}
           required={true}
         />
         <SelectElement
-          name="instrument"
-          label="Instrument"
+          name='instrument'
+          label='Instrument'
           options={this.props.instruments}
           onUserInput={this.setFormData}
           value={this.state.formData.instrument}
           required={true}
         />
         <DateElement
-          name="date"
-          label="Date"
+          name='date'
+          label='Date'
           onUserInput={this.setFormData}
           value={this.state.formData.date}
           required={true}
         />
         <SelectElement
-          name="flagStatus"
-          label="Flag Status"
+          name='flagStatus'
+          label='Flag Status'
           options={this.props.flagStatusList}
           onUserInput={this.setFormData}
           value={this.state.formData.flagStatus}
           required={true}
         />
         <TextareaElement
-          name="comment"
-          label="Comment"
+          name='comment'
+          label='Comment'
           onUserInput={this.setFormData}
           value={this.state.formData.comment}/>
-        <ButtonElement label="Update"/>
+        <ButtonElement label='Update'/>
       </FormElement>
       </div>
     );

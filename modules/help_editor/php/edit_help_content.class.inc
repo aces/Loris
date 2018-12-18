@@ -28,16 +28,15 @@ class Edit_Help_Content extends \NDB_Form
      /**
      * Determine if user has permission to access this page
      *
-     * @return boolean true if access is permitted
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
-
-        // check user permissions
         return $user->hasPermission('context_help');
     }
+
      /**
       * Returns default help content of the page
       *

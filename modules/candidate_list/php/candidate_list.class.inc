@@ -23,18 +23,21 @@ namespace LORIS\candidate_list;
 class Candidate_List extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
+
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
      *
-     * @return true if user has access, false otherwise
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has access, false otherwise
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-        $aap  = $user->hasPermission('access_all_profiles');
+        $aap = $user->hasPermission('access_all_profiles');
+
         $this->tpl_data['access_all_profiles'] = $aap;
+
         return (
             $user->hasPermission('access_all_profiles')
             || ($user->hasStudySite() && $user->hasPermission('data_entry'))

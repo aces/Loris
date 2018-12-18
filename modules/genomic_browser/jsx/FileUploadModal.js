@@ -2,54 +2,56 @@
 FileTypeSelect, FileInput, TextAreaInput, CheckboxInput, ProgressBar
 */
 
-var GenomicFileUploadModal = React.createClass({
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-  propTypes: {
-    baseURL: React.PropTypes.string.isRequired
-  },
-
-  getInitialState: function() {
-    return {
+class GenomicFileUploadModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       readyForUpload: false,
       submited: false,
-      uploadSummary: {}
+      uploadSummary: {},
     };
-  },
+    this.validateForm = this.validateForm.bind(this);
+    this.reloadPage = this.reloadPage.bind(this);
+    this.handleUploadSubmit = this.handleUploadSubmit.bind(this);
+  }
 
-  shouldComponentUpdate: function(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return nextState.readyForUpload !== this.state.readyForUpload ||
                nextState.submited !== this.state.submited ||
                nextProps.id !== this.props.id;
-  },
+  }
 
-  validateForm: function(requiredInputs) {
+  validateForm(requiredInputs) {
     // this is always returning true... for now
     requiredInputs = requiredInputs || [];
     this.setState({
       readyForUpload: requiredInputs.reduce(
         function(previousValue, currentValue, currentIndex, array) {
           return previousValue;
-        }, true)
+        }, true),
     });
-  },
+  }
 
-  reloadPage: function() {
+  reloadPage() {
     $('#modalContainer').modal('hide');
     $('#showdata').click();
-  },
+  }
 
-  handleUploadSubmit: function(event) {
+  handleUploadSubmit(event) {
     event.preventDefault();
-    var self = this;
-    var formData = new FormData(document.getElementById('uploadForm'));
+    let self = this;
+    let formData = new FormData(document.getElementById('uploadForm'));
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.previousText = '';
     xhr.onerror = function() {
-      console.error("[XHR] Fatal Error.");
+      console.error('[XHR] Fatal Error.');
     };
     xhr.onreadystatechange = function() {
-      var bar = document.getElementById("progressBar");
+      let bar = document.getElementById('progressBar');
       try {
         switch (xhr.readyState) {
           case 0:
@@ -60,10 +62,10 @@ var GenomicFileUploadModal = React.createClass({
             break;
           case 3:
 
-            var newResponse = xhr.responseText.substring(xhr.previousText.length);
-            var result = JSON.parse(newResponse);
+            let newResponse = xhr.responseText.substring(xhr.previousText.length);
+            let result = JSON.parse(newResponse);
             bar.innerHTML = String(result.message);
-            bar.style.width = result.progress + "%";
+            bar.style.width = result.progress + '%';
             if (result.error !== undefined) {
               bar.className = 'progress-bar progress-bar-danger';
             }
@@ -77,19 +79,19 @@ var GenomicFileUploadModal = React.createClass({
             break;
         }
       } catch (e) {
-        console.error("[XHR STATECHANGE] Exception: " + e);
+        console.error('[XHR STATECHANGE] Exception: ' + e);
         bar.innerHTML = 'An error occurred';
         bar.className = 'progress-bcar progress-bar-danger';
-        bar.style.width = "100%";
+        bar.style.width = '100%';
       }
     };
-    var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
-    xhr.open("POST", url, true);
+    let url = this.props.baseURL + '/genomic_browser/ajax/genomic_file_upload.php';
+    xhr.open('POST', url, true);
     xhr.send(formData);
-  },
+  }
 
-  render: function() {
-    var footerButtons = [];
+  render() {
+    let footerButtons = [];
 
     if (this.state.submited) {
       footerButtons.push(<button key="submited" className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
@@ -119,44 +121,43 @@ var GenomicFileUploadModal = React.createClass({
             </div>
         );
   }
-});
+}
+GenomicFileUploadModal.propTypes = {
+  baseURL: PropTypes.string.isRequired,
+};
 
-var RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
+let RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 
-var UploadForm = React.createClass({
-
-  getInitialState: function() {
-    return {
+class UploadForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       baseURL: '',
-      fileType: "",
-      useColumnHeaders: true // Change this to false when we are ready to use Mapping files
+      fileType: '',
+      useColumnHeaders: true, // Change this to false when we are ready to use Mapping files
     };
-  },
+    this.handleFileTypeChange = this.handleFileTypeChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+  }
 
-  getDefaultProps: function() {
-    return {
-      validate: null
-    };
-  },
-
-  handleFileTypeChange: function(event) {
+  handleFileTypeChange(event) {
     event.preventDefault();
     this.setState({fileType: event.target.value});
-  },
+  }
 
-  handleCheckboxChange: function(event) {
+  handleCheckboxChange(event) {
     if (event.target.name === 'pscidColumn') {
       this.setState({useColumnHeaders: !this.state.useColumnHeaders});
     }
-  },
+  }
 
-  componentWillUpdate: function(prevProps, prevState) {
+  componentWillUpdate(prevProps, prevState) {
     this.props.validate();
-  },
+  }
 
-  render: function() {
-    var instructions = [];
-    var inputs = [];
+  render() {
+    let instructions = [];
+    let inputs = [];
 
     inputs.push(<FileTypeSelect key="fileType" baseURL={this.props.baseURL} multiple={false} onFileTypeChange={this.handleFileTypeChange} name="fileType" label="File type:"/>);
 
@@ -180,38 +181,38 @@ var UploadForm = React.createClass({
     }
 
     return (
-            <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
-                <div className="row">
-                    {instructions}
-                    {inputs}
-                </div>
-            </form>
-        );
+      <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
+          <div className="row">
+              {instructions}
+              {inputs}
+          </div>
+      </form>
+    );
   }
-});
+}
+UploadForm.defaultProps = {
+  validate: null,
+};
+UploadForm.propTypes = {
+  validate: PropTypes.func,
+};
 
-var FileTypeSelect = React.createClass({
-  getDefaultProps: function() {
-    return {
-      baseURL: '',
-      onFileTypeChange: null,
-      getFileType: null
+class FileTypeSelect extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      availableFileType: [],
     };
-  },
+    this.getGenomicFileType = this.getGenomicFileType.bind(this);
+  }
 
-  getInitialState: function() {
-    return {
-      availableFileType: []
-    };
-  },
-
-  componentDidMount: function() {
+  componentDidMount() {
     this.getGenomicFileType();
-  },
+  }
 
-  getGenomicFileType: function() {
-    var self = this;
-    var xhr = new XMLHttpRequest();
+  getGenomicFileType() {
+    let self = this;
+    let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       try {
         switch (xhr.readyState) {
@@ -225,26 +226,25 @@ var FileTypeSelect = React.createClass({
             xhr.previousText = xhr.responseText;
             break;
           case 4:
-            var fileType = [{genomicFileType: ''}].concat(JSON.parse(xhr.responseText));
+            let fileType = [{genomicFileType: ''}].concat(JSON.parse(xhr.responseText));
             self.setState({availableFileType: fileType});
             break;
           default:
             break;
         }
       } catch (e) {
-        console.error("Exception: " + e);
+        console.error('Exception: ' + e);
       }
     };
-    var url = this.props.baseURL + "/AjaxHelper.php?Module=genomic_browser&script=get_genomic_file_type.php";
-    xhr.open("POST", url, true);
+    let url = this.props.baseURL + '/AjaxHelper.php?Module=genomic_browser&script=get_genomic_file_type.php';
+    xhr.open('POST', url, true);
     xhr.send();
-  },
+  }
 
-  render: function() {
-    var options = this.state.availableFileType.map(function(e) {
+  render() {
+    let options = this.state.availableFileType.map(function(e) {
       return (<option key={e.genomicFileType} value={e.genomicFileType}>{e.genomicFileType}</option>);
-    }
-        );
+    });
 
     return (
             <div className="col-xs-12 form-group">
@@ -257,90 +257,116 @@ var FileTypeSelect = React.createClass({
             </div>
         );
   }
-});
+}
+FileTypeSelect.propTypes = {
+  baseURL: PropTypes.string,
+  onFileTypeChange: PropTypes.func,
+  getFileType: PropTypes.func,
+};
+FileTypeSelect.defaultProps = {
+  baseURL: '',
+  onFileTypeChange: null,
+  getFileType: null,
+};
 
-var FileInput = React.createClass({
+class FileInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string
-  },
-
-  render: function() {
-    return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
-                </div>
-            </div>
-        );
-  }
-});
-
-var TextAreaInput = React.createClass({
-
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string
-  },
-
-  render: function() {
-    return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
-                </div>
-            </div>
-        );
-  }
-});
-
-var CheckboxInput = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string
-  },
-  getInitialState: function() {
-    return {
-      checked: this.props.checked || false
     };
-  },
-  render: function() {
+  }
+
+  render() {
+    return (
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
+          </div>
+      </div>
+    );
+  }
+}
+FileInput.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
+
+class TextAreaInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+  render() {
+    return (
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
+          </div>
+      </div>
+    );
+  }
+}
+TextAreaInput.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
+
+class CheckboxInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checked: this.props.checked || false,
+    };
+  }
+
+  render() {
         // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
     return (
-            <div className="form-group col-sm-12">
-                <label className="col-xs-3"></label>
-                <div className="col-xs-9">
-                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
-                    Use PSCID in column headers
-                    {this.props.label}
-                </div>
-            </div>
-        );
+      <div className="form-group col-sm-12">
+          <label className="col-xs-3"></label>
+          <div className="col-xs-9">
+              <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
+              Use PSCID in column headers
+              {this.props.label}
+          </div>
+      </div>
+    );
   }
-});
+}
+CheckboxInput.propTypes = {
+  name: PropTypes.string,
+};
 
-var ProgressBar = React.createClass({
+class ProgressBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string
-  },
+    };
+  }
 
-  render: function() {
+  render() {
     return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <div className="progress" style={{height: "20px"}}>
-                        <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
-                    </div>
-                </div>
-            </div>
-        );
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <div className="progress" style={{height: '20px'}}>
+                  <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
+              </div>
+          </div>
+      </div>
+    );
   }
-});
+}
+ProgressBar.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
 
 window.GenomicFileUploadModal = GenomicFileUploadModal;
 window.RGenomicFileUploadModal = RGenomicFileUploadModal;
@@ -359,5 +385,5 @@ export default {
   FileInput,
   TextAreaInput,
   CheckboxInput,
-  ProgressBar
+  ProgressBar,
 };

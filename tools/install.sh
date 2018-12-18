@@ -139,8 +139,9 @@ if [ -f ../project/config.xml ]; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
+create-project.sh ../project
 
+mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
 chmod 770 ../smarty/templates_c
 

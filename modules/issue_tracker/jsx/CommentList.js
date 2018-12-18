@@ -2,8 +2,9 @@
  * React component used to display a button and a collapsible list
  * with comments.
  */
-class CommentList extends React.Component {
+import React, {Component} from 'react';
 
+class CommentList extends Component {
   constructor(props) {
     super(props);
 
@@ -19,11 +20,11 @@ class CommentList extends React.Component {
 
   render() {
     const btnCommentsLabel = (this.state.collapsed ?
-      "Show Comment History" :
-      "Hide Comment History");
+      'Show Comment History' :
+      'Hide Comment History');
 
     const changes = this.props.commentHistory.reduce(function(carry, item) {
-      let label = item.dateAdded.concat(" - ", item.addedBy);
+      let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
         carry[label] = {};
       }
@@ -34,12 +35,12 @@ class CommentList extends React.Component {
     const history = Object.keys(changes).sort().reverse().map(function(key, i) {
       const textItems = Object.keys(changes[key]).map(function(index, j) {
         return (
-          <div key={j} className="row">
-            <div className="col-md-2">
-              <div className="col-md-8"><b>{index}</b></div>
-              <div className="col-md-4"> to </div>
+          <div key={j} className='row'>
+            <div className='col-md-2'>
+              <div className='col-md-8'><b>{index}</b></div>
+              <div className='col-md-4'> to </div>
             </div>
-            <div className="col-md-10"><i>{changes[key][index]}</i></div>
+            <div className='col-md-10'><i>{changes[key][index]}</i></div>
           </div>
         );
       }, this);
@@ -47,10 +48,10 @@ class CommentList extends React.Component {
       return (
         <div key={i}>
           <hr/>
-          <div className="history-item-label">
+          <div className='history-item-label'>
             <span>{key}</span> updated :
           </div>
-          <div className="history-item-changes">
+          <div className='history-item-changes'>
             {textItems}
           </div>
         </div>
@@ -59,15 +60,15 @@ class CommentList extends React.Component {
 
     return (
       <div>
-        <div className="btn btn-primary"
+        <div className='btn btn-primary'
              onClick={this.toggleCollapsed}
-             data-toggle="collapse"
-             data-target="#comment-history"
+             data-toggle='collapse'
+             data-target='#comment-history'
              style={{margin: '10px 0'}}
         >
           {btnCommentsLabel}
         </div>
-        <div id="comment-history" className="collapse">
+        <div id='comment-history' className='collapse'>
           {history}
         </div>
       </div>

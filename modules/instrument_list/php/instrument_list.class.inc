@@ -16,6 +16,7 @@
  * @package behavioural
  */
 namespace LORIS\instrument_list;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -48,34 +49,57 @@ class Instrument_List extends \NDB_Menu_Filter
     protected $candidate;
 
     /**
+     * Sets the timepoint that is being accessed on this page.
+     *
+     * @param \TimePoint $timepoint The timepoint object.
+     *
+     * @return void
+     */
+    public function setTimePoint(\TimePoint $timepoint)
+    {
+        $this->timePoint = $timepoint;
+    }
+
+    /**
+     * Sets the candidate that is being accessed on this page.
+     *
+     * @param \Candidate $candidate The candidate object.
+     *
+     * @return void
+     */
+    public function setCandidate(\Candidate $candidate)
+    {
+        $this->candidate = $candidate;
+    }
+    /**
     * Checking permissions
+    *
+    * @param \User $user The user whose access is being checked
     *
     * @return bool
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-        if (isset($_REQUEST['sessionID'])) {
-            //These variable are only for checking the permissions.
-            $TimePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-            $candID    = $TimePoint->getCandID();
-            $Candidate =& \Candidate::singleton($candID);
-            return ($user->hasPermission('access_all_profiles')
-                || (in_array(
-                    $Candidate->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                )
-                   )
-                || (in_array(
-                    $TimePoint->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                )
-                   )
-            );
+        $timePoint = $this->timePoint;
+        if ($timePoint === null) {
+            throw new \LorisException("Page requires a timepoint to load");
         }
-        // check user permissions
-        return false;
+        $candidate = $this->candidate;
+        if ($candidate === null) {
+            throw new \LorisException("Page requires a candidate to load");
+        }
+
+        //These variable are only for checking the permissions.
+        return ($user->hasPermission('access_all_profiles')
+            || (in_array(
+                $candidate->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )) || (in_array(
+                $timePoint->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
+            )
+        );
     }
 
     /**
@@ -101,33 +125,13 @@ class Instrument_List extends \NDB_Menu_Filter
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $gets = $request->getQueryParams();
-
-        $attribute = $request->getAttribute("CandID");
-        if ($attribute !== null) {
-            $this->candidate = \Candidate::singleton($attribute);
-        } else {
-            $this->candidate = \Candidate::singleton($gets['candID']);
+        $this->candidate = $request->getAttribute("Candidate");
+        $this->timePoint = $request->getAttribute("timePoint");
+        if ($this->candidate === null || $this->timePoint === null) {
+            // This shouldn't happen, the module level router verifies that
+            // the candidate exists before getting here.
+            throw new \LorisException("Timepoint list requires a timepoint.");
         }
-
-        $attribute = $request->getAttribute("TimePoint");
-        if ($attribute !== null) {
-            $this->timePoint = $attribute;
-        } else {
-            // FIXME: Make VisitLabel not sessionID
-            $this->timePoint = \TimePoint::singleton($gets['sessionID']);
-        }
-
-        $request = $request->withAttribute(
-            'Candidate',
-            $this->candidate
-        );
-
-        $request = $request->withAttribute(
-            'TimePoint',
-            $this->timePoint
-        );
-
         return parent::process($request, $handler);
     }
 
@@ -316,7 +320,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // assert that a battery has already been selected
         if (is_null($this->timePoint)) {
-            throw new Exception("No battery selected");
+            throw new \Exception("No battery selected");
         }
 
         // craft the select query

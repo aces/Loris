@@ -42,24 +42,25 @@ class ViewSession extends \NDB_Form
      * Determine whether the user has permission to view the
      * imaging_browser page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
-        // allow only to view own site data
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-
-        return ($user->hasPermission('imaging_browser_view_allsites')
-                || ((in_array(
-                    $timePoint->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                ))
-                     && $user->hasPermission('imaging_browser_view_site')
-                   )
-                || $user->hasPermission('imaging_browser_phantom_allsites')
-                || $user->hasPermission('imaging_browser_phantom_ownsite')
+        /* User has access if they have an 'all site' permission or if they are
+        * part of a study site and are permitted to view their own site.
+         */
+        return $user->hasAnyPermission(
+            array(
+             'imaging_browser_view_allsites',
+             'imaging_browser_phantom_allsites',
+             'imaging_browser_phantom_ownsite',
+            )
+        )
+        || $user->hasCenterPermission(
+            'imaging_browser_view_site',
+            \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
         );
     }
 
@@ -70,9 +71,7 @@ class ViewSession extends \NDB_Form
      */
     function _hasQCPerm()
     {
-        $user =& \User::singleton();
-
-        return $user->hasPermission('imaging_browser_qc');
+        return \User::singleton()->hasPermission('imaging_browser_qc');
     }
 
     /**
@@ -88,7 +87,8 @@ class ViewSession extends \NDB_Form
         $this->sessionID = $_REQUEST['sessionID'];
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
-            if ($this->_hasAccess() && isset($_POST['save_changes'])) {
+            $user = \User::singleton();
+            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -120,7 +120,7 @@ class ViewSession extends \NDB_Form
                                                     true  => 'True',
                                                     false => 'False',
                                                    );
-            $this->tpl_data['has_permission']    = ($this->_hasAccess()) ?
+            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
@@ -168,7 +168,7 @@ class ViewSession extends \NDB_Form
              on (files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
-            AND PendingStaging=0 $extra_where_string 
+            $extra_where_string 
             ORDER BY files.OutputType, 
                      files.AcquisitionProtocolID, 
                      files.File",

@@ -13,7 +13,7 @@
 */
 namespace LORIS\imaging_browser;
 /**
- * MRINavigatoin class
+ * MRINavigation class
  *
  * This class provides the management of sessions
  * to navigate to the previous and/or next session.

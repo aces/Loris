@@ -30,12 +30,12 @@ class Configuration extends \NDB_Form
      * _has_access returns true
      * if the user has the specific permission
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 
@@ -70,7 +70,11 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-
+        $this->tpl_data['lookup_center']   = array(
+                                              ''            => '',
+                                              'PatientID'   => 'PatientID',
+                                              'PatientName' => 'PatientName',
+                                             );
     }
 
     /**

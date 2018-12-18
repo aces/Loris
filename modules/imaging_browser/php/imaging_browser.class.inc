@@ -31,18 +31,25 @@ class Imaging_Browser extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user hass access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
-        return ($user->hasPermission('imaging_browser_view_allsites')
-               || ($user->hasStudySite()
-                   && $user->hasPermission('imaging_browser_view_site')
-                  )
-               || $user->hasPermission('imaging_browser_phantom_allsites')
-               || $user->hasPermission('imaging_browser_phantom_ownsite')
+        /* User has access if they have an 'all site' permission or if they are
+        * part of a study site and are permitted to view their own site.
+         */
+        return $user->hasAnyPermission(
+            array(
+             'imaging_browser_view_allsites',
+             'imaging_browser_phantom_allsites',
+             'imaging_browser_phantom_ownsite',
+            )
+        )
+        || (
+            $user->hasStudySite()
+            && $user->hasPermission('imaging_browser_view_site')
         );
     }
 
@@ -153,7 +160,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.PendingStaging=0 AND 
             f.FileType='mnc'";
 
         $this->query .= $left_joins;

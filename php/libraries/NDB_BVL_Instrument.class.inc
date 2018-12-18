@@ -240,7 +240,8 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $access = $obj->_hasAccess();
+        $user   = \User::singleton();
+        $access = $obj->_hasAccess($user);
 
         // check that user has access
         if ($access == false) {
@@ -265,16 +266,14 @@ class NDB_BVL_Instrument extends NDB_Page
      * If the user has ANY of the permissions listed in the config.xml file for
      * the instrument, access is granted.
      *
-     * Future improvement: call this function from display() rather than from
-     * factory()?
+     * @param \User $user The user whose access is being checked
      *
      * @return bool
-     * @access private
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         //get config
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
 
         //check if instrumentPermissions are being used.
@@ -291,8 +290,6 @@ class NDB_BVL_Instrument extends NDB_Page
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
-            $user =& User::singleton();
-
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
             foreach ($instrumentPermissions["instrument"] as $instrument) {
@@ -418,7 +415,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
-        $defaults = $this->_setDefaultsArray($defaults[0]);
+        $defaults = $this->_setDefaultsArray($defaults[0] ?? array());
 
         // merge in the localDefaults property so that simple
         // additions to the defaults array no longer requires
@@ -748,7 +745,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db     =& Database::singleton();
+        $db     = \Database::singleton();
         $result = $db->update(
             $this->table,
             $values,
@@ -792,7 +789,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields()
     {
-        $config      =& NDB_Config::singleton();
+        $config      = \NDB_Config::singleton();
         $dateOptions = array(
                         'language'         => 'en',
                         'format'           => 'YMd',
@@ -843,7 +840,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getCertificationConfig()
     {
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $CertificationConfig      = $config->getSetting("Certification");
         $CertificationEnabled     = $CertificationConfig['EnableCertification'];
@@ -852,7 +849,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if ($CertificationEnabled) {
             foreach (
-                Utility::toArray($CertificationConfig['CertificationProjects'])
+                Utility::associativeToNumericArray(
+                    $CertificationConfig['CertificationProjects']
+                )
                 as $value
             ) {
                 if (is_array($value['CertificationProject'])) {
@@ -863,10 +862,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
             foreach (
-                Utility::toArray($CertificationConfig['CertificationInstruments'])
+                Utility::associativeToNumericArray(
+                    $CertificationConfig['CertificationInstruments']
+                )
                 as $instrument
             ) {
-                foreach (Utility::toArray($instrument['test']) as $test) {
+                foreach (
+                    Utility::associativeToNumericArray($instrument['test'])
+                    as $test
+                ) {
                     $CertificationInstruments[] = $test['@']['value'];
                 }
             }
@@ -886,7 +890,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames()
     {
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -962,7 +966,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFullName()
     {
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $success = $db->pselectOne(
             "SELECT Full_name FROM test_names WHERE Test_name=:TN",
@@ -1008,7 +1012,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDateOfAdministration()
     {
-        $db  =& Database::singleton();
+        $db  = \Database::singleton();
         $doa = $db->pselectOne(
             "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
@@ -1027,7 +1031,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getSubtestList()
     {
         // get a database connection
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $query = "SELECT Subtest_name AS Name, Description
             FROM instrument_subtests
@@ -1377,7 +1381,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue($field)
     {
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
         $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1396,7 +1400,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getSessionID()
     {
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1437,7 +1441,7 @@ class NDB_BVL_Instrument extends NDB_Page
             return 'Complete';
         }
 
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $query = "SELECT " . join(',', $this->_requiredElements)
             . " FROM $this->table WHERE CommentID=:CID";
@@ -1464,7 +1468,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus()
     {
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $query = "SELECT Data_entry_completion_status
             FROM $this->table WHERE CommentID=:CID";
@@ -1490,7 +1494,7 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $db->update(
             $this->table,
@@ -1594,7 +1598,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $rules=array(),
         $rule_message='You must specify or select from the drop-down'
     ) {
-        $group[] =& $this->form->createElement(
+        $group[] = $this->form->createElement(
             "textarea",
             $field,
             null,
@@ -1603,7 +1607,7 @@ class NDB_BVL_Instrument extends NDB_Page
              'rows' => 4,
             )
         );
-        $group[] =& $this->createSelect(
+        $group[] = $this->createSelect(
             $field."_status",
             "",
             array(
@@ -1692,7 +1696,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 . "if you want to leave this time blank.";
         }
 
-        $group[] =& $this->form->createElement(
+        $group[] = $this->form->createElement(
             "time",
             $field,
             null,
@@ -1700,7 +1704,7 @@ class NDB_BVL_Instrument extends NDB_Page
             null
         );
 
-        $group[] =& $this->createSelect(
+        $group[] = $this->createSelect(
             $field . "_status",
             "",
             array(
@@ -1941,7 +1945,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores($scoreCols)
     {
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2022,7 +2026,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function loadInstanceData($instrumentInstance)
     {
-        $db       =& Database::singleton();
+        $db       = \Database::singleton();
         $defaults = $db->pselect(
             "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
             array('CID' => $instrumentInstance->getCommentID())
@@ -2047,11 +2051,11 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge($Date_taken = false)
     {
-        $db        =& Database::singleton();
+        $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i
+            "SELECT i.Date_taken, c.DoB FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2077,11 +2081,11 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getPSCID()
     {
-        $db        =& Database::singleton();
+        $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
-            "SELECT c.PSCID FROM $this->testName i
+            "SELECT c.PSCID FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2115,7 +2119,7 @@ class NDB_BVL_Instrument extends NDB_Page
             switch ($row['COLUMN_NAME']) {
             case 'CommentID':
             case 'UserID':
-                continue;
+                continue 2;
             case 'Data_entry_completion_status':
                 $values[$row['COLUMN_NAME']] = 'Incomplete';
                 break;
@@ -2251,7 +2255,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
 
         $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
 

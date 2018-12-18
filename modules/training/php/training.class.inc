@@ -29,11 +29,12 @@ class Training extends \NDB_Form
     /**
      * Checks if the user has access to examiner forms (edit_examiner and training)
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return $user->hasPermission('training');
     }
     /**
@@ -119,8 +120,12 @@ class Training extends \NDB_Form
 
         if (isset($certificationInstruments['test'])) {
             $certificationInstruments['test']
-                = \Utility::toArray($certificationInstruments['test']);
-            foreach ($certificationInstruments['test'] as $certificationInstrument) {
+                = \Utility::associativeToNumericArray(
+                    $certificationInstruments['test']
+                );
+            foreach (
+                $certificationInstruments['test'] as $certificationInstrument
+            ) {
                 $test_key = $certificationInstrument['@']['value'];
                 $testID   = $DB->pselectOne(
                     "SELECT ID

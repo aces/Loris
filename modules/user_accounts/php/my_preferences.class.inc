@@ -24,20 +24,6 @@ namespace LORIS\user_accounts;
 class My_Preferences extends \NDB_Form
 {
     /**
-     * Controls who's got access to this page, namely those who have the
-     * 'user_accounts' and who either have permission
-     * 'user_accounts_multisite' or whose site matches the site of the user they
-     * are trying to edit.
-     *
-     * @return true if user has access, false otherwise.
-     */
-    function _hasAccess()
-    {
-        // User can always access My Preferences page
-        return true;
-    }
-
-    /**
      * Computes the initial values this page will be filled with.
      *
      * @return array the default values for the initial state of this page.
@@ -208,9 +194,10 @@ class My_Preferences extends \NDB_Form
         // prepend two random characters
         if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
-            $expiry = isset($values['Password_expiry'])
-                ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_hash'], $expiry);
+            $user->updatePassword(
+                $set['Password_hash'],
+                $values['Password_expiry'] ?? ''
+            );
         }
 
         // send the user an email
