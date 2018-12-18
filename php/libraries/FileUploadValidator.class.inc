@@ -86,7 +86,7 @@ class FileUploadValidator
     /**
      * Given an array of files, validate them and upload them to the server.
      *
-     * The permission paramaeter is a UNIX file permissions octet.
+     * The permission parameter is a UNIX file permissions octet.
      * All files uploaded will use these permissions. If uploaded files are
      * required to have differing permissions, this must be done
      * manually in the calling code after this function has executed.
@@ -137,7 +137,7 @@ class FileUploadValidator
                 $this->_responseCode = 409;
                 return false;
             }
-            // Validate theat the MIME type of the file is allowed
+            // Validate that the MIME type of the file is allowed
             if (!empty($this->permittedMIMETypes)) {
                 if (!in_array(
                     $uploadedFile->getClientMediaType(),
