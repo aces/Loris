@@ -551,7 +551,7 @@ class Instrument_List_ControlPanel extends \TimePoint
      * Generates the HTML to display the set of buttons
      * for the Time Point status update
      *
-     * @return string
+     * @return bool
      * @access private
      */
     function _displaySendToDCC()
@@ -775,7 +775,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     /**
      * DisplayStartNextStage function
      *
-     * @return void
+     * @return bool
      */
     function _displayStartNextStage()
     {

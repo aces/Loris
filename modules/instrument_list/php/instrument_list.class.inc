@@ -293,9 +293,9 @@ class Instrument_List extends \NDB_Menu_Filter
      * @param string $candID    the value of candID
      * @param string $sessionID the value of sessionID
      *
-     * @return void
+     * @return string
      */
-    function getFeedbackPanel($candID, $sessionID)
+    function getFeedbackPanel($candID, $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
