@@ -14,7 +14,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
 
 You can try LORIS on Heroku before installing it on your system. The project management and clinical data management functions of LORIS are available for experimenting with. Imaging functionality is not yet available.
 
-Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
+Deploy and log in with username *admin* and the password that's set up during deployment via ClearDB.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <br>
@@ -103,4 +103,3 @@ If you would like to contribue to LORIS development, please consult our
 [Contributing Guide](./CONTRIBUTING.md).
 
 ### Contributing Documentation
-We love suggestions for our documentation! If you notice any inaccuracies, typos, etc. please open a GitHub Issue and we'll address it. 
