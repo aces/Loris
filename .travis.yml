@@ -84,7 +84,7 @@ before_script:
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
 env:
-    - TRAVIS_CI=true LORIS_DB_CONFIG=/../test/config.xml
+    - LORIS_DB_CONFIG=/../test/config.xml
 
 script:
     - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
