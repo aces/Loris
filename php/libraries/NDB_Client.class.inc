@@ -137,7 +137,7 @@ class NDB_Client
         // version. All session from then onward should have Same Site enabled.
         if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 3) {
             $sessionOptions['cookie_samesite'] = true;
-        } 
+        }
 
         session_start($sessionOptions);
         // if exiting, destroy the php session
