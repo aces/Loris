@@ -149,4 +149,4 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->delete('candidate', array('CandID' => 900001));
     }
 }
-?>
+

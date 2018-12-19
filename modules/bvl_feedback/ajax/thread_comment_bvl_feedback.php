@@ -36,4 +36,4 @@ print json_encode($newEntryValues);
 
 exit();
 
-?>
+

@@ -120,4 +120,4 @@ class NDB_BVL_Instrument_Instrument_Preview
         return;
     }
 }
-?>
+

@@ -339,6 +339,12 @@ class ConsentStatus extends Component {
           alert(label + ' withdrawal date cannot be later than today!');
           return;
         }
+        if (this.state.formData[withdrawal]) {
+          withdrawalRequired[i] = true;
+        } else {
+          withdrawalRequired[i] = false;
+        }
+        i++;
       }
     }
 
@@ -414,6 +420,5 @@ ConsentStatus.propTypes = {
   tabName: PropTypes.string,
   action: PropTypes.string,
 };
-
 
 export default ConsentStatus;

@@ -96,4 +96,4 @@ class PasswordReset extends \NDB_Form
     }
 
 }
-?>
+

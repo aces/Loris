@@ -760,4 +760,4 @@ class CouchDB
         }
     }
 }
-?>
+

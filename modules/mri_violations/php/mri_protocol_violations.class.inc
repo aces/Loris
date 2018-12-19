@@ -198,4 +198,4 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         );
     }
 }
-?>
+

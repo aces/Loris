@@ -77,9 +77,9 @@ class RequestAccount extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return a (possibly empty) array of errors
+     * @return array a (possibly empty) array of errors
      */
-    function _validate($values)
+    function _validate($values): array
     {
         $errors = array();
         // FIXME: These error checks are direct ports from when the request

@@ -33,7 +33,6 @@ class Media extends \NDB_Menu_Filter
     public $hasHidePermission  = false;
     public $AjaxModule         = true;
     public $skipTemplate       = true;
-    public $fieldOptions;
 
     /**
      * Check user permissions
@@ -50,7 +49,7 @@ class Media extends \NDB_Menu_Filter
         // Set permission to access user-hidden files, currently based on superuser
         $this->hasHidePermission = $user->hasPermission("superuser");
 
-        return $user->hasPermission('media_read');
+        return $user->hasPermission('media_read') || $this->hasWritePermission;
     }
 
     /**
@@ -187,8 +186,7 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result            = $this->toArray();
-        $result['options'] = $this->options;
+        $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }

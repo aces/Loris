@@ -270,6 +270,9 @@ class NDB_Page implements RequestHandlerInterface
                'style' => 'max-width:33%; display:inline-block;',
               )
     ) {
+        if ($options === array() && !empty($this->dateOptions)) {
+            $options = $this->dateOptions;
+        }
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
 
@@ -663,8 +666,8 @@ class NDB_Page implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->setup();
-        return (new \Zend\Diactoros\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display()));
+        return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
     /**
@@ -854,4 +857,4 @@ class NDB_Page implements RequestHandlerInterface
         );
     }
 }
-?>
+

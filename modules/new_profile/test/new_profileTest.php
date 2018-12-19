@@ -162,4 +162,4 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
 }
-?>
+

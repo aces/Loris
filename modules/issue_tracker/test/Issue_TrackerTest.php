@@ -182,4 +182,4 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->assertContains("Back to list", $text);
     }
 }
-?>
+

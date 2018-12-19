@@ -33,4 +33,4 @@ $result = $DB->pselectRow(
 
 echo json_encode($result);
 
-?>
+

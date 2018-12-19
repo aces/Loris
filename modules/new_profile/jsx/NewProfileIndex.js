@@ -92,7 +92,7 @@ class NewProfileIndex extends React.Component {
             );
         }
         $.ajax(
-            loris.BaseURL + '/new_profile/ajax/addProfile.php',
+            loris.BaseURL + '/new_profile/Addprofile',
             {
                 method: 'POST',
                 data: JSON.stringify(this.state.formData),

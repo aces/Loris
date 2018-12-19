@@ -206,4 +206,4 @@ if (isset($_REQUEST['PrintImageData'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

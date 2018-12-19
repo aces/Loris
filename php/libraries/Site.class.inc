@@ -53,7 +53,7 @@ class Site
     /**
      * Select basic Site information and stores it into the object property
      *
-     * @param int $centerID The CentreID to load data for
+     * @param int $centerID The CenterID to load data for
      *
      * @return void
      */
@@ -139,3 +139,4 @@ class Site
         return ($this->_siteInfo['Study_site'] == 'Y');
     }
 }
+

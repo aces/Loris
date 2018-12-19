@@ -190,4 +190,4 @@ class IssueNavigation
     }
 }
 
-?>
+

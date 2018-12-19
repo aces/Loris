@@ -39,17 +39,21 @@ class Data_Release extends \NDB_Menu_Filter
         $DB      = $Factory->Database();
 
         // set the class variables
-        $this->columns      = array(
-                               'file_name',
-                               'version',
-                               'upload_date',
-                              );
-        $this->query        = " FROM data_release dr JOIN"
-                               . " data_release_permissions drp"
-                               . " ON (dr.id=drp.data_release_id)"
-                               . " JOIN users u ON (u.ID=drp.userid)"
-                               . " WHERE u.UserID="
-                               . $DB->quote($user->getUsername());
+        $this->columns = array(
+                          'file_name',
+                          'version',
+                          'upload_date',
+                         );
+        $this->query   = " FROM data_release dr";
+
+        if (!$user->hasPermission("superuser")) {
+            $this->query .= " JOIN data_release_permissions drp 
+            ON (dr.id=drp.data_release_id) 
+            JOIN users u ON (u.ID=drp.userid) 
+            WHERE u.UserID="
+            . $DB->quote($user->getUsername());
+        }
+
         $this->group_by     = '';
         $this->order_by     = 'upload_date';
         $this->headers      = array(
@@ -105,4 +109,4 @@ class Data_Release extends \NDB_Menu_Filter
 
 }
 
-?>
+

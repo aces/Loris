@@ -2195,7 +2195,7 @@ class LorisForm
      */
     function setElementError($el, $error)
     {
-        if ($this->form[$el]) {
+        if (isset($this->form[$el]) && $this->form[$el]) {
             $this->form[$el]["error"] = $error;
         }
         $this->errors[$el] = $error;
@@ -2341,4 +2341,4 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-?>
+

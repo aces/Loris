@@ -35,6 +35,10 @@ class Utility
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
+     * NOTE This function assumes 1 month = 30 days. Although this is not really
+     * accurate, it should not be changed as it impacts the reproducibility of
+     * the analysis of data in LORIS.
+     *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
      * @param string $testdate date of testing (or second date), formatted YYYY-MM-DD
      *
@@ -163,7 +167,7 @@ class Utility
             $query .= "WHERE Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
+            $query .= " AND CenterID <> 1";
         }
 
         $result = $DB->pselect($query, array());
@@ -284,26 +288,6 @@ class Utility
     }
 
     /**
-     * Cleans a string to make it safe for variables and such
-     *
-     * @param string $string the string to clean
-     *
-     * @return string The string cleaned up enough to be used as a
-     *                variable name
-     */
-    static function getCleanString(string $string): string
-    {
-        $string = trim($string);
-        $string = str_replace('  ', ' ', $string);
-        $string = str_replace(' ', '_', $string);
-        $string = str_replace("'", '', $string);
-        $string = str_replace('"', '', $string);
-        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
-        $string = strtolower($string);
-        return $string;
-    }
-
-    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
@@ -390,44 +374,6 @@ class Utility
     }
 
     /**
-     * Merges two arrays recursively, overwriting values of the first
-     * with the second.  the one "strange" bit is that if there exists
-     * a set of 2 or more sibling elements with the same name, then
-     * the entire set will be replaced rather than recursively merged.
-     *
-     * @param array      $array1       The first array to be merged
-     * @param array      $array2       The second array to be merged
-     * @param array|null $merged_array A reference to an array to merge
-     *                            the parameters into. If not specified,
-     *                            a new array will be created
-     *
-     * @return array with the two parameters recursively merged
-     */
-    static function arrayMergeRecursiveOverwriting(
-        array $array1,
-        array $array2,
-        ?array &$merged_array = null
-    ): array {
-        if (empty($merged_array)) {
-            $merged_array = $array1;
-        }
-        foreach ($array2 AS $key=>$value) {
-            if (is_array($array1[$key]) && isset($array1[$key][0])) {
-                $merged_array[$key] = $value;
-            } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::arrayMergeRecursiveOverwriting(
-                    $array1[$key],
-                    $array2[$key],
-                    $merged_array[$key]
-                );
-            } else {
-                $merged_array[$key] = $value;
-            }
-        }
-        return $merged_array;
-    }
-
-    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
@@ -471,6 +417,24 @@ class Utility
     }
 
     /**
+     * Converts an associative array to a numeric array consisting of the
+     * argument's value as its first and only element. This is adapted from the
+     * original functioning of toArray which was not type-safe. It is
+     * primarily used for extracting configuration settings.
+     *
+     * @param array $associative_array An asssociative array.
+     *
+     * @return array The new numeric array, or $array if it was already numeric.
+     */
+    static function associativeToNumericArray(array $associative_array): array
+    {
+        if (!array_key_exists(0, $associative_array)) {
+            return array($associative_array);
+        }
+        return $associative_array;
+    }
+
+    /**
      * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
@@ -483,8 +447,19 @@ class Utility
      *
      * @return array If $var is an array, var, otherwise an array containing $var
      */
-    static function toArray($var): array
+    static function toArray($var)
     {
+        // TODO Uncomment the exception code below after LORIS 21 is released.
+        //throw new DeprecatedException(
+        //    'Utility::toArray() is deprecated and should not be used. ' .
+        //    'Instead use Utility::associativeToNumericArray() for converting ' .
+        //    'arrays. Scalar values cannot be passed to this function.'
+        //);
+        error_log(
+            'Utility::toArray() will be deprecated in LORIS ' .
+            'version 21. Please use Utility::associativeToNumericArray() ' .
+            'instead.'
+        );
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
@@ -492,15 +467,13 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection elements, not just a single element
-     * Not the same as toArray, apparently.
+     * Takes a scalar value and returns an array containing that value as its
+     * only element.
      * Note: This function should be used for tags without attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return  array If $var is an array, var, otherwise an array containing $var
-     * @cleanup This should be removed and all uses converted to toArray
-     *          (or vice versa, but toArray seems to be more common in the code)
+     * @return array If $var is an array, var, otherwise an array containing $var
      */
     static function asArray($var): array
     {
@@ -545,10 +518,10 @@ class Utility
      */
     static function getAllInstruments(): array
     {
-        $Factory       = NDB_Factory::singleton();
+        $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+            "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
             array()
         );
         $instruments   = array();
@@ -603,7 +576,8 @@ class Utility
         $DB            =& \Database::singleton();
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+             ORDER BY Full_name",
             array()
         );
         foreach ($instruments_q as $key) {
@@ -896,28 +870,6 @@ class Utility
     }
 
     /**
-     * Determine whether an array is a numeric (normal) array or an
-     * associative (hashtable) array.
-     *
-     * @param array $arr The array to be checked for numeric keys.
-     *
-     * @return boolean True if the given parameter is an array with
-     *                 numeric keys, false otherwise.
-     * @note   Fix this in future, checking $arr[0] is naive
-     */
-    static function numericArray(array $arr): bool
-    {
-        if (!is_array($arr)) {
-            return false;
-        }
-        $keys = array_keys($arr);
-        if (count($keys) === 0) {
-            return false;
-        }
-        return isset($arr[0]);
-    }
-
-    /**
      * This function takes two strings. If one string has a
      * suffix which is a prefix of the other, it will return
      * the part of the second string minus the common
@@ -966,30 +918,6 @@ class Utility
             }
         }
         return $prefixStr;
-    }
-
-    /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
-    static function arrayToCSV(array $array): string
-    {
-        $fp = fopen("php://temp", 'w+');
-
-        fputcsv($fp, $array['headers']);
-        foreach ($array['data'] as $item) {
-            fputcsv($fp, $item);
-        }
-
-        // Read what we have written.
-        rewind($fp);
-        $csv_string = stream_get_contents($fp);
-
-        fclose($fp);
-        return $csv_string;
     }
 
     /**
@@ -1082,13 +1010,13 @@ class Utility
 
         switch($last) {
         case 'g':
-            return $val * 1024 * 1024 * 1024;
+            return (int)$val * 1024 * 1024 * 1024;
         case 'm':
-            return $val * 1024 * 1024;
+            return (int)$val * 1024 * 1024;
         case 'k':
-            return $val * 1024;
+            return (int)$val * 1024;
         default:
-            return $val;
+            return (int)$val;
         }
     }
 
@@ -1114,4 +1042,4 @@ class Utility
         return $languages;
     }
 }
-?>
+

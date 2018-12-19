@@ -37,7 +37,7 @@ $useConsent = $consentConfig['useConsent'];
 $consents = $consentConfig['Consent'];
 
 // Format array of consents
-foreach(\Utility::toArray($consents) as $consent) {
+foreach(\Utility::associativeToNumericArray($consents) as $consent) {
     $consentName = $consent['name'];
     $consentLabel = $consent['label'];
     $consentList[$consentName] = $consentLabel;
@@ -99,8 +99,8 @@ foreach ($consentList as $consentName=>$consentLabel) {
         $consentID  = $entry['ID'];
         $candID     = $entry['CandID'];
         // Check if consent status is not_answered
-        if($status === "not_answered") {
-            array_push($errors, "Deprecated consent status 'not_answered' found for " . $consentName . ":
+        if($status === "not_answered" || $status === "") {
+            array_push($errors, "Deprecated consent status 'not_answered' or empty string found for " . $consentName . ":
                        [ID]     => " . $consentID . "
                        [CandID] => " . $candID . "
                        Please change to a valid status or remove data.");
@@ -117,15 +117,6 @@ foreach ($consentList as $consentName=>$consentLabel) {
                        [ID]     => " . $consentID . "
                        [CandID] => " . $candID . "
                        All 'yes' statuses must have a consent date.");
-        }
-        // Check if consent status is no and consent date given, but withdrawal date is empty
-        if($status === "no" && !empty($date)) {
-            if(empty($withdrawal)) {
-                array_push($errors, "The date of withdrawal is missing for " . $consentName . ":
-                           [ID]     => " . $consentID . "
-                           [CandID] => " . $candID . "
-                           All 'no' statuses with given consent date must have a withdrawal date.");
-            }
         }
         // Check for zero dates
         if($date === "0000-00-00" || $withdrawal === "0000-00-00") {

@@ -29,7 +29,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
 {
     //aka building-table-using-react
     var $AjaxModule = true;
-    public $fieldOptions;
 
     /**
      * Set up the variables required by NDB_Menu_Filter class for constructing

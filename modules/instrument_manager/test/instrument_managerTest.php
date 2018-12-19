@@ -79,4 +79,4 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
 
 
 }
-?>
+
