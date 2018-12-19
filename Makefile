@@ -2,7 +2,6 @@
 
 all: VERSION javascript
 	composer install --no-dev
-	npm run compile
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
