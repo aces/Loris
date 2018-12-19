@@ -8,9 +8,6 @@ php:
     - "7.2"
     - "7.3"
 
-env:
- - LORIS_DB_CONFIG=../test/config.xml
-
 addons:
     firefox: "44.0"
 
@@ -28,6 +25,7 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
+    - npm install
     - make dev
     - phpenv rehash
 
@@ -44,6 +42,8 @@ install:
     - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
 
 before_script:
+
+
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
@@ -86,9 +86,10 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
+#env:
+ # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - make check
-    - make unittests
+    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
