@@ -197,7 +197,7 @@ class Candidate
      *                                      YYYY-MM-DD. Value should be null
      *                                      unless the useEDC setting is
      *                                      configured to be true.
-     * @param string      $sex      sex, either 'Male' or 'Female'
+     * @param string      $sex         sex, either 'Male' or 'Female'
      * @param string|null $PSCID       PSCID specified by the user, if available
      * @param int|null    $projectID   The project ID, if available
      *
