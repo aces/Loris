@@ -745,7 +745,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db     = \Database::singleton();
+        $db = \Database::singleton();
         $db->update(
             $this->table,
             $values,
