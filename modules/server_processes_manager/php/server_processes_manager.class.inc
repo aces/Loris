@@ -26,6 +26,10 @@ namespace LORIS\server_processes_manager;
  */
 class Server_Processes_Manager extends \NDB_Menu_Filter
 {
+    public $fieldOptions;
+
+    public $skipTemplate = true;
+
     /**
      * Determines whether the current user has access to the page.
      *
