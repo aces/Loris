@@ -25,8 +25,7 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
-    - npm install
-    - make
+    - make dev
     - make check
     - phpenv rehash
 
@@ -91,6 +90,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - make check
+    - make unittests
 
 dist: precise
