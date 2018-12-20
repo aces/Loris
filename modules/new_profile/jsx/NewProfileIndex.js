@@ -94,7 +94,7 @@ class NewProfileIndex extends React.Component {
         $.ajax(
             loris.BaseURL + '/new_profile/Addprofile',
             {
-                method: 'POST',
+                method: 'GET',
                 data: JSON.stringify(this.state.formData),
                 dataType: 'json',
                 success: (data) => {
@@ -115,7 +115,7 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
     setFormData(formElement, value) {
-        let formData = this.state.formData;
+        let formData = JSON.parse(JSON.stringify(this.state.formData));
         formData[formElement] = value;
 
         this.setState(

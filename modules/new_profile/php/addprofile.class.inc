@@ -58,51 +58,15 @@ class Addprofile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
 
+        $v   = array_keys($request->getQueryParams())[1];
 
-
-        $values = $request->getQueryParams();
-        // create the candidate
-        $DB        = \Database::singleton();
-        $user      =& \User::singleton();
-        $config    =& \NDB_Config::singleton();
-        $site_arr  = $user->getData('CenterIDs');
-        $num_sites = count($site_arr);
-if ($num_sites >1) {
-    $candID = \Candidate::createNew(
-        $values['site'],
-        $values['dateTaken'],
-        $values['edcDateTaken'] ?? null,
-        $values['gender'],
-        $values['pscid'] ?? null
-    );
-} else {
-    $centerIDs = $user->getData('CenterIDs');
-    $centerID  = $centerIDs[0];
-    $candID    = \Candidate::createNew(
-        $centerID,
-        $values['dateTaken'],
-        $values['edcDateTaken'] ?? null,
-        $values['gender'],
-        $values['pscid'] ?? null
-    );
-}
-        // get the candidate
-        $candidate =& \Candidate::singleton($candID);
-        // setup the project for candidate
-if (isset($values['project'])) {
-    $candidate->setData('ProjectID', $values['project']);
-}
-        $result           = array();
-        $result['candID'] = $candID;
-        $result['pscid']  = $candidate->getPSCID();
-        
         return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Only GET requests are allowed"
+                        json_encode($v)
                     )
                 );
     }
