@@ -1,11 +1,34 @@
-all:
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript
+
+all: VERSION javascript
 	composer install --no-dev
-	npm install
-	npm run compile
+
+# If anything changes, re-generate the VERSION file
+VERSION: .
 	git describe --tags --always > VERSION
 
-dev:
+phpdev:
 	composer install
+
+javascript:
 	npm install
 	npm run compile
-	git describe --tags --always > VERSION
+
+dev: VERSION phpdev javascript
+
+clean:
+	rm -f smarty/templates_c/*
+	rm -f VERSION
+	rm -f vendor
+
+# Perform static analysis checks
+checkstatic: phpdev
+	npm run lint:php
+	npm run lint:javascript
+	vendor/bin/phan
+
+unittests: phpdev
+	vendor/bin/phpunit --configuration test/phpunit.xml
+
+# Perform all tests that don't require an install.
+check: checkstatic unittests

@@ -51,7 +51,7 @@ class UserPermissions
     function select($username)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
