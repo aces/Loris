@@ -181,8 +181,8 @@ END";
         $this->query .= $left_joins;
         $this->query .= $where;
 
-        $config =& \NDB_Config::singleton();
-        $user   =& \User::singleton();
+        $config = \NDB_Config::singleton();
+        $user   = \User::singleton();
         $DB     = \Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr = implode(",", $user->getCenterIDs());
@@ -285,7 +285,7 @@ END";
         } else {
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site =& \Site::singleton($val);
+                $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
                     $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
