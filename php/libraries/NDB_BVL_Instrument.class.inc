@@ -1398,13 +1398,11 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
+        $allValues = self::loadInstanceData($this);
         $DB = \Database::singleton();
 
-        $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
-        $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
-
-        if (!empty($fieldValue)) {
-            return $fieldValue;
+        if (!empty($allValues[$field])) {
+            return $allValues[$field];
         }
         return false;
     }
@@ -2057,9 +2055,9 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
      *                                               to be retrieved.
      *
-     * @return Array containing the data for each field in this instrument
+     * @return array containing the data for each field in this instrument
      */
-    static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): Array
+    static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
         $db       = \Database::singleton();
 
@@ -2097,6 +2095,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $CommentID = $this->getCommentID();
 
+<<<<<<< HEAD
         $result = \Database::singleton()->pselectRow(
             "SELECT i.Date_taken, c.DoB FROM $this->testName i
             JOIN flag f USING (CommentID)
@@ -2104,6 +2103,11 @@ class NDB_BVL_Instrument extends NDB_Page
             JOIN candidate c USING (CandID)
             WHERE f.CommentID=:CID",
             array('CID' => $CommentID)
+=======
+        $dates = array(
+            'Date_taken' => $this->getFieldValue('Date_taken'),
+            'DoB'        => $this->getFieldValue('DoB'),
+>>>>>>> Fix getCandidateAge and getFieldValue
         );
 
         $age = array();
