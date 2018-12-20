@@ -40,15 +40,18 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                     'N',
                                    );
     private $_name        = "#userAccounts_filter".
-                                   " > div > div > fieldset > div:nth-child(2)" .
-                                   " > div > div > input";
+                                " > div > div > fieldset > div:nth-child(3)".
+                                " > div > div > input";
     private $_site        = "#userAccounts_filter".
-                                   " > div > div:nth-child(1) > div > div > select";
+                                " > div > div > fieldset > div:nth-child(2)".
+                                " > div > div > select";
     private $_clearFilter = "#userAccounts_filter".
-                                   " > div > div:nth-child(7) > div > div > button";
+                                " > div > div > fieldset > div:nth-child(8)".
+                                " > div > div > button";
     private $_table       ="#dynamictable > tbody > tr:nth-child(1)";
-    private $_addUserBtn  = "#userAccounts_dataTable" .
-                                   " > div > div > div > div:nth-child(2) > button";
+    private $_addUserBtn  = "#userAccounts_dataTable".
+                                " > div.table-header > div > div".
+                                " > div:nth-child(2) > button:nth-child(1)";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
@@ -143,9 +146,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "
             );
                     $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#userAccountsFilter".
-                        " > div > div.panel.panel-default >".
-                        " div.table-header.panel-heading').textContent"
+                        "return document.querySelector('#userAccounts_dataTable".
+                        " > div.table-header > div > div > div:nth-child(1)').textContent"
                     );
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
