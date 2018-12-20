@@ -14,8 +14,7 @@ namespace LORIS\api;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
-
+use \LORIS\Api\Endpoint;
 /**
  * A class for handling the api/v????/projects endpoint.
  *
@@ -25,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
+class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     public $skipTemplate = true;
 
@@ -85,15 +84,9 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // FIXME: Validate permissions.
-        switch ($request->getURI()->getPath()) {
-        case "projects":
-        case "projects/":
-            $projects = $this->_getProjectList();
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "application/json")
-                ->withBody(new \LORIS\Http\StringStream(json_encode($projects)));
-        // FIXME: Delegate to other endpoints under /projects/ for other paths.
-        default:
+        $pathparts = $request->getAttribute('pathparts');
+
+        if ($pathparts[0] != 'projects') {
             return (new \LORIS\Http\Response())
             ->withBody(
                 new \LORIS\Http\StringStream(
@@ -101,6 +94,24 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
                 )
             )->withStatus(404);
         }
+
+        if (count($pathparts) === 1) {
+            $projects = $this->_getProjectList();
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "application/json")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($projects)
+                    )
+                );
+        }
+
+        // Delegate to project specific endpoint.
+        $endpoint = new \LORIS\Api\Endpoints\Projects\Project();
+        array_shift($pathparts);
+        $request = $request->withAttribute('pathparts', $pathparts);
+
+        return $endpoint->process($request, $endpoint);
     }
 
     /**

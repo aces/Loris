@@ -14,7 +14,7 @@ namespace LORIS\api;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
+use \LORIS\Api\Endpoint;
 
 /**
  * A class for handling the api/v????/login endpoint.
@@ -25,7 +25,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Login extends APIEndpoint
+class Login extends Endpoint
 {
     /**
      * All users have access to the login endpoint to try and login.
