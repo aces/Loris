@@ -1,4 +1,4 @@
-/* exported FormElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
+/* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
 TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
@@ -143,6 +143,72 @@ FormElement.defaultProps = {
   onSubmit: function() {
     console.warn('onSubmit() callback is not set!');
   },
+};
+
+/**
+ * FieldsetElement Component.
+ * React wrapper for <fieldset> element that is nested inside <FormElement></FormElement>,
+ * and accepts child react components. A fieldset groups related elements in a form.
+ *
+ * The form elements can be passed by nesting Form components directly inside <FieldsetElement></FieldsetElement>.
+ *
+ */
+class FieldsetElement extends Component {
+  constructor(props) {
+    super(props);
+    this.getFormElements = this.getFormElements.bind(this);
+  }
+
+  getFormElements() {
+    const formElementsHTML = [];
+    const columns = this.props.columns;
+    const maxColumnSize = 12;
+    const colSize = Math.floor(maxColumnSize / columns);
+    const colClass = 'col-xs-12 col-sm-' + colSize + ' col-md-' + colSize;
+
+    // Render elements from React
+    React.Children.forEach(this.props.children, function(child, key) {
+      // If child is plain HTML, insert it as full size.
+      // Useful for inserting <hr> to split form sections
+      let elementClass = 'col-xs-12 col-sm-12 col-md-12';
+
+      // If child is form element use appropriate size
+      if (React.isValidElement(child) && typeof child.type === 'function') {
+        elementClass = colClass;
+      }
+      formElementsHTML.push(
+        <div key={'el_child_' + key} className={elementClass}>{child}</div>
+      );
+    });
+    return formElementsHTML;
+  }
+
+  render() {
+    // Generate form elements
+    let formElements = this.getFormElements();
+
+    return (
+      <fieldset
+        name={this.props.name}
+      >
+        <legend>
+          {this.props.legend}
+        </legend>
+        {formElements}
+      </fieldset>
+    );
+  }
+}
+
+FieldsetElement.propTypes = {
+  columns: PropTypes.number,
+  name: PropTypes.string,
+  legend: PropTypes.string,
+};
+
+FieldsetElement.defaultProps = {
+  columns: 1,
+  legend: 'Selection Filter',
 };
 
 /**
@@ -1522,6 +1588,7 @@ class LorisElement extends Component {
 }
 
 window.FormElement = FormElement;
+window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
 window.TagsElement = TagsElement;
 window.SearchableDropdown = SearchableDropdown;
@@ -1539,6 +1606,7 @@ window.LorisElement = LorisElement;
 
 export default {
   FormElement,
+  FieldsetElement,
   SelectElement,
   TagsElement,
   SearchableDropdown,
