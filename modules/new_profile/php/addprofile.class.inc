@@ -57,16 +57,14 @@ class Addprofile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-
-        $v   = array_keys($request->getQueryParams())[1];
-
+//todo : import ajax file and return with dccid and pcsid
         return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "GET")
+                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($v)
+                        json_encode($request->getParsedBody())
                     )
                 );
     }

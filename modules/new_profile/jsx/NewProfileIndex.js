@@ -94,7 +94,7 @@ class NewProfileIndex extends React.Component {
         $.ajax(
             loris.BaseURL + '/new_profile/Addprofile',
             {
-                method: 'GET',
+                method: 'POST',
                 data: JSON.stringify(this.state.formData),
                 dataType: 'json',
                 success: (data) => {
