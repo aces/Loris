@@ -968,47 +968,47 @@ class Candidate
         return $option_array;
     }
 
-}
+    /**
+     * Ensure that generated IDs do not end with 0
+     * replace every consecutive digit pattern ending with 000 by 001
+     * or string ending with an alpha char followed by a 0
+     * e.g.: abc000 -> abc001
+     *       abc000r4 -> abc001r4
+     *       abc123d0 -> abc123d1
+     *
+     * @param string $string the string to correct
+     *
+     * @return string the string with offending 0 replaced by 1
+     */
+    function zeroSupress(string $string): string
+    {
+        $matches  = array();
+        $replaces = array();
+        $pattern  = "|0{3,}|";
 
-/**
- * Ensure that generated IDs do not end with 0
- * replace every consecutive digit pattern ending with 000 by 001
- * or string ending with an alpha char followed by a 0
- * e.g.: abc000 -> abc001
- *       abc000r4 -> abc001r4
- *       abc123d0 -> abc123d1
- *
- * @param string $string the string to correct
- *
- * @return string the string with offending 0 replaced by 1
- */
-function zeroSupress(string $string): string
-{
-    $matches  = array();
-    $replaces = array();
-    $pattern  = "|0{3,}|";
+        // find occurence of at least 3 consecutive 0
+        preg_match_all($pattern, $string, $matches);
+        $matches  = $matches[0];
+        $replaces = array();
+        foreach ($matches as $match) {
+            $replaces[] = str_pad("1", strlen($match), "0", STR_PAD_LEFT);
+        }
 
-    // find occurence of at least 3 consecutive 0
-    preg_match_all($pattern, $string, $matches);
-    $matches  = $matches[0];
-    $replaces = array();
-    foreach ($matches as $match) {
-        $replaces[] = str_pad("1", strlen($match), "0", STR_PAD_LEFT);
+        //replace the last 0 by 1
+        $pos = 0;
+        $len = 0;
+
+        for ($i = 0; $i < sizeof($matches); $i++) {
+            $pos    = strpos($string, $matches[$i], $pos+$len);
+            $len    = strlen($matches[$i]);
+            $string = substr_replace($string, $replaces[$i], $pos, $len);
+        }
+
+        // if string end with [a-z]0 replace by [a-z]1
+        $string = preg_replace("/(.*)([a-z])(0)$/i", '${1}${2}1', $string);
+
+        return $string;
     }
 
-    //replace the last 0 by 1
-    $pos = 0;
-    $len = 0;
-
-    for ($i = 0; $i < sizeof($matches); $i++) {
-        $pos    = strpos($string, $matches[$i], $pos+$len);
-        $len    = strlen($matches[$i]);
-        $string = substr_replace($string, $replaces[$i], $pos, $len);
-    }
-
-    // if string end with [a-z]0 replace by [a-z]1
-    $string = preg_replace("/(.*)([a-z])(0)$/i", '${1}${2}1', $string);
-
-    return $string;
 }
 ?>
