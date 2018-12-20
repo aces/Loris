@@ -1399,7 +1399,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function getFieldValue(string $field)
     {
         $allValues = self::loadInstanceData($this);
-        $DB        = \Database::singleton();
 
         if (!empty($allValues[$field])) {
             return $allValues[$field];
@@ -2093,8 +2092,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge(string $date): array
     {
-        $CommentID = $this->getCommentID();
-
         $dates = array(
             'Date_taken' => $this->getFieldValue('Date_taken'),
             'DoB'        => $this->getFieldValue('DoB'),
