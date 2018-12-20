@@ -112,13 +112,6 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
         }
 
-        // throw error if unable to locate insertion script
-        if (!file_exists($this->_mriCodePath . self::IMAGING_UPLOAD_FILE_PATH)) {
-            $msg = "Could not locate " . self::IMAGING_UPLOAD_FILE_PATH;
-            error_log($msg);
-            throw new \LorisException($msg);
-        }
-
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
 
