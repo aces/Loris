@@ -8,7 +8,7 @@ RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
 
 # Login
-RewriteRule ^login[/]?$ /index.php?lorispath=api/v0.0.2/login/ [QSA,END]
+RewriteRule ^login[/]?$ /index.php?lorispath=api/v0.0.3-dev/login/ [QSA,END]
 
 # Projects API rewrite rules
 RewriteRule ^projects/$ /index.php?lorispath=api/v0.0.3-dev/projects/ [QSA,END]
@@ -19,7 +19,6 @@ RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Proj
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true&PrintProjectJSON=true [L]
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true&PrintProjectJSON=true&InstrumentDetails=true [L]
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/images(/*)$ projects/Images.php?project_name=$1 [QSA,L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true&PrintProjectJSON=true [L]
 
 # Candidates API rewrite rules
 

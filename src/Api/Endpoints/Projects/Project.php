@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 
 /**
- * A class for handling the api/v????/projects/$projectname endpoint.
+ * A class for handling the /projects/$projectname endpoint.
  *
  * @category API
  * @package  Loris
@@ -30,8 +30,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public $skipTemplate = true;
 
     /**
-     * A cache of the results of the projects/ endpoint, so that it doesn't
-     * need to be recalculated for the ETag and handler
+     * A cache of the results of the projects/$projectname endpoint, so that
+     * it doesn't need to be recalculated for the ETag and handler
      */
     protected $responseCache = array();
 
@@ -86,14 +86,16 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // FIXME: Validate project based permissions.
-        $pathparts = $request->getAttribute('pathparts');
+
+        $pathparts   = $request->getAttribute('pathparts');
+        $projectname = $pathparts[0];
 
         $this->project = \NDB_Factory::singleton()
-            ->project($pathparts[0]);
+            ->project($projectname);
 
         if (count($pathparts) > 1) {
             switch($pathparts[1]) {
-                // FIXME: delegate to other handlers
+            // FIXME: delegate to other handlers
             case 'candidates':
             case 'images':
             case 'instruments':
@@ -109,7 +111,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withHeader("Content-Type", "application/json")
             ->withBody(
                 new \LORIS\Http\StringStream(
-                    json_encode($this->_getProject($pathparts[0]))
+                    json_encode($this->_getProject($projectname))
                 )
             );
     }

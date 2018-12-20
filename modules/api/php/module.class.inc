@@ -98,7 +98,8 @@ class Module extends \Module
         // Strip the version and add it to a request attribute, then let the default
         // module handler kick in to delegate to the appropriate page.
         $newurl = $request->getURI()->withPath($endpoint);
-        // split the url into parts to form a queue for the endpoints to delegate
+        // Split the url into parts to form a queue for the endpoints to delegate
+        // the request to subendpoints
         $pathparts  = explode('/', $newurl->getPath());
         $newrequest = $request
             ->withURI($newurl)
