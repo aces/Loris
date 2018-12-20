@@ -748,16 +748,16 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db     = \Database::singleton();
-	if ($this->jsonData !== true) {
-		// If the instrument is saving as JSON into the Data column, the
-		// table may not exist, so don't try and update it.
-		$result = $db->update(
-			$this->table,
-			$values,
-			array('CommentID' => $this->getCommentID())
-		);
-	}
+        $db = \Database::singleton();
+        if ($this->jsonData !== true) {
+            // If the instrument is saving as JSON into the Data column, the
+            // table may not exist, so don't try and update it.
+            $result = $db->update(
+                $this->table,
+                $values,
+                array('CommentID' => $this->getCommentID())
+            );
+        }
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
@@ -1399,7 +1399,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getFieldValue(string $field)
     {
         $allValues = self::loadInstanceData($this);
-        $DB = \Database::singleton();
+        $DB        = \Database::singleton();
 
         if (!empty($allValues[$field])) {
             return $allValues[$field];
@@ -2059,7 +2059,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
-        $db       = \Database::singleton();
+        $db = \Database::singleton();
 
         if ($instrumentInstance->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2095,19 +2095,9 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $CommentID = $this->getCommentID();
 
-<<<<<<< HEAD
-        $result = \Database::singleton()->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i
-            JOIN flag f USING (CommentID)
-            JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
-            WHERE f.CommentID=:CID",
-            array('CID' => $CommentID)
-=======
         $dates = array(
             'Date_taken' => $this->getFieldValue('Date_taken'),
             'DoB'        => $this->getFieldValue('DoB'),
->>>>>>> Fix getCandidateAge and getFieldValue
         );
 
         $age = array();
