@@ -150,8 +150,7 @@ FormElement.defaultProps = {
  * React wrapper for <fieldset> element that is nested inside <FormElement></FormElement>,
  * and accepts child react components. A fieldset groups related elements in a form.
  *
- * The form elements can be passed by:
- * 1. Form components nested directly inside <FieldsetElement></FieldsetElement>
+ * The form elements can be passed by nesting Form components directly inside <FieldsetElement></FieldsetElement>
  *
  */
 class FieldsetElement extends Component {
