@@ -2092,10 +2092,10 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge(string $date): array
     {
-        $dates = array(
-            'Date_taken' => $this->getFieldValue('Date_taken'),
-            'DoB'        => $this->getFieldValue('DoB'),
-        );
+	    $dates = array(
+		    'Date_taken' => $this->getFieldValue('Date_taken'),
+		    'DoB'        => $this->getDoB(),
+	    );
 
         $age = array();
         if (empty($date)) {
@@ -2105,6 +2105,26 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
+    }
+
+    /**
+     * Get the candidates DOB.
+     *
+     * @return string The candidate's DOB.
+     */
+    function getDoB()
+    {
+        $db        = \Database::singleton();
+        $CommentID = $this->getCommentID();
+
+        $dob = $db->pselectOne(
+            "SELECT c.DoB FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $dob;
     }
 
     /**
