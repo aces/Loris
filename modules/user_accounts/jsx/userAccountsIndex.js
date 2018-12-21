@@ -138,7 +138,7 @@ class UserAccountsIndex extends Component {
       }},
     ];
     const actions = [
-      {label: 'Add User', action: this.addUser},
+      {name: 'addUser', label: 'Add User', action: this.addUser},
     ];
 
     return (

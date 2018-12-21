@@ -352,9 +352,11 @@ class DataTable extends Component {
 
   renderActions() {
     if (this.props.actions) {
-      return this.props.actions.map((action) => {
+      return this.props.actions.map((action, key) => {
         return (
           <button
+            key={key}
+            name={action.name}
             className="btn btn-primary"
             onClick={action.action}
           >
