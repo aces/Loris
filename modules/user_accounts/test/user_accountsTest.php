@@ -146,8 +146,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "
             );
                     $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#userAccounts_dataTable".
-                        " > div.table-header > div > div > div:nth-child(1)').textContent"
+                        "return document.querySelector".
+                          "('#userAccounts_dataTable > div.table-header".
+                          " > div > div > div:nth-child(1)').textContent"
                     );
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
