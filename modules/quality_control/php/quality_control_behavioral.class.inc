@@ -2,10 +2,10 @@
 /**
  * This file contains the NDB_Menu_Filter_media class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
- * @package  Quality Control
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -16,10 +16,11 @@ namespace LORIS\quality_control;
  * Main class for quality control module corresponding to /quality_control/ URL
  * Tools section of the LorisMenu.
  *
- * PHP Version 5
+ * PHP Version 7
+ *
  * @category Module
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
+ * @package  Quality_Control
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -27,10 +28,12 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $AjaxModule         = true;
-    public $fieldOptions; 
+    public $fieldOptions;
 
     /**
      * Check user permissions
+     *
+     * @param string $user UserID
      *
      * @return bool
      * @throws ConfigurationException
@@ -93,18 +96,18 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         $hiddenOptions = [];
         if ($this->hasHidePermission) {
             $hiddenOptions = array(
-                0 => 'Visible only',
-                1 => 'Hidden only',
-            );
+                              0 => 'Visible only',
+                              1 => 'Hidden only',
+                             );
         }
 
         $this->fieldOptions = [
-            'visits'      => $visitList,
-            'instrument'  => $instrumentList,
-            'site'        => $siteList,
-            'projects'    => $projectList,
-            'hidden'      => $hiddenOptions
-        ];
+                               'visits'     => $visitList,
+                               'instrument' => $instrumentList,
+                               'site'       => $siteList,
+                               'projects'   => $projectList,
+                               'hidden'     => $hiddenOptions,
+                              ];
 
         return true;
     }
@@ -116,16 +119,16 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $db                 = \Database::singleton();
+        $db = \Database::singleton();
         $this->skipTemplate = true;
-        $config             =& \NDB_Config::singleton();
-        $ddeInstruments     = $config->getSetting('DoubleDataEntryInstruments');
-        if (gettype($ddeInstruments) == "string") { 
+        $config         =& \NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        if (gettype($ddeInstruments) == "string") {
             $ddeInstruments = array($db->quote($ddeInstruments));
         } else {
-             for ($i=0; $i<count($ddeInstruments); ++$i) { 
-                 $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
-             } 
+            for ($i=0; $i<count($ddeInstruments); ++$i) {
+                $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
+            }
         }
         $query = " FROM session s JOIN flag f ON (f.sessionid = s.id)".
             " JOIN candidate c ON (c.candid = s.candid)".
@@ -146,22 +149,22 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
             ";
         }
 
-        $this->columns  = [
-            's.Visit_label as visit_label',
-            's.CandID as cand_id',
-            'c.PSCID as pscid',
-            't.Full_name as instrument',
-        ];
-        $query          = $query . $where;
-        $this->query    = $query;
+        $this->columns = [
+                          's.Visit_label as visit_label',
+                          's.CandID as cand_id',
+                          'c.PSCID as pscid',
+                          't.Full_name as instrument',
+                         ];
+        $query         = $query . $where;
+        $this->query   = $query;
 
         $this->order_by = 'f.commentid';
         $this->headers  = [
-            'Visit Label',
-            'DCCID',
-            'PSCID',
-            'Instrument',
-        ];
+                           'Visit Label',
+                           'DCCID',
+                           'PSCID',
+                           'Instrument',
+                          ];
         return true;
     }
 
@@ -178,7 +181,7 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/quality_control/js/qualityControlIndex.js",
+             $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }

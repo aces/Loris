@@ -5,7 +5,7 @@
  * PHP Version 7
  *
  * @category Module
- * @package  Quality Control
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -19,7 +19,7 @@ namespace LORIS\quality_control;
  * PHP Version 7
  *
  * @category Module
- * @package  Media
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -33,6 +33,8 @@ class Quality_Control extends \NDB_Menu_Filter
 
     /**
      * Check user permissions
+     *
+     * @param string $user UserID
      *
      * @return bool
      * @throws ConfigurationException
@@ -167,7 +169,7 @@ class Quality_Control extends \NDB_Menu_Filter
           AND s.Active='Y'
           AND s.CenterID <> '1' ";
 
-        $query = $select.$joins.$where; 
+        $query = $select.$joins.$where;
         return $query;
     }
     /**
@@ -205,7 +207,7 @@ class Quality_Control extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList     = \Utility::getProjectList();
+        $projectList = \Utility::getProjectList();
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
@@ -225,10 +227,10 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         $scan_location = array(
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
-        );
+                          "In Imaging Browser"    => "Found in Imaging Browser",
+                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
+                          "Missing"               => "Missing",
+                         );
         // Form Elements
         $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
@@ -240,24 +242,24 @@ class Quality_Control extends \NDB_Menu_Filter
             'mRIParameterForm',
             "MRI Parameter Form",
             array(
-                "Incomplete" => "Incomplete",
-                "Complete"   => "Complete",
+             "Incomplete" => "Incomplete",
+             "Complete"   => "Complete",
             )
         );
         $this->addSelect(
             'scanDoneInMRIPF',
             'Scan Done in MRI PF',
             array(
-                "Yes" => "Yes",
-                "No"  => "No",
+             "Yes" => "Yes",
+             "No"  => "No",
             )
         );
         $this->addSelect(
             'tarchive',
             'Tarchive Status',
             array(
-                "In DICOM" => "In DICOM Archives",
-                "Missing"  => "Missing",
+             "In DICOM" => "In DICOM Archives",
+             "Missing"  => "Missing",
             )
         );
         $this->addSelect(
@@ -269,8 +271,8 @@ class Quality_Control extends \NDB_Menu_Filter
             'qCStatus',
             'QC Status',
             array(
-                "Pass" => "Pass",
-                "Fail" => "Fail",
+             "Pass" => "Pass",
+             "Fail" => "Fail",
             )
         );
         $this->addSelect(
@@ -282,48 +284,48 @@ class Quality_Control extends \NDB_Menu_Filter
             'selected',
             'Selected',
             array(
-                "True"  => "True",
-                "False" => "False",
+             "True"  => "True",
+             "False" => "False",
             )
         );
 
         $hiddenOptions = [];
         if ($this->hasHidePermission) {
             $hiddenOptions = array(
-                0 => 'Visible only',
-                1 => 'Hidden only',
-            );
+                              0 => 'Visible only',
+                              1 => 'Hidden only',
+                             );
         }
 
         $this->fieldOptions = [
-            'site'               => $siteList,
-            'project'            => $projectList2,
-            'subproject'         => $subprojectList2,
-            'scanType'           => $scan_types,
-            'mRIParameterForm'   => array(
-                "Incomplete" => "Incomplete",
-                "Complete"   => "Complete",
-            ),
-            'scanDoneInMRIPF'     => array(
-                "Yes" => "Yes",
-                "No"  => "No",
-            ),
-            'tarchive'            => array(
-                "In DICOM" => "In DICOM Archives",
-                "Missing"  => "Missing",
-            ),
-            'scanLocation' => $scan_location,
-            'qCStatus'     => array(
-                "Pass" => "Pass",
-                "Fail" => "Fail",
-            ),
-            'uploadedBy'   => $uploaderList,
-            'selected'     => array(
-                "True"  => "True",
-                "False" => "False",
-            ),
-            'hidden'       => $hiddenOptions
-        ];
+                               'site'             => $siteList,
+                               'project'          => $projectList2,
+                               'subproject'       => $subprojectList2,
+                               'scanType'         => $scan_types,
+                               'mRIParameterForm' => array(
+                                                      "Incomplete" => "Incomplete",
+                                                      "Complete"   => "Complete",
+                                                     ),
+                               'scanDoneInMRIPF'  => array(
+                                                      "Yes" => "Yes",
+                                                      "No"  => "No",
+                                                     ),
+                               'tarchive'         => array(
+                                                      "In DICOM" => "In DICOM Archives",
+                                                      "Missing"  => "Missing",
+                                                     ),
+                               'scanLocation'     => $scan_location,
+                               'qCStatus'         => array(
+                                                      "Pass" => "Pass",
+                                                      "Fail" => "Fail",
+                                                     ),
+                               'uploadedBy'       => $uploaderList,
+                               'selected'         => array(
+                                                      "True"  => "True",
+                                                      "False" => "False",
+                                                     ),
+                               'hidden'           => $hiddenOptions,
+                              ];
 
         return true;
     }
@@ -360,10 +362,10 @@ class Quality_Control extends \NDB_Menu_Filter
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
                 = $this->_buildQuery(
-                $scan_type,
-                $scans_done[$scan_type],
-                $acq_IDs[$scan_type]
-            );
+                    $scan_type,
+                    $scans_done[$scan_type],
+                    $acq_IDs[$scan_type]
+                );
         }
 
         $query = implode(
@@ -376,23 +378,23 @@ class Quality_Control extends \NDB_Menu_Filter
         $this->query = " FROM ( " . $query . " ) as tmp";
 
         $this->columns = [
-            'PSCID',
-            'SessionID',
-            'cand_id',
-            'site',
-            'project',
-            'subproject',
-            'visit_label',
-            'scan_type',
-            'mri_parameter_form',
-            'scan_done',
-            'tarchive_loc',
-            'scan_location',
-            'qc_status',
-            'uploaded_by',
-            'selected',
-            'CommentID',
-        ];
+                          'PSCID',
+                          'SessionID',
+                          'cand_id',
+                          'site',
+                          'project',
+                          'subproject',
+                          'visit_label',
+                          'scan_type',
+                          'mri_parameter_form',
+                          'scan_done',
+                          'tarchive_loc',
+                          'scan_location',
+                          'qc_status',
+                          'uploaded_by',
+                          'selected',
+                          'CommentID',
+                         ];
 
         $this->group_by = 'PSCID,
             SessionID,
@@ -414,23 +416,23 @@ class Quality_Control extends \NDB_Menu_Filter
         $this->order_by = 'PSCID';
 
         $this->headers = [
-            'PSCID',
-            'Session ID',
-            'DCCID',
-            'Site',
-            'Project',
-            'Subproject',
-            'Visit Label',
-            'Scan Type',
-            'MRI Parameter Form',
-            'Scan Done in MRI PF',
-            'Tarchive',
-            'Scan Location',
-            'QC Status',
-            'Uploaded By',
-            'Selected',
-            'CommentID',
-        ];
+                          'PSCID',
+                          'Session ID',
+                          'DCCID',
+                          'Site',
+                          'Project',
+                          'Subproject',
+                          'Visit Label',
+                          'Scan Type',
+                          'MRI Parameter Form',
+                          'Scan Done in MRI PF',
+                          'Tarchive',
+                          'Scan Location',
+                          'QC Status',
+                          'Uploaded By',
+                          'Selected',
+                          'CommentID',
+                         ];
 
         return true;
     }
@@ -448,7 +450,7 @@ class Quality_Control extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/quality_control/js/qualityControlIndex.js",
+             $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
