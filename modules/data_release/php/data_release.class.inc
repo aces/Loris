@@ -147,7 +147,7 @@ class Data_Release extends \NDB_Menu_Filter
      *               access to. See "has access to" definition in this function's
      *               description.
      */
-    function getUserVersionPermissions(array $vFiles, \Database $DB)
+    function getUserVersionPermissions(array $vFiles, \Database $DB) : array
     {
         $userFileAccess = $DB->pselect(
             "SELECT u.UserID, drp.data_release_id, version, file_name
