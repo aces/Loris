@@ -35,7 +35,7 @@ permission was added for him/her.
 8. Ensure that when a box is unchecked, the user's access to any of the released 
 files with that version is revoked.
 
-9. Ensure that when a box is checked, the user is granted access to all files with 
+9. Ensure that when a box is checked, the user is granted access to all files within 
 that release version.
 
 10. Ensure that an unmodified checkbox does not give or revoke any access permissions 
