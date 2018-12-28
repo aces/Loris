@@ -297,35 +297,36 @@ class Quality_Control extends \NDB_Menu_Filter
                              );
         }
 
-        $this->fieldOptions = [
-                               'site'             => $siteList,
-                               'project'          => $projectList2,
-                               'subproject'       => $subprojectList2,
-                               'scanType'         => $scan_types,
-                               'mRIParameterForm' => array(
-                                                      "Incomplete" => "Incomplete",
-                                                      "Complete"   => "Complete",
-                                                     ),
-                               'scanDoneInMRIPF'  => array(
-                                                      "Yes" => "Yes",
-                                                      "No"  => "No",
-                                                     ),
-                               'tarchive'         => array(
-                                                      "In DICOM" => "In DICOM Archives",
-                                                      "Missing"  => "Missing",
-                                                     ),
-                               'scanLocation'     => $scan_location,
-                               'qCStatus'         => array(
-                                                      "Pass" => "Pass",
-                                                      "Fail" => "Fail",
-                                                     ),
-                               'uploadedBy'       => $uploaderList,
-                               'selected'         => array(
-                                                      "True"  => "True",
-                                                      "False" => "False",
-                                                     ),
-                               'hidden'           => $hiddenOptions,
-                              ];
+        $this->fieldOptions
+            = [
+               'site'             => $siteList,
+               'project'          => $projectList2,
+               'subproject'       => $subprojectList2,
+               'scanType'         => $scan_types,
+               'mRIParameterForm' => array(
+                                      "Incomplete" => "Incomplete",
+                                      "Complete"   => "Complete",
+                                     ),
+               'scanDoneInMRIPF'  => array(
+                                      "Yes" => "Yes",
+                                      "No"  => "No",
+                                     ),
+               'tarchive'         => array(
+                                      "In DICOM" => "In DICOM Archives",
+                                      "Missing"  => "Missing",
+                                     ),
+               'scanLocation'     => $scan_location,
+               'qCStatus'         => array(
+                                      "Pass" => "Pass",
+                                      "Fail" => "Fail",
+                                     ),
+               'uploadedBy'       => $uploaderList,
+               'selected'         => array(
+                                      "True"  => "True",
+                                      "False" => "False",
+                                     ),
+               'hidden'           => $hiddenOptions,
+              ];
 
         return true;
     }
