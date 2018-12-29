@@ -1,0 +1,1 @@
+Everything any developer would need to be able to contribute to loris.
