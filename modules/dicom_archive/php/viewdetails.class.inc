@@ -288,9 +288,9 @@ class ViewDetails extends \NDB_Form
         }
         if (!isset($protocolMin) && !isset($protocolMax)) {
             return false;
-        } elseif (isset($protocolMin) && $protocolMax == NULL) {
+        } elseif (isset($protocolMin) && $protocolMax == null) {
             return $protocolMin <= $seriesRange;
-        } elseif (!isset($protocolMax) && $protocolMin == NULL) {
+        } elseif (!isset($protocolMax) && $protocolMin == null) {
             return $seriesRange <= $protocolMax;
         } else {
             return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
@@ -355,16 +355,16 @@ class ViewDetails extends \NDB_Form
       *
       * @return \LORIS\BreadcrumbTrail
       */
-     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-     {
-         $label = ucwords(str_replace('_', ' ', $this->name));
-         return new \LORIS\BreadcrumbTrail(
-             new \LORIS\Breadcrumb($label, "/$this->name"),
-             new \LORIS\Breadcrumb(
-                 'View Details',
-                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
-             )
-         );
-     }
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'View Details',
+                "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
+            )
+        );
+    }
 }
 ?>
