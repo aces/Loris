@@ -125,9 +125,9 @@ case 'nrrd':
     break;
 case 'DICOMTAR':
     // ADD case for DICOMTAR
-    $FullPath         = $tarchivePath . '/' . $File;
-    $MimeType         = 'application/x-tar';
-    $PatientName      = $_GET['patientName'] ?? '';
+    $FullPath    = $tarchivePath . '/' . $File;
+    $MimeType    = 'application/x-tar';
+    $PatientName = $_GET['patientName'] ?? '';
     break;
 default:
     $FullPath = $DownloadPath . '/' . $File;
