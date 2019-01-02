@@ -48,16 +48,13 @@ class UserPermissions
      *
      * @return bool true if the user exists, false otherwise
      */
-    function select(string $username): bool
+    function select(?string $username): bool
     {
-        // create DB object
-        $DB = \Database::singleton();
-
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = array('UName' => $username);
 
-        $this->userID = $DB->pselectOne($query, $params);
+        $this->userID = \Database::singleton()->pselectOne($query, $params);
         if (empty($this->userID)) {
             return false;
         }
