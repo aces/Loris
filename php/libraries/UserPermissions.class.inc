@@ -2,7 +2,7 @@
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -44,7 +44,7 @@ class UserPermissions
      *
      * Fills the permissions property based on username
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return bool true if the user exists, false otherwise
      */
