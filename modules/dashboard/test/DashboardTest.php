@@ -744,4 +744,4 @@ class DashboardTest extends LorisIntegrationTest
     }
 
 }
-?>
+

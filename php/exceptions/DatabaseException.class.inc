@@ -46,4 +46,4 @@ class DatabaseException extends LorisException
         );
     }
 }
-?>
+

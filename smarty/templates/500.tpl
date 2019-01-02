@@ -1,6 +1,4 @@
 <div class="container">
-{foreach from=$error_message item=message}
-    <h2>{$message}</h2>
-{/foreach}
+    <h3>{$message}</h3>
     <div><a href="{$baseurl}">Go to main page</a></div>
 </div>

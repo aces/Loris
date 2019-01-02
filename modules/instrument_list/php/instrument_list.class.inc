@@ -82,11 +82,11 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
-            throw new \LorisException("Page requires a timepoint to load");
+            throw new \NotFound("Page requires a timepoint to load");
         }
         $candidate = $this->candidate;
         if ($candidate === null) {
-            throw new \LorisException("Page requires a candidate to load");
+            throw new \NotFound("Page requires a candidate to load");
         }
 
         //These variable are only for checking the permissions.
@@ -293,9 +293,9 @@ class Instrument_List extends \NDB_Menu_Filter
      * @param string $candID    the value of candID
      * @param string $sessionID the value of sessionID
      *
-     * @return void
+     * @return string
      */
-    function getFeedbackPanel($candID, $sessionID)
+    function getFeedbackPanel($candID, $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();

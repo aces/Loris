@@ -49,4 +49,4 @@ if ($user->hasPermission('document_repository_view')
     );
 }
 
-?>
+

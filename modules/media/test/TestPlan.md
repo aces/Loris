@@ -16,17 +16,16 @@ In order to use the media module the user might need one or both of the followin
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
-2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label, Instrument and Site)
-3. **Upload** new files associated to a specific timepoint
+2. **Upload** new files associated to a specific timepoint
   - PSCID, Visit Label and Instrument are required fields for all uploaded files
   - File name should always start with [PSCID]\_[Visit Label]\_[Instrument]
-4. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database.
+3. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database.
 
 ---
 
 ### 💻 Testing Procedure
 
-**Install Module** 
+**Install Module** -- [Automation Testing] 
   1. Run associated SQL patch to create a "media" table and add "Media" module under _Clinical_ section in Loris.
 
 
@@ -61,7 +60,7 @@ In order to use the media module the user might need one or both of the followin
   8. Once the file finished uploading a success message should appear on top of the page and fade away in a couple of seconds
   9. Click on browse tab and make sure the file you just uploaded is shown in data table
 
-**Test file browsing**
+**Test file browsing** 
   1. After a couple of files are uploaded, make sure they are properly displayed in the data table
   2. Make sure that information in the data table corresponds to the information in the database (media table)
   3. Click on 👉  **column headers** to make sure sorting functionality is working as expected (Ascending/Descending)
@@ -83,7 +82,7 @@ In order to use the media module the user might need one or both of the followin
     - Click 👉 **Update File** and go back to **Browse** tab under ```$LORISURL/media/```. The file should no longer be displayed in the data table (unless the user has superuser permissions).
     - _Note: only a person with direct database access could revert the hide file action._
 
-**Test filters**
+**Test filters** [Automation Testing]
   1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, File name, For Site, File type and Uploaded by.
     - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
     - Default option of dropdown should be blank.

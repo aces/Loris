@@ -25,7 +25,6 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
-    - npm install
     - make dev
     - phpenv rehash
 
@@ -42,8 +41,6 @@ install:
     - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
 
 before_script:
-
-
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
@@ -90,6 +87,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - make checkstatic
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise

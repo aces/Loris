@@ -73,4 +73,4 @@ $sessionResults = array_values(
     )
 );
 print json_encode($sessionResults);
-?>
+

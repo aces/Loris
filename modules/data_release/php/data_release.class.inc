@@ -109,4 +109,4 @@ class Data_Release extends \NDB_Menu_Filter
 
 }
 
-?>
+

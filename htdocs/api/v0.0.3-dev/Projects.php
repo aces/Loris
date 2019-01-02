@@ -99,4 +99,4 @@ if (isset($_REQUEST['PrintProjects'])) {
     $obj = new Projects($_SERVER['REQUEST_METHOD']);
     print $obj->toJSONString();
 }
-?>
+

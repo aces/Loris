@@ -77,4 +77,4 @@ if ($user->hasPermission('document_repository_view')
     $Notifier->notify($msg_data);
 }
 
-?>
+

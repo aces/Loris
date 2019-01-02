@@ -261,4 +261,4 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 
 
 }
-?>
+

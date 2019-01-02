@@ -108,4 +108,4 @@ class TrainingTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
 }
-?>
+

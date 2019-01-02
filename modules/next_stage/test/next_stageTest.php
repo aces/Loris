@@ -210,4 +210,4 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Next stage started.", $bodyText);
     }
 }
-?>
+

@@ -36,4 +36,4 @@ if ($_POST['action'] == 'addpermission') {
     echo "There was an error adding permissions";
 }
 
-?>
+

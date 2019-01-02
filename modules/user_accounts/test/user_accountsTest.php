@@ -385,4 +385,4 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 }
-?>
+

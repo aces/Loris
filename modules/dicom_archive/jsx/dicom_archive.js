@@ -159,6 +159,7 @@ class DicomArchive extends Component {
     return (
       <FilterableDataTable
         name="dicom_filter"
+        title='Dicom Archive'
         data={this.state.data.data}
         fields={fields}
         getFormattedCell={this.formatColumn}

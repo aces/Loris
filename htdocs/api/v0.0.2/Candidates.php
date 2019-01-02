@@ -244,4 +244,4 @@ if (isset($_REQUEST['PrintCandidates'])) {
     }
     print $obj->toJSONString();
 }
-?>
+

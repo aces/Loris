@@ -181,4 +181,4 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->_testFilter("full_name", self::$newData['full_name']);
     }
 }
-?>
+

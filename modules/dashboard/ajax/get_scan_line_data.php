@@ -107,4 +107,4 @@ function getScanData($siteID, $labels)
     return $data;
 }
 
-?>
+
