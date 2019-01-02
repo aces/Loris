@@ -97,10 +97,14 @@ class Module extends \Module
 
         // Strip the version and add it to a request attribute, then let the default
         // module handler kick in to delegate to the appropriate page.
-        $newurl     = $request->getURI()->withPath($endpoint);
+        $newurl = $request->getURI()->withPath($endpoint);
+        // Split the url into parts to form a queue for the endpoints to delegate
+        // the request to subendpoints
+        $pathparts  = explode('/', $newurl->getPath());
         $newrequest = $request
             ->withURI($newurl)
-            ->withAttribute("LORIS-API-Version", $version);
+            ->withAttribute("LORIS-API-Version", $version)
+            ->withAttribute('pathparts', $pathparts);
 
         $parentresp = parent::handle($newrequest);
         switch ($parentresp->getStatusCode()) {
