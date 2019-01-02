@@ -33,10 +33,10 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
-     * @param string $user UserID
+     * @param \User $user UserID
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess(\User $user) : bool
     {
@@ -47,14 +47,14 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
     /**
      * Create a form to filter behavioral QC by various criteria
      *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
+     * @return void
+     * @throws \ConfigurationException
+     * @throws \DatabaseException
+     * @throws \Exception
      */
-    function _setFilterForm()
+    function _setFilterForm(): void
     {
-        $user      =& \User::singleton();
+        $user      = \User::singleton();
         $db        = \Database::singleton();
         $siteList  = array();
         $visitList = \Utility::getVisitList();
@@ -114,10 +114,10 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
     /**
      * Build a list of behavioural QC to display in Data Table
      *
-     * @return bool
-     * @throws DatabaseException
+     * @return void
+     * @throws \DatabaseException
      */
-    function _setupVariables()
+    function _setupVariables(): void
     {
         $db = \Database::singleton();
         $this->skipTemplate = true;
@@ -165,7 +165,6 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
                            'PSCID',
                            'Instrument',
                           ];
-        return true;
     }
 
     /**
