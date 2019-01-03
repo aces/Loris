@@ -1,37 +1,11 @@
 <?php
 
 /**
- * After running this script, a user should be able to go from an outdated LORIS
- * instance to the newest install without issue.
- *
- * This includes having the latest minor release files, third-party packages
- * (apt, npm, composer), PHP Version, etc.
- *
- * ## Details
- *
- * Specifically:
- *
- *- [x] **Creates a back up of `$LORIS_root`**
- *
- *- [x] (If not on a development instance) **Downloads the release source code
- *      and overwrites `$LORIS_root`**
- *
- *- [x] **Ensures that apt dependencies are installed and up-to-date**
- *
- *- [x] **Runs 3rd-party package managers** (npm and composer)
- *
- *- [x] **Outputs a list of SQL patches** for the user to apply manually
- *      (including development patches if on a LORIS dev instance)
- *
- *- [x] **Provides a lot of output** to assist the user in what's going on.
- *
- * Assumptions:
- *
- * As of now there is no "rollback" feature. `rsync` is used to overwrite the
- * LORIS-root source code from the unzipped release folder. A backup is created,
- * but should something go wrong with `rsync`, the user will need to restore the
- * source code files manually. In this case, an error message is displayed and
- * the script will exit.
+ * This script takes as input a 'from' version and a 'to' version and returns
+ * a list of SQL patches to be run in order to update LORIS from one version to
+ * another. Optionally this script can automatically apply the correct sequence
+ * of patches. This can only be done if the interval between the supplied
+ * versions is not greater than one major release of LORIS.
  *
  * The function to retrieve patches is heavily dependent on the way we organize
  * and name SQL files. If the directory structure changes, this functionality
@@ -49,73 +23,10 @@ require __DIR__ . '/PHP_CLI_Helper.class.inc';
 require_once __DIR__ . '/generic_includes.php';
 
 error_reporting(E_ALL);
-/* Do validation and CLI flag processing */
-$required_major_php = 7; //TODO: Update these values as time passes
-$required_minor_php = 2;
-$required_major_apache = 2;
-$required_minor_apache = 4;
-// PHP version required for LORIS.
-$required_php = "$required_major_php.$required_minor_php";
-if (PHP_MAJOR_VERSION < $required_major_php
-    || PHP_MINOR_VERSION < $required_minor_php
-) {
-    die(
-        "[-] ERROR: {$argv[0]} and LORIS require PHP v$required_php or higher."
-        . PHP_EOL
-    );
-}
-// PHP version required for LORIS.
-$apache_info = shell_exec('apache2 -v');
-/* Look for the string "$major.$minor" in info string. Also match on versions
- * higher than minor version because we want AT LEAST that version.
- */
-$pattern = "/$required_major_apache\.[$required_minor_apache-9]/";
-if (preg_match($pattern, $apache_info) === 0) {
-    $required_apache = "$required_major_apache.$required_minor_apache";
-    die(
-        "[-] ERROR: LORIS requires Apache v$required_apache or higher."
-        . PHP_EOL
-    );
-}
-
-// Check that the backup directory argument is present and valid
-$backup_dir = $argv[1] ?? '';
-if (!is_dir($backup_dir)) {
-    echo '[-] ERROR: Argument suppled for backup directory is not a valid '
-        . 'directory.' . PHP_EOL;
-    die(usageString());
-}
 // Only apply SQL patches if user explicitly requests it
 $apply_patches = false;
 if (in_array('--apply-patches', $argv, true)) {
     $apply_patches = true;
-}
-
-/* BEGIN UPDATE PROCESS */
-
-/* Below are all the apt packages required for LORIS to run.
- *      @see: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
- */
-$loris_requirements = [
-                       "wget",
-                       "zip",
-                       "unzip",
-                       "php-json",
-                       "npm",
-                       "software-properties-common",
-                       "php-ast",
-                       "php$required_php",
-                       "php$required_php-mysql",
-                       "php$required_php-xml",
-                       "php$required_php-json",
-                       "php$required_php-mbstring",
-                       "php$required_php-gd",
-                       "libapache2-mod-php$required_php",
-                      ];
-// Update apt packages.
-echo '[**] Updating required packages...' . PHP_EOL;
-if (updateRequiredPackages($loris_requirements)) {
-    echo '[**] Required apt packages up-to-date.' . PHP_EOL;
 }
 
 // Create db connection and get LORIS version info.
@@ -125,20 +36,6 @@ $db        = \Database::singleton();
 
 $paths     = $config->getSetting('paths');
 $loris_root_dir = $paths['base'];
-// Update other dependencies via e.g. composer and npm
-echo '[**] Updating dependencies via package managers...' . PHP_EOL;
-chdir($loris_root_dir); // Composer will fail if not in LORIS root
-if (runPackageManagers()) {
-    echo '[**] Dependencies up-to-date.' . PHP_EOL;
-}
-
-// Update source code.
-
-
-$preupdate_version = getVersionFromLORISRoot($loris_root_dir);
-$info            = json_decode(getLatestReleaseInfo());
-$release_version = $info->{'tag_name'};
-$release_version = substr($release_version, 1); // remove leading 'v'
 
 // Require a confirm flag so nothing is overwritten by accident
 if (!in_array('--confirm', $argv, true)) {
@@ -151,8 +48,6 @@ if (!in_array('--confirm', $argv, true)) {
     die(usageString());
 }
 // Display some info and wait so the user can read it.
-echo 'This script will prompt for superuser privileges,'
-    . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
 echo 'You may wish to review code changes tagged with "Caveat For '
     . 'Existing Projects" as they may include changes to your workflow. '
     . PHP_EOL
@@ -163,12 +58,6 @@ sleep(3);
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
 echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
-echo "[**] Updating LORIS source code "
-    . "($preupdate_version --> $release_version)" . PHP_EOL;
-if (updateSourceCode($loris_root_dir, $backup_dir)) {
-    echo '[+] LORIS source code files successfully updated.' . PHP_EOL;
-}
-
 
 // Print required SQL patches and commands needed to apply them
 if ($apply_patches === true && $preupdate_version === '?') {
@@ -192,84 +81,6 @@ if ($apply_patches === true && $preupdate_version === '?') {
 }
 echo "[***] Done." . PHP_EOL;
 
-/**
- * Creates a backup of LORIS root.  Downloads and extracts new files from
- * the newest release on Github.  Overwrites source code with new files.  Script
- * will die on certain errors.
- *
- * @param string $loris_root_dir The directory where LORIS is installed
- * @param string $backup_dir     The directory prefix where backups are stored.
- *
- * @return bool True if rsync executes successfully, false otherwise.
- */
-function updateSourceCode(string $loris_root_dir, string $backup_dir) : bool
-{
-    // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
-    $backup_dir      .= 'bkp-LORIS';
-    $version_filepath = $loris_root_dir . 'VERSION';
-    $backup_dir      .= '_v' . getVersionFromLORISRoot($loris_root_dir);
-    $backup_dir      .= '_' . date("j-M-Y") . '/'; // e.g. 10-May-2018
-    echo "[*] Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
-    recurseCopy($loris_root_dir, $backup_dir);
-
-    // Get the release code from Github
-    $tarball_path = downloadLatestRelease();
-    if (empty($tarball_path)) {
-        die('[-] ERROR: Could not download the latest LORIS release.');
-    }
-    $dst_dir = '/tmp/'; // Parent directory for source code download
-    echo '[*] Extracting release files...' . PHP_EOL;
-    $cmd = "unzip -o " . escapeshellarg($tarball_path) . ' -d '
-        . escapeshellarg($dst_dir);
-    doExec($cmd);
-
-    // Find the file name for the release just downloaded
-    $release_dir = '';
-    foreach (glob("$dst_dir*") as $filename) {
-        if (strpos($filename, '/aces-Loris-') !== false) {
-            $release_dir = $filename;
-        }
-    }
-    if (empty($release_dir)) {
-        die("[-] ERROR: Could not find downloaded files in $dst_dir" . PHP_EOL);
-    }
-    // Use rsync to overwrite files in $loris_root
-    echo '[*] Overwriting old source code files.'  . PHP_EOL;
-    $cmd = 'rsync -r ' . escapeshellarg($release_dir) . ' ' .
-        escapeshellarg($loris_root_dir);
-    return doExec($cmd);
-}
-
-/**
- * Ensures required packages and their repositories are known to the server
- * and are up-to-date.
- *
- * @param array $requirements Apt packages required by LORIS.
- *
- * @return bool True if all packages installed and up-to-date. False otherwise.
- */
-function updateRequiredPackages($requirements) : bool
-{
-    // we need 3rd party PPA to get the latest PHP on Ubuntu
-    echo '[*] Adding external PPAs...' . PHP_EOL;
-    // -y flag required to suppress a message from the author
-    // TODO: check if these already exist before adding
-    exec('sudo apt-add-repository ppa:ondrej/php -y');
-    exec('sudo apt-add-repository ppa:ondrej/apache2 -y');
-
-    echo '[*] Updating apt package list...' . PHP_EOL;
-    exec('sudo apt-get update');
-    // die unless all required packages are installed and up-to-date
-    if (!(installMissingRequirements($requirements))
-        && (installAptPackages($requirements)))
-    {
-        die(
-            'Could not upgrade all required packages. Exiting.'
-            . PHP_EOL
-        );
-    }
-    return true;
-}
 
 /**
  * Returns a list of SQL patch files to apply based on LORIS version
@@ -546,113 +357,6 @@ function getMissingPrivileges(string $patch, $db_config) {
 }
 
 /**
- * Prints a list of missing apt packages and prompts user to install them.
- *
- * @param array $requirements Required packages determined missing earlier
- *
- * @return bool True if all packages install properly. False otherwise.
- */
-function installMissingRequirements(array $requirements): bool
-{
-    $to_install = getMissingRequirements($requirements);
-    if (empty($to_install)) {
-        return true;
-    }
-    echo '[-] Required package(s) not installed:' . PHP_EOL;
-    foreach ($to_install as $tool) {
-        echo "\t* {$tool}" . PHP_EOL;
-    }
-    $answers       = [
-                      'Y',
-                      'n',
-                     ];
-    $defaultAnswer = 'Y';
-    writeQuestion('Install now?', $answers);
-    $answer = readAnswer($answers, $defaultAnswer);
-    if ($answer != 'Y') {
-        echo '[-] Not installing requirements...' . PHP_EOL;
-        return false;
-    }
-    echo '[*] Installing requirements...' . PHP_EOL;
-    return installAptPackages($to_install);
-}
-
-/**
- * Takes an array of packages to install using apt-get.  Uses exec to install
- * or upgrade apt packages based on $upgrade_mode.
- *
- * @param array $packages     List of apt packages to install
- * @param bool  $upgrade_mode If true, only upgrades packages. False to install
- *
- * @return bool true if all packages installed properly. False otherwise.
- */
-function installAptPackages($packages, $upgrade_mode = false) : bool
-{
-    foreach ($packages as $package) {
-        if (installAptPackage($package, $upgrade_mode) !== true) {
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
- * Installs or upgrades an individual apt package.
- *
- * @param string $name         Name of package to install
- * @param bool   $only_upgrade Whether to upgrade or install a package
- *
- * @return bool True if package installed/upgraded successfull. Otherwise false
- */
-function installAptPackage($name, $only_upgrade = false) : bool
-{
-    if ($only_upgrade) {
-        $cmd = "sudo apt-get install --only-upgrade ";
-    } else {
-        $cmd = "sudo apt-get install ";
-    }
-    $cmd .= escapeshellarg($name);
-    return doExec($cmd);
-}
-
-/**
- * Runs 3rd-party package managers using exec
- *
- * @return bool True if all commands execute correctly. False otherwise
- */
-function runPackageManagers() : bool
-{
-    $cmd = 'composer install';
-    if (doExec($cmd) === false) {
-        return false;
-    }
-
-    $cmd = 'composer dump-autoload';
-    if (doExec($cmd) === false) {
-        return false;
-    }
-
-    $cmd = 'npm install';
-    if (doExec($cmd) === false) {
-        return false;
-    }
-    return true;
-}
-
-/**
- * Use wget to query Github API for latest LORIS release info
- *
- * @return string JSON data from Github API
- */
-function getLatestReleaseInfo() : string
-{
-    // get latest release based on GithubAPI
-    $release_url = 'https://api.github.com/repos/aces/Loris/releases/latest';
-    // capture json content using wget in quiet mode, reading from STDIN
-    return shell_exec('wget -qnv -O - ' . escapeshellarg($release_url));
-}
-
-/**
  * Slurps VERSION file in LORIS root and returns contents
  *
  * @param string $loris_root_dir The directory where LORIS is installed
@@ -672,106 +376,6 @@ function getVersionFromLORISRoot($loris_root_dir) : string
 }
 
 /**
- * Download zipped LORIS release code to $download_path
- *
- * @param string $download_path Path to release code download.
- *
- * @return string The download path if one exists, otherwise the empty string.
- */
-function downloadLatestRelease($download_path = '/tmp/loris_') : string
-{
-    echo "[-] Querying for latest release version... ";
-    $j = json_decode(getLatestReleaseInfo());
-    echo 'Got ' . $j->{'tag_name'} . PHP_EOL;
-    $download_path .= $j->{'tag_name'}; // include
-
-    $src_code_url   = $j->{'zipball_url'};
-    $download_path .= '.zip';
-    if (file_exists($download_path)) {
-        echo "[-] $download_path already exists. Not downloading." . PHP_EOL;
-        return $download_path;
-    }
-    $cmd = "wget -qnv -O $download_path $src_code_url";
-    exec($cmd, $output, $status);
-    if ($status !== 0) {
-        echo bashErrorToString($cmd, $output, $status);
-        return '';
-    }
-    return $download_path;
-}
-
-/**
- * Check if all tools in $required are installed
- *
- * @param array $required Packages required by LORIS
- *
- * @return array of names of missing requirements
- */
-function getMissingRequirements($required) : array
-{
-    $missing = [];
-    foreach ($required as $tool) {
-        if (!installed($tool)) {
-            echo "MISSING: $tool" .PHP_EOL;
-            $missing[] = $tool;
-        }
-    }
-
-    return $missing;
-}
-
-/**
- * Recursively copies a directory.  Items in $blacklist are not copied.
- *
- * @param string $src Path to directory to be copied
- * @param string $dst Path to the new copy
- *
- * @return void
- *
- * @link https://secure.php.net/manual/en/function.copy.php#91010
- */
-function recurseCopy($src, $dst) : void
-{
-    $blacklist = [
-                  '.',
-                  '..',
-                  '.git', // let git handle this
-                  'vendor', // let composer handle this
-                  'user_uploads', // could be very large files
-                  'templates_c', // no need to backup compiled files
-                 ];
-    $dir       = opendir($src);
-    if (file_exists($dst)) {
-        echo "[-] WARNING: $dst already exists. Not backing up." . PHP_EOL;
-        return;
-    }
-    mkdir($dst);
-    while (false != ( $file = readdir($dir)) ) {
-        // don't backup files in the blacklist
-        foreach ($blacklist as $item) {
-            if ($file === $item) {
-                continue 2;
-            }
-        }
-        if (!is_readable($src . '/' . $file)) {
-            $out = "[-] WARNING: Insufficient permissions to read $file";
-            if (is_dir($src . '/' . $file)) {
-                $out .= '/';
-            }
-            $out .= '. This file/folder will not be backed up.' . PHP_EOL;
-            echo $out;
-            continue;
-        }
-        if (is_dir($src . '/' . $file) ) {
-            recurseCopy($src . '/' . $file, $dst . '/' . $file);
-        } else {
-            copy($src . '/' . $file, $dst . '/' . $file);
-        }
-    }
-    closedir($dir);
-}
-
-/**
  * Returns a string displaying the proper usage of this script
  *
  * @return string Usage information
@@ -779,9 +383,7 @@ function recurseCopy($src, $dst) : void
 function usageString() : string
 {
     $flags = [
-              '<backup-directory>',
               '--confirm',
-              '[--apply-patches]',
              ];
     return 'Usage: php update.php ' . implode(' ', $flags) . PHP_EOL;
 }
