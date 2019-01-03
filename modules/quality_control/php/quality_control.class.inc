@@ -34,10 +34,10 @@ class Quality_Control extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
-     * @param string $user UserID
+     * @param \User $user UserID
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess(\User $user) : bool
     {
@@ -53,7 +53,7 @@ class Quality_Control extends \NDB_Menu_Filter
      *
      * @return array $scan_types of desired scan types.
      */
-    function _getScanTypes()
+    function _getScanTypes(): array
     {
         $config = \NDB_Config::singleton();
         $db     = \Database::singleton();
@@ -100,7 +100,7 @@ class Quality_Control extends \NDB_Menu_Filter
      *
      * @return string $query for the given modality
      */
-    function _buildQuery($scan_type, $scan_done, $acqID)
+    function _buildQuery($scan_type, $scan_done, $acqID): string
     {
 
         $select =  " SELECT DISTINCT
@@ -175,12 +175,12 @@ class Quality_Control extends \NDB_Menu_Filter
     /**
      * Create a form to filter behavioral QC by various criteria
      *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
+     * @return void
+     * @throws \ConfigurationException
+     * @throws \DatabaseException
+     * @throws \Exception
      */
-    function _setFilterForm()
+    function _setFilterForm(): void
     {
         $user      =& \User::singleton();
         $db        =& \Database::singleton();
@@ -328,18 +328,17 @@ class Quality_Control extends \NDB_Menu_Filter
                'hidden'           => $hiddenOptions,
               ];
 
-        return true;
     }
     /**
      * Build a list of imaging QC to display in Data Table
      *
-     * @return bool
-     * @throws DatabaseException
+     * @return void
+     * @throws \DatabaseException
      */
-    function _setupVariables()
+    function _setupVariables(): void
     {
 
-        $db =& \Database::singleton();
+        $db = \Database::singleton();
         $this->skipTemplate = true;
 
         $scan_types = $this->_getScanTypes();
@@ -434,8 +433,6 @@ class Quality_Control extends \NDB_Menu_Filter
                           'Selected',
                           'CommentID',
                          ];
-
-        return true;
     }
 
     /**
