@@ -35,7 +35,7 @@ class Modal extends React.Component {
     if (this.props.throwWarning) {
       swal({
         title: 'Are You Sure?',
-        text: 'Leaving the form will result in the loss of any information' +
+        text: 'Leaving the form will result in the loss of any information ' +
           'entered.',
         type: 'warning',
         showCancelButton: true,
