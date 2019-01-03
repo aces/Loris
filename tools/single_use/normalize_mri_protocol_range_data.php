@@ -99,7 +99,9 @@ foreach ($tables_to_normalize as $table) {
     split_ranges($table, $printToSQL, $output);
 }
 $filename = __DIR__ . "/../../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
-echo("Please run the SQL patch found in: " . $filename . "\n"); 
+if ($printToSQL) {
+    echo("Please run the SQL patch found in: " . $filename . "\n");
+}
 
 function _exportSQL ($output) {
     //export file
