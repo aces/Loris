@@ -149,7 +149,7 @@ chmod 770 ../smarty/templates_c
 os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
 
 debian=("Debian" "Ubuntu")
-redhat=("Red" "CentOS" "Fedora") 
+redhat=("Red" "CentOS" "Fedora" "Oracle") 
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
