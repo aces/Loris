@@ -9,7 +9,7 @@
 class NewProfileIndex extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state        = {
             data: {},
             configData: {},
             formData: {},
@@ -19,8 +19,8 @@ class NewProfileIndex extends React.Component {
             errMessage: '',
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.setFormData = this.setFormData.bind(this);
-        this.fetchData = this.fetchData.bind(this);
+        this.setFormData  = this.setFormData.bind(this);
+        this.fetchData    = this.fetchData.bind(this);
     }
 
     /**
@@ -49,7 +49,7 @@ class NewProfileIndex extends React.Component {
     }
 
     validate() {
-        const data = this.state.formData;
+        const data  = this.state.formData;
         let isError = false;
         if (data.dateTaken !== data.dateTakenConfirm) {
             isError = true;
@@ -73,10 +73,10 @@ class NewProfileIndex extends React.Component {
         e.preventDefault();
         const err = this.validate();
         this.setState(
-                {
-                    errMessage: '',
+            {
+                errMessage: '',
                 }
-            );
+        );
         if (!err) {
             this.setState(
                 {
@@ -115,7 +115,7 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
     setFormData(formElement, value) {
-        let formData = JSON.parse(JSON.stringify(this.state.formData));
+        let formData          = JSON.parse(JSON.stringify(this.state.formData));
         formData[formElement] = value;
 
         this.setState(
@@ -127,114 +127,114 @@ class NewProfileIndex extends React.Component {
 
      render() {
             let profile = null;
-            let edc = null;
+            let edc     = null;
             let project = null;
-            let pscid = null;
+            let pscid   = null;
             if (this.state.configData['useProject'] === 'true') {
-                project =
+                project        =
                 <div>
                  <SelectElement
-                   name ="project"
-                   label ="Project"
-                   options ={this.state.configData.project}
+                   name        ="project"
+                   label       ="Project"
+                   options     ={this.state.configData.project}
                    onUserInput ={this.setFormData}
-                   ref ="project"
-                   value ={this.state.formData.project}
-                   required ={true}
+                   ref         ="project"
+                   value       ={this.state.formData.project}
+                   required    ={true}
                  />
                 </div>;
             }
             if (this.state.configData['edc'] === 'true') {
-                edc =
+                edc            =
                  <div>
                  <DateElement
-                   name ="edcDateTaken"
-                   label ="Expected Date of Confinement"
-                   minYear ="2000"
-                   maxYear ="2017"
+                   name        ="edcDateTaken"
+                   label       ="Expected Date of Confinement"
+                   minYear     ="2000"
+                   maxYear     ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="edcDateTaken1"
-                   value ={this.state.formData.edcDateTaken}
-                   required ={true}
+                   ref         ="edcDateTaken1"
+                   value       ={this.state.formData.edcDateTaken}
+                   required    ={true}
                  />
                  <DateElement
-                   name ="edcDateTakenConfirm"
-                   label ="Confirm EDC"
-                   minYear ="2000"
-                   maxYear ="2017"
+                   name        ="edcDateTakenConfirm"
+                   label       ="Confirm EDC"
+                   minYear     ="2000"
+                   maxYear     ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="edcDateTaken2"
-                   value ={this.state.formData.edcDateTakenConfirm}
-                   required ={true}
+                   ref         ="edcDateTaken2"
+                   value       ={this.state.formData.edcDateTakenConfirm}
+                   required    ={true}
                  />
                  </div>;
             }
             if (this.state.configData['pscidSet'] === 'true') {
-                pscid =
+                pscid          =
                 <div>
                   <TextboxElement
-                   name ="pscid"
-                   label ="PSCID"
+                   name        ="pscid"
+                   label       ="PSCID"
                    onUserInput ={this.setFormData}
-                   ref ="pscid"
-                   value ={this.state.formData.pscid}
-                   required ={true}
+                   ref         ="pscid"
+                   value       ={this.state.formData.pscid}
+                   required    ={true}
                   />
                 </div>;
             }
             if (!this.state.isCreated) {
-                profile =
+                profile   =
                 <FormElement
-                 name ="newProfileForm"
+                 name     ="newProfileForm"
                  onSubmit ={this.handleSubmit}
-                 ref ="form"
+                 ref      ="form"
                 >
-                 <label className="error">{this.state.errMessage}</label>
+                 <label className ="error">{this.state.errMessage}</label>
                  <DateElement
-                   name ="dateTaken"
-                   label ="Date of Birth"
-                   minYear ="2000"
-                   maxYear ="2017"
-                   onUserInput ={this.setFormData}
-                   ref ="dateTaken1"
-                   value ={this.state.formData.dateTaken}
-                   required ={true}
+                   name           ="dateTaken"
+                   label          ="Date of Birth"
+                   minYear        ="2000"
+                   maxYear        ="2017"
+                   onUserInput    ={this.setFormData}
+                   ref            ="dateTaken1"
+                   value          ={this.state.formData.dateTaken}
+                   required       ={true}
                  />
                  <DateElement
-                   name ="dateTakenConfirm"
-                   label ="Date of Birth Confirm"
-                   minYear ="2000"
-                   maxYear ="2017"
-                   onUserInput ={this.setFormData}
-                   ref ="dateTaken2"
-                   value ={this.state.formData.dateTakenConfirm}
-                   required ={true}
+                   name           ="dateTakenConfirm"
+                   label          ="Date of Birth Confirm"
+                   minYear        ="2000"
+                   maxYear        ="2017"
+                   onUserInput    ={this.setFormData}
+                   ref            ="dateTaken2"
+                   value          ={this.state.formData.dateTakenConfirm}
+                   required       ={true}
                  />
                  {edc}
                  <SelectElement
-                   name ="gender"
-                   label ="Gender"
-                   options ={this.state.configData.gender}
-                   onUserInput ={this.setFormData}
-                   ref ="gender"
-                   value ={this.state.formData.gender}
-                   required ={true}
+                   name           ="gender"
+                   label          ="Gender"
+                   options        ={this.state.configData.gender}
+                   onUserInput    ={this.setFormData}
+                   ref            ="gender"
+                   value          ={this.state.formData.gender}
+                   required       ={true}
                  />
                  <SelectElement
-                   name ="site"
-                   label ="Site"
-                   options ={this.state.configData.site}
-                   onUserInput ={this.setFormData}
-                   ref ="site"
-                   value ={this.state.formData.site}
-                   required ={true}
+                   name           ="site"
+                   label          ="Site"
+                   options        ={this.state.configData.site}
+                   onUserInput    ={this.setFormData}
+                   ref            ="site"
+                   value          ={this.state.formData.site}
+                   required       ={true}
                  />
                  {pscid}
                  {project}
-                 <ButtonElement label ="Create" id="button"/>
+                 <ButtonElement label ="Create" id ="button"/>
                 </FormElement>;
             } else {
-                profile =
+                profile    =
                 <div>
                 <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid}</p>
                 <p><a href ={'/' + this.state.newData.candID}>Access this candidate</a></p>
@@ -251,7 +251,7 @@ class NewProfileIndex extends React.Component {
     $(
         function() {
             const newProfileIndex = (
-            <div className ="page-document">
+            <div className        ="page-document">
             <NewProfileIndex />
             </div>
             );

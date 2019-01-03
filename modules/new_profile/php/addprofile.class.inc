@@ -57,14 +57,53 @@ class Addprofile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-//todo : import ajax file and return with dccid and pcsid
+        //todo : import ajax file and return with dccid and pcsid
+        //       $data   = json_decode($request->getBody()->getContents(), true);
+        //        json_encode($request->getParsedBody())
+        $data = $request->getParsedBody();
+        reset($data);
+        $values    = json_decode(key($data), true);
+        $DB        = \Database::singleton();
+        $user      = \User::singleton();
+        $config    = \NDB_Config::singleton();
+        $site_arr  = $user->getData('CenterIDs');
+        $num_sites = count($site_arr);
+        if ($num_sites >1) {
+            $candID = \Candidate::createNew(
+                $values['site'],
+                $values['dateTaken'],
+                $values['edcDateTaken'] ?? null,
+                $values['gender'],
+                $values['pscid'] ?? null
+            );
+        } else {
+            $centerIDs = $user->getData('CenterIDs');
+            $centerID  = $centerIDs[0];
+            $candID    = \Candidate::createNew(
+                $centerID,
+                $values['dateTaken'],
+                $values['edcDateTaken'] ?? null,
+                $values['gender'],
+                $values['pscid'] ?? null
+            );
+        }
+        // get the candidate
+        $candidate = \Candidate::singleton($candID);
+        // setup the project for candidate
+        if (isset($values['project'])) {
+            $candidate->setData(array('ProjectID' => $values['project']));
+        }
+        $result           = array();
+        $result['candID'] = $candID;
+        $result['pscid']  = $candidate->getPSCID();
+
         return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($request->getParsedBody())
+                        json_encode($result)
                     )
                 );
     }
