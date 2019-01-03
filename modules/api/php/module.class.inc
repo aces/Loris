@@ -127,6 +127,9 @@ class Module extends \Module
                     );
         }
 
+        // This disregards the parent handler from the base module class, because most of the work
+        // it does (adding page decoration middleware, delegating to a sub-page class in the Module, etc)
+        // is not relevant for the API module.
         $response = $handler->handle($newrequest);
         switch ($response->getStatusCode()) {
         case 401:
