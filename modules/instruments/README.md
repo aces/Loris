@@ -1,4 +1,4 @@
-# Instrument List
+# Instruments Module
 
 ## Purpose
 
