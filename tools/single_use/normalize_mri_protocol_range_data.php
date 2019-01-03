@@ -2,9 +2,14 @@
 /**
  * This script is the part of the second step for normalizing the mri_protocol table
  * and mri_protocol_checks table.
- * It populates the new min & max columns for each field that can contain ranges and
- * returns SQL statements to remove the old %_range columns if the option "tosql" is set.
- * This script must be run AFTER running this patch:
+ * It populates the new min & max columns for each field that can contain ranges. 
+ *   - If the script is run with the option "tosql", the SQL statements to remove the
+ *     old "%_range" columns will be written in file
+ *     $LORIS/project/tables_sql/DELETE_mri_protocol_range_columns.sql
+ *   - If the script is run without the option "tosql", the SQL statements to
+ *     remove the old "%_range" columns will be printed in the terminal.
+ *
+ * NOTE: this script must be run AFTER running this patch:
  * /var/www/loris/SQL/New_patches/2018-02-27_normalize_mri_protocol_sql.
  *
  * "Usage: php normalize_mri_protocol_range_data.php [tosql]";
