@@ -48,7 +48,6 @@ class ImagingUploader extends Component {
       method: 'GET',
       dataType: 'json',
       success: (data) => {
-        // FIXME: Remove the following line of code, add ['PatientName'] to the
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
         // the StaticDataTable Component.
@@ -92,7 +91,7 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1 ) {
+    if (this.state.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
