@@ -1,6 +1,12 @@
 #!/usr/bin/env php
-# script/bootstrap: Resolve all dependencies that the application requires to
-#                   run.
+# This script verifies a development installation of LORIS by ensuring that
+# the system has all of the required dependencies such as the correct PHP and
+# Apache versions as well as other miscellaneous extensions and system tools.
+#
+# Production environments should not run this tool as their dependency 
+# management should be performed by a proper package such as a .deb file.
+#
+# Currently only Ubuntu environments are supported by this script.
 <?php
 error_reporting(E_ALL);
 
@@ -45,7 +51,10 @@ if (preg_match($pattern, $apache_version) === 0) {
 
 // NOTE Update as time passes.
 // Dependencies last updated for version: 20.0.1
-$apt_dependencies = [
+// This list should consist only of packages that can be installed via apt on
+// Ubuntu environments and must not include libraries that should be installed
+// via tools such as npm and composer.
+$apt_dependencies = array(
                        "wget",
                        "zip",
                        "unzip",
@@ -60,7 +69,7 @@ $apt_dependencies = [
                        "php$required_php-mbstring",
                        "php$required_php-gd",
                        "libapache2-mod-php$required_php",
-                      ];
+                      );
 
 if (
     !(installMissingRequirements($apt_dependencies))
