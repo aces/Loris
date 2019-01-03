@@ -108,8 +108,6 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
                                'projects'   => $projectList,
                                'hidden'     => $hiddenOptions,
                               ];
-
-        return true;
     }
     /**
      * Build a list of behavioural QC to display in Data Table
