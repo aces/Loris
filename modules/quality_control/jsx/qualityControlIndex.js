@@ -55,28 +55,19 @@ class QualityControlIndex extends Component {
   }
 
   componentDidMount() {
-    this.fetchData('imaging')
+    this.fetchData(this.props.ImgDataURL, 'ImgData')
         .then(() => this.setState({isLoadedImg: true}));
-    this.fetchData('behavioral')
+    this.fetchData(this.props.BehavioralDataURL, 'BehavioralData')
         .then(() => this.setState({isLoadedBehavioral: true}));
   }
 
-  fetchData(flag) {
-    if (flag === 'imaging') {
-      return fetch(this.props.ImgDataURL, {credentials: 'same-origin'})
-       .then((resp) => resp.json())
-       .then((ImgData) => this.setState({ImgData}))
-       .catch((error) => {
-         this.setState({error: true});
+  fetchData(url, state) {
+    return fetch(url, {credentials: 'same-origin'})
+        .then((resp) => resp.json())
+        .then((data) => this.setState({[state]: data}))
+        .catch((error) => {
+            this.setState({error: true});
       });
-    } else if (flag === 'behavioral') {
-      return fetch(this.props.BehavioralDataURL, {credentials: 'same-origin'})
-       .then((resp) => resp.json())
-       .then((BehavioralData) => this.setState({BehavioralData}))
-       .catch((error) => {
-         this.setState({error: true});
-       });
-    }
   }
 
   render() {

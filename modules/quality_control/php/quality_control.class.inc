@@ -44,7 +44,6 @@ class Quality_Control extends \NDB_Menu_Filter
         //create user object
         $this->hasHidePermission = $user->hasPermission("superuser");
         return $user->hasPermission('data_team_helper');
-
     }
 
     /**
