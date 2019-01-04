@@ -51,7 +51,7 @@ try {
 // update so we'll limit the query to that. Additionally we will filter out
 // results from the `new` data that are password hashes i.e. those that begin
 // with the $ character.
-$sql = "select new as password from history where col like '%hash%' AND type='U' AND new NOT LIKE '\$%';";
+$sql = "select new as password from history where col = 'Password_hash' AND type='U' AND new NOT LIKE '\$%';";
 $result = $DB->pselectCol($sql, array());
 
 // Hash all the passwords.
