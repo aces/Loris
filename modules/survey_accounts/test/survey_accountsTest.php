@@ -299,4 +299,3 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("", $inputText);
     }
 }
-?>
