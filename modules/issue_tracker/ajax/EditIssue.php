@@ -354,12 +354,18 @@ function updateComments($comment, $issueID)
     $db   =& Database::singleton();
 
     if (isset($comment) && $comment != "null") {
+        $query = 'SELECT issueComment FROM issues_comments WHERE issueID=:i';
+        $issueComment = $db->pselectOne($query, array('i' => $issueID));
         $commentValues = array(
                           'issueComment' => $comment,
                           'addedBy'      => $user->getData('UserID'),
                           'issueID'      => $issueID,
                          );
-        $db->insert('issues_comments', $commentValues);
+        if ($issueComment) {
+          $db->update('issues_comments', $commentValues, array('issueID' => $issueID));
+        } else {
+          $db->insert('issues_comments', $commentValues);
+        }
     }
 }
 
@@ -670,11 +676,11 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $db->pSelectOne(
+        $issueData['desc']           = $db->pselectOne(
             "SELECT issueComment
-FROM issues_comments WHERE issueID=:issueID
+FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded",
-            array('issueID' => $issueID)
+            array('i' => $issueID)
         );
     }
     $issueData['comment'] = null;

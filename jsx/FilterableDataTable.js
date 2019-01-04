@@ -51,7 +51,6 @@ class FilterableDataTable extends Component {
         columns={this.props.columns}
         filter={this.state.filter}
         fields={this.props.fields}
-        actions={this.props.actions}
         updateFilter={this.updateFilter}
         clearFilter={this.clearFilter}
       />
@@ -62,6 +61,7 @@ class FilterableDataTable extends Component {
         data={this.props.data}
         fields={this.props.fields}
         filter={this.state.filter}
+        actions={this.props.actions}
         getFormattedCell={this.props.getFormattedCell}
       />
     );

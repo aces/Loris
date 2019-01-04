@@ -511,7 +511,7 @@ class DataTable extends Component {
       </div>
     );
 
-    let footer = this.state.Hide.downloadCSV === true ? '' : (
+    let footer = this.props.hide.downloadCSV === true ? '' : (
       <div className="panel-footer table-footer">
         <div className="row">
           <div className="col-xs-12" style={{marginTop: '10px'}}>
@@ -567,7 +567,7 @@ DataTable.defaultProps = {
   rowNumLabel: 'No.',
   filter: {},
   hide: {
-    rowsPerPage: true,
+    rowsPerPage: false,
     downloadCSV: false,
     defaultColumn: false,
   },
