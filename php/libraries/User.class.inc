@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use GuzzleHttp\Psr7\Request;
 /**
  * User class. This deals with any User management except permissions,
  * which is contained in the UserPermissions base class.
@@ -553,30 +555,23 @@ class User extends UserPermissions
          */
         $hash       = sha1($password);
         $hashPrefix = substr(sha1($password), 0, 5);
-        $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
+        // $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
 
-        /* Build curl */
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
+        $adapter  = GuzzleAdapter::createWithConfig(
+            array('base_uri' => 'https://api.pwnedpasswords.com')
+        );
+        $request  = new Request('GET', "/range/$hashPrefix");
+        $response = $adapter->sendRequest($request);
+        print_r($response);
 
-        // get response
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        // In case request fials for any reason
-        if (curl_error($ch)) {
-            error_log(
-                "ERROR: Problem connecting to pwned passwords API: "
-                . curl_error($ch)
-            );
-            /* Don't prevent password change if there is a cURL error. Using
-             * this API is nice but not critical to functioning.
-             */
+        /* We don't want password changes to fail in case there is a
+         * networking issue while making the request. If the API can't be
+         * reached for any reason, we will skip the pwned password check.
+         */
+        if (!$response->getStatusCode() === 200) {
             return false;
         }
-        curl_close($ch);
-
-        $hashSuffixes = explode("\n", $response);
+        $hashSuffixes = explode("\n", $response->getBody());
         /* The response will be one long string consisting of suffixes matching
          * our hash prefix, followed by a colon and the number of times the
          * password has occurred in data breaches.
@@ -584,7 +579,7 @@ class User extends UserPermissions
          * and the whole suffix line together contain $hash as a substring at
          * the beginning of the line (instead of preprocessing by removing
          * the colon and count from the end of the $suffix line.
-         * Check the above link if you want more info.
+         * Check the API documentation linked above if you want more info.
          */
         foreach ($hashSuffixes as $suffix) {
             $line = strtolower($hashPrefix . $suffix);
