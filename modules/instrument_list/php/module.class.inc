@@ -96,7 +96,7 @@ class Module extends \Module
                 new \LORIS\Router\NoopResponder(
                     new \LORIS\Http\Error(
                         $request,
-                        500,
+                        404,
                         $message
                     )
                 )
