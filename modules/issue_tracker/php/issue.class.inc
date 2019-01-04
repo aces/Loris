@@ -89,11 +89,15 @@ class Issue extends \NDB_Form
             [$baseURL . "/issue_tracker/js/index.js"]
         );
     }
+
     /**
      * Checks if the user has the ability to *view* the issue page
      * Does not govern editing abilities; those are controlled by issueIndex.js
      *
+     * @param User $user
+     *
      * @return bool
+     *
      * @throws \ConfigurationException
      */
     function _hasAccess(\User $user) : bool

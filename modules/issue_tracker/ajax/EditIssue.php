@@ -354,17 +354,17 @@ function updateComments($comment, $issueID)
     $db   =& Database::singleton();
 
     if (isset($comment) && $comment != "null") {
-        $query = 'SELECT issueComment FROM issues_comments WHERE issueID=:i';
-        $issueComment = $db->pselectOne($query, array('i' => $issueID));
+        $query         = 'SELECT issueComment FROM issues_comments WHERE issueID=:i';
+        $issueComment  = $db->pselectOne($query, array('i' => $issueID));
         $commentValues = array(
                           'issueComment' => $comment,
                           'addedBy'      => $user->getData('UserID'),
                           'issueID'      => $issueID,
                          );
         if ($issueComment) {
-          $db->update('issues_comments', $commentValues, array('issueID' => $issueID));
+            $db->update('issues_comments', $commentValues, array('issueID' => $issueID));
         } else {
-          $db->insert('issues_comments', $commentValues);
+            $db->insert('issues_comments', $commentValues);
         }
     }
 }
