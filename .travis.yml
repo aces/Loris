@@ -22,7 +22,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
-    - php -S 127.0.0.1:8000 -t htdocs htdocs/router.php
+    - php -S 127.0.0.1:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
     - make dev
@@ -70,7 +70,7 @@ before_script:
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-    - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+    - mysql LorisTest -e "UPDATE Config SET Value='http://127.0.0.1:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
     - mkdir -p data/loris/bin/mri
     - mysql LorisTest -e "UPDATE Config SET Value='data/loris/bin/mri' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
