@@ -97,7 +97,7 @@ abstract class LorisIntegrationTest extends TestCase
         $user->updatePassword('4test4');
 
         $dev = $this->config->getSettingFromXML('dev');
-        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:8000/wd/hub';
+        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
         $capabilities = array(
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
