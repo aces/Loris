@@ -22,7 +22,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
-    - php -S 127.0.0.1:8000 -t htdocs htdocs/router.php >/dev/null 2>&1
+    - php -S 127.0.0.1:8000 -t htdocs htdocs/router.php
 
 install:
     - make dev
