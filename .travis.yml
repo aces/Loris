@@ -91,4 +91,4 @@ script:
     - make checkstatic
     - vendor/bin/phpunit --configuration test/phpunit.xml
 
-dist: Trusty
+dist: precise
