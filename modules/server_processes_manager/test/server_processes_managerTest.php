@@ -43,7 +43,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'Stderr File'              => '#dynamictable > thead > tr',
             'Exit Code File'           => '#dynamictable > thead > tr',
             'Exit Code'                => '#dynamictable > thead > tr',
-            'UserID'                   => '#dynamictable > thead > tr',
+            'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
            );
