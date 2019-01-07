@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Handles a request to the candidates portion of the Loris API
  *
@@ -31,9 +31,9 @@ class Candidates extends APIBase
      * Create a Candidates request handler
      *
      * @param string $method The HTTP request method of the request
-     * @param array  $data   The data that was POSTed to the request
+     * @param ?array  $data   The data that was POSTed to the request
      */
-    public function __construct($method, $data=null)
+    public function __construct(string $method, ?array $data=null)
     {
         $this->AllowedMethods = [
                                  'GET',
@@ -50,7 +50,7 @@ class Candidates extends APIBase
      *
      * @return string An ETag for ths candidates object
      */
-    function calculateETag()
+    function calculateETag(): string
     {
         $ETagCriteria = $this->DB->pselectRow(
             "SELECT MAX(TestDate) as Time,
@@ -69,7 +69,7 @@ class Candidates extends APIBase
      *
      * @return void but populates $this->JSON
      */
-    public function handleGET()
+    public function handleGET(): void
     {
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
@@ -101,7 +101,7 @@ class Candidates extends APIBase
      *
      * @return void but populates $this->JSON and writes to DB
      */
-    public function handlePOST()
+    public function handlePOST(): void
     {
         $data = $this->RequestData;
         if ($data === null) {
@@ -194,13 +194,13 @@ class Candidates extends APIBase
      *
      * @param array  $data   The data that was posted
      * @param string $field  The field to be validated in $data
-     * @param mixed  $values Can either be an array of valid values for
+     * @param array|string  $values Can either be an array of valid values for
      *                       the field, or a string representing the format
      *                       expected of the data.
      *
      * @return void but will generate an error and exit if the value is invalid.
      */
-    protected function verifyField($data, $field, $values)
+    protected function verifyField(array $data, string $field, $values): void
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
@@ -230,9 +230,9 @@ class Candidates extends APIBase
      * @param string $sex      Biological sex of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
-     * @return none
+     * @return int The ID of the newly-created Candidate
      */
-    public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
+    public function createNew(string $centerID, string $DoB, string $edc, string $sex, string $PSCID)
     {
         return \Candidate::createNew(
             $centerID,
