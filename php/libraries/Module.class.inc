@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
@@ -43,11 +43,14 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * This also sets up PHP class autoloading for the module that is loaded,
      * such that files in the module/php directory can be autoloaded.
      *
-     * @param string $name The module name we'd like information about
+     * @param  string $name The module name we'd like information about
+     * @throws \LorisNoSuchModuleException
+     * @throws \LorisModuleMissingException
+     * @throws \NotFound
      *
-     * @return a Module
+     * @return \Module object
      */
-    static public function factory($name)
+    static public function factory(string $name): \Module
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -106,7 +109,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * @param string $name      The name of the module
      * @param string $moduledir The directory on the filesystem containing the module
      */
-    public function __construct($name, $moduledir)
+    public function __construct(string $name, string $moduledir)
     {
         parent::__construct(
             new \ArrayIterator(
@@ -150,7 +153,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * Returns true if this module should be publicly available to people who
      * are not logged in to LORIS.
      *
-     * @return bool (false: not that this is not currently possible because main.php
+     * @return bool (false: note that this is not currently possible because main.php
      *         checks that the user is logged in before it calls NDB_Caller.)
      */
     public function isPublicModule()
@@ -164,11 +167,11 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * By default, this will assume that anonymous users do not have access
      * to non-public modules, but otherwise everyone has access to anything.
      *
-     * @param User $user The user to check access for.
+     * @param \User $user The user to check access for.
      *
      * @return bool True if the user has access
      */
-    public function hasAccess(User $user)
+    public function hasAccess(\User $user): bool
     {
         if ($this->isPublicModule() !== true) {
             if ($user instanceof \LORIS\AnonymousUser) {
@@ -184,7 +187,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      *
      * @return a NDB_Page subclass representing this page.
      */
-    public function loadPage($page)
+    public function loadPage(string $page)
     {
         // Some URLs are things like "/login/request-account", but `-` isn't valid
         // in a class name, so remove it while loading the module.
@@ -213,7 +216,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      *
      * @return string the content of the page help.
      */
-    public function getHelp($page)
+    public function getHelp(string $page): string
     {
         $helpFile = $this->dir . "/help/$page.md";
         if (file_exists($helpFile)) {
