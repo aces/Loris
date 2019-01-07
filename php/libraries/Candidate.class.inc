@@ -365,10 +365,7 @@ class Candidate
         if (is_null($var)) {
             return $this->candidateInfo;
         } else {
-            if (isset($this->candidateInfo[$var])) {
-                return $this->candidateInfo[$var];
-            }
-            return null;
+            return $this->candidateInfo[$var] ?? null;
         }
     }
 
@@ -706,44 +703,44 @@ class Candidate
     */
     static function _generatePSCID(string $prefix): string
     {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
+        $alphabet = \Candidate::_getPSCIDSetting('alphabet');
+        $length = \Candidate::_getPSCIDSetting('length');
+        $generation = \Candidate::_getPSCIDSetting('generation');
 
-        $config = $factory->config();
+        // Get all existing PSCIDs for this Site.
+        $existingPSCIDs = \Candidate::_getPSCIDsHavingPrefix($prefix);
+        print_r($existingPSCIDs);
+        // Generate new IDs until we find one that's unused.
+        while (true) {
+            $id = ($generation == 'sequential') ?
+                Candidate::_generateNewSequentialID($prefix):
+                Candidate::_generateNewRandomID($alphabet, $length);
 
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
-
-        // run one first time, then loop until the pscid is not used
-        do {
-            // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') {
-                if (!empty($pscid)) {
-                    $pscid++;
-                } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
-                }
-            } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+            // If this ID is not being used, return the new ID.
+            if (
+                !in_array(
+                    $id, 
+                    $existingPSCIDs,
+                    true
+                )
+            ) {
+                return $prefix . $id;
             }
+        }
 
-            if ($pscid == '') {
-                throw new LorisException(
-                    "Well this is embarrassing, our automated PSCID generator "
-                    . "is about to enter an infinite loop."
-                );
-            }
+    }
 
-            // check if the pscid is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $pscid)
-            ) > 0
+    static function _getPSCIDsHavingPrefix(string $prefix): array {
+        $result = \Database::singleton()->pselectCol(
+            "SELECT PSCID from candidate WHERE PSCID LIKE '$prefix%'",
+            array()
         );
-
-        return $pscid;
+        // Filter off Site prefix so that we just get the IDs.
+        $PSCIDs = array();
+        foreach($result as $id) {
+            $PSCIDs[] = substr($id, strlen($prefix));
+        }
+        return $PSCIDs;
     }
 
     /**
@@ -790,6 +787,46 @@ class Candidate
     }
 
     /**
+     * Queries the database for all PSCIDs with a given Site prefix and 
+     * generates the next ID in the sequence. Works for numeric, alphabetical,
+     * and alphanumeric IDs.
+     *
+     * @param string $prefix The Site prefix used for querying.
+     *
+     * @return string The next ID in sequence.
+     */
+    static function _generateNewSequentialID(
+        string $prefix
+    ): string {
+        $max = max(\Candidate::_getPSCIDsHavingPrefix($prefix));
+        $max++;
+        return $max;
+    }
+
+    static function _generateNewRandomID(
+        string $type,
+        int $length
+    ): string {
+        $alphabet = array();
+        switch($type) {
+        case 'alpha':
+            $alphabet = range('a', 'z');
+            break;
+        case 'alphanumeric':
+            $alphabet = array_merge(range(0, 9), range('a', 'z'));
+            break;
+        case 'numeric':
+            $alphabet = range(0, 9);
+            break;
+        }
+        $id = '';
+        while (strlen($id) < $length) {
+            $id .= $alphabet[random_int(0, count($alphabet) - 1)];
+        }
+        return $id;
+    }
+
+    /**
      * Validate's that a PSCID matches the format defined by project
      * config
      *
@@ -817,68 +854,25 @@ class Candidate
         return preg_match($regex, $PSCID) === 1;
     }
 
-
     /**
-     * Helper function used to generate PSCID. This generates a random
-     * number if generation is not "sequential"
+     * Helper function used for extracting the values from the config
+     * settings relating to the PSCID structure.
      *
-     * @param array $arrays Array specifying format of random
-     *                      string to be generated
-     *
-     * @return string A random string matching format from arrays
+     * @return string[]|int
      */
-    static function generateRandomStringFromArrays(array $arrays): string
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            if (is_array($array)) {
-                $string .= $array[array_rand($array)];
-            } else {
-                $string .= $array;
-            }
+    static function _getPSCIDSetting(
+        string $setting
+    ) {
+        if ($setting == 'generation') {
+            return \NDB_Factory::singleton()
+                ->config()
+                ->getSetting('PSCID')['generation'];
         }
-        return $string;
-    }
 
-    /**
-     * Helper function used to generate PSCID. Generate the string for the first
-     * numeric part of the PSCID if generation type is "sequential" and pads with
-     * an appropriate numbers.
-     *
-     * @param array $arrays An array config file specifying format of number
-     *
-     * @return string The first string to be used for the PSCID
-     */
-    static function generateFirstStringFromArrays(array $arrays): string
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            $string .= array_shift($array);
-        }
-        return $string;
-    }
-
-    /**
-     * Helper function used for generating PSCID.
-     * This parses the PSCID format in the config file into a format that
-     * can be converted into a regex for validation.
-     *
-     * @param array       $idStructure The structure defined in the config file
-     *                          in the array format returned by NDB_Config.
-     *                            array format returned by NDB_Config.
-     * @param string|null $siteAbbrev  The candidate being validate's site
-     *                            abbreviation, so that it can be inserted into
-     *                            relevant "site" parts of the regex generated.
-     *
-     * @return array An array of regular expressions defining each section of
-     *               the PSCID as defined in config.xml
-     */
-    static function generateArrays(
-        array $idStructure,
-        ?string $siteAbbrev = null
-    ): array {
-
-        $idStructure = $idStructure['structure']['seq'];
+        // Values other than 'generation' are found within 'seq' elements.
+        $idStructure = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('PSCID')['structure']['seq'];
 
         if (!$idStructure[0]) {
             // There's only one seq tag so the param format
@@ -888,50 +882,44 @@ class Candidate
             $idStructure = $temp;
         }
 
-        $arrays = array();
-        foreach ($idStructure AS $seq) {
-            if (isset($seq['@']['length'])) {
-                $length = $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length = $seq['@']['minLength'];
-            } else {
-                $length = 1;
-            }
-
-            for ($i=0; $i<$length; $i++) {
-                switch($seq['@']['type']) {
-                case 'alpha':
-                    $arrays[] = range('a', 'z');
-                    break;
-
-                case 'alphanumeric':
-                    $arrays[] = array_merge(range(0, 9), range('a', 'z'));
-                    break;
-
-                case 'numeric':
-                    $arrays[] = range(0, 9);
-                    break;
-
-                case 'static':
-                    $arrays[] = array($seq['#']);
-                    break;
-
-                case 'set':
-                    if (strpos($seq['#'], '|') !== false) {
-                        $arrays[] = explode('|', $seq['#']);
-                    } else {
-                        $arrays[] = str_split($seq['#']);
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
-                    break;
+        /* Iterate over each 'seq' value and extract minimum length or length
+         * if their values are set. Return a length of 1 by default.
+         */
+        if ($setting == 'length') {
+            foreach ($idStructure as $seq) {
+                $length = $seq['@']['minLength'] ?? $seq['@']['length'];
+                if (isset($length)) {
+                    return $length;
                 }
             }
+            return 1;
         }
-
-        return $arrays;
+        /* Iterate over each 'seq' value and extract the 'type' value. This is
+         * needed to figure out which alphabet a PSCID will use.
+         */
+        if ($setting == 'alphabet') {
+            $seqTypes = array();
+            foreach ($idStructure as $seq) {
+                if (isset($seq['@']['type'])) {
+                    $seqTypes[] = $seq['@']['type'];
+                }
+            }
+            // Remove seq values that do not correspond to PSCID alphabets.
+            $alphabet = array_filter($seqTypes, function ($type) {
+                return in_array(
+                    $type,
+                    array('numeric', 'alphanumeric', 'alpha'),
+                    true
+                );
+            });
+            if (count($alphabet) > 1) {
+                throw new \ConfigurationException(
+                    'Too many values specified for PSCID seq types'
+                );
+            }
+            // The only element should correspond to the PSCID alphabet.
+            return array_pop($alphabet);
+        }
     }
 
     /**
