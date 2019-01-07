@@ -31,25 +31,25 @@ class QualityControlIndex extends Component {
   formatColumn(column, cell, row) {
       let result = <td>{cell}</td>;
       switch (column) {
-          case 'MRI Parameter Form':
-              let mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
-                  row.CommentID + '&sessionID=' + row['Session ID'] +
-                  '&candID=' + row.DCCID;
-              result = <td> <a href={mpfURL}>{cell}</a> </td>;
-          case 'Scan Location':
-            if (cell == 'In Imaging Browser') {
-              let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-                  row['Session ID'];
-              result = <td><a href={imgURL}>{cell}</a></td>;
-            }
-          case 'Tarchive':
-            if (cell == 'In DICOM') {
-                let tarchiveURL = loris.BaseURL +
-                    '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-                return <td><a href = {tarchiveURL}>{cell}</a></td>;
-            } else {
-              result = <td>Missing</td>;
-            }
+      case 'MRI Parameter Form':
+        if (cell == 'Yes') {
+          let mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
+              row.CommentID + '&sessionID=' + row['Session ID'] +
+              '&candID=' + row.DCCID;
+          result = <td><a href={mpfURL}>{cell}</a></td>;
+        }
+      case 'Scan Location':
+        if (cell == 'In Imaging Browser') {
+          let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+              row['Session ID'];
+          result = <td><a href={imgURL}>{cell}</a></td>;
+        }
+      case 'Tarchive':
+        if (cell == 'In DICOM') {
+          let tarchiveURL = loris.BaseURL +
+              '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
+          return <td><a href = {tarchiveURL}>{cell}</a></td>;
+        }
       }
       return result;
   }
@@ -148,12 +148,8 @@ class QualityControlIndex extends Component {
         type: 'select',
         options: ImgOptions.selected,
       }},
-      {label: 'CommentID', show: false, filter: {
-        options: ImgOptions.hidden,
-      }},
-      {label: 'TarchiveID', show: false, filter: {
-        options: ImgOptions.hidden,
-      }},
+      {label: 'CommentID', show: false},
+      {label: 'TarchiveID', show: false},
     ];
 
     const BehavioralFields = [
