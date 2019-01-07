@@ -31,7 +31,7 @@ class Candidates extends APIBase
      * Create a Candidates request handler
      *
      * @param string $method The HTTP request method of the request
-     * @param ?array  $data   The data that was POSTed to the request
+     * @param ?array $data   The data that was POSTed to the request
      */
     public function __construct(string $method, ?array $data=null)
     {
@@ -192,9 +192,9 @@ class Candidates extends APIBase
     /**
      * Verifies that the field POSTed to the URL is valid.
      *
-     * @param array  $data   The data that was posted
-     * @param string $field  The field to be validated in $data
-     * @param array|string  $values Can either be an array of valid values for
+     * @param array        $data   The data that was posted
+     * @param string       $field  The field to be validated in $data
+     * @param array|string $values Can either be an array of valid values for
      *                       the field, or a string representing the format
      *                       expected of the data.
      *
@@ -232,8 +232,13 @@ class Candidates extends APIBase
      *
      * @return int The ID of the newly-created Candidate
      */
-    public function createNew(string $centerID, string $DoB, string $edc, string $sex, string $PSCID)
-    {
+    public function createNew(
+        string $centerID,
+        string $DoB,
+        string $edc,
+        string $sex,
+        string $PSCID
+    ): int {
         return \Candidate::createNew(
             $centerID,
             $DoB,

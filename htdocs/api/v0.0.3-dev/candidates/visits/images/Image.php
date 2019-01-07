@@ -33,8 +33,13 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      * @param string $VisitLabel The visit label to be serialized
      * @param string $Filename   The file name to be retrieved
      */
-    public function __construct(string $method, string $CandID, string $VisitLabel, string $Filename)
-    {
+    public function __construct(
+        string $method,
+        string $CandID,
+        string $VisitLabel,
+        string $Filename
+    ) {
+
         ob_start();
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
