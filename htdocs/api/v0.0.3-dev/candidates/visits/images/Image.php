@@ -33,7 +33,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      * @param string $VisitLabel The visit label to be serialized
      * @param string $Filename   The file name to be retrieved
      */
-    public function __construct($method, $CandID, $VisitLabel, $Filename)
+    public function __construct(string $method, string $CandID, string $VisitLabel, string $Filename)
     {
         ob_start();
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
@@ -73,7 +73,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return void but populates $this->JSON
      */
-    public function handleGET()
+    public function handleGET(): void
     {
         $fullDir = $this->getFullPath();
         ob_end_clean();
@@ -112,7 +112,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string of the header value
      */
-    protected function getHeader($headerName)
+    protected function getHeader(string $headerName): string
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->Database();
@@ -140,7 +140,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Calculate the entity tag for this image
      *
-     * @return string
+     * @return null
      */
     public function calculateETag()
     {
@@ -153,7 +153,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string
      */
-    protected function getFullPath()
+    protected function getFullPath(): string
     {
         return $this->getAssemblyRoot() . "/" . $this->getDatabaseDir();
     }
@@ -164,7 +164,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string
      */
-    protected function getAssemblyRoot()
+    protected function getAssemblyRoot(): string
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->Config();
