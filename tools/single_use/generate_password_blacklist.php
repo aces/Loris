@@ -33,7 +33,7 @@ if (readAnswer($answers, $defaultAnswer) !== 'y') {
 }
 
 /* This script will write the password blacklist to a table in the DB. Fail if
- * the user has not applied the patch yet.
+ * the user has not applied the SQL patch yet.
  */
 try {
     $sql = "SELECT 1 FROM password_blacklist LIMIT 1;";
