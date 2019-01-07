@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file represent a BreadcrumbTrail object that can be print as a string
- * that containt all its breadcrumbs.
+ * This file represents a BreadcrumbTrail object that can be printed as a string
+ * that contains all its breadcrumbs.
  *
  * PHP Version 7
  *
