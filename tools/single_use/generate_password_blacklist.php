@@ -107,7 +107,7 @@ function writeQuestion($question, $answers) : void
     echo $question . ' (' . implode('/', $answers) . '): ' . PHP_EOL;
 }
 /**
- * Gets user input from STDIN and checks if it matches a valye in
+ * Gets user input from STDIN and checks if it matches a value in
  * $possibleAnswers.  If not, the default answer is used.  Inteded to follow
  * function writeQuestion
  *
