@@ -31,7 +31,7 @@ class QualityControlIndex extends Component {
   formatColumn(column, cell, row) {
       let result = <td>{cell}</td>;
       switch (column) {
-      case 'MRI Parameter Form':
+      case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
           let mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
               row.CommentID + '&sessionID=' + row['Session ID'] +
@@ -48,7 +48,7 @@ class QualityControlIndex extends Component {
         if (cell == 'In DICOM') {
           let tarchiveURL = loris.BaseURL +
               '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-          return <td><a href = {tarchiveURL}>{cell}</a></td>;
+          result = <td><a href = {tarchiveURL}>{cell}</a></td>;
         }
       }
       return result;
