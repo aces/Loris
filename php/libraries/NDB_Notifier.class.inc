@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * PHP Version 7
  *
@@ -35,10 +35,10 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      *                        by the notifier.
      */
     public function __construct(
-        $module_name,
-        $operation_type,
-        $extra_tpl_data=null,
-        $asAdmin=null
+        string $module_name,
+        string $operation_type,
+        array $extra_tpl_data=null,
+        bool $asAdmin=null
     ) {
         parent::__construct(
             $module_name,
@@ -57,9 +57,9 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      * @return void
      */
     public function notify(
-        $extra_tpl_data=array(),
-        $custom_message=null
-    ) {
+        array $extra_tpl_data=array(),
+        string $custom_message=null
+    ): void {
         $this->tpl_data = $this->tpl_data + $extra_tpl_data;
 
         if (!empty($custom_message)) {
@@ -81,7 +81,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      *
      * TODO add validation for email sent/failed
      */
-    private function _sendEmails()
+    private function _sendEmails(): void
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
             $this->tpl_data['notified_user'] = $name;
