@@ -49,8 +49,6 @@ class ImagingUploader extends Component {
       dataType: 'json',
       success: (data) => {
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
-        // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
-        // the StaticDataTable Component.
         this.setState({
           data: data,
           isLoaded: true,
