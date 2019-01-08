@@ -43,13 +43,16 @@ class Media extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // Set global permission to control access to different modules of media page
-        $this->hasWritePermission = $user->hasPermission('media_write');
-
         // Set permission to access user-hidden files, currently based on superuser
         $this->hasHidePermission = $user->hasPermission("superuser");
 
-        return $user->hasPermission('media_read') || $this->hasWritePermission;
+        return $user->hasAnyPermission(
+            array(
+             'media_read',
+             'media_write',
+            )
+        );
+
     }
 
     /**
@@ -96,12 +99,12 @@ class Media extends \NDB_Menu_Filter
 
         //Language selector
         $languages    = \Utility::getLanguageList();
-        $languageList = [];
+        $languageList = array();
         foreach ($languages as $language) {
             $languageList[$language] = $language;
         }
 
-        $hiddenOptions = [];
+        $hiddenOptions = array();
         if ($this->hasHidePermission) {
             $hiddenOptions = array(
                               0 => 'Visible only',
@@ -109,15 +112,15 @@ class Media extends \NDB_Menu_Filter
                              );
         }
 
-        return [
-                'fileTypes'   => $fileTypeList,
-                'visits'      => $visitList,
-                'sites'       => $siteList,
-                'instruments' => $instrumentList,
-                'languages'   => $languageList,
-                'hidden'      => $hiddenOptions,
+        return array(
+                'fileTypes'     => $fileTypeList,
+                'visits'        => $visitList,
+                'sites'         => $siteList,
+                'instruments'   => $instrumentList,
+                'languages'     => $languageList,
+                'hidden'        => $hiddenOptions,
                 'maxUploadSize' => \Utility::getMaxUploadSize(),
-               ];
+               );
     }
 
     /**
@@ -129,7 +132,7 @@ class Media extends \NDB_Menu_Filter
     {
         $provisioner = new MediaFileProvisioner();
 
-        $user = \User:: singleton();
+        $user = \User::singleton();
 
         if ($user->hasPermission("access_all_profiles") == false) {
             $provisioner = $provisioenr->filter(
@@ -152,21 +155,21 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $table = (new \LORIS\Data\Table())                                      
-            ->withDataFrom($this->getDataProvisioner());                        
-        $arr   = array_map(                                                     
-            function ($row) {                                                   
-                return array_values($row);                                      
-            },                                                                  
-            json_decode($table->toJSON(\User::singleton()), true)               
-        );                                                                      
-        $options = $this->getOptions();                   
-        return json_encode(                                                     
-            [                                                                   
-             'data'         => $arr,                                            
-             'fieldOptions' => $options,                                        
-            ]
-        );    
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        $options = $this->getOptions();
+        return json_encode(
+            array(
+             'data'         => $arr,
+             'fieldOptions' => $options,
+            )
+        );
     }
 
     /**

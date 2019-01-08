@@ -56,7 +56,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
              LEFT JOIN session s ON m.session_id = s.ID
              LEFT JOIN candidate c ON c.CandID=s.CandID
              LEFT JOIN language l USING (language_id)",
-             array()
+            array()
         );
     }
 
@@ -69,7 +69,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = $row['CenterID'];
+            $cid      = $row['site'];
             $hidefile = $row['hide_file'];
             return new MediaFile($row, $cid, $hidefile);
     }

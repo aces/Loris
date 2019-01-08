@@ -12,10 +12,11 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\media;
+define('SHOW', 0);
 
 /**
- * HideFilesFilter filters out data for any resource that has a value of 'true'
- * for the attribute 'hide_file'
+ * HideFilesFilter filters out data for any resource that has a value of 1
+ * for the attribute 'hide_file'.
  *
  * @category   Data
  * @package    Main
@@ -33,14 +34,10 @@ class HideFileFilter implements \LORIS\Data\Filter
      *                                           filtered for.
      * @param \LORIS\Data\DataInstance $resource The data being filtered.
      *
-     * @return bool true if the file passes the filter and should not be hidden.
+     * @return bool Whether the file should be shown.
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        if ($resource->getHideFile()) {
-            return false;
-        } else {
-            return true;
-        }
+        return $resource->getHideFile() === SHOW;
     }
 }
