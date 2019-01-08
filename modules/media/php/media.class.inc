@@ -120,13 +120,6 @@ class Media extends \NDB_Menu_Filter
                ];
     }
 
-    // MAKE FILTER FOR THIs
-    //    if (!$user->hasPermission("superuser")) {
-    //        $this->query .= " AND m.hide_file = FALSE";
-    //    }
-    //
-    // 
-
     /**
      * Gets the data source for this menu filter.
      *
