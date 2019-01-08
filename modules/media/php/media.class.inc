@@ -136,7 +136,7 @@ class Media extends \NDB_Menu_Filter
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
-        if ($user->hasPermission("superuser")) {
+        if (!$user->hasPermission("superuser")) {
             $provisioner = $provisioner->filter(
                 new HideFileFilter()
             );
