@@ -57,11 +57,9 @@ class Media extends \NDB_Menu_Filter
      *
      * @return void
      */
-    function setup()
+    function getOptions()
     {
-        parent::setup();
-
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $db   = \Database::singleton();
 
         $siteList  = array();
@@ -70,18 +68,13 @@ class Media extends \NDB_Menu_Filter
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
         } else {
             // allow only to view own site data
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site =& \Site::singleton($val);
+                $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                    $siteList[$val] = $site->getCenterName();
                 }
             }
         }
@@ -116,66 +109,46 @@ class Media extends \NDB_Menu_Filter
                              );
         }
 
-        $this->fieldOptions = [
-                               'fileTypes'   => $fileTypeList,
-                               'visits'      => $visitList,
-                               'sites'       => $siteList,
-                               'instruments' => $instrumentList,
-                               'languages'   => $languageList,
-                               'hidden'      => $hiddenOptions,
-                              ];
-
-        return true;
+        return [
+                'fileTypes'   => $fileTypeList,
+                'visits'      => $visitList,
+                'sites'       => $siteList,
+                'instruments' => $instrumentList,
+                'languages'   => $languageList,
+                'hidden'      => $hiddenOptions,
+                'maxUploadSize' => \Utility::getMaxUploadSize(),
+               ];
     }
 
+    // MAKE FILTER FOR THIs
+    //    if (!$user->hasPermission("superuser")) {
+    //        $this->query .= " AND m.hide_file = FALSE";
+    //    }
+    //
+    // 
+
     /**
-     * Build a list of media to display in Data Table
+     * Gets the data source for this menu filter.
      *
-     * @return void
-     * @throws \DatabaseException
+     * @return \LORIS\Data\Provisioner
      */
-    function _setupVariables()
+    function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $user =& \User::singleton();
-        // the base query
-        $query  = " FROM media m 
-                    LEFT JOIN session s ON m.session_id = s.ID 
-                    LEFT JOIN candidate c ON c.CandID=s.CandID 
-                    LEFT JOIN language l USING (language_id) ";
-        $query .= " WHERE 1=1 ";
+        $provisioner = new MediaFileProvisioner();
 
-        // set the class variables
-        $this->columns
-            = [
-               'm.file_name',
-               '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
-               's.Visit_label as visit_label',
-               'l.language_label',
-               '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
-               '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
-               'm.uploaded_by',
-               'm.date_taken',
-               'substring(m.comments, 1, 50) as comments',
-               'm.date_uploaded',
-               'm.file_type',
-               's.CandID as cand_id',
-               's.ID as session_id',
-               'm.hide_file',
-               'm.id',
-              ];
+        $user = \User:: singleton();
 
-        $this->query = $query;
-
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND s.CenterID IN (" . $site_arr . ")";
+        if ($user->hasPermission("access_all_profiles") == false) {
+            $provisioner = $provisioenr->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
         }
-
-        if (!$user->hasPermission("superuser")) {
-            $this->query .= " AND m.hide_file = FALSE";
+        if ($user->hasPermission("superuser")) {
+            $provisioner = $provisioner->filter(
+                new HideFileFilter()
+            );
         }
-
-        return true;
+        return $provisioner;
     }
 
     /**
@@ -186,9 +159,21 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result = $this->toArray();
-        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
-        return json_encode($result);
+        $table = (new \LORIS\Data\Table())                                      
+            ->withDataFrom($this->getDataProvisioner());                        
+        $arr   = array_map(                                                     
+            function ($row) {                                                   
+                return array_values($row);                                      
+            },                                                                  
+            json_decode($table->toJSON(\User::singleton()), true)               
+        );                                                                      
+        $options = $this->getOptions();                   
+        return json_encode(                                                     
+            [                                                                   
+             'data'         => $arr,                                            
+             'fieldOptions' => $options,                                        
+            ]
+        );    
     }
 
     /**
