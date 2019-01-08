@@ -20,11 +20,9 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 
-// id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
 define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDIDATE_MIN_PSCID', 1000);
-define('CANDIDATE_MAX_PSCID', 9999);
+define('CANDID_LENGTH', 6);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -675,27 +673,11 @@ class Candidate
     */
     static function _generateCandID(): int
     {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        // generate a candidate id
-        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-
-        // make sure the cand id is not used
-        while ($db->pselectOne(
-            "SELECT count(CandID) FROM candidate WHERE CandID=:CaID",
-            array('CaID' => $candID)
-        ) > 0) {
-            // pick a new candidate id
-            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        }
-
-        return $candID;
+        return intval(\Candidate::_generateID('CandID'));
     }
 
     /**
-    * Generates a new PSCID in the format defined by the config file
+    * Generates a new PSCID in the format defined by the config file.
     *
     * @param string $prefix The prefix to use for the PSCID
     *
@@ -703,32 +685,92 @@ class Candidate
     */
     static function _generatePSCID(string $prefix): string
     {
-        $alphabet = \Candidate::_getPSCIDSetting('alphabet');
-        $length = \Candidate::_getPSCIDSetting('length');
-        $generation = \Candidate::_getPSCIDSetting('generation');
+        return \Candidate::_generateID('PSCID', $prefix);
 
-        // Get all existing PSCIDs for this Site.
-        $existingPSCIDs = \Candidate::_getPSCIDsHavingPrefix($prefix);
+    }
+
+    /**
+     * Generates a new ExternalID in the format defined by the config file.
+     *
+     * @return string De-identified ExternalID used for data sharing.
+     */
+    static function _generateExternalID(): string
+    {
+        \Candidate::_generateID('ExternalID');
+    }
+
+
+    /**
+     * Generate a new ID based on configuration settings for PSCID or 
+     * ExternalID.
+     * @param string $kind One of 'PSCID, 'ExternalID', or 'CandID'.
+     * @param string $prefix The prefix to an ID. Usually a Site abbreviation
+     * such as MON for Montreal but can be a static value.
+     *
+     * @return string A new ID with prefix $prefix.
+     */
+    static function _generateID(string $kind, string $prefix = '') {
+        // Validation
+        if (!in_array($kind, array('PSCID', 'ExternalID', 'CandID'), true)) {
+            throw new LorisException(
+                'Invalid value passed for parameter "kind". Must be one of: ' .
+                '"PSCID", "ExternalID", or "CandID".'
+            );
+        }
+        // Query database for existing IDs to prevent duplicates.
+        $existingIDs = \Candidate::_getExistingIDs($kind, $prefix);
+
+        /* Initialize defaults for ID generation. These are used by CandID 
+         * which is always a fixed-length integer.
+         */
+        $alphabet = range(0, 9);
+        $length = CANDID_LENGTH;
+        $generation = 'random';
+
+        if ($kind !== 'CandID') {
+            /* Read config settings from project/config.xml to retrieve the
+             * alphabet, length, and generation method (sequential or random) used
+             * to create new IDs.
+             */
+            $alphabet = \Candidate::_getIDSetting($kind, 'alphabet');
+            $length = \Candidate::_getIDSetting($kind, 'length');
+            $generation = \Candidate::_getIDSetting($kind, 'generation');
+        }
         
         // Generate new IDs until we find one that's unused.
         while (true) {
-            $id = ($generation == 'sequential') ?
-                Candidate::_generateNewSequentialID($prefix):
-                Candidate::_generateNewRandomID($alphabet, $length);
+            switch ($generation) {
+            case 'sequential':
+                $id = Candidate::_generateNewSequentialID($existingIDs);
+                /* Edge-case: if there are no existing IDs, the above function
+                 * will return the empty string. The below statement creates
+                 * a new string with the first character of the alphabet
+                 * repeated $length times.
+                 */
+                if ($id === '') {
+                    echo "edge-case";
+                    print_r($existingIDs);
+                    $id = str_repeat(strval($alphabet[0]), $length);
+                }
+                break;
+            case 'random':
+                $id = Candidate::_generateNewRandomID($alphabet, $length);
+                break;
+            }
 
             // If this ID is not being used, return the new ID.
             if (
                 !in_array(
                     $id, 
-                    $existingPSCIDs,
+                    $existingIDs,
                     true
                 )
             ) {
                 return $prefix . $id;
             }
         }
-
     }
+
 
     /**
      * Queries the database for PSCIDs starting with a prefix. This is used to
@@ -742,75 +784,52 @@ class Candidate
      * @return string[] The PSCIDs retrieved from the database with the prefix
      *                      stripped. E.g. MON1234 becomes 1234.
      */
-    static function _getPSCIDsHavingPrefix(string $prefix): array {
+    static function _getExistingIDs(string $kind, string $prefix = ''): array {
+        // CandIDs have no prefix so the result of the query can be returned
+        // immediately.
+        if ($kind === 'CandID') {
+            return \Database::singleton()->pselectCol(
+                'SELECT CandID from candidate',
+                array()
+            );
+        }
+
+        // Must be present to prevent SQLi possibility.
+        if ($kind !== 'PSCID' && $kind !== 'ExternalID') {
+            throw new LorisException(
+                'Argument for "kind" variable must be either "PSCID", ' .
+                '"ExternalID", or "CandID"'
+            );
+        }
         $result = \Database::singleton()->pselectCol(
-            "SELECT PSCID from candidate WHERE PSCID LIKE '$prefix%'",
+            // $kind and $prefix are not user-controllable.
+            "SELECT $kind from candidate WHERE $kind LIKE '$prefix%'",
             array()
         );
+
         // Filter off Site prefix so that we just get the IDs.
-        $PSCIDs = array();
+        $ids = array();
         foreach($result as $id) {
-            $PSCIDs[] = substr($id, strlen($prefix));
+            $ids[] = substr($id, strlen($prefix));
         }
-        return $PSCIDs;
+        return $ids;
     }
 
     /**
-     * Generates a new ExternalID in the format defined by the config file.
-     * This is based on _generatePSCID.
+     * Given a list of IDs, generates the next ID in the sequence by
+     * incrementing the maximum value. Works for alphabetical and numeric IDs.
      *
-     * @return string Anonymized ExternalID for distributing data
-     */
-    static function _generateExternalID(): string
-    {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
-
-        $db = $factory->database();
-
-        do {
-            // generate a new external ID
-            if ($ExternalIDSettings['generation'] == 'sequential') {
-                if (!empty($externalID)) {
-                    $externalID++;
-                } else {
-                    $externalID = Candidate::generateFirstStringFromArrays(
-                        $ExternalIDArrays
-                    );
-                }
-            } else {
-                $externalID = Candidate::generateRandomStringFromArrays(
-                    $ExternalIDArrays
-                );
-            }
-
-            // check if the external ID is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
-                array('EID' => $externalID)
-            )  > 0
-        );
-
-        return $externalID;
-    }
-
-    /**
-     * Queries the database for all PSCIDs with a given Site prefix and 
-     * generates the next ID in the sequence. Works for numeric, alphabetical,
-     * and alphanumeric IDs.
-     *
-     * @param string $prefix The Site prefix used for querying.
+     * @param array $existingIDs An array of existing IDs.
      *
      * @return string The next ID in sequence.
      */
     static function _generateNewSequentialID(
-        string $prefix
+        array $existingIDs
     ): string {
-        $max = max(\Candidate::_getPSCIDsHavingPrefix($prefix));
+        if (count($existingIDs) < 1) {
+            return '';
+        }
+        $max = max($existingIDs);
         $max++;
         return strval($max);
     }
@@ -819,34 +838,15 @@ class Candidate
      * Generates a new random string using a given alphabet and with a given
      * length. 
      *
-     * @param string $type An alphabet. Should be one of: 'alpha',
-     * 'alphanumeric', or 'numeric'.
+     * @param array $alphabet A series of valid characters to be used in the ID.
      * @param int $length The length of ID to generate.
      *
      * @return string The new ID.
      */
     static function _generateNewRandomID(
-        string $type,
+        array $alphabet,
         int $length
     ): string {
-        $alphabet = array();
-        switch($type) {
-        case 'alpha':
-            $alphabet = range('a', 'z');
-            break;
-        case 'alphanumeric':
-            $alphabet = array_merge(range(0, 9), range('a', 'z'));
-            break;
-        case 'numeric':
-            $alphabet = range(0, 9);
-            break;
-        default:
-            throw new LorisException(
-                'Bad alphabet value passed in "type" parameter. Value must ' .
-                'be one of: alpha, alphanumeric, or numeric.'
-            );
-            break;
-        }
         $id = '';
         while (strlen($id) < $length) {
             $id .= $alphabet[random_int(0, count($alphabet) - 1)];
@@ -888,19 +888,26 @@ class Candidate
      *
      * @return string[]|int
      */
-    static function _getPSCIDSetting(
+    static function _getIDSetting(
+        string $kind,
         string $setting
     ) {
+        if ($kind !== 'PSCID' && $kind !== 'ExternalID') {
+            throw new LorisException(
+                'Argument for "kind" variable must be either "PSCID" or ' .
+                '"ExternalID".'
+            );
+        }
         if ($setting == 'generation') {
             return \NDB_Factory::singleton()
                 ->config()
-                ->getSetting('PSCID')['generation'];
+                ->getSetting($kind)['generation'];
         }
 
         // Values other than 'generation' are found within 'seq' elements.
         $idStructure = \NDB_Factory::singleton()
             ->config()
-            ->getSetting('PSCID')['structure']['seq'];
+            ->getSetting($kind)['structure']['seq'];
 
         if (!$idStructure[0]) {
             // There's only one seq tag so the param format
@@ -915,10 +922,13 @@ class Candidate
          */
         if ($setting == 'length') {
             foreach ($idStructure as $seq) {
-                $length = $seq['@']['minLength'] ?? $seq['@']['length'];
-                if (isset($length)) {
-                    return $length;
+                if (!isset($seq['@']['minLength']) &&
+                    !isset($seq['@']['length'])
+                ) {
+                    continue;
                 }
+                $length = $seq['@']['minLength'] ?? $seq['@']['length'];
+                return intval($length);
             }
             return 1;
         }
@@ -945,8 +955,19 @@ class Candidate
                     'Too many values specified for PSCID seq types'
                 );
             }
-            // The only element should correspond to the PSCID alphabet.
-            return array_pop($alphabet);
+            switch (array_pop($alphabet)){
+            case 'alpha':
+                return range('a','z');
+            case 'numeric':
+                return range(0, 9);
+            case 'alphanumeric':
+                return array_merge(range(0, 9), range('a', 'z'));
+            default:
+                throw new \ConfigurationException(
+                    "Invalid alphbet supplied for $kind"
+                );
+                break;
+            }
         }
     }
 
