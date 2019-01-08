@@ -659,7 +659,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     if (!empty($_GET['issueID'])) { //if an existing issue
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
-        $desc           = $db->pselect(
+        $desc       = $db->pselect(
             "SELECT issueComment
 FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded LIMIT 1",

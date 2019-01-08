@@ -94,7 +94,7 @@ class Issue extends \NDB_Form
      * Checks if the user has the ability to *view* the issue page
      * Does not govern editing abilities; those are controlled by issueIndex.js
      *
-     * @param User $user
+     * @param User $user User Instance
      *
      * @return bool
      *
