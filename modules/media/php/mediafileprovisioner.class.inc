@@ -38,7 +38,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     {
         parent::__construct(
             "SELECT m.file_name,                                                   
-                    (SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid,  
+                    (SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid,
                     s.Visit_label as visit_label,
                     l.language_label,
                			(SELECT Full_name FROM test_names WHERE Test_name=m.instrument),
@@ -53,8 +53,8 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                			m.hide_file,
                			m.id
              FROM media m
-             LEFT JOIN session s ON m.session_id = s.ID                  
-             LEFT JOIN candidate c ON c.CandID=s.CandID                  
+             LEFT JOIN session s ON m.session_id = s.ID
+             LEFT JOIN candidate c ON c.CandID=s.CandID
              LEFT JOIN language l USING (language_id)",
              array()
         );
