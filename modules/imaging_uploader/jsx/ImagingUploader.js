@@ -48,7 +48,6 @@ class ImagingUploader extends Component {
       method: 'GET',
       dataType: 'json',
       success: (data) => {
-        // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         this.setState({
           data: data,
           isLoaded: true,
