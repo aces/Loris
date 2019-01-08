@@ -211,12 +211,12 @@ abstract class NDB_Notifier_Abstract
      */
     private function _getAdminUser(): string
     {
-        $result     = \Database::singleton()->pselectRow(
+        $result           = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
             array()
         );
-        $info_array =array();
-        $info_array['ID']    = $result['ID'];
+        $info_array       =array();
+        $info_array['ID'] = $result['ID'];
         $info_array['name']  = $result['Real_name'];
         $info_array['email'] = $result['Email'];
         return $info_array;
@@ -379,8 +379,8 @@ abstract class NDB_Notifier_Abstract
         int $trigger_user,
         int $target_user,
         string $service
-    ): void
-    {
+    ): void {
+
         \Database::singleton()->insert(
             'notification_history',
             array(
@@ -495,8 +495,8 @@ abstract class NDB_Notifier_Abstract
     public static function getNotificationModuleID(
         string $module,
         string $operation_type
-    ): int
-    {
+    ): int {
+
         $query  = "SELECT id
                   FROM notification_modules
                   WHERE module_name=:mn
