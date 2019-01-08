@@ -2,7 +2,7 @@
 /**
  * This file contains the NDB_Menu_Filter_media class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media
@@ -19,7 +19,7 @@ namespace LORIS\media;
  * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media
@@ -29,8 +29,6 @@ namespace LORIS\media;
  */
 class Media extends \NDB_Menu_Filter
 {
-    public $hasWritePermission = false;
-    public $hasHidePermission  = false;
     public $AjaxModule         = true;
     public $skipTemplate       = true;
 
@@ -43,9 +41,6 @@ class Media extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // Set permission to access user-hidden files, currently based on superuser
-        $this->hasHidePermission = $user->hasPermission("superuser");
-
         return $user->hasAnyPermission(
             array(
              'media_read',
@@ -82,7 +77,7 @@ class Media extends \NDB_Menu_Filter
             }
         }
 
-        $instrumentList   = [];
+        $instrumentList   = array();
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
@@ -91,7 +86,7 @@ class Media extends \NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = [];
+        $fileTypeList  = array();
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
@@ -105,7 +100,7 @@ class Media extends \NDB_Menu_Filter
         }
 
         $hiddenOptions = array();
-        if ($this->hasHidePermission) {
+        if (\User::singleton()->hasPermission('superuser') {
             $hiddenOptions = array(
                               0 => 'Visible only',
                               1 => 'Hidden only',
