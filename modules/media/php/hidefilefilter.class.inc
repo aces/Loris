@@ -37,7 +37,7 @@ class HideFileFilter implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        if ($resource->hideFile) {
+        if ($resource->getHideFile()) {
             return false;
         } else {
             return true;
