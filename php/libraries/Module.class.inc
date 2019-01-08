@@ -43,7 +43,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * This also sets up PHP class autoloading for the module that is loaded,
      * such that files in the module/php directory can be autoloaded.
      *
-     * @param  string $name The module name we'd like information about
+     * @param string $name The module name we'd like information about
+     *
      * @throws \LorisNoSuchModuleException
      * @throws \LorisModuleMissingException
      * @throws \NotFound
