@@ -709,7 +709,7 @@ class Candidate
 
         // Get all existing PSCIDs for this Site.
         $existingPSCIDs = \Candidate::_getPSCIDsHavingPrefix($prefix);
-        print_r($existingPSCIDs);
+        
         // Generate new IDs until we find one that's unused.
         while (true) {
             $id = ($generation == 'sequential') ?
@@ -730,6 +730,18 @@ class Candidate
 
     }
 
+    /**
+     * Queries the database for PSCIDs starting with a prefix. This is used to
+     * get all existing IDs for a given site. The prefix will be stripped from
+     * the IDs as the calling code will be interested in and aware of the Site
+     * corresponding to the prefix. Returning the bare IDs allows for easier
+     * processing.
+     *
+     * @param string $prefix A site abbreviation, e.g. MON for Montreal.
+     *
+     * @return string[] The PSCIDs retrieved from the database with the prefix
+     *                      stripped. E.g. MON1234 becomes 1234.
+     */
     static function _getPSCIDsHavingPrefix(string $prefix): array {
         $result = \Database::singleton()->pselectCol(
             "SELECT PSCID from candidate WHERE PSCID LIKE '$prefix%'",
@@ -800,9 +812,19 @@ class Candidate
     ): string {
         $max = max(\Candidate::_getPSCIDsHavingPrefix($prefix));
         $max++;
-        return $max;
+        return strval($max);
     }
 
+    /**
+     * Generates a new random string using a given alphabet and with a given
+     * length. 
+     *
+     * @param string $type An alphabet. Should be one of: 'alpha',
+     * 'alphanumeric', or 'numeric'.
+     * @param int $length The length of ID to generate.
+     *
+     * @return string The new ID.
+     */
     static function _generateNewRandomID(
         string $type,
         int $length
@@ -818,12 +840,18 @@ class Candidate
         case 'numeric':
             $alphabet = range(0, 9);
             break;
+        default:
+            throw new LorisException(
+                'Bad alphabet value passed in "type" parameter. Value must ' .
+                'be one of: alpha, alphanumeric, or numeric.'
+            );
+            break;
         }
         $id = '';
         while (strlen($id) < $length) {
             $id .= $alphabet[random_int(0, count($alphabet) - 1)];
         }
-        return $id;
+        return strval($id);
     }
 
     /**
