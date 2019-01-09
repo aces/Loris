@@ -36,7 +36,8 @@ abstract class ValidatableIdentifier implements Identifier
      * This function is called by the contructor to ensure that no
      * ValidatableIdentifier exists if it value is not valid.
      *
-     * It is static because it could be called before instanciation
+     * Validation should be done on the value format and not on the database
+     * state.
      *
      * @param string $value The value to be validated
      *
