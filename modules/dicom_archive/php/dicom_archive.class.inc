@@ -105,9 +105,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        /* Ensure that the server is well configured to prevent displaying
-         * data that is not properly anonmyized.
-         */
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
         $arr   = array_map(
