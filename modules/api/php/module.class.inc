@@ -80,8 +80,10 @@ class Module extends \Module
                     )
                 );
         };
+
         $version  = $pieces[1];
         $endpoint = $pieces[2];
+
         if (!in_array($version, $validAPIVersions)) {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
@@ -106,24 +108,47 @@ class Module extends \Module
             ->withAttribute("LORIS-API-Version", $version)
             ->withAttribute('pathparts', $pathparts);
 
-        $parentresp = parent::handle($newrequest);
-        switch ($parentresp->getStatusCode()) {
+        $handlername = $pathparts[0];
+        switch($handlername) {
+        case 'login':
+            $handler = new \LORIS\Api\Endpoints\Login();
+            break;
+        case 'projects':
+            $handler = new \LORIS\Api\Endpoints\Projects();
+            break;
+        default:
+            return (new \LORIS\Http\Response())
+                    ->withStatus(404)
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(["error" => "not found"])
+                        )
+                    );
+        }
+
+        // This disregards the parent handler from the base module class,
+        // because most of the work it does (adding page decoration middleware,
+        // delegating to a sub-page class in the Module, etc) is not relevant
+        // for the API module.
+        $response = $handler->handle($newrequest);
+        switch ($response->getStatusCode()) {
         case 401:
         case 403:
         case 404:
             // If permission was denied, fake a 404 to avoid leaking metadata.
             // Also convert all 404s to the same message to ensure you can't
             // derive metadata by looking at the error message.
-            return $parentresp
+            return $response
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(404)
                 ->withBody(
-                    new \LORIS\HTTP\StringStream(
+                    new \LORIS\Http\StringStream(
                         json_encode(["error" => "not found"])
                     )
                 );
         default:
-            return $parentresp;
+            return $response;
         }
     }
 }
