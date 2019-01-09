@@ -37,8 +37,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     public function __construct(
         string $module_name,
         string $operation_type,
-        array $extra_tpl_data=null,
-        bool $asAdmin=null
+        array $extra_tpl_data = array(),
+        bool $asAdmin = false
     ) {
         parent::__construct(
             $module_name,
@@ -52,13 +52,13 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      * Function to be overridden by module using the notification system
      *
      * @param array  $extra_tpl_data additional variables to be sent to the template.
-     * @param string $custom_message message overriding module-defined message
+     * @param ?string $custom_message message overriding module-defined message
      *
      * @return void
      */
     public function notify(
         array $extra_tpl_data=array(),
-        string $custom_message=null
+        ?string $custom_message=null
     ): void {
         $this->tpl_data = $this->tpl_data + $extra_tpl_data;
 
