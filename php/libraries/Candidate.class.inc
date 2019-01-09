@@ -673,7 +673,14 @@ class Candidate
     */
     static function _generateCandID(): int
     {
-        return intval(\Candidate::_generateID('CandID'));
+        $existingIDs = \Candidate::_getExistingIDs('CandID');
+        /* Generate new random values for a CandID until we find one that's
+         * unused.
+         */
+        do {
+            $id = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        } while (in_array($id, $existingIDs, true));
+        return $id;
     }
 
     /**
@@ -703,7 +710,7 @@ class Candidate
     /**
      * Generate a new ID based on configuration settings for PSCID or 
      * ExternalID.
-     * @param string $kind One of 'PSCID, 'ExternalID', or 'CandID'.
+     * @param string $kind One of 'PSCID or 'ExternalID'
      * @param string $prefix The prefix to an ID. Usually a Site abbreviation
      * such as MON for Montreal but can be a static value.
      *
@@ -714,61 +721,40 @@ class Candidate
         if (!in_array($kind, array('PSCID', 'ExternalID', 'CandID'), true)) {
             throw new LorisException(
                 'Invalid value passed for parameter "kind". Must be one of: ' .
-                '"PSCID", "ExternalID", or "CandID".'
+                '"PSCID", "ExternalID".'
             );
         }
         // Query database for existing IDs to prevent duplicates.
         $existingIDs = \Candidate::_getExistingIDs($kind, $prefix);
 
-        /* Initialize defaults for ID generation. These are used by CandID 
-         * which is always a fixed-length integer.
+        /* Read config settings from project/config.xml to retrieve the
+         * alphabet, length, and generation method (sequential or random) used
+         * to create new IDs.
          */
-        $alphabet = range(0, 9);
-        $length = CANDID_LENGTH;
-        $generation = 'random';
+        $alphabet = \Candidate::_getIDSetting($kind, 'alphabet');
+        $length = \Candidate::_getIDSetting($kind, 'length');
+        $generation = \Candidate::_getIDSetting($kind, 'generation');
 
-        if ($kind !== 'CandID') {
-            /* Read config settings from project/config.xml to retrieve the
-             * alphabet, length, and generation method (sequential or random) used
-             * to create new IDs.
-             */
-            $alphabet = \Candidate::_getIDSetting($kind, 'alphabet');
-            $length = \Candidate::_getIDSetting($kind, 'length');
-            $generation = \Candidate::_getIDSetting($kind, 'generation');
-        }
-        
         // Generate new IDs until we find one that's unused.
-        while (true) {
+        do {
             switch ($generation) {
             case 'sequential':
-                $id = Candidate::_generateNewSequentialID($existingIDs);
-                /* Edge-case: if there are no existing IDs, the above function
-                 * will return the empty string. The below statement creates
-                 * a new string with the first character of the alphabet
-                 * repeated $length times.
+                /* If there are no existing IDs, create a new string
+                 * with the first character of the alphabet repeated $length 
+                 * times.
                  */
-                if ($id === '') {
-                    echo "edge-case";
-                    print_r($existingIDs);
+                if (count($existingIDs) < 1) {
                     $id = str_repeat(strval($alphabet[0]), $length);
+                } else {
+                    $id = Candidate::_generateNewSequentialID($existingIDs);
                 }
                 break;
             case 'random':
                 $id = Candidate::_generateNewRandomID($alphabet, $length);
                 break;
             }
-
-            // If this ID is not being used, return the new ID.
-            if (
-                !in_array(
-                    $id, 
-                    $existingIDs,
-                    true
-                )
-            ) {
-                return $prefix . $id;
-            }
-        }
+        } while (in_array($id, $existingIDs, true));
+        return $prefix . $id;
     }
 
 
@@ -822,7 +808,10 @@ class Candidate
         array $existingIDs
     ): string {
         if (count($existingIDs) < 1) {
-            return '';
+            throw new \LorisException(
+                'Cannot generate new sequential ID because the sequence ' .
+                'provided is empty.'
+            );
         }
         $max = max($existingIDs);
         $max++;
