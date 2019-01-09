@@ -154,8 +154,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * Returns true if this module should be publicly available to people who
      * are not logged in to LORIS.
      *
-     * @return bool (false: note that this is not currently possible because main.php
-     *         checks that the user is logged in before it calls NDB_Caller.)
+     * @return bool False. Subclasses must override this function in the case
+     *                  that they should be publicly available.
      */
     public function isPublicModule()
     {
