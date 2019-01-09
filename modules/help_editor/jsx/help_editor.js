@@ -58,7 +58,7 @@ class HelpEditor extends React.Component {
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
    *
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
     let url;
