@@ -16,28 +16,28 @@ header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
 $DB            = Database::singleton();
-$genderData    = array();
+$sexData       = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
-    $genderData['labels'][] = $siteName;
-    $genderData['datasets']['female'][] = $DB->pselectOne(
+    $sexData['labels'][] = $siteName;
+    $sexData['datasets']['female'][] = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         WHERE c.CenterID=:Site AND c.Gender='female' AND c.Active='Y'
+         WHERE c.CenterID=:Site AND c.Sex='female' AND c.Active='Y'
          AND c.Entity_type='Human'",
         array('Site' => $siteID)
     );
-    $genderData['datasets']['male'][]   = $DB->pselectOne(
+    $sexData['datasets']['male'][]   = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         WHERE c.CenterID=:Site AND c.Gender='male' AND c.Active='Y'
+         WHERE c.CenterID=:Site AND c.Sex='male' AND c.Active='Y'
          AND c.Entity_type='Human'",
         array('Site' => $siteID)
     );
 }
 
-print json_encode($genderData);
+print json_encode($sexData);
 
 return 0;
 

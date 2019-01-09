@@ -260,7 +260,7 @@
                                                             </th>
                                                         {/if}
                                                         <th>
-                                                            Gender
+                                                            Biological Sex
                                                         </th>
                                                         {if $candidate.ProjectTitle != ""}
                                                             <th>
@@ -318,7 +318,7 @@
                                                             </td>
                                                         {/if}
                                                         <td>
-                                                            {$candidate.Gender}
+                                                            {$candidate.Sex}
                                                         </td>
                                                         {if $candidate.ProjectTitle != ""}
                                                             <td>

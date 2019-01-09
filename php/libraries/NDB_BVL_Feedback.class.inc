@@ -452,7 +452,7 @@ class NDB_BVL_Feedback
         $query = "SELECT c.CandID as CandID,
                     c.PSCID as PSCID,
                     c.Ethnicity,
-                    c.Gender,
+                    c.Sex,
                     s.ID as SessionID,
                     s.Visit_label as Visit,
                     ft.Feedback_level as QC_Class,

@@ -71,9 +71,12 @@ class Candidates extends APIBase
      */
     public function handleGET()
     {
+        // The inaccurately titled "Gender" column was renamed to "Sex"
+        // in the backend, but the v0.0.2 version of the API is immutable
+        // and still needs to refer to it as Gender, even if it's wrong.
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
-                    EDC, DoB, Gender
+                    EDC, DoB, Sex as Gender
                 FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
              WHERE Active='Y'
                 ",

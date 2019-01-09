@@ -34,7 +34,7 @@ class CandidateTest extends TestCase
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
-           'Gender'       => 'Male',
+           'Sex'          => 'Male',
            'PSC'          => 'AAA',
            'Ethnicity'    => null,
            'Active'       => 'Y',

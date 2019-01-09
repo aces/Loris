@@ -88,7 +88,7 @@ class Candidate
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
-            c.EDC, c.Gender, c.Entity_type,
+            c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
@@ -197,7 +197,7 @@ class Candidate
      *                                      YYYY-MM-DD. Value should be null
      *                                      unless the useEDC setting is
      *                                      configured to be true.
-     * @param string      $gender      gender, either 'Male' or 'Female'
+     * @param string      $sex         sex, either 'Male' or 'Female'
      * @param string|null $PSCID       PSCID specified by the user, if available
      * @param int|null    $projectID   The project ID, if available
      *
@@ -209,7 +209,7 @@ class Candidate
         int $centerID,
         string $dateOfBirth,
         ?string $edc,
-        string $gender,
+        string $sex,
         ?string $PSCID = null,
         ?int $projectID = null
     ): int {
@@ -271,7 +271,7 @@ class Candidate
                      'PSCID'           => $PSCID,
                      'DoB'             => $dateOfBirth,
                      'EDC'             => $edc,
-                     'Gender'          => $gender,
+                     'Sex'             => $sex,
                      'ProjectID'       => $projectID,
                      'Date_active'     => date('Y-m-d'),
                      'Date_registered' => date('Y-m-d'),
@@ -494,13 +494,13 @@ class Candidate
     }
 
     /**
-     * Return the candidate's gender
+     * Return the candidate's sex
      *
-     * @return string Male|Female String describing the gender
+     * @return string Male|Female String describing the sex
      */
-    function getCandidateGender(): string
+    function getCandidateSex(): string
     {
-        return $this->candidateInfo["Gender"];
+        return $this->candidateInfo["Sex"];
     }
 
     /**

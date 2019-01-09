@@ -22,8 +22,8 @@
     <td>{$archive.PatientDoB}</td>
   </tr>
   <tr>
-    <th>Patient Gender</th>
-    <td>{$archive.PatientGender}</td>
+    <th>Patient Biological Sex</th>
+    <td>{$archive.PatientSex}</td>
   </tr>
   <tr>
     <th>Date acquired</th>

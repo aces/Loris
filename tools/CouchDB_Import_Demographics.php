@@ -31,8 +31,8 @@ class CouchDBDemographicsImporter {
             'Description' => 'Cohort of this session',
             'Type' => 'varchar(255)'
         ),
-        'Gender' => array(
-            'Description' => 'Candidate\'s gender',
+        'Sex' => array(
+            'Description' => 'Candidate\'s biological sex',
             'Type' => "enum('Male', 'Female')"
         ),
         'Site' => array(
@@ -131,7 +131,7 @@ class CouchDBDemographicsImporter {
                                 s.Visit_label, 
                                 s.SubprojectID, 
                                 p.Alias as Site, 
-                                c.Gender, 
+                                c.Sex,
                                 s.Current_stage, 
                                 CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, 
                                 c.ProjectID, 
@@ -159,7 +159,7 @@ class CouchDBDemographicsImporter {
                             s.Visit_label, 
                             s.SubprojectID, 
                             Site, 
-                            c.Gender, 
+                            c.Sex,
                             s.Current_stage,
                             Failure,
                             c.ProjectID, 
@@ -173,9 +173,9 @@ class CouchDBDemographicsImporter {
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields = ", c.ProbandSex as Sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
-            $groupBy .= ", c.ProbandGender, Age_difference";
+            $groupBy .= ", c.ProbandSex, Age_difference";
         }
         // If expected date of confinement is being used, add EDC information into the query
         if ($config->getSetting("useEDC") === "true") {
@@ -213,8 +213,8 @@ class CouchDBDemographicsImporter {
         $config = \NDB_Config::singleton();
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
-            $this->Dictionary["Gender_proband"] = array(
-                'Description' => 'Proband\'s gender',
+            $this->Dictionary["Sex_proband"] = array(
+                'Description' => 'Proband\'s biological sex',
                 'Type' => "enum('Male','Female')"
             );
             $this->Dictionary["Age_difference"] = array(
