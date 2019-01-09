@@ -46,7 +46,7 @@ class CandID extends ValidatableIdentifier
      *
      * @return bool True if the value format is valid
      */
-    static protected function validate(string $value): bool
+    protected function validate(string $value): bool
     {
         return preg_match('/[0-9]{6}/', $value) === 1;
     }

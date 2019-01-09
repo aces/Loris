@@ -36,23 +36,27 @@ abstract class ValidatableIdentifier implements Identifier
      * This function is called by the contructor to ensure that no
      * ValidatableIdentifier exists if it value is not valid.
      *
+     * It is static because it could be called before instanciation
+     *
      * @param string $value The value to be validated
      *
      * @return bool True if the value format is valid
      */
-    abstract static protected function validate(string $value): bool;
+    abstract protected function validate(string $value): bool;
 
     /**
      * Default constructor
      *
-     * Classes extending ValidatableIdentifier should call their validate
-     * function.
+     * This is final to make sure that classes extending ValidatableIdentifier
+     * will call validate upon instanciation.
      *
      * @param string $value The Identifier's value
+     *
+     * @throws \DomainException When the value is not valid
      */
-    public function __construct(string $value)
+    public final function __construct(string $value)
     {
-        if (!static::validate($value)) {
+        if (!$this->validate($value)) {
             throw new \DomainException('The value is not valid');
         }
         $this->value = $value;
