@@ -36,7 +36,7 @@ class CandID extends ValidatableIdentifier
 
     /**
      * Validate that the value of the CandID is a string of length 6.
-     * This do not checks for unicity in the database or any other
+     * This does not check for uniqueness in the database or any other
      * state related facts.
      *
      * This function is called by the contructor of ValidatableIdentifier
