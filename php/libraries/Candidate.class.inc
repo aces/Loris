@@ -803,7 +803,7 @@ class Candidate
         }
         $result = \Database::singleton()->pselectCol(
             // $kind and $prefix are not user-controllable.
-            "SELECT $kind from candidate WHERE $kind LIKE '$prefix%'",
+            "SELECT substring($kind, LENGTH($prefix) +1) from candidate WHERE $kind LIKE '$prefix%'",
             array()
         );
 
