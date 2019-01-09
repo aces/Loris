@@ -703,20 +703,22 @@ class Candidate
      */
     static function _generateExternalID(): string
     {
-        \Candidate::_generateID('ExternalID');
+        return \Candidate::_generateID('ExternalID');
     }
 
 
     /**
-     * Generate a new ID based on configuration settings for PSCID or 
+     * Generate a new ID based on configuration settings for PSCID or
      * ExternalID.
-     * @param string $kind One of 'PSCID or 'ExternalID'
+     *
+     * @param string $kind   One of 'PSCID or 'ExternalID'
      * @param string $prefix The prefix to an ID. Usually a Site abbreviation
      * such as MON for Montreal but can be a static value.
      *
      * @return string A new ID with prefix $prefix.
      */
-    static function _generateID(string $kind, string $prefix = '') {
+    static function _generateID(string $kind, string $prefix = '')
+    {
         // Validation
         if (!in_array($kind, array('PSCID', 'ExternalID', 'CandID'), true)) {
             throw new LorisException(
@@ -731,8 +733,8 @@ class Candidate
          * alphabet, length, and generation method (sequential or random) used
          * to create new IDs.
          */
-        $alphabet = \Candidate::_getIDSetting($kind, 'alphabet');
-        $length = \Candidate::_getIDSetting($kind, 'length');
+        $alphabet   = \Candidate::_getIDSetting($kind, 'alphabet');
+        $length     = \Candidate::_getIDSetting($kind, 'length');
         $generation = \Candidate::_getIDSetting($kind, 'generation');
 
         // Generate new IDs until we find one that's unused.
@@ -740,7 +742,7 @@ class Candidate
             switch ($generation) {
             case 'sequential':
                 /* If there are no existing IDs, create a new string
-                 * with the first character of the alphabet repeated $length 
+                 * with the first character of the alphabet repeated $length
                  * times.
                  */
                 if (count($existingIDs) < 1) {
@@ -757,7 +759,6 @@ class Candidate
         return $prefix . $id;
     }
 
-
     /**
      * Queries the database for PSCIDs starting with a prefix. This is used to
      * get all existing IDs for a given site. The prefix will be stripped from
@@ -765,12 +766,14 @@ class Candidate
      * corresponding to the prefix. Returning the bare IDs allows for easier
      * processing.
      *
+     * @param string $kind   One of 'CandID', 'PSCID', or 'ExternalID'.
      * @param string $prefix A site abbreviation, e.g. MON for Montreal.
      *
      * @return string[] The PSCIDs retrieved from the database with the prefix
      *                      stripped. E.g. MON1234 becomes 1234.
      */
-    static function _getExistingIDs(string $kind, string $prefix = ''): array {
+    static function _getExistingIDs(string $kind, string $prefix = ''): array
+    {
         // CandIDs have no prefix so the result of the query can be returned
         // immediately.
         if ($kind === 'CandID') {
@@ -789,7 +792,9 @@ class Candidate
         }
         $result = \Database::singleton()->pselectCol(
             // $kind and $prefix are not user-controllable.
-            "SELECT substring($kind, LENGTH('$prefix') +1) from candidate WHERE $kind LIKE '$prefix%'",
+            "SELECT substring($kind, LENGTH('$prefix') +1) 
+            from candidate 
+            WHERE $kind LIKE '$prefix%'",
             array()
         );
 
@@ -820,10 +825,10 @@ class Candidate
 
     /**
      * Generates a new random string using a given alphabet and with a given
-     * length. 
+     * length.
      *
      * @param array $alphabet A series of valid characters to be used in the ID.
-     * @param int $length The length of ID to generate.
+     * @param int   $length   The length of ID to generate.
      *
      * @return string The new ID.
      */
@@ -870,6 +875,9 @@ class Candidate
      * Helper function used for extracting the values from the config
      * settings relating to the PSCID structure.
      *
+     * @param string $kind    One of 'CandID' or 'ExternalID'
+     * @param string $setting One of 'generation', 'minLength', 'alphabet',
+     *
      * @return string[]|int
      */
     static function _getIDSetting(
@@ -906,8 +914,8 @@ class Candidate
          */
         if ($setting == 'length') {
             foreach ($idStructure as $seq) {
-                if (!isset($seq['@']['minLength']) &&
-                    !isset($seq['@']['length'])
+                if (!isset($seq['@']['minLength'])
+                    && !isset($seq['@']['length'])
                 ) {
                     continue;
                 }
@@ -927,13 +935,20 @@ class Candidate
                 }
             }
             // Remove seq values that do not correspond to PSCID alphabets.
-            $alphabet = array_filter($seqTypes, function ($type) {
-                return in_array(
-                    $type,
-                    array('numeric', 'alphanumeric', 'alpha'),
-                    true
-                );
-            });
+            $alphabet = array_filter(
+                $seqTypes,
+                function ($type) {
+                    return in_array(
+                        $type,
+                        array(
+                         'numeric',
+                         'alphanumeric',
+                         'alpha',
+                        ),
+                        true
+                    );
+                }
+            );
             if (count($alphabet) > 1) {
                 throw new \ConfigurationException(
                     'Too many values specified for PSCID seq types'
@@ -941,7 +956,7 @@ class Candidate
             }
             switch (array_pop($alphabet)){
             case 'alpha':
-                return range('a','z');
+                return range('a', 'z');
             case 'numeric':
                 return range(0, 9);
             case 'alphanumeric':
