@@ -214,9 +214,9 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $site =& Site::singleton($centerID);
+        $site = \Site::singleton($centerID);
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
+        $user = \User::singleton($_SESSION['State']->getUsername());
 
         // generate candid
         $candID = Candidate::_generateCandID();
@@ -703,7 +703,13 @@ class Candidate
      */
     static function _generateExternalID(): string
     {
-        return \Candidate::_generateID('ExternalID');
+        return \Candidate::_generateID(
+            'ExternalID',
+            \Candidate::_getIDSetting(
+                'ExternalID',
+                'prefix'
+            )
+        );
     }
 
 
@@ -878,7 +884,7 @@ class Candidate
      * @param string $kind    One of 'CandID' or 'ExternalID'
      * @param string $setting One of 'generation', 'minLength', 'alphabet',
      *
-     * @return string[]|int
+     * @return array|int
      */
     static function _getIDSetting(
         string $kind,
@@ -890,13 +896,15 @@ class Candidate
                 '"ExternalID".'
             );
         }
+        // The generation setting can be easily extracted and returned.
         if ($setting == 'generation') {
             return \NDB_Factory::singleton()
                 ->config()
                 ->getSetting($kind)['generation'];
         }
 
-        // Values other than 'generation' are found within 'seq' elements.
+        // Values other than 'generation' are found within 'seq' elements and
+        // require more complex processing.
         $idStructure = \NDB_Factory::singleton()
             ->config()
             ->getSetting($kind)['structure']['seq'];
@@ -909,66 +917,143 @@ class Candidate
             $idStructure = $temp;
         }
 
-        /* Iterate over each 'seq' value and extract minimum length or length
-         * if their values are set. Return a length of 1 by default.
-         */
-        if ($setting == 'length') {
-            foreach ($idStructure as $seq) {
-                if (!isset($seq['@']['minLength'])
-                    && !isset($seq['@']['length'])
-                ) {
-                    continue;
-                }
-                $length = $seq['@']['minLength'] ?? $seq['@']['length'];
-                return intval($length);
-            }
-            return 1;
-        }
-        /* Iterate over each 'seq' value and extract the 'type' value. This is
-         * needed to figure out which alphabet a PSCID will use.
-         */
-        if ($setting == 'alphabet') {
-            $seqTypes = array();
-            foreach ($idStructure as $seq) {
-                if (isset($seq['@']['type'])) {
-                    $seqTypes[] = $seq['@']['type'];
-                }
-            }
-            // Remove seq values that do not correspond to PSCID alphabets.
-            $alphabet = array_filter(
-                $seqTypes,
-                function ($type) {
-                    return in_array(
-                        $type,
-                        array(
-                         'numeric',
-                         'alphanumeric',
-                         'alpha',
-                        ),
-                        true
-                    );
-                }
+        try {
+            $seqValue = \Candidate::_getSeqSetting($idStructure, $setting);
+        } catch (\ConfigurationException $e) {
+            /* Throw a new exception so that we can inform developers whether
+             * the ConfigurationException arose due to ExternalID or PSCID
+             * settings.
+             */
+            throw new LorisException(
+                "Cannot create new candidate because of a configuration " .
+                "error in settings for $kind structure. Details: "
+                . $e->getMessage()
             );
-            if (count($alphabet) > 1) {
-                throw new \ConfigurationException(
-                    'Too many values specified for PSCID seq types'
-                );
-            }
-            switch (array_pop($alphabet)){
+        }
+        if ($setting === 'alphabet') {
+            switch ($seqValue) {
             case 'alpha':
                 return range('a', 'z');
             case 'numeric':
                 return range(0, 9);
             case 'alphanumeric':
                 return array_merge(range(0, 9), range('a', 'z'));
-            default:
-                throw new \ConfigurationException(
-                    "Invalid alphbet supplied for $kind"
-                );
-                break;
             }
         }
+        // Min, max, and length values should be returned as integers.
+        return intval($seqValue);
     }
+
+    /**
+     * Iterate over each 'seq' value and return its setting if its value is
+     * configured. Do error handling to make sure that there is exactly one
+     * value corresponding to the requested setting.
+     *
+     * @param array  $idStructure Settings concerning ID structure extracted
+     *                  from project/config.sml
+     * @param string $setting     The name of the variable for which we want the
+     *                  value.
+     *
+     * @throws ConfigurationException
+     *
+     * @return array
+     */
+    static function _getSeqSetting(array $idStructure, string $setting)
+    {
+
+        /* Do validation on 'prefix' and 'alphabet' since they both are found in
+         * 'type' attributes within 'seq' elements. See project/config.xml for
+         * examples.
+         */
+        switch($setting) {
+        case 'alphabet':
+            $seqSettings = array_filter(
+                \Candidate::_extractSeqSetting($idStructure, 'type'),
+                function ($x) {
+                    return $x === 'alpha'
+                        || $x === 'alphanumeric'
+                        || $x === 'numeric';
+                }
+            );
+            break;
+        case 'prefix':
+            $seqSettings = array_filter(
+                \Candidate::_extractSeqSetting($idStructure, 'type'),
+                function ($x) {
+                    return $x === 'static' || $x === 'siteAbbrev';
+                }
+            );
+            break;
+        default:
+            /* Other settings (i.e. 'length', 'min', 'max') can be extracted
+             * directly as they are stored within distinct attributes.
+             */
+            $seqSettings = \Candidate::_extractSeqSetting(
+                $idStructure,
+                $setting
+            );
+            break;
+        }
+
+        if (count($seqSettings) > 1) {
+            throw new ConfigurationException(
+                'Too many values found for setting ' . $setting
+            );
+        }
+        if (count($seqSettings) === 0) {
+            throw new ConfigurationException(
+                'No value found for config setting ' . $setting
+            );
+        }
+        return array_pop($seqSettings);
+    }
+
+    /**
+     * Traverse the $idStructure array and collect all values that exist
+     * for $setting.
+     *
+     * @param array  $idStructure Settings concerning ID structure extracted
+     *                  from project/config.sml
+     * @param string $setting     The name of the variable for which we want the
+     *                  value.
+     *
+     * @return array The value(s) corresponding to $setting.
+     */
+    static function _extractSeqSetting(
+        array $idStructure,
+        string $setting
+    ): array {
+        $seqSettings = array();
+        foreach ($idStructure as $seq) {
+            if (isset($seq['@'][$setting])) {
+                $seqSettings[] = $seq['@'][$setting];
+            }
+        }
+        return $seqSettings;
+    }
+
+    /**
+     * A callback function for array_filter called in _extractSeqSetting.
+     * Returns true when $value is a valid in the context of alphabet types
+     * defined by ID generation logic within this class.
+     *
+     * @param string $value A 'seq' value from project/config.xml
+     *
+     * @return bool Whether $value is a valid alphabet value.
+     */
+    static function _alphabetFilter(string $value)
+    {
+        return in_array(
+            $value,
+            array(
+             'alpha',
+             'alphanumeric',
+             'numeric',
+            ),
+            true
+        );
+    }
+
 
     /**
      * Gets the participant_status options from participant_status_options table
