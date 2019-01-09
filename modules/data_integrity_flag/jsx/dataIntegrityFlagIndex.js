@@ -27,9 +27,7 @@ class DataIntegrityFlagIndex extends Component {
   }
 
   /**
-   * Retrieve data from the provided URL and save it in state
-   * Additionally add hiddenHeaders to global loris variable
-   * for easy access by columnFormatter.
+   * Retrieve data from the provided URL and save it in state.
    *
    * @return {object}
    */
@@ -44,7 +42,7 @@ class DataIntegrityFlagIndex extends Component {
   }
 
   /**
-   * Modify behaviour of specified column cells in the Data Table component
+   * Modify behaviour of specified column cells in the Data Table component.
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
