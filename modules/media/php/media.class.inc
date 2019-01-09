@@ -100,7 +100,7 @@ class Media extends \NDB_Menu_Filter
         }
 
         $hiddenOptions = array();
-        if (\User::singleton()->hasPermission('superuser') {
+        if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = array(
                               0 => 'Visible only',
                               1 => 'Hidden only',
