@@ -14,7 +14,7 @@
 namespace LORIS\StudyEntities\Candidate;
 
 /**
- * A representation of a CandID object which is always a string of length 6
+ * A representation of a CandID object. A CandID is always a string of length 6.
  *
  * @category StudyEntities
  * @package  LORIS
