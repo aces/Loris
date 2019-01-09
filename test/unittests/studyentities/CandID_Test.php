@@ -30,12 +30,6 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class CandID_Test extends TestCase
 {
-    public function testConstructorEmptyValue(): void
-    {
-        $this->expectException(\ArgumentCountError::class);
-        $candid = new CandID();
-    }
-
     /*
      * dataProviders for constructor invalid values
      */
@@ -71,3 +65,4 @@ class CandID_Test extends TestCase
         $this->assertEquals('123456', (string) $candid);
     }
 }
+
