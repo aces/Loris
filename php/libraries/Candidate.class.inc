@@ -996,14 +996,12 @@ class Candidate
         }
 
         if (count($seqSettings) > 1) {
-            throw new ConfigurationException(
-                'Too many values found for setting ' . $setting
-            );
+            $errMsg = 'Too many values found for config setting: ';
+        } elseif (count($seqSettings) === 0) {
+            $errMsg = 'No value found for config setting: ';
         }
-        if (count($seqSettings) === 0) {
-            throw new ConfigurationException(
-                'No value found for config setting ' . $setting
-            );
+        if (isset($errMsg)) {
+            throw new \ConfigurationException($errMsg . $setting);
         }
         return array_pop($seqSettings);
     }
@@ -1031,29 +1029,6 @@ class Candidate
         }
         return $seqSettings;
     }
-
-    /**
-     * A callback function for array_filter called in _extractSeqSetting.
-     * Returns true when $value is a valid in the context of alphabet types
-     * defined by ID generation logic within this class.
-     *
-     * @param string $value A 'seq' value from project/config.xml
-     *
-     * @return bool Whether $value is a valid alphabet value.
-     */
-    static function _alphabetFilter(string $value)
-    {
-        return in_array(
-            $value,
-            array(
-             'alpha',
-             'alphanumeric',
-             'numeric',
-            ),
-            true
-        );
-    }
-
 
     /**
      * Gets the participant_status options from participant_status_options table
