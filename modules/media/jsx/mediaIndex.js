@@ -13,7 +13,6 @@ class MediaIndex extends Component {
 
     this.state = {
       data: {},
-      fieldOptions: {},
       error: false,
       isLoaded: false,
     };
@@ -37,7 +36,7 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.data, fieldOptions: data.fieldOptions}))
+      .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -78,9 +77,6 @@ class MediaIndex extends Component {
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
-    case 'Site':
-      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
-      break;
     case 'Edit Metadata':
       const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
       result = <td className={style}><a href={editURL}>Edit</a></td>;
@@ -106,7 +102,7 @@ class MediaIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
-    const options = this.state.fieldOptions;
+    const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
@@ -167,7 +163,7 @@ class MediaIndex extends Component {
             <MediaUploadForm
               DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
               action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-              maxUploadSize={this.state.fieldOptions.maxUploadSize}
+              maxUploadSize={this.state.data.maxUploadSize}
             />
           </TabPane>
         );
@@ -179,7 +175,7 @@ class MediaIndex extends Component {
         <TabPane TabId={tabs[0].id}>
           <FilterableDataTable
             name="media"
-            data={this.state.data}
+            data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />

@@ -5,6 +5,7 @@
  *
  * PHP Version 7
  *
+ * @category   Behavioural
  * @package    Main
  * @subpackage Admin
  * @author     Henri Rabalais <henri.rabalais@mcin.ca>
@@ -17,6 +18,7 @@ namespace LORIS\help_editor;
 /**
  * A HelpRow represents a row in the Help Editor menu table.
  *
+ * @category   Behavioural
  * @package    Main
  * @subpackage Admin
  * @author     Henri Rabalais <henri.rabalais@mcin.ca>
@@ -30,7 +32,7 @@ class HelpRow implements \LORIS\Data\DataInstance
     /**
      * Create a new HelpRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
+     * @param array $row The row (in the same format as \Database::pselectRow returns
      *                     returns
      */
     public function __construct(array $row)

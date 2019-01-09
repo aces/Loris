@@ -5,6 +5,7 @@
  *
  * PHP Version 7
  *
+ * @category   Behavioural
  * @package    Main
  * @subpackage Admin
  * @author     Henri Rabalais <henri.rabalais@mcin.ca>
@@ -20,6 +21,7 @@ namespace LORIS\help_editor;
  *
  * PHP Version 7
  *
+ * @category   Behavioural
  * @package    Main
  * @subpackage Admin
  * @author     Henri Rabalais <henri.rabalais@mcin.ca>
