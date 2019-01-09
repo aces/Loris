@@ -144,8 +144,7 @@ class TimePoint
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
-                'Failed to retrieve data for timepoint '
-                . htmlspecialchars($sessionID)
+                "Failed to retrieve data for timepoint $sessionID"
             );
         }
         // New feature, older databases might not have the table created,
