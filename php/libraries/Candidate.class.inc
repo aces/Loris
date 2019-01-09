@@ -803,16 +803,11 @@ class Candidate
         }
         $result = \Database::singleton()->pselectCol(
             // $kind and $prefix are not user-controllable.
-            "SELECT substring($kind, LENGTH($prefix) +1) from candidate WHERE $kind LIKE '$prefix%'",
+            "SELECT substring($kind, LENGTH('$prefix') +1) from candidate WHERE $kind LIKE '$prefix%'",
             array()
         );
 
-        // Filter off Site prefix so that we just get the IDs.
-        $ids = array();
-        foreach($result as $id) {
-            $ids[] = substr($id, strlen($prefix));
-        }
-        return $ids;
+        return $result;
     }
 
     /**
