@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * An API endpoint is an endpoint which abstracts away common element
  * of different LORIS API endpoints.
@@ -29,8 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 abstract class Endpoint implements RequestHandlerInterface
 {
-    public $skipTemplate = true;
-
     /**
      * Return an array of valid HTTP methods for this endpoint
      *

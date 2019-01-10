@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Login page class
  *
@@ -77,7 +77,7 @@ class Login extends Endpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $requestdata = json_decode($request->getBody(), true);
+        $requestdata = json_decode((string) $request->getBody(), true);
         if (!isset($requestdata['username']) || !isset($requestdata['password'])) {
             return (new \LORIS\Http\Response())
                 ->withBody(
