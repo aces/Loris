@@ -1433,7 +1433,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $sessionID = $this->getSessionID();
         if (!empty($sessionID)) {
-            $timepoint = \Timepoint::singleton($sessionID);
+            $timepoint    = \Timepoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;
         }
