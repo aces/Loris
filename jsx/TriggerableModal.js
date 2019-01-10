@@ -1,0 +1,73 @@
+/**
+ * This file contains the React Component for a Triggerable Modal Window.
+ *
+ * @author Henri Rabalais
+ * @version 1.1.0
+ *
+ */
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+import Modal from 'Modal';
+
+/**
+ * Triggerable Modal Component.
+ * React wrapper for a Triggerable Modal Window. 
+ * Allows to dynamically toggle a Modal window through a rendered trigger.
+ *
+ * ================================================
+ * Usage:
+ * - Wrap the contents to be displayed by the Modal Window by the 
+ *   Triggerable Modal Component.
+ * - Use the 'title' prop to set a title for the Modal Component.
+ * - Use the 'trigger' prop to set the component that will act as a trigger to
+ *   open the Modal window.
+ * - Use the 'onSubmit' prop to set a submission promise object for the Modal's contents.
+ * - Use the 'onClose' prop to set a function to be triggered when the Modal is
+ *   closed.
+ * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window.
+ * =================================================
+ *
+ */
+class TriggerableModal extends Component {
+  constructor() {
+    super();
+    this.state = {open: false};
+    this.close = this.close.bind(this);
+  }
+
+  close() {
+    this.setState({open: false});
+    this.props.onClose();
+  }
+
+  render() {
+    const {trigger} = this.props;
+
+    const renderTrigger = () => {
+      return React.cloneElement(
+        trigger,
+        {onClick: () => {
+          trigger.props.onUserInput instanceof Function && trigger.props.onUserInput();
+          this.setState({open: true});
+        }},
+      );
+    };
+
+    return (
+      <div>
+        {renderTrigger()}
+        <Modal {...this.props} open={this.state.open} close={this.close}/>
+      </div>
+    );
+  }
+}
+
+TriggerableModal.propTypes = {
+  trigger: PropTypes.node.required,
+};
+
+TriggerableModal.defaultProps = {
+};
+
+export default TriggerableModal;
