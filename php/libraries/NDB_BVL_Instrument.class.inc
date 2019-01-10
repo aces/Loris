@@ -1429,7 +1429,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @return int for the subprojectID
      */
-    function getSubprojectID()
+    function getSubprojectID(): ?int
     {
         $sessionID = $this->getSessionID();
         if (!empty($sessionID)) {
