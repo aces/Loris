@@ -1427,7 +1427,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the subprojectID for the timepoint to which this instrument pertains
      *
-     * @return int for the subprojectID
+     * @return int|null The subprojectID
      */
     function getSubprojectID(): ?int
     {
