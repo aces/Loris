@@ -80,7 +80,8 @@ var config = [{
       Panel: 'jsx/Panel',
       ProgressBar: 'jsx/ProgressBar',
       StaticDataTable: 'jsx/StaticDataTable',
-      Tabs: 'jsx/Tabs'
+      Tabs: 'jsx/Tabs',
+      TriggerableModal: 'jsx/TriggerableModal',
     },
     extensions: ['', '.js', '.jsx']
   },

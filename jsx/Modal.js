@@ -5,6 +5,8 @@
  * @version 1.1.0
  *
  */
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
 /**
@@ -15,41 +17,35 @@ import swal from 'sweetalert2';
  * Usage:
  * - Wrap the contents to be displayed by the Modal Window by the Modal Component.
  * - Use the 'title' prop to set a title for the Modal Component.
- * - Use the 'trigger' prop to set the component that will act as a trigger to
- *   open the Modal window.
- * - Use the 'onSubmit' prop to set a submission function for the Modal's contents.
- * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window
+ * - Use the 'onSubmit' prop to set a submission promise object for the Modal's contents.
+ * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window.
  * =================================================
  *
  */
-class Modal extends React.Component {
+class Modal extends Component {
   constructor() {
     super();
-    this.state = {
-      open: false
-    };
-    this.onClose = this.onClose.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  onClose() {
+  handleClose() {
     if (this.props.throwWarning) {
       swal({
         title: 'Are You Sure?',
-        text: 'Leaving the form will result in the loss of any information ' +
+        text: 'Leaving the form will result in the loss of any information' +
           'entered.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel'
-      }).then(result => result.value && this.setState({open: false}));
+        cancelButtonText: 'Cancel',
+      }).then((result) => result.value && this.props.close());
     } else {
-      this.setState({open: false});
+      this.props.close();
     }
   }
 
   render() {
-    const {open} = this.state;
-    const {children, onSubmit, trigger, title} = this.props;
+    const {open, children, onSubmit, title} = this.props;
 
     const headerStyle = {
       display: 'flex',
@@ -59,21 +55,47 @@ class Modal extends React.Component {
       borderTopRightRadius: '10',
       fontSize: 24,
       padding: 35,
-      borderBottom: '1px solid #DDDDDD'
+      borderBottom: '1px solid #DDDDDD',
     };
 
     const glyphStyle = {
       marginLeft: 'auto',
-      cursor: 'pointer'
+      cursor: 'pointer',
     };
 
     const bodyStyle = {
-      padding: 15
+      padding: 15,
+    };
+
+    const modalContainer = {
+      display: 'block',
+      position: 'fixed',
+      zIndex: 9999,
+      paddingTop: '100px',
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
+      overflow: 'auto',
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      visibility: open ? 'visible' : 'hidden',
+    };
+
+    const modalContent = {
+      opacity: open ? 1 : 0,
+      top: open ? 0 : '-300px',
+      position: 'relative',
+      backgroundColor: '#fefefe',
+      borderRadius: '7px',
+      margin: 'auto',
+      padding: 0,
+      border: '1px solid #888',
+      width: '700px',
+      boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
+      transition: 'top 0.4s, opacity 0.4s',
     };
 
     const renderChildren = () => open && children;
-
-    const display = () => open ? {display: 'block'} : {display: 'none'};
 
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
@@ -81,12 +103,12 @@ class Modal extends React.Component {
       flexDirection: 'row',
       alignItems: 'center',
       height: '40px',
-      padding: '35px 35px 20px 35px'
+      padding: '35px 35px 20px 35px',
     };
 
     const submitStyle = {
       marginLeft: 'auto',
-      marginRight: '20px'
+      marginRight: '20px',
     };
 
     const submitButton = () => {
@@ -95,26 +117,22 @@ class Modal extends React.Component {
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={onSubmit}
+              onUserInput={() => onSubmit().then(() => this.props.close())}
             />
           </div>
         );
       }
     };
 
-    const renderTrigger = () => {
-      return React.cloneElement(
-        trigger,
-        {onClick: () => this.setState({open: true})}
-      );
-    };
-
-    const modal = (
-      <div className="modal" style={display()} onClick={this.onClose}>
-        <div className="modal-content" onClick={e => e.stopPropagation()}>
+    return (
+      <div style={modalContainer} onClick={this.handleClose}>
+        <div
+          style={modalContent}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div style={headerStyle}>
             {title}
-            <span style={glyphStyle} onClick={this.onClose}>
+            <span style={glyphStyle} onClick={this.handleClose}>
               ×
             </span>
           </div>
@@ -127,25 +145,18 @@ class Modal extends React.Component {
         </div>
       </div>
     );
-
-    return (
-      <div>
-        {renderTrigger()}
-        {modal}
-      </div>
-    );
   }
 }
 
 Modal.propTypes = {
-  title: React.PropTypes.string,
-  trigger: React.PropTypes.element.isRequired,
-  onSubmit: React.PropTypes.func,
-  throwWarning: React.PropTypes.bool
+  title: PropTypes.string,
+  trigger: PropTypes.element.isRequired,
+  onSubmit: PropTypes.object,
+  throwWarning: PropTypes.bool,
 };
 
 Modal.defaultProps = {
-  throwWarning: true
+  throwWarning: false,
 };
 
 export default Modal;
