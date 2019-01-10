@@ -581,7 +581,14 @@ Returns file level QC information. It will return a JSON object of the form:
         "File" : $Filename
     },
     "QC" : "Pass|Fail",
-    "Selected" : boolean
+    "Selected" : boolean,
+    "Caveats" : {
+      "Severity" : $severity,
+      "Header" : $header,
+      "Value" : $headerValue,
+      "ValidRange" : $headerValidRange,
+      "ValidRegex" : $headerValidRegex
+    }
 }
 ```
 
@@ -668,7 +675,7 @@ will return a JSON object of the form:
     "Description" : {
         "SeriesName" : "",
         "SeriesDescription"  : ""
-    }
+    },
     "Dimensions" : {
         "XSpace" : {
             "Length" : "",
@@ -686,6 +693,13 @@ will return a JSON object of the form:
             "Length" : "",
             "StepSize" : ""
         }
+    },
+    "ScannerInfo" : {
+      "Manufacturer" : $scannerManufacturer,
+      "Model" : $scannerModel,
+      "SoftwareVersion" : $scannerSoftwareVersion,
+      "SerialNumber" : $scannerSerialNumber,
+      "FieldStrength" : $scannerFieldStrength
     }
 }
 ```
