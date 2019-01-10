@@ -54,7 +54,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Access Profile'      => '#bc2 > a:nth-child(2) > div',
             'Site'                => '#dynamictable > thead > tr > th:nth-child(2)',
             'PSCID'               => '#PSCID',
-            'Gender'              => '#dynamictable > thead>tr>th.dynamictableNext',
+            'Sex'                 => '#dynamictable > thead>tr>th.dynamictableNext',
             'Entity Type'         => '#dynamictable > thead > tr > th:nth-child(6)',
             'Participant Status'  => '#dynamictable > thead > tr > th:nth-child(7)',
             'Subproject'          => '#dynamictable > thead > tr > th:nth-child(8)',
@@ -170,8 +170,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertEquals("input", $dobOptions->getTagName());
         // Not currently done
         //$this->assertEquals("date",$dobOptions->getAttribute("type"));
-        $genderOptions = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $this->assertEquals("select", $genderOptions->getTagName());
+        $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+        $this->assertEquals("select", $sexOptions->getTagName());
         $numVisits = $this->webDriver->findElement(WebDriverBy::Name("Visit_Count"));
         $this->assertEquals("input", $dobOptions->getTagName());
         // Not currently done in Loris.
