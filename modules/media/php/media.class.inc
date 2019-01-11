@@ -110,12 +110,12 @@ class Media extends \NDB_Menu_Filter
         }
 
         return [
-                'fileTypes'   => $fileTypeList,
-                'visits'      => $visitList,
-                'sites'       => $siteList,
-                'instruments' => $instrumentList,
-                'languages'   => $languageList,
-                'hidden'      => $hiddenOptions,
+                'fileTypes'     => $fileTypeList,
+                'visits'        => $visitList,
+                'sites'         => $siteList,
+                'instruments'   => $instrumentList,
+                'languages'     => $languageList,
+                'hidden'        => $hiddenOptions,
                 'maxUploadSize' => \Utility::getMaxUploadSize(),
                ];
     }
@@ -152,21 +152,21 @@ class Media extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $table = (new \LORIS\Data\Table())                                      
-            ->withDataFrom($this->getDataProvisioner());                        
-        $arr   = array_map(                                                     
-            function ($row) {                                                   
-                return array_values($row);                                      
-            },                                                                  
-            json_decode($table->toJSON(\User::singleton()), true)               
-        );                                                                      
-        $options = $this->getOptions();                   
-        return json_encode(                                                     
-            [                                                                   
-             'data'         => $arr,                                            
-             'fieldOptions' => $options,                                        
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        $options = $this->getOptions();
+        return json_encode(
+            [
+             'data'         => $arr,
+             'fieldOptions' => $options,
             ]
-        );    
+        );
     }
 
     /**
