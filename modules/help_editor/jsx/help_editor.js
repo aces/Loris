@@ -35,9 +35,7 @@ class HelpEditor extends React.Component {
   }
 
   /**
-   * Retrieve data from the provided URL and save it in state
-   * Additionally add hiddenHeaders to global loris variable
-   * for easy access by columnFormatter.
+   * Retrieve data from the provided URL and save it in state.
    *
    * @return {object}
    */
