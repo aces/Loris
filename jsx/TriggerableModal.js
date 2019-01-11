@@ -12,12 +12,12 @@ import Modal from 'Modal';
 
 /**
  * Triggerable Modal Component.
- * React wrapper for a Triggerable Modal Window. 
+ * React wrapper for a Triggerable Modal Window.
  * Allows to dynamically toggle a Modal window through a rendered trigger.
  *
  * ================================================
  * Usage:
- * - Wrap the contents to be displayed by the Modal Window by the 
+ * - Wrap the contents to be displayed by the Modal Window by the
  *   Triggerable Modal Component.
  * - Use the 'title' prop to set a title for the Modal Component.
  * - Use the 'trigger' prop to set the component that will act as a trigger to
@@ -48,7 +48,7 @@ class TriggerableModal extends Component {
       return React.cloneElement(
         trigger,
         {onClick: () => {
-          trigger.props.onUserInput instanceof Function && trigger.props.onUserInput();
+          if (trigger.props.onUserInput instanceof Function) trigger.props.onUserInput();
           this.setState({open: true});
         }}
       );
@@ -64,10 +64,7 @@ class TriggerableModal extends Component {
 }
 
 TriggerableModal.propTypes = {
-  trigger: PropTypes.node.required,
-};
-
-TriggerableModal.defaultProps = {
+  trigger: PropTypes.node.required
 };
 
 export default TriggerableModal;
