@@ -50,7 +50,7 @@ class TriggerableModal extends Component {
         {onClick: () => {
           trigger.props.onUserInput instanceof Function && trigger.props.onUserInput();
           this.setState({open: true});
-        }},
+        }}
       );
     };
 

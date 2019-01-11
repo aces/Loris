@@ -37,8 +37,8 @@ class Modal extends Component {
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel',
-      }).then((result) => result.value && this.props.close());
+        cancelButtonText: 'Cancel'
+      }).then(result => result.value && this.props.close());
     } else {
       this.props.close();
     }
@@ -55,16 +55,16 @@ class Modal extends Component {
       borderTopRightRadius: '10',
       fontSize: 24,
       padding: 35,
-      borderBottom: '1px solid #DDDDDD',
+      borderBottom: '1px solid #DDDDDD'
     };
 
     const glyphStyle = {
       marginLeft: 'auto',
-      cursor: 'pointer',
+      cursor: 'pointer'
     };
 
     const bodyStyle = {
-      padding: 15,
+      padding: 15
     };
 
     const modalContainer = {
@@ -78,7 +78,7 @@ class Modal extends Component {
       height: '100%',
       overflow: 'auto',
       backgroundColor: 'rgba(0,0,0,0.7)',
-      visibility: open ? 'visible' : 'hidden',
+      visibility: open ? 'visible' : 'hidden'
     };
 
     const modalContent = {
@@ -92,7 +92,7 @@ class Modal extends Component {
       border: '1px solid #888',
       width: '700px',
       boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
-      transition: 'top 0.4s, opacity 0.4s',
+      transition: 'top 0.4s, opacity 0.4s'
     };
 
     const renderChildren = () => open && children;
@@ -103,12 +103,12 @@ class Modal extends Component {
       flexDirection: 'row',
       alignItems: 'center',
       height: '40px',
-      padding: '35px 35px 20px 35px',
+      padding: '35px 35px 20px 35px'
     };
 
     const submitStyle = {
       marginLeft: 'auto',
-      marginRight: '20px',
+      marginRight: '20px'
     };
 
     const submitButton = () => {
@@ -128,7 +128,7 @@ class Modal extends Component {
       <div style={modalContainer} onClick={this.handleClose}>
         <div
           style={modalContent}
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           <div style={headerStyle}>
             {title}
@@ -152,11 +152,11 @@ Modal.propTypes = {
   title: PropTypes.string,
   trigger: PropTypes.element.isRequired,
   onSubmit: PropTypes.object,
-  throwWarning: PropTypes.bool,
+  throwWarning: PropTypes.bool
 };
 
 Modal.defaultProps = {
-  throwWarning: false,
+  throwWarning: false
 };
 
 export default Modal;
