@@ -29,8 +29,8 @@ namespace LORIS\media;
  */
 class Media extends \NDB_Menu_Filter
 {
-    public $AjaxModule         = true;
-    public $skipTemplate       = true;
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
 
     /**
      * Check user permissions
