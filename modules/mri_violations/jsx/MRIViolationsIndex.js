@@ -1,0 +1,202 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+import {Tabs, TabPane} from 'Tabs';
+import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
+
+//import MediaUploadForm from './uploadForm';
+
+class MRIViolationsIndex extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: {},
+      error: false,
+      isLoaded: false,
+    };
+
+    this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
+  }
+
+  /**
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
+   * for easy access by columnFormatter.
+   *
+   * @return {object}
+   */
+  fetchData() {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
+
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {object} row - row content indexed by column
+   *
+   * @return {*} a formated table cell for a given column
+   */
+  formatColumn(column, cell, row) {
+    // Set class to 'bg-danger' if file is hidden.
+    const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
+    let result = <td className={style}>{cell}</td>;
+    switch (column) {
+    case 'File Name':
+      if (this.props.hasPermission('media_write')) {
+        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
+          encodeURIComponent(row['File Name']);
+        result = (
+          <td className={style}>
+            <a href={downloadURL} target="_blank" download={row['File Name']}>
+              {cell}
+            </a>
+          </td>
+        );
+      }
+      break;
+    case 'Visit Label':
+      if (row['CandID'] !== null && row['SessionID']) {
+        const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
+          row['CandID'] + '&sessionID=' + row['SessionID'];
+        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
+      }
+      break;
+    case 'Edit Metadata':
+      const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
+      result = <td className={style}><a href={editURL}>Edit</a></td>;
+      break;
+    }
+
+    return result;
+  }
+
+  render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
+    }
+
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+
+   /**
+    * XXX: Currently, the order of these fields MUST match the order of the
+    * queried columns in _setupVariables() in media.class.inc
+    */
+    const options = this.state.data.fieldOptions;
+    const fields = [
+      {label: 'File Name', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
+      {label: 'PSCID', show: true, filter: {
+        name: 'pscid',
+        type: 'text',
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visits,
+      }},
+      {label: 'Language', show: true, filter: {
+        name: 'language',
+        type: 'select',
+        options: options.languages,
+      }},
+      {label: 'Instrument', show: true, filter: {
+        name: 'instrument',
+        type: 'select',
+        options: options.instruments,
+      }},
+      {label: 'Site', show: true, filter: {
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'Uploaded By', show: true, filter: {
+        name: 'uploadedBy',
+        type: 'text',
+        }},
+      {label: 'Date Taken', show: true},
+      {label: 'Comments', show: true},
+      {label: 'Date Uploaded', show: true},
+      {label: 'File Type', show: false, filter: {
+        name: 'fileType',
+        type: 'select',
+        options: options.fileTypes,
+      }},
+      {label: 'CandID', show: false},
+      {label: 'SessionID', show: false},
+      {label: 'File Visibility', show: false, filter: {
+        name: 'fileVisibility',
+        type: 'select',
+        options: options.hidden,
+        hide: !this.props.hasPermission('superUser'),
+      }},
+      {label: 'Edit Metadata', show: true},
+    ];
+    const tabs = [{id: 'resolutionStatus', label: 'Not Resolved'}];
+    const uploadTab = () => {
+      if (this.props.hasPermission('media_write')) {
+        tabs.push({id: 'upload', label: 'Upload'});
+        return (
+          <TabPane TabId={tabs[1].id}>
+            <MediaUploadForm
+              DataURL={`${loris.BaseURL}/mri_violations/ajax/FileUpload.php?action=getData`}
+              action={`${loris.BaseURL}/mri_violations/ajax/FileUpload.php?action=upload`}
+              maxUploadSize={this.state.data.maxUploadSize}
+            />
+          </TabPane>
+        );
+      }
+    };
+
+    return (
+      <Tabs tabs={tabs} defaultTab="resolutionStatus" updateURL={true}>
+        <TabPane TabId={tabs[0].id}>
+          <FilterableDataTable
+            name="mri_violations"
+            data={this.state.data.Data}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+          />
+        </TabPane>
+        {uploadTab()}
+      </Tabs>
+    );
+  }
+}
+
+MRIViolationsIndex.propTypes = {
+  dataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
+};
+
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <MRIViolationsIndex
+      dataURL={`${loris.BaseURL}/mri_violations/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
+});
