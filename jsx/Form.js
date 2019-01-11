@@ -1526,6 +1526,37 @@ ButtonElement.defaultProps = {
 };
 
 /**
+  * Call To Action (CTA) component
+  * React wrapper for <button> element that is used for Call to Actions, usually
+  * outside the context of forms.
+  */
+ class CTA extends Component {
+   render() {
+     return (
+       <button
+         className={this.props.buttonClass}
+         onClick={this.props.onUserInput}
+       >
+         {this.props.label}
+       </button>
+     );
+   }
+ }
+
+  CTA.propTypes = {
+   label: PropTypes.string,
+   buttonClass: PropTypes.string,
+   onUserInput: PropTypes.func,
+ };
+
+  CTA.defaultProps = {
+   buttonClass: 'btn btn-primary',
+   onUserInput: function() {
+     console.warn('onUserInput() callback is not set');
+   },
+ };
+
+/**
  * Generic form element.
  */
 class LorisElement extends Component {
@@ -1602,6 +1633,7 @@ window.StaticElement = StaticElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
+window.CTA = CTA;
 window.LorisElement = LorisElement;
 
 export default {
@@ -1620,5 +1652,6 @@ export default {
   LinkElement,
   CheckboxElement,
   ButtonElement,
+  CTA,
   LorisElement,
 };

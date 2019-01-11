@@ -85,7 +85,6 @@ class MediaEditForm extends Component {
 
     let alertMessage = '';
     let alertClass = 'alert text-center hide';
-    let backURL = loris.BaseURL.concat('/media/');
 
     if (this.state.uploadResult) {
       if (this.state.uploadResult === 'success') {
@@ -102,18 +101,11 @@ class MediaEditForm extends Component {
         <div className={alertClass} role='alert' ref='alert-message'>
           {alertMessage}
         </div>
-        {
-          this.state.uploadResult === 'success' ?
-          <a className='btn btn-primary' href={backURL}>Back to media</a> :
-          null
-        }
         <FormElement
           name='mediaEdit'
           onSubmit={this.handleSubmit}
           ref='form'
         >
-          <h3>Edit Media File</h3>
-          <br />
           <SelectElement
             name='pscid'
             label='PSCID'
