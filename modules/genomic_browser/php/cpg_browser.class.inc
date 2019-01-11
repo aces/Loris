@@ -163,7 +163,7 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND candidate.RegistrationCenterID IN (" . $site_arr . ")";
         }
 
         $this->order_by = 'psc.Name, candidate.CandID DESC';
