@@ -704,7 +704,7 @@ class ViewSession extends \NDB_Form
         $subjectData['pscid'] = $candidate->getPSCID();
         $subjectData['dob']   = $candidate->getCandidateDoB();
         $subjectData['edc']   = $candidate->getCandidateEDC();
-        $subjectData['gender'] = $candidate->getCandidateGender();
+        $subjectData['sex']   = $candidate->getCandidateSex();
 
         // This doesn't work.
         //Need to find the proper way to get the TarchiveID.

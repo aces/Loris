@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
@@ -13,6 +14,7 @@ class ImagingUploader extends Component {
     this.state = {
       isLoaded: false,
       filter: {},
+      hiddenHeaders: ['PatientName'],
     };
 
     /**
@@ -46,13 +48,8 @@ class ImagingUploader extends Component {
       method: 'GET',
       dataType: 'json',
       success: (data) => {
-        // FIXME: Remove the following line of code, add ['PatientName'] to the
-        // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
-        // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
-        // the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
         this.setState({
-          Data: data,
+          data: data,
           isLoaded: true,
         });
       },
@@ -215,13 +212,13 @@ class ImagingUploader extends Component {
                 Module='imaging_uploader'
                 name='imaging_filter'
                 id='imaging_filter'
-                ref={filterRef}
+                ref={this.setFilterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
-                <TextboxElement {... this.state.Data.form.candID} />
-                <TextboxElement {... this.state.Data.form.pSCID} />
-                <SelectElement {... this.state.Data.form.visitLabel} />
+                <TextboxElement {... this.state.data.form.candID} />
+                <TextboxElement {... this.state.data.form.pSCID} />
+                <SelectElement {... this.state.data.form.visitLabel} />
                 <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
@@ -235,6 +232,7 @@ class ImagingUploader extends Component {
               Headers={this.state.data.Headers}
               getFormattedCell={this.formatColumn}
               Filter={this.state.filter}
+              hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
         </TabPane>

@@ -115,4 +115,4 @@ if (isset($_REQUEST['PrintThumbnailFormat'])) {
         $_REQUEST['Filename']
     );
 }
-?>
+

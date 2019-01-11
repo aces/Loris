@@ -260,4 +260,4 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     }
 }
 
-?>
+

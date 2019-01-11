@@ -103,7 +103,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($_REQUEST['setStageUpdate'], $this->_statusOptions)
             && in_array($currentStage, $this->_dynamicStageOptions)
         ) {
-            $this->setData($currentStage, $_REQUEST['setStageUpdate']);
+            $this->setData(
+                array(
+                 $currentStage => $_REQUEST['setStageUpdate'],
+                )
+            );
             return;
         }
 
@@ -167,7 +171,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
 
             // Send to DCC - set Submitted to Y
-            $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array(
+                 'Submitted' => $_REQUEST['setSubmitted'],
+                )
+            );
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
                 $nextStage = 'Approval';
@@ -227,7 +235,11 @@ class Instrument_List_ControlPanel extends \TimePoint
         // un-submit to dcc
         if ($condition1 && $condition2 && $condition3 && $condition4) {
 
-                $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array(
+                 'Submitted' => $_REQUEST['setSubmitted'],
+                )
+            );
 
                 // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
@@ -283,19 +295,31 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCStatus', $_REQUEST['setBVLQCStatus']);
+            $this->setData(
+                array(
+                 'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCStatus', null);
+            $this->setData(
+                array('BVLQCStatus' => null)
+            );
             return;
         }
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
+            $this->setData(
+                array(
+                 'BVLQCType' => $_REQUEST['setBVLQCType'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCType', null);
+            $this->setData(
+                array('BVLQCType' => null)
+            );
             return;
         }
     }
@@ -527,7 +551,7 @@ class Instrument_List_ControlPanel extends \TimePoint
      * Generates the HTML to display the set of buttons
      * for the Time Point status update
      *
-     * @return string
+     * @return bool
      * @access private
      */
     function _displaySendToDCC()
@@ -751,7 +775,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     /**
      * DisplayStartNextStage function
      *
-     * @return void
+     * @return bool
      */
     function _displayStartNextStage()
     {
@@ -772,4 +796,4 @@ class Instrument_List_ControlPanel extends \TimePoint
     }
 
 }
-?>
+

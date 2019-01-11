@@ -89,4 +89,4 @@ if (isset($_REQUEST['PrintInstrumentForm'])) {
     $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
     print $obj->toJSONString();
 }
-?>
+

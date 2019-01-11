@@ -64,4 +64,4 @@ class BvlFeedbackTest extends LorisIntegrationTest
 
     }
 }
-?>
+

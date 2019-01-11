@@ -618,4 +618,4 @@ function endWithSuccess()
     $DB = Database::singleton();
     $DB->commit();
 }
-?>
+

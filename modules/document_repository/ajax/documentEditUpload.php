@@ -153,4 +153,4 @@ if ($userSingleton->hasPermission('document_repository_view')
     }
 }
 
-?>
+

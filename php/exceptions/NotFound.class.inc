@@ -25,4 +25,4 @@
 class NotFound extends LorisException
 {
 }
-?>
+

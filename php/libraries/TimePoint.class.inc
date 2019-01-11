@@ -137,14 +137,14 @@ class TimePoint
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                $row['SubprojectID']
+                intval($row['SubprojectID'])
             );
-            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
+            $title = $subprojectSettings['title'] ?? '';
+            $this->_timePointInfo['SubprojectTitle'] = $title;
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
-                'Failed to retrieve data for timepoint '
-                . htmlspecialchars($sessionID)
+                "Failed to retrieve data for timepoint $sessionID"
             );
         }
         // New feature, older databases might not have the table created,
@@ -288,9 +288,10 @@ class TimePoint
         $config =& \NDB_Config::singleton();
         $visitLabelSettings = $config->getSetting('visitLabel');
         $isValid            = false;
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabelSetting) {
+        foreach (\Utility::associativeToNumericArray($visitLabelSettings)
+            as $visitLabelSetting) {
             if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
-                $items = \Utility::toArray(
+                $items = \Utility::associativeToNumericArray(
                     $visitLabelSetting['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -343,29 +344,40 @@ class TimePoint
 
     /**
      * Sets a piece of data for this timepoint and saves it to the session table.
+     * $newData should be in the form: array($key => $value).
      *
      * This should usually not be used directly but instead use one of the set*
      * methods below. However, there are cases where it may be easier to directly
      * use setData.
      *
-     * @param string      $var   The variable to set for this timepoint.
-     * @param string|null $value The value to set $var to.
+     * @param array $newData Key-value pair(s) of the field(s) to change and its
+     *                              new value(s).
      *
-     * @return void (side-effect modifies session table.)
+     * @return bool
+     *
+     * @throws DatabaseException
+     * @throws LorisException
      */
-    function setData($var, ?string $value = null): void
+    public function setData(array $newData): bool
     {
-        if (!is_array($var)) {
-            $setData = array($var => $value);
-        } else {
-            $setData = $var;
+        /* $newData should be in the form: array($key => $value). Count should
+         * equal 1 if this is the case.
+         */
+        if (empty($newData)) {
+            throw new LorisException(
+                'TimePoint::setData() cannot be called with an empty array!'
+            );
+            return false;
         }
 
-        //$this->_timePointInfo = array_merge($this->_timePointInfo, $setData);
-
-        $db =& Database::singleton();
-        $db->update('session', $setData, array('ID' => $this->getData('SessionID')));
-        $this->select(intval($this->getData('SessionID')));
+        \Database::singleton()->update(
+            'session',
+            $newData,
+            array(
+             'ID' => $this->getData('SessionID'),
+            )
+        );
+        return true;
     }
 
     /**
@@ -930,13 +942,16 @@ class TimePoint
      */
     function getEffectiveDateOfBirth(): ?string
     {
-        $config    = NDB_Config::singleton();
-        $candidate = Candidate::singleton($this->getCandID());
-        $settings  = $config->getSubprojectSettings($this->getSubprojectID());
-        if ($settings['options']['useEDC'] == "true") {
-            return $candidate->getCandidateEDC();
+        $candidate = \Candidate::singleton($this->getCandID());
+        if (!is_null($this->getSubprojectID())) {
+            $settings = \NDB_Config::singleton()
+                ->getSubprojectSettings($this->getSubprojectID());
+            if ($settings['options']['useEDC'] == "true") {
+                return $candidate->getCandidateEDC();
+            }
         }
 
         return $candidate->getCandidateDoB();
     }
 }
+

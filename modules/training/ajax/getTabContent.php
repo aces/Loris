@@ -139,4 +139,4 @@ function createTabHTML($contentType, $title, $tabVariables, $type)
 
     return $html;
 }
-?>
+

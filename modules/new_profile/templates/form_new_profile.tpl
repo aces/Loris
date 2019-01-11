@@ -40,8 +40,8 @@
     {/if}
 	<br><br>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">{$form.gender.label}</label>
-		<div class="col-sm-10">{$form.gender.html}</div>
+		<label class="col-sm-2">{$form.sex.label}</label>
+		<div class="col-sm-10">{$form.sex.html}</div>
 	</div>
 	<br><br>
     {if $form.psc.html != ""}

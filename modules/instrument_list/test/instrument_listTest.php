@@ -114,4 +114,4 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         }
     }
 }
-?>
+

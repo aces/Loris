@@ -223,4 +223,4 @@ class ConfigurationTest extends LorisIntegrationTest
     }
 
 }
-?>
+

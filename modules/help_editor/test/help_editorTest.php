@@ -167,4 +167,4 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     }
 
 }
-?>
+

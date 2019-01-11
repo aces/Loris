@@ -91,9 +91,13 @@ class Stats_Demographic extends \NDB_Form
         $disclamer='',
         $projectID=null
     ) {
-        $tpl_data = array();
-        $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
+        // This line replaces the empty $projectID string with null
+        // `$projectID ?? null` would retain empty strings.
+        $projectID = empty($projectID) ? null : $projectID;
+        $tpl_data  = array();
+        $tpl_data['test_name'] = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
+
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb('statistics');
@@ -221,16 +225,17 @@ class Stats_Demographic extends \NDB_Form
             array()
         );
 
-        $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if (isset($_REQUEST['DemographicSite'])
-                && $_REQUEST['DemographicSite'] == $row['NumericID']
-            ) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+        $sites[null] ='All sites';
+
+        if (!empty($centers)) {
+            foreach ($centers as $row) {
+                $sites[$row['NumericID']] = $row['ShortName'];
+                if ($demographicSite == $row['NumericID']) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $row['NumericID'],
+                                                      'Name' => $row['LongName'],
+                                                     );
+                }
             }
         }
 
@@ -332,20 +337,20 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR
                                ps.participant_status IS NULL)
-                          AND c.Gender='Male'
+                          AND c.Sex='Male'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
 
-        $this->tpl_data['gender_male']['total'] = 0;
+        $this->tpl_data['sex_male']['total'] = 0;
         foreach ($result as $row) {
-            $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
-            if (isset($this->tpl_data['gender_male']['total'])) {
-                $this->tpl_data['gender_male']['total'] += $row['val'];
+            $this->tpl_data['sex_male'][$row['rowid']] = $row['val'];
+            if (isset($this->tpl_data['sex_male']['total'])) {
+                $this->tpl_data['sex_male']['total'] += $row['val'];
             } else {
-                $this->tpl_data['gender_male']['total'] = $row['val'];
+                $this->tpl_data['sex_male']['total'] = $row['val'];
             }
         }
 
@@ -362,20 +367,20 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Active='Y'
                           AND (ps.participant_status=1
                                OR ps.participant_status IS NULL)
-                          AND c.Gender='Female'
+                          AND c.Sex='Female'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
 
-        $this->tpl_data['gender_female']['total'] = 0;
+        $this->tpl_data['sex_female']['total'] = 0;
         foreach ($result as $row) {
-            $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
-            if (isset($this->tpl_data['gender_female']['total'])) {
-                $this->tpl_data['gender_female']['total'] += $row['val'];
+            $this->tpl_data['sex_female'][$row['rowid']] = $row['val'];
+            if (isset($this->tpl_data['sex_female']['total'])) {
+                $this->tpl_data['sex_female']['total'] += $row['val'];
             } else {
-                $this->tpl_data['gender_female']['total'] = $row['val'];
+                $this->tpl_data['sex_female']['total'] = $row['val'];
             }
         }
 
@@ -480,7 +485,7 @@ class Stats_Demographic extends \NDB_Form
                 "SELECT c.CenterID as CenterID,
                         s.SubprojectID as SubprojectID,
                         s.visit_label as VLabel,
-                        c.gender as Subcat,
+                        c.sex as Subcat,
                         count(s.CandID) as val
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)

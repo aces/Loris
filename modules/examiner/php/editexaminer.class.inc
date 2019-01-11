@@ -418,7 +418,7 @@ class EditExaminer extends \NDB_Form
             return array();
         }
         $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
+            = \Utility::associativeToNumericArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
@@ -452,4 +452,4 @@ class EditExaminer extends \NDB_Form
         );
     }
 }
-?>
+

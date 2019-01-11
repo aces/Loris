@@ -88,7 +88,7 @@ class Candidate
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
-            c.EDC, c.Gender, c.Entity_type,
+            c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
@@ -197,7 +197,7 @@ class Candidate
      *                                      YYYY-MM-DD. Value should be null
      *                                      unless the useEDC setting is
      *                                      configured to be true.
-     * @param string      $gender      gender, either 'Male' or 'Female'
+     * @param string      $sex         sex, either 'Male' or 'Female'
      * @param string|null $PSCID       PSCID specified by the user, if available
      * @param int|null    $projectID   The project ID, if available
      *
@@ -209,7 +209,7 @@ class Candidate
         int $centerID,
         string $dateOfBirth,
         ?string $edc,
-        string $gender,
+        string $sex,
         ?string $PSCID = null,
         ?int $projectID = null
     ): int {
@@ -271,7 +271,7 @@ class Candidate
                      'PSCID'           => $PSCID,
                      'DoB'             => $dateOfBirth,
                      'EDC'             => $edc,
-                     'Gender'          => $gender,
+                     'Sex'             => $sex,
                      'ProjectID'       => $projectID,
                      'Date_active'     => date('Y-m-d'),
                      'Date_registered' => date('Y-m-d'),
@@ -376,33 +376,33 @@ class Candidate
      * Sets some data about the candidate and saves it into the
      * database.
      *
-     * @param mixed $var   Either a key-value pair passed as an array or just
-     *                          a key.
-     * @param mixed $value The value to be set to when $var is a string key.
+     * @param array $newData Key-value pair(s) of the field(s) to change and the
+     *                              new value(s).
      *
-     * @return true on success
+     * @return bool
+     *
      * @throws DatabaseException
-     * @note   This function is sometimes called as a key-value array and other
-     * times with two separate key arguments. This should be refactored
-     * to enforce one standard way of calling the function.
+     * @throws LorisException
      */
-    public function setData($var, $value = null): bool
+    public function setData(array $newData): bool
     {
-        if (!is_array($var)) {
-            $setData = array($var => $value);
-        } else {
-            $setData = $var;
+        /* $newData should be in the form: array($key => $value). Count should
+         * equal 1 if this is the case.
+         */
+        if (empty($newData)) {
+            throw new LorisException(
+                'Candidate::setData() cannot be called with an empty array!'
+            );
+            return false;
         }
+        $this->candidateInfo = array_merge($this->candidateInfo, $newData);
 
-        $this->candidateInfo = array_merge($this->candidateInfo, $setData);
-
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $db->update(
+        \NDB_Factory::singleton()->database()->update(
             'candidate',
-            $setData,
-            array('CandID' => $this->getData('CandID'))
+            $newData,
+            array(
+             'CandID' => $this->getData('CandID'),
+            )
         );
         return true;
     }
@@ -486,21 +486,21 @@ class Candidate
      * Returns the expect date of confinement (due date)
      * of this candidate.
      *
-     * @return string The DoB in YYYY-MM-DD format
+     * @return string|null The DoB in YYYY-MM-DD format
      */
-    function getCandidateEDC(): string
+    function getCandidateEDC(): ?string
     {
         return $this->candidateInfo["EDC"];
     }
 
     /**
-     * Return the candidate's gender
+     * Return the candidate's sex
      *
-     * @return string Male|Female String describing the gender
+     * @return string Male|Female String describing the sex
      */
-    function getCandidateGender(): string
+    function getCandidateSex(): string
     {
-        return $this->candidateInfo["Gender"];
+        return $this->candidateInfo["Sex"];
     }
 
     /**
@@ -983,3 +983,4 @@ class Candidate
     }
 
 }
+

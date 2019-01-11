@@ -2341,4 +2341,4 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-?>
+

@@ -129,8 +129,8 @@ function getProbandInfoFields()
         array('candid' => $candID)
     );
 
-    $gender = $db->pselectOne(
-        'SELECT ProbandGender FROM candidate where CandID = :candid',
+    $sex = $db->pselectOne(
+        'SELECT ProbandSex FROM candidate where CandID = :candid',
         array('candid' => $candID)
     );
 
@@ -180,7 +180,7 @@ function getProbandInfoFields()
     $result = [
                'pscid'            => $pscid,
                'candID'           => $candID,
-               'ProbandGender'    => $gender,
+               'ProbandSex'       => $sex,
                'ProbandDoB'       => $dob,
                'ageDifference'    => $ageDifference,
                'extra_parameters' => $extra_parameters,

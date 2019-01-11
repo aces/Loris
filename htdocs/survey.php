@@ -142,21 +142,22 @@ class DirectDataEntryMainPage
      *
      * @param integer $currentPage The current page number
      *
-     * @return The page which preceeded this one
+     * @return int The page which preceeded this one
      */
-    function getNextPageNum($currentPage)
+    function getNextPageNum($currentPage): int
     {
-        $DB = Database::singleton();
         if ($currentPage === null) {
             return 1;
         }
-        return $DB->pselectOne(
-            "SELECT Order_number FROM instrument_subtests
-            WHERE Test_name=:TN AND Order_number > :PN 
-            ORDER BY Order_number",
-            array(
-             'TN' => $this->TestName,
-             'PN' => $currentPage,
+        return intval(
+            \Database::singleton()->pselectOne(
+                "SELECT Order_number FROM instrument_subtests
+                WHERE Test_name=:TN AND Order_number > :PN 
+                ORDER BY Order_number",
+                array(
+                 'TN' => $this->TestName,
+                 'PN' => $currentPage,
+                )
             )
         );
     }
@@ -166,10 +167,10 @@ class DirectDataEntryMainPage
      *
      * @param integer $currentPage The current page number
      *
-     * @return string the previous page number or "top" if the user is on
+     * @return string|null the previous page number or "top" if the user is on
      *         the top page
      */
-    function getPrevPageNum($currentPage)
+    function getPrevPageNum($currentPage): ?string
     {
         $DB = Database::singleton();
         if ($currentPage === null) {
@@ -264,9 +265,9 @@ class DirectDataEntryMainPage
      *
      * @param string $status The status to be updated to
      *
-     * @return True on success, false on failure
+     * @return bool True on success, false on failure
      */
-    function updateStatus($status)
+    function updateStatus($status): bool
     {
         $DB = Database::singleton();
 
@@ -402,4 +403,4 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new DirectDataEntryMainPage();
     $Runner->run();
 }
-?>
+

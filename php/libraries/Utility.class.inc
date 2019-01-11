@@ -417,6 +417,24 @@ class Utility
     }
 
     /**
+     * Converts an associative array to a numeric array consisting of the
+     * argument's value as its first and only element. This is adapted from the
+     * original functioning of toArray which was not type-safe. It is
+     * primarily used for extracting configuration settings.
+     *
+     * @param array $associative_array An asssociative array.
+     *
+     * @return array The new numeric array, or $array if it was already numeric.
+     */
+    static function associativeToNumericArray(array $associative_array): array
+    {
+        if (!array_key_exists(0, $associative_array)) {
+            return array($associative_array);
+        }
+        return $associative_array;
+    }
+
+    /**
      * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
@@ -429,8 +447,19 @@ class Utility
      *
      * @return array If $var is an array, var, otherwise an array containing $var
      */
-    static function toArray($var): array
+    static function toArray($var)
     {
+        // TODO Uncomment the exception code below after LORIS 21 is released.
+        //throw new DeprecatedException(
+        //    'Utility::toArray() is deprecated and should not be used. ' .
+        //    'Instead use Utility::associativeToNumericArray() for converting ' .
+        //    'arrays. Scalar values cannot be passed to this function.'
+        //);
+        error_log(
+            'Utility::toArray() will be deprecated in LORIS ' .
+            'version 21. Please use Utility::associativeToNumericArray() ' .
+            'instead.'
+        );
         if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
@@ -438,15 +467,13 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection elements, not just a single element
-     * Not the same as toArray, apparently.
+     * Takes a scalar value and returns an array containing that value as its
+     * only element.
      * Note: This function should be used for tags without attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return  array If $var is an array, var, otherwise an array containing $var
-     * @cleanup This should be removed and all uses converted to toArray
-     *          (or vice versa, but toArray seems to be more common in the code)
+     * @return array If $var is an array, var, otherwise an array containing $var
      */
     static function asArray($var): array
     {
@@ -843,57 +870,6 @@ class Utility
     }
 
     /**
-     * This function takes two strings. If one string has a
-     * suffix which is a prefix of the other, it will return
-     * the part of the second string minus the common
-     * suffix/prefix.
-     *
-     * This is mostly used for removing pieces of a relative
-     * URL in a way that can be concatinated to an absolute
-     * URL without duplicating components. ie.
-     *
-     * removeCommonAffix("http://localhost/foo", "/foo/bar")
-     *
-     * would return "/bar", which can then be concatenated
-     * to "http://localhost/foo" to form the URL
-     * "http://loclahost/foo/bar"
-     *
-     * @param string $suffixStr The string which may contain a common affix
-     *                          at the end of the string
-     * @param string $prefixStr The string to compare the suffix string to
-     *
-     * @return string $prefixStr minus the largest common piece of $suffixStr
-     */
-    static function removeCommonAffix(
-        string $suffixStr,
-        string $prefixStr
-    ): string {
-        $lastFound = '';
-        // Start from the end of $suffixStr and work backwords, to make sure
-        // it fails fast in the event that there's nothing in common.
-        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
-            $piece = substr($suffixStr, $i);
-            $found = strpos($prefixStr, $piece);
-            if ($found === 0) {
-                // The current substring starts at index 0 in prefixStr, so we
-                // know that it's a prefix. Keep track of it.
-                $lastFound = $piece;
-            } else if ($found === false) {
-                // The current substring doesn't appear anywhere in
-                // $prefixStr, so return the last known complete prefix.
-                // There's no chance that a larger string is going to
-                // be a prefix either.
-                return substr($prefixStr, strlen($lastFound));
-            } else {
-                // Otherwise, the string appears somewhere, but isn't at the
-                // beginning of the string. Keep going because this might be
-                // the middle of a larger prefix.
-            }
-        }
-        return $prefixStr;
-    }
-
-    /**
      * QuickForm rule to check that a date is valid.
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
@@ -1015,4 +991,4 @@ class Utility
         return $languages;
     }
 }
-?>
+

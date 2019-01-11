@@ -56,4 +56,4 @@ foreach ($results as $row) {
     $sessionResults[] = $row['value'];
 }
 print json_encode($sessionResults);
-?>
+

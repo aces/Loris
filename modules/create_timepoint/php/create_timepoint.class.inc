@@ -154,7 +154,10 @@ class Create_Timepoint extends \NDB_Form
         $visitLabelSettings = $config->getSetting('visitLabel');
         $visitLabelAdded    = false;
 
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
+        foreach (
+            \Utility::associativeToNumericArray($visitLabelSettings)
+            as $visitLabel
+        ) {
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
@@ -165,7 +168,7 @@ class Create_Timepoint extends \NDB_Form
                     );
                 }
                 $labelOptions[''] = null;
-                $items            = \Utility::toArray(
+                $items            = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -265,4 +268,4 @@ class Create_Timepoint extends \NDB_Form
         );
     }
 }
-?>
+

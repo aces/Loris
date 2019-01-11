@@ -38,4 +38,4 @@ print json_encode($recruitmentBySiteData);
 
 return 0;
 
-?>
+

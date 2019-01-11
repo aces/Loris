@@ -58,4 +58,4 @@ $justTheDocs = array_map(function($row) {
 $results);
 print json_encode($justTheDocs);
  */
-?>
+

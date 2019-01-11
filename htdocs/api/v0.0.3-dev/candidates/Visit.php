@@ -281,4 +281,4 @@ if (isset($_REQUEST['PrintVisit'])) {
     }
     print $obj->toJSONString();
 }
-?>
+

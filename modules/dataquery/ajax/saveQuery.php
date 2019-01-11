@@ -80,4 +80,4 @@ if ($_REQUEST['OverwriteQuery'] === "true") {
 } else {
     print $cdb->postDoc($baseDocument);
 }
-?>
+
