@@ -173,7 +173,7 @@ class QualityControlIndex extends Component {
       }},
     ];
 
-    let tab0 = (
+    const tab0 = (
         <TabPane TabId={tabList[0].id}>
           <FilterableDataTable
                   name="quality_control_behavioural"
@@ -184,7 +184,7 @@ class QualityControlIndex extends Component {
         </TabPane>
     );
 
-    let tab1 = (
+    const tab1 = (
         <TabPane TabId={tabList[1].id}>
             <FilterableDataTable
                 name="quality_control"
@@ -214,12 +214,12 @@ QualityControlIndex.propTypes = {
 
 window.addEventListener('load', () => {
     ReactDOM.render(
-        <QualityControlIndex
-            ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
-            BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
-            hasPermission={loris.userHasPermission}
-        />,
-        document.getElementById('lorisworkspace')
+      <QualityControlIndex
+        ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
+        BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
     );
 });
 

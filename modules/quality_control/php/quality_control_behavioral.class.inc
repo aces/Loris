@@ -85,28 +85,12 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
         $projectList = \Utility::getProjectList();
-        // Form Elements
-        $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('instrument', 'Instruments', $instrumentList);
-        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('site', 'Site', $siteList);
-        $this->addSelect('project', 'Project', $projectList);
-
-        $hiddenOptions = [];
-        if ($this->hasHidePermission) {
-            $hiddenOptions = array(
-                              0 => 'Visible only',
-                              1 => 'Hidden only',
-                             );
-        }
 
         $this->fieldOptions = [
                                'visits'     => $visitList,
                                'instrument' => $instrumentList,
                                'site'       => $siteList,
                                'projects'   => $projectList,
-                               'hidden'     => $hiddenOptions,
                               ];
     }
     /**
