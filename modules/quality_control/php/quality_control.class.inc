@@ -42,6 +42,7 @@ class Quality_Control extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         //create user object
+        $this->hasHidePermission = $user->hasPermission("superuser");
         return $user->hasPermission('data_team_helper');
     }
 
@@ -147,8 +148,7 @@ class Quality_Control extends \NDB_Menu_Filter
            END as selected,
            qc.QCStatus as qc_status,
            mu.uploadedBy as uploaded_by,
-           f.CommentID as CommentID, 
-           tb.Test_name as MPF ";
+           f.CommentID as CommentID ";
 
         $joins = " FROM flag f
         JOIN session s ON (f.SessionID=s.ID)
@@ -161,14 +161,13 @@ class Quality_Control extends \NDB_Menu_Filter
         (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
-        LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)";
+        LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name LIKE 'mri_parameter_form%'
+          AND f.Test_name='mri_parameter_form'
           AND s.Active='Y'
-          AND s.CenterID <> '1'
-          AND tb.Test_name LIKE 'mri_parameter_form%' ";
+          AND s.CenterID <> '1' ";
 
         $query = $select.$joins.$where;
         return $query;
@@ -232,6 +231,63 @@ class Quality_Control extends \NDB_Menu_Filter
                           "In MRI Violated Scans" => "Found in MRI Violated Scans",
                           "Missing"               => "Missing",
                          );
+        // Form Elements
+        $this->addSelect('site', 'Site', $siteList);
+        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addSelect('project', 'Project', $projectList2);
+        $this->addSelect('subproject', 'Subproject', $subprojectList2);
+        $this->addSelect('scanType', 'Scan Type', $scan_types);
+        $this->addSelect(
+            'mRIParameterForm',
+            "MRI Parameter Form",
+            array(
+             "Incomplete" => "Incomplete",
+             "Complete"   => "Complete",
+            )
+        );
+        $this->addSelect(
+            'scanDoneInMRIPF',
+            'Scan Done in MRI PF',
+            array(
+             "Yes" => "Yes",
+             "No"  => "No",
+            )
+        );
+        $this->addSelect(
+            'tarchive',
+            'Tarchive Status',
+            array(
+             "In DICOM" => "In DICOM Archives",
+             "Missing"  => "Missing",
+            )
+        );
+        $this->addSelect(
+            'scanLocation',
+            'Scan Location',
+            $scan_location
+        );
+        $this->addSelect(
+            'qCStatus',
+            'QC Status',
+            array(
+             "Pass" => "Pass",
+             "Fail" => "Fail",
+            )
+        );
+        $this->addSelect(
+            'uploadedBy',
+            'Uploaded By',
+            $uploaderList
+        );
+        $this->addSelect(
+            'selected',
+            'Selected',
+            array(
+             "True"  => "True",
+             "False" => "False",
+            )
+        );
 
         $this->fieldOptions
             = [
