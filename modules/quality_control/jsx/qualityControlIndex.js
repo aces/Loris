@@ -33,7 +33,7 @@ class QualityControlIndex extends Component {
       switch (column) {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
-          let mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
+          let mpfURL = loris.BaseURL + '/instruments/mri_parameter_form/?commentID=' +
               row.CommentID + '&sessionID=' + row['Session ID'] +
               '&candID=' + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
