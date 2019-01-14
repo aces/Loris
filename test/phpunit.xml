@@ -6,7 +6,6 @@
     <testsuites>
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
-            <directory>./unittests/api</directory>
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>

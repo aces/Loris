@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Project page class under Projects
  *
@@ -10,7 +10,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Projects;
+namespace LORIS\Api\Endpoints\Project;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -27,8 +27,6 @@ use \LORIS\Api\Endpoint;
  */
 class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-    public $skipTemplate = true;
-
     /**
      * A cache of the results of the projects/$projectname endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
@@ -36,14 +34,18 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected $responseCache = array();
 
     /**
-     * All users have access to the login endpoint to try and login.
-     *
-     * @return boolean true if access is permitted
+     * The requested project
      */
-    function _hasAccess()
+    protected $project;
+
+    /**
+     * Contructor
+     *
+     * @param \Project $project The requested project
+     */
+    public function __construct(\Project $project)
     {
-        $user = \User::singleton();
-        return !($user instanceof \LORIS\AnonymousUser);
+        $this->project = $project;
     }
 
     /**
@@ -87,33 +89,45 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         // FIXME: Validate project based permissions.
 
-        $pathparts   = $request->getAttribute('pathparts');
-        $projectname = $pathparts[0];
-
-        $this->project = \NDB_Factory::singleton()
-            ->project($projectname);
-
-        if (count($pathparts) > 1) {
-            switch($pathparts[1]) {
-            // FIXME: delegate to other handlers
-            case 'candidates':
-            case 'images':
-            case 'instruments':
-            case 'visits':
-                break;
-            default:
-                return (new \LORIS\Http\Response())
-                        ->withStatus(404);
-            }
+        $pathparts = $request->getAttribute('pathparts');
+        if (count($pathparts) === 0) {
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "application/json")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            $this->_getProject($this->project->getName())
+                        )
+                    )
+                );
         }
 
-        return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($this->_getProject($projectname))
-                )
-            );
+        // Delegate to sub-endpoints
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'candidates':
+            $handler = new Candidates($this->project);
+            break;
+        case 'images':
+            $handler = new Images($this->project);
+            break;
+        case 'instruments':
+            $handler = new Instruments($this->project);
+            break;
+        case 'visits':
+            $handler = new Visits($this->project);
+            break;
+        default:
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
+        return $handler->process(
+            $newrequest,
+            $handler
+        );
     }
 
     /**
@@ -123,19 +137,17 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param string $name The project name
      *
-     * @return array That endpoint representation of a project
+     * @throws \NotFound When the project name does not exists
+     * @return array The representation of a project
      */
-    private function _getProject(string $name) : array
+    private function _getProject(string $name): array
     {
         if (!isset($this->responseCache[$name])) {
-
-            $project = \NDB_Factory::singleton()->project($name);
-
             $meta = array('Project' => $name);
 
             $visits = array_keys(
                 \Utility::getExistingVisitLabels(
-                    $project->getId()
+                    $this->project->getId()
                 )
             );
 
@@ -143,7 +155,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 \Utility::getAllInstruments()
             );
 
-            $candids = $project->getCandidateIds();
+            $candids = $this->project->getCandidateIds();
 
             $responsebody['Meta']        = $meta;
             $responsebody['Visits']      = $visits;
@@ -165,7 +177,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $projectname = $request->getAttribute('pathparts')[0];
-        return md5(json_encode($this->_getProject($projectname), true));
+        $body = $this->_getProject($this->project->getName());
+
+        return md5(json_encode($body));
     }
 }

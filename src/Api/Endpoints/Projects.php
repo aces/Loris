@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Projects page class
  *
@@ -26,8 +26,6 @@ use \LORIS\Api\Endpoint;
  */
 class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-    public $skipTemplate = true;
-
     /**
      * A cache of the results of the projects/ endpoint, so that it doesn't
      * need to be recalculated for the ETag and handler
@@ -86,15 +84,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // FIXME: Validate permissions.
         $pathparts = $request->getAttribute('pathparts');
 
-        if ($pathparts[0] != 'projects') {
-            return (new \LORIS\Http\Response())
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    '{ "error" : "Invalid API endpoint" }'
-                )
-            )->withStatus(404);
-        }
-
         if (count($pathparts) === 1) {
             $projects = $this->_getProjectList();
             return (new \LORIS\Http\Response())
@@ -107,9 +96,17 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to project specific endpoint.
-        $endpoint = new \LORIS\Api\Endpoints\Projects\Project();
-        array_shift($pathparts);
-        $request = $request->withAttribute('pathparts', $pathparts);
+        try {
+            $project = \NDB_Factory::singleton()
+                ->project($pathparts[1]);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $endpoint = new Project\Project($project);
+
+        $pathparts = array_slice($pathparts, 2);
+        $request   = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);
     }
@@ -173,6 +170,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_getProjectList(), true));
+        return md5(json_encode($this->_getProjectList()));
     }
 }
