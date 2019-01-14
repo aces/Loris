@@ -48,10 +48,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private $_clearFilter = "#userAccounts_filter".
                                 " > div > div > fieldset > div:nth-child(8)".
                                 " > div > div > button";
-    private $_table       ="#dynamictable > tbody > tr:nth-child(1)";
-    private $_addUserBtn  = "#userAccounts_dataTable".
-                                " > div.table-header > div > div".
-                                " > div:nth-child(2) > button:nth-child(1)";
+    private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
+    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
+                                " div > div > div.pull-right > button:nth-child(1)";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
@@ -146,9 +145,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "
             );
                     $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector".
-                          "('#userAccounts_dataTable > div.table-header".
-                          " > div > div > div:nth-child(1)').textContent"
+                        "return document.querySelector('#default-panel".
+                        " > div > div > div.table-header > div > div >".
+                        " div:nth-child(1)').textContent"
                     );
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
