@@ -65,11 +65,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '000001',
-             'PSCID'       => 'DCC0001',
-             'CenterID'    => 1,
-             'Active'      => 'Y',
-             'Entity_type' => 'Human',
+             'CandID'               => '000001',
+             'PSCID'                => 'DCC0001',
+             'RegistrationCenterID' => 1,
+             'Active'               => 'Y',
+             'Entity_type'          => 'Human',
             )
         );
 
