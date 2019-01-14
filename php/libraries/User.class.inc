@@ -110,10 +110,29 @@ class User extends UserPermissions
                                                   );
             }
         }
+
+        // Get user projects
+        $project_rows = $DB->pselect(
+            "SELECT p.Name, p.ProjectID from user_project_rel upr
+             LEFT JOIN Project p on (p.ProjectID=upr.ProjectID)
+             WHERE (upr.UserID=:UserID)",
+            array(
+             "UserID" => $row['ID'],
+            )
+        );
+        $projects     = array();
+        $project_IDs  = array();
+        foreach ($project_rows as $project_row) {
+            $projects[$project_row['ProjectID']] = $project_row['Name'];
+            $project_ID[] = $project_row['ProjectID'];
+        }
+
         // store user data in object property
-        $row['examiner']  = $examiner_info;
-        $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
+        $row['examiner']   = $examiner_info;
+        $row['CenterIDs']  = $user_cid;
+        $row['Projects']   = $projects;
+        $row['ProjectIDs'] = $project_IDs; 
+        $obj->userInfo     = $row;
         return $obj;
     }
 
@@ -316,6 +335,26 @@ class User extends UserPermissions
         unset($site_list['pending']);
         natcasesort($site_list);
         return $site_list;
+    }
+
+    /**
+     * Get the user's projects
+     *
+     * @return array
+     */
+    function getProjects()
+    {
+        return $this->userInfo['Projects'];
+    }
+
+    /**
+     * Get the user's project ids
+     *
+     * @return array
+     */
+    function getProjectIds()
+    {
+        return $this->userInfo['ProjectIDs'];
     }
 
     /**
@@ -529,6 +568,22 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
+    }
+
+    /**
+     * Checks if a user has access to a project
+     *
+     * @param int $projectID The project's unique ID
+     *
+     * @return bool
+     */
+    public function hasAccessToProject(int $projectID) : bool
+    {
+        return in_array(
+            $projectID,
+            $this->getProjectIds(),
+            true
+        );
     }
 
     /**
