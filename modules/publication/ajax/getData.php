@@ -32,7 +32,7 @@ function getData() : array
     $db   = \Database::singleton();
     $user = \User::singleton();
 
-    checkPermission($db, $user);
+    userCanGetData($db, $user);
 
     $data   = array();
     $titles = $db->pselectCol(
@@ -110,7 +110,7 @@ function getProjectData() : array
     $db   = \Database::singleton();
     $user = \User::singleton();
 
-    checkPermission($db, $user, $id);
+    userCanGetData($db, $user, $id);
 
     $query  = 'SELECT Title, Description, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
@@ -319,7 +319,7 @@ function getUploadTypes() : array
  *
  * @return void
  */
-function checkPermission($db, $user, $pubID = null)
+function userCanGetData($db, $user, $pubID = null)
 {
     if (is_null($pubID) && !$user->hasPermission('publication_view')) {
         header("HTTP/1.1 403 Forbidden");

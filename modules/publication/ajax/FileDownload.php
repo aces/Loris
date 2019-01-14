@@ -13,7 +13,7 @@
 
 $user = \User::singleton();
 
-checkPermission($user);
+userCanDownload($user);
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
@@ -43,7 +43,7 @@ readfile($filePath);
  *
  * @return void
  */
-function checkPermission($user) : void
+function userCanDownload($user) : void
 {
     if (!($user->hasPermission('publication_view')
         || $user->hasPermission('publication_propose')

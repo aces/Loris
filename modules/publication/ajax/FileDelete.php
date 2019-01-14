@@ -27,7 +27,7 @@ if (empty($uploadData)) {
     return;
 }
 
-permissionCheck($uploadData, $db, $user);
+userCanDelete($uploadData, $db, $user);
 
 $db->delete(
     'publication_upload',
@@ -48,7 +48,7 @@ unlink($base . $uploadData['URL']);
  *
  * @return void
  */
-function permissionCheck($uploadData, $db, $user) : void
+function userCanDelete($uploadData, $db, $user) : void
 {
     $origUser = $db->pselectOne(
         'SELECT UserID FROM publication WHERE PublicationID=:pid',
