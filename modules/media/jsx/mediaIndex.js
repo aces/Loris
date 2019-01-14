@@ -178,7 +178,7 @@ class MediaIndex extends Component {
             <MediaUploadForm
               DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
               action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-              maxUploadSize={this.state.fieldOptions.maxUploadSize}
+              maxUploadSize={options.maxUploadSize}
             />
           </TabPane>
         );
