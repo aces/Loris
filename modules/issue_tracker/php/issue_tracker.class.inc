@@ -178,18 +178,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Converts the data from the data table to an array suitable for JSON
-     * serialization. Ovverides bass class in order to enforce name regex
-     * rules.
-     *
-     * @return array of data from dicom_archive menu filter.
-     */
-    function toArray()
-    {
-        return json_decode($this->toJSON);
-    }
-
-    /**
      * Overrides base getJSDependencies() to add support for issue tracker
      * specific React Index file.
      *
