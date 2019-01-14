@@ -42,7 +42,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
     const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
-                                  'install the instrument';
+                                  'install the instrument.';
     const BAD_REQUEST         = 'Uploaded file is not of type LINST or is ' .
                                 'too large.';
 
