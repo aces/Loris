@@ -356,7 +356,6 @@ class DataTable extends Component {
         return (
           <button
             key={key}
-            name={action.name}
             className="btn btn-primary"
             onClick={action.action}
           >
@@ -568,7 +567,7 @@ class DataTable extends Component {
     );
 
     return (
-      <div name={this.props.name} style={{margin: '14px'}}>
+      <div style={{margin: '14px'}}>
         {header}
         <table className="table table-hover table-primary table-bordered" id="dynamictable">
           <thead>
@@ -584,7 +583,6 @@ class DataTable extends Component {
   }
 }
 DataTable.propTypes = {
-  name: PropTypes.string,
   data: PropTypes.array.isRequired,
   RowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes

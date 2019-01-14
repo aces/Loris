@@ -138,22 +138,18 @@ class UserAccountsIndex extends Component {
       }},
     ];
     const actions = [
-      {name: 'addUser', label: 'Add User', action: this.addUser},
+      {label: 'Add User', action: this.addUser},
     ];
 
     return (
-      <div id="userAccountsIndex">
-        <div id="userAccountsFilter">
-          <FilterableDataTable
-            name="userAccounts"
-            title='User Accounts'
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-          />
-        </div>
-      </div>
+      <FilterableDataTable
+        name="userAccounts"
+        title='User Accounts'
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+        actions={actions}
+      />
     );
   }
 }

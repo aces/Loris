@@ -112,7 +112,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element loaction
+     * @param string $element The input element location
      * @param string $table   The first row location in the table
      * @param string $records The records number in the table
      * @param string $value   The test value
@@ -177,39 +177,30 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'First_name',
             'NewFirst'
         );
-        //  these tests below needs more time to run
-        //  $this->markTestSkipped("Skipping excessively slow test");
-        //  return;
-        //  $this->_verifyUserModification(
-        //      'user_accounts',
-        //      'UnitTester',
-        //      'First_name',
-        //      'NewFirst'
-        //  );
-        //  $this->_verifyUserModification(
-        //      'user_accounts',
-        //      'UnitTester',
-        //      'Last_name',
-        //      'NewLast'
-        //  );
-        //  $this->_verifyUserModification(
-        //      'user_accounts',
-        //      'UnitTester',
-        //      'Active',
-        //      'No'
-        //  );
-        //  $this->_verifyUserModification(
-        //      'user_accounts',
-        //      'UnitTester',
-        //      'Email',
-        //      'newemail@example.com'
-        //  );
-        //  $this->_verifyUserModification(
-        //      'user_accounts',
-        //      'UnitTester',
-        //      'Pending_approval',
-        //      'No'
-        //  );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'Last_name',
+            'NewLast'
+        );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'Active',
+            'No'
+        );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'Email',
+            'newemail@example.com'
+        );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'Pending_approval',
+            'No'
+        );
     }
     /**
      * Tests various My Preference page edit operations.
