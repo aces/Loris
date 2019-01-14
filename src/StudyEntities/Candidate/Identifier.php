@@ -22,7 +22,7 @@ namespace LORIS\StudyEntities\Candidate;
 interface Identifier
 {
     /**
-     * Return the name of the indentifier type from this interface
+     * Return the name of the identifier type for this interface
      * implementation.
      *
      * @return string The identifier type

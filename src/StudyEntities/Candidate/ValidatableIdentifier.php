@@ -49,7 +49,7 @@ abstract class ValidatableIdentifier implements Identifier
      * Default constructor
      *
      * This is final to make sure that classes extending ValidatableIdentifier
-     * will call validate upon instanciation.
+     * will call validate upon instantiation.
      *
      * @param string $value The Identifier's value
      *
