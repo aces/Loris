@@ -466,7 +466,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array    associative array of id=>module/operation/description
      */
-    public static function getNotificationModules()
+    public static function getNotificationModules() :array
     {
         $result = \Database::singleton()->pselect(
             'SELECT * FROM notification_modules',
