@@ -32,4 +32,3 @@ unittests: phpdev
 
 # Perform all tests that don't require an install.
 check: checkstatic unittests
-
