@@ -85,6 +85,8 @@ class MediaIndex extends Component {
           <MediaEditForm
             DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
             action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+            fetchData={this.fetchData /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/}
           />
         </TriggerableModal>
       );

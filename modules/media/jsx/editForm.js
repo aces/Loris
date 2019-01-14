@@ -219,12 +219,13 @@ class MediaEditForm extends Component {
         }, false);
         return xhr;
       },
-      success: function(data) {
+      success: (data) => {
         $('#file-progress').addClass('hide');
         self.setState({
           uploadResult: 'success',
         });
         self.showAlertMessage();
+        this.props.fetchData();
       },
       error: function(err) {
         console.error(err);
