@@ -11,7 +11,11 @@
 namespace LORIS\StudyEntities\Candidate;
 
 /**
- * PHP Version 7
+ * A Candidate\Identifier is something that it used to identify a candidate that
+ * is part of a study.
+ *
+ * Instances of Identifier must have a type to distinguish what kind of identifier
+ * it is (ie. CandID, PSCID) and must be serializable to a string.
  *
  * @category Model
  * @package  StudyEntities
