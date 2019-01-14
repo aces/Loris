@@ -82,7 +82,9 @@ class Login extends Endpoint
             return (new \LORIS\Http\Response())
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        '{ "error" : Missing username or password" }'
+                        json_encode(
+                            array('error' => 'Missing username or password')
+                        )
                     )
                 )
                 ->withStatus(400);
@@ -99,7 +101,7 @@ class Login extends Endpoint
                 return (new \LORIS\Http\Response())
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode(['token' => $token])
+                            json_encode(array('token' => $token))
                         )
                     )
                     ->withHeader("Content-Type", "application/json")
@@ -108,7 +110,9 @@ class Login extends Endpoint
                 return (new \LORIS\Http\Response())
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            ['error' => 'Unacceptable JWT key']
+                            json_encode(
+                                array('error' => 'Unacceptable JWT key')
+                            )
                         )
                     )
                     ->withHeader("Content-Type", "application/json")
