@@ -174,52 +174,52 @@ class QualityControlIndex extends Component {
     ];
 
     const tab0 = (
-        <TabPane TabId={tabList[0].id}>
-          <FilterableDataTable
-                  name="quality_control_behavioural"
-                  data={this.state.BehavioralData.Data}
-                  fields={BehavioralFields}
-                  getFormattedCell={this.formatColumn}
-          />
-        </TabPane>
+      <TabPane TabId={tabList[0].id}>
+        <FilterableDataTable
+          name="quality_control_behavioural"
+          data={this.state.BehavioralData.Data}
+          fields={BehavioralFields}
+          getFormattedCell={this.formatColumn}
+        />
+      </TabPane>
     );
 
     const tab1 = (
-        <TabPane TabId={tabList[1].id}>
-            <FilterableDataTable
-                name="quality_control"
-                data={this.state.ImgData.Data}
-                fields={ImgFields}
-                getFormattedCell={this.formatColumn}
-            />
-        </TabPane>
+      <TabPane TabId={tabList[1].id}>
+        <FilterableDataTable
+          name="quality_control"
+          data={this.state.ImgData.Data}
+          fields={ImgFields}
+          getFormattedCell={this.formatColumn}
+        />
+      </TabPane>
     );
     return (
-        <div>
-            <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id}
-                  updateURL={true}>
-                {tab0}
-                {tab1}
-            </Tabs>
-        </div>
+      <div>
+        <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id}
+        updateURL={true}>
+          {tab0}
+          {tab1}
+        </Tabs>
+      </div>
     );
   }
 }
 
 QualityControlIndex.propTypes = {
-    ImgDataURL: PropTypes.string.isRequired,
-    BehavioralDataURL: PropTypes.string.isRequired,
-    hasPermission: PropTypes.func.isRequired,
+  ImgDataURL: PropTypes.string.isRequired,
+  BehavioralDataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
-    ReactDOM.render(
-      <QualityControlIndex
-        ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
-        BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
-        hasPermission={loris.userHasPermission}
-      />,
-      document.getElementById('lorisworkspace')
-    );
+  ReactDOM.render(
+    <QualityControlIndex
+      ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
+      BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
 });
 
