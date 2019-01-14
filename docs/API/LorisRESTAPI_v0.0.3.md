@@ -822,7 +822,8 @@ PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename/$IsPhantom
 
 Uploads a DICOM file that is comprssed as a `.zip`,`.tar.gz` or `.tgz`
 $CandID must be the full name of the file and its extension
-$IsPhantom must be 'Y' or 'y' if its a phantom file, else 'N' or 'n' if not 
+$IsPhantom must be `'Y'` or `'y'` if its a phantom file, else `'N'` or `'n'` 
+if not.
 
 Returns JSON data upon success having the form:
 
