@@ -582,13 +582,22 @@ Returns file level QC information. It will return a JSON object of the form:
     },
     "QC" : "Pass|Fail",
     "Selected" : boolean,
-    "Caveats" : {
-      "Severity" : $severity,
-      "Header" : $header,
-      "Value" : $headerValue,
-      "ValidRange" : $headerValidRange,
-      "ValidRegex" : $headerValidRegex
-    }
+    "Caveats" : [
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        },
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        }
+    ]
 }
 ```
 
