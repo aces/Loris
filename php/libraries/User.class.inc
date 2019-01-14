@@ -562,7 +562,6 @@ class User extends UserPermissions
         );
         $request  = new Request('GET', "/range/$hashPrefix");
         $response = $adapter->sendRequest($request);
-        print_r($response);
 
         /* We don't want password changes to fail in case there is a
          * networking issue while making the request. If the API can't be
