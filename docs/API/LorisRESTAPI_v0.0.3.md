@@ -270,7 +270,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "Site"    : Site,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female"
+        "Sex"     : "Male|Female"
 }
 ```
 
@@ -301,7 +301,7 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female",
+        "Sex"     : "Male|Female",
         "Site"    : SiteName,
     }
 }
@@ -316,7 +316,7 @@ PSCID is only required if the generation type in the Loris config is set to
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
 a site other than the list of sitenames the user is affiliated with, and a 400 
-Bad Request if any data provided is invalid (PSCID format, date format, gender 
+Bad Request if any data provided is invalid (PSCID format, date format, sex
 something other than Male|Female, invalid project name, invalid sitename, etc). 
 A successful POST request will return a CandidateObject for the newly created 
 candidate.

@@ -10,8 +10,8 @@ var siteColours = [
     '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
 ];
 
-// Colours for the recruitment bar chart: breakdown by gender
-var genderColours = ['#2FA4E7', '#1C70B6'];
+// Colours for the recruitment bar chart: breakdown by sex
+var sexColours = ['#2FA4E7', '#1C70B6'];
 
 $(document).ready(function () {
     "use strict";
@@ -216,7 +216,7 @@ $.ajax({
                 }
             },
             color: {
-                pattern: genderColours
+                pattern: sexColours
             }
         });
     },

@@ -69,7 +69,7 @@ class Candidate_List extends \NDB_Menu_Filter
                           'psc.Name AS Site',
                           'c.CandID AS DCCID',
                           'c.PSCID',
-                          'c.Gender',
+                          'c.Sex',
                           'c.Entity_type',
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
@@ -90,7 +90,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                'centerID'     => 'c.CenterID',
                                'DCCID'        => 'c.CandID',
                                'PSCID'        => 'c.PSCID',
-                               'gender'       => 'c.Gender',
+                               'Sex'          => 'c.Sex',
                                'SubprojectID' => 's.SubprojectID',
                               );
 
@@ -99,7 +99,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                'c.CenterID',
                                'c.CandID',
                                'c.PSCID',
-                               'c.Gender',
+                               'c.Sex',
                               );
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
@@ -139,7 +139,7 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         //'COALESCE(pso.ID,1) AS Participant_Status',
-        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex';
         $this->order_by = 'c.PSCID ASC';
 
         if ($useProjects) {
@@ -171,7 +171,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                      'c.ProjectID',
                                      's.Scan_done',
                                      's.Visit_label',
-                                     'c.Gender',
+                                     'c.Sex',
                                     );
 
         if ($useProjects) {
@@ -270,8 +270,8 @@ class Candidate_List extends \NDB_Menu_Filter
         );
 
         $this->addSelect(
-            'gender',
-            'Gender',
+            'sex',
+            'Biological Sex',
             array(
              ''       => 'All',
              'Male'   => 'Male',

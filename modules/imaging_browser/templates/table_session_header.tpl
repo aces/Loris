@@ -9,7 +9,7 @@
             <th>Site</th>
             <th>QC Pending</th>
             <th>DOB</th>
-            <th>Gender</th>
+            <th>Sex</th>
             <th>Output Type</th>
             <th>Scanner</th>
             <th>Subproject</th>
@@ -28,7 +28,7 @@
             <td>{$subject.site}</td>
             <td>{if $subject.mriqcpending=="Y"}<img src="{$baseurl}/images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}</td>
             <td>{$subject.dob}</td>
-            <td>{$subject.gender}</td>
+            <td>{$subject.sex}</td>
             <td>{$outputType}</td>
             <td>{$subject.scanner}</td>
             <td>{$subject.SubprojectTitle}</td>

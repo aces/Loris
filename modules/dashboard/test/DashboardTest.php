@@ -695,7 +695,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * 5. Create a candidate and assign it to any site. Inactivate it.
-     * Make sure it is NOT taken into account in the gender
+     * Make sure it is NOT taken into account in the sex
      * breakdown view (recruitment panel).
      * 6. Check that site breakdown view (recruitment panel) is correct.
      *

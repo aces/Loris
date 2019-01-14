@@ -155,7 +155,7 @@ class Datadict extends \NDB_Menu_Filter
             // special rule for dropdowns where value is numeric
             if (strtolower(substr($key, -8)) == 'centerid'
                 || strtolower(substr($key, -10)) == 'categoryid'
-                || strtolower(substr($key, -6)) == 'gender'
+                || strtolower(substr($key, -6)) == 'sex'
             ) {
                 $query .= " AND $key = '$val' ";
             } else {

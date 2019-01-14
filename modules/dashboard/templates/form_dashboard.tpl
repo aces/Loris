@@ -58,7 +58,7 @@
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-8">
                             <div>
-                                <h5 class="chart-title">Gender breakdown by site</h5>
+                                <h5 class="chart-title">Biological sex breakdown by site</h5>
                                 <div id="recruitmentBarChart"></div>
                             </div>
                         </div>

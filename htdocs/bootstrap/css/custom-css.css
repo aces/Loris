@@ -448,6 +448,7 @@ div.navbar div.container div.navbar-brand {
 
 .btn {
     font-size: 14px;
+    margin: 10px 5px;
 }
 
 .btn-default {
@@ -588,10 +589,6 @@ a.btn.btn-primary:hover {
     background-color: #F2F2F2;
 }
 
-.downloadCSV {
-    margin: 20px 0;
-}
-
 .perPage {
     width: 75px;
     color: black;
@@ -610,7 +607,8 @@ a.btn.btn-primary:hover {
 }
 
 .pagination-table {
-    margin: 0;
+    margin: -13px 0px;
+    padding-left: 5px;
 }
 
 .left.carousel-control {
@@ -726,6 +724,7 @@ a.btn.btn-primary:hover {
     color: #064785;
     background-color: #E4EBF2;
     border-color: #C3D5DB;
+    font-size: 16px;
 }
 
 .panel-primary {
@@ -830,3 +829,23 @@ a.list-group-item:focus {
     100% { transform: rotate(360deg); }
 }
 
+/* Styling for fieldset */
+fieldset {
+    display: block;
+    margin: 6px 15px 15px 15px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 1px solid #C3D5DB;
+    border-radius: 6px;
+}
+
+legend {
+    padding-inline-start: 6px;
+    padding-inline-end: 6px;
+    width: auto;
+    border-bottom: 0px;
+    font-size: 14px;
+    color: #064785;
+}

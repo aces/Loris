@@ -26,14 +26,23 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter_filter>div>div:nth-child(1)>div>div>input";
-    static $patientName = "#dicom_filter_filter>div>div:nth-child(2)>div>div>input";
-    static $site        = "#dicom_filter_filter>div>div:nth-child(8)>div>div>select";
-    static $gender      = "#dicom_filter_filter>div>div:nth-child(3)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter>div>div:nth-child(4)>div>div>input";
-    static $clearFilter = "#dicom_filter_filter>div>div:nth-child(9)>div>div>button";
+    static $patientID   = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(2)>div>div>input";
+    static $patientName = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(3)>div>div>input";
+    static $site        = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(9)>div>div>select";
+    static $sex         = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(4)>div>div>input";
+    static $dateOfBirth = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(5)>div>div>input";
+    static $clearFilter = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(10)>div>div>button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
+    // rows displayed of
+    static $display = "#default-panel".
+                       ">div>div>div.table-header > div > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -100,7 +109,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             null,
             "MTL022_300022_V1"
         );
-        $this-> _testFilter(self::$gender, self::$table, null, "M");
+        $this-> _testFilter(self::$sex, self::$table, null, "M");
         $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
         $this-> _testFilter(self::$site, self::$table, "4", "4");
     }
@@ -139,10 +148,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
+            $row      = self::$display;
             $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('#lorisworkspace > div >".
-                " div.panel.panel-default > div.table-header.panel-heading".
-                " > div > div').textContent"
+                "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
             $this->assertContains($records, $bodyText);
@@ -173,7 +181,12 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        $text = $this->webDriver->getPageSource();
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
+        );
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
+        );
         $this->assertContains('View Details', $text);
     }
     /**
@@ -192,8 +205,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        sleep(1);
-        $text = $this->webDriver->getPageSource();
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
+        );
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );

@@ -40,7 +40,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
           // expected_headers
                                    'No.'               => '#dynamictable > thead',
                                    'PSCID'             => '#dynamictable > thead',
-                                   'Gender'            => '#dynamictable > thead',
+                                   'Sex'               => '#dynamictable > thead',
                                    'Subproject'        => '#dynamictable > thead',
                                    'File'              => '#dynamictable > thead',
                                    'SNP'               => '#dynamictable > thead',
@@ -65,7 +65,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
           // expected_headers
                               'No.'                 => '#dynamictable > thead',
                               'PSCID'               => '#dynamictable > thead',
-                              'Gender'              => '#dynamictable > thead',
+                              'Sex'                 => '#dynamictable > thead',
                               'RsID'                => '#dynamictable > thead',
                               'Allele A'            => '#dynamictable > thead',
                               'Allele B'            => '#dynamictable > thead',
