@@ -44,18 +44,16 @@ class TriggerableModal extends Component {
   render() {
     const {label, onUserInput} = this.props;
 
-    const renderTrigger = () => {
-      return (
-        <CTA label={label} onUserInput={() => {
-          if (onUserInput instanceof Function) onUserInput();
-          this.setState({open: true});
-        }}/>
-      );
-    };
+    const trigger = (
+      <CTA label={label} onUserInput={() => {
+        if (onUserInput instanceof Function) onUserInput();
+        this.setState({open: true});
+      }}/>
+    );
 
     return (
       <div>
-        {renderTrigger()}
+        {trigger}
         <Modal {...this.props} open={this.state.open} close={this.close}/>
       </div>
     );
@@ -64,6 +62,7 @@ class TriggerableModal extends Component {
 
 TriggerableModal.propTypes = {
   label: PropTypes.string.required,
+  onClose: PropTypes.func,
 };
 
 export default TriggerableModal;
