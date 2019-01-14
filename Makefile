@@ -14,15 +14,7 @@ javascript:
 	npm install
 	npm run compile
 
-# Install dependencies and compile the jsx to js
 dev: VERSION phpdev javascript
-        sudo apt-get update
-        sudo apt-get install -y libapparmor1
-        pecl install -f ast-0.1.6
-        sudo apt-get install npm
-        npm install
-        composer install
-        npm run compile
 
 clean:
 	rm -f smarty/templates_c/*
