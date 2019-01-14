@@ -13,13 +13,7 @@
 
 $user = \User::singleton();
 
-if (!($user->hasPermission('publication_view')
-    || $user->hasPermission('publication_propose')
-    || $user->hasPermission('publication_approve'))
-) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-}
+checkPermission($user);
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
@@ -40,3 +34,22 @@ header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
 readfile($filePath);
+
+
+/**
+ * Permission check
+ *
+ * @param User $user user
+ *
+ * @return void
+ */
+function checkPermission($user) : void
+{
+    if (!($user->hasPermission('publication_view')
+        || $user->hasPermission('publication_propose')
+        || $user->hasPermission('publication_approve'))
+    ) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+}

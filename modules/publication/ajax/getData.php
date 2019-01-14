@@ -29,7 +29,10 @@ if (isset($_REQUEST['action'])) {
  */
 function getData() : array
 {
-    $db = Database::singleton();
+    $db   = \Database::singleton();
+    $user = \User::singleton();
+
+    checkPermission($db, $user);
 
     $data   = array();
     $titles = $db->pselectCol(
@@ -104,7 +107,10 @@ function getProjectData() : array
 {
     $id = $_REQUEST['id'];
 
-    $db = \Database::singleton();
+    $db   = \Database::singleton();
+    $user = \User::singleton();
+
+    checkPermission($db, $user, $id);
 
     $query  = 'SELECT Title, Description, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
@@ -302,4 +308,43 @@ function getUploadTypes() : array
         array(),
         'PublicationUploadTypeID'
     );
+}
+
+/**
+ * Permission check
+ *
+ * @param Database $db    database
+ * @param User     $user  user
+ * @param int      $pubID publication ID
+ *
+ * @return void
+ */
+function checkPermission($db, $user, $pubID = null)
+{
+    if (is_null($pubID) && !$user->hasPermission('publication_view')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+
+    $origUser = $db->pselectOne(
+        'SELECT UserID FROM publication WHERE PublicationID=:p',
+        array('p' => $pubID)
+    );
+
+    $userIDs = $db->pselectCol(
+        'SELECT pu.UserID as ID '.
+        'FROM publication_users_edit_perm_rel pu '.
+        'WHERE PublicationID=:p',
+        array('p' => $pubID)
+    );
+
+    $userCanEdit = (
+        $user->getId() === $origUser ||
+        in_array($user->getId(), $userIDs)
+    );
+
+    if (!$userCanEdit && !$user->hasPermission('publication_view')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
 }
