@@ -626,7 +626,8 @@ class Candidate
           ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
         $result = $db->pselectCol($query, $where);
-        return array_shift($result);
+
+        return is_array($result) ? array_shift($result) : null;
     }
 
     /**
