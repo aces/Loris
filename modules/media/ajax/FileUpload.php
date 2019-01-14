@@ -135,7 +135,7 @@ function uploadFile()
         ]
     );
 
-    if (!isset($sessionID) || count($sessionID) < 1) {
+    if (!isset($sessionID) || strlen($sessionID) < 1) {
         showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'."
