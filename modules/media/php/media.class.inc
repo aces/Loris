@@ -130,7 +130,7 @@ class Media extends \NDB_Menu_Filter
         $user = \User::singleton();
 
         if ($user->hasPermission("access_all_profiles") == false) {
-            $provisioner = $provisioenr->filter(
+            $provisioner = $provisioner->filter(
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
