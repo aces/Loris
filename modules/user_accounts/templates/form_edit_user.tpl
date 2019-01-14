@@ -290,6 +290,15 @@
         {/if}
     </div>
     {/if}
+    <div class="row form-group form-inline">
+        <label class="col-sm-2">
+            {$form.ProjectIDs.label}
+        </label>
+        <div class="col-sm-10">
+            {$form.ProjectIDs.html}
+        </div>
+    </div>
+
     {if $form.errors.sites_group}
     <div class="row form-group form-inline has-error">
     {else}
