@@ -246,6 +246,17 @@ CREATE TABLE `users` (
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
 
+CREATE TABLE `user_project_rel` (
+  `UserID` int(10) unsigned NOT NULL,
+  `ProjectID` int(2) NOT NULL,
+  PRIMARY KEY  (`UserID`,`ProjectID`),
+  KEY `FK_user_project_rel_2` (`ProjectID`),
+  CONSTRAINT `FK_user_project_rel_2` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_project_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_project_rel (UserID, ProjectID) SELECT 1, ProjectID FROM Project;
+
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
