@@ -152,7 +152,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $err = '';
         if (!$this->canWriteFiles()) {
             $err    = self::CANNOT_WRITE_FILES;
-            $status = 403;
+            $status = 503;
         }
 
         if ($this->instrumentExists($instrument)) {

@@ -116,7 +116,7 @@ class FileUploadValidator
         foreach ($uploadedFiles as $uploadedFile) {
             //Ensure that the $uploadedFile uses the PSR-7 UploadedFile
             //interface
-            if (! $uploadedFile instanceof \Zend\Diactoros\UploadedFile) {
+            if (! $uploadedFile instanceof \Psr\Http\Message\UploadedFileInterface) {
 
                 $this->_responseCode = 500;
                 throw new \LorisException(
