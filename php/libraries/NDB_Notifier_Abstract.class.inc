@@ -506,7 +506,7 @@ abstract class NDB_Notifier_Abstract
                    "mn" => $module,
                    "ot" => $operation_type,
                   );
-        return \Database::singleton()->pselectOne($query, $params);
+        return intval(\Database::singleton()->pselectOne($query, $params));
     }
 
     /**
@@ -518,16 +518,12 @@ abstract class NDB_Notifier_Abstract
      */
     public static function getNotificationServiceID(string $service): int
     {
-        $DB = Database::singleton();
-
         $query  = "SELECT id
                   FROM notification_services
                   WHERE service=:serv
                     ";
         $params = array("serv" => $service);
-        $result = $DB->pselectOne($query, $params);
-
-        return $result;
+        return intval(\Database::singleton()->pselectOne($query, $params));
     }
 
     /**
