@@ -11,14 +11,19 @@ import swal from 'sweetalert2';
 
 /**
  * Modal Component.
- * React wrapper for a Modal Window. Allows to dynamically toggle a Modal window.
+ * React wrapper for a Modal Window. Allows to dynamically toggle a Modal
+ * window.
  *
  * ================================================
  * Usage:
- * - Wrap the contents to be displayed by the Modal Window by the Modal Component.
+ * - Wrap the contents to be displayed by the Modal Window by the
+ *   Modal Component.
  * - Use the 'title' prop to set a title for the Modal Component.
- * - Use the 'onSubmit' prop to set a submission promise object for the Modal's contents.
- * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window.
+ * - Use the 'onSubmit' prop to set a submission *promise* object for the
+ *   Modal's contents.
+ * - Use the 'onClose' prop to set a function that triggers upon Modal closure.
+ * - Use the 'throwWarning' prop to throw a warning upon closure of the
+ *   Modal Window.
  * =================================================
  *
  */
@@ -32,20 +37,20 @@ class Modal extends Component {
     if (this.props.throwWarning) {
       swal({
         title: 'Are You Sure?',
-        text: 'Leaving the form will result in the loss of any information' +
+        text: 'Leaving the form will result in the loss of any information ' +
           'entered.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Proceed',
         cancelButtonText: 'Cancel',
-      }).then((result) => result.value && this.props.close());
+      }).then((result) => result.value && this.props.onClose());
     } else {
-      this.props.close();
+      this.props.onClose();
     }
   }
 
   render() {
-    const {open, children, onSubmit, title} = this.props;
+    const {show, children, onSubmit, title} = this.props;
 
     const headerStyle = {
       display: 'flex',
@@ -78,12 +83,12 @@ class Modal extends Component {
       height: '100%',
       overflow: 'auto',
       backgroundColor: 'rgba(0,0,0,0.7)',
-      visibility: open ? 'visible' : 'hidden',
+      visibility: show ? 'visible' : 'hidden',
     };
 
     const modalContent = {
-      opacity: open ? 1 : 0,
-      top: open ? 0 : '-300px',
+      opacity: show ? 1 : 0,
+      top: show ? 0 : '-300px',
       position: 'relative',
       backgroundColor: '#fefefe',
       borderRadius: '7px',
@@ -95,7 +100,7 @@ class Modal extends Component {
       transition: 'top 0.4s, opacity 0.4s',
     };
 
-    const renderChildren = () => open && children;
+    const renderChildren = () => show && children;
 
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
@@ -117,7 +122,7 @@ class Modal extends Component {
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.close())}
+              onUserInput={() => onSubmit().then(() => this.props.onClose())}
             />
           </div>
         );
@@ -150,8 +155,9 @@ class Modal extends Component {
 
 Modal.propTypes = {
   title: PropTypes.string,
-  trigger: PropTypes.element.isRequired,
   onSubmit: PropTypes.object,
+  onClose: PropTypes.func,
+  show: PropTypes.bool,
   throwWarning: PropTypes.bool,
 };
 

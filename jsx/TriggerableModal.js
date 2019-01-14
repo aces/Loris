@@ -38,7 +38,7 @@ class TriggerableModal extends Component {
 
   close() {
     this.setState({open: false});
-    this.props.onClose();
+    if (this.props.onClose instanceof Function) this.props.onClose();
   }
 
   render() {
@@ -54,14 +54,14 @@ class TriggerableModal extends Component {
     return (
       <div>
         {trigger}
-        <Modal {...this.props} open={this.state.open} close={this.close}/>
+        <Modal {...this.props} show={this.state.open} onClose={this.close}/>
       </div>
     );
   }
 }
 
 TriggerableModal.propTypes = {
-  label: PropTypes.string.required,
+  label: PropTypes.string.isRequired,
   onClose: PropTypes.func,
 };
 
