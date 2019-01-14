@@ -348,9 +348,9 @@ abstract class NDB_Notifier_Abstract
      *
      * @param int $uid containing the userID
      *
-     * @return string  Phone number of the user
+     * @return ?string  Phone number of the user
      */
-    protected function getPhone(int $uid): string
+    protected function getPhone(int $uid): ?string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Phone FROM users WHERE ID=:uid",
