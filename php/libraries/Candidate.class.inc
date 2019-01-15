@@ -259,7 +259,10 @@ class Candidate
                 throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
             }
         } else {
-            $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
+            $PSCID = Candidate::_generatePSCID(
+                \Candidate::_getIDSetting('PSCID', 'prefix')
+                ?? $site->getSiteAlias()
+            );
         }
 
         // insert the new candidate into the database
@@ -743,26 +746,69 @@ class Candidate
         $length     = \Candidate::_getIDSetting($kind, 'length');
         $generation = \Candidate::_getIDSetting($kind, 'generation');
 
-        // Generate new IDs until we find one that's unused.
-        do {
-            switch ($generation) {
-            case 'sequential':
-                /* If there are no existing IDs, create a new string
-                 * with the first character of the alphabet repeated $length
-                 * times.
-                 */
-                if (count($existingIDs) < 1) {
-                    $id = str_repeat(strval($alphabet[0]), $length);
-                } else {
-                    $id = Candidate::_generateNewSequentialID($existingIDs);
-                }
-                break;
-            case 'random':
-                $id = Candidate::_generateNewRandomID($alphabet, $length);
-                break;
+        // Initialize minimum and maximum allowed values for IDs. Set the values
+        // to the lowest/highest character in $alphabet repeated $length times
+        // if the min or max is not configured in project/config.xml.
+        try {
+            $min = \Candidate::_getIDSetting($kind, 'min');
+        } catch (\LorisException $e) {
+            $min = str_repeat(strval($alphabet[0]), $length);
+        }
+        try {
+            $min = \Candidate::_getIDSetting($kind, 'max');
+        } catch (\LorisException $e) {
+            $max = str_repeat(strval($alphabet[count($alphabet) - 1]), $length);
+        }
+
+        // Check that the number of existing IDs does not exceed the range of
+        // possible values (given by the size of the alphabet to the power of
+        // number of characters in the ID).
+        if (count($existingIDs) >= (count($alphabet) ** $length)) {
+            throw new \LorisException(
+                'Cannot create new identifier because all valid identifiers ' .
+                'are in use!'
+            );
+        }
+
+        switch ($generation) {
+        case 'sequential':
+            /* If there are no existing IDs, create a new string
+             * with the first character of the alphabet repeated $length
+             * times.
+             */
+            if (count($existingIDs) < 1) {
+                $id = $min;
+            } else {
+                $id = \Candidate::_nextValueInSequence(
+                    $existingIDs,
+                    $length,
+                    $min,
+                    $max
+                );
             }
-        } while (in_array($id, $existingIDs, true));
-        return $prefix . $id;
+            break;
+        case 'random':
+            $id = \Candidate::_generateNewRandomID($alphabet, $length);
+            // If the random ID is already in use, increment it until we find
+            // an unused value.
+            if (in_array(
+                str_pad($id, $length, '0', STR_PAD_LEFT),
+                $existingIDs,
+                true
+            )
+            ) {
+                $id = \Candidate::_nextValueInSequence(
+                    $existingIDs,
+                    $length,
+                    $min,
+                    $max,
+                    $id
+                );
+            }
+            break;
+        }
+
+        return $prefix . str_pad($id, $length, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -811,12 +857,23 @@ class Candidate
      * Given a list of IDs, generates the next ID in the sequence by
      * incrementing the maximum value. Works for alphabetical and numeric IDs.
      *
-     * @param array $existingIDs An array of existing IDs.
+     * @param array   $existingIDs An array of existing IDs.
+     * @param int     $length      The number of characters in the ID.
+     * @param string  $min         The minimum allowed value.
+     * @param string  $max         The maximum allowed value.
+     * @param ?string $id          An optional starting point in the sequence
+     *                              from which to increment. The default
+     *                              behaviour is to increment the highest value
+     *                              in $existingIDs.
      *
-     * @return string The next ID in sequence.
+     * @return string The next ID in sequence and in bounds.
      */
-    static function _generateNewSequentialID(
-        array $existingIDs
+    static function _nextValueInSequence(
+        array $existingIDs,
+        int $length,
+        string $min,
+        string $max,
+        ?string $id = null
     ): string {
         if (count($existingIDs) < 1) {
             throw new \LorisException(
@@ -824,9 +881,33 @@ class Candidate
                 'provided is empty.'
             );
         }
-        $max = max($existingIDs);
-        $max++;
-        return strval($max);
+        $newID = $id ?? max($existingIDs);
+        // Increment newID until we find an unused value within the boundaries
+        // of $min and $max.
+        do {
+            // Make sure $newID is greater than or equal to minimum and less
+            // than or equal to maximum.
+            if (strcmp(strval(++$newID), $min) < 0) {
+                // If newID is less than the minimum, increment again.
+                continue;
+            }
+            if (strcmp(strval($newID), $max) > 0) {
+                // If newID has exceeded the maximum, wrap back around to the
+                // minimum possible value. We know that there is a free ID
+                // available somewhere in the range of possible IDs or else
+                // _generateID above will have thrown an exception. This allows
+                // us to increment $newID until we find a free space.
+                $newID = $min;
+            }
+        } while (
+            in_array(
+                str_pad(strval($newID), $length, '0', STR_PAD_LEFT),
+                $existingIDs,
+                true
+            )
+        );
+
+        return strval($newID);
     }
 
     /**
@@ -918,7 +999,7 @@ class Candidate
         }
 
         try {
-            $seqValue = \Candidate::_getSeqSetting($idStructure, $setting);
+            $seqValue = \Candidate::_getSeqAttribute($idStructure, $setting);
         } catch (\ConfigurationException $e) {
             /* Throw a new exception so that we can inform developers whether
              * the ConfigurationException arose due to ExternalID or PSCID
@@ -940,6 +1021,25 @@ class Candidate
                 return array_merge(range(0, 9), range('a', 'z'));
             }
         }
+
+        if ($setting === 'prefix') {
+            if ($seqValue === 'static') {
+                // The 'static' seq attribute must also include a value which
+                // will be a fixed string prefix to be prepended to IDs in
+                // LORIS. This must be extracted manually.
+                foreach ($idStructure as $seq) {
+                    if ($seq['@']['type'] === 'static') {
+                        // This index stores the prefix.
+                        return $seq['#'];
+                    }
+                }
+            } else {
+                // The other option, 'siteAbbrev', indicates that the calling
+                // code should prepend a Site Alias to the ID. Since the config
+                // file does not know what this will be, return null.
+                return null;
+            }
+        }
         // Min, max, and length values should be returned as integers.
         return intval($seqValue);
     }
@@ -956,19 +1056,20 @@ class Candidate
      *
      * @throws ConfigurationException
      *
-     * @return array
+     * @return string
      */
-    static function _getSeqSetting(array $idStructure, string $setting)
-    {
-
+    static function _getSeqAttribute(
+        array $idStructure,
+        string $setting
+    ): string {
         /* Do validation on 'prefix' and 'alphabet' since they both are found in
          * 'type' attributes within 'seq' elements. See project/config.xml for
          * examples.
          */
         switch($setting) {
         case 'alphabet':
-            $seqSettings = array_filter(
-                \Candidate::_extractSeqSetting($idStructure, 'type'),
+            $seqAttributes = array_filter(
+                \Candidate::_extractSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'alpha'
                         || $x === 'alphanumeric'
@@ -977,8 +1078,8 @@ class Candidate
             );
             break;
         case 'prefix':
-            $seqSettings = array_filter(
-                \Candidate::_extractSeqSetting($idStructure, 'type'),
+            $seqAttributes = array_filter(
+                \Candidate::_extractSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'static' || $x === 'siteAbbrev';
                 }
@@ -988,22 +1089,23 @@ class Candidate
             /* Other settings (i.e. 'length', 'min', 'max') can be extracted
              * directly as they are stored within distinct attributes.
              */
-            $seqSettings = \Candidate::_extractSeqSetting(
+            $seqAttributes = \Candidate::_extractSeqAttribute(
                 $idStructure,
                 $setting
             );
             break;
         }
 
-        if (count($seqSettings) > 1) {
+        // Validation
+        if (count($seqAttributes) > 1) {
             $errMsg = 'Too many values found for config setting: ';
-        } elseif (count($seqSettings) === 0) {
+        } elseif (count($seqAttributes) === 0) {
             $errMsg = 'No value found for config setting: ';
         }
         if (isset($errMsg)) {
             throw new \ConfigurationException($errMsg . $setting);
         }
-        return array_pop($seqSettings);
+        return array_pop($seqAttributes);
     }
 
     /**
@@ -1017,17 +1119,17 @@ class Candidate
      *
      * @return array The value(s) corresponding to $setting.
      */
-    static function _extractSeqSetting(
+    static function _extractSeqAttribute(
         array $idStructure,
         string $setting
     ): array {
-        $seqSettings = array();
+        $seqAttributes = array();
         foreach ($idStructure as $seq) {
             if (isset($seq['@'][$setting])) {
-                $seqSettings[] = $seq['@'][$setting];
+                $seqAttributes[] = $seq['@'][$setting];
             }
         }
-        return $seqSettings;
+        return $seqAttributes;
     }
 
     /**
