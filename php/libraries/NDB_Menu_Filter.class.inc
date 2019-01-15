@@ -145,12 +145,14 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_setupVariables();
 
         // set the headers if necessary
-        if (!is_array($this->headers) || count($this->headers) == 0) {
-            foreach ($this->columns as $value) {
-                if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
-                    $this->headers[] = $match[0];
-                }
-            }
+        if (!is_array($this->headers) || 
+            count($this->headers) == 0 &&
+             is_array($this->columns)) {
+               foreach ($this->columns as $value) {
+                  if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
+                      $this->headers[] = $match[0];
+                  }
+               }
         }
 
         // start the filter form
