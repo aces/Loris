@@ -879,7 +879,7 @@ An HTTP 202 response code will also be returned if the processing is launched.
 
 To see processing status of a DICOM fileset, send a GET request in the form:
 ```
-GET  /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id
+GET /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id
 ```
 
 Returns JSON data having the form:
