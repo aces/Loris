@@ -198,7 +198,7 @@ function validConfigPaths(array $paths): bool
 }
 
 /**
- * Check that the reuested download path does not have the '..' sequence and
+ * Check that the requested download path does not have the '..' sequence and
  * that it has an intelligible file extension.
  *
  * @param string $path The requested file.
