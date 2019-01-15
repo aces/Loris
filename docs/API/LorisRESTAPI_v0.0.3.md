@@ -843,8 +843,8 @@ Returns JSON data upon success having the form:
 
 mri_upload_id is the Upload ID for the DICOM fileset.
 
-When the file has been succesfully uploaded, it will live in the location that 
-is specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration
+A file that has been succesfully uploaded will live in the location that is 
+specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration.
 
 ### 5.4 Process DICOM fileset
 ```
@@ -864,7 +864,7 @@ The POST request JSON must be of the form:
 }
 ```
 
-Returns JSON data with a status if processing has been launched. The format is:
+Returns JSON data with a status of the process launch. The format is:
 
 ```js
 {
@@ -877,7 +877,7 @@ Returns JSON data with a status if processing has been launched. The format is:
 An HTTP 202 response code will also be returned if the processing is launched.
 
 
-To get processing status of DICOM fileset, send a GET request as follows:
+To see processing status of a DICOM fileset, send a GET request in the form:
 ```
 GET  /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id
 ```
