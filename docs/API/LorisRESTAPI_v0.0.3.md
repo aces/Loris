@@ -870,4 +870,4 @@ Returns JSON data with a status if processing has been launched. The format is:
 {"success":"Process launched"}
 ```
 
-The response will also include an HTTP 202 code if the processes is launched.
+The response will also include an HTTP 202 code if the processing is launched.
