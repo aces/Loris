@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import swal from 'sweetalert2';
+import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -29,14 +31,16 @@ class ExaminerIndex extends Component {
         addRadiologist: null,
         addSite: null,
       },
+      showModal: false,
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.addExaminer = this.addExaminer.bind(this);
-    this.renderAddExaminer = this.renderAddExaminer.bind(this);
+    this.renderAddExaminerForm = this.renderAddExaminerForm.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   componentDidMount() {
@@ -97,8 +101,12 @@ class ExaminerIndex extends Component {
       contentType: false,
       processData: false,
       success: (data) => {
-        swal('Success!', 'Examiner added.', 'success');
-        this.fetchData();
+        swal('Success!', 'Examiner added.', 'success').then((result) => {
+          if (result.value) {
+            this.fetchData();
+            this.setState({showModal: false});
+          }
+        });
       },
       error: (error) => {
         console.error(error);
@@ -142,13 +150,21 @@ class ExaminerIndex extends Component {
     return result;
   }
 
-  addExaminer() {
-    // open modal window
+  openModal() {
+    this.setState({showModal: true});
   }
 
-  renderAddExaminer() {
+  closeModal() {
+    this.setState({showModal: false});
+  }
+
+  renderAddExaminerForm() {
     return (
-      <div id='examinerForm' style={{width: '44%', float: 'right'}}>
+      <Modal
+        title='Add Examiner'
+        onClose={this.closeModal}
+        show={this.state.showModal}
+      >
         <FormElement
           Module="examiner"
           name="addExaminer"
@@ -163,19 +179,19 @@ class ExaminerIndex extends Component {
             required={true}
             onUserInput={this.setFormData}
           />
-          <CheckboxElement
-            name="addRadiologist"
-            label="Radiologist"
-            id="checkRadiologist"
-            value={this.state.formData.addRadiologist}
-            onUserInput={this.setFormData}
-          />
           <SelectElement
             name="addSite"
             options={this.state.data.fieldOptions.sites}
             label="Site"
             value={this.state.formData.addSite}
             required={true}
+            onUserInput={this.setFormData}
+          />
+          <CheckboxElement
+            name="addRadiologist"
+            label="Radiologist"
+            id="checkRadiologist"
+            value={this.state.formData.addRadiologist}
             onUserInput={this.setFormData}
           />
           <ButtonElement
@@ -186,10 +202,10 @@ class ExaminerIndex extends Component {
               </div>
             }
             type="submit"
-            buttonClass="btn btn-sm btn-success pull-right"
+            buttonClass="btn btn-sm btn-success"
           />
         </FormElement>
-      </div>
+      </Modal>
     );
   }
 
@@ -229,21 +245,20 @@ class ExaminerIndex extends Component {
       {label: 'Certification', show: this.state.data.useCertification},
     ];
     const actions = [
-      {name: 'addExaminer', label: 'Add Examiner', action: this.addExaminer},
+      {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
     ];
 
     return (
-      <div id="examinerIndex">
-        <div id="examinerFilter">
-          <FilterableDataTable
-            name='examiner'
-            title='Examiner'
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-          />
-        </div>
+      <div>
+        {this.renderAddExaminerForm()}
+        <FilterableDataTable
+          name='examiner'
+          title='Examiner'
+          data={this.state.data.Data}
+          fields={fields}
+          getFormattedCell={this.formatColumn}
+          actions={actions}
+        />
       </div>
     );
   }

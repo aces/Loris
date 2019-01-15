@@ -338,14 +338,13 @@ class DataTable extends Component {
 
   renderActions() {
     if (this.props.actions) {
-      return this.props.actions.map((action) => {
+      return this.props.actions.map((action, key) => {
         return (
-          <button
-            className="btn btn-primary"
-            onClick={action.action}
-          >
-            {action.label}
-          </button>
+          <CTA
+            key={key}
+            label={action.label}
+            onUserInput={action.action}
+          />
         );
       });
     }

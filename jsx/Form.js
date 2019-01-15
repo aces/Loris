@@ -1417,7 +1417,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline';
+    let elementClass = 'checkbox-inline col-sm-offset-3';
     let label = null;
 
     // Add required asterix
@@ -1428,7 +1428,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline has-error';
+      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
     }
 
     return (
@@ -1469,7 +1469,6 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
-  inputClass: 'col-sm-9',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
