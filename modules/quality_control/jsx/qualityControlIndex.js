@@ -107,7 +107,11 @@ class QualityControlIndex extends Component {
         type: 'select',
         options: ImgOptions.subproject,
       }},
-      {label: 'Visit Label', show: true},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: ImgOptions.visitLabel,
+      }},
       {label: 'Scan Type', show: true, filter: {
         name: 'scanType',
         type: 'select',

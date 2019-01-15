@@ -172,20 +172,21 @@ class Quality_Control extends \NDB_Menu_Filter
         $query = $select.$joins.$where;
         return $query;
     }
+
     /**
-     * Create a form to filter behavioral QC by various criteria
+     * Build a list of imaging QC to display in Data Table
      *
      * @return void
-     * @throws \ConfigurationException
      * @throws \DatabaseException
-     * @throws \Exception
      */
-    function _setFilterForm(): void
+    function _setupVariables(): void
     {
-        $user      =& \User::singleton();
-        $db        =& \Database::singleton();
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
+
+        $this->skipTemplate = true;
+        $user               =& \User::singleton();
+        $db                 =& \Database::singleton();
+        $siteList           = array();
+        $visitList          = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
             $siteList = \Utility::getSiteList();
@@ -227,110 +228,41 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         $scan_location = array(
-                          "In Imaging Browser"    => "Found in Imaging Browser",
-                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
-                          "Missing"               => "Missing",
-                         );
-        // Form Elements
-        $this->addSelect('site', 'Site', $siteList);
-        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('project', 'Project', $projectList2);
-        $this->addSelect('subproject', 'Subproject', $subprojectList2);
-        $this->addSelect('scanType', 'Scan Type', $scan_types);
-        $this->addSelect(
-            'mRIParameterForm',
-            "MRI Parameter Form",
-            array(
-             "Incomplete" => "Incomplete",
-             "Complete"   => "Complete",
-            )
-        );
-        $this->addSelect(
-            'scanDoneInMRIPF',
-            'Scan Done in MRI PF',
-            array(
-             "Yes" => "Yes",
-             "No"  => "No",
-            )
-        );
-        $this->addSelect(
-            'tarchive',
-            'Tarchive Status',
-            array(
-             "In DICOM" => "In DICOM Archives",
-             "Missing"  => "Missing",
-            )
-        );
-        $this->addSelect(
-            'scanLocation',
-            'Scan Location',
-            $scan_location
-        );
-        $this->addSelect(
-            'qCStatus',
-            'QC Status',
-            array(
-             "Pass" => "Pass",
-             "Fail" => "Fail",
-            )
-        );
-        $this->addSelect(
-            'uploadedBy',
-            'Uploaded By',
-            $uploaderList
-        );
-        $this->addSelect(
-            'selected',
-            'Selected',
-            array(
-             "True"  => "True",
-             "False" => "False",
-            )
+            "In Imaging Browser"    => "Found in Imaging Browser",
+            "In MRI Violated Scans" => "Found in MRI Violated Scans",
+            "Missing"               => "Missing",
         );
 
         $this->fieldOptions
             = [
-               'site'             => $siteList,
-               'project'          => $projectList2,
-               'subproject'       => $subprojectList2,
-               'scanType'         => $scan_types,
-               'mRIParameterForm' => array(
-                                      "Incomplete" => "Incomplete",
-                                      "Complete"   => "Complete",
-                                     ),
-               'scanDoneInMRIPF'  => array(
-                                      "Yes" => "Yes",
-                                      "No"  => "No",
-                                     ),
-               'tarchive'         => array(
-                                      "In DICOM" => "In DICOM Archives",
-                                      "Missing"  => "Missing",
-                                     ),
-               'scanLocation'     => $scan_location,
-               'qCStatus'         => array(
-                                      "Pass" => "Pass",
-                                      "Fail" => "Fail",
-                                     ),
-               'uploadedBy'       => $uploaderList,
-               'selected'         => array(
-                                      "True"  => "True",
-                                      "False" => "False",
-                                     ),
-              ];
-
-    }
-    /**
-     * Build a list of imaging QC to display in Data Table
-     *
-     * @return void
-     * @throws \DatabaseException
-     */
-    function _setupVariables(): void
-    {
-
-        $db = \Database::singleton();
-        $this->skipTemplate = true;
+            'site'             => $siteList,
+            'project'          => $projectList2,
+            'subproject'       => $subprojectList2,
+            'scanType'         => $scan_types,
+            'mRIParameterForm' => array(
+                "Incomplete" => "Incomplete",
+                "Complete"   => "Complete",
+            ),
+            'scanDoneInMRIPF'  => array(
+                "Yes" => "Yes",
+                "No"  => "No",
+            ),
+            'tarchive'         => array(
+                "In DICOM" => "In DICOM Archives",
+                "Missing"  => "Missing",
+            ),
+            'scanLocation'     => $scan_location,
+            'qCStatus'         => array(
+                "Pass" => "Pass",
+                "Fail" => "Fail",
+            ),
+            'uploadedBy'       => $uploaderList,
+            'selected'         => array(
+                "True"  => "True",
+                "False" => "False",
+            ),
+            'visitLabel'       => $visitList,
+        ];
 
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {

@@ -44,55 +44,7 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         return $user->hasPermission('data_team_helper');
     }
 
-    /**
-     * Create a form to filter behavioral QC by various criteria
-     *
-     * @return void
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
-     * @throws \Exception
-     */
-    function _setFilterForm(): void
-    {
-        $user      = \User::singleton();
-        $db        = \Database::singleton();
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
-        // allow to view all sites data through filter
-        if ($user->hasPermission('access_all_profiles')) {
-            $siteList = \Utility::getSiteList(false);
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
-            foreach ($siteIDs as $val) {
-                $site = &Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
-                }
-            }
-        }
-        $instrumentList   = [];
-        $instrumentsQuery = $db->pselect(
-            "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
-            []
-        );
-        foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
-        }
-        $projectList = \Utility::getProjectList();
 
-        $this->fieldOptions = [
-                               'visits'     => $visitList,
-                               'instrument' => $instrumentList,
-                               'site'       => $siteList,
-                               'projects'   => $projectList,
-                              ];
-    }
     /**
      * Build a list of behavioural QC to display in Data Table
      *
@@ -130,6 +82,44 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
                 AND (f.commentid NOT LIKE 'DDE_%')
             ";
         }
+
+        $user      = \User::singleton();
+        $siteList  = array();
+        $visitList = \Utility::getVisitList();
+        // allow to view all sites data through filter
+        if ($user->hasPermission('access_all_profiles')) {
+            $siteList = \Utility::getSiteList(false);
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
+            }
+        } else {
+            // allow only to view own site data
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = &Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
+        }
+        $instrumentList   = [];
+        $instrumentsQuery = $db->pselect(
+            "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
+            []
+        );
+        foreach ($instrumentsQuery as $instrument) {
+            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
+        }
+        $projectList = \Utility::getProjectList();
+
+        $this->fieldOptions = [
+            'visits'     => $visitList,
+            'instrument' => $instrumentList,
+            'site'       => $siteList,
+            'projects'   => $projectList,
+        ];
 
         $this->columns = [
                           's.Visit_label as visit_label',
