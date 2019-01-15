@@ -19,7 +19,7 @@ install:
 
 before_script:
 - VERSION = ${TRAVIS_PHP_VERSION:0:3}
-- sed -i 's/7.2/$VERSION/g' Dockerfile.test.php7
+- sed -i "s/7.2/$VERSION/g" Dockerfile.test.php7
 
 script:
 - make checkstatic
