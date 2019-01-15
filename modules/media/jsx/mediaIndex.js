@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import TriggerableModal from 'TriggerableModal';
 
 import MediaUploadForm from './uploadForm';
+import MediaEditForm from './editForm';
 
 class MediaIndex extends Component {
   constructor(props) {
@@ -78,8 +80,17 @@ class MediaIndex extends Component {
       }
       break;
     case 'Edit Metadata':
-      const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-      result = <td className={style}><a href={editURL}>Edit</a></td>;
+      const editButton = (
+        <TriggerableModal title="Edit Media File" label="Edit">
+          <MediaEditForm
+            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+            fetchData={this.fetchData /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/}
+          />
+        </TriggerableModal>
+      );
+      result = <td className={style}>{editButton}</td>;
       break;
     }
 
