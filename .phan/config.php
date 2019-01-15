@@ -32,6 +32,7 @@ return [
 		"PhanTypeMismatchForeach",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
+		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",
 		"PhanTypeVoidAssignment",
