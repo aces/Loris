@@ -818,7 +818,7 @@ Only `GET` is currently supported.
 ### 5.3 Upload DICOM fileset
 ```
 PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename
-X-Is-Phantom: 1
+X-Is-Phantom: bool
 ```
 
 Upload a tarred set of DICOM files that is compressed as a `.zip`,`.tar.gz` or 
@@ -853,7 +853,7 @@ POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/process
 
 Launch processing of an uploaded DICOM fileset that has not been yet processed.
 
-The request JSON must be of the form:
+The POST request JSON must be of the form:
 
 ```js
 {
@@ -867,7 +867,27 @@ The request JSON must be of the form:
 Returns JSON data with a status if processing has been launched. The format is:
 
 ```js
-{"success":"Process launched"}
+{
+  "process_id": 123,
+  "status": "started|running|complete|failed",
+  "message": "..."
+}
 ```
 
-The response will also include an HTTP 202 code if the processing is launched.
+An HTTP 202 response code will also be returned if the processing is launched.
+
+
+To get processing status of DICOM fileset, send a GET request as follows:
+```
+GET  /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id
+```
+
+Returns JSON data having the form:
+
+```js
+{
+  "process_id": 123,
+  "status": "started|running|complete|failed",
+  "message": "..."
+}
+```
