@@ -126,8 +126,8 @@ class PasswordExpiry extends \NDB_Form
         }
         // Check if password is present in existing data breaches.
         if (\User::pwnedPassword($_POST['password'])) {
-            $this->tpl_data['error_message'] = 'The password you chose is too common. Please '
-                . 'choose a more unique password.';
+            $this->tpl_data['error_message'] = 'The password you chose is ' .
+                'too common. Please choose a more unique password.';
             return array('password' => 'Password pwned.');
         }
 
