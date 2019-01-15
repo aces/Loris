@@ -104,7 +104,6 @@ class ExaminerIndex extends Component {
         swal('Success!', 'Examiner added.', 'success').then((result) => {
           if (result.value) {
             this.fetchData();
-            this.setState({showModal: false});
           }
         });
       },
