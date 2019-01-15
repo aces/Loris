@@ -815,48 +815,59 @@ scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 Only `GET` is currently supported.
 
-### 5.3 Upload DICOM file
+### 5.3 Upload DICOM fileset
 ```
-PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename/$IsPhantom
+PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename
+X-Is-Phantom: 1
 ```
 
-Upload a DICOM file that is compressed as a `.zip`,`.tar.gz` or `.tgz`.
-$CandID must be the full name of the file and its extension.
-$IsPhantom must be `'Y'` or `'y'` if it's a phantom file, else `'N'` or `'n'` 
-if not.
+Upload a tarred set of DICOM files that is compressed as a `.zip`,`.tar.gz` or 
+`.tgz`. $Filename must be the full name of the fileset and its extension.
+
+$Filename must be named according to the format 
+$PSCID_$CandID_$VisitLabel.ext where ext is one of the extensions above.
+
+X-Is-Phantom is a required header that must be sent as part of the request. 
+
+X-Is-Phantom must be set to `1` if the fileset is a phantom.
+X-Is-Phantom must be set to `0` for a fileset that is not a phantom.
 
 Returns JSON data upon success having the form:
 
 ```js
 {
-    "success":"Uploaded",
+    "status":"uploaded",
     "mri_upload_id":"3"
 }
 ```
 
-mri_upload_id is the Upload ID for the file.
+mri_upload_id is the Upload ID for the DICOM fileset.
 
-### 5.4 Process DICOM file
+When the file has been succesfully uploaded, it will live in the location that 
+is specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration
+
+### 5.4 Process DICOM fileset
 ```
-POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/$IsPhantom
+POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/process
 ```
 
-Launch processing of an uploaded DICOM file that has not been unprocessed.
+Launch processing of an uploaded DICOM fileset that has not been yet processed.
 
-The JSON must be of the form:
+The request JSON must be of the form:
 
 ```js
 {
+    "process_type":"mri_upload",
     "Filename":$Filename, 
     "mri_upload_id":$mri_upload_id, 
-    "IsPhantom":$IsPhantom, 
-    "CandID":$CandID,
-    "VisitLabel":$VisitLabel
+    "IsPhantom": bool
 }
 ```
 
-Returns JSON data with a status if processing has been launched in the form:
+Returns JSON data with a status if processing has been launched. The format is:
 
 ```js
 {"success":"Process launched"}
 ```
+
+The response will also include an HTTP 202 code if the processes is launched.
