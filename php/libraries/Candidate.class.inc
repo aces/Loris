@@ -781,6 +781,7 @@ class Candidate
             } else {
                 $id = \Candidate::_nextValueInSequence(
                     $existingIDs,
+                    $alphabet,
                     $length,
                     $min,
                     $max
@@ -792,13 +793,14 @@ class Candidate
             // If the random ID is already in use, increment it until we find
             // an unused value.
             if (in_array(
-                str_pad($id, $length, '0', STR_PAD_LEFT),
+                str_pad($id, $length, $alphabet[0], STR_PAD_LEFT),
                 $existingIDs,
                 true
             )
             ) {
                 $id = \Candidate::_nextValueInSequence(
                     $existingIDs,
+                    $alphabet,
                     $length,
                     $min,
                     $max,
@@ -808,7 +810,7 @@ class Candidate
             break;
         }
 
-        return $prefix . str_pad($id, $length, '0', STR_PAD_LEFT);
+        return $prefix . str_pad($id, $length, $alphabet[0], STR_PAD_LEFT);
     }
 
     /**
@@ -858,6 +860,7 @@ class Candidate
      * incrementing the maximum value. Works for alphabetical and numeric IDs.
      *
      * @param array   $existingIDs An array of existing IDs.
+     * @param array   $alphabet    The character set for IDs. Used for padding.
      * @param int     $length      The number of characters in the ID.
      * @param string  $min         The minimum allowed value.
      * @param string  $max         The maximum allowed value.
@@ -870,6 +873,7 @@ class Candidate
      */
     static function _nextValueInSequence(
         array $existingIDs,
+        array $alphabet,
         int $length,
         string $min,
         string $max,
@@ -901,7 +905,7 @@ class Candidate
             }
         } while (
             in_array(
-                str_pad(strval($newID), $length, '0', STR_PAD_LEFT),
+                str_pad(strval($newID), $length, $alphabet[0], STR_PAD_LEFT),
                 $existingIDs,
                 true
             )
@@ -1014,11 +1018,11 @@ class Candidate
         if ($setting === 'alphabet') {
             switch ($seqValue) {
             case 'alpha':
-                return range('a', 'z');
+                return range('A', 'Z');
             case 'numeric':
                 return range(0, 9);
             case 'alphanumeric':
-                return array_merge(range(0, 9), range('a', 'z'));
+                return array_merge(range(0, 9), range('A', 'Z'));
             }
         }
 
