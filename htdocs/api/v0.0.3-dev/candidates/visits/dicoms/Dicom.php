@@ -224,7 +224,10 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                         $this->error($msg);
                         $this->JSON = array("error" => $msg);
                     }
-                    $this->JSON = array("success" => "Process launched");
+
+                    $msg = "Process launched";
+                    $this->JSON = array("status" => $msg);
+                    $this->header("HTTP/1.1 202 Accepted");
                 }
             } else {
                 $msg        = "Could not access upload file.";
