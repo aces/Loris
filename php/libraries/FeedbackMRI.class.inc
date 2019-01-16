@@ -2,7 +2,7 @@
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Imaging
  * @package  Imaging
@@ -43,7 +43,7 @@ class FeedbackMRI
      * @param int $fileID    The fileID that this feedback is for
      * @param int $sessionID The SessionID that this feedback is for
      */
-    function __construct($fileID='', $sessionID='')
+    function __construct(int $fileID='', int $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -58,33 +58,12 @@ class FeedbackMRI
     }
 
     /**
-     * Clears all predefined comments from the object
-     * (used prior to re-setting the list of predefined comments)
-     *
-     * @return bool true if operation succeeded
-     */
-    function clearPredefinedComments()
-    {
-        // start the query
-        $query = "DELETE FROM feedback_mri_comments WHERE ".$this->_buildWhere();
-
-        // limit to predefined comments
-        $query .= "AND PredefinedCommentID IS NOT NULL";
-
-        // run the query
-        $success = mysql_query($query);
-
-        // return success
-        return $success;
-    }
-
-    /**
      * Clears all comments from the object
      *
      * @return void
      * @access public
      */
-    function clearAllComments()
+    function clearAllComments(): void
     {
         // create DB object
         $DB =& Database::singleton();
@@ -103,7 +82,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function setPredefinedComments($predefinedCommentIDs)
+    function setPredefinedComments(array $predefinedCommentIDs): bool
     {
         // choke if we are passed an empty array
         if (empty($predefinedCommentIDs)) {
@@ -132,7 +111,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function addTextComment($comment, $commentTypeID)
+    function addTextComment(string $comment, int $commentTypeID): bool
     {
         // choke if we are passed an empty comment or typeID
         if (empty($comment) || empty($commentTypeID)) {
@@ -155,7 +134,7 @@ class FeedbackMRI
      *               comments) where $typeID is always the CommentTypeID from
      *               feedback_mri_comment_types table
      */
-    function getComments()
+    function getComments(): array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -194,7 +173,7 @@ class FeedbackMRI
      * @return A two-dimensional array with key (int) PredefinedCommentID and
      *               one-element array ('Comment'=> string CommentName)
      */
-    function getAllPredefinedComments($commentTypeID)
+    function getAllPredefinedComments(int $commentTypeID): A
     {
         // create DB object
         $DB =& Database::singleton();
@@ -228,7 +207,7 @@ class FeedbackMRI
      *
      * @return string value of $fieldName in mri table
      */
-    function getMRIValue($fieldName)
+    function getMRIValue(int $fieldName): string
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
@@ -274,7 +253,7 @@ class FeedbackMRI
      *
      * @return bool false on failure, true on success
      */
-    function setMRIValue($fieldName, $value)
+    function setMRIValue(string $fieldName, string $value): bool
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
@@ -338,7 +317,7 @@ class FeedbackMRI
      *               'field'=>string name of column in mri table for status,
      *               'values'=>array of possible enum values for field)
      */
-    function getAllCommentTypes()
+    function getAllCommentTypes(): array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -405,7 +384,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function _addComment($comment='', $commentTypeID='', $predefinedCommentID='')
+    function _addComment(string $comment='', int $commentTypeID='', int $predefinedCommentID=''): bool
     {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)
@@ -467,7 +446,7 @@ class FeedbackMRI
      * @return string where string to limit selects to current object
      * @access private
      */
-    function _buildWhere()
+    function _buildWhere(): string
     {
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
@@ -487,7 +466,7 @@ class FeedbackMRI
      * @return array  $where                  key=>value pairs
      * @access private
      */
-    function _buildWhereAssoc()
+    function _buildWhereAssoc(): array
     {
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
