@@ -637,9 +637,9 @@ class ViewSession extends \NDB_Form
      *
      * @param string $FileID the value of FileID
      *
-     * @return string
+     * @return ?string
      */
-    function _getSelected($FileID): string
+    function _getSelected($FileID): ?string
     {
 
         $selected = $this->DB->pselectOne(
