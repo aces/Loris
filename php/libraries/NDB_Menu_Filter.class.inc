@@ -145,8 +145,8 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_setupVariables();
 
         // set the headers if necessary
-        if (!is_array($this->headers)
-            || count($this->headers) == 0
+        if ((!is_array($this->headers)
+            || count($this->headers) == 0)
             && is_array($this->columns)
         ) {
             foreach ($this->columns as $value) {
