@@ -843,7 +843,7 @@ mri_upload_id is the Upload ID for the DICOM fileset.
 A file that has been succesfully uploaded will live in the location that is 
 specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration.
 
-### 5.4 Process DICOM fileset
+### 5.3 Process DICOM fileset
 ```
 POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes
 ```
