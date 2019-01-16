@@ -772,19 +772,18 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID Thread ID being updated
      * @param string  $comment    The comment to update the thread to
-     * @param integer $type       The typeID to update Feedback_type to
+     * @param ?integer $type       The typeID to update Feedback_type to
      * @param string  $public     Y or N to update thread's public status to
      * @param string  $status     Status of the thread (options from
      *                            feedback_bvl_thread.Status)
      * @param string  $fieldname  The optional fieldname that the thread is in
      *                            reference to.
-     *
-     * @return void
+     c@return void
      */
     function updateThread(
         $feedbackID,
         $comment,
-        $type='',
+        $type=null,
         $public='',
         $status='',
         $fieldname =''
