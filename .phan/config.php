@@ -28,7 +28,7 @@ return [
         "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",
 		"PhanUndeclaredConstant",
-		"PhanTypeMismatchForeach",
+		"PhanTypeMismatchDefault",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",

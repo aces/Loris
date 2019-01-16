@@ -40,7 +40,7 @@ class Stats_Behavioural extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of centers
+     * @param array $Centers  the value of centers
      *
      * @return bool
      */
