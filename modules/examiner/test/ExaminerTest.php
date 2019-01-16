@@ -41,10 +41,11 @@ class ExaminerTest extends LorisIntegrationTest
             'Examiner'         => '#bc2 > a:nth-child(2) > div',
             'Selection Filter' => '#lorisworkspace > div.row > '.
                                   'div.col-sm-12.col-md-7 > div > div.panel-heading',
-            'Add Examiner'     => '#lorisworkspace > div.row > div.col'.
-                                  '-sm-12.col-md-5 > div > div.panel-heading',
+            'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
+                                  'div > div:nth-child(1)',
             'Add'              => '#examiner > div:nth-child(3) > div > button',
            );
+
     /**
     * Insert testing data
     *
