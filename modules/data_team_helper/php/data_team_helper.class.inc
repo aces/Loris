@@ -336,7 +336,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param int|string $site        the id or default value of the site
      * @param int|null   $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return array
      */
     function instrumentInConflict(string $test_name,
         $visit_label=null,
@@ -484,7 +484,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param int|string   $site        the id or default value of the site
      * @param int|null     $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return array
      */
     function getIncompleteCandidates($test_name,
         $visit_label=null,
@@ -790,7 +790,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @param string $visit_label the value of visit label
      *
-     * @return   unknown
+     * @return   array
      * @throws   \DatabaseException
      * @internal param unknown_type $visit
      */

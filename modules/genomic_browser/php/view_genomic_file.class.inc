@@ -146,7 +146,7 @@ class View_Genomic_File extends \NDB_Form
     * @param string      $type  type of the date
     * @param array       $array array containing the date
     *
-    * @return date if exists, if not an empty string
+    * @return int|string Date (Unix int timestamp) if exists, or an empty string
     */
     function _getDate($file, $type, $array)
     {

@@ -140,9 +140,9 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Calculate the entity tag for this image
      *
-     * @return string
+     * @return ?string
      */
-    public function calculateETag()
+    public function calculateETag(): ?string
     {
         return null;
     }

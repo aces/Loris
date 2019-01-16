@@ -126,9 +126,9 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Calculate the entity tag for this URL.
      *
-     * @return string
+     * @return ?string
      */
-    public function calculateETag()
+    public function calculateETag(): ?string
     {
         return null;
     }

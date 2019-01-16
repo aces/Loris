@@ -75,7 +75,7 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Gets a list of images for this visit. Filename only.
      *
-     * @return an array of strings of filenames
+     * @return array of strings of filenames
      */
     function getVisitImages()
     {
