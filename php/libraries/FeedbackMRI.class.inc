@@ -40,10 +40,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param int $fileID    The fileID that this feedback is for
-     * @param int $sessionID The SessionID that this feedback is for
+     * @param string $fileID    The fileID that this feedback is for
+     * @param string $sessionID The SessionID that this feedback is for
      */
-    function __construct(int $fileID='', int $sessionID='')
+    function __construct(string $fileID='', string $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -60,10 +60,10 @@ class FeedbackMRI
     /**
      * Clears all comments from the object
      *
-     * @return void
+     * @return bool
      * @access public
      */
-    function clearAllComments(): void
+    function clearAllComments(): bool
     {
         // create DB object
         $DB =& Database::singleton();
