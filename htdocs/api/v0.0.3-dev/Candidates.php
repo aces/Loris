@@ -48,9 +48,9 @@ class Candidates extends APIBase
      * Calculate an ETag by taking a hash of the number of candidates in the
      * database and the time of the most recently changed one.
      *
-     * @return string An ETag for ths candidates object
+     * @return ?string An ETag for ths candidates object
      */
-    function calculateETag(): string
+    function calculateETag(): ?string
     {
         $ETagCriteria = $this->DB->pselectRow(
             "SELECT MAX(TestDate) as Time,
