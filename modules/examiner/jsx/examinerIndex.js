@@ -93,25 +93,28 @@ class ExaminerIndex extends Component {
       }
     }
     formObject.append('fire_away', 'Add');
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/examiner/',
-      data: formObject,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => {
+      if (resp.ok && resp.status === 200) {
         swal('Success!', 'Examiner added.', 'success').then((result) => {
           if (result.value) {
             this.fetchData();
           }
         });
-      },
-      error: (error) => {
-        console.error(error);
-        let message = error.responseText;
-        swal('Error!', message, 'error');
-      },
+      } else {
+        resp.text().then((message) => {
+          swal('Error!', message, 'error');
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
     });
   }
 
@@ -272,6 +275,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
+      submitURL={`${loris.BaseURL}/examiner/`}
       hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
