@@ -813,9 +813,6 @@ Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
-Only `GET` is currently supported.
-
-### 5.3 Upload DICOM fileset
 ```
 PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename
 X-Is-Phantom: bool
@@ -848,7 +845,7 @@ specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration.
 
 ### 5.4 Process DICOM fileset
 ```
-POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/process
+POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes
 ```
 
 Launch processing of an uploaded DICOM fileset that has not been yet processed.
