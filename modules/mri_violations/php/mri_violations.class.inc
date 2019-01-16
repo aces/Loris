@@ -439,7 +439,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+             $baseurl . "/mri_violations/js/MRIViolationsIndex.js",
             )
         );
     }

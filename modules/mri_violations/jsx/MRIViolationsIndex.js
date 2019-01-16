@@ -5,7 +5,6 @@ import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
-//import MediaUploadForm from './uploadForm';
 
 class MRIViolationsIndex extends Component {
   constructor(props) {
@@ -154,34 +153,21 @@ class MRIViolationsIndex extends Component {
       }},
       {label: 'Edit Metadata', show: true},
     ];
-    const tabs = [{id: 'resolutionStatus', label: 'Not Resolved'}];
-    const uploadTab = () => {
-      if (this.props.hasPermission('media_write')) {
-        tabs.push({id: 'upload', label: 'Upload'});
-        return (
-          <TabPane TabId={tabs[1].id}>
-            <MediaUploadForm
-              DataURL={`${loris.BaseURL}/mri_violations/ajax/FileUpload.php?action=getData`}
-              action={`${loris.BaseURL}/mri_violations/ajax/FileUpload.php?action=upload`}
-              maxUploadSize={this.state.data.maxUploadSize}
-            />
-          </TabPane>
-        );
-      }
-    };
+
+    const filterPresets = [
+        { label : 'Not Resolved', filter : { resolved : { value : false }}},
+        { label : 'Resolved', filter : { resolved : { value : true }}},
+    ]
 
     return (
-      <Tabs tabs={tabs} defaultTab="resolutionStatus" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
+
           <FilterableDataTable
             name="mri_violations"
             data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />
-        </TabPane>
-        {uploadTab()}
-      </Tabs>
+
     );
   }
 }
