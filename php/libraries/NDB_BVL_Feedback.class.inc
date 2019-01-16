@@ -770,15 +770,16 @@ class NDB_BVL_Feedback
      * Creates a new thread entry and (if allowed) updates the selected
      * thread's type/status/public
      *
-     * @param integer $feedbackID Thread ID being updated
-     * @param string  $comment    The comment to update the thread to
+     * @param integer  $feedbackID Thread ID being updated
+     * @param string   $comment    The comment to update the thread to
      * @param ?integer $type       The typeID to update Feedback_type to
-     * @param string  $public     Y or N to update thread's public status to
-     * @param string  $status     Status of the thread (options from
+     * @param string   $public     Y or N to update thread's public status to
+     * @param string   $status     Status of the thread (options from
      *                            feedback_bvl_thread.Status)
-     * @param string  $fieldname  The optional fieldname that the thread is in
+     * @param string   $fieldname  The optional fieldname that the thread is in
      *                            reference to.
-     c@return void
+     *
+     * @return void
      */
     function updateThread(
         $feedbackID,
