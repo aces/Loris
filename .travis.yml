@@ -6,9 +6,7 @@ language: php
 matrix:
   include:
   - php: "7.2"
-    env: PHP='7.2'
   - php: "7.3"
-    env: PHP='7.3'
 
 services:
 - docker
@@ -21,7 +19,7 @@ install:
 - make dev
 
 before_script:
-- sed -i "s/7.2/$PHP/g" Dockerfile.test.php7
+- sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
 - make checkstatic
