@@ -72,7 +72,7 @@ class FeedbackMRI
         $query .= "AND PredefinedCommentID IS NOT NULL";
 
         // run the query
-        $success = mysqli_query($query);
+        $success = mysql_query($query);
 
         // return success
         return $success;
