@@ -51,7 +51,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                ON (s.CenterID = c.CenterID)
              LEFT JOIN Project p
                ON (c.ProjectID = p.ProjectID)
-             WHERE Active="Y"
+             WHERE c.Active="Y"
             ',
             array()
         );
