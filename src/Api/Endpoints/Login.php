@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Login page class
  *
@@ -47,7 +47,7 @@ class Login extends Endpoint
      */
     protected function allowedMethods() : array
     {
-        return ['POST'];
+        return array('POST');
     }
 
     /**
@@ -61,11 +61,11 @@ class Login extends Endpoint
      */
     protected function supportedVersions() : array
     {
-        return [
-                "v0.0.1",
-                "v0.0.2",
-                "v0.0.3-dev",
-               ];
+        return array(
+                'v0.0.1',
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -77,15 +77,11 @@ class Login extends Endpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $requestdata = json_decode($request->getBody(), true);
+        $requestdata = json_decode((string) $request->getBody(), true);
         if (!isset($requestdata['username']) || !isset($requestdata['password'])) {
-            return (new \LORIS\Http\Response())
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        '{ "error" : Missing username or password" }'
-                    )
-                )
-                ->withStatus(400);
+            return new \LORIS\Http\Response\BadRequest(
+                'missing username or password'
+            );
         }
 
         $user     = $requestdata['username'];
@@ -96,33 +92,19 @@ class Login extends Endpoint
         if ($login->passwordAuthenticate($user, $password, false)) {
             $token = $this->getEncodedToken($user);
             if (!empty($token)) {
-                return (new \LORIS\Http\Response())
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode(['token' => $token])
-                        )
-                    )
-                    ->withHeader("Content-Type", "application/json")
-                    ->withStatus(200);
+                return new \LORIS\Http\Response\JsonResponse(
+                    array('token' => $token)
+                );
             } else {
-                return (new \LORIS\Http\Response())
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            ['error' => 'Unacceptable JWT key']
-                        )
-                    )
-                    ->withHeader("Content-Type", "application/json")
-                    ->withStatus(500);
+                return new \LORIS\Http\Response\InternalServerError(
+                    'unacceptable JWT key'
+                );
             }
         }
-        return (new \LORIS\Http\Response())
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode(array("error" => $login->_lastError))
-                )
-            )
-            ->withHeader("Content-Type", "application/json")
-            ->withStatus(401);
+
+        return new \LORIS\Http\Response\Unauthorized(
+            $login->_lastError
+        );
     }
 
     /**

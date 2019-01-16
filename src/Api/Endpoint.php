@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * An API endpoint is an endpoint which abstracts away common element
  * of different LORIS API endpoints.
@@ -29,8 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 abstract class Endpoint implements RequestHandlerInterface
 {
-    public $skipTemplate = true;
-
     /**
      * Return an array of valid HTTP methods for this endpoint
      *
@@ -64,36 +62,19 @@ abstract class Endpoint implements RequestHandlerInterface
     ): ResponseInterface {
         $methods = $this->allowedMethods();
         if (!in_array($request->getMethod(), $methods)) {
-            return (new \LORIS\Http\Response())
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array("error" => "Unsupported HTTP Method")
-                        )
-                    )
-                )->withHeader("Allow", join(",", $methods))
-                ->withStatus(405);
+            return new \LORIS\Http\Response\MethodNotAllowed($methods);
         }
 
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-
         if (!in_array($version, $versions)) {
-            return (new \LORIS\Http\Response())
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array("error" => "Unsupported LORIS API version")
-                        )
-                    )
-                )
-                ->withHeader("Allow", join(",", $methods))
-                ->withHeader("Content-Type", "application/json")
-                ->withStatus(400);
+            return new \LORIS\Http\Response\BadRequest('unsupported version');
         }
+
         if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
             return (new \LORIS\Middleware\ETag())->process($request, $handler);
         }
+
         return $handler->handle($request);
     }
 }

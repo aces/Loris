@@ -1,52 +1,55 @@
 <?php declare(strict_types=1);
 /**
- * This implements the Projects endpoint class
+ * This implements the Instruments page class under Project
  *
  * PHP Version 7
  *
  * @category API
  * @package  Loris
- * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints;
+namespace LORIS\Api\Endpoints\Project;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
+
 /**
- * A class for handling the api/v????/projects endpoint.
+ * A class for handling the /projects/$projectname/instruments endpoint.
  *
  * @category API
  * @package  Loris
- * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the results of the projects/ endpoint, so that it doesn't
-     * need to be recalculated for the ETag and handler
+     * A cache of the results of the endpoint, so that
+     * it doesn't need to be recalculated for the ETag and handler
      */
     protected $cache;
 
     /**
-     * All users have access to the login endpoint to try and login.
-     *
-     * @return boolean true if access is permitted
+     * The requested project
      */
-    function _hasAccess()
+    protected $project;
+
+    /**
+     * Contructor
+     *
+     * @param \Project $project The requested project
+     */
+    public function __construct(\Project $project)
     {
-        $user = \User::singleton();
-        return !($user instanceof \LORIS\AnonymousUser);
+        $this->project = $project;
     }
 
     /**
      * Return which methods are supported by this endpoint.
-     *
-     * Projects can only be retrieved, not created.
      *
      * @return array supported HTTP methods
      */
@@ -58,9 +61,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Versions of the LORIS API which are supported by this
      * endpoint.
-     *
-     * Projects has existed since v0.0.1 of the API and has not
-     * changed since.
      *
      * @return array a list of supported API versions.
      */
@@ -74,7 +74,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request starts with /projects/
+     * Handles a request that starts with /projects/$projectname/candidates
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -82,42 +82,49 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // FIXME: Validate permissions.
         $pathparts = $request->getAttribute('pathparts');
-
-        if (count($pathparts) === 1) {
+        if (count($pathparts) === 0) {
             return new \LORIS\Http\Response\JsonResponse(
-                $this->_toArray()
+                $this->_handleGET($request)
             );
         }
 
         // Delegate to project specific endpoint.
+        $instrumentname = array_shift($pathparts);
         try {
-            $project = \NDB_Factory::singleton()
-                ->project($pathparts[1]);
-        } catch (\NotFound $e) {
+            $instrument = \NDB_BVL_Instrument::factory(
+                $instrumentname,
+                null,
+                null,
+                true
+            );
+        } catch (\Exception $e) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $endpoint = new Project\Project($project);
-
-        $pathparts = array_slice($pathparts, 2);
-        $request   = $request->withAttribute('pathparts', $pathparts);
+        $endpoint = new Instrument($this->project, $instrument);
+        $request  = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);
     }
 
     /**
-     * Returns an array of projects for this LORIS instance
-     * a format that can be JSON encoded to confirm to the
-     * API.
+     * Create an array representation of this endpoint's reponse body
      *
-     * @return array of projects
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return array
      */
-    private function _toArray() : array
+    private function _handleGET(ServerRequestInterface $request): array
     {
         if (!isset($this->cache)) {
-            $this->cache = (new \LORIS\Api\Views\Projects())->toArray();
+            $provisioner = new \LORIS\api\ProjectInstrumentsRowProvisioner();
+
+            $this->cache = (new \LORIS\Api\Views\ProjectInstruments(
+                $this->project,
+                (new \LORIS\Data\Table())->withDataFrom($provisioner)
+                    ->toArray($request->getAttribute('user'))
+            ))->toArray();
         }
         return $this->cache;
     }
@@ -131,6 +138,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray()));
+        return md5(json_encode($this->_handleGET($request)));
     }
 }

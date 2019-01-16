@@ -111,7 +111,7 @@ class Candidate
             $this->candidateInfo[$key] = $value;
         }
 
-        if ($config->getSetting('useProjects') === 'true') {
+        if (isset($this->candidateInfo['ProjectID'])) {
             $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
         }
 
