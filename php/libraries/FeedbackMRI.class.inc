@@ -170,10 +170,10 @@ class FeedbackMRI
      * @param int $commentTypeID CommentTypeID from feedback_mri_comment_types
      *                           table
      *
-     * @return A two-dimensional array with key (int) PredefinedCommentID and
-     *               one-element array ('Comment'=> string CommentName)
+     * @return array A two-dimensional array with key (int) PredefinedCommentID
+     *               and one-element array ('Comment'=> string CommentName)
      */
-    function getAllPredefinedComments(int $commentTypeID): A
+    function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -375,17 +375,23 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param int    $commentTypeID       CommentTypeID from
-     *                                    feedback_mri_comment_types table
-     *                                    (optional if using predefinedCommentID)
-     * @param int    $predefinedCommentID PredefinedCommentID
-     *                                    from feedback_mri_predefined_comments
+     * @param string $commentTypeID       CommentTypeID from
+     *                                    feedback_mri_comment_types
+     *                                    table (optional if
+     *                                    using
+     *                                    predefinedCommentID)
+     * @param string $predefinedCommentID PredefinedCommentID
+     *                                    from
+     *                                    feedback_mri_predefined_comments
      *                                    table
      *
      * @return bool true if operation succeeded
      */
-    function _addComment(string $comment='', int $commentTypeID='', int $predefinedCommentID=''): bool
-    {
+    function _addComment(
+        string $comment='',
+        string $commentTypeID='',
+        string $predefinedCommentID=''
+    ): bool {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)
             || (!empty($comment) && !empty($predefinedCommentID))
