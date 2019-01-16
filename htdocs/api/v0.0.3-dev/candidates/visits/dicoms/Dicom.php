@@ -117,14 +117,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         }
         fclose($fp);
 
-        /**
-         * See Loris/modules/imaging_uploader/php/imaging_uploader.class.inc
-         * and related for HOWTOs
-         * 1. Validate the file.
-         * 2. Validate that user can upload dicoms
-         * 3. Save/Move file into /data/incoming or wherever incoming MRI
-         *    upload files should be saved.
-         */
         if (!empty($data)) {
             $factory = \NDB_Factory::singleton();
             $config  = $factory->Config();
@@ -146,11 +138,12 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                         $args['values']['uploaded_file_path'] = $dest;
                         $mri_upload_id = $this->_process($args);
                         if ($mri_upload_id) {
-                            $this->JSON = array(
-                                           "success"       => "Uploaded",
-                                           "mri_upload_id" => $mri_upload_id,
-                                          );
-                            $this->performRealUpload($mri_upload_id, $dest);
+                            $this->JSON  = array(
+                                            "success"       => "Uploaded",
+                                            "mri_upload_id" => $mri_upload_id,
+                                           );
+                            $processDbId = $this->performRealUpload($mri_upload_id, $dest);
+                            $this->printProcessResults($processDbId);
                         } else {
                             //@TODO Set header for some 4XX error status I imagine
                             $msg        = "Could not insert mri upload";
@@ -158,7 +151,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                         }
                     }
                 }
-                i f($op) {
+                if ($op) {
                     fclose($op);
                 }
             } else {
@@ -217,17 +210,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                     $mri_upload_id = $mri_upload_id;
                     //@TODO Check if upload was successfully run before?? If
                     //yes, what to do? Quit?
-                    $result = $this->performRealUpload($mri_upload_id, $dest, true);
-                    if (!$result) {
-                        $msg = "Could not launch processing.";
-                        $this->header("HTTP/1.1 500 Internal Server Error");
-                        $this->error($msg);
-                        $this->JSON = array("error" => $msg);
-                    }
-
-                    $msg = "Process launched";
-                    $this->JSON = array("status" => $msg);
-                    $this->header("HTTP/1.1 202 Accepted");
+                    $processDbId = $this->performRealUpload($mri_upload_id, $dest, true);
+                    $this->printProcessResults($processDbId);
                 }
             } else {
                 $msg        = "Could not access upload file.";
@@ -277,7 +261,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
 
         $db->insert('mri_upload', $values);
         $mri_upload_id = $db->getLastInsertId();
-        i f($mri_upload_id>0) {
+        if ($mri_upload_id>0) {
             return $mri_upload_id;
         }
 
@@ -341,7 +325,9 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      * @param string $uploaded_file_path The path the the uploaded file on Loris
      * @param bool   $trigger_pipeline   Trigger imaging pipeline manually
      *
-     * @return mixed
+     * @return int ID (in the database) of the launched process
+     * or null if it could not be launched
+     * or false if processing was not attempted
      */
     function performRealUpload($mri_upload_id, $uploaded_file_path,
         $trigger_pipeline=false
@@ -356,13 +342,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $spm_module = \Module::factory('server_processes_manager');
             // Perform the real upload on the server
             $serverProcessLauncher = new SP\ServerProcessLauncher();
-            $serverProcessLauncher->mriUpload(
+            $processDbId           = $serverProcessLauncher->mriUpload(
                 $mri_upload_id,
                 $uploaded_file_path
             );
-            return true;
+            return $processDbId;
         }
-        // Did/could not launch upload
+        // Did not launch upload
         return false;
     }
 
@@ -393,6 +379,53 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         }
 
         return false;
+    }
+
+    /**
+     * Get info about a Loris process
+     *
+     * @param array $idsToMonitor IDs of the server processes to monitor
+     *
+     * @return an associative array of the current state of the processes.
+     */
+    function getProcessInfo($idsToMonitor)
+    {
+        // Instantiate the server process module to autoload
+            // its namespace classes
+            $spm_module = \Module::factory('server_processes_manager');
+            // Perform the real upload on the server
+            $serverProcessesMonitor = new SPM\ServerProcessesMonitor();
+            $processes = $serverProcessesMonitor->getProcessesState($idsToMonitor);
+            //@TODO Catch \DatabaseException thrown by getProcessesState() ??
+        foreach ($processes as $proc) {
+            $processesInfo[] = array(
+                                "process_id" => $proc['PID'],
+                                "status"     => $proc['PROGRESS'],
+                                "message"    => $proc['STATE'],
+                               );
+        }
+            return $processesInfo;
+    }
+
+    /**
+     * Get info about a Loris process
+     *
+     * @param array $idsToMonitor IDs of the server processes to monitor
+     *
+     * @return an associative array of the current state of the processes.
+     */
+    function printProcessResults($idsToMonitor)
+    {
+        if (!$idsToMonitor) {
+            $msg = "Could not launch processing.";
+            $this->header("HTTP/1.1 500 Internal Server Error");
+            $this->error($msg);
+            $this->JSON = array("error" => $msg);
+        } else {
+            $processesInfo = $this->getProcessInfo($idsToMonitor);
+            $this->JSON    = array("processes" => $processesInfo);
+            $this->header("HTTP/1.1 202 Accepted");
+        }
     }
 
     /**
