@@ -89,6 +89,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      *
      * @return \PHPUnit\DbUnit\Database\DefaultConnection
      */
+    /* @phan-suppress-next-line PhanUndeclaredTypeReturnType*/
     final public function getConnection()
     {
         $this->factory = NDB_Factory::singleton();

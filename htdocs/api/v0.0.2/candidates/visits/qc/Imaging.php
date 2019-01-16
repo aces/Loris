@@ -92,9 +92,9 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Calculate the ETag for the current QC status
      *
-     * @return string The JSON's entity tag
+     * @return ?string The JSON's entity tag
      */
-    public function calculateETag()
+    public function calculateETag(): ?string
     {
         // mod_rewrite seems to be eatting the ETag for some reason that I won't
         // be able to figure out in time for the release.
