@@ -208,10 +208,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "http://localhost/" FROM ConfigS
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/./" FROM ConfigSettings WHERE Name="patientIDRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="patientNameRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientIDRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientNameRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=44;
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=45;

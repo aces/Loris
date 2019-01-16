@@ -1424,6 +1424,22 @@ class NDB_BVL_Instrument extends NDB_Page
         return '';
     }
 
+    /**
+     * Gets the subprojectID for the timepoint to which this instrument pertains
+     *
+     * @return int|null The subprojectID
+     */
+    function getSubprojectID(): ?int
+    {
+        $sessionID = $this->getSessionID();
+        if (!empty($sessionID)) {
+            $timepoint    = \Timepoint::singleton($sessionID);
+            $subprojectID = $timepoint->getSubprojectID();
+            return $subprojectID;
+        }
+        return null;
+    }
+
 
     /**
      * Determines what the data entry status flag should be set to
