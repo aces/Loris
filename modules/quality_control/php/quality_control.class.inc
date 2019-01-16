@@ -183,8 +183,8 @@ class Quality_Control extends \NDB_Menu_Filter
     {
 
         $this->skipTemplate = true;
-        $user               =& \User::singleton();
-        $db                 =& \Database::singleton();
+        $user               = \User::singleton();
+        $db                 = \Database::singleton();
         $siteList           = array();
         $visitList          = \Utility::getVisitList();
         // allow to view all sites data through filter
@@ -218,7 +218,7 @@ class Quality_Control extends \NDB_Menu_Filter
             $subprojectList2[$value] = $value;
         }
         //print_r($subprojectList2);
-        $uploaderList =[];
+        $uploaderList = array();
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
             array()
