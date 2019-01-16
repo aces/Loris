@@ -12,6 +12,7 @@
  */
 namespace Loris\API\Candidates\Candidate\Visit\Dicoms;
 require_once __DIR__ . '/../../Visit.php';
+use LORIS\server_processes_manager as SP;
 /**
  * Handles API requests for the candidate's visit DICOM tar file. Extends
  * Visit so that the constructor will validate the candidate
@@ -40,7 +41,11 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = [
+                                     'GET',
+                                     'PUT',
+                                     'POST',
+                                    ];
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -48,11 +53,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
 
         parent::__construct($method, $CandID, $VisitLabel);
 
-        $results =  $this->getFullPath();
-        if (empty($results)) {
-            $this->header("HTTP/1.1 404 Not Found");
-            $this->error("File not found");
-            $this->safeExit(0);
+        if ($method=='GET') {
+            $results =  $this->getFullPath();
+            if (empty($results)) {
+                $this->header("HTTP/1.1 404 Not Found");
+                $this->error("File not found");
+                $this->safeExit(0);
+            }
         }
 
         if ($requestDelegationCascade) {
@@ -83,6 +90,306 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $this->error("Could not load Tarfile");
             $this->safeExit(1);
         }
+    }
+
+    /**
+     * Handle a PUT request
+     *
+     * @return void but populates $this->JSON and writes to database
+     */
+    public function handlePUT()
+    {
+
+        if (!isset($_REQUEST['Filename'], $_REQUEST['IsPhantom'])) {
+            // Missing data. Filname and IsPhantom values are required.
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Missing data. Check your request.");
+            $this->safeExit(1);
+        }
+
+        // Get file
+        $fp   = fopen("php://input", "rb");
+        $data = '';
+        while (!feof($fp)) {
+            if (($buf = fread($fp, 8092)) !='') {
+                $data .= $buf;
+            }
+        }
+        fclose($fp);
+
+        /**
+         * See Loris/modules/imaging_uploader/php/imaging_uploader.class.inc
+         * and related for HOWTOs
+         * 1. Validate the file.
+         * 2. Validate that user can upload dicoms
+         * 3. Save/Move file into /data/incoming or wherever incoming MRI
+         *    upload files should be saved.
+         */
+        if (!empty($data)) {
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->Config();
+            $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
+            if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
+                && (is_writable($MRIUploadIncomingPath))
+            ) {
+                //@TODO: Check with JohnSaigle et al about security related re
+                //$_REQUEST['Tarname'] (sanitisation etc)
+                $dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Filename'];
+                $op   = fopen($dest, 'wb');
+                if (!fwrite($op, $data)) {
+                    $this->JSON = array("error" => "Could not write file");
+                } else {
+                    $isPhantom = $_REQUEST['IsPhantom'];
+                    $args      = $this->createProcessArgs($isPhantom);
+                    if (!empty($args)) {
+                        // Add path to mri upload file
+                        $args['values']['uploaded_file_path'] = $dest;
+                        $mri_upload_id = $this->_process($args);
+                        if ($mri_upload_id) {
+                            $this->JSON = array(
+                                           "success"       => "Uploaded",
+                                           "mri_upload_id" => $mri_upload_id,
+                                          );
+                            $this->performRealUpload($mri_upload_id, $dest);
+                        } else {
+                            //@TODO Set header for some 4XX error status I imagine
+                            $msg        = "Could not insert mri upload";
+                            $this->JSON = array("error" => $msg);
+                        }
+                    }
+                }
+                i f($op) {
+                    fclose($op);
+                }
+            } else {
+                //@TODO Set header for some 4XX error status I imagine
+                $this->JSON = array("error" => "Could not write file");
+            }
+        }
+    }
+
+    /**
+     * Handle a POST request
+     *
+     * @return void but populates $this->JSON and writes to database
+     */
+    public function handlePOST()
+    {
+
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            if (($buf = fread($fp, 1024)) !='') {
+                $data .= $buf;
+            }
+        }
+        fclose($fp);
+
+        //@TODO Validate $data
+        $data = json_decode($data);
+
+        if (!$this->checkValidUploadData($data)) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Missing or incorrect data. Check your request.");
+            $this->safeExit(1);
+        }
+
+        if (!empty($data)) {
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->Config();
+            $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
+            if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
+                && (is_writable($MRIUploadIncomingPath))
+            ) {
+                //@TODO: Check with JohnSaigle et al about security related to
+                //$data->Filename and others (sanitisation etc)
+                $filename      = $data->Filename;
+                $mri_upload_id = $data->mri_upload_id;
+                $dest          = $MRIUploadIncomingPath . "/" . $filename;
+                $op            = stat($dest);
+                if (!$op) {
+                    $msg = "Could not find file.";
+                    $this->header("HTTP/1.1 500 Internal Server Error");
+                    $this->error($msg);
+                    $this->JSON = array("error" => $msg);
+                    $this->safeExit(1);
+                } else {
+                    $mri_upload_id = $mri_upload_id;
+                    //@TODO Check if upload was successfully run before?? If
+                    //yes, what to do? Quit?
+                    $result = $this->performRealUpload($mri_upload_id, $dest, true);
+                    if (!$result) {
+                        $msg = "Could not launch processing.";
+                        $this->header("HTTP/1.1 500 Internal Server Error");
+                        $this->error($msg);
+                        $this->JSON = array("error" => $msg);
+                    }
+                    $this->JSON = array("success" => "Process launched");
+                }
+            } else {
+                $msg        = "Could not access upload file.";
+                $this->JSON = array("error" => $msg);
+                $this->header("HTTP/1.1 500 Internal Server Error");
+                $this->error($msg);
+                $this->safeExit(1);
+            }
+        }
+    }
+
+    /**
+     * Process file with Batch upload imaging script
+     *
+     * @param mixed $args Inputs for processing the file
+     *
+     * @return true on success, false othewise
+     */
+    function _process($args)
+    {
+        $db          = \Database::singleton();
+        $user        = \User::singleton();
+        $user_name   = $user->getUsername();
+        $date        = date('Y-m-d H:i:s');
+        $pscid       = $args['values']['pSCID'];
+        $candid      = $args['values']['candID'];
+        $visit_label = $args['values']['visitLabel'];
+        $uploaded_file_path = $args['values']['uploaded_file_path'];
+        $isPhantom          = $args['values']['IsPhantom'];
+        $pname    = $pscid. "_" . $candid . "_" . $visit_label;
+        $sessioni = $db->pselectOne(
+            "SELECT ID FROM  session WHERE CandID = :cid
+            AND Visit_label =:vlabel",
+            array(
+             'cid'    => $candid,
+             'vlabel' => $visit_label,
+            )
+        );
+        $values   = array(
+                     'UploadedBy'     => $user_name,
+                     'UploadDate'     => $date,
+                     'UploadLocation' => $uploaded_file_path,
+                     'SessionID'      => $sessionid,
+                     'PatientName'    => $pname,
+                     'IsPhantom'      => $isPhantom,
+                    );
+
+        $db->insert('mri_upload', $values);
+        $mri_upload_id = $db->getLastInsertId();
+        i f($mri_upload_id>0) {
+            return $mri_upload_id;
+        }
+
+        //Something went wrong
+        return false;
+    }
+
+    /**
+     * Gets basic candidate information
+     * in order to access PSCID and similar
+     *
+     * @return mixed
+     */
+    function getCandData()
+    {
+        $factory   = \NDB_Factory::singleton();
+        $DB        = $factory->database();
+        $cand_info = $DB->pselectRow(
+            "SELECT c.PSCID, c.Entity_type
+            FROM candidate c
+            JOIN session s ON (c.CandID=s.CandID)
+            WHERE c.Active='Y' AND s.Active='Y'
+            AND c.CandID=:CID
+            AND s.Visit_label=:VL",
+            [
+             'CID' => $this->CandID,
+             'VL'  => $this->VisitLabel,
+            ]
+        );
+        return $cand_info;
+    }
+
+    /**
+     * Creates an array of args for _process()
+     *
+     * @param bool $isPhantom Fileset is phantom or not
+     *
+     * @return mixed
+     */
+    function createProcessArgs($isPhantom=null)
+    {
+        $cand_info = $this->getCandData();
+        if (!empty($cand_info) && !empty($cand_info['PSCID'])) {
+            //Create values for processing the file
+            $args['values']['candID']     = $this->CandID;
+            $args['values']['pSCID']      = $cand_info['PSCID'];
+            $args['values']['visitLabel'] = $this->VisitLabel;
+            $args['values']['overwrite']  = false;
+            $args['values']['IsPhantom']  = $isPhantom;
+
+            return $args;
+        }
+        //Nothing found
+        return false;
+    }
+
+    /**
+     * Perform the actual upload by executing the imaging uploader pipeline
+     *
+     * @param mixed  $mri_upload_id      The upload id of the mri
+     * @param string $uploaded_file_path The path the the uploaded file on Loris
+     * @param bool   $trigger_pipeline   Trigger imaging pipeline manually
+     *
+     * @return mixed
+     */
+    function performRealUpload($mri_upload_id, $uploaded_file_path,
+        $trigger_pipeline=false
+    ) {
+        $config = \NDB_Config::singleton();
+        $ImagingUploaderAutoLaunch = $config->getSetting(
+            'ImagingUploaderAutoLaunch'
+        );
+        if ($ImagingUploaderAutoLaunch || $trigger_pipeline) {
+            // Instantiate the server process module to autoload
+            // its namespace classes
+            $spm_module = \Module::factory('server_processes_manager');
+            // Perform the real upload on the server
+            $serverProcessLauncher = new SP\ServerProcessLauncher();
+            $serverProcessLauncher->mriUpload(
+                $mri_upload_id,
+                $uploaded_file_path
+            );
+            return true;
+        }
+        // Did/could not launch upload
+        return false;
+    }
+
+    /**
+     * Check if MRI Upload data (mri upload id etc) are valid before triggering
+     * the Imaging pipeline
+     *
+     * @param mixed $data The data to validate
+     *
+     * @return mixed
+     */
+    function checkValidUploadData($data)
+    {
+        $Filename      = $data->Filename;
+        $mri_upload_id = $data->mri_upload_id;
+        $isPhantom     = $data->mri_upload_id;
+        $d_ok          = isset($Filename, $isPhantom, $mri_upload_id);
+
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $mid     = $db->pselectOne(
+            "SELECT UploadID FROM mri_upload WHERE UploadID = :mid",
+            array('mid' => $mri_upload_id)
+        );
+
+        if (!empty($d_ok) && !empty($mid)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
