@@ -23,6 +23,7 @@ define('EDC_NOT_SPECIFIED', 5);
 define('CANDIDATE_MIN_CANDID', 100000);
 define('CANDIDATE_MAX_CANDID', 999999);
 define('CANDID_LENGTH', 6);
+define('PSCID_LENGTH', 3);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -743,22 +744,17 @@ class Candidate
          * to create new IDs.
          */
         $alphabet   = \Candidate::_getIDSetting($kind, 'alphabet');
-        $length     = \Candidate::_getIDSetting($kind, 'length');
+        $length     = \Candidate::_getIDSetting($kind, 'length')
+            ?? PSCID_LENGTH;
         $generation = \Candidate::_getIDSetting($kind, 'generation');
 
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml.
-        try {
-            $min = \Candidate::_getIDSetting($kind, 'min');
-        } catch (\LorisException $e) {
-            $min = str_repeat(strval($alphabet[0]), $length);
-        }
-        try {
-            $min = \Candidate::_getIDSetting($kind, 'max');
-        } catch (\LorisException $e) {
-            $max = str_repeat(strval($alphabet[count($alphabet) - 1]), $length);
-        }
+        $min = \Candidate::_getIDSetting($kind, 'min') ??
+            str_repeat(strval($alphabet[0]), $length);
+        $max = \Candidate::_getIDSetting($kind, 'max') ??
+            str_repeat(strval($alphabet[count($alphabet) - 1]), $length);
 
         // Check that the number of existing IDs does not exceed the range of
         // possible values (given by the size of the alphabet to the power of
@@ -1044,8 +1040,9 @@ class Candidate
                 return null;
             }
         }
-        // Min, max, and length values should be returned as integers.
-        return intval($seqValue);
+        // Min, max, and length values should be returned as integers or as
+        // null if they are not set.
+        return is_null($seqValue) ?: intval($seqValue);
     }
 
     /**
@@ -1060,12 +1057,12 @@ class Candidate
      *
      * @throws ConfigurationException
      *
-     * @return string
+     * @return ?string
      */
     static function _getSeqAttribute(
         array $idStructure,
         string $setting
-    ): string {
+    ): ?string {
         /* Do validation on 'prefix' and 'alphabet' since they both are found in
          * 'type' attributes within 'seq' elements. See project/config.xml for
          * examples.
@@ -1102,14 +1099,11 @@ class Candidate
 
         // Validation
         if (count($seqAttributes) > 1) {
-            $errMsg = 'Too many values found for config setting: ';
-        } elseif (count($seqAttributes) === 0) {
-            $errMsg = 'No value found for config setting: ';
+            throw new \ConfigurationException(
+                'Too many values found for config setting: ' . $setting
+            );
         }
-        if (isset($errMsg)) {
-            throw new \ConfigurationException($errMsg . $setting);
-        }
-        return array_pop($seqAttributes);
+        return count($seqAttributes) > 0 ? array_pop($seqAttributes) : null;
     }
 
     /**
