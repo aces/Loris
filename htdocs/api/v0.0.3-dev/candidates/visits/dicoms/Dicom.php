@@ -143,7 +143,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                                             "mri_upload_id" => $mri_upload_id,
                                            );
                             $processDbId = $this->performRealUpload($mri_upload_id, $dest);
-                            $this->printProcessResults($processDbId);
+                            $this->printProcessResults($processDbId, $mri_upload_id);
                         } else {
                             //@TODO Set header for some 4XX error status I imagine
                             $msg        = "Could not insert mri upload";
@@ -211,7 +211,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                     //@TODO Check if upload was successfully run before?? If
                     //yes, what to do? Quit?
                     $processDbId = $this->performRealUpload($mri_upload_id, $dest, true);
-                    $this->printProcessResults($processDbId);
+                    $this->printProcessResults($processDbId, $mri_upload_id);
                 }
             } else {
                 $msg        = "Could not access upload file.";
@@ -411,19 +411,20 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      * Get info about a Loris process
      *
      * @param array $idsToMonitor IDs of the server processes to monitor
+     * @param int $mri_upload_id Upload id of the DICOM fileset
      *
      * @return an associative array of the current state of the processes.
      */
-    function printProcessResults($idsToMonitor)
+    function printProcessResults($idsToMonitor, $mri_upload_id=null)
     {
         if (!$idsToMonitor) {
             $msg = "Could not launch processing.";
             $this->header("HTTP/1.1 500 Internal Server Error");
             $this->error($msg);
-            $this->JSON = array("error" => $msg);
+            $this->JSON = array_merge($this->JSON, array("error" => $msg));
         } else {
             $processesInfo = $this->getProcessInfo($idsToMonitor);
-            $this->JSON    = array("processes" => $processesInfo);
+            $this->JSON    = array_merge($this->JSON, array("processes" => $processesInfo));
             $this->header("HTTP/1.1 202 Accepted");
         }
     }
