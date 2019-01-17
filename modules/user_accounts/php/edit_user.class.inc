@@ -259,6 +259,7 @@ class Edit_User extends \NDB_Form
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
         }
+
         // multi-site UPDATE
         $uid           = $user->getData('ID');
         $us_curr_sites = $values['CenterIDs'];
@@ -276,6 +277,23 @@ class Edit_User extends \NDB_Form
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
+
+        // multi-project UPDATE
+        $us_curr_projects = $values['ProjectIDs'];
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_project_rel', array("UserID" => $uid));
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                     "UserID"    => $uid,
+                     "ProjectID" => $project,
+                    )
+                );
+            }
+        }
+        unset($values['ProjectIDs']);
+        // END multi-project UPDATE
 
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
@@ -713,6 +731,14 @@ class Edit_User extends \NDB_Form
             'CenterIDs',
             'Sites',
             $siteOptions,
+            array('multiple' => 'multiple')
+        );
+
+        $projArr = $editor->getData('Projects');
+        $this->addSelect(
+            'ProjectIDs',
+            'Projects',
+            $projArr,
             array('multiple' => 'multiple')
         );
 
