@@ -352,7 +352,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getProjectIds()
+    function getProjectIds(): array
     {
         return $this->userInfo['ProjectIDs'];
     }
