@@ -28,7 +28,7 @@ class ExaminerIndex extends Component {
       isLoaded: false,
       formData: {
         addName: null,
-        addRadiologist: null,
+        addRadiologist: false,
         addSite: null,
       },
       showModal: false,
