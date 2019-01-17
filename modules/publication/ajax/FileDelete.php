@@ -34,9 +34,10 @@ $db->delete(
     array('PublicationUploadID' => $uploadID)
 );
 
-$base = $config->getSetting('publication_uploads');
+$src  = $config->getSetting('publication_uploads') . $uploadData['URL'];
+$dest = $config->getSetting('publication_deletions') . $uploadData['URL'];
 
-unlink($base . $uploadData['URL']);
+rename($src, $dest);
 
 
 /**
@@ -64,6 +65,6 @@ function userCanDelete($uploadData, $db, $user) : void
 
     if ($user->getId() !== $origUser && !in_array($user->getId(), $editors)) {
         header("HTTP/1.1 403 Forbidden");
-        return;
+        exit;
     }
 }

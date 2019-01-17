@@ -161,9 +161,14 @@ INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES (
 
 DELETE FROM Config WHERE Value='/data/publication_uploads/';
 DELETE FROM ConfigSettings WHERE Name='publication_uploads';
+DELETE FROM Config WHERE Value='/data/publication_uploads/to_be_deleted/';
+DELETE FROM ConfigSettings WHERE Name='publication_deletions';
 SET @pathID = (SELECT ID FROM ConfigSettings WHERE Name='paths');
 SET @order  = (SELECT MAX(OrderNumber) + 1 FROM ConfigSettings WHERE Parent=@pathID);
-INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to uploaded publications', 1, @pathID, 'Publications', 'text', @order);
+INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to uploaded publications', 1, @pathID, 'Publications', 'text', @order + 1);
 INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_uploads'), '/data/publication_uploads/');
+
+INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_deletions', 'Path to deleted publications', 1, @pathID, 'Deleted Publications', 'text', @order + 1);
+INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_deletions'), '/data/publication_uploads/to_be_deleted/');
 
 SET FOREIGN_KEY_CHECKS=1;
