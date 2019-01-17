@@ -15,7 +15,6 @@ RewriteRule ^projects/? /index.php [QSA,END]
 
 # Candidates API rewrite rules
 
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&PrintInstruments=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&PrintInstrumentData=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&PrintInstrumentData=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true&PrintInstrumentData=true [L]
@@ -40,3 +39,4 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/dicoms/([a-zA-Z0-9_.-]+)$ cand
 RewriteRule ^candidates/?$ /index.php [QSA,END]  
 RewriteRule ^candidates/([0-9]+)/?$ /index.php [QSA,END]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/?$ /index.php [QSA,END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/?$ /index.php [QSA,END] 

@@ -14,7 +14,8 @@
 namespace LORIS\api;
 
 /**
- * A CandidatesRow represents a candidate for the candidates/ emdppoint.
+ * A CandidatesRow represents a candidate for the
+ * /candidates endppoint.
  *
  * @category API
  * @package  Loris

@@ -75,9 +75,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                "v0.0.1",
-                "v0.0.2",
-                "v0.0.3-dev",
+                'v0.0.1',
+                'v0.0.2',
+                'v0.0.3-dev',
                );
     }
 
@@ -94,6 +94,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
+                if ($this->visit === null) {
+                    return new \LORIS\Http\Response\NotFound();
+                }
                 return new \LORIS\Http\Response\JsonResponse(
                     (new \LORIS\Api\Views\Visit($this->visit))
                         ->toArray()
@@ -114,8 +117,27 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        // TODO
-        return new \LORIS\Http\Response\NotImplemented();
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'instruments':
+            $handler = new Visit\Instruments($this->visit);
+            break;
+        case 'images':
+            $handler = new Visit\Images($this->visit);
+            break;
+        case 'qc':
+            $handler = new Visit\Qc($this->visit);
+            break;
+        case 'dicoms':
+            $handler = new Visit\Dicoms($this->visit);
+            break;
+        default:
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
         return $handler->process(
             $newrequest,
             $handler
