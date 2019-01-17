@@ -73,36 +73,6 @@ class ExaminerTest extends LorisIntegrationTest
         );
          parent::tearDown();
     }
-    /**
-     * Tests that the Add Examiner form loads if the user has the correct permission
-     *
-     * @return void
-     */
-    function testAddExaminerFormLoadsWithPermission()
-    {
-        $this->setupPermissions(array("examiner_view"));
-        $this->safeGet($this->url . "/examiner/");
-
-        // Check the name input
-        $nameInput = $this->webDriver->findElement(
-            WebDriverBy::Name("addName")
-        );
-        $this->assertEquals("input", $nameInput->getTagName());
-
-        // Check the radiologist input
-        $radiologistInput = $this->webDriver->findElement(
-            WebDriverBy::Name("addRadiologist")
-        );
-        $this->assertEquals("input", $radiologistInput->getTagName());
-
-        // Check the site input
-        $siteInput = $this->webDriver->findElement(
-            WebDriverBy::Name("addSite")
-        );
-        $this->assertEquals("select", $siteInput->getTagName());
-
-        $this->resetPermissions();
-    }
 
     /**
      * Tests that the examiner table loads if the user has the correct permission
