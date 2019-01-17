@@ -253,7 +253,7 @@ CREATE TABLE `user_project_rel` (
   KEY `FK_user_project_rel_2` (`ProjectID`),
   CONSTRAINT `FK_user_project_rel_2` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_user_project_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO user_project_rel (UserID, ProjectID) SELECT 1, ProjectID FROM Project;
 
