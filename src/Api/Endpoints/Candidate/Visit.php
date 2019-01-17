@@ -28,12 +28,6 @@ use \LORIS\Api\Endpoint;
 class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the endpoint results, so that it doesn't need to be
-     * recalculated for the ETag and handler.
-     */
-    protected $cache;
-
-    /**
      * The requested Candidate
      *
      * @var \Candidate
@@ -164,10 +158,11 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->candidate->getListOfVisitLabels()
         );
 
-        if ($sessionid !== false) {
-            // TODO :: Shoudl we replace an existing visit?
-            return new \LORIS\Http\Response\NotImplemented(
-                '?????? How should we handle that ???????'
+        $centerid = array_search($data['Site'], \Utility::getSiteList());
+
+        if (!in_array($centerid, $user->getCenterIDs())) {
+            return new \LORIS\Http\Response\Forbidden(
+                'You can`t create candidates visit for that site'
             );
         }
 
@@ -175,6 +170,34 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $data['Battery'],
             \Utility::getSubprojectList()
         );
+
+        if ($sessionid !== false) {
+            // If the visit label already exists for that candidate
+            $timepoint = \NDB_Factory::singleton()->timepoint($sessionid);
+            if ($timepoint->getCurrentStage() !== 'Not Started') {
+                return new \LORIS\Http\Response\Conflict(
+                    'This visit is already started'
+                );
+            }
+
+            $username = $user->getUsername();
+            $today    = date("Y-m-d");
+            // TODO :: Add a replace function in \Timepoint.class.inc
+            $timepoint->setData('CenterID', $centerid);
+            $timepoint->setData('Visit_label', $data['Visit']);
+            $timepoint->setData('SubprojectID', $subprojectid);
+            $timepoint->setData('Active', 'Y');
+            $timepoint->setData('Date_active', $today);
+            $timepoint->setData('RegisteredBy', $username);
+            $timepoint->setData('UserID', $username);
+            $timepoint->setData('Date_registered', $today);
+            $timepoint->setData('Testdate', $today);
+
+            $link = '/' . $request->getUri()->getPath();
+            return (new \LORIS\Http\Response())
+                ->withStatus(204)
+                ->withHeader('Content-Location', $link);
+        }
 
         try {
             \TimePoint::isValidVisitLabel(
@@ -188,14 +211,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $centerid = array_search($data['Site'], \Utility::getSiteList());
-
-        if (!in_array($centerid, $user->getCenterIDs())) {
-            return new \LORIS\Http\Response\Forbidden(
-                'You can`t create candidates for that site'
-            );
-        }
-
         \TimePoint::createNew(
             $data['CandID'],
             $subprojectid,
@@ -203,9 +218,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $centerid
         );
 
-        // TODO :: Add Content-Location header
+        $link = '/' . $request->getUri()->getPath();
         return (new \LORIS\Http\Response())
-            ->withStatus(201);
+            ->withStatus(201)
+            ->withHeader('Content-Location', $link);
     }
 
     /**
