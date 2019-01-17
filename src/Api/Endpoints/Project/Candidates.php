@@ -84,13 +84,24 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
 
-        if (count($pathparts) > 1) {
+        if (count($pathparts) !== 0) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        return new \LORIS\Http\Response\JsonResponse(
-            $this->_toArray()
-        );
+        switch ($request->getMethod()) {
+        case 'GET':
+            return new \LORIS\Http\Response\JsonResponse($this->_toArray());
+
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+
+        }
     }
 
     /**

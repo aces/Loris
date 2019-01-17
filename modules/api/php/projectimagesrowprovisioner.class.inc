@@ -82,6 +82,43 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
     }
 
     /**
+     * Creates a new providionner with user specific filter
+     *
+     * @param \User $user The requesting user
+     *
+     * @return ProjectImagesRowProvisioner
+     */
+    public function forUser(\User $user): ProjectImagesRowProvisioner
+    {
+        $new = clone($this);
+
+        if (!$user->hasPermission('imaging_browser_view_allsites')) {
+            if ($user->hasPermission('imaging_browser_view_site')) {
+                $new = $new->filter(
+                    new \LORIS\Data\Filters\UserSiteMatch()
+                );
+            } else {
+                $new = $new->filter(
+                    new \LORIS\Data\Filters\OnlyPhantoms()
+                );
+            }
+        }
+
+        if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
+            if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
+                $new = $new->filter(
+                    new \LORIS\Data\Filters\UserSiteMatch()
+                );
+            } else {
+                $new = $new->filter(
+                    new \LORIS\Data\Filters\NoPhantoms()
+                );
+            }
+        }
+        return $new;
+    }
+
+    /**
      * Returns an instance of a ProjectImagesRow object for a given
      * table row.
      *

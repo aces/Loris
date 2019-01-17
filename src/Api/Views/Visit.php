@@ -12,6 +12,8 @@
 namespace LORIS\Api\Views;
 
 /**
+ * Creates a representation of a project visit following the api response
+ * specifications.
  *
  * @category ApiViews
  * @package  Loris
@@ -25,6 +27,11 @@ class Visit
     protected $meta   = array();
     protected $stages = array();
 
+    /**
+     * Constructor which sets the instance variables based on the provided timepoint
+     *
+     * @param \Timepoint $timepoint The timepoint to represent
+     */
     public function __construct(\Timepoint $timepoint)
     {
         $this->meta['CandID']  = $timepoint->getCandID();
@@ -33,27 +40,35 @@ class Visit
         $this->meta['Battery'] = $timepoint->getData('SubprojectTitle');
 
         if ($timepoint->getDateOfScreening() !== null) {
-            $this->stages['Screening'] = array(
-                                          'Date'   => $timepoint->getDateOfScreening(),
-                                          'Status' => $timepoint->getScreeningStatus(),
-                                         );
+            $screening = array(
+                          'Date'   => $timepoint->getDateOfScreening(),
+                          'Status' => $timepoint->getScreeningStatus(),
+                         );
+            $this->stages['Screening'] = $screening;
         }
 
         if ($timepoint->getDateOfVisit() !== null) {
-            $this->stages['Visit'] = array(
-                                      'Date'   => $timepoint->getDateOfVisit(),
-                                      'Status' => $timepoint->getVisitStatus(),
-                                     );
+            $visit = array(
+                      'Date'   => $timepoint->getDateOfVisit(),
+                      'Status' => $timepoint->getVisitStatus(),
+                     );
+            $this->stages['Visit'] = $visit;
         }
 
         if ($timepoint->getDateOfApproval() !== null) {
-            $this->stages['Screening'] = array(
-                                          'Date'   => $timepoint->getDateOfapproval(),
-                                          'Status' => $timepoint->getApprovalStatus(),
-                                         );
+            $approval = array(
+                         'Date'   => $timepoint->getDateOfapproval(),
+                         'Status' => $timepoint->getApprovalStatus(),
+                        );
+            $this->stages['Screening'] = $approval;
         }
     }
 
+    /**
+     * Creates an serializable array of this object's data
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         return array(

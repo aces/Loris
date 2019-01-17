@@ -82,7 +82,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /projects/$projectname/candidates
+     * Handles a request for a specific project's instrument
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -91,13 +91,24 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) > 1) {
+        if (count($pathparts) !== 1) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        return new \LORIS\Http\Response\JsonResponse(
-            $this->_handleGET($request)
-        );
+        switch ($request->getMethod()) {
+        case 'GET':
+            return new \LORIS\Http\Response\JsonResponse(
+                $this->_handleGET($request)
+            );
+
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
     }
 
     /**
@@ -105,12 +116,14 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $this->cache = json_decode($this->instrument->toJSON(), true);
+            $this->cache = new \LORIS\Http\Response\JsonResponse(
+                json_decode($this->instrument->toJSON(), true)
+            );
         }
 
         return $this->cache;
@@ -125,6 +138,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }

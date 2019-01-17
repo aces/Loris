@@ -41,8 +41,6 @@ class Login extends Endpoint
     /**
      * Return which methods are supported by this endpoint.
      *
-     * Login can only be POSTed to
-     *
      * @return array supported HTTP methods
      */
     protected function allowedMethods() : array
@@ -77,34 +75,49 @@ class Login extends Endpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $requestdata = json_decode((string) $request->getBody(), true);
-        if (!isset($requestdata['username']) || !isset($requestdata['password'])) {
-            return new \LORIS\Http\Response\BadRequest(
-                'missing username or password'
-            );
+        if (count($request->getAttribute('pathparts')) !== 1) {
+            return new \LORIS\Http\Response\NotFound();
         }
 
-        $user     = $requestdata['username'];
-        $password = $requestdata['password'];
+        switch ($request->getMethod()) {
+        case 'POST':
+            $requestdata = json_decode((string) $request->getBody(), true);
 
-        $login = $this->getLoginAuthenticator();
+            $user     = $requestdata['username'] ?? null;
+            $password = $requestdata['password'] ?? null;
 
-        if ($login->passwordAuthenticate($user, $password, false)) {
-            $token = $this->getEncodedToken($user);
-            if (!empty($token)) {
-                return new \LORIS\Http\Response\JsonResponse(
-                    array('token' => $token)
-                );
-            } else {
-                return new \LORIS\Http\Response\InternalServerError(
-                    'unacceptable JWT key'
+            if ($user === null || $password === null) {
+                return new \LORIS\Http\Response\BadRequest(
+                    'missing username or password'
                 );
             }
-        }
 
-        return new \LORIS\Http\Response\Unauthorized(
-            $login->_lastError
-        );
+            $login = $this->getLoginAuthenticator();
+
+            if ($login->passwordAuthenticate($user, $password, false)) {
+                $token = $this->getEncodedToken($user);
+                if (!empty($token)) {
+                    return new \LORIS\Http\Response\JsonResponse(
+                        array('token' => $token)
+                    );
+                } else {
+                    return new \LORIS\Http\Response\InternalServerError(
+                        'unacceptable JWT key'
+                    );
+                }
+            }
+
+            return new \LORIS\Http\Response\Unauthorized(
+                $login->_lastError
+            );
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
     }
 
     /**

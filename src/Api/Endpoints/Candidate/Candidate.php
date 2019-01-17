@@ -57,7 +57,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return ['GET'];
+        return array('GET');
     }
 
     /**
@@ -68,11 +68,11 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return [
-                "v0.0.1",
-                "v0.0.2",
-                "v0.0.3-dev",
-               ];
+        return array(
+                'v0.0.1',
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -86,10 +86,22 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
-            return new \LORIS\Http\Response\JsonResponse(
-                (new \LORIS\Api\Views\Candidate($this->candidate))
+            switch ($request->getMethod()) {
+            case 'GET':
+                return new \LORIS\Http\Response\JsonResponse(
+                    (new \LORIS\Api\Views\Candidate($this->candidate))
                     ->toArray()
-            );
+                );
+
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+            }
         }
 
         // Delegate to sub-endpoints
@@ -100,11 +112,11 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->candidate->getListOfVisitLabels()
         );
 
-        if ($sessionid === false) {
-            return new \LORIS\Http\Response\NotFound();
+        try {
+            $visit = \NDB_Factory::singleton()->timepoint($sessionid);
+        } catch (\LorisException $e) {
+            $visit = null;
         }
-
-        $visit = \NDB_Factory::singleton()->timepoint($sessionid);
 
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);

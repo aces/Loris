@@ -51,8 +51,6 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Return which methods are supported by this endpoint.
      *
-     * Projects can only be retrieved, not created.
-     *
      * @return array supported HTTP methods
      */
     protected function allowedMethods() : array
@@ -87,13 +85,23 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // FIXME: Validate project based permissions.
-
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
-            return new \LORIS\Http\Response\JsonResponse(
-                $this->_toArray()
-            );
+            switch ($request->getMethod()) {
+            case 'GET':
+                return new \LORIS\Http\Response\JsonResponse(
+                    $this->_toArray()
+                );
+
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
+
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+            }
         }
 
         // Delegate to sub-endpoints

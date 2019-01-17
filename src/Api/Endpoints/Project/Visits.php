@@ -85,11 +85,22 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // FIXME: Validate project based permissions.
 
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) > 1) {
+        if (count($pathparts) !== 0) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        return new \LORIS\Http\Response\JsonResponse($this->_toArray($request));
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
+
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
     }
 
     /**
@@ -97,13 +108,14 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _toArray(ServerRequestInterface $request): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $this->cache = (new \LORIS\Api\Views\Project($this->project))
+            $array       = (new \LORIS\Api\Views\Project($this->project))
                 ->toVisitArray();
+            $this->cache = new \LORIS\Http\Response\JsonResponse($array);
         }
 
         return $this->cache;
@@ -118,6 +130,6 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray($request)));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }

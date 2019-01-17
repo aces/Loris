@@ -105,6 +105,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'POST':
                 return $this->_handlePOST($request);
 
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
+
             default:
                 return new \LORIS\Http\Response\MethodNotAllowed(
                     $this->allowedMethods()
@@ -205,9 +209,12 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             array('ProjectID' => $project->getId())
         );
 
-        return (new \LORIS\Http\Response\JsonResponse(
-            (new \LORIS\Api\Views\Candidate($candidate))->toArray()['Meta']
-        ))->withStatus(201);
+        $body = (new \LORIS\Api\Views\Candidate($candidate))->toArray()['Meta'];
+        $link = '/'. $request->getURI()->getPath() . '/' . $candid;
+
+        return (new \LORIS\Http\Response\JsonResponse($body))
+            ->withStatus(201)
+            ->withHeader('Content-Location', $link);
     }
 
     /**

@@ -79,17 +79,20 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) > 1) {
+        if (count($pathparts) !== 0) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        try {
-            return new \LORIS\Http\Response\JsonResponse(
-                $this->_handleGET($request)
-            );
-        } catch(\Exception $e) {
-            return new \LORIS\Http\Response\BadRequest(
-                $e->getMessage()
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
+
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
             );
         }
     }
@@ -99,51 +102,34 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-
-        $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
-        // Malformed dates with throw an Exception
-        $since = new \DateTime($datestring);
+        try {
+            $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
+            $since      = new \DateTime($datestring);
+        } catch (\Exception $e) {
+            return new \LROIS\Http\Response\BadRequest(
+                $e->getMessage()
+            );
+        }
 
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\ProjectImagesRowProvisioner(
+            $user = $request->getAttribute('user');
+
+            $provisioner = (new \LORIS\api\ProjectImagesRowProvisioner(
                 $this->project,
                 $since
-            );
-
-            $user = $request->getAttribute('user');
-            if (!$user->hasPermission('imaging_browser_view_allsites')) {
-                if ($user->hasPermission('imaging_browser_view_site')) {
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\UserSiteMatch()
-                    );
-                } else {
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\OnlyPhantoms()
-                    );
-                }
-            }
-
-            if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
-                if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\UserSiteMatch()
-                    );
-                } else {
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\NoPhantoms()
-                    );
-                }
-            }
+            ))->forUser($user);
 
             $images = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $this->cache = array('Images' => $images);
+            $this->cache = new \LORIS\Http\Response\JsonResponse(
+                array('Images' => $images)
+            );
         }
 
         return $this->cache;
@@ -158,6 +144,6 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }
