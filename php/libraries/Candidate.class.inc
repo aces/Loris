@@ -613,7 +613,7 @@ class Candidate
     /**
      * Returns first visit for a candidate based on Date_visit
      *
-     * @return string|null The visit label for the candidate's first visit
+     * @return string The visit label for the candidate's first visit
      */
     public function getFirstVisit()
     {
@@ -627,7 +627,7 @@ class Candidate
         $where  = array('cid' => $candID);
         $result = $db->pselectCol($query, $where);
 
-        return is_array($result) ? array_shift($result) : null;
+        return is_array($result) ? array_shift($result) : '';
     }
 
     /**
