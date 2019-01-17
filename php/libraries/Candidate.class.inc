@@ -424,7 +424,7 @@ class Candidate
      *
      * @return string Project name
      */
-    function getProjectTitle(): string|null
+    function getProjectTitle(): ?string
     {
         $ProjectList = Utility::getProjectList();
         return $ProjectList[$this->getProjectID()];
