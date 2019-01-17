@@ -1417,7 +1417,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = 'checkbox-inline col-sm-offset-3';
     let label = null;
 
     // Add required asterix
@@ -1428,19 +1428,14 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className={this.props.inputClass}>
+        <label htmlFor={this.props.id}>
           <input
             type="checkbox"
-            className="input-sm"
             name={this.props.name}
             id={this.props.id}
             checked={this.props.value}
@@ -1449,7 +1444,9 @@ class CheckboxElement extends React.Component {
             onChange={this.handleChange}
           />
           {errorMessage}
-        </div>
+          {this.props.label}
+          {requiredHTML}
+        </label>
       </div>
     );
   }
@@ -1458,7 +1455,7 @@ class CheckboxElement extends React.Component {
 CheckboxElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.bool.isRequired,
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -1467,12 +1464,10 @@ CheckboxElement.propTypes = {
 };
 
 CheckboxElement.defaultProps = {
-  value: '',
   id: null,
   disabled: false,
   required: false,
   errorMessage: '',
-  inputClass: 'col-sm-9',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1497,6 +1492,7 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
@@ -1510,6 +1506,7 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
+  name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
   onUserInput: PropTypes.func,
