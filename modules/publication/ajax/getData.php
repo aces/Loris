@@ -59,8 +59,12 @@ function getData() : array
 
     // imaging VoIs -- filter out non-human readable DICOM tags
     $imgVOIs = $db->pselectCol(
-        "SELECT DISTINCT Name FROM parameter_type ".
-        "WHERE SourceFrom='parameter_file' AND Name NOT LIKE 'dicom_0x%'",
+        "SELECT DISTINCT p.Name FROM parameter_type p 
+         JOIN parameter_type_category_rel ptcr 
+         ON p.ParameterTypeID=ptcr.ParameterTypeID 
+         JOIN parameter_type_category ptc 
+         ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID 
+         WHERE ptc.Name='MRI Variables'",
         array()
     );
 
