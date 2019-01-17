@@ -179,7 +179,7 @@ class Database_Test extends TestCase
 
         $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
