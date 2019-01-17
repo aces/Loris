@@ -33,7 +33,7 @@ class Module extends \Module
      * The instrument_list module falls back to the instrument_list page regardless
      * of what the page loaded was. This ensures that routes which use the CandID
      * (and not the word "instrument_list") are still able to be loaded and not
-     * 404 errors.
+     * give 404 errors.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -42,10 +42,47 @@ class Module extends \Module
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $resp = parent::handle($request);
+        // hasAccess from the parent returns a 403
         if ($resp->getStatusCode() != 404) {
             return $resp;
         }
+
+        /* If the response code above was a 404, it could have been caused by
+         * the \NotFound exception in instrument_list.class.inc. This means
+         * that the route used to access the module contained either a candID
+         * or a timepoint but not both.
+         * The code below extracts this information from the server so that the
+         * module can load properly even in cases like the above where
+         * "instrument_list" isn't actually in the URL path.
+         */
+
+        // Falling back to instrument_list, ensure that the CandID
+        // and SessionID are valid, and if so attach the models to
+        // the request.
         $page = $this->loadPage("instrument_list");
+
+        $gets = $request->getQueryParams();
+
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            $candidate = \Candidate::singleton($attribute);
+        } else {
+            $candidate = \Candidate::singleton($gets['candID'] ?? '');
+        }
+        $request = $request->withAttribute("Candidate", $candidate);
+
+        $attribute = $request->getAttribute("timePoint");
+        if ($attribute === null) {
+            $request = $request->withAttribute(
+                "timePoint",
+                \TimePoint::singleton($gets['sessionID'])
+            );
+        }
+
+        // We need to set the internal page properties for hasAccess to succeed.
+        $page->setCandidate($candidate);
+        $page->setTimePoint($request->getAttribute("timePoint"));
+
         return $page->process($request, $page);
 
     }

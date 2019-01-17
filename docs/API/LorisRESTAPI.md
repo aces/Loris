@@ -281,7 +281,15 @@ A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
 (PSCID format, date format, gender something other than Male|Female, invalid project
 name, etc). A successful POST request will return the CandID for the newly
-created candidate.
+created candidate in a JSON object of the form: 
+
+```js
+{
+    "Meta":{
+        "CandID":123456
+    }
+}
+```
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.

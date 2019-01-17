@@ -1424,6 +1424,22 @@ class NDB_BVL_Instrument extends NDB_Page
         return '';
     }
 
+    /**
+     * Gets the subprojectID for the timepoint to which this instrument pertains
+     *
+     * @return int|null The subprojectID
+     */
+    function getSubprojectID(): ?int
+    {
+        $sessionID = $this->getSessionID();
+        if (!empty($sessionID)) {
+            $timepoint    = \Timepoint::singleton($sessionID);
+            $subprojectID = $timepoint->getSubprojectID();
+            return $subprojectID;
+        }
+        return null;
+    }
+
 
     /**
      * Determines what the data entry status flag should be set to
@@ -2051,7 +2067,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i
+            "SELECT i.Date_taken, c.DoB FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2081,7 +2097,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
-            "SELECT c.PSCID FROM $this->testName i
+            "SELECT c.PSCID FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2115,7 +2131,7 @@ class NDB_BVL_Instrument extends NDB_Page
             switch ($row['COLUMN_NAME']) {
             case 'CommentID':
             case 'UserID':
-                continue;
+                continue 2;
             case 'Data_entry_completion_status':
                 $values[$row['COLUMN_NAME']] = 'Incomplete';
                 break;
@@ -2251,7 +2267,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
 
         $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
 

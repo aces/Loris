@@ -25,7 +25,7 @@ as well as at least 1 study site.
 
 ## Configurations
 
-The "useProjects" configuration affects whether or the available
+The "useProjects" configuration affects whether or not the available
 subprojects are restricted to the candidate's project related
 subprojects.
 
@@ -35,6 +35,6 @@ is deprecated as text entry is unreliable.
 
 ## Interactions with LORIS
 
-Users primarily access this module from the `candidate_list` .  Upon
+Users primarily access this module from the `candidate_list`. Upon
 creating a timepoint, the module provides a link to the (empty)
 `instrument list` module for the new timepoint.

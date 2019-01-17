@@ -113,7 +113,7 @@ table th{
 }
 .frozenHeader{
   position   : absolute;
-  overflow-x : auto;
+  overflow-x : hidden;
 }
 .headerColm {
   background: #1c70b6;
@@ -453,3 +453,33 @@ a.btn.btn-primary {
 .sweet-alert p {
   word-wrap: break-word;
 }
+
+/* Necessary formatting for swal2 while still with bootstrap v3 */
+.swal2-popup {
+  font-size: 1.6rem
+}
+
+/* Places swal above all other divs */
+.swal2-container {
+  z-index: 9999
+}
+
+/* Loader customizations */
+
+.loader {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
+    border: 8px solid #FFFFFF; /* White */
+    border-top: 8px solid #A6D3F5; /* Blue */
+    border-left: 8px solid #A6D3F5; /* Blue */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+

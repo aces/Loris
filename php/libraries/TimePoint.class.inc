@@ -188,7 +188,7 @@ class TimePoint
      * @param integer $candID         6 digit CandID having a timepoint created.
      * @param integer $SubprojectID   The subprojectID of the new timepoint
      * @param string  $nextVisitLabel The visit label of the timepoint being created
-     * @param string  $psc            The centre of the timepoint
+     * @param string  $psc            The center of the timepoint
      *
      * @return void
      */

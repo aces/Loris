@@ -466,7 +466,7 @@
                         </li>
                         {foreach from=$links item=link}
                                 <li>
-                                    <a href="{$link.url}" target="{$link.windowName}">
+                                    <a href="{$link.url}" target="{$link.windowName}" rel="noopener noreferrer">
                                         {$link.label}
                                     </a>
                                     |

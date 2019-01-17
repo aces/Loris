@@ -4,7 +4,7 @@
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
@@ -46,7 +46,7 @@ function editFile()
     $idMediaFile = $req['idMediaFile'];
 
     if (!$idMediaFile) {
-        showError("Error! Invalid media file ID!");
+        showMediaError("Error! Invalid media file ID!");
     }
 
     $updateValues = [
@@ -58,7 +58,7 @@ function editFile()
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
     } catch (DatabaseException $e) {
-        showError("Could not update the file. Please try again!");
+        showMediaError("Could not update the file. Please try again!");
     }
 
 }
@@ -90,12 +90,12 @@ function uploadFile()
     $mediaPath = $config->getSetting('mediaPath');
 
     if (!isset($mediaPath)) {
-        showError("Error! Media path is not set in Loris Settings!");
+        showMediaError("Error! Media path is not set in Loris Settings!");
         exit;
     }
 
     if (!file_exists($mediaPath)) {
-        showError("Error! The upload folder '$mediaPath' does not exist!");
+        showMediaError("Error! The upload folder '$mediaPath' does not exist!");
         exit;
     }
 
@@ -110,7 +110,7 @@ function uploadFile()
 
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
-        showError("Please fill in all required fields!");
+        showMediaError("Please fill in all required fields!");
         return;
     }
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
@@ -118,7 +118,7 @@ function uploadFile()
     $extension = pathinfo($fileName)['extension'];
 
     if (!isset($extension)) {
-        showError("Please make sure your file has a valid extension!");
+        showMediaError("Please make sure your file has a valid extension!");
         return;
     }
 
@@ -136,7 +136,7 @@ function uploadFile()
     );
 
     if (!isset($sessionID) || count($sessionID) < 1) {
-        showError(
+        showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'."
         );
@@ -160,21 +160,15 @@ function uploadFile()
              ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
-        $existingFiles = getFilesList();
-        $idMediaFile   = array_search($fileName, $existingFiles);
         try {
-            // Override db record if file_name already exists
-            if ($idMediaFile) {
-                $db->update('media', $query, ['id' => $idMediaFile]);
-            } else {
-                $db->insert('media', $query);
-            }
+            // Insert or override db record if file_name already exists
+            $db->insertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
-            showError("Could not upload the file. Please try again!");
+            showMediaError("Could not upload the file. Please try again!");
         }
     } else {
-        showError("Could not upload the file. Please try again!");
+        showMediaError("Could not upload the file. Please try again!");
     }
 }
 
@@ -202,35 +196,35 @@ function viewData()
 function getUploadFields()
 {
 
-    $db =& Database::singleton();
+    $db   = \NDB_Factory::singleton()->database();
+    $user = \User::singleton();
 
-    $instruments = $db->pselect(
-        "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
-    );
-    $candidates  = $db->pselect(
-        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
-        []
+    // Select only candidates that have had visit at user's sites
+    $qparam       = array();
+    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
+                      FROM candidate c
+                      LEFT JOIN session s USING (CandID)
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
+
+    if (!$user->hasPermission('access_all_profiles')) {
+        $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
+        $qparam['cid'] = implode(",", $user->getCenterIDs());
+    } else {
+        $sessionQuery .= " ORDER BY c.PSCID ASC";
+    }
+    $sessionRecords = $db->pselect(
+        $sessionQuery,
+        $qparam
     );
 
-    $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList  = toSelect($candidates, "PSCID", null);
-    $candIdList      = toSelect($candidates, "CandID", "PSCID");
+    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
+    $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData    = [];
-    $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
-        "FROM candidate c ".
-        "LEFT JOIN session s USING(CandID) ".
-        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
-        "ORDER BY c.PSCID ASC",
-        []
-    );
-
+    $sessionData = [];
     foreach ($sessionRecords as $record) {
 
         // Populate sites
@@ -318,7 +312,6 @@ function getUploadFields()
 
     $result = [
                'candidates'  => $candidatesList,
-               'candIDs'     => $candIdList,
                'visits'      => $visitList,
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
@@ -338,7 +331,7 @@ function getUploadFields()
  *
  * @return void
  */
-function showError($message)
+function showMediaError($message)
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
