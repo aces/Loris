@@ -272,6 +272,8 @@ class DataTable extends Component {
             searchString = data.toLowerCase();
             if (exactMatch) {
               result = (searchString === searchKey);
+            } else if (opposite) {
+              result = searchString !== searchKey;
             } else {
               result = (searchString.indexOf(searchKey) > -1);
             }
@@ -306,7 +308,7 @@ class DataTable extends Component {
       return this.props.actions.map((action, key) => {
         if (action.show !== false) {
           return (
-            < CTA
+            <CTA
               key = {key}
               label = {action.label}
               onUserInput = {action.action}
