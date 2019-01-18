@@ -103,7 +103,6 @@ class NewProfileIndex extends React.Component {
      this.setState({newData: data});
      this.setState({isCreated: true});
     });
-// I can't get data from here,new Candidate is null
                 }
     }
 /* eslint-enable no-console */
