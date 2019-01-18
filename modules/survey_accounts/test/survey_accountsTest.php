@@ -26,23 +26,17 @@ require_once __DIR__ .
 class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 {
     // UI location on the page
-    static $pscid      = "#surveyAccounts_filter".
-                         " > div > div:nth-child(1) > div > div > input";
-    static $visit      = "#surveyAccounts_filter".
-                         " > div > div:nth-child(2) > div > div > select";
-    static $email      = "#surveyAccounts_filter".
-                         " > div > div:nth-child(3) > div > div > input";
-    static $instrument = "#surveyAccounts_filter".
-                         " > div > div:nth-child(4) > div > div > select";
+    static $pscid      = "#surveyAccounts_filter > div > div > fieldset > div:nth-child(2) > div > div > input";
+    static $visit      = "#surveyAccounts_filter > div > div > fieldset > div:nth-child(3) > div > div > select";
+    static $email      = "#surveyAccounts_filter > div > div > fieldset > div:nth-child(4) > div > div > input";
+    static $instrument = "#surveyAccounts_filter > div > div > fieldset > div:nth-child(5) > div > div > select";
     // clear filter button
-    static $clearFilter = "#surveyAccounts_filter".
-                          " > div > div:nth-child(6) > div > div > button";
-    static $add         = "#surveyAccounts_filter".
-                          " > div > div:nth-child(7) > div > div > button";
+    static $clearFilter = "#surveyAccounts_filter > div > div > fieldset > ".
+                          "div:nth-child(7) > div > div > button";
+    static $add         = "#default-panel > div > div > div.table-header >".
+                          " div > div > div.pull-right > button:nth-child(1)";
     // header of the table
-    static $table = "#lorisworkspace >".
-                    " div > div.panel.panel-default >".
-                    " div.table-header.panel-heading > div > div";
+    static $table = "#default-panel > div > div > div.table-header > div > div > div:nth-child(1)";
     /**
      * Insert testing data
      *
