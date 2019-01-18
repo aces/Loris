@@ -139,11 +139,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                         $mri_upload_id = $this->_process($args);
                         if ($mri_upload_id) {
                             $this->JSON  = array(
-                                            "success"       => "Uploaded",
+                                            "status"       => "uploaded",
                                             "mri_upload_id" => $mri_upload_id,
                                            );
                             $processDbId = $this->performRealUpload($mri_upload_id, $dest);
-                            $this->printProcessResults($processDbId, $mri_upload_id);
+                            if ($processDbId) {
+                                $this->printProcessResults(array($processDbId), $mri_upload_id);
+                            }
                         } else {
                             //@TODO Set header for some 4XX error status I imagine
                             $msg        = "Could not insert mri upload";
@@ -168,7 +170,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handlePOST()
     {
-
         $fp   = fopen("php://input", "r");
         $data = '';
         while (!feof($fp)) {
@@ -211,7 +212,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                     //@TODO Check if upload was successfully run before?? If
                     //yes, what to do? Quit?
                     $processDbId = $this->performRealUpload($mri_upload_id, $dest, true);
-                    $this->printProcessResults($processDbId, $mri_upload_id);
+                    $this->printProcessResults(array($processDbId), $mri_upload_id, true);
                 }
             } else {
                 $msg        = "Could not access upload file.";
@@ -391,12 +392,12 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     function getProcessInfo($idsToMonitor)
     {
         // Instantiate the server process module to autoload
-            // its namespace classes
-            $spm_module = \Module::factory('server_processes_manager');
-            // Perform the real upload on the server
-            $serverProcessesMonitor = new SPM\ServerProcessesMonitor();
-            $processes = $serverProcessesMonitor->getProcessesState($idsToMonitor);
-            //@TODO Catch \DatabaseException thrown by getProcessesState() ??
+        // its namespace classes
+        $spm_module = \Module::factory('server_processes_manager');
+        // Perform the real upload on the server
+        $serverProcessesMonitor = new SP\ServerProcessesMonitor();
+        $processes = $serverProcessesMonitor->getProcessesState($idsToMonitor);
+        //@TODO Catch \DatabaseException thrown by getProcessesState() ??
         foreach ($processes as $proc) {
             $processesInfo[] = array(
                                 "process_id" => $proc['PID'],
@@ -404,28 +405,51 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                                 "message"    => $proc['STATE'],
                                );
         }
-            return $processesInfo;
+        return $processesInfo;
     }
 
     /**
      * Get info about a Loris process
      *
-     * @param array $idsToMonitor IDs of the server processes to monitor
-     * @param int $mri_upload_id Upload id of the DICOM fileset
+     * @param array $idsToMonitor     IDs of the server processes to monitor
+     * @param int   $mri_upload_id    Upload id of the DICOM fileset
+     * @param bool  $trigger_pipeline Imaging pipeline manually triggered
      *
      * @return an associative array of the current state of the processes.
      */
-    function printProcessResults($idsToMonitor, $mri_upload_id=null)
+    function printProcessResults($idsToMonitor, $mri_upload_id=null, $trigger_pipeline=false)
     {
-        if (!$idsToMonitor) {
-            $msg = "Could not launch processing.";
-            $this->header("HTTP/1.1 500 Internal Server Error");
-            $this->error($msg);
-            $this->JSON = array_merge($this->JSON, array("error" => $msg));
-        } else {
+        $this->header("HTTP/1.1 202 Accepted");
+        if (!empty($idsToMonitor)) {
             $processesInfo = $this->getProcessInfo($idsToMonitor);
-            $this->JSON    = array_merge($this->JSON, array("processes" => $processesInfo));
-            $this->header("HTTP/1.1 202 Accepted");
+            if (!empty($this->JSON)) {
+                $this->JSON    = array_merge($this->JSON, array("processes" => $processesInfo));
+            }
+            else {
+                $this->JSON    = array("processes" => $processesInfo);
+            }
+        } else if ($trigger_pipeline) {
+            $msg = "Could not launch processing.";
+            $this->JSON = array_merge($this->JSON, array("error" => $msg));
+        }
+    }
+
+    /**
+     * Sets an HTTP response
+     *
+     * @param string $header    HTTP header
+     * @param string $message   Message
+     * @param array  $JSON_data JSON data 
+     * @param bool   $is_error  Set true if this is an error response
+     *
+     * @return void 
+     */
+    function setHttpResponse($header, $message="", $JSON_data=null, $is_error=false)
+    {
+        $this->JSON = array_merge($this->JSON, $JSON_data);
+        $this->header($header);
+        if ($is_error) {
+            $this->error($message);
         }
     }
 
