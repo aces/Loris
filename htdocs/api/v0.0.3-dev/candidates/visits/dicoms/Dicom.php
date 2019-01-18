@@ -142,9 +142,15 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                                             "status"        => "uploaded",
                                             "mri_upload_id" => $mri_upload_id,
                                            );
-                            $processDbId = $this->performRealUpload($mri_upload_id, $dest);
+                            $processDbId = $this->performRealUpload(
+                                $mri_upload_id,
+                                $dest
+                            );
                             if ($processDbId) {
-                                $this->printProcessResults(array($processDbId), $mri_upload_id);
+                                $this->printProcessResults(
+                                    array($processDbId),
+                                    $mri_upload_id
+                                );
                             }
                         } else {
                             //@TODO Set header for some 4XX error status I imagine
@@ -211,8 +217,16 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                     $mri_upload_id = $mri_upload_id;
                     //@TODO Check if upload was successfully run before?? If
                     //yes, what to do? Quit?
-                    $processDbId = $this->performRealUpload($mri_upload_id, $dest, true);
-                    $this->printProcessResults(array($processDbId), $mri_upload_id, true);
+                    $processDbId = $this->performRealUpload(
+                        $mri_upload_id,
+                        $dest,
+                        true
+                    );
+                    $this->printProcessResults(
+                        array($processDbId),
+                        $mri_upload_id,
+                        true
+                    );
                 }
             } else {
                 $msg        = "Could not access upload file.";
@@ -417,13 +431,19 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return an associative array of the current state of the processes.
      */
-    function printProcessResults($idsToMonitor, $mri_upload_id=null, $trigger_pipeline=false)
-    {
+    function printProcessResults(
+        $idsToMonitor,
+        $mri_upload_id=null,
+        $trigger_pipeline=false
+    ) {
         $this->header("HTTP/1.1 202 Accepted");
         if (!empty($idsToMonitor)) {
             $processesInfo = $this->getProcessInfo($idsToMonitor);
             if (!empty($this->JSON)) {
-                $this->JSON = array_merge($this->JSON, array("processes" => $processesInfo));
+                $this->JSON = array_merge(
+                    $this->JSON,
+                    array("processes" => $processesInfo)
+                );
             } else {
                 $this->JSON = array("processes" => $processesInfo);
             }
