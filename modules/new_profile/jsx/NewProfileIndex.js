@@ -98,8 +98,6 @@ class NewProfileIndex extends React.Component {
     })
     .then((resp) => resp.json())
     .then((data) => {
-     const newCandidate = data;
-     console.log(newCandidate);
      this.setState({newData: data});
      this.setState({isCreated: true});
     });
@@ -236,7 +234,7 @@ class NewProfileIndex extends React.Component {
                 profile =
                 <div>
                 <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid}</p>
-                <p><a href ={'/' + this.state.candID}>Access this candidate</a></p>
+                <p><a href ={'/' + this.state.newData.candID}>Access this candidate</a></p>
                 <p><a href ="/new_profile/">Recruit another candidate</a></p>
                 </div>;
             }
