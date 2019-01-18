@@ -139,7 +139,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                         $mri_upload_id = $this->_process($args);
                         if ($mri_upload_id) {
                             $this->JSON  = array(
-                                            "status"       => "uploaded",
+                                            "status"        => "uploaded",
                                             "mri_upload_id" => $mri_upload_id,
                                            );
                             $processDbId = $this->performRealUpload($mri_upload_id, $dest);
@@ -423,13 +423,12 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         if (!empty($idsToMonitor)) {
             $processesInfo = $this->getProcessInfo($idsToMonitor);
             if (!empty($this->JSON)) {
-                $this->JSON    = array_merge($this->JSON, array("processes" => $processesInfo));
-            }
-            else {
-                $this->JSON    = array("processes" => $processesInfo);
+                $this->JSON = array_merge($this->JSON, array("processes" => $processesInfo));
+            } else {
+                $this->JSON = array("processes" => $processesInfo);
             }
         } else if ($trigger_pipeline) {
-            $msg = "Could not launch processing.";
+            $msg        = "Could not launch processing.";
             $this->JSON = array_merge($this->JSON, array("error" => $msg));
         }
     }
@@ -439,10 +438,10 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      *
      * @param string $header    HTTP header
      * @param string $message   Message
-     * @param array  $JSON_data JSON data 
+     * @param array  $JSON_data JSON data
      * @param bool   $is_error  Set true if this is an error response
      *
-     * @return void 
+     * @return void
      */
     function setHttpResponse($header, $message="", $JSON_data=null, $is_error=false)
     {
