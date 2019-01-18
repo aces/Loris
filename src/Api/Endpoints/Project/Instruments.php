@@ -132,7 +132,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($request->getAttribute('user'));
 
-            $array = (new \LORIS\Api\Views\ProjectInstruments(
+            $array = (new \LORIS\Api\Views\Project\Instruments(
                 $this->project,
                 $data
             ))->toArray();

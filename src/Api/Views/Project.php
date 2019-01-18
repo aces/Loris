@@ -58,28 +58,6 @@ class Project
                );
     }
 
-    public function toInstrumentArray(): array
-    {
-        $ddeinstruments = \Utility::getAllDDEInstruments();
-        $instruments    = array();
-        foreach ($this->_getInstruments() as $shortname => $fullname) {
-            $isDDE    = in_array($shortname, $ddeinstruments);
-            $subgroup = null; // TODO
-
-            $obj = array(
-                    'FullName'               => $fullname,
-                    'Subgroup'               => $subgroup,
-                    'DoubleDataEntryEnabled' => $isDDE,
-                   );
-            $instruments[$shortname] = $obj;
-        }
-
-        return array(
-                'Meta'        => $this->meta,
-                'Instruments' => $instruments,
-               );
-    }
-
     public function toVisitArray(): array
     {
         return array(
