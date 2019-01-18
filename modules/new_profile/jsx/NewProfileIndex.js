@@ -23,30 +23,27 @@ class NewProfileIndex extends React.Component {
         this.fetchData = this.fetchData.bind(this);
     }
 
-    /**
-   * Retrive data from the provided URL and save it in state
-   */
-    fetchData() {
-        $.ajax(
-            loris.BaseURL + '/new_profile/?format=json',
-            {
-                method: 'GET',
-                dataType: 'json',
-                success: (data) => {
-                    this.setState(
-                        {
-                            configData: data,
-                            isLoaded: true,
-                        }
-                    );
-                },
-            }
-        );
-    }
+  componentDidMount() {
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
+  }
 
-    componentWillMount() {
-        this.fetchData();
-    }
+  /**
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
+   * for easy access by columnFormatter.
+   *
+   * @return {object}
+   */
+  fetchData() {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({configData: data}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
 
     validate() {
         const data = this.state.formData;
@@ -77,36 +74,39 @@ class NewProfileIndex extends React.Component {
                 errMessage: '',
                 }
         );
-        if (!err) {
-            this.setState(
-                {
-                    isCreated: true,
-                }
-            );
-        } else {
+        if (err) {
             this.setState(
                 {
                     errMessage: 'Date of birth fields must match',
                     isCreated: false,
                 }
             );
-        }
-        $.ajax(
-            loris.BaseURL + '/new_profile/Addprofile',
-            {
-                method: 'POST',
-                data: JSON.stringify(this.state.formData),
-                dataType: 'json',
-                success: (data) => {
-                    this.setState(
-                        {
-                            newData: data,
-                        }
-                    );
-                },
-            }
-        );
+        } else {
+    let formData = this.state.formData;
+    let formObject = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
+      }
     }
+/* eslint-disable no-console */
+   fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => resp.json())
+    .then((data) => {
+     const newCandidate = data;
+     console.log(newCandidate);
+     this.setState({newData: data});
+     this.setState({isCreated: true});
+    });
+// I can't get data from here,new Candidate is null
+                }
+    }
+/* eslint-enable no-console */
 
     /**
    * Set the form data based on state values of child elements/componenets
@@ -237,7 +237,7 @@ class NewProfileIndex extends React.Component {
                 profile =
                 <div>
                 <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid}</p>
-                <p><a href ={'/' + this.state.newData.candID}>Access this candidate</a></p>
+                <p><a href ={'/' + this.state.candID}>Access this candidate</a></p>
                 <p><a href ="/new_profile/">Recruit another candidate</a></p>
                 </div>;
             }
@@ -248,13 +248,13 @@ class NewProfileIndex extends React.Component {
             );
     }
 }
-    $(
-        function() {
-            const newProfileIndex = (
-            <div className ="page-document">
-            <NewProfileIndex />
-            </div>
-            );
-            ReactDOM.render(newProfileIndex, document.getElementById('lorisworkspace'));
-        }
-    );
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <NewProfileIndex
+      dataURL={`${loris.BaseURL}/new_profile/?format=json`}
+      submitURL={`${loris.BaseURL}/new_profile/Addprofile`}
+      hasPermission={loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
+});

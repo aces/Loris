@@ -60,9 +60,7 @@ class Addprofile extends \NDB_Page
         //todo : import ajax file and return with dccid and pcsid
         //       $data   = json_decode($request->getBody()->getContents(), true);
         //        json_encode($request->getParsedBody())
-        $data = $request->getParsedBody();
-        reset($data);
-        $values    = json_decode(key($data), true);
+        $values = $request->getParsedBody();
         $DB        = \Database::singleton();
         $user      = \User::singleton();
         $config    = \NDB_Config::singleton();
