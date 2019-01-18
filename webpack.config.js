@@ -38,7 +38,6 @@ const config = [{
     './modules/instrument_builder/js/react.questions.js': './modules/instrument_builder/jsx/react.questions.js',
     './modules/instrument_manager/js/instrumentManagerIndex.js': './modules/instrument_manager/jsx/instrumentManagerIndex.js',
     './modules/survey_accounts/js/columnFormatter.js': './modules/survey_accounts/jsx/columnFormatter.js',
-    './modules/server_processes_manager/js/columnFormatter.js': './modules/server_processes_manager/jsx/columnFormatter.js',
     './modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': './modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
     './modules/mri_violations/js/columnFormatter.js': './modules/mri_violations/jsx/columnFormatter.js',
     './modules/mri_violations/js/columnFormatterUnresolved.js': './modules/mri_violations/jsx/columnFormatterUnresolved.js',
@@ -51,6 +50,7 @@ const config = [{
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
+    './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
   },
   output: {
     path: __dirname + '/',
