@@ -10,7 +10,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Candidate;
+namespace LORIS\Api\Endpoints\Candidate\Visit;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -44,8 +44,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Candidate $candidate The requested candidate
-     * @param \Timepoint $visit     The requested visit
+     * @param \Candidate  $candidate The requested candidate
+     * @param ?\Timepoint $visit     The requested visit; can be null in PUT requests
      */
     public function __construct(\Candidate $candidate, ?\Timepoint $visit)
     {
@@ -120,16 +120,16 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'instruments':
-            $handler = new Visit\Instruments($this->visit);
+            $handler = new Instruments($this->visit);
             break;
         case 'images':
-            $handler = new Visit\Images($this->visit);
+            $handler = new Images($this->visit);
             break;
         case 'qc':
-            $handler = new Visit\Qc($this->visit);
+            $handler = new Qc($this->visit);
             break;
         case 'dicoms':
-            $handler = new Visit\Dicoms($this->visit);
+            $handler = new Dicoms($this->visit);
             break;
         default:
             return new \LORIS\Http\Response\NotFound();

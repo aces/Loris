@@ -84,6 +84,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // TODO :: User permission to acces this and subendpoints
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
@@ -120,7 +121,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);
 
-        $handler = new Visit(
+        $handler = new Visit\Visit(
             $this->candidate,
             $visit
         );

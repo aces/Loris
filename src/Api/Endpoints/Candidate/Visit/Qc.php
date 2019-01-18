@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the visit's instruments endpoint class
+ * This implements the visit's imaging qc endpoint class
  *
  * PHP Version 7
  *
@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 
 /**
- * A class for handling request for a visit instruments.
+ * A class for handling request for a visit imaging qc.
  *
  * @category API
  * @package  Loris
@@ -25,7 +25,7 @@ use \LORIS\Api\Endpoint;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
      * The requested Visit
@@ -51,7 +51,10 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return array(
+                'GET',
+                'PUT',
+               );
     }
 
     /**
@@ -63,7 +66,6 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.1',
                 'v0.0.2',
                 'v0.0.3-dev',
                );
@@ -79,10 +81,13 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) === 0) {
+        if (count($pathparts) === 1 && array_pop($pathparts) === 'imaging') {
             switch ($request->getMethod()) {
             case 'GET':
                 return $this->_handleGET($request);
+
+            case 'PUT':
+                return $this->_handlePUT($request);
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -95,13 +100,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
-        // Delegate to sub-endpoints
-        // TODO
-        return new \LORIS\Http\Response\NotImplemented();
-        return $handler->process(
-            $newrequest,
-            $handler
-        );
+        return new \LORIS\Http\Response\NotFound();
     }
 
     /**
@@ -114,21 +113,83 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\VisitInstrumentsRowProvisioner(
+            $provisioner = new \LORIS\api\VisitImagingQcRowProvisioner(
                 $this->visit
             );
-            $data        = (new \LORIS\Data\Table())
+
+            $data = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($request->getAttribute('user'));
 
-            $view = (new \LORIS\Api\Views\Visit\Instruments(
-                $this->visit,
-                array_values($data)
-            ))->toArray();
+            $view = (new \LORIS\Api\Views\Visit\Qc($this->visit, $data[0]))
+                ->toArray();
 
             $this->cache = new \LORIS\Http\Response\JsonResponse($view);
         }
         return $this->cache;
+    }
+
+    /**
+     * Sets new value for this session imaging qc.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePUT(ServerRequestInterface $request): ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        $data = json_decode((string) $request->getBody(), true);
+
+        $requiredfields = array(
+                           'Meta',
+                           'SessionQC',
+                           'Pending',
+                          );
+        $diff           = array_diff($requiredfields, array_keys($data));
+        if (!empty($diff)) {
+            return new \LORIS\Http\Response\BadRequest(
+                'Field(s) missing: ' . implode(', ', $diff)
+            );
+        }
+
+        $candid = $data['Meta']['CandID'] ?? null;
+        if ($candid !== $this->visit->getCandID()) {
+            return new \LORIS\Http\Response\BadRequest(
+                'Candidate from URL does not match metadata'
+            );
+        }
+
+        $visitlabel = $data['Meta']['Visit'] ?? null;
+        if ($visitlabel !== $this->visit->getVisitLabel()) {
+            return new \LORIS\Http\Response\BadRequest(
+                'Visit from URL does not match metadata'
+            );
+        }
+
+        $qcstatus  = $data['SessionQC'];
+        $ispending = $data['Pending'] ? 'Y' : 'N';
+
+        try {
+            $this->visit->setData('MRIQCStatus', $qcstatus);
+        } catch (\DatabaseException $e) {
+            return new \LORIS\Http\Response\BadRequest(
+                'MRIQCStatus value not acceptable'
+            );
+        }
+
+        try {
+            $this->visit->setData('MRIQCPending', $ispending);
+        } catch (\DatabaseException $e) {
+            return new \LORIS\Http\Response\BadRequest(
+                'MRIQCPending value not acceptable'
+            );
+        }
+
+        $link = '/' . $request->getUri()->getPath();
+        return (new \LORIS\Http\Response())
+            ->withStatus(204)
+            ->withHeader('Content-Location', $link);
     }
 
     /**
@@ -140,6 +201,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
+        // FIXME :: If-None-Match do not work
         return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }

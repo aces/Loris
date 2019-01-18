@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for candidates
+ * This class implements a data Instance for visit imaging qc
  *
  * PHP Version 7
  *
@@ -14,8 +14,8 @@
 namespace LORIS\api;
 
 /**
- * A CandidatesRow represents a candidate for the
- * /candidates endpoint.
+ * A VisitImagingQcRow represents a visit imaging qc status for the
+ * /candidates/$candid/$visit_label/qc/imaging endpoint.
  *
  * @category API
  * @package  Loris
@@ -23,7 +23,7 @@ namespace LORIS\api;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesRow implements \LORIS\Data\DataInstance
+class VisitImagingQcRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
@@ -44,27 +44,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj = array(
-                'CandID'  => $this->DBRow['CandID'],
-                'Project' => $this->DBRow['ProjectName'],
-                'PSCID'   => $this->DBRow['PSCID'],
-                'Site'    => $this->DBRow['SiteName'],
-                'EDC'     => $this->DBRow['EDC'],
-                'DoB'     => $this->DBRow['DoB'],
-                'Gender'  => $this->DBRow['Sex'],
-               );
-
-        return json_encode($obj);
-    }
-
-    /**
-     * Returns the CenterID for this row, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
-     *
-     * @return integer The CenterID
-     */
-    public function getCenterID(): int
-    {
-        return intval($this->DBRow['CenterID']);
+        return json_encode($this->DBRow);
     }
 }

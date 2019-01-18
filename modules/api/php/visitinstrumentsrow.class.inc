@@ -15,7 +15,7 @@ namespace LORIS\api;
 
 /**
  * A VisitInstrumentsRow represents an instrument for the
- * /candidates/$candid/$visit_label/instruments endppoint.
+ * /candidates/$candid/$visit_label/instruments endpoint.
  *
  * @category API
  * @package  Loris
