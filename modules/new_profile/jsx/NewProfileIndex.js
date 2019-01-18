@@ -1,7 +1,7 @@
 /**
  * New Profile Form
  *
- * Create a new proflie form
+ * Create a new profile form
  *
  * @author  Shen Wang
  * @version 1.0.0
