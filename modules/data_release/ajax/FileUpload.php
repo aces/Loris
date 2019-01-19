@@ -12,10 +12,12 @@
   *  @link     https://github.com/aces/Loris
   */
 
-$DB   =& Database::singleton();
-$user =& User::singleton();
+$DB   = \Database::singleton();
+$user = \User::singleton();
 
-if ($_POST['action'] == 'upload') {
+if ($_POST['action'] == 'upload'
+    && $user->hasPermission("data_release_upload")
+) {
     $fileName    = $_FILES["file"]["name"];
     $version     = $_POST['version'];
     $upload_date = date('Y-m-d');
@@ -55,10 +57,11 @@ if ($_POST['action'] == 'upload') {
                 array('UserID' => $user->getUsername())
             );
             $ID      = $DB->pselectOne(
-                "SELECT id FROM data_release WHERE "
-                . "file_name=:file_name AND "
-                . "version=:version AND "
-                . "upload_date=:upload_date",
+                "SELECT id 
+                        FROM data_release 
+                        WHERE file_name=:file_name 
+                            AND version=:version 
+                            AND upload_date=:upload_date",
                 array(
                  'file_name'   => $fileName,
                  'version'     => $version,

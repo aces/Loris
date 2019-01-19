@@ -7,15 +7,11 @@ Options -Indexes
 RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
 
-# Projects API rewrite rules
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2&PrintInstrumentForm=true [L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Project=$1&Visits=true&PrintProjectJSON=true [L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true&PrintProjectJSON=true [L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true&PrintProjectJSON=true&InstrumentDetails=true [L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/images(/*)$ projects/Images.php?project_name=$1 [QSA,L]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true&PrintProjectJSON=true [L]
+# Login
+RewriteRule ^login[/]?$ /index.php [QSA,END]
 
-RewriteRule ^projects/$ /index.php?lorispath=api/v0.0.3-dev/projects/ [QSA,END]
+# Projects API rewrite rules
+RewriteRule ^projects/? /index.php [QSA,END]
 
 # Candidates API rewrite rules
 
@@ -44,5 +40,3 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)$ cand
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/dicoms$ candidates/visits/Dicoms.php?CandID=$1&VisitLabel=$2&PrintDicoms=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/dicoms/([a-zA-Z0-9_.-]+)$ candidates/visits/dicoms/Dicom.php?CandID=$1&VisitLabel=$2&Tarname=$3&PrintDicomData=true [L]
 
-# New module enpoints
-RewriteRule ^login[/]?$ /index.php?lorispath=api/v0.0.3-dev/login/ [QSA,END]

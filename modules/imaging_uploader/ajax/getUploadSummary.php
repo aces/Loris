@@ -17,48 +17,22 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
-// Get LORIS user issuing the request
-$user =& User::singleton();
-if (!$user->hasPermission('imaging_uploader')) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
+if (!\User::singleton()->hasPermission('imaging_uploader')) {
+    http_response_code(403);
+    return;
+}
+if (!validRequest()) {
+    http_response_code(400);
+    return;
 }
 
-set_include_path(
-    get_include_path().":../../project/libraries:../../php/libraries:"
-);
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
+$uploadId = $_POST['uploadId'];
+$summary  = $_POST['summary'] === 'true';
 
-$client = new NDB_Client();
-$client->initialize("../../project/config.xml");
-
-$config = NDB_Config::singleton();
-
-// create Database object
-$DB =& Database::singleton();
-
-// return bad request if uploadId is not in POST argument list
-// or if it is not a number
-if (empty($_POST['uploadId']) || !is_numeric($_POST['uploadId'])) {
-    header("HTTP/1.1 400 Bad Request");
-    exit;
-} else {
-    $uploadId = $_POST['uploadId'];
-}
-
-// return bad request if summary is not in POST argument list
-// of if it is neither 'true' nor 'false'
-if (empty($_POST['summary'])
-    || ($_POST['summary'] != 'true' && $_POST['summary'] != 'false')
-) {
-    header("HTTP/1.1 400 Bad Request");
-    exit;
-} else {
-    $summary = $_POST['summary'] == 'true';
-}
-
-// Fetch columns Inserting and InsertionComplete from table mri_upload
+/* Fetch columns Inserting and InsertionComplete from table mri_upload
+ * create Database object
+ */
+$DB    =& Database::singleton();
 $query = "SELECT Inserting, InsertionComplete 
           FROM mri_upload
           WHERE UploadId =:uploadId";
@@ -70,8 +44,9 @@ $row       = $DB->pselectRow(
 $inserting = $row['Inserting'];
 $insertionComplete = $row['InsertionComplete'];
 
-// Get notifications from table notification_spool. Only get those with
-// Verbose == 'N' if summary is set to true
+/* Get notifications from table notification_spool. Only get those with
+ * Verbose == 'N' if summary is set to true
+ */
 $query = "SELECT NotificationID, TimeSpooled, Error, Verbose, Message 
           FROM notification_spool
           WHERE ProcessID = :processId";
@@ -85,7 +60,7 @@ $notifications = $DB->pselect(
 );
 
 // Return JSON object encapsulating the response
-print json_encode(
+echo json_encode(
     array(
      'inserting'         => $inserting,
      'insertionComplete' => $insertionComplete,
@@ -93,4 +68,21 @@ print json_encode(
     )
 );
 
-
+/**
+ * Ensure that the POST request sent to this script is well-formed:
+ * - uploadID must be present and be a positive integer
+ * - summary must be equal to 'true' or 'false' when present.
+ *
+ * @return bool Whether the above conditions apply.
+ */
+function validRequest(): bool
+{
+    if (empty($_POST['uploadId'])
+        || !is_numeric($_POST['uploadId'])
+        || intval($_POST['uploadId'] < 0)
+        || ($_POST['summary'] !== 'true' && $_POST['summary'] !== 'false')
+    ) {
+        return false;
+    }
+    return true;
+}
