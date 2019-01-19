@@ -25,19 +25,19 @@ require_once __DIR__ .
  */
 class NewProfileTestIntegrationTest extends LorisIntegrationTest
 {
-    public $dateTaken  = "#lorisworkspace > div > div > form >".
+    public $dateTaken  = "#lorisworkspace > div > form >".
                          " div > div:nth-child(2) > div > div > input";
-    public $dtc        = "#lorisworkspace > div > div > form >".
+    public $dtc        = "#lorisworkspace > div > form >".
                          " div > div:nth-child(3) > div > div > input";
-    public $edc        = "#lorisworkspace > div > div > form >".
+    public $edc        = "#lorisworkspace > div > form >".
                          " div > div:nth-child(4)>div>div:nth-child(1)>div>input";
-    public $edcConfirm = "#lorisworkspace > div > div > form >".
+    public $edcConfirm = "#lorisworkspace > div > form >".
                          " div > div:nth-child(4)>div>div:nth-child(2)>div>input";
-    public $gender     = "#lorisworkspace > div > div > form >".
+    public $gender     = "#lorisworkspace > div > form >".
                          " div > div:nth-child(5) > div > div > select";
-    public $site       = "#lorisworkspace > div > div > form >".
+    public $site       = "#lorisworkspace > div > form >".
                          " div > div:nth-child(6) > div > div > select";
-    public $btn        = "#lorisworkspace > div > div > form >".
+    public $btn        = "#lorisworkspace > div > form >".
                          " div > div:nth-child(9) > div > div > button";
     /**
      * Tests that, when loading the new_profile module with all settings
@@ -55,14 +55,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("New Profile", $bodyText);
         // check EDC shows on the page
-        $value = "#lorisworkspace > div > div > form > div >".
+        $value = "#lorisworkspace > div > form > div >".
                  " div:nth-child(4) > div > div:nth-child(1) > label";
         $EDC   = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertContains("Expected Date of Confinement", $EDC);
         // check Project shows on the page
-        $value   = "#lorisworkspace > div > div > form > div >".
+        $value   = "#lorisworkspace > div > form > div >".
                  " div:nth-child(8) > div > div:nth-child(1) > label";
         $project = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -86,7 +86,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/new_profile/");
 
         try {
-            $value   = "#lorisworkspace > div > div > form > div >".
+            $value   = "#lorisworkspace > div > form > div >".
                  " div:nth-child(8) > div > div:nth-child(1) > label";
             $project = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
