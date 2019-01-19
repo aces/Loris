@@ -12,6 +12,7 @@
  * */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 class MediaEditForm extends Component {
   constructor(props) {
@@ -27,7 +28,6 @@ class MediaEditForm extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
@@ -83,37 +83,13 @@ class MediaEditForm extends Component {
       );
     }
 
-    let alertMessage = '';
-    let alertClass = 'alert text-center hide';
-    let backURL = loris.BaseURL.concat('/media/');
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === 'success') {
-        alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
-      } else if (this.state.uploadResult === 'error') {
-        alertClass = 'alert alert-danger text-center';
-        alertMessage = 'Failed to update the file';
-      }
-    }
-
     return (
       <div>
-        <div className={alertClass} role='alert' ref='alert-message'>
-          {alertMessage}
-        </div>
-        {
-          this.state.uploadResult === 'success' ?
-          <a className='btn btn-primary' href={backURL}>Back to media</a> :
-          null
-        }
         <FormElement
           name='mediaEdit'
           onSubmit={this.handleSubmit}
           ref='form'
         >
-          <h3>Edit Media File</h3>
-          <br />
           <SelectElement
             name='pscid'
             label='PSCID'
@@ -227,19 +203,14 @@ class MediaEditForm extends Component {
         }, false);
         return xhr;
       },
-      success: function(data) {
+      success: (data) => {
         $('#file-progress').addClass('hide');
-        self.setState({
-          uploadResult: 'success',
-        });
-        self.showAlertMessage();
+        swal('Upload Successful!', '', 'success');
+        this.props.fetchData();
       },
       error: function(err) {
+        swal('Upload Error!', '', 'error');
         console.error(err);
-        self.setState({
-          uploadResult: 'error',
-        });
-        self.showAlertMessage();
       },
     });
   }
@@ -263,34 +234,11 @@ class MediaEditForm extends Component {
       formData: formData,
     });
   }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    let self = this;
-
-    if (this.refs['alert-message'] === null) {
-      return;
-    }
-
-    let alertMsg = this.refs['alert-message'];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null,
-      });
-    });
-  }
 }
 
 MediaEditForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
 };
-
-let RMediaEditForm = React.createFactory(MediaEditForm);
-
-window.MediaEditForm = MediaEditForm;
-window.RMediaEditForm = RMediaEditForm;
 
 export default MediaEditForm;

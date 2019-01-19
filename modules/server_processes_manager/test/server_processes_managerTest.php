@@ -37,13 +37,13 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'Server Processes Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
             'No.'                      => '#dynamictable > thead > tr',
-            'Pid'                      => '#dynamictable > thead > tr',
+            'PID'                      => '#dynamictable > thead > tr',
             'Type'                     => '#dynamictable > thead > tr',
             'Stdout File'              => '#dynamictable > thead > tr',
             'Stderr File'              => '#dynamictable > thead > tr',
             'Exit Code File'           => '#dynamictable > thead > tr',
             'Exit Code'                => '#dynamictable > thead > tr',
-            'Userid'                   => '#dynamictable > thead > tr',
+            'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
            );
@@ -86,6 +86,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       */
     function testPageUIs()
     {
+        $this->markTestSkipped("Skipping long test");
         $this->safeGet($this->url . "/server_processes_manager/");
         sleep(1);
         foreach ($this->_loadingUI as $key => $value) {
