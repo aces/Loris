@@ -965,7 +965,7 @@ class Candidate
      * @param string $kind    One of 'CandID' or 'ExternalID'
      * @param string $setting One of 'generation', 'minLength', 'alphabet',
      *
-     * @return array|int
+     * @return array|int|string|null
      */
     static function _getIDSetting(
         string $kind,
@@ -1042,7 +1042,7 @@ class Candidate
         }
         // Min, max, and length values should be returned as integers or as
         // null if they are not set.
-        return is_null($seqValue) ?: intval($seqValue);
+        return is_null($seqValue) ? $seqValue: intval($seqValue);
     }
 
     /**
@@ -1103,7 +1103,7 @@ class Candidate
                 'Too many values found for config setting: ' . $setting
             );
         }
-        return count($seqAttributes) > 0 ? array_pop($seqAttributes) : null;
+        return array_pop($seqAttributes);
     }
 
     /**
