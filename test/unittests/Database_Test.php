@@ -235,4 +235,25 @@ class Database_Test extends TestCase
             )
         );
     }
+
+    function testinsertWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+
+        $DB->insert("ConfigSettings", array('ID' => 99990, 'Name' => 'test insert', 'Visible' => 1, 'Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => 99990,
+                    'Name' => 'test insert',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+        $DB->delete("ConfigSettings", array('ID' => 99990);
+    }
 }
