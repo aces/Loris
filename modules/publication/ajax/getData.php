@@ -13,9 +13,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 if (isset($_REQUEST['action'])) {
-    $db   = \Database::singleton();
-    $user = \User::singleton();
-    $action = $_REQUEST['action'];
+    $db      = \Database::singleton();
+    $user    = \User::singleton();
+    $action  = $_REQUEST['action'];
     $message = array('message' => null);
 
     if ($action === 'getData') {
@@ -23,7 +23,8 @@ if (isset($_REQUEST['action'])) {
             return json_encode(getData($db));
         } else {
             http_response_code(403);
-            $message['message'] = 'You do not have access to the publication module.';
+            $message['message'] =
+                'You do not have access to the publication module.';
             return json_encode($message);
         }
     } elseif ($action === 'getProjectData') {
