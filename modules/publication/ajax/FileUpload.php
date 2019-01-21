@@ -880,5 +880,5 @@ function showPublicationError($message, $code = 500, $pubID = null) : void
 
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
+    exit(json_encode(['message' => $message]));
 }

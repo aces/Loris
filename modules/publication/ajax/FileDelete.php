@@ -22,23 +22,31 @@ $query      = "SELECT PublicationID, URL ".
     "WHERE PublicationUploadID=:upid";
 $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 
+$message = array('message' => null);
+
 if (empty($uploadData)) {
     header("HTTP/1.1 400 Bad Request");
-    return;
+    $message['message'] = 'Invalid Upload ID';
+    echo json_encode($message);
 }
 
-userCanDelete($uploadData, $db, $user);
+if (userCanDelete($uploadData, $db, $user)) {
 
-$db->delete(
-    'publication_upload',
-    array('PublicationUploadID' => $uploadID)
-);
+    $db->delete(
+        'publication_upload',
+        array('PublicationUploadID' => $uploadID)
+    );
 
-$src  = $config->getSetting('publication_uploads') . $uploadData['URL'];
-$dest = $config->getSetting('publication_deletions') . $uploadData['URL'];
+    $src  = $config->getSetting('publication_uploads') . $uploadData['URL'];
+    $dest = $config->getSetting('publication_deletions') . $uploadData['URL'];
 
-rename($src, $dest);
+    rename($src, $dest);
 
+} else {
+    header("HTTP/1.1 403 Forbidden");
+    $message['message'] = 'You do not have permission to delete this file.';
+    echo json_encode($message);
+}
 
 /**
  * Permission check
@@ -47,10 +55,11 @@ rename($src, $dest);
  * @param Database $db         database
  * @param User     $user       user
  *
- * @return void
+ * @return bool
  */
-function userCanDelete($uploadData, $db, $user) : void
+function userCanDelete($uploadData, $db, $user) : bool
 {
+    $retVal   = false;
     $origUser = $db->pselectOne(
         'SELECT UserID FROM publication WHERE PublicationID=:pid',
         array('pid' => $uploadData['PublicationID'])
@@ -63,8 +72,11 @@ function userCanDelete($uploadData, $db, $user) : void
         array('pid' => $uploadData['PublicationID'])
     );
 
-    if ($user->getId() !== $origUser && !in_array($user->getId(), $editors)) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
+    // Allow user to delete if they are original uploader
+    // or is user with edit permission
+    if ($user->getId() === $origUser || in_array($user->getId(), $editors)) {
+        $retVal = true;
     }
+
+    return $retVal;
 }

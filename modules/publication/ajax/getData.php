@@ -13,11 +13,28 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 if (isset($_REQUEST['action'])) {
+    $db   = \Database::singleton();
+    $user = \User::singleton();
     $action = $_REQUEST['action'];
+    $message = array('message' => null);
+
     if ($action === 'getData') {
-        echo json_encode(getData());
+        if (userCanGetData($db, $user)) {
+            echo json_encode(getData($db));
+        } else {
+            header("HTTP/1.1 403 Forbidden");
+            $message['message'] = 'You do not have access to the publication module.';
+            echo json_encode($message);
+        }
     } elseif ($action === 'getProjectData') {
-        echo json_encode(getProjectData());
+        $id = $_REQUEST['id'];
+        if (userCanGetData($db, $user, $id)) {
+            echo json_encode(getProjectData($db, $user, $id));
+        } else {
+            header("HTTP/1.1 403 Forbidden");
+            $message['message'] = 'You do not have access to this project.';
+            echo json_encode($message);
+        }
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
@@ -25,15 +42,12 @@ if (isset($_REQUEST['action'])) {
 /**
  * Gets publication and parameter_type data from database
  *
+ * @param Database $db Database instance
+ *
  * @return array Array of general publication data
  */
-function getData() : array
+function getData($db) : array
 {
-    $db   = \Database::singleton();
-    $user = \User::singleton();
-
-    userCanGetData($db, $user);
-
     $data   = array();
     $titles = $db->pselectCol(
         'SELECT Title FROM publication',
@@ -105,17 +119,14 @@ function getData() : array
 /**
  * Gets Data for a specific PublicationID
  *
+ * @param Database $db   Database instance
+ * @param User     $user User instance
+ * @param int      $id   Publication ID
+ *
  * @return array Array of data for a specific project
  */
-function getProjectData() : array
+function getProjectData($db, $user, $id) : array
 {
-    $id = $_REQUEST['id'];
-
-    $db   = \Database::singleton();
-    $user = \User::singleton();
-
-    userCanGetData($db, $user, $id);
-
     $query  = 'SELECT Title, Description, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
@@ -137,7 +148,6 @@ function getProjectData() : array
         $result['collaborators'] = getCollaborators($id);
 
         // allow edit access for user if user is original proposer
-        $user    = \User::singleton();
         $userIDs = $db->pselectCol(
             'SELECT pu.UserID as ID '.
             'FROM publication_users_edit_perm_rel pu '.
@@ -321,13 +331,13 @@ function getUploadTypes() : array
  * @param User     $user  user
  * @param int      $pubID publication ID
  *
- * @return void
+ * @return bool
  */
-function userCanGetData($db, $user, $pubID = null)
+function userCanGetData($db, $user, $pubID = null) : bool
 {
+    $retVal = true;
     if (is_null($pubID) && !$user->hasPermission('publication_view')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
+        $retVal = false;
     }
 
     $origUser = $db->pselectOne(
@@ -348,7 +358,8 @@ function userCanGetData($db, $user, $pubID = null)
     );
 
     if (!$userCanEdit && !$user->hasPermission('publication_view')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
+        $retVal = false;
     }
+
+    return $retVal;
 }
