@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * An API endpoint is an endpoint which abstracts away common element
  * of different LORIS API endpoints.
@@ -11,7 +11,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api;
+namespace LORIS\Api;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
@@ -27,10 +27,8 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-abstract class APIEndpoint extends \NDB_Page
+abstract class Endpoint implements RequestHandlerInterface
 {
-    public $skipTemplate = true;
-
     /**
      * Return an array of valid HTTP methods for this endpoint
      *

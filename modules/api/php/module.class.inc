@@ -53,11 +53,6 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $validAPIVersions = [
-                             "v0.0.1",
-                             "v0.0.2",
-                             "v0.0.3-dev",
-                            ];
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
@@ -80,46 +75,47 @@ class Module extends \Module
                     )
                 );
         };
+
         $version  = $pieces[1];
         $endpoint = $pieces[2];
-        if (!in_array($version, $validAPIVersions)) {
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "application/json")
-                ->withStatus(400)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            ['error' => "Unsupported LORIS API version " . $version]
-                        )
-                    )
-                );
-        }
 
         // Strip the version and add it to a request attribute, then let the default
         // module handler kick in to delegate to the appropriate page.
-        $newurl     = $request->getURI()->withPath($endpoint);
+        $newurl = $request->getURI()->withPath($endpoint);
+
+        // Split the url into parts to form a queue for the endpoints to delegate
+        // the request to subendpoints
+        $pathparts = explode('/', $endpoint);
+
         $newrequest = $request
             ->withURI($newurl)
-            ->withAttribute("LORIS-API-Version", $version);
+            ->withAttribute("LORIS-API-Version", $version)
+            ->withAttribute('pathparts', $pathparts);
 
-        $parentresp = parent::handle($newrequest);
-        switch ($parentresp->getStatusCode()) {
-        case 401:
-        case 403:
-        case 404:
-            // If permission was denied, fake a 404 to avoid leaking metadata.
-            // Also convert all 404s to the same message to ensure you can't
-            // derive metadata by looking at the error message.
-            return $parentresp
-                ->withHeader("Content-Type", "application/json")
-                ->withStatus(404)
-                ->withBody(
-                    new \LORIS\HTTP\StringStream(
-                        json_encode(["error" => "not found"])
-                    )
-                );
+        $handlername = $pathparts[0];
+
+        switch($handlername) {
+        case 'login':
+            $handler = new \LORIS\Api\Endpoints\Login();
+            break;
+        case 'projects':
+            $handler = new \LORIS\Api\Endpoints\Projects();
+            break;
         default:
-            return $parentresp;
+            return (new \LORIS\Http\Response())
+                    ->withStatus(404)
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(["error" => "not found"])
+                        )
+                    );
         }
+
+        // This disregards the parent handler from the base module class,
+        // because most of the work it does (adding page decoration middleware,
+        // delegating to a sub-page class in the Module, etc) is not relevant
+        // for the API module.
+        return $handler->process($newrequest, $handler);
     }
 }

@@ -41,8 +41,9 @@ $uid        = $db->pselectOne(
     array('userid' => $user->getUsername())
 );
 $permission = $db->pselectOne(
-    "SELECT 'X' FROM data_release_permissions WHERE "
-    . "userid=:uid AND data_release_id=:fileID",
+    "SELECT 'X' 
+          FROM data_release_permissions 
+          WHERE userid=:uid AND data_release_id=:fileID",
     array(
      'uid'    => $uid,
      'fileID' => $fileID,
@@ -58,5 +59,3 @@ header('Content-Description: File Transfer');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($FullPath) . "\"");
 readfile($FullPath);
-
-

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Projects page class
  *
@@ -10,12 +10,11 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api;
+namespace LORIS\Api\Endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
-
+use \LORIS\Api\Endpoint;
 /**
  * A class for handling the api/v????/projects endpoint.
  *
@@ -25,10 +24,8 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
+class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-    public $skipTemplate = true;
-
     /**
      * A cache of the results of the projects/ endpoint, so that it doesn't
      * need to be recalculated for the ETag and handler
@@ -86,22 +83,33 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // FIXME: Validate permissions.
-        switch ($request->getURI()->getPath()) {
-        case "projects":
-        case "projects/":
+        $pathparts = $request->getAttribute('pathparts');
+
+        if (count($pathparts) === 1) {
             $projects = $this->_getProjectList();
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
-                ->withBody(new \LORIS\Http\StringStream(json_encode($projects)));
-        // FIXME: Delegate to other endpoints under /projects/ for other paths.
-        default:
-            return (new \LORIS\Http\Response())
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    '{ "error" : "Invalid API endpoint" }'
-                )
-            )->withStatus(404);
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($projects)
+                    )
+                );
         }
+
+        // Delegate to project specific endpoint.
+        try {
+            $project = \NDB_Factory::singleton()
+                ->project($pathparts[1]);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $endpoint = new Project\Project($project);
+
+        $pathparts = array_slice($pathparts, 2);
+        $request   = $request->withAttribute('pathparts', $pathparts);
+
+        return $endpoint->process($request, $endpoint);
     }
 
     /**
@@ -163,6 +171,6 @@ class Projects extends APIEndpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_getProjectList(), true));
+        return md5(json_encode($this->_getProjectList()));
     }
 }
