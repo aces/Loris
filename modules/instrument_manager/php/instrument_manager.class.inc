@@ -161,7 +161,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             if ($exists <= 0) {
                 $error_message = exec(
                     'php generate_tables_sql_and_testNames.php '
-                    . escapeshellarg($new_file)
+                    . escapeshellarg($new_file) . ' --apply'
                 );
                 if (!empty($error_message)
                     && strpos($error_message, "Instrument") !== false

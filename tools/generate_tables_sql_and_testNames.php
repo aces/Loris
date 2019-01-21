@@ -5,17 +5,8 @@
  *
  * PHP Version 7
  *
- * The generate_tables_sql_and_testNames.php takes the {instrument_name}.linst file
- * from the /instrument_manager  module and installs an instrument for the table of each
- * instrument it finds in the {instrument_name}.linst file.
- * These sql files are output to the tables_sql/ subdirectory.
- *
- * Ex cmd with SQL execution:
- * php generate_tables_sql_and_testNames.php ../instruments/[instrument_name].linst
- *
- * Ex cmd without SQL execution:
- * php generate_tables_sql_and_testNames.php
- * ../instruments/[instrument_name].linst false
+ * Parses a LINST file and creates a corresponding SQL script. Optionally 
+ * applies this new script automatically.
  *
  * @category Tools
  * @package  Behavioural
@@ -23,9 +14,38 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-// require all relevant libraries
 require_once 'generic_includes.php';
-$execute_mysql_query = ($argv[2] ?? true) === true; 
+// Display usage message if flag parameter is absent or invalid.
+if (!isset($argv[2]) 
+    || !in_array(
+        $argv[2],
+        array(
+            '--to-sql',
+            '--apply'
+        ),
+        true
+    )
+) {
+    $usage = <<<USAGE
+The generate_tables_sql_and_testNames.php script takes the 
+{instrument_name}.linst file from the /instrument_manager  module and installs 
+an instrument for the table of each instrument it finds in the 
+{instrument_name}.linst file.
+These sql files are written to the tables_sql/ subdirectory.
+
+Ex cmd without SQL execution:
+php generate_tables_sql_and_testNames.php
+../instruments/[instrument_name].linst --to-sql
+
+Ex cmd with SQL execution:
+php generate_tables_sql_and_testNames.php 
+../instruments/[instrument_name].linst --apply
+USAGE; 
+
+    echo $usage;
+};
+
+$execute_mysql_query = $argv[2] === '--apply';
 $data          = file_get_contents($argv[1]);
 $instruments   = explode("{-@-}", trim($data));
 $error_message = "";
@@ -78,7 +98,7 @@ if (!is_array($instruments)) {
                 break;
             case "page":
                 $pages[] = $bits[2];
-                continue;
+                continue 2;
                 // Continue as no SQL needs to be generated.
             case "title":
                 $title = $bits[1];
@@ -149,11 +169,11 @@ if (!is_array($instruments)) {
         }
         fclose($fp);
     }
-    // Execute the SQL tasks if no error_message.
+    // Execute the SQL tasks if no error_message and CLI flag set.
     if ($db->isConnected() 
         && empty($error_message)
-        && $execute_mysql_query) 
-    {
+        && $execute_mysql_query
+    ) {
         if (!$db->tableExists($sql_query_table_name)) {
             // Table doesn't exist!
             $sql_query_statement .= implode($sql_query_columns);
@@ -163,7 +183,8 @@ if (!is_array($instruments)) {
             $statement            = $db->prepare($sql_query_statement);
             $statement->execute();
         } else {
-            $error_message = "There is already an instrument installed with this name.";
+            $error_message = "There is already an instrument installed with 
+                this name.";
         }
         $statement = $db->prepare(
             'REPLACE INTO test_names (Test_name, Full_name, Sub_group)'
@@ -194,7 +215,7 @@ if ($error_message) {
  * Creates a partial MySQL enum statement based on options extracted from
  * a LINST file (which is in turn based on an HTML select field).
  *
- * @param array  $options the enum values.
+ * @param array $options the enum values.
  *
  * @return string
  */
