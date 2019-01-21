@@ -9,7 +9,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\Api\Views;
+namespace LORIS\Api\Views\Project;
 
 /**
  * Creates a representation of a project instrument following the api response
@@ -22,7 +22,7 @@ namespace LORIS\Api\Views;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class ProjectInstruments
+class Instruments
 {
     protected $meta        = array();
     protected $instruments = array();
