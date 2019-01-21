@@ -789,7 +789,12 @@ class Candidate
             // If the random ID is already in use, increment it until we find
             // an unused value.
             if (in_array(
-                str_pad($id, $length, $alphabet[0], STR_PAD_LEFT),
+                str_pad(
+                    $id, 
+                    $length, 
+                    strval($alphabet[0]), 
+                    STR_PAD_LEFT
+                ),
                 $existingIDs,
                 true
             )
@@ -806,7 +811,12 @@ class Candidate
             break;
         }
 
-        return $prefix . str_pad($id, $length, $alphabet[0], STR_PAD_LEFT);
+        return $prefix . str_pad(
+            $id, 
+            $length, 
+            strval($alphabet[0]), 
+            STR_PAD_LEFT
+        );
     }
 
     /**
@@ -901,7 +911,12 @@ class Candidate
             }
         } while (
             in_array(
-                str_pad(strval($newID), $length, $alphabet[0], STR_PAD_LEFT),
+                str_pad(
+                    strval($newID), 
+                    $length, 
+                    strval($alphabet[0]), 
+                    STR_PAD_LEFT
+                ),
                 $existingIDs,
                 true
             )
