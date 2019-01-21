@@ -259,7 +259,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("PSCI: BBQ001", $bodyText);
+        $this->assertContains("PSCID: BBQ001", $bodyText);
 
         $this->deleteCandidate("BBQ000");
         $this->deleteCandidate("BBQ001");
