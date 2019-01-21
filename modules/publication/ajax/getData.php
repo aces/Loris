@@ -23,8 +23,8 @@ if (isset($_REQUEST['action'])) {
             return json_encode(getData($db));
         } else {
             http_response_code(403);
-            $message['message'] =
-                'You do not have access to the publication module.';
+            $message['message']
+                = 'You do not have access to the publication module.';
             return json_encode($message);
         }
     } elseif ($action === 'getProjectData') {
