@@ -174,32 +174,32 @@ class CNV_Browser extends \NDB_Menu_Filter
                                'genotyping_platform.Name',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'           => 'candidate.RegistrationCenterID',
-                               'DCCID'              => 'candidate.CandID',
-                               'PSCID'              => 'candidate.PSCID',
-                               'sex'                => 'candidate.Sex',
-                               'SubprojectID'       => 'cohort.SubprojectID',
-                               'External_ID'        => 'candidate.ExternalID',
-                               'Show_Brief_Results' => 'show_brief_results',
-                               'CNV_Type'           => 'CNV.Type',
-                               'Copy_Num_Change'    => 'CNV.CopyNumChange',
-                               'CNV_Description'    => 'CNV.Description',
-                               'Event_Name'         => 'CNV.EventName',
-                               'Common_CNV'         => 'CNV.Common_CNV',
-                               'Characteristics'    => 'CNV.Characteristics',
-                               'Inheritance'        => 'CNV.Inheritance',
-                               'Array_Report'       => 'CNV.ArrayReport',
-                               'Markers'            => 'CNV.Markers',
-                               'Validation_Method'  => 'CNV.ValidationMethod',
-                               'Chromosome'         => 'CNV.Chromosome',
-                               'Strand'             => 'CNV.Strand',
-                               'genomic_range'      => 'genomic_range',
-                               'Gene_Symbol'        => 'CNV.OfficialSymbol',
-                               'Gene_Name'          => 'CNV.OfficialName',
-                               'Platform'           => 'genotyping_platform.Name',
-                              );
-
+        $ftf = array(
+                'centerID'           => 'candidate.RegistrationCenterID',
+                'DCCID'              => 'candidate.CandID',
+                'PSCID'              => 'candidate.PSCID',
+                'sex'                => 'candidate.Sex',
+                'SubprojectID'       => 'cohort.SubprojectID',
+                'External_ID'        => 'candidate.ExternalID',
+                'Show_Brief_Results' => 'show_brief_results',
+                'CNV_Type'           => 'CNV.Type',
+                'Copy_Num_Change'    => 'CNV.CopyNumChange',
+                'CNV_Description'    => 'CNV.Description',
+                'Event_Name'         => 'CNV.EventName',
+                'Common_CNV'         => 'CNV.Common_CNV',
+                'Characteristics'    => 'CNV.Characteristics',
+                'Inheritance'        => 'CNV.Inheritance',
+                'Array_Report'       => 'CNV.ArrayReport',
+                'Markers'            => 'CNV.Markers',
+                'Validation_Method'  => 'CNV.ValidationMethod',
+                'Chromosome'         => 'CNV.Chromosome',
+                'Strand'             => 'CNV.Strand',
+                'genomic_range'      => 'genomic_range',
+                'Gene_Symbol'        => 'CNV.OfficialSymbol',
+                'Gene_Name'          => 'CNV.OfficialName',
+                'Platform'           => 'genotyping_platform.Name',
+               );
+        $this->formToFilter = $ftf;
         return true;
     }
 
