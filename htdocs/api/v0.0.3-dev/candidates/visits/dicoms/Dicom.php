@@ -104,7 +104,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     public function handlePUT()
     {
 
-        if (!isset($_REQUEST['Filename'], $_REQUEST['IsPhantom'])) {
+        //if (!isset($_REQUEST['Filename'], $_SERVER['HTTP_X_IS_PHANTOM'])) {
+        if (!isset($_REQUEST['Tarname'], $_SERVER['HTTP_X_IS_PHANTOM'])) {
             // Missing data. Filname and IsPhantom values are required.
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Missing data. Check your request.");
@@ -130,12 +131,14 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             ) {
                 //@TODO: Check with JohnSaigle et al about security related re
                 //$_REQUEST['Tarname'] (sanitisation etc)
-                $dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Filename'];
+                //$dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Filename'];
+                $dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Tarname'];
                 $op   = fopen($dest, 'wb');
                 if (!fwrite($op, $data)) {
                     $this->JSON = array("error" => "Could not write file");
                 } else {
-                    $isPhantom = $_REQUEST['IsPhantom'];
+                    //$isPhantom = $_REQUEST['IsPhantom'];
+                    $isPhantom = $_SERVER['HTTP_X_IS_PHANTOM'];
                     $args      = $this->createProcessArgs($isPhantom);
                     if (!empty($args)) {
                         // Add path to mri upload file
@@ -418,7 +421,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         //@TODO Catch \DatabaseException thrown by getProcessesState() ??
         foreach ($processes as $proc) {
             $processesInfo[] = array(
-                                "process_id" => $proc['PID'],
+                                "process_id" => $proc['ID'],
+                                "pid" => $proc['PID'],
                                 "status"     => $proc['PROGRESS'],
                                 "message"    => $proc['STATE'],
                                );
