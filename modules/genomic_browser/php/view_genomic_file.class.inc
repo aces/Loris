@@ -142,9 +142,9 @@ class View_Genomic_File extends \NDB_Form
     /**
     * Gets the date according to the type
     *
-    * @param GenomicFile $file  file object
-    * @param string      $type  type of the date
-    * @param array       $array array containing the date
+    * @param Genomic_File $file  file object
+    * @param string       $type  type of the date
+    * @param array        $array array containing the date
     *
     * @return int|string Date (Unix int timestamp) if exists, or an empty string
     */

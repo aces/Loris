@@ -325,8 +325,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets a rejected parameter according to its type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the rejected
+     * @param \MRIFile $file file object
+     * @param string   $type type of the rejected
      *
      * @return string The parameter of the rejected
      */
@@ -351,8 +351,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets the date according to the type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the date
+     * @param \MRIFile $file file object
+     * @param string   $type type of the date
      *
      * @return string The date if exists, if not an empty string
      */

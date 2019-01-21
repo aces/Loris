@@ -1059,29 +1059,26 @@ class NDB_BVL_Feedback
      * Returns false if the user doesn't have the appropriate permissions
      * or is not on one of the appropriate pages to return bvl_feedback.
      *
-     * @param test_name $test_name The name of the test to be checked.
+     * @param string $test_name The name of the test to be checked.
      *
-     * @return bool|object
+     * @return bool
      * @throws ConfigurationException
      * @throws Exception
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
-    static function bvlFeedbackPossible($test_name)
+    static function bvlFeedbackPossible(string $test_name): bool
     {
-        $user =& User::singleton();
-
-        if ($user->hasPermission('bvl_feedback')) {
+        if (\User::singleton()->hasPermission('bvl_feedback')) {
             if (($test_name === "timepoint_list")
                 || ($test_name === "instrument_list")
             ) {
                 return true;
             } else {
-                $Factory       = NDB_Factory::singleton();
-                $DB            = $Factory->database();
-                $instruments_q = $DB->pselectOne(
-                    "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
-                    array('testName' => $test_name)
-                );
+                $instruments_q = \NDB_Factory::singleton()-database()
+                    ->pselectOne(
+                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
+                        array('testName' => $test_name)
+                    );
                 if ($instruments_q == 1) {
                     return true;
                 }
