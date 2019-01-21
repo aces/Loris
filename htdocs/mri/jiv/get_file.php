@@ -144,24 +144,24 @@ if (!file_exists($FullPath)) {
 
 // Build and send the response with the file data.
 $DownloadFilename = basename($File);
-header("Content-type: $MimeType");
-if (!empty($DownloadFilename)) {
-    // Prepend the patient name to the beginning of the file name.
-    if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
-        /* Format: $Filename_$PatientName.extension
-         *
-         * basename() is used around $PatientName to prevent the use of
-         * relative path traversal characters.
-         */
 
-        $DownloadFilename = basename($PatientName) .
-            '_' .
-            pathinfo($DownloadFilename, PATHINFO_FILENAME) .
-            '.' .
-            pathinfo($DownloadFilename, PATHINFO_EXTENSION);
+// Prepend the patient name to the beginning of the file name for DICOMTAR
+// files.
+if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
+    /* Format: $Filename_$PatientName.extension
+     *
+     * basename() is used around $PatientName to prevent the use of
+     * relative path traversal characters.
+     */
 
-    }
+    $DownloadFilename = basename($PatientName) .
+        '_' .
+        pathinfo($DownloadFilename, PATHINFO_FILENAME) .
+        '.' .
+        pathinfo($DownloadFilename, PATHINFO_EXTENSION);
+
 }
+header("Content-type: $MimeType");
 header("Content-Disposition: attachment; filename=$DownloadFilename");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
