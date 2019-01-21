@@ -21,8 +21,17 @@ require_once __DIR__ . '/../generic_includes.php';
 
 $instruments = Utility::getAllInstruments();
 
-$confirm =false;
-if (!empty($argv[1]) && $argv[1] == 'confirm') {
+if (empty($argv[1])
+    || (!empty($argv[1])
+    && ($argv[1] === 'help' || ($argv[1] !== 'check' && $argv[1] !== 'confirm')))
+    || in_array('-h', $argv, true)
+    || !empty($argv[2])
+) {
+    showHelp();
+}
+
+$confirm = false;
+if ($argv[1] == 'confirm') {
     $confirm = true;
 }
 
@@ -60,9 +69,14 @@ foreach ($instruments as $inst=>$fullName) {
         continue;
     }
 
-    // Break if Date taken does not exist
+    // Skip if Date taken does not exist
     if (!$DB->columnExists($inst, 'Date_taken')) {
         echo "\t$inst does not use a `Date_taken` field and should be handled separately.\n";
+        continue;
+    }
+    // Skip if Date taken does not exist
+    if (!$DB->columnExists($inst, 'Candidate_Age')) {
+        echo "\t$inst does not use a `Candidate_Age` field and should be handled separately.\n";
         continue;
     }
 
@@ -149,4 +163,23 @@ if (!empty($incorrectAges)) {
 
 if (!$confirm) {
     echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
+}
+
+/*
+ * Prints the usage and example help text and stop program
+ */
+function showHelp()
+{
+    echo "*** Fix Candidate Age ***\n\n";
+
+    echo "Usage: php fix_candidate_age.php [confirm | check | help | -h]\n";
+    echo "Example: php fix_candidate_age.php help\n";
+    echo "Example: php fix_candidate_age.php check\n";
+    echo "Example: php fix_candidate_age.php confirm\n\n";
+
+    echo "When the 'check' option is used, the script only detects and reports 
+    miscalculated and NULL ages. 
+    Using the 'confirm' option will apply the necessary corrections to the data.";
+
+    die();
 }
