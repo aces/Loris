@@ -186,7 +186,7 @@ function getProjectData($db, $user, $id) : array
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
-            return array_merge($pubData, getData());
+            return array_merge($pubData, getData($db));
         } else {
             return $pubData;
         }
