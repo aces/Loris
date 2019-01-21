@@ -179,7 +179,7 @@ class Database_Test extends TestCase
 
         $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
         $this->assertEquals(
             $allSetting,
             array(
@@ -216,7 +216,7 @@ class Database_Test extends TestCase
         );
         $DB->update("ConfigSettings", array('Visible' => null, 'Description' => 'new description'), array('Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
         $this->assertEquals(
             $allSetting,
             array(
@@ -242,7 +242,7 @@ class Database_Test extends TestCase
 
         $DB->insert("ConfigSettings", array('ID' => 99990, 'Name' => 'test insert', 'Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
         $this->assertEquals(
             $allSetting,
             array(
@@ -254,6 +254,5 @@ class Database_Test extends TestCase
                 )
             )
         );
-        $DB->delete("ConfigSettings", array('ID' => 99990));
     }
 }
