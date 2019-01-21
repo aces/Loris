@@ -254,6 +254,6 @@ class Database_Test extends TestCase
                 )
             )
         );
-        $DB->delete("ConfigSettings", array('ID' => 99990);
+        $DB->delete("ConfigSettings", array('ID' => 99990));
     }
 }
