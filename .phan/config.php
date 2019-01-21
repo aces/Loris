@@ -27,7 +27,6 @@ return [
         "PhanTypeMismatchDimFetch",
         "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",
-		"PhanUndeclaredTypeParameter",
 		"PhanUndeclaredConstant",
 		"PhanTypeMismatchForeach",
 		"PhanTypeMismatchArgument",

@@ -421,7 +421,7 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * FieldInConflict function
      *
-     * @param unknown_type $test_name  the value of test name
+     * @param string $test_name  the value of test name
      * @param string       $field_name the value of field name
      *
      * @return array
@@ -478,7 +478,7 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * GetIncompleteCandidates function
      *
-     * @param unknown_type $test_name   the value of test name
+     * @param string $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
      * @param int|string   $site        the id or default value of the site
