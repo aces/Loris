@@ -25,9 +25,9 @@ $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 $message = array('message' => null);
 
 if (empty($uploadData)) {
-    header("HTTP/1.1 400 Bad Request");
+    http_response_code(400);
     $message['message'] = 'Invalid Upload ID';
-    echo json_encode($message);
+    return json_encode($message);
 }
 
 if (userCanDelete($uploadData, $db, $user)) {
@@ -43,9 +43,9 @@ if (userCanDelete($uploadData, $db, $user)) {
     rename($src, $dest);
 
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    http_response_code(403);
     $message['message'] = 'You do not have permission to delete this file.';
-    echo json_encode($message);
+    return json_encode($message);
 }
 
 /**

@@ -19,7 +19,8 @@ if (isset($_REQUEST['action'])) {
     } elseif ($action === 'editProject') {
         editProject();
     } else {
-        header("HTTP/1.1 400 Bad Request");
+        http_response_code(400);
+        return;
     }
 }
 

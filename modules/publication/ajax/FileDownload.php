@@ -24,9 +24,9 @@ if (userCanDownload($user)) {
 
     if (!file_exists($filePath)) {
         error_log("ERROR: File $filePath does not exist");
-        header("HTTP/1.1 404 Not Found");
+        http_response_code(404);
         $message['message'] = "Could not locate file: $file";
-        echo json_encode($message);
+        return json_encode($message);
     }
 
     // Output file in downloadable format
@@ -36,9 +36,9 @@ if (userCanDownload($user)) {
     header("Content-disposition: attachment; filename=\"" .  $filePath . "\"");
     readfile($filePath);
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    http_response_code(403);
     $message['message'] = 'You do not have permission to download this file.';
-    echo json_encode($message);
+    return json_encode($message);
 }
 
 /**
