@@ -20,7 +20,6 @@ return [
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
 		"PhanUndeclaredMethod",
-		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
         "PhanTypeArraySuspiciousNullable",

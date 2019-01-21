@@ -134,6 +134,9 @@ class EditExaminer extends \NDB_Form
                  'TID' => $testID,
                 )
             );
+            // FIXME $visit_label should be set properly. This declaration
+            // was only added to appease phan.
+            $visit_label = '';
 
              // if certification for new instrument for the examiner
             if (empty($certID) && !empty($certStatus)) {
@@ -257,6 +260,8 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
+
+        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
         $url = "{$baseurl}/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);

@@ -206,14 +206,15 @@ class Statistics_Mri_Site extends Statistics_Site
         // cells for ones that are missing for a given issue in the
         // template
         $visits = array();
+        $projectID = $_REQUEST['ProjectID'] ?? '';
 
         $data = array();
         foreach ($this->issues as $issue) {
             // FIXME The function _completeCount() seems to be unfinished and
             // always returns null.
-            $complete_count = $this->_completeCount($centerID, $projectID, $issue);
+            $complete_count = $this->_completeCount($id, $projectID, $issue);
 
-            $results = $this->_getResults($centerID, $projectID, $issue);
+            $results = $this->_getResults($id, $projectID, $issue);
 
             $test_url = $issue;
             foreach ($results as $row) {

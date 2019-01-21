@@ -642,7 +642,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$pieces[1]]
                         = array(
                            'type'    => 'numeric',
-                           'options' => $options,
+                           'options' => array()
                           );
                     break;
 

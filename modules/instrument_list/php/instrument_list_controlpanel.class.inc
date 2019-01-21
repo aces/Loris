@@ -163,7 +163,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     }
                 }
                 unset($flagList);
-                unset($constantsArray);
                 unset($flagTypeIDs);
                 unset($flagName);
                 unset($flagStatus);

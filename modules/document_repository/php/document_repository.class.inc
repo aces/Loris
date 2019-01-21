@@ -316,10 +316,15 @@ class Document_Repository extends \NDB_Menu_Filter
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;
+            // FIXME the for-loop below is pretty confusing and is not 
+            // documented. This should be cleaned up and the phan suppressions
+            // removed.
             foreach ($results as $result) {
+                //@phan-suppress-next-line PhanUndeclaredVariable
                 $thisref = &$refs->{$result['id']};
                 if (empty($thisref)) {
                     $thisref = new \stdClass();
+                    //@phan-suppress-next-line PhanUndeclaredVariable
                     $refs->{$result['id']} =& $thisref;
                 }
                 foreach ($result as $k => $v) {
@@ -328,6 +333,7 @@ class Document_Repository extends \NDB_Menu_Filter
                 if ($result['parent_id'] == 0) {
                     $tree->{$result['id']} = &$thisref;
                 } else {
+                    //@phan-suppress-next-line PhanUndeclaredVariable
                     $refs->{$result['parent_id']}->children->{$result['id']}
                         = &$thisref;
                 }

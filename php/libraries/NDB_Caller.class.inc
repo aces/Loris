@@ -424,6 +424,7 @@ class NDB_Caller
         }
 
         // save instrument form data
+        $success = false;
         if (!isset($_REQUEST['ClearInstrument'])) {
             // If ClearInstrument was set, it's the control
             // panel, not the instrument that needs to be
@@ -442,11 +443,15 @@ class NDB_Caller
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
-            || !in_array(
-                $timepoint->getData("CenterID"),
-                $user->getData("CenterIDs")
+            || (
+                isset($timepoint) 
+                && !in_array(
+                    $timepoint->getData("CenterID"),
+                    $user->getData("CenterIDs")
+                )
             )
         ) {
+
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
             }
