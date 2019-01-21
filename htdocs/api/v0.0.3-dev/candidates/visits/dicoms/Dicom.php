@@ -74,21 +74,25 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $fullDir = $this->getFullPath();
-        $fp      = fopen($fullDir, "r");
-        if ($fp !== false) {
-            $this->Header("Content-Type: application/x-tar");
-            $this->Header('Content-Length: '.filesize($fullDir));
-            $this->Header(
-                'Content-Disposition: attachment; filename='.$this->Tarname
-            );
-            fpassthru($fp);
-            fclose($fp);
-            $this->safeExit(0);
+        if (isset($_REQUEST['ProcessID']) && !empty($_REQUEST['ProcessID'])) {
+            $this->printProcessResults(array($_REQUEST['ProcessID']));
         } else {
-            $this->header("HTTP/1.1 500 Internal Server Error");
-            $this->error("Could not load Tarfile");
-            $this->safeExit(1);
+            $fullDir = $this->getFullPath();
+            $fp      = fopen($fullDir, "r");
+            if ($fp !== false) {
+                $this->Header("Content-Type: application/x-tar");
+                $this->Header('Content-Length: '.filesize($fullDir));
+                $this->Header(
+                    'Content-Disposition: attachment; filename='.$this->Tarname
+                );
+                fpassthru($fp);
+                fclose($fp);
+                $this->safeExit(0);
+            } else {
+                $this->header("HTTP/1.1 500 Internal Server Error");
+                $this->error("Could not load Tarfile");
+                $this->safeExit(1);
+            }
         }
     }
 
@@ -431,8 +435,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return an associative array of the current state of the processes.
      */
-    function printProcessResults(
-        $idsToMonitor,
+    function printProcessResults($idsToMonitor,
         $mri_upload_id=null,
         $trigger_pipeline=false
     ) {
