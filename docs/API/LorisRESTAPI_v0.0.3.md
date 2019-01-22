@@ -878,7 +878,6 @@ Returns JSON data with a status of the process launch. The format is:
 An HTTP 202 response code will also be returned if processing is launched.
 
 
-To see processing status of a DICOM fileset, send a GET request in the form:
 To see processing status of DICOM filesets, send a GET request in the form:
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id[,$process_id2,...]
