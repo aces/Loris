@@ -168,7 +168,7 @@ function() {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
-            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
+            DataURL={`${loris.BaseURL}/document_repository/Files`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}

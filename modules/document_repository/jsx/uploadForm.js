@@ -30,22 +30,13 @@ class DocUploadForm extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
  fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
-    });
+    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({Data: data, isLoaded: true}))
+      .catch((error) => {
+        this.setState({error: 'An error occurred when loading the form!'});
+        console.error(error);
+      });
 }
   componentDidMount() {
     this.fetchData();
