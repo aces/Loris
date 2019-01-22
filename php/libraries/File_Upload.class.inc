@@ -463,7 +463,7 @@ class File_Upload
       *
       * @param string $name The string file name
       *
-      * @return string split file name
+      * @return array split file name
       * @see    File_Upload::nameToIncremental()
       * @see    File_Upload::nameToUniqueRandom()
       * @see    File_Upload::nameToUniqueTimestamp()
@@ -490,7 +490,7 @@ class File_Upload
      * @param string $dir  The target directory for the file.
      * @param string $name The proposed name for the file.
      *
-     * @return string New filename
+     * @return array New filename
      * @see    File_Upload::moveFile()
      */
     function nameToIncremental(string $dir, string $name): string
