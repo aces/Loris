@@ -423,8 +423,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $processesInfo[] = array(
                                 "process_id" => $proc['ID'],
                                 "pid"        => $proc['PID'],
-                                "status"     => $proc['PROGRESS'],
-                                "message"    => $proc['STATE'],
+                                "status"    => $proc['STATE'],
+                                "message"     => $proc['PROGRESS'],
                                );
         }
         return $processesInfo;
