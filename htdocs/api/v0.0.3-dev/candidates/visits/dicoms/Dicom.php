@@ -75,7 +75,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     public function handleGET()
     {
         if (isset($_REQUEST['ProcessID']) && !empty($_REQUEST['ProcessID'])) {
-            $this->printProcessResults(array($_REQUEST['ProcessID']));
+            $ids = explode(",", $_REQUEST['ProcessID']);
+            $this->printProcessResults($ids);
         } else {
             $fullDir = $this->getFullPath();
             $fp      = fopen($fullDir, "r");
