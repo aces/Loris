@@ -856,8 +856,7 @@ The POST request JSON must be of the form:
 {
     "process_type":"mri_upload",
     "Filename":$Filename, 
-    "mri_upload_id":$mri_upload_id, 
-    "IsPhantom": bool
+    "mri_upload_id":$mri_upload_id 
 }
 ```
 
