@@ -39,7 +39,7 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param ?array $InputData  The data posted to this URL
      */
     public function __construct($method, $CandID, $VisitLabel, $InputData=null)
     {
