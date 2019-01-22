@@ -1,3 +1,4 @@
+import Panel from 'Panel';
 /**
  * New Profile Form
  *
@@ -240,7 +241,9 @@ class NewProfileIndex extends React.Component {
             }
             return (
             <div>
+            <Panel>
             {profile}
+            </Panel>
             </div>
             );
     }
