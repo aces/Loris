@@ -60,24 +60,16 @@ abstract class Endpoint implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $methods = $this->allowedMethods();
-        if (!in_array($request->getMethod(), $methods)) {
-            return new \LORIS\Http\Response\MethodNotAllowed(
-                $methods
-            );
-        }
-
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-
         if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\BadRequest(
-                'Unsupported LORIS API version'
-            );
+            return new \LORIS\Http\Response\BadRequest('unsupported version');
         }
+
         if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
             return (new \LORIS\Middleware\ETag())->process($request, $handler);
         }
+
         return $handler->handle($request);
     }
 }
