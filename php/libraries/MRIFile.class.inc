@@ -2,7 +2,7 @@
 /**
  * Contains the MRIFile class used for NeuroDB imaging
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Imaging
  * @package  Imaging
@@ -31,9 +31,9 @@ class MRIFile
      *
      * @param integer $fileID The FileID to be loaded
      */
-    function __construct($fileID)
+    function __construct(int $fileID)
     {
-        $db     =& Database::singleton();
+        $db     = \Database::singleton();
         $params = array('FID' => $fileID);
 
         $query    = "SELECT * FROM files WHERE FileID=:FID";
@@ -81,7 +81,7 @@ class MRIFile
      *
      * @return mixed The value of the parameter
      */
-    function getParameter($parameterName)
+    function getParameter(string $parameterName)
     {
         if (isset($this->QCData[$parameterName])) {
             return $this->QCData[$parameterName];
@@ -105,21 +105,17 @@ class MRIFile
     /**
      * Gets the AcquisitionProtocol for this file
      *
-     * @return String the type of scan
+     * @return ?string the type of scan
      */
-    function getAcquisitionProtocol()
+    function getAcquisitionProtocol(): ?string
     {
-        $db =& Database::singleton();
-
         if (is_null($this->fileData['AcquisitionProtocolID'])) {
             return null;
         }
 
-        $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID";
-        $acquisitionProtocol = $db->pselectOne(
-            $query,
+        return \Database::singleton()->pselectOne(
+            'SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID',
             array('ProtoID' => $this->fileData['AcquisitionProtocolID'])
         );
-        return $acquisitionProtocol;
     }
 }
