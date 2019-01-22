@@ -830,11 +830,11 @@ class Utility
      * This is used by create timepoint and start timepoint pages,
      * so it probably shouldn't be in the instrument class.
      *
-     * @param array $dateElement The date element in QuickForm array format.
+     * @param array|string $dateElement The date element in QuickForm array format.
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    static function _checkDate(array $dateElement): bool
+    static function _checkDate($dateElement): bool
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
