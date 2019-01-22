@@ -790,9 +790,9 @@ class Candidate
             // an unused value.
             if (in_array(
                 str_pad(
-                    $id, 
-                    $length, 
-                    strval($alphabet[0]), 
+                    $id,
+                    $length,
+                    strval($alphabet[0]),
                     STR_PAD_LEFT
                 ),
                 $existingIDs,
@@ -812,9 +812,9 @@ class Candidate
         }
 
         return $prefix . str_pad(
-            $id, 
-            $length, 
-            strval($alphabet[0]), 
+            $id,
+            $length,
+            strval($alphabet[0]),
             STR_PAD_LEFT
         );
     }
@@ -912,9 +912,9 @@ class Candidate
         } while (
             in_array(
                 str_pad(
-                    strval($newID), 
-                    $length, 
-                    strval($alphabet[0]), 
+                    strval($newID),
+                    $length,
+                    strval($alphabet[0]),
                     STR_PAD_LEFT
                 ),
                 $existingIDs,
