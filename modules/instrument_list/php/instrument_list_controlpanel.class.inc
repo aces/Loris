@@ -71,14 +71,14 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // BVLQC - get permission and set the tpl element
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $this->tpl_data['access']['bvl_qc']
             = $user->hasPermission('bvl_feedback');
 
         // BVLQCType
-        $success = $this->_displayBVLQCType();
+        $this->_displayBVLQCType();
         // BVLQCStatus
-        $success = $this->_displayBVLQCStatus();
+        $this->_displayBVLQCStatus();
 
         $smarty = new \Smarty_neurodb("instrument_list");
         $smarty->assign($this->tpl_data);
@@ -189,7 +189,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $battery = new \NDB_BVL_Battery();
 
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
 
@@ -255,7 +255,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 $battery = new \NDB_BVL_Battery();
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
                 // get the list of instruments
@@ -374,7 +374,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery;
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($_REQUEST['sessionID']);
+        $battery->selectBattery($_REQUEST['sessionID']);
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -581,7 +581,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -686,7 +686,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();

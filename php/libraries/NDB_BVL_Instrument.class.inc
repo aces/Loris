@@ -499,10 +499,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save(): bool
     {
-        $scoreResult = '';
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
-            $scoreResult = $this->score();
 
             // determine the data entry completion status, and store that in
             // the database
@@ -2217,7 +2215,6 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-            $success      = $controlPanel->select($_REQUEST['commentID']);
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
@@ -2227,12 +2224,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $TestName = $this->testName;
             if (file_exists(
                 $BasePath
-                . "NDB_BVL_Instrument_$TestName.class.inc"
+                    . "NDB_BVL_Instrument_$TestName.class.inc"
             )
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
-                $success = $controlPanel->save();
+                $controlPanel->save();
             }
 
             // display the control panel

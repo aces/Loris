@@ -183,9 +183,9 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
         // Manually extract the sessionID with a select statement,
         // since the keys used to look it up are in different tables
         // and we can't join in the update wrapper.
-        $factory     = \NDB_Factory::singleton();
-        $DB          = $factory->database();
-         $sessionID  = $DB->pselectOne(
+        $factory    = \NDB_Factory::singleton();
+        $DB         = $factory->database();
+         $sessionID = $DB->pselectOne(
              "SELECT s.ID
                FROM session s 
                  JOIN candidate c ON (c.CandID=s.CandID) 
@@ -196,7 +196,7 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
               'CID' => $this->CandID,
              )
          );
-         $qcstatus   = $DB->update(
+         $DB->update(
              'session',
              [
               'MRIQCStatus'  => $data['SessionQC'],

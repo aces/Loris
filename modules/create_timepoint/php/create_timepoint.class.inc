@@ -69,7 +69,7 @@ class Create_Timepoint extends \NDB_Form
      */
     function _process($values)
     {
-        $success = \TimePoint::createNew(
+        \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
             $values['visitLabel'],

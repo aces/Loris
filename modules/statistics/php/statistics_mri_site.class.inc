@@ -73,9 +73,9 @@ class Statistics_Mri_Site extends Statistics_Site
      * @param string $projectID the value of projectID
      * @param string $issue     the value of issue
      *
-     * @return void
+     * @return ?string
      */
-    function _completeCount($centerID, $projectID, $issue)
+    function _completeCount($centerID, $projectID, $issue): ?string
     {
         return null;
     }
@@ -209,6 +209,8 @@ class Statistics_Mri_Site extends Statistics_Site
 
         $data = array();
         foreach ($this->issues as $issue) {
+            // FIXME The function _completeCount() seems ot be unfinished and
+            // always returns null.
             $complete_count = $this->_completeCount($centerID, $projectID, $issue);
 
             $results = $this->_getResults($centerID, $projectID, $issue);
