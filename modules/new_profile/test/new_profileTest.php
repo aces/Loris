@@ -25,19 +25,19 @@ require_once __DIR__ .
  */
 class NewProfileTestIntegrationTest extends LorisIntegrationTest
 {
-    public $dateTaken  = "#lorisworkspace > div > form >".
+    public $dateTaken  = "#default-panel > div > form >".
                          " div > div:nth-child(2) > div > div > input";
-    public $dtc        = "#lorisworkspace > div > form >".
+    public $dtc        = "#default-panel > div > form >".
                          " div > div:nth-child(3) > div > div > input";
-    public $edc        = "#lorisworkspace > div > form >".
+    public $edc        = "#default-panel > div > form >".
                          " div > div:nth-child(4)>div>div:nth-child(1)>div>input";
-    public $edcConfirm = "#lorisworkspace > div > form >".
+    public $edcConfirm = "#default-panel > div > form >".
                          " div > div:nth-child(4)>div>div:nth-child(2)>div>input";
-    public $gender     = "#lorisworkspace > div > form >".
+    public $gender     = "#default-panel > div > form >".
                          " div > div:nth-child(5) > div > div > select";
-    public $site       = "#lorisworkspace > div > form >".
+    public $site       = "#default-panel > div > form >".
                          " div > div:nth-child(6) > div > div > select";
-    public $btn        = "#lorisworkspace > div > form >".
+    public $btn        = "#default-panel > div > form >".
                          " div > div:nth-child(9) > div > div > button";
     /**
      * Tests that, when loading the new_profile module with all settings
@@ -55,14 +55,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("New Profile", $bodyText);
         // check EDC shows on the page
-        $value = "#lorisworkspace > div > form > div >".
+        $value = "#default-panel > div > form > div >".
                  " div:nth-child(4) > div > div:nth-child(1) > label";
         $EDC   = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertContains("Expected Date of Confinement", $EDC);
         // check Project shows on the page
-        $value   = "#lorisworkspace > div > form > div >".
+        $value   = "#default-panel > div > form > div >".
                  " div:nth-child(8) > div > div:nth-child(1) > label";
         $project = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -86,7 +86,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/new_profile/");
 
         try {
-            $value   = "#lorisworkspace > div > form > div >".
+            $value   = "#default-panel > div > form > div >".
                  " div:nth-child(8) > div > div:nth-child(1) > label";
             $project = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
@@ -160,7 +160,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$this->btn').click()"
         );
         $bodyText   = $this->webDriver->executescript(
-            "return document.querySelector('#lorisworkspace').textContent"
+            "return document.querySelector('#default-panel').textContent"
         );
         $this->assertContains("New candidate created.", $bodyText);
         $this->restoreConfigSetting("useEDC");
