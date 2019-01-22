@@ -501,6 +501,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
+            $this->score();
 
             // determine the data entry completion status, and store that in
             // the database
@@ -2215,6 +2216,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
+            $controlPanel->select($_REQUEST['commentID']);
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
