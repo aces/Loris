@@ -179,7 +179,7 @@ class Database_Test extends TestCase
 
         $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
@@ -216,7 +216,7 @@ class Database_Test extends TestCase
         );
         $DB->update("ConfigSettings", array('Visible' => null, 'Description' => 'new description'), array('Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
@@ -252,7 +252,7 @@ class Database_Test extends TestCase
         );
         $DB->insert("ConfigSettings", array('ID' => 99992, 'Name' => 'test 2', 'Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
