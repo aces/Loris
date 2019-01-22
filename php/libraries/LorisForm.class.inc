@@ -2156,7 +2156,7 @@ class LorisForm
      *
      * @return array
      */
-    function getSubmitValues(): array
+    function getSubmitValues()
     {
         $retVal     = array();
         $submitKeys = $_POST + $_FILES;
