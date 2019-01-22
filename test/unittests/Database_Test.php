@@ -179,7 +179,7 @@ class Database_Test extends TestCase
 
         $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
+        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
@@ -216,7 +216,7 @@ class Database_Test extends TestCase
         );
         $DB->update("ConfigSettings", array('Visible' => null, 'Description' => 'new description'), array('Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
+        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
@@ -239,16 +239,32 @@ class Database_Test extends TestCase
     function testinsertWithIsNull() {
         $this->_factory   = NDB_Factory::singleton();
         $DB = Database::singleton();
-
-        $DB->insert("ConfigSettings", array('ID' => 99990, 'Name' => 'test insert', 'Visible' => 1, 'Description' => null));
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                )
+            )
+        );
+        $DB->insert("ConfigSettings", array('ID' => 99992, 'Name' => 'test 2', 'Visible' => 1, 'Description' => null));
         $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
-        $DB->run("DELETE FROM ConfigSettings WHERE ID >99900");
+        $DB->run("DROP TEMPORAIRY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
             array(
                 0 => array(
-                    'ID' => 99990,
-                    'Name' => 'test insert',
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
                     'Description' => null,
                     'Visible' => '1'
                 )
