@@ -1074,7 +1074,7 @@ class NDB_BVL_Feedback
             ) {
                 return true;
             } else {
-                $instruments_q = \NDB_Factory::singleton()-database()
+                $instruments_q = \NDB_Factory::singleton()->database()
                     ->pselectOne(
                         "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
                         array('testName' => $test_name)
