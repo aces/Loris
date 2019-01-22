@@ -871,7 +871,7 @@ Returns JSON data with a status of the process launch. The format is:
       "pid": "29039",
       "status":"RUNNING"
       "message":"..."
-    },
+    }
   ]
 }
 ```
