@@ -117,7 +117,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        if (!$this->canWriteFiles()) {
+        if (! ($this->canWriteFiles()
+            && \User::singleton()->hasPermission('instrument_manager_write'))
+        ) {
             return (new \Zend\Diactoros\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
@@ -618,9 +620,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $instrument_dir = $this->path . 'project/instruments';
         $table_dir      = $this->path . 'project/tables_sql';
 
-        return is_writable($instrument_dir)
-            && is_writable($table_dir)
-            && \User::singleton()->hasPermission('instrument_manager_write');
+        return is_writable($instrument_dir) && is_writable($table_dir);
     }
 
 
