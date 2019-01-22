@@ -316,7 +316,7 @@ class Document_Repository extends \NDB_Menu_Filter
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;
-            // FIXME the for-loop below is pretty confusing and is not 
+            // FIXME the for-loop below is pretty confusing and is not
             // documented. This should be cleaned up and the phan suppressions
             // removed.
             foreach ($results as $result) {

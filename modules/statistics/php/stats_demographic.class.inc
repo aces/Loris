@@ -158,7 +158,7 @@ class Stats_Demographic extends \NDB_Form
         //functions below. This declaration was added to satisfy phan but work
         //should be done to properly populate this value. Until then there is
         //the possibility of errors arising in the demographic stats.
-        $visits = array(); 
+        $visits      = array();
         $db          = \Database::singleton();
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting('useProjects');

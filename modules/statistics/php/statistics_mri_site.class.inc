@@ -205,7 +205,7 @@ class Statistics_Mri_Site extends Statistics_Site
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the
         // template
-        $visits = array();
+        $visits    = array();
         $projectID = $_REQUEST['ProjectID'] ?? '';
 
         $data = array();
