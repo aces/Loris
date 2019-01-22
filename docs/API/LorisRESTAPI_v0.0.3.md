@@ -865,9 +865,14 @@ Returns JSON data with a status of the process launch. The format is:
 
 ```js
 {
-  "process_id": 123,
-  "status": "started|running|complete|failed",
-  "message": "..."
+  "processes": [
+    {   
+      "process_id": "8",
+      "pid": "29039",
+      "status":"RUNNING"
+      "message":"..."
+    },
+  ]
 }
 ```
 
@@ -875,16 +880,23 @@ An HTTP 202 response code will also be returned if processing is launched.
 
 
 To see processing status of a DICOM fileset, send a GET request in the form:
+To see processing status of DICOM filesets, send a GET request in the form:
 ```
-GET /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id
+GET /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes/$process_id[,$process_id2,...]
 ```
 
 Returns JSON data having the form:
 
 ```js
 {
-  "process_id": 123,
-  "status": "started|running|complete|failed",
-  "message": "..."
+  "processes": [
+    {
+      "process_id": "8",
+      "pid": "29039",
+      "status":"SUCCESS"
+      "message": "Finished MRI uploading (pid = 29039) End time:2019-01-22 16:04:25",
+    },
+    ...
+  ]
 }
 ```
