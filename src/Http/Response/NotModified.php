@@ -34,13 +34,11 @@ class NotModified extends JsonResponse
      * Create a Json response specific to 404 Not Found
      *
      * @param string $etag The endpoint etag
-     * @param string $msg  The error message
      */
-    public function __construct(string $etag, string $msg = 'not modified')
+    public function __construct(string $etag)
     {
-        $body    = array('error' => $msg);
         $headers = array('ETag' => $etag);
-        parent::__construct($body, 304, $headers);
+        parent::__construct(null, 304, $headers);
     }
 }
 
