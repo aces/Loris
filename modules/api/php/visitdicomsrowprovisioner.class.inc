@@ -56,7 +56,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
                ON (s.CandID=c.CandID)
              JOIN tarchive_series ts
                ON (ts.TarchiveID=t.TarchiveID)
-             WHERE t.PatientName LIKE $ID AND
+             WHERE t.PatientName LIKE :v_patientname AND
                c.Active="Y" AND
                s.Active="Y" AND
                s.ID = :v_sessionid
@@ -73,7 +73,8 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
              ORDER BY Tarname
             ',
             array(
-             'v_sessionid' => $timepoint->getSessionID(),
+             'v_sessionid'   => $timepoint->getSessionID(),
+             'v_patientname' => '%%',
             )
         );
     }
