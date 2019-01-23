@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the visit's dicoms endpoint class
+ * This implements a visit's dicom endpoint class
  *
  * PHP Version 7
  *
@@ -10,14 +10,14 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Candidate\Visit;
+namespace LORIS\Api\Endpoints\Candidate\Visit\Dicom;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 
 /**
- * A class for handling request for a visit dicoms.
+ * A class for handling request for a visit specific dicom.
  *
  * @category API
  * @package  Loris
@@ -25,7 +25,7 @@ use \LORIS\Api\Endpoint;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
      * The requested Visit
@@ -35,13 +35,22 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected $visit;
 
     /**
+     * The requested Dicom filename
+     *
+     * @var string
+     */
+    protected $tarname;
+
+    /**
      * Contructor
      *
-     * @param \Timepoint $visit The requested visit
+     * @param \Timepoint $visit   The requested visit
+     * @param string     $tarname The dicom filename
      */
-    public function __construct(\Timepoint $visit)
+    public function __construct(\Timepoint $visit, string $tarname)
     {
-        $this->visit = $visit;
+        $this->visit   = $visit;
+        $this->tarname = $tarname;
     }
 
     /**
@@ -66,7 +75,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /candidates/$candid
+     * Handles a request to /candidates/$candid/$visit_label/dicoms/$tarname
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -92,19 +101,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $tarname    = array_shift($pathparts);
-        $newrequest = $request
-            ->withAttribute('pathparts', $pathparts);
-
-        $handler = new Dicom\Dicom(
-            $this->visit,
-            $tarname
-        );
-
-        return $handler->process(
-            $newrequest,
-            $handler
-        );
+        return new \LORIS\Http\Response\NotFound();
     }
 
     /**
@@ -117,20 +114,37 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\VisitDicomsRowProvisioner(
-                $this->visit
+            // TODO :: Add a forUser function in the provisioner
+            $provisioner = new \LORIS\api\VisitDicomRowProvisioner(
+                $this->visit,
+                $this->tarname
             );
 
             $data = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($request->getAttribute('user'));
 
-            $view = (new \LORIS\Api\Views\Visit\Dicoms(
-                $this->visit,
-                $data
-            ))->toArray();
+            $info = new \SplFileInfo($data[0]['fullpath']);
+            if (!$info->isFile()) {
+                return new \LORIS\Http\Response\NotFound();
+            }
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            if (!$info->isReadable()) {
+                return new \LORIS\Http\Response\NotFound();
+            }
+
+            $file        = $info->openFile('r');
+            $this->cache = (new \LORIS\Http\Response())
+                ->withHeader('Content-Type', 'application/x-tar')
+                ->withHeader(
+                    'Content-Disposition',
+                    'attachment; filename=' . $this->tarname
+                )
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        $file->fread($file->getSize())
+                    )
+                );
         }
         return $this->cache;
     }

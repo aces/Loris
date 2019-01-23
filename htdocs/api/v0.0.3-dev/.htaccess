@@ -31,12 +31,11 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/heade
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/headers/(.*)$ candidates/visits/images/headers/Specific.php?CandID=$1&VisitLabel=$2&Filename=$3&Header=$4&PrintSpecificHeader=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)$ candidates/visits/images/Image.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageData=true [L]
 
-## DICOMs API related URLs
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/dicoms/([a-zA-Z0-9_.-]+)$ candidates/visits/dicoms/Dicom.php?CandID=$1&VisitLabel=$2&Tarname=$3&PrintDicomData=true [L]
 
 RewriteRule ^candidates/?$ /index.php [QSA,END]  
-RewriteRule ^candidates/([0-9]+)/?$ /index.php [QSA,END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/?$ /index.php [QSA,END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/?$ /index.php [QSA,END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/qc/imaging/?$ /index.php [QSA,END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/dicoms/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/qc/imaging/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/[a-zA-Z0-9_.-]+/?$ /index.php [QSA,END]
