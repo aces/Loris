@@ -418,7 +418,14 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $spm_module = \Module::factory('server_processes_manager');
         // Perform the real upload on the server
         $serverProcessesMonitor = new SP\ServerProcessesMonitor();
-        $processes = $serverProcessesMonitor->getProcessesState($idsToMonitor);
+        $user        = \User::singleton();
+        $user_name   = $user->getUsername();
+        // filter to current user
+        // @TODO Add permissions check that user can get process info
+        $processes = $serverProcessesMonitor->getProcessesState(
+            $idsToMonitor,
+            $user_name
+        );
         //@TODO Catch \DatabaseException thrown by getProcessesState() ??
         foreach ($processes as $proc) {
             $processesInfo[] = array(
@@ -458,25 +465,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         } else if ($trigger_pipeline) {
             $msg        = "Could not launch processing.";
             $this->JSON = array_merge($this->JSON, array("error" => $msg));
-        }
-    }
-
-    /**
-     * Sets an HTTP response
-     *
-     * @param string $header    HTTP header
-     * @param string $message   Message
-     * @param array  $JSON_data JSON data
-     * @param bool   $is_error  Set true if this is an error response
-     *
-     * @return void
-     */
-    function setHttpResponse($header, $message="", $JSON_data=null, $is_error=false)
-    {
-        $this->JSON = array_merge($this->JSON, $JSON_data);
-        $this->header($header);
-        if ($is_error) {
-            $this->error($message);
         }
     }
 
