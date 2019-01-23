@@ -247,11 +247,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Process file with Batch upload imaging script
+     * Inserts into the mri_upload table the following information:
+     *   - UploadedBy, UploadDate, UploadLocation, SessionID and
+     *     PatientName
      *
      * @param mixed $args Inputs for processing the file
      *
-     * @return true on success, false othewise
+     * @return $mri_upload_id on success, false othewise
      */
     function _process($args)
     {
