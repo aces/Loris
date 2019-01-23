@@ -134,7 +134,7 @@ function() {
         type: 'text',
         }},
       {label: 'For Site', show: true, filter: {
-        name: 'sites',
+        name: 'site',
         type: 'select',
         options: options.sites,
       }},
@@ -168,8 +168,8 @@ function() {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
-            DataURL={`${loris.BaseURL}/document_repository/Files`}
-            action={`${loris.BaseURL}/document_repository/Files`}
+            DataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/Uploadfile`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
             category={this.state.newCategory}

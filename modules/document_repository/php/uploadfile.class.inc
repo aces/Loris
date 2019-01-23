@@ -27,7 +27,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Files extends \NDB_Page
+class Uploadfile extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -41,8 +41,8 @@ class Files extends \NDB_Page
     function _hasAccess(\User $user) : bool
     {
         return (
-            $user->hasPermission('access_all_profiles')
-            || ($user->hasStudySite() && $user->hasPermission('data_entry'))
+            $user->hasPermission('document_repository_delete')
+            || $user->hasPermission('document_repository_view')
 
         );
     }
@@ -58,22 +58,11 @@ class Files extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "GET") {
+    //        $this->uploadDocFile();            
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "GET")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode($this->getUploadDocFields())
-                    )
-                );
-        }
-        if ($request->getMethod() == "POST") {
-            $this->uploadDocFile();            
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully"))
@@ -115,29 +104,29 @@ function uploadDocFile()
         $fileName   = $_FILES["file"]["name"];
         $fileType   = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
-        $fullPath   = $uploadPath . $fileName;
+       // $fullPath   = $uploadPath . $fileName;
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
     if (intval($category) < 0) {
-        throw new LorisException(
+        throw new \LorisException(
             "'Category' parameter must be a positive integer."
         );
     }
         // Check to see if $fullPath is writable. If not, throw an error. If it
         // doesn't exist, create an uploads folder for the logged-in user.
-    if (!is_writable($fullPath)) {
-        if (file_exists($fullPath)) {
-            throw new LorisException(
+    if (!is_writable($uploadPath)) {
+        if (file_exists($uploadPath)) {
+            throw new \LorisException(
                 "User uploads path in Document Repository is not writable."
             );
         }
-        mkdir($fullPath, 0770);
+        mkdir($uploadPath, 0770);
     }
         // Copy the uploaded file to the user's upload folder if possible.
         // Insert a record of the file into the document_repository table
     if (!move_uploaded_file(
         $_FILES['file']['tmp_name'],
-        $fullPath . $fileName
+        $uploadPath . $fileName
     )) {
         throw new LorisException(
             'ERROR: Could not upload file. Contact your administrator.'

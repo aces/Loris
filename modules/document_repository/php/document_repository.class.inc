@@ -48,19 +48,21 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $user = \User::singleton();
-        $db   = \Database::singleton();
-
-        $fileTypeList  = [];
-        $fileTypeQuery = $db->pselect(
-            "SELECT File_type FROM document_repository",
-            []
-        );
-        foreach ($fileTypeQuery as $filetype) {
-            $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
-        }
-        //        print_r($fileTypeList);
-        $siteList = array();
+    $user =& \User::singleton();
+    $db    = \Database::singleton();
+    $query = $db->pselect(
+        "SELECT * FROM document_repository_categories",
+        array()
+    );
+    //categories
+    $categoriesList = array();
+    foreach ($query as $value) {
+           $arr = $this->parseCategory($value);
+           $categoriesList[$arr['id']] =$arr['name'];
+    }
+    //site
+        $siteList  = array();
+        $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -79,57 +81,79 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 }
             }
         }
-        //todo get the list
-        $result = $db->pselect(
-            "SELECT * FROM document_repository_categories",
-            array()
-        );
+    //instrument
+    $instruments     = $db->pselect(
+        "SELECT Test_name FROM test_names ORDER BY Test_name",
+        array()
+    );
+    $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
 
-        $data = array();
-        foreach ($result as $value) {
-               $item      = $this->parseCategory($value);
-               $id        = $item['id'];
-               $name      = $item['name'];
-               $data[$id] =$name;
+    //file types
+        $fileTypeList  = [];
+        $fileTypeQuery = $db->pselect("SELECT File_type FROM document_repository group by File_type", []);
+        foreach ($fileTypeQuery as $filetype) {
+            $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-        $categoryList = $data;
 
-        $this->fieldOptions = [
-                               'fileTypes'      => $fileTypeList,
-                               'fileCategories' => $categoryList,
-                               'sites'          => $siteList,
-                              ];
-
-        return true;
+    $this->fieldOptions = array(
+               'fileCategories'  => $categoriesList,
+               'sites'       => $siteList,
+               'instruments' => $instrumentsList,
+               'fileTypes'   => $fileTypeList,
+              );
+    return $true;
     }
-    /**
-     * Return the category list array
-     *
-     * @param string $value value
-     *
-     * @return array
-     */
-    public  function parseCategory($value)
-    {
+/**
+ * Handler of parsing category
+ *
+ * @param string $value the value
+ *
+ * @return array
+ */
+function parseCategory($value): array
+{
         $id    = $value['id'];
         $depth = 0;
         $DB    = \Database::singleton();
             $categoryName = $value['category_name'];
-        do {
-            if ($value['parent_id'] != 0) {
-                $depth       += 1;
-                $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
-                                " where id=$parent_id";
-                $value        = $DB->pselectRow($query, array());
-                $categoryName = $value['category_name'] . ">" . $categoryName;
-            }
-        } while ($value['parent_id'] != 0);
+    do {
+        if ($value['parent_id'] != 0) {
+            $depth       += 1;
+            $parent_id    = $value['parent_id'];
+            $query        = "SELECT * FROM document_repository_categories".
+                            " where id=$parent_id";
+            $value        = $DB->pselectRow($query, array());
+            $categoryName = $value['category_name'] . ">" . $categoryName;
+        }
+    } while ($value['parent_id'] != 0);
          return array(
                  "name" => $categoryName,
                  "id"   => $id,
                 );
+}
+/**
+ * Utility function to convert data from database to a
+ * (select) dropdown friendly format
+ *
+ * @param array  $options array of options
+ * @param string $item    key
+ * @param string $item2   value
+ *
+ * @return array
+ */
+function toDocSelect($options, $item, $item2): array
+{
+    $selectOptions = array();
+    $optionsValue = $item;
+    if (isset($item2)) {
+        $optionsValue = $item2;
     }
+    foreach ($options as $key => $value) {
+        $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+    }
+    return $selectOptions;
+}
+
     /**
      * Build a list of media to display in Data Table
      *
