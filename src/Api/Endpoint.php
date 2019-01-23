@@ -63,7 +63,7 @@ abstract class Endpoint implements RequestHandlerInterface
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\BadRequest('unsupported version');
+            return new \LORIS\Http\Response\BadRequest('Unsupported version');
         }
 
         if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
