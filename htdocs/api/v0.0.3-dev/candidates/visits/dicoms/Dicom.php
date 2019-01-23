@@ -104,8 +104,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handlePUT()
     {
+        if (!\User::singleton()->hasPermission('imaging_uploader')) {
+            $this->header("HTTP/1.1 403 Forbidden");
+            $this->error("Access Forbidden.");
+            $this->safeExit(1);
 
-        //if (!isset($_REQUEST['Filename'], $_SERVER['HTTP_X_IS_PHANTOM'])) {
+        }
+
         if (!isset($_REQUEST['Tarname'], $_SERVER['HTTP_X_IS_PHANTOM'])) {
             // Missing data. Filname and IsPhantom values are required.
             $this->header("HTTP/1.1 400 Bad Request");
@@ -132,7 +137,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             ) {
                 //@TODO: Check with JohnSaigle et al about security related re
                 //$_REQUEST['Tarname'] (sanitisation etc)
-                //$dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Filename'];
                 $dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Tarname'];
                 $op   = fopen($dest, 'wb');
                 if (!fwrite($op, $data)) {
@@ -184,6 +188,13 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handlePOST()
     {
+        if (!\User::singleton()->hasPermission('imaging_uploader')) {
+            $this->header("HTTP/1.1 403 Forbidden");
+            $this->error("Access Forbidden.");
+            $this->safeExit(1);
+
+        }
+
         $fp   = fopen("php://input", "r");
         $data = '';
         while (!feof($fp)) {
@@ -389,8 +400,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     {
         $Filename      = $data->Filename;
         $mri_upload_id = $data->mri_upload_id;
-        $isPhantom     = $data->mri_upload_id;
-        $d_ok          = isset($Filename, $isPhantom, $mri_upload_id);
+        $d_ok          = isset($Filename, $mri_upload_id);
 
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
