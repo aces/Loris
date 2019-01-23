@@ -627,7 +627,7 @@ class Candidate
         $where  = array('cid' => $candID);
         $result = $db->pselectCol($query, $where);
 
-        return is_array($result) ? array_shift($result) : '';
+        return (is_array($result) && count($result) > 0) ? array_shift($result) : '';
     }
 
     /**
