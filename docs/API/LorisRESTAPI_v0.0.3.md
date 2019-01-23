@@ -845,7 +845,7 @@ specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration.
 
 ### 5.3 Process DICOM fileset
 ```
-POST /candidates/$CandID/$VisitLabel/dicoms/$Filename/processes
+POST /candidates/$CandID/$VisitLabel/dicoms/$Filename
 ```
 
 Launch processing of an uploaded DICOM fileset that has not been yet processed.
