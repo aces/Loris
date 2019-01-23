@@ -57,12 +57,12 @@ class Uploadfile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() == "GET") {
-    //        $this->uploadDocFile();            
+        if ($request->getMethod() == "POST") {
+            $this->uploadDocFile();            
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "GET")
+                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully"))
@@ -91,10 +91,12 @@ function uploadDocFile()
     $config  = $factory->config();
     $base    = $config->getSetting('base');
     $name    = \User::singleton()->getUsername();
-    $DB      = $factory->database();
-
+    $DB = \Database::singleton();
         $category   = $_POST['category']; // required
         $site       = $_POST['forSite']       !== '' ? $_POST['forSite'] : null;
+        
+        $site  = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name=:name",
+                 array('name'=>$site));
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
         $visit      = $_POST['visitLabel']      !== '' ? $_POST['visitLabel'] : null;
@@ -104,7 +106,6 @@ function uploadDocFile()
         $fileName   = $_FILES["file"]["name"];
         $fileType   = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
-       // $fullPath   = $uploadPath . $fileName;
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
     if (intval($category) < 0) {

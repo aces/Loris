@@ -85,7 +85,7 @@ class DocUploadForm extends React.Component {
             <SelectElement
               name="category"
               label="Category"
-              options={this.state.Data.categories}
+              options={this.state.Data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               ref="category"
               hasError={false}
@@ -96,8 +96,8 @@ class DocUploadForm extends React.Component {
               name="forSite"
               label="Site"
               placeHolder="Search for site"
-              options={this.state.Data.sites}
-              strictSearch={true}
+              options={this.state.Data.fieldOptions.sites}
+//              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}
@@ -106,7 +106,7 @@ class DocUploadForm extends React.Component {
             <SelectElement
               name="instrument"
               label="Instrument"
-              options={this.state.Data.instruments}
+              options={this.state.Data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               ref="instrument"
               value={this.state.formData.instrument}
@@ -199,6 +199,8 @@ uploadFile() {
     .then((resp) => resp.json())
     .then(()=>{
       swal('Upload Successful!', '', 'success');
+      this.props.refreshPage();
+      this.fetchData();
     });
   }
 
