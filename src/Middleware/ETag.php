@@ -61,9 +61,9 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             if ($clientETag == $endpointETag) {
                 // It matches, so just return a 304 Not modified instead of
                 // doing any work.
-                return (new \LORIS\Http\Response())
-                    ->withStatus(304)
-                    ->withHeader('ETag', $endpointETag);
+                return new \LORIS\Http\Response\NotModified(
+                    $endpointETag
+                );
             }
         }
 
