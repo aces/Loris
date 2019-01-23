@@ -166,67 +166,39 @@ class DocUploadForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
     let formData = this.state.formData;
     let formRefs = this.refs;
-    // let docFiles = this.state.Data.docFiles ? this.state.Data.docFiles : [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
       return;
     }
       this.uploadFile();
-  }
-  /*
-   * Uploads the file to the server
-   */
-  uploadFile() {
-    // Set form data and upload the media file
-    let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
-      if (formData[key] !== '') {
-        formObj.append(key, formData[key]);
-      }
-    }
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      success: function() {
-        // Trigger an update event to update all observers (i.e DataTable)
-        let event = new CustomEvent('update-datatable');
-        window.dispatchEvent(event);
-        this.props.refreshPage();
         this.setState({
-//          docFiles: docFiles,
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal('Upload Successful!', '', 'success');
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
-        this.setState({
-          errorMessage: msg,
-          uploadProgress: -1,
-        });
-        swal(msg, '', 'error');
-      }.bind(this),
+      this.props.refreshPage();
+  }
+
+uploadFile() {
+    // Set form data and upload the media file
+    let formData = this.state.formData;
+    let formObject= new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
+      }
+    }
+   fetch(this.props.action, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => resp.json())
+    .then(()=>{
+      swal('Upload Successful!', '', 'success');
     });
   }
 
