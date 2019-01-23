@@ -43,8 +43,8 @@ if (!in_array('--confirm', $argv, true)) {
         . "is $release_version. "
         . PHP_EOL
         . 'Please run this script with the --confirm flag '
-        . 'to update your source code to version ' . $release_version
-        . PHP_EOL;
+        . 'to update your database to be compatible with version ' 
+        . $release_version . PHP_EOL;
     die(usageString());
 }
 // Display some info and wait so the user can read it.
@@ -54,7 +54,6 @@ echo 'You may wish to review code changes tagged with "Caveat For '
     . "\t" . 'See: https://github.com/aces/Loris/pulls?'
     . 'q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged'
     . PHP_EOL . PHP_EOL;
-sleep(3);
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
 echo '[*] Release notes:' . PHP_EOL;
 echo $info->{'body'} . PHP_EOL . PHP_EOL;
@@ -178,7 +177,6 @@ function getPatchesFromVersion(
             return array();
         }
     }
-
 
     // Add the relevant patches between $start and $end.
     // For example, if upgrading from 18 to 19, the array will contain all 
@@ -363,9 +361,8 @@ function getMissingPrivileges(string $patch, $db_config) {
  *
  * @return string LORIS version from VERSION file. '?' if not found
  */
-function getVersionFromLORISRoot($loris_root_dir) : string
+function getVersionFromLORISRoot(string $loris_root_dir) : string
 {
-    // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
         echo "[-] ERROR: Could not find VERSION file in $loris_root_dir."
@@ -382,8 +379,9 @@ function getVersionFromLORISRoot($loris_root_dir) : string
  */
 function usageString() : string
 {
-    $flags = [
+    $flags = array(
+              '--apply-patches',
               '--confirm',
-             ];
+             );
     return 'Usage: php update.php ' . implode(' ', $flags) . PHP_EOL;
 }
