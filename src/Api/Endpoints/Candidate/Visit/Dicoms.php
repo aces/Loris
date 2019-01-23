@@ -123,6 +123,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->toArray($request->getAttribute('user'));
 
             $view = (new \LORIS\Api\Views\Visit\Dicoms(
+                $this->visit,
                 $data
             ))->toArray();
 
