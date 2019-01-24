@@ -179,7 +179,7 @@ function showHelp()
 
     echo "When the 'check' option is used, the script only detects and reports 
     miscalculated and NULL ages. 
-    Using the 'confirm' option will apply the necessary corrections to the data.";
+    Using the 'confirm' option will apply the necessary corrections to the data.\n\n";
 
     die();
 }
