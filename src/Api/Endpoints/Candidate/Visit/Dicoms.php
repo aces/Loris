@@ -121,13 +121,13 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->visit
             );
 
-            $data = (new \LORIS\Data\Table())
+            $dicomtars = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
-                ->toArray($request->getAttribute('user'));
+                ->getRows($request->getAttribute('user'));
 
             $view = (new \LORIS\Api\Views\Visit\Dicoms(
                 $this->visit,
-                $data
+                ...$dicomtars
             ))->toArray();
 
             $this->cache = new \LORIS\Http\Response\JsonResponse($view);

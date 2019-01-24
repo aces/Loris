@@ -11,6 +11,7 @@
 
 namespace LORIS\Api\Views\Visit;
 
+use \LORIS\DicomTarDTO;
 /**
  * Creates a representation of a visit dicoms following the api response
  * specifications.
@@ -30,40 +31,36 @@ class Dicoms
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *
-     * @param \Timepoint $timepoint The timepoint to represent
-     * @param array      $dicoms    An array of \LORIS\api\VisitDicomsRow
+     * @param \Timepoint  $timepoint The timepoint to represent
+     * @param DicomTarDTO ...$dicoms An array of dicomtars
      */
-    public function __construct(\Timepoint $timepoint, array $dicoms)
+    public function __construct(\Timepoint $timepoint, DicomTarDTO ...$dicoms)
     {
         $this->meta['CandID'] = $timepoint->getCandID();
         $this->meta['Visit']  = $timepoint->getVisitLabel();
 
-        $this->dicomtars = array_reduce(
-            $dicoms,
-            function (array $carry , array $item) {
-                $tarname = $item['Tarname'];
-                if (!isset($carry[$tarname])) {
-                    $carry[$tarname] = array(
-                                        'Tarname'    => $tarname,
-                                        'SeriesInfo' => array(),
-                                       );
-                }
-                $info = array(
-                         'SeriesDescription' => $item['SeriesDescription'],
-                         'SeriesNumber'      => $item['SeriesNumber'],
-                         'EchoTime'          => $item['EchoTime'],
-                         'RepetitionTime'    => $item['RepetitionTime'],
-                         'InversionTime'     => $item['InversionTime'],
-                         'SliceThickness'    => $item['SliceThickness'],
-                         'Modality'          => $item['Modality'],
-                         'SeriesUID'         => $item['SeriesUID'],
-                        );
-                $carry[$tarname]['SeriesInfo'][] = $info;
-                return $carry;
-            },
-            array()
-        );
-
+        foreach ($dicoms as $dicom) {
+            $obj = array(
+                    'Tarname'    => $dicom->getTarname(),
+                    'SeriesInfo' => array_map(
+                        function ($serie) {
+                            $s = array(
+                                  'SeriesDescription' => $serie->getDescription(),
+                                  'SeriesNumber'      => $serie->getNumber(),
+                                  'EchoTime'          => $serie->getEchotime(),
+                                  'RepetitionTime'    => $serie->getRepetitiontime(),
+                                  'InversionTime'     => $serie->getInversiontime(),
+                                  'SliceThickness'    => $serie->getSlicethickness(),
+                                  'Modality'          => $serie->getModality(),
+                                  'SeriesUID'         => $serie->getSeriesuid(),
+                                 );
+                            return $s;
+                        },
+                        $dicom->getSeries()
+                    ),
+                   );
+            $this->dicomtars[] = $obj;
+        }
     }
 
     /**
@@ -75,7 +72,7 @@ class Dicoms
     {
         return array(
                 'Meta'      => $this->meta,
-                'DicomTars' => array_values($this->dicomtars),
+                'DicomTars' => $this->dicomtars,
                );
     }
 }

@@ -40,41 +40,19 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
         parent::__construct(
             '
              SELECT
-               SUBSTRING_INDEX(t.ArchiveLocation, "/", -1) as Tarname,
-               ts.SeriesDescription as SeriesDescription,
-               ts.SeriesNumber as SeriesNumber,
-               ts.EchoTime as EchoTime,
-               ts.RepetitionTime as RepetitionTime,
-               ts.InversionTime as InversionTime,
-               ts.SliceThickness as SliceThickness,
-               ts.Modality as Modality,
-               ts.SeriesUID as SeriesUID
+               t.TarchiveID as tarchiveid
              FROM tarchive t
              JOIN session s
                ON (t.SessionID=t.SessionID)
              JOIN candidate c
                ON (s.CandID=c.CandID)
-             JOIN tarchive_series ts
-               ON (ts.TarchiveID=t.TarchiveID)
-             WHERE t.PatientName LIKE :v_patientname AND
+             WHERE 
                c.Active="Y" AND
                s.Active="Y" AND
                s.ID = :v_sessionid
-             GROUP BY
-               t.TarchiveID,
-               ts.SeriesDescription,
-               ts.SeriesNUmber,
-               ts.EchoTime,
-               ts.RepetitionTime,
-               ts.InversionTime,
-               ts.SliceThickness,
-               ts.Modality,
-               ts.SeriesUID
-             ORDER BY Tarname
             ',
             array(
-             'v_sessionid'   => $timepoint->getSessionID(),
-             'v_patientname' => '%%',
+             'v_sessionid' => $timepoint->getSessionID(),
             )
         );
     }
@@ -89,7 +67,8 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new VisitDicomsRow($row);
+        return (new \LORIS\DicomTar(intval($row['tarchiveid'])))
+            ->asDTO();
     }
 }
 
