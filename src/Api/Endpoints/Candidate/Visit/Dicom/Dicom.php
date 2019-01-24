@@ -114,17 +114,24 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            // TODO :: Add a forUser function in the provisioner
-            $provisioner = new \LORIS\api\VisitDicomRowProvisioner(
-                $this->visit,
-                $this->tarname
+            $dicomtars = $this->visit->getDicomTars(
+                $request->getAttribute('user')
             );
 
-            $data = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($request->getAttribute('user'));
+            $tarname = $this->tarname;
+            $dicom   = array_filter(
+                iterator_to_array($dicomtars),
+                function ($item) use ($tarname) {
+                    return $item->getTarname() == $tarname;
+                }
+            );
 
-            $info = new \SplFileInfo($data[0]['fullpath']);
+            $tarchivepath = \NDB_factory::singleton()
+                ->config()
+                ->getSetting('tarchiveLibraryDir');
+
+            $fullpath = $tarchivepath . array_pop($dicom)->getArchiveLocation();
+            $info     = new \SplFileInfo($fullpath);
             if (!$info->isFile()) {
                 return new \LORIS\Http\Response\NotFound();
             }

@@ -921,5 +921,21 @@ class TimePoint
         return $candidate->getCandidateDoB();
     }
 
-} // end class
+    /**
+     * Gets the DicomTar of that session
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\DicomTarDTO[]
+     */
+    public function getDicomTars(\User $user): \Traversable
+    {
+        $provisioner = new \LORIS\api\VisitDicomsRowProvisioner($this);
+
+        return (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+    }
+
+}
 ?>

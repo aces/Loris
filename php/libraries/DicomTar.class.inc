@@ -42,7 +42,7 @@ class DicomTar
                 ->pselectRow(
                     '
                       SELECT
-                        SUBSTRING_INDEX(ArchiveLocation, "/", -1) as tarname,
+                        ArchiveLocation as archivelocation,
                         PatientName as patientname
                       FROM
                         tarchive
@@ -54,9 +54,10 @@ class DicomTar
             if (empty($dbrow)) {
                 throw new \NotFound('There is no tarchive with that id');
             }
-            $this->_tarchiveid  = $tarchiveid;
-            $this->_tarname     = $dbrow['tarname'];
-            $this->_patientname = $dbrow['patientname'];
+            $this->_tarchiveid      = $tarchiveid;
+            $this->_tarname         = basename($dbrow['archivelocation']);
+            $this->_archivelocation = $dbrow['archivelocation'];
+            $this->_patientname     = $dbrow['patientname'];
         }
     }
 
@@ -70,6 +71,7 @@ class DicomTar
         return new \LORIS\DicomTarDTO(
             $this->_tarchiveid ?? null,
             $this->_tarname ?? null,
+            $this->_archivelocation ?? null,
             $this->_patientname ?? null,
             ...$this->getSeries()
         );
@@ -143,6 +145,8 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
 
     private $_tarname;
 
+    private $_archivelocation;
+
     private $_patientname;
 
     private $_series;
@@ -150,21 +154,24 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Constructor
      *
-     * @param ?int          $tarchiveid  The TarchiveID
-     * @param ?string       $tarname     The dicom filename
-     * @param ?string       $patientname The PatientName
-     * @param DicomSerieDTO ...$series   An array of dicom series
+     * @param ?int          $tarchiveid      The TarchiveID
+     * @param ?string       $tarname         The dicom filename
+     * @param ?string       $archivelocation The dicom file location
+     * @param ?string       $patientname     The PatientName
+     * @param DicomSerieDTO ...$series       An array of dicom series
      */
     public function __construct(
         ?int $tarchiveid,
         ?string $tarname,
+        ?string $archivelocation,
         ?string $patientname,
         DicomSerieDTO ...$series
     ) {
-        $this->_tarchiveid  = $tarchiveid;
-        $this->_tarname     = $tarname;
-        $this->_patientname = $patientname;
-        $this->_series      = $series;
+        $this->_tarchiveid      = $tarchiveid;
+        $this->_tarname         = $tarname;
+        $this->_archivelocation = $archivelocation;
+        $this->_patientname     = $patientname;
+        $this->_series          = $series;
     }
 
     /**
@@ -212,6 +219,30 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     {
         $new           = clone($this);
         $new->_tarname = $tarname;
+        return $new;
+    }
+
+    /**
+     * Accessor for ArchiveLocation
+     *
+     * @return string|null
+     */
+    public function getArchiveLocation(): ?string
+    {
+        return $this->_archivelocation;
+    }
+
+    /**
+     * Returns a new instance of this class with the new value
+     *
+     * @param string $archivelocation The new ArchiveLocation
+     *
+     * @return DicomTarDTO
+     */
+    public function withArchiveLocation($archivelocation): DicomTarDTO
+    {
+        $new = clone($this);
+        $new->_archivelocation = $archivelocation;
         return $new;
     }
 

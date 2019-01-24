@@ -117,13 +117,9 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\VisitDicomsRowProvisioner(
-                $this->visit
+            $dicomtars = $this->visit->getDicomTars(
+                $request->getAttribute('user')
             );
-
-            $dicomtars = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->getRows($request->getAttribute('user'));
 
             $view = (new \LORIS\Api\Views\Visit\Dicoms(
                 $this->visit,
