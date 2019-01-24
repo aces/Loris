@@ -27,6 +27,8 @@ class DicomTar
 
     private $_tarname;
 
+    private $_archivelocation;
+
     private $_patientname;
 
     /**
