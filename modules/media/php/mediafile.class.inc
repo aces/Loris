@@ -37,7 +37,7 @@ class MediaFile implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->DBRow    = $row;
+        $this->DBRow = $row;
     }
 
     /**
