@@ -98,9 +98,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 1) {
             switch ($request->getMethod()) {
             case 'GET':
-                return new \LORIS\Http\Response\JsonResponse(
-                    $this->_getAllCandidates($user)
-                );
+                return $this->_handleGET($request);
 
             case 'POST':
                 return $this->_handlePOST($request);
@@ -136,13 +134,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a list of all candidates visible to a user fiting this endpoint
      * response format.
      *
-     * @param \User $user The requesting user
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return array
+     * @return ResponseInterface
      */
-    private function _getAllCandidates(\User $user): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
+            $user        = $request->getAttribute('user');
             $provisioner = (new \LORIS\api\CandidatesProvisioner())
                 ->forUser($user);
 
@@ -150,7 +149,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $this->cache = array('Candidates' => $candidates);
+            $this->cache = new \LORIS\Http\Response\JsonResponse(
+                array('Candidates' => $candidates)
+            );
         }
         return $this->cache;
     }
@@ -160,7 +161,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return ResponseInterface The appropriate HTTP response after validation
+     * @return ResponseInterface
      */
     private function _handlePOST(ServerRequestInterface $request): ResponseInterface
     {
@@ -226,12 +227,6 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(
-            json_encode(
-                $this->_getAllCandidates(
-                    $request->getAttribute('user')
-                )
-            )
-        );
+        return md5(json_encode($this->_handleGet($request)->getBody()));
     }
 }
