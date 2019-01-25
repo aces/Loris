@@ -173,47 +173,27 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $this->safeExit(1);
         }
 
-        if (!empty($data)) {
-            $factory = \NDB_Factory::singleton();
-            $config  = $factory->Config();
-            $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
-            if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
-                && (is_writable($MRIUploadIncomingPath))
-            ) {
-                //@TODO: Check with JohnSaigle et al about security related to
-                //$data->Filename and others (sanitisation etc)
-                $filename      = $data->Filename;
-                $mri_upload_id = $data->mri_upload_id;
-                $dest          = $MRIUploadIncomingPath . "/" . $filename;
-                $op            = stat($dest);
-                if (!$op) {
-                    $msg = "Could not find file.";
-                    $this->header("HTTP/1.1 500 Internal Server Error");
-                    $this->error($msg);
-                    $this->JSON = array("error" => $msg);
-                    $this->safeExit(1);
-                } else {
-                    $mri_upload_id = $mri_upload_id;
-                    //@TODO Check if upload was successfully run before?? If
-                    //yes, what to do? Quit?
-                    $processDbId = $this->performRealUpload(
-                        $mri_upload_id,
-                        $dest,
-                        true
-                    );
-                    $this->printProcessResults(
-                        array($processDbId),
-                        $mri_upload_id,
-                        true
-                    );
-                }
-            } else {
-                $msg        = "Could not access upload file.";
-                $this->JSON = array("error" => $msg);
-                $this->header("HTTP/1.1 500 Internal Server Error");
-                $this->error($msg);
-                $this->safeExit(1);
-            }
+        $uploadedLocation = $this->getFileLocation($data->mri_upload_id);
+        $op = stat($uploadedLocation['UploadLocation']);
+        if ($op) {
+            //@TODO Check if upload was successfully run before?? If
+            //yes, what to do? Quit?
+            $processDbId = $this->performRealUpload(
+                $data->mri_upload_id,
+                $uploadLocation,
+                true
+            );
+            $this->printProcessResults(
+                array($processDbId),
+                $data->mri_upload_id,
+                true
+            );
+        } else {
+            $msg = "Could not find file.";
+            $this->header("HTTP/1.1 500 Internal Server Error");
+            $this->error($msg);
+            $this->JSON = array("error" => $msg);
+            $this->safeExit(1);
         }
     }
 
@@ -240,6 +220,27 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             ]
         );
         return $cand_info;
+    }
+
+    /**
+     * Gets location of uploaded file
+     *
+     * @param string $mri_upload_id Upload ID in the mri_upload table
+     *
+     * @return string Location of uploaded file
+     */
+    function getFileLocation($mri_upload_id)
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $uploadLocation = $DB->pselectRow(
+            "SELECT mu.UploadLocation
+            FROM mri_upload mu
+            WHERE mu.UploadID=:UID
+            ",
+            ['UID' => $mri_upload_id]
+        );
+        return $uploadLocation;
     }
 
     /**
@@ -278,7 +279,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      * Perform the actual upload by executing the imaging uploader pipeline
      *
      * @param mixed  $mri_upload_id      The upload id of the mri
-     * @param string $uploaded_file_path The path the the uploaded file on Loris
+     * @param string $uploaded_file_path The path to the uploaded file on Loris
      * @param bool   $trigger_pipeline   Trigger imaging pipeline manually
      *
      * @return int ID (in the database) of the launched process
@@ -403,7 +404,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Get info about a Loris process
      *
-     * @param resource $dh       IDs of the server processes to monitor
+     * @param resource $dh       Destination directory
      * @param stromg   $filename Upload id of the DICOM fileset
      *
      * @return Full temporary path and filename of uploaded file
