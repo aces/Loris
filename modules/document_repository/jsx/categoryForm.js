@@ -30,22 +30,13 @@ class DocCategoryForm extends React.Component {
     this.fatchData = this.fetchData.bind(this);
   }
  fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
-          data: data,
-          isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        this.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
-    });
+    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data: data, isLoaded: true}))
+      .catch((error) => {
+        this.setState({error: 'An error occurred when loading the form!'});
+        console.error(error);
+      });
 }
   componentDidMount() {
     this.fetchData();
@@ -96,7 +87,7 @@ class DocCategoryForm extends React.Component {
             <SelectElement
               name="parent_id"
               label="Parent"
-              options={this.state.data.categories}
+              options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               ref="parent_id"
               hasError={false}
@@ -149,6 +140,7 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
+//todo ajax to fetch uploadcategeory
     $.ajax({
       type: 'POST',
       url: this.props.action,

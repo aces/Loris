@@ -138,7 +138,10 @@ function() {
         type: 'select',
         options: options.sites,
       }},
-      {label: 'Comments', show: false},
+      {label: 'Comments', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
       {label: 'Date Upload', show: false},
       {label: 'editID', show: false},
       {label: 'deleteID', show: false},
@@ -177,7 +180,7 @@ function() {
         </TabPane>
         <TabPane TabId={tabList[2].id}>
           <DocCategoryForm
-            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getCategory`}
+            DataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
             refreshPage={this.fetchData}
             newCategoryState={this.newCategoryState}
