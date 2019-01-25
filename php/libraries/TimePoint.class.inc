@@ -926,15 +926,16 @@ class TimePoint
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\DicomTarDTO[]
+     * @return \LORIS\DicomTarDTO[] A traversable of \LORIS\DicomTarDTO
      */
-    public function getDicomTars(\User $user): \Traversable
+    public function getDicomTars(\User $user): array
     {
         $provisioner = new \LORIS\api\VisitDicomsRowProvisioner($this);
-
-        return (new \LORIS\Data\Table())
+        $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->getRows($user);
+
+        return iterator_to_array($traversable);
     }
 
 }

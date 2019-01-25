@@ -120,7 +120,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
             $tarname = $this->tarname;
             $dicom   = array_filter(
-                iterator_to_array($dicomtars),
+                $dicomtars,
                 function ($item) use ($tarname) {
                     return $item->getTarname() == $tarname;
                 }

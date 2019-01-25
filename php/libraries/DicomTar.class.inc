@@ -82,7 +82,7 @@ class DicomTar
     /**
      * Get this dicomtar series
      *
-     * @return DicomSeries[]
+     * @return DicomSeriesDTO[]
      */
     public function getSeries(): array
     {
@@ -267,7 +267,9 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      */
     public function withPatientname(string $patientname): DicomTarDTO
     {
-        $this->_patientname = $patientname;
+        $new = clone($this);
+        $new->_patientname = $patientname;
+        return $new;
     }
 
     /**
@@ -340,10 +342,10 @@ class DicomSerieDTO
      * @param ?int    $id             The TarchiveSeriesID
      * @param ?string $description    The SeriesDescription
      * @param ?int    $number         The SeriesNumber
-     * @param ?float  $echotime       The EchoTime
-     * @param ?float  $repetitiontime The RepetitionTime
-     * @param ?float  $inversiontime  The InversionTime
-     * @param ?float  $slicethickness The SliceThickness
+     * @param ?string $echotime       The EchoTime
+     * @param ?string $repetitiontime The RepetitionTime
+     * @param ?string $inversiontime  The InversionTime
+     * @param ?string $slicethickness The SliceThickness
      * @param ?string $modality       The Modality
      * @param ?string $seriesuid      The SeriesUID
      */
