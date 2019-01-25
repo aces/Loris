@@ -15,9 +15,7 @@ require_once __DIR__ . '/../../Visit.php';
 require_once __DIR__ . '/../../../../../../modules/imaging_uploader/php/imaging_uploader.class.inc';
 require_once __DIR__ . '/../../../../../../modules/imaging_uploader/php/module.class.inc';
 /**
- * Handles API requests for the candidate's visit DICOM tar file. Extends
- * Visit so that the constructor will validate the candidate
- * and visit_label portion of the URL automatically.
+ * Handles utility tasks for Dicom fileset upload and processing
  *
  * @category Main
  * @package  API
