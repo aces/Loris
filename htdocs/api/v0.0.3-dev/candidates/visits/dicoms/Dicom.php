@@ -261,17 +261,17 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $args['visitLabel'] = $this->VisitLabel;
             //@Note Overwrite defaults to 'reject'
             //@TODO Propose 'X-Overwrite' PUT header
-            //'rename' or 'overwrite' modes can be set 
+            //'rename' or 'overwrite' modes can be set
             //via HTTP PUT Header 'X-Overwrite'
-            $args['overwrite']  = "reject";
-            $args['IsPhantom']  = $isPhantom==0 ? "N" : "Y";
-            $args['mriFile']    = array(
-                                   'name'     => $_REQUEST['Tarname'],
-                                   'type'     => 'application/gzip',
-                                   'tmp_name' => $temp_filepath,
-                                   'size'     => $_SERVER['CONTENT_LENGTH'],
-                                   'error'    => 0,
-                                  );
+            $args['overwrite'] = "reject";
+            $args['IsPhantom'] = $isPhantom==0 ? "N" : "Y";
+            $args['mriFile']   = array(
+                                  'name'     => $_REQUEST['Tarname'],
+                                  'type'     => 'application/gzip',
+                                  'tmp_name' => $temp_filepath,
+                                  'size'     => $_SERVER['CONTENT_LENGTH'],
+                                  'error'    => 0,
+                                 );
 
             return $args;
         }

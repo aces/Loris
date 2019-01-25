@@ -105,9 +105,9 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $file   = new \File_Upload;
         $config = \NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-        
+
         //@Note Overwrite defaults to 'reject'
-        //'rename' or 'overwrite' modes can be set in $values['overwrite'] 
+        //'rename' or 'overwrite' modes can be set in $values['overwrite']
         //via HTTP PUT Header 'X-Overwrite'
         $file->setOverwriteMode($values['overwrite']);
 
