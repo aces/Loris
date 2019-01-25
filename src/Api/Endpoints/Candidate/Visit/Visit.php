@@ -116,6 +116,11 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
+        if ($this->visit === null) {
+            // Subendpoint requires a Timepoint. see Constructor comment for $visit
+            return new \LORIS\Http\Response\NotFound();
+        }
+
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
