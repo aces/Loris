@@ -28,7 +28,7 @@ require_once __DIR__ . '/../../../../../../modules/imaging_uploader/php/module.c
 class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
 {
     // so we can use File_Upload::preProcessFile()
-    var $info = null;
+    var $info     = null;
     var $tmp_name = '';
     var $processDbId;
     /**
@@ -37,9 +37,9 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
     public function __construct()
     {
 
-        $this->info = array();
-        $this->tmp_name = '';
-        $this->processDbId = 0;
+        $this->info          = array();
+        $this->tmp_name      = '';
+        $this->processDbId   = 0;
         $this->mri_upload_id = 0;
 
         //Instantiate a helper module so we can use Imaging_Uploader module
@@ -55,7 +55,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      * completed
      * Overload Imaging_Uploader::_process()
      *
-     * @param array $values           the array of values 
+     * @param array $values           the array of values
      * @param bool  $trigger_pipeline Trigger imaging pipeline manually
      *
      * @return int ID (in the database) of the launched process
@@ -76,7 +76,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
                 $spm_module = \Module::factory('server_processes_manager');
                 // Perform the real upload on the server
                 $serverProcessLauncher = new SP\ServerProcessLauncher();
-                $this->processDbId           = $serverProcessLauncher->mriUpload(
+                $this->processDbId     = $serverProcessLauncher->mriUpload(
                     $this->mri_upload_id,
                     $this->uploaded_file_path
                 );
@@ -106,7 +106,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $config = \NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
         $file->setOverwriteMode("overwrite");
-        $file->fileMove = false;
+        $file->fileMove   = false;
         $file->isCLImport = true;
         $file->addCLFile($values['mriFile']['tmp_name'], 'mriFile');
 
