@@ -87,7 +87,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
-             'Visit_label'  => 'test';
+             'Visit_label'  => 'test',
             )
         );
 
