@@ -87,6 +87,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Visit_label'  => 'test';
             )
         );
 
@@ -160,7 +161,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
              'ID'                 => '1002',
              'CandID'             => '999777',
-             'PatientName'        => '[name]test',
+             'PatientName'        => '[name]test_test',
              'time_run'           => '2008-06-29 04:00:44',
              'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
              'series_description' => 'Test Series Description',
