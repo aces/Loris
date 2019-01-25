@@ -105,7 +105,12 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $file   = new \File_Upload;
         $config = \NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-        $file->setOverwriteMode("overwrite");
+        
+        //@Note Overwrite defaults to 'reject'
+        //'rename' or 'overwrite' modes can be set in $values['overwrite'] 
+        //via HTTP PUT Header 'X-Overwrite'
+        $file->setOverwriteMode($values['overwrite']);
+
         $file->fileMove   = false;
         $file->isCLImport = true;
         $file->addCLFile($values['mriFile']['tmp_name'], 'mriFile');
@@ -115,9 +120,6 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $file->CLFiles['mriFile']['info'] = $values['mriFile'];
         $file->CLFiles['mriFile']['file'] = $this;
 
-        //pass the existing form ($form) by reference to File_Upload,
-        // and register the file_upload field names being used.
-        //$file->registerForm($this->form);
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
