@@ -12,6 +12,7 @@
  */
 namespace Loris\API\Candidates\Candidate\Visit\Dicoms;
 require_once __DIR__ . '/../../Visit.php';
+require_once __DIR__ . '/DicomUploadHelper.php';
 use LORIS\server_processes_manager as SP;
 /**
  * Handles API requests for the candidate's visit DICOM tar file. Extends
@@ -104,6 +105,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handlePUT()
     {
+
         if (!\User::singleton()->hasPermission('imaging_uploader')) {
             $this->header("HTTP/1.1 403 Forbidden");
             $this->error("Access Forbidden.");
@@ -118,67 +120,25 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $this->safeExit(1);
         }
 
-        // Get file
-        $fp   = fopen("php://input", "rb");
-        $data = '';
-        while (!feof($fp)) {
-            if (($buf = fread($fp, 8092)) !='') {
-                $data .= $buf;
-            }
-        }
-        fclose($fp);
+        $isPhantom     = $_SERVER['HTTP_X_IS_PHANTOM'];
+        $dh            = new DicomUploadHelper();
+        $temp_filepath = $this->readFileToTemp($dh, $_REQUEST['Tarname']);
+        $args          = $this->createProcessArgs($isPhantom, $temp_filepath);
+        $processDbId   = $dh->_process($args);
 
-        if (!empty($data)) {
-            $factory = \NDB_Factory::singleton();
-            $config  = $factory->Config();
-            $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
-            if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
-                && (is_writable($MRIUploadIncomingPath))
-            ) {
-                //@TODO: Check with JohnSaigle et al about security related re
-                //$_REQUEST['Tarname'] (sanitisation etc)
-                $dest = $MRIUploadIncomingPath . "/" . $_REQUEST['Tarname'];
-                $op   = fopen($dest, 'wb');
-                if (!fwrite($op, $data)) {
-                    $this->JSON = array("error" => "Could not write file");
-                } else {
-                    //$isPhantom = $_REQUEST['IsPhantom'];
-                    $isPhantom = $_SERVER['HTTP_X_IS_PHANTOM'];
-                    $args      = $this->createProcessArgs($isPhantom);
-                    if (!empty($args)) {
-                        // Add path to mri upload file
-                        $args['values']['uploaded_file_path'] = $dest;
-                        $mri_upload_id = $this->_process($args);
-                        if ($mri_upload_id) {
-                            $this->JSON  = array(
-                                            "status"        => "uploaded",
-                                            "mri_upload_id" => $mri_upload_id,
-                                           );
-                            $processDbId = $this->performRealUpload(
-                                $mri_upload_id,
-                                $dest
-                            );
-                            if ($processDbId) {
-                                $this->printProcessResults(
-                                    array($processDbId),
-                                    $mri_upload_id
-                                );
-                            }
-                        } else {
-                            //@TODO Set header for some 4XX error status I imagine
-                            $msg        = "Could not insert mri upload";
-                            $this->JSON = array("error" => $msg);
-                        }
-                    }
-                }
-                if ($op) {
-                    fclose($op);
-                }
-            } else {
-                //@TODO Set header for some 4XX error status I imagine
-                $this->JSON = array("error" => "Could not write file");
-            }
+        if ($processDbId) {
+            $this->printProcessResults(array($processDbId), $mri_upload_id);
+        } else if ($dh->mri_upload_id) {
+            $this->JSON = array(
+                           "status"        => "uploaded",
+                           "mri_upload_id" => $dh->mri_upload_id,
+                          );
+        } else {
+            $this->header("HTTP/1.1 500 Internal Server Error");
+            $this->error("Sorry, something has faceplanted.");
+            $this->safeExit(1);
         }
+
     }
 
     /**
@@ -258,54 +218,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Inserts into the mri_upload table the following information:
-     *   - UploadedBy, UploadDate, UploadLocation, SessionID and
-     *     PatientName
-     *
-     * @param mixed $args Inputs for processing the file
-     *
-     * @return $mri_upload_id on success, false othewise
-     */
-    function _process($args)
-    {
-        $db          = \Database::singleton();
-        $user        = \User::singleton();
-        $user_name   = $user->getUsername();
-        $date        = date('Y-m-d H:i:s');
-        $pscid       = $args['values']['pSCID'];
-        $candid      = $args['values']['candID'];
-        $visit_label = $args['values']['visitLabel'];
-        $uploaded_file_path = $args['values']['uploaded_file_path'];
-        $isPhantom          = $args['values']['IsPhantom'];
-        $pname    = $pscid. "_" . $candid . "_" . $visit_label;
-        $sessioni = $db->pselectOne(
-            "SELECT ID FROM  session WHERE CandID = :cid
-            AND Visit_label =:vlabel",
-            array(
-             'cid'    => $candid,
-             'vlabel' => $visit_label,
-            )
-        );
-        $values   = array(
-                     'UploadedBy'     => $user_name,
-                     'UploadDate'     => $date,
-                     'UploadLocation' => $uploaded_file_path,
-                     'SessionID'      => $sessionid,
-                     'PatientName'    => $pname,
-                     'IsPhantom'      => $isPhantom,
-                    );
-
-        $db->insert('mri_upload', $values);
-        $mri_upload_id = $db->getLastInsertId();
-        if ($mri_upload_id>0) {
-            return $mri_upload_id;
-        }
-
-        //Something went wrong
-        return false;
-    }
-
-    /**
      * Gets basic candidate information
      * in order to access PSCID and similar
      *
@@ -333,20 +245,28 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Creates an array of args for _process()
      *
-     * @param bool $isPhantom Fileset is phantom or not
+     * @param bool   $isPhantom     Fileset is phantom or not
+     * @param string $temp_filepath path to temp directory
      *
      * @return mixed
      */
-    function createProcessArgs($isPhantom=null)
+    function createProcessArgs($isPhantom=null, $temp_filepath='')
     {
         $cand_info = $this->getCandData();
         if (!empty($cand_info) && !empty($cand_info['PSCID'])) {
             //Create values for processing the file
-            $args['values']['candID']     = $this->CandID;
-            $args['values']['pSCID']      = $cand_info['PSCID'];
-            $args['values']['visitLabel'] = $this->VisitLabel;
-            $args['values']['overwrite']  = false;
-            $args['values']['IsPhantom']  = $isPhantom;
+            $args['candID']     = $this->CandID;
+            $args['pSCID']      = $cand_info['PSCID'];
+            $args['visitLabel'] = $this->VisitLabel;
+            $args['overwrite']  = false;
+            $args['IsPhantom']  = $isPhantom==0 ? "N" : "Y";
+            $args['mriFile']    = array(
+                                   'name'     => $_REQUEST['Tarname'],
+                                   'type'     => 'application/gzip',
+                                   'tmp_name' => $temp_filepath,
+                                   'size'     => $_SERVER['CONTENT_LENGTH'],
+                                   'error'    => 0,
+                                  );
 
             return $args;
         }
@@ -430,8 +350,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $spm_module = \Module::factory('server_processes_manager');
         // Perform the real upload on the server
         $serverProcessesMonitor = new SP\ServerProcessesMonitor();
-        $user        = \User::singleton();
-        $user_name   = $user->getUsername();
+        $user      = \User::singleton();
+        $user_name = $user->getUsername();
         // filter to current user
         // @TODO Add permissions check that user can get process info
         $processes = $serverProcessesMonitor->getProcessesState(
@@ -443,8 +363,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $processesInfo[] = array(
                                 "process_id" => $proc['ID'],
                                 "pid"        => $proc['PID'],
-                                "status"    => $proc['STATE'],
-                                "message"     => $proc['PROGRESS'],
+                                "status"     => $proc['STATE'],
+                                "message"    => $proc['PROGRESS'],
                                );
         }
         return $processesInfo;
@@ -478,6 +398,36 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $msg        = "Could not launch processing.";
             $this->JSON = array_merge($this->JSON, array("error" => $msg));
         }
+    }
+
+    /**
+     * Get info about a Loris process
+     *
+     * @param resource $dh       IDs of the server processes to monitor
+     * @param stromg   $filename Upload id of the DICOM fileset
+     *
+     * @return Full temporary path and filename of uploaded file
+     */
+    function readFileToTemp($dh, $filename)
+    {
+        $tmp_dir      = $dh->tempdir();
+        $tmp_filepath = $tmp_dir . "/" . $filename;
+        $op           = fopen($tmp_filepath, "ab");
+        $data         = '';
+        $fp           = fopen("php://input", "rb");
+        // Get file. Append to $tmp_file immediately instead of holding file
+        // contents in memory.
+        if ($op) {
+            while (!feof($fp)) {
+                if (($buf = fread($fp, 8092)) !='') {
+                    $res = fwrite($op, $buf);
+                }
+            }
+        }
+        fclose($fp);
+        fclose($op);
+
+        return $tmp_filepath;
     }
 
     /**
@@ -541,4 +491,5 @@ if (isset($_REQUEST['PrintDicomData'])) {
     );
     print $obj->toJSONString();
 }
+
 ?>
