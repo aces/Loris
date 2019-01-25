@@ -33,16 +33,11 @@ class MediaFile implements \LORIS\Data\DataInstance
     /**
      * Create a new Media File Instance.
      *
-     * @param array   $row      The instance (in the same format as
-     *                                  \Database::pselectRow returns
-     * @param integer $cid      The centerID affiliated with this instance.
-     * @param integer $hideFile 0 or 1, whether a file should be hidden.
+     * @param array $row The Media File Instance
      */
-    public function __construct(array $row, int $cid, int $hideFile)
+    public function __construct(array $row)
     {
         $this->DBRow    = $row;
-        $this->CenterID = $cid;
-        $this->hideFile = $hideFile;
     }
 
     /**
@@ -63,7 +58,7 @@ class MediaFile implements \LORIS\Data\DataInstance
      */
     public function getCenterID(): int
     {
-        return $this->CenterID;
+        return $this->DBRow['centerId'];
     }
 
     /**
@@ -75,6 +70,6 @@ class MediaFile implements \LORIS\Data\DataInstance
      */
     public function getHideFile(): int
     {
-        return $this->hideFile;
+        return $this->DBRow['hideFile'];
     }
 }

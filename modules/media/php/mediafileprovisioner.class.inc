@@ -37,24 +37,24 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct()
     {
         parent::__construct(
-            "SELECT m.file_name,                                                   
+            "SELECT m.file_name as fileName,
                     c.PSCID as pscid,
-                    s.Visit_label as visit_label,
-                    l.language_label,
-               			(SELECT Full_name FROM test_names WHERE Test_name=m.instrument),
-               			s.CenterID as site,
-               			m.uploaded_by,
-               			m.date_taken,
+                    s.Visit_label as visitLabel,
+                    l.language_label as languageLabel,
+               			(SELECT Full_name FROM test_names WHERE Test_name=m.instrument) as fullName,
+               			s.CenterID as centerID,
+               			m.uploaded_by as uploadedBy,
+               			m.date_taken as dateTaken,
                			substring(m.comments, 1, 50) as comments,
-               			m.date_uploaded,
-               			m.file_type,
-               			s.CandID as cand_id,
-               			s.ID as session_id,
-               			m.hide_file,
+               			m.date_uploaded as dateUploaded,
+               			m.file_type as fileType,
+               			s.CandID as candidateId,
+               			s.ID as sessionId,
+               			m.hide_file as hideFile,
                			m.id
              FROM media m
-             LEFT JOIN session s ON m.session_id = s.ID
-             LEFT JOIN candidate c ON c.CandID=s.CandID
+             INNER JOIN session s ON m.session_id = s.ID
+             INNER JOIN candidate c ON c.CandID=s.CandID
              LEFT JOIN language l USING (language_id)
              WHERE s.Active='Y' and c.Active='Y'",
             array()
@@ -70,8 +70,6 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid      = $row['site'];
-            $hidefile = $row['hide_file'];
-            return new MediaFile($row, $cid, $hidefile);
+            return new MediaFile($row);
     }
 }
