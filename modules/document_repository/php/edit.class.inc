@@ -8,18 +8,18 @@
  * @package  Document_Repository
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\document_repository;
 
 /**
- * Creates the form for NDB_Form_document_repository
+ * Creates the form for document_repository/edit page
  *
  * @category Loris
  * @package  Document_Repository
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris/
  */
 class Edit extends \NDB_Form
 {

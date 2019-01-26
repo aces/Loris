@@ -140,25 +140,14 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-//todo ajax to fetch uploadcategeory
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      success: function() {
+   fetch(this.props.action, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObj,
+    })
+    .then((resp) => resp.json())
+    .then(()=>{
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
@@ -168,19 +157,8 @@ class DocCategoryForm extends React.Component {
           uploadProgress: -1,
         });
         swal('Add Successful!', '', 'success');
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Add error!';
-        this.setState({
-          errorMessage: msg,
-          uploadProgress: -1,
-        });
-        swal(msg, '', 'error');
-      }.bind(this),
     });
   }
-
   /**
    * Validate the form
    *

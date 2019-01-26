@@ -6,9 +6,9 @@
  *
  * @category Documentation
  * @package  Main
- * @author   Mia Petkova <mia.petkova@gmail.com>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/Jkat/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\document_repository;
 /**
@@ -20,7 +20,7 @@ namespace LORIS\document_repository;
  * @package  Main
  * @author   Justin Kat <justinkat@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/Jkat/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris
 */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
@@ -94,7 +94,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-
     $this->fieldOptions = array(
                'fileCategories'  => $categoriesList,
                'sites'       => $siteList,
@@ -176,8 +175,8 @@ function toDocSelect($options, $item, $item2): array
                          '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
                          'v.comments',
                          'v.Date_uploaded',
-                         'v.record_id as editID',
-                         'v.record_id as deleteID',
+                         'v.record_id as Edit',
+                         'v.record_id as Delete_File',
                          'v.File_category as category',
                          'v.Data_dir',
                         ];

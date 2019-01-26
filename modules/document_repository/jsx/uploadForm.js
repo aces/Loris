@@ -42,7 +42,7 @@ class DocUploadForm extends React.Component {
     this.fetchData();
   }
   componentWillReceiveProps(nextProps) {
-    // Any time props.email changes, update state.
+    // Any time props.category changes, update state.
     if (nextProps.category) {
         this.fetchData();
       }

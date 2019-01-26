@@ -1,15 +1,9 @@
 <?php
 /**
- * The validateIDs endpoint is used to verify whether or not
- * a candidate PSCID and CandID match
- *
- * It takes two parameters (PSCID and CandID) and returns either
- * "1" or "0".
- *
  * PHP Version 7
  *
  * @category Main
- * @package  Candidate_List
+ * @package  Document_Repository
  * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -22,7 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Implements the ValidateIDs endpoint
  *
  * @category Main
- * @package  Candidate_List
+ * @package  Document_Repository
  * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -36,7 +30,7 @@ class Uploadcategory extends \NDB_Page
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool true iff the user has access to this page.
+     * @return bool true if the user has access to this page.
      */
     function _hasAccess(\User $user) : bool
     {
@@ -48,8 +42,7 @@ class Uploadcategory extends \NDB_Page
     }
 
     /**
-     * This acts as an AJAX endpoint that only returns a "0" or "1" depending
-     * on whether the candidate passed exists.
+     * Handle a post form
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *

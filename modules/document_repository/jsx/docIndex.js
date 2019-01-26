@@ -70,7 +70,7 @@ class DocIndex extends React.Component {
     let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
     result = <td className={style}><a href={editURL}>Edit</a></td>;
       break;
-    case 'Delete':
+    case 'Delete File':
     let id = row['Edit'];
 function click() {
 swal({
@@ -143,9 +143,9 @@ function() {
         type: 'text',
       }},
       {label: 'Date Upload', show: false},
-      {label: 'editID', show: false},
-      {label: 'deleteID', show: false},
-      {label: 'File Category', show: true, filter: {
+      {label: 'Edit', show: true},
+      {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
+      {label: 'File Category', show: false, filter: {
         name: 'fileCategories',
         type: 'select',
         options: options.fileCategories,
@@ -181,7 +181,7 @@ function() {
         <TabPane TabId={tabList[2].id}>
           <DocCategoryForm
             DataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
+            action={`${loris.BaseURL}/document_repository/Uploadcategory`}
             refreshPage={this.fetchData}
             newCategoryState={this.newCategoryState}
           />
@@ -191,12 +191,24 @@ function() {
   }
 }
 
-$(function() {
+/* $(function() {
   const docIndex = (
     <div className="page-document">
       <DocIndex DataURL={`${loris.BaseURL}/document_repository/?format=json`} />
+      hasPermission={loris.userHasPermission}
     </div>
   );
 
   ReactDOM.render(docIndex, document.getElementById('lorisworkspace'));
+});*/
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <div className="page-document">
+    <DocIndex
+      DataURL={`${loris.BaseURL}/document_repository/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />
+    </div>,
+    document.getElementById('lorisworkspace')
+  );
 });
