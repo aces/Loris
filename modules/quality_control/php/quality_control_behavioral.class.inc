@@ -115,11 +115,11 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         $projectList = \Utility::getProjectList();
 
         $this->fieldOptions = [
-            'visits'     => $visitList,
-            'instrument' => $instrumentList,
-            'site'       => $siteList,
-            'projects'   => $projectList,
-        ];
+                               'visits'     => $visitList,
+                               'instrument' => $instrumentList,
+                               'site'       => $siteList,
+                               'projects'   => $projectList,
+                              ];
 
         $this->columns = [
                           's.Visit_label as visit_label',
@@ -131,12 +131,6 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         $this->query   = $query;
 
         $this->order_by = 'f.commentid';
-        $this->headers  = [
-                           'Visit Label',
-                           'DCCID',
-                           'PSCID',
-                           'Instrument',
-                          ];
     }
 
     /**

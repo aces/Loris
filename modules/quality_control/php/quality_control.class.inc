@@ -166,6 +166,7 @@ class Quality_Control extends \NDB_Menu_Filter
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
           AND f.Test_name='mri_parameter_form'
+          AND c.Active='Y'
           AND s.Active='Y'
           AND s.CenterID <> '1' ";
 
@@ -183,10 +184,10 @@ class Quality_Control extends \NDB_Menu_Filter
     {
 
         $this->skipTemplate = true;
-        $user               = \User::singleton();
-        $db                 = \Database::singleton();
-        $siteList           = array();
-        $visitList          = \Utility::getVisitList();
+        $user      = \User::singleton();
+        $db        = \Database::singleton();
+        $siteList  = array();
+        $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
             $siteList = \Utility::getSiteList();
@@ -228,41 +229,41 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         $scan_location = array(
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
-        );
+                          "In Imaging Browser"    => "Found in Imaging Browser",
+                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
+                          "Missing"               => "Missing",
+                         );
 
         $this->fieldOptions
             = [
-            'site'             => $siteList,
-            'project'          => $projectList2,
-            'subproject'       => $subprojectList2,
-            'scanType'         => $scan_types,
-            'mRIParameterForm' => array(
-                "Incomplete" => "Incomplete",
-                "Complete"   => "Complete",
-            ),
-            'scanDoneInMRIPF'  => array(
-                "Yes" => "Yes",
-                "No"  => "No",
-            ),
-            'tarchive'         => array(
-                "In DICOM" => "In DICOM Archives",
-                "Missing"  => "Missing",
-            ),
-            'scanLocation'     => $scan_location,
-            'qCStatus'         => array(
-                "Pass" => "Pass",
-                "Fail" => "Fail",
-            ),
-            'uploadedBy'       => $uploaderList,
-            'selected'         => array(
-                "True"  => "True",
-                "False" => "False",
-            ),
-            'visitLabel'       => $visitList,
-        ];
+               'site'             => $siteList,
+               'project'          => $projectList2,
+               'subproject'       => $subprojectList2,
+               'scanType'         => $scan_types,
+               'mRIParameterForm' => array(
+                                      "Incomplete" => "Incomplete",
+                                      "Complete"   => "Complete",
+                                     ),
+               'scanDoneInMRIPF'  => array(
+                                      "Yes" => "Yes",
+                                      "No"  => "No",
+                                     ),
+               'tarchive'         => array(
+                                      "In DICOM" => "In DICOM Archives",
+                                      "Missing"  => "Missing",
+                                     ),
+               'scanLocation'     => $scan_location,
+               'qCStatus'         => array(
+                                      "Pass" => "Pass",
+                                      "Fail" => "Fail",
+                                     ),
+               'uploadedBy'       => $uploaderList,
+               'selected'         => array(
+                                      "True"  => "True",
+                                      "False" => "False",
+                                     ),
+               'visitLabel'       => $visitList,
+              ];
 
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
@@ -339,26 +340,6 @@ class Quality_Control extends \NDB_Menu_Filter
             TarchiveID ';
 
         $this->order_by = 'PSCID';
-
-        $this->headers = [
-                          'PSCID',
-                          'Session ID',
-                          'DCCID',
-                          'Site',
-                          'Project',
-                          'Subproject',
-                          'Visit Label',
-                          'Scan Type',
-                          'MRI Parameter Form',
-                          'Scan Done in MRI PF',
-                          'Tarchive',
-                          'Scan Location',
-                          'QC Status',
-                          'Uploaded By',
-                          'Selected',
-                          'CommentID',
-                          'TarchiveID',
-                         ];
     }
 
     /**
