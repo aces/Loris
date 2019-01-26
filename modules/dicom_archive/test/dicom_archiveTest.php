@@ -32,7 +32,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                             ">div>div>fieldset>div:nth-child(3)>div>div>input";
     static $site        = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(9)>div>div>select";
-    static $gender      = "#dicom_filter_filter".
+    static $sex         = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(4)>div>div>input";
     static $dateOfBirth = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(5)>div>div>input";
@@ -109,7 +109,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             null,
             "MTL022_300022_V1"
         );
-        $this-> _testFilter(self::$gender, self::$table, null, "M");
+        $this-> _testFilter(self::$sex, self::$table, null, "M");
         $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
         $this-> _testFilter(self::$site, self::$table, "4", "4");
     }

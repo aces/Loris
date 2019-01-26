@@ -74,8 +74,8 @@ class Candidate extends \Loris\API\APIBase
      */
     public function handleGET()
     {
-        $Site   = $this->Candidate->getCandidateSite();
-        $Gender = $this->Candidate->getCandidateGender();
+        $Site = $this->Candidate->getCandidateSite();
+        $Sex  = $this->Candidate->getCandidateSex();
 
         $this->JSON = [
                        "Meta"   => [
@@ -85,7 +85,7 @@ class Candidate extends \Loris\API\APIBase
                                     'Site'    => $Site,
                                     'EDC'     => $this->Candidate->getCandidateEDC(),
                                     'DoB'     => $this->Candidate->getCandidateDoB(),
-                                    'Gender'  => $Gender,
+                                    'Sex'     => $Sex,
                                    ],
                        "Visits" => array_values(
                            $this->Candidate->getListOfVisitLabels()

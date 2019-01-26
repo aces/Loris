@@ -10,7 +10,7 @@
      - Input the right 'Patient Name'
      - Input the right 'Date of Birth'
      - Input the right 'Archive Location'
-     - Input the right 'Gender'
+     - Input the right 'Sex'
      - Input the right 'Acquisition Date'
      - Input the right 'Series UID'
      - Check the results in the table

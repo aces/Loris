@@ -33,7 +33,7 @@ class Module extends \Module
      * The instrument_list module falls back to the instrument_list page regardless
      * of what the page loaded was. This ensures that routes which use the CandID
      * (and not the word "instrument_list") are still able to be loaded and not
-     * 404 errors.
+     * give 404 errors.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -41,17 +41,20 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        try {
-            $resp = parent::handle($request);
-            // hasAccess from the parent returns a 403
-            if ($resp->getStatusCode() != 404) {
-                return $resp;
-            }
-        } catch (\LorisException $e) {
-            // Calling hasAccess from the loader would have failed with
-            // an exception saying it needs a timepoint/candidate if loading
-            // the instrument_list page, which we set below.
+        $resp = parent::handle($request);
+        // hasAccess from the parent returns a 403
+        if ($resp->getStatusCode() != 404) {
+            return $resp;
         }
+
+        /* If the response code above was a 404, it could have been caused by
+         * the \NotFound exception in instrument_list.class.inc. This means
+         * that the route used to access the module contained either a candID
+         * or a timepoint but not both.
+         * The code below extracts this information from the server so that the
+         * module can load properly even in cases like the above where
+         * "instrument_list" isn't actually in the URL path.
+         */
 
         // Falling back to instrument_list, ensure that the CandID
         // and SessionID are valid, and if so attach the models to
@@ -60,26 +63,46 @@ class Module extends \Module
 
         $gets = $request->getQueryParams();
 
-        $attribute = $request->getAttribute("CandID");
-        if ($attribute !== null) {
-            $candidate = \Candidate::singleton($attribute);
-        } else {
-            $candidate = \Candidate::singleton($gets['candID'] ?? '');
-        }
-        $request = $request->withAttribute("Candidate", $candidate);
+        try {
+            $attribute = $request->getAttribute("CandID");
+            if ($attribute !== null) {
+                $candidate = \Candidate::singleton(intval($attribute));
+            } else {
+                $candidate = \Candidate::singleton(intval($gets['candID']) ?? -1);
+            }
+            $request = $request->withAttribute("Candidate", $candidate);
 
-        $attribute = $request->getAttribute("timePoint");
-        if ($attribute === null) {
-            $request = $request->withAttribute(
-                "timePoint",
-                \TimePoint::singleton($gets['sessionID'])
+            $attribute = $request->getAttribute("timePoint");
+            if ($attribute === null) {
+                $request = $request->withAttribute(
+                    "timePoint",
+                    \TimePoint::singleton(intval($gets['sessionID']))
+                );
+            }
+
+            // We need to set the internal page properties for hasAccess to succeed.
+            $page->setCandidate($candidate);
+            $page->setTimePoint($request->getAttribute("timePoint"));
+
+        } catch (\LorisException $e) {
+            $user    = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+            $message = 'Could not find candidate information for candidate '
+                . htmlspecialchars($gets['candID']) . ' and session '
+                . htmlspecialchars($gets['sessionID']) . '.';
+            return (new \LORIS\Middleware\PageDecorationMiddleware(
+                $user
+            ))->process(
+                $request,
+                new \LORIS\Router\NoopResponder(
+                    new \LORIS\Http\Error(
+                        $request,
+                        404,
+                        $message
+                    )
+                )
             );
+
         }
-
-        // We need to set the internal page properties for hasAccess to succeed.
-        $page->setCandidate($candidate);
-        $page->setTimePoint($request->getAttribute("timePoint"));
-
         return $page->process($request, $page);
 
     }

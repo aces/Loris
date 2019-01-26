@@ -3,7 +3,7 @@
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -26,6 +26,12 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
 {
+    const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
+        . "server error. Please contact your project administrator for more "
+        . "information.";
+    const CONFIGURATION_ERROR = "LORIS configuration settings are invalid or "
+        . "missing and as a result execution cannot proceed. Please contact "
+        . "your project administrator and/or verify your LORIS configuration.";
     protected $name;
     protected $dir;
 
@@ -233,6 +239,19 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     {
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
+            $path = $request->getURI()->getPath();
+            if (preg_match('/(\.css)$/', $path) == 1) {
+                $resp = $resp->withHeader(
+                    "Content-Type",
+                    "text/css"
+                );
+            }
+            if (preg_match('/(\.js)$/', $path) == 1) {
+                $resp = $resp->withHeader(
+                    "Content-Type",
+                    "application/javascript"
+                );
+            }
             return $resp;
         }
 
@@ -244,6 +263,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         }
 
         try {
+            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             $page = $this->loadPage($pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
@@ -270,7 +290,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             }
         } catch (\NotFound $e) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
-                $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                $user
             ))->process(
                 $request,
                 new \LORIS\Router\NoopResponder(
@@ -281,8 +301,70 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     )
                 )
             );
+            /* The order of these catch statements matter and should go from
+             * most to least specific. Otherwise all Exceptions will be caught
+             * as their more generic parent class which reduces precision.
+             */
+        } catch (\DatabaseException $e) {
+            error_log($e);
+            return $this->responseStatus500(
+                $request,
+                $user,
+                self::GENERIC_500_ERROR
+            );
+        } catch (\ConfigurationException $e) {
+            error_log($e);
+            return $this->responseStatus500(
+                $request,
+                $user,
+                self::CONFIGURATION_ERROR
+            );
+        } catch (\LorisException $e) {
+            error_log($e);
+            return $this->responseStatus500(
+                $request,
+                $user,
+                self::GENERIC_500_ERROR
+            );
+        } catch (\Exception $e) {
+            error_log($e);
+            return $this->responseStatus500(
+                $request,
+                $user,
+                self::GENERIC_500_ERROR
+            );
         }
 
         return $page->process($request, $page);
+    }
+
+    /**
+     * Return a properly-decorated response with status 500. Used to handle
+     * exceptions thrown within the codebase in a graceful way.
+     *
+     * @param ServerRequestInterface $request The request to process.
+     * @param \User                  $user    The user to decorate the page with.
+     * @param string                 $message An error message explaining the
+     *                                  500 code to the user.
+     *
+     * @return ResponseInterface A properly decorated 500 response.
+     */
+    function responseStatus500(
+        ServerRequestInterface $request,
+        \User $user,
+        string $message
+    ): ResponseInterface {
+        return (new \LORIS\Middleware\PageDecorationMiddleware(
+            $user
+        ))->process(
+            $request,
+            new \LORIS\Router\NoopResponder(
+                new \LORIS\Http\Error(
+                    $request,
+                    500,
+                    $message
+                )
+            )
+        );
     }
 }

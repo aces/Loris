@@ -5,7 +5,7 @@ User Account module - Test plan
       - `There can be only one Highlander`.
       - `User management`
 2. The User Module should display only users belonging to the same site as the active user, unless they have the permission `Across all sites create and edit users`.
-3. Click the `Clear Form` button and verify it resets all filters.
+3. Click the `Clear Filters` button and verify it resets all filters.
 4. Verify that searching functions with all criteria: 
     * site, 
     * user name, 
@@ -14,7 +14,7 @@ User Account module - Test plan
     * pending approval, 
     * email,
     * examiner. 
-5. The `All` option in the site filter should displays users from all sites, even if they are different from the active user.
+5. The empty option in the site filter should display users from all sites, even if they are different from the active user.
 6. Ensure adding a new user with the same name as an existing user fails.
 
 When creating or editing a user: (subtest: edit_user)

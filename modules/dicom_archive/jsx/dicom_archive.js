@@ -125,8 +125,8 @@ class DicomArchive extends Component {
         name: 'patientName',
         type: 'text',
       }},
-      {label: 'Gender', show: true, filter: {
-        name: 'gender',
+      {label: 'Sex', show: true, filter: {
+        name: 'sex',
         type: 'text',
       }},
       {label: 'Date of Birth', show: true, filter: {

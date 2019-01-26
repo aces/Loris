@@ -321,7 +321,7 @@ class SinglePointLogin
             return false;
         }
         // Validate passsword
-        $oldhash = $row['Password_hash'];
+        $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {

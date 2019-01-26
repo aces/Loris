@@ -145,7 +145,10 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_setupVariables();
 
         // set the headers if necessary
-        if (!is_array($this->headers) || count($this->headers) == 0) {
+        if ((!is_array($this->headers)
+            || count($this->headers) == 0)
+            && is_iterable($this->columns)
+        ) {
             foreach ($this->columns as $value) {
                 if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
                     $this->headers[] = $match[0];
@@ -446,7 +449,7 @@ class NDB_Menu_Filter extends NDB_Menu
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'gender'
+                || strtolower(substr($field, -6)) == 'sex'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {

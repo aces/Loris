@@ -41,7 +41,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             ? intval($_REQUEST['candID'])
             : '';
         $this->tpl_data['sessionID'] = intval($_REQUEST['sessionID']);
-        $this->tpl_data['commentID'] = intval($_REQUEST['commentID']);
+        $this->tpl_data['commentID'] = $_REQUEST['commentID'];
         $this->tpl_data['test_name'] = $_REQUEST['test_name'];
         $this->tpl_data['subtest']   = $_REQUEST['subtest'] ?? '';
 

@@ -334,45 +334,45 @@ class Dashboard extends \NDB_Form
     }
 
     /**
-     * Gets the total count of candidates of a specific gender
+     * Gets the total count of candidates of a specific sex
      *
-     * @param string $gender gender (male or female)
+     * @param string $sex Biological sex (male or female)
      *
      * @return int
      */
-    function getTotalGender($gender)
+    function getTotalSex(string $sex) : int
     {
         $DB    = \Database::singleton();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
-             WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
+             WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
              AND c.CenterID <> 1",
-            array('Gender' => $gender)
+            array('sex' => $sex)
         );
         return $total;
     }
 
     /**
-     * Gets the total count of candidates of a specific gender,
+     * Gets the total count of candidates of a specific sex,
      * associated with a specific project
      *
-     * @param string $gender    gender (male or female)
+     * @param string $sex       A biological sex (male or female)
      * @param int    $projectID Project ID
      *
      * @return int
      */
-    function getTotalGenderByProject($gender, $projectID)
+    function getTotalSexByProject(string $sex, int $projectID) : int
     {
         $DB    = \Database::singleton();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
-             WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
+             WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.CenterID <> 1",
             array(
-             'Gender' => $gender,
-             'PID'    => $projectID,
+             'sex' => $sex,
+             'PID' => $projectID,
             )
         );
         return $total;
@@ -400,18 +400,18 @@ class Dashboard extends \NDB_Form
                 = $recruitmentTarget;
 
             if ($ID == 'overall') {
-                $totalFemales = $this->getTotalGender("Female");
+                $totalFemales = $this->getTotalSex("Female");
             } else {
-                $totalFemales = $this->getTotalGenderByProject("Female", $ID);
+                $totalFemales = $this->getTotalSexByProject("Female", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['female_total']   = $totalFemales;
             $this->tpl_data['recruitment'][$ID]['female_percent']
                 = round($totalFemales / $recruitmentTarget * 100);
 
             if ($ID == 'overall') {
-                $totalMales = $this->getTotalGender("Male");
+                $totalMales = $this->getTotalSex("Male");
             } else {
-                $totalMales = $this->getTotalGenderByProject("Male", $ID);
+                $totalMales = $this->getTotalSexByProject("Male", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['male_total']   = $totalMales;
             $this->tpl_data['recruitment'][$ID]['male_percent']
