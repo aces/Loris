@@ -219,9 +219,6 @@ class Candidate
 
         $user = \User::singleton($_SESSION['State']->getUsername());
 
-        // generate candid
-        $candID = Candidate::_generateCandID();
-
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
@@ -251,14 +248,6 @@ class Candidate
                 );
             }
 
-            // check pscid uniqueness
-            if ($db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $PSCID)
-            ) > 0
-            ) {
-                throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
-            }
         } else {
             $PSCID = Candidate::_generatePSCID(
                 \Candidate::_getIDSetting('PSCID', 'prefix')
@@ -266,7 +255,30 @@ class Candidate
             );
         }
 
-        // insert the new candidate into the database
+        // Generate candid
+        $candID = Candidate::_generateCandID();
+
+        // Check ID uniqueness. This can occur if two Candidates are created
+        // at almost the same time and a race condition occurs on the server.
+        $pscidUnique  = intval(
+            $db->pselectOne(
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
+                array('PID' => $PSCID)
+            )
+        ) === 0;
+        $candIDUnique = intval(
+            $db->pselectOne(
+                "SELECT count(CandID) FROM candidate WHERE CandID=:CID",
+                array('CID' => $candID)
+            )
+        ) === 0;
+        if (! ($pscidUnique && $candIDUnique)) {
+            throw new Exception(
+                "Candidate identifiers are not unique. Can't continue."
+            );
+        }
+
+        // Insert the new candidate into the database if everything is fine.
         $setArray = array(
                      'CandID'               => $candID,
                      'RegistrationCenterID' => $centerID,
