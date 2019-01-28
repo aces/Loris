@@ -79,9 +79,9 @@ class MRIFile
      *
      * @param string $parameterName The parameter to be retrieved
      *
-     * @return mixed The value of the parameter
+     * @return ?string The value of the parameter
      */
-    function getParameter(string $parameterName)
+    function getParameter(string $parameterName): ?string
     {
         if (isset($this->QCData[$parameterName])) {
             return $this->QCData[$parameterName];
