@@ -195,7 +195,7 @@ function getPatchesFromVersion(
     }
     $patch_dir           = $loris_root . 'SQL/Release_patches/';
     $all_release_patches = glob($patch_dir . '*.sql');
-    $patches = [];
+    $patches = array();
     if ($diff_major > 0 || $diff_minor > 0) {
         foreach (range($start, $end) as $v) {
             foreach ($all_release_patches as $patch) {
