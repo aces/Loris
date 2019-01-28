@@ -60,6 +60,18 @@ class Uploadfile extends \NDB_Page
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully"))
                 );
+        } 
+        if ($request->getMethod() == "GET") {
+            $value =  $request->getQueryParams();
+            $id = $value['id'];  
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withHeader("Allow", "GET")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($this->getUploadDocFields($id)))
+                );
         }
     }
 /**
@@ -135,7 +147,7 @@ function uploadDocFile()
              'version'       => $version,
              'File_name'     => $fileName,
              'File_size'     => $fileSize,
-             'Data_dir'      => "$name/$fileName", // e.g. 'admin/file.png'
+             'Data_dir'      => $fileName, // e.g. 'admin/file.png'
              'uploaded_by'   => $name,
              'Instrument'    => $instrument,
              'PSCID'         => $pscid,
@@ -156,7 +168,7 @@ function uploadDocFile()
  * @return array
  * @throws DatabaseException
  */
-  function getUploadDocFields(): array
+  function getUploadDocFields(string $id): array
   {
     $db    = \Database::singleton();
     $query = $db->pselect(
@@ -179,8 +191,8 @@ function uploadDocFile()
     $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
     //docFile
     $docData = null;
-    if (isset($_GET['idDocFile'])) {
-        $idDocFile = $_GET['idDocFile'];
+    if (isset($id)) {
+        $idDocFile = $id;
         $docData   = $db->pselectRow(
             "SELECT " .
             "record_id as id, " .
@@ -246,13 +258,16 @@ function parseCategory($value): array
 function toDocSelect($options, $item, $item2): array
 {
     $selectOptions = array();
+
     $optionsValue = $item;
     if (isset($item2)) {
         $optionsValue = $item2;
     }
+
     foreach ($options as $key => $value) {
         $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
     }
+
     return $selectOptions;
 }
 }

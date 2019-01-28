@@ -9,8 +9,9 @@ $(function() {
       <div className="row">
         <div className="col-md-9 col-lg-7">
           <DocEditForm
-            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData&idDocFile=${args.id}`}
-            action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=edit`}
+            DataURL={`${loris.BaseURL}/document_repository/Uploadfile/?id=${args.id}`}
+            action={`${loris.BaseURL}/document_repository/Editfile`}
+            // action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=edit`}
           />
         </div>
       </div>

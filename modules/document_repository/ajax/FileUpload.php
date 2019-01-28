@@ -31,9 +31,9 @@ function editDocFile(): void
     }
     $stdin     = file_get_contents('php://input');
     $req       = json_decode($stdin, true);
-    $idDocFile = $req['idDocFile'];
+    $id = $req['id'];
 
-    if (!$idDocFile) {
+    if (!$id) {
         showError("Error! Invalid doc file ID!");
     }
 
@@ -51,7 +51,7 @@ function editDocFile(): void
         $db->update(
             'document_repository',
             $updateValues,
-            ['record_id' => $idDocFile]
+            ['record_id' => $id]
         );
     } catch (DatabaseException $e) {
         showError("Could not update the file. Please try again!");

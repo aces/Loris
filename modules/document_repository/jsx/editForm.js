@@ -28,7 +28,24 @@ class DocEditForm extends React.Component {
   }
 
   componentDidMount() {
-    let self = this;
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
+  }
+
+  fetchData() {
+    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.setState({
+          Data: data,
+          docData: data.docData,
+        });
+      })
+      .catch((error) => {
+        this.setState({error: true});
+    });
+  }
+/*    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -58,7 +75,7 @@ class DocEditForm extends React.Component {
         });
       },
     });
-  }
+*/
 
   render() {
     // Data loading error
@@ -123,6 +140,7 @@ class DocEditForm extends React.Component {
               ref="category"
               hasError={false}
               required={true}
+              disabled={true}
               value={this.state.docData.category}
             />
             <SearchableDropdown
@@ -134,6 +152,7 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}
+              disabled={true}
               value={this.state.docData.forSite}
             />
             <SelectElement
