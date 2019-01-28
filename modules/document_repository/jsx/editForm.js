@@ -36,20 +36,7 @@ class DocEditForm extends React.Component {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-        this.setState({
-          Data: data,
-          docData: data.docData,
-        });
-      })
-      .catch((error) => {
-        this.setState({error: true});
-    });
-  }
-/*    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let docData = {
+      let formData = {
           idDocFile: data.docData.id,
           pscid: data.docData.pscid,
           category: data.docData.category,
@@ -60,22 +47,16 @@ class DocEditForm extends React.Component {
           category: data.docData.category,
           forSite: data.docData.forSite,
         };
-
-        self.setState({
+        this.setState({
           Data: data,
-          isLoaded: true,
           docData: data.docData,
-          docData: docData,
+          formData: formData,
         });
-      },
-      error: function(error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
+      })
+      .catch((error) => {
+        this.setState({error: true});
     });
-*/
+  }
 
   render() {
     // Data loading error
@@ -143,12 +124,10 @@ class DocEditForm extends React.Component {
               disabled={true}
               value={this.state.docData.category}
             />
-            <SearchableDropdown
+            <SelectElement
               name="forSite"
               label="Site"
-              placeHolder="Search for site"
               options={this.state.Data.sites}
-              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}
@@ -204,47 +183,25 @@ class DocEditForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    let self = this;
-    let myFormData = this.state.docData;
-    $('#docEditEl').hide();
-    $('#file-progress').removeClass('hide');
 
-    $.ajax({
-      type: 'POST',
-      url: self.props.action,
-      data: JSON.stringify(myFormData),
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let progressbar = $('#progressbar');
-            let progresslabel = $('#progresslabel');
-            let percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + '%');
-            $(progresslabel).html(percent + '%');
-            progressbar.attr('aria-valuenow', percent);
-          }
-        }, false);
-        return xhr;
-      },
-      success: function(data) {
-        $('#file-progress').addClass('hide');
-        self.setState({
-          uploadResult: 'success',
-        });
-        self.showAlertMessage();
-      },
-      error: function(err) {
-        console.error(err);
-        self.setState({
-          uploadResult: 'error',
-        });
-        self.showAlertMessage();
-      },
-
+    let formData = this.state.docData;
+    let formObject= new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
+      }
+    }
+   fetch(this.props.action, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => resp.json())
+    .then(()=>{
+      swal('Updated Successful!', '', 'success');
+      this.props.refreshPage();
+      this.fetchData();
     });
   }
 

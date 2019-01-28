@@ -51,16 +51,14 @@ class Editfile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-            $req =  $request->getQueryParams();
-            $id = $req['id'];
-            $this->editDocFile($id);            
+            $this->editDocFile();            
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($req))
+                        json_encode("updaite"))
                 );
         } 
     }
@@ -71,24 +69,24 @@ class Editfile extends \NDB_Page
  *
  * @return void
  */
-function editDocFile(string $id): void
+function editDocFile(): void
 {
     $db   = \Database::singleton();
     $user = \User::singleton();
     $updateValues = [
-                     'File_category' => $req['category'],
-                     'For_site'      => $req['forSite'],
-                     'Instrument'    => $req['instrument'],
-                     'comments'      => $req['comments'],
-                     'version'       => $req['version'],
-                     'visitLabel'    => $req['visitLabel'],
-                     'pscid'         => $req['pscid'],
+                     'File_category' => $_POST['category'],
+                     'For_site'      => $_POST['forSite'],
+                     'Instrument'    => $_POST['instrument'],
+                     'comments'      => $_POST['comments'],
+                     'version'       => $_POST['version'],
+                     'visitLabel'    => $_POST['visitLabel'],
+                     'pscid'         => $_POST['pscid'],
                     ];
     try {
         $db->update(
             'document_repository',
             $updateValues,
-            ['record_id' => $id]
+            ['record_id' => $_POST['id']]
         );
     } catch (DatabaseException $e) {
         showError("Could not update the file. Please try again!");

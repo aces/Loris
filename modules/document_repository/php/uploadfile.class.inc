@@ -110,7 +110,7 @@ function uploadDocFile()
         $fileSize   = $_FILES["file"]["size"];
         $fileName   = $_FILES["file"]["name"];
         $fileType   = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
-        $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
+        $uploadPath = "$base/modules/document_repository/user_uploads/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
     if (intval($category) < 0) {
