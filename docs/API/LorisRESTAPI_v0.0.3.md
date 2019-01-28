@@ -835,7 +835,7 @@ If the fileset is not a phantom, set X-Is-Phantom as follows:
 `X-Is-Phantom: 0`
 
 
-X-Overwrite is an optional header. It can be used to overwrite or rename an 
+X-Overwrite is an optional header. It can be used to overwrite or rename 
 the Dicom fileset that has been uploaded before. By default the server will 
 reject modifying a previously uploaded Dicom fileset.
 
