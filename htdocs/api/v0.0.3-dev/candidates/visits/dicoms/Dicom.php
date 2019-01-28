@@ -267,15 +267,15 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             $args['candID']     = $this->CandID;
             $args['pSCID']      = $cand_info['PSCID'];
             $args['visitLabel'] = $this->VisitLabel;
-            $args['overwrite'] = $overwrite;
-            $args['IsPhantom'] = $isPhantom==0 ? "N" : "Y";
-            $args['mriFile']   = array(
-                                  'name'     => $_REQUEST['Tarname'],
-                                  'type'     => 'application/gzip',
-                                  'tmp_name' => $temp_filepath,
-                                  'size'     => $_SERVER['CONTENT_LENGTH'],
-                                  'error'    => 0,
-                                 );
+            $args['overwrite']  = $overwrite;
+            $args['IsPhantom']  = $isPhantom==0 ? "N" : "Y";
+            $args['mriFile']    = array(
+                                   'name'     => $_REQUEST['Tarname'],
+                                   'type'     => 'application/gzip',
+                                   'tmp_name' => $temp_filepath,
+                                   'size'     => $_SERVER['CONTENT_LENGTH'],
+                                   'error'    => 0,
+                                  );
 
             return $args;
         }

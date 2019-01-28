@@ -40,7 +40,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $this->tmp_name      = '';
         $this->processDbId   = 0;
         $this->mri_upload_id = 0;
-        $this->errors = array();
+        $this->errors        = array();
 
         //Instantiate a helper module so we can use Imaging_Uploader module
         //ApiImagingUploader is just a random string.
