@@ -95,13 +95,41 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
-        // Delegate to sub-endpoints
-        // TODO
-        return new \LORIS\Http\Response\NotImplemented();
-        return $handler->process(
-            $newrequest,
-            $handler
+        // Delegate to instrument specific endpoint.
+        $instrumentname = array_shift($pathparts);
+
+        $battery = new \NDB_BVL_Battery();
+        $battery->selectBattery($this->visit->getSessionID());
+
+        $entry = array_filter(
+            $battery->getBatteryVerbose(),
+            function ($item) use ($instrumentname) {
+                return $item['Test_name'] == $instrumentname;
+            }
         );
+
+        $dde       = array_search('dde', $pathparts) !== false;
+        $arraykey  = $dde ? 'DDECommentID' : 'CommentID';
+        $commentid = array_pop($entry)[$arraykey] ?? null;
+        if ($commentid === null) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        try {
+            $instrument = \NDB_BVL_Instrument::factory(
+                $instrumentname,
+                $commentid,
+                null,
+                true
+            );
+        } catch (\Exception $e) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $endpoint = new Instrument\Instrument($this->visit, $instrument);
+        $request  = $request->withAttribute('pathparts', $pathparts);
+
+        return $endpoint->process($request, $endpoint);
     }
 
     /**

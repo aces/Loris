@@ -13,13 +13,6 @@ RewriteRule ^login[/]?$ /index.php [QSA,END]
 # Projects API rewrite rules
 RewriteRule ^projects/? /index.php [QSA,END]
 
-# Candidates API rewrite rules
-
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&PrintInstrumentData=true [L]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&PrintInstrumentData=true [L]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true&PrintInstrumentData=true [L]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true&PrintInstrumentData=true [L]
-
 ## Imaging API related URLs
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images$ candidates/visits/Images.php?CandID=$1&VisitLabel=$2&PrintImages=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/qc$ candidates/visits/images/qc/QC.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageQC=true [L]
@@ -36,6 +29,10 @@ RewriteRule ^candidates/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/[a-zA-Z0-9_.]+/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/[a-zA-Z0-9_.]+/dde/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/[a-zA-Z0-9_.]+/flags/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/[a-zA-Z0-9_.]+/dde/flags/? /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/qc/imaging/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/[a-zA-Z0-9_.-]+/?$ /index.php [QSA,END]
