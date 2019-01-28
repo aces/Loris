@@ -180,7 +180,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             //yes, what to do? Quit?
             $processDbId = $this->performRealUpload(
                 $data->mri_upload_id,
-                $uploadLocation,
+                $uploadedLocation['UploadLocation'],
                 true
             );
             $this->printProcessResults(
