@@ -627,7 +627,6 @@ class Candidate
           AND Entity_type <> 'Scanner'";
         $where  = array('cid' => $candID);
         $result = $db->pselectOne($query, $where);
-        echo $result . "\n";
         return $result ?? '';
     }
 
