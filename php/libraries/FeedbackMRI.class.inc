@@ -79,7 +79,6 @@ class FeedbackMRI
     }
 
     /**
->>>>>>> 9e8834ab4... Fix PhanUndeclaredTypeReturnType errors
      * Clears all comments from the object
      *
      * @return bool
