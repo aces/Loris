@@ -196,14 +196,14 @@ END";
                 }
             } else {
                 if ($user->hasPermission('imaging_browser_phantom_allsites')) {
-                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ") 
+                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr) 
                                       OR c.Entity_type = 'Scanner') ";
                 } else if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
-                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ")
+                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr)
                                       OR (c.Entity_type = 'Scanner'
                                       AND s.CenterID IN (" . $site_arr . "))) ";
                 } else {
-                    $this->query .= " AND c.CenterID IN (" . $site_arr . ") ";
+                    $this->query .= " AND c.RegistrationCenterID IN ($site_arr) ";
                 }
             }
         }

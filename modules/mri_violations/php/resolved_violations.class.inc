@@ -233,7 +233,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_protocol_violated_scans.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved <> '0'"
             . " UNION " .
             "SELECT PatientName,
@@ -260,7 +260,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_violations_log.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved <> '0'"
             . " UNION " .
             "SELECT PatientName,
@@ -285,7 +285,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved <> '0')
             as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)

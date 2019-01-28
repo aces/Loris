@@ -87,12 +87,12 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
-            LEFT JOIN psc as p USING (CenterID)
+            LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
             WHERE c.CandID=:Candidate AND c.Active = 'Y'";
 
@@ -266,18 +266,18 @@ class Candidate
 
         // insert the new candidate into the database
         $setArray = array(
-                     'CandID'          => $candID,
-                     'CenterID'        => $centerID,
-                     'PSCID'           => $PSCID,
-                     'DoB'             => $dateOfBirth,
-                     'EDC'             => $edc,
-                     'Sex'             => $sex,
-                     'ProjectID'       => $projectID,
-                     'Date_active'     => date('Y-m-d'),
-                     'Date_registered' => date('Y-m-d'),
-                     'Entity_type'     => 'Human',
-                     'RegisteredBy'    => $user->getUsername(),
-                     'UserID'          => $user->getUsername(),
+                     'CandID'               => $candID,
+                     'RegistrationCenterID' => $centerID,
+                     'PSCID'                => $PSCID,
+                     'DoB'                  => $dateOfBirth,
+                     'EDC'                  => $edc,
+                     'Sex'                  => $sex,
+                     'ProjectID'            => $projectID,
+                     'Date_active'          => date('Y-m-d'),
+                     'Date_registered'      => date('Y-m-d'),
+                     'Entity_type'          => 'Human',
+                     'RegisteredBy'         => $user->getUsername(),
+                     'UserID'               => $user->getUsername(),
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
@@ -469,7 +469,7 @@ class Candidate
      */
     function getCenterID(): int
     {
-        return $this->candidateInfo["CenterID"];
+        return $this->candidateInfo["RegistrationCenterID"];
     }
 
     /**

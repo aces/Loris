@@ -51,7 +51,11 @@ class Create_Timepoint extends \NDB_Form
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-            (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs')))
+            (in_array(
+                $candidate->getData('RegistrationCenterID'),
+                $user->getData('CenterIDs')
+            )
+            )
         );
     }
 

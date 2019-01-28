@@ -90,7 +90,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND session.CenterID IN (" . $site_arr . ")";
         }
 
         $this->group_by     = '';
