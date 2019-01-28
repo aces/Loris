@@ -31,7 +31,6 @@ return [
 		"PhanUndeclaredTypeParameter",
 		"PhanUndeclaredConstant",
 		"PhanTypeMismatchForeach",
-		"PhanTypeMismatchDefault",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",
