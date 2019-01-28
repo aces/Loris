@@ -1,9 +1,10 @@
 <?php
 /**
- * Script exporting Update statements to remove 0000-00-00 values
- * and replace them by NULL
+ * Migrate an existing instrument from having its data stored in
+ * an SQL table to having its data stored in the flag.Data column
+ * in JSON format.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
