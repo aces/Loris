@@ -20,25 +20,29 @@ if (isset($_REQUEST['action'])) {
 
     if ($action === 'getData') {
         if (userCanGetData($db, $user)) {
-            return json_encode(getData($db));
+            echo json_encode(getData($db));
+            exit;
         } else {
             http_response_code(403);
             $message['message']
                 = 'You do not have access to the publication module.';
-            return json_encode($message);
+            echo json_encode($message);
+            exit;
         }
     } elseif ($action === 'getProjectData') {
         $id = $_REQUEST['id'];
         if (userCanGetData($db, $user, $id)) {
-            return json_encode(getProjectData($db, $user, $id));
+            echo json_encode(getProjectData($db, $user, $id));
+            exit;
         } else {
             http_response_code(403);
             $message['message'] = 'You do not have access to this project.';
-            return json_encode($message);
+            echo json_encode($message);
+            exit;
         }
     } else {
         http_response_code(400);
-        return;
+        exit;
     }
 }
 /**

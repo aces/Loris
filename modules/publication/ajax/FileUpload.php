@@ -20,7 +20,7 @@ if (isset($_REQUEST['action'])) {
         editProject();
     } else {
         http_response_code(400);
-        return;
+        exit;
     }
 }
 

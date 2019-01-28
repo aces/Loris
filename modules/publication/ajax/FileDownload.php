@@ -26,7 +26,8 @@ if (userCanDownload($user)) {
         error_log("ERROR: File $filePath does not exist");
         http_response_code(404);
         $message['message'] = "Could not locate file: $file";
-        return json_encode($message);
+        echo json_encode($message);
+        exit;
     }
 
     // Output file in downloadable format
@@ -38,7 +39,8 @@ if (userCanDownload($user)) {
 } else {
     http_response_code(403);
     $message['message'] = 'You do not have permission to download this file.';
-    return json_encode($message);
+    echo json_encode($message);
+    exit;
 }
 
 /**
