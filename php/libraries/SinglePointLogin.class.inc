@@ -469,7 +469,7 @@ class SinglePointLogin
         $longLockoutThreshold  = 15;
 
         // SQL code to run.
-        $query  = "SELECT COUNT(loginhistoryID) " .
+        $query  = "SELECT COUNT(loginhistoryID) as loginattempts" .
             "FROM user_login_history " .
             "WHERE userID = :username " .
             "AND Success = 'N' " .
@@ -490,10 +490,19 @@ class SinglePointLogin
                    'ip'                  => $_SERVER['REMOTE_ADDR'],
                   );
 
-        $shortFailCount = $this->_getFailedLoginCount($query, $params);
+        // Query DB for login attempts.
+        $database  = \NDB_Factory::singleton()->database();
+        $statement = $database->prepare($query);
+
+        $shortFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
 
         $params['timeWindowInMinutes'] = $longWindowInMinutes;
-        $longFailCount = $this->_getFailedLoginCount($query, $params);
+
+        $longFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
 
         return $shortFailCount > $shortLockoutThreshold
             || $longFailCount > $longLockoutThreshold;
