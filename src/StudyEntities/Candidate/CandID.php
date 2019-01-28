@@ -40,7 +40,7 @@ class CandID extends ValidatableIdentifier
      * state related facts.
      *
      * This function is called by the contructor of ValidatableIdentifier
-     * to ensure that no CandID exists if it value is not valid.
+     * to ensure that no CandID exists if its value is not valid.
      *
      * @param string $value The value to be validated
      *
