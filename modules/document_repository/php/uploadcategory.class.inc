@@ -51,35 +51,36 @@ class Uploadcategory extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-            $this->uploadDocCategory();            
+            $this->uploadDocCategory();
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("uploaded successfully"))
+                        json_encode("uploaded successfully")
+                    )
                 );
         }
     }
-/**
+    /**
  * Handles the upload category process
  *
  * @return void
  */
-function uploadDocCategory()
-{
-    $DB = \Database::singleton();
+    function uploadDocCategory()
+    {
+        $DB            = \Database::singleton();
         $category_name = $_POST['category_name']; // required
         $parent_id     = $_POST['parent_id']  !== '' ? $_POST['parent_id'] : null;
         $comment       = $_POST['comments']    !== '' ? $_POST['comments'] : null;
-    $DB->insert(
-        "document_repository_categories",
-        array(
-         "category_name" => $category_name,
-         "parent_id"     => $parent_id,
-         "comments"      => $comments,
-        )
-    );
-}
+        $DB->insert(
+            "document_repository_categories",
+            array(
+             "category_name" => $category_name,
+             "parent_id"     => $parent_id,
+             "comments"      => $comments,
+            )
+        );
+    }
 }

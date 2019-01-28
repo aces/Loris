@@ -51,45 +51,46 @@ class Editfile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-            $this->editDocFile();            
+            $this->editDocFile();
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("updaite"))
+                        json_encode("updaite")
+                    )
                 );
-        } 
+        }
     }
-/**
+    /**
  * Handles the document edit process
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editDocFile(): void
-{
-    $db   = \Database::singleton();
-    $user = \User::singleton();
-    $updateValues = [
-                     'File_category' => $_POST['category'],
-                     'For_site'      => $_POST['forSite'],
-                     'Instrument'    => $_POST['instrument'],
-                     'comments'      => $_POST['comments'],
-                     'version'       => $_POST['version'],
-                     'visitLabel'    => $_POST['visitLabel'],
-                     'pscid'         => $_POST['pscid'],
-                    ];
-    try {
-        $db->update(
-            'document_repository',
-            $updateValues,
-            ['record_id' => $_POST['id']]
-        );
-    } catch (DatabaseException $e) {
-        showError("Could not update the file. Please try again!");
+    function editDocFile(): void
+    {
+        $db           = \Database::singleton();
+        $user         = \User::singleton();
+        $updateValues = [
+                         'File_category' => $_POST['category'],
+                         'For_site'      => $_POST['forSite'],
+                         'Instrument'    => $_POST['instrument'],
+                         'comments'      => $_POST['comments'],
+                         'version'       => $_POST['version'],
+                         'visitLabel'    => $_POST['visitLabel'],
+                         'pscid'         => $_POST['pscid'],
+                        ];
+        try {
+            $db->update(
+                'document_repository',
+                $updateValues,
+                ['record_id' => $_POST['id']]
+            );
+        } catch (DatabaseException $e) {
+            showError("Could not update the file. Please try again!");
+        }
     }
-}
 }
