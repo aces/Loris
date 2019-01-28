@@ -93,7 +93,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
 
         //file types
         $fileTypeList  = [];
-        $fileTypeQuery = $db->pselect("SELECT File_type FROM document_repository group by File_type", []);
+        $fileTypeQuery = $db->pselect(
+            "SELECT File_type FROM document_repository group by File_type",
+            []
+        );
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }

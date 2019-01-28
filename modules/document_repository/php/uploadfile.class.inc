@@ -159,8 +159,7 @@ class Uploadfile extends \NDB_Page
                  'File_type'     => $fileType,
                 )
             );
-            $msg_data['newDocument']
-            = $baseURL . "/document_repository/";
+            $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document']    = $fileName;
             $uploadNotifier->notify($msg_data);
         }
@@ -168,6 +167,8 @@ class Uploadfile extends \NDB_Page
 
     /**
  * Returns a list of fields from database
+ *
+ * @param String $id id of the Doc file
  *
  * @return array
  * @throws DatabaseException
