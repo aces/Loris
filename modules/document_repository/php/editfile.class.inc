@@ -66,7 +66,7 @@ class Editfile extends \NDB_Page
     /**
  * Handles the document edit process
  *
- * @throws DatabaseException
+ * @throws \DatabaseException
  *
  * @return void
  */
@@ -89,7 +89,7 @@ class Editfile extends \NDB_Page
                 $updateValues,
                 ['record_id' => $_POST['id']]
             );
-        } catch (DatabaseException $e) {
+        } catch (\DatabaseException $e) {
             showError("Could not update the file. Please try again!");
         }
     }

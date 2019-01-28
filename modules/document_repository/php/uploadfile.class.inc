@@ -79,7 +79,6 @@ class Uploadfile extends \NDB_Page
     /**
  * Handles the document upload process
  *
- * @throws DatabaseException
  *
  * @return void
  */
@@ -171,7 +170,6 @@ class Uploadfile extends \NDB_Page
  * @param String $id id of the Doc file
  *
  * @return array
- * @throws DatabaseException
  */
     function getUploadDocFields(string $id): array
     {
