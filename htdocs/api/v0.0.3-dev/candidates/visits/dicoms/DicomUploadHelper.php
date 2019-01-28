@@ -29,6 +29,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
     var $info     = null;
     var $tmp_name = '';
     var $processDbId;
+    var $errors = null;
     /**
      * Construct a DicomUploadHelper class object
      */
@@ -39,6 +40,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $this->tmp_name      = '';
         $this->processDbId   = 0;
         $this->mri_upload_id = 0;
+        $this->errors = array();
 
         //Instantiate a helper module so we can use Imaging_Uploader module
         //ApiImagingUploader is just a random string.
@@ -137,6 +139,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
         $file->setHandlerArgs(array("values" => $values));
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
+        $this->errors = $file->getErrors();
         return true;
     }
 

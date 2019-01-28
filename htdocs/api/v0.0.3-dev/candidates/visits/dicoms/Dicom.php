@@ -133,9 +133,9 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                            "status"        => "uploaded",
                            "mri_upload_id" => $dh->mri_upload_id,
                           );
-        } else {
-            $this->header("HTTP/1.1 500 Internal Server Error");
-            $this->error("Sorry, something has faceplanted.");
+        } else if (!empty($dh->errors)) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error($dh->errors);
             $this->safeExit(1);
         }
 
@@ -255,15 +255,19 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     {
         $cand_info = $this->getCandData();
         if (!empty($cand_info) && !empty($cand_info['PSCID'])) {
-            //Create values for processing the file
-            $args['candID']     = $this->CandID;
-            $args['pSCID']      = $cand_info['PSCID'];
-            $args['visitLabel'] = $this->VisitLabel;
             //@Note Overwrite defaults to 'reject'
             //@TODO Propose 'X-Overwrite' PUT header
             //'rename' or 'overwrite' modes can be set
             //via HTTP PUT Header 'X-Overwrite'
-            $args['overwrite'] = "reject";
+            $overwrite = "reject";
+            if (isset($_SERVER['HTTP_X_OVERWRITE'])) {
+                $overwrite = $_SERVER['HTTP_X_OVERWRITE'];
+            }
+            //Create values for processing the file
+            $args['candID']     = $this->CandID;
+            $args['pSCID']      = $cand_info['PSCID'];
+            $args['visitLabel'] = $this->VisitLabel;
+            $args['overwrite'] = $overwrite;
             $args['IsPhantom'] = $isPhantom==0 ? "N" : "Y";
             $args['mriFile']   = array(
                                   'name'     => $_REQUEST['Tarname'],
