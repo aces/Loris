@@ -117,15 +117,26 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        if (! ($this->canWriteFiles()
-            && \User::singleton()->hasPermission('instrument_manager_write'))
-        ) {
+        // Ensure the user is allowed to upload.
+        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
             return (new \Zend\Diactoros\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => CANNOT_WRITE_FILES)
+                            array('error' => 'Forbidden')
+                        )
+                    )
+                );
+        }
+        // Ensure the server is properly configured.
+        if (! $this->canWriteFiles()) {
+            return (new \Zend\Diactoros\Response())
+                ->withStatus(500, 'Internal Server Error')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => self::UPLOAD_INSTALL_FAILED)
                         )
                     )
                 );
