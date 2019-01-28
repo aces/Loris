@@ -826,13 +826,13 @@ $Filename must be named according to the format
 $PSCID_$CandID_$VisitLabel.ext where ext is one of the extensions above.
 
 X-Is-Phantom is a required header that must be sent as part of the request. 
-If the fileset a phantom, set X-Is-Phantom as follows:
+If the is fileset a phantom, set X-Is-Phantom as follows:
 
 `X-Is-Phantom: 1`
 
 If the fileset is not a phantom, set X-Is-Phantom as follows:
 
-X-Is-Phantom: 0
+`X-Is-Phantom: 0`
 
 
 X-Overwrite is an optional header. It can be used to overwrite or rename an 
