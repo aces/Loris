@@ -90,18 +90,18 @@ if (strpos($FileBase, "DCM_") === 0) {
 $DownloadFilename = '';
 switch($FileExt) {
 case 'mnc':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-minc";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-minc";
     $DownloadFilename = basename($File);
     break;
 case 'nii':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-nifti";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-nifti";
     $DownloadFilename = basename($File);
     break;
 case 'nii.gz':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-nifti-gz";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
 case 'png':
@@ -120,25 +120,25 @@ case 'raw_byte.gz':
     $MimeType = 'application/octet-stream';
     break;
 case 'xml':
-    $FullPath = $imagePath . '/' . $File;
-    $MimeType = 'application/xml';
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/xml';
     $DownloadFilename = basename($File);
     break;
 case 'nrrd':
-    $FullPath = $imagePath . '/' . $File;
-    $MimeType = 'image/vnd.nrrd';
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'image/vnd.nrrd';
     $DownloadFilename = basename($File);
     break;
 case 'DICOMTAR':
     // ADD case for DICOMTAR
-    $FullPath    = $tarchivePath . '/' . $File;
-    $MimeType    = 'application/x-tar';
+    $FullPath         = $tarchivePath . '/' . $File;
+    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
-    $PatientName = $_GET['patientName'] ?? '';
+    $PatientName      = $_GET['patientName'] ?? '';
     break;
 default:
-    $FullPath = $DownloadPath . '/' . $File;
-    $MimeType = 'application/octet-stream';
+    $FullPath         = $DownloadPath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
     $DownloadFilename = basename($File);
     break;
 }
