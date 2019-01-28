@@ -87,18 +87,22 @@ if (strpos($FileBase, "DCM_") === 0) {
 /* Determine and construct the appropriate download path for the requested file
  * name based on its extension.
  */
+$DownloadFilename = '';
 switch($FileExt) {
 case 'mnc':
     $FullPath = $mincPath . '/' . $File;
     $MimeType = "application/x-minc";
+    $DownloadFilename = basename($File);
     break;
 case 'nii':
     $FullPath = $mincPath . '/' . $File;
     $MimeType = "application/x-nifti";
+    $DownloadFilename = basename($File);
     break;
 case 'nii.gz':
     $FullPath = $mincPath . '/' . $File;
     $MimeType = "application/x-nifti-gz";
+    $DownloadFilename = basename($File);
     break;
 case 'png':
     $FullPath = $imagePath . '/' . $File;
@@ -118,20 +122,24 @@ case 'raw_byte.gz':
 case 'xml':
     $FullPath = $imagePath . '/' . $File;
     $MimeType = 'application/xml';
+    $DownloadFilename = basename($File);
     break;
 case 'nrrd':
     $FullPath = $imagePath . '/' . $File;
     $MimeType = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
     break;
 case 'DICOMTAR':
     // ADD case for DICOMTAR
     $FullPath    = $tarchivePath . '/' . $File;
     $MimeType    = 'application/x-tar';
+    $DownloadFilename = basename($File);
     $PatientName = $_GET['patientName'] ?? '';
     break;
 default:
     $FullPath = $DownloadPath . '/' . $File;
     $MimeType = 'application/octet-stream';
+    $DownloadFilename = basename($File);
     break;
 }
 
@@ -143,8 +151,11 @@ if (!file_exists($FullPath)) {
 }
 
 // Build and send the response with the file data.
-$DownloadFilename = basename($File);
 header("Content-type: $MimeType");
+
+// Build filename and send attachment Content-Disposition header for files that
+// should be downloaded rather than displayed, i.e. png, jpg, header, and
+// raw_byte.gz files.
 if (!empty($DownloadFilename)) {
     // Prepend the patient name to the beginning of the file name.
     if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
@@ -161,8 +172,8 @@ if (!empty($DownloadFilename)) {
             pathinfo($DownloadFilename, PATHINFO_EXTENSION);
 
     }
+    header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
-header("Content-Disposition: attachment; filename=$DownloadFilename");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
