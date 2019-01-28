@@ -273,7 +273,7 @@ function getPrivileges($db_config): array {
     $h = $db_config['host'];
     $p = $db_config['password'];
     /* Run 'SHOW privileges' for this user and parse the output. We are passing
-     * the password value on bhelaf of the user here as the SHOW command does
+     * the password value on behalf of the user here as the SHOW command does
      * not alter any data.
      *
      * NOTE this may have issues when dealing with passwords that contain
