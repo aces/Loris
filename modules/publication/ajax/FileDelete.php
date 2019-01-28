@@ -27,8 +27,7 @@ $message = array('message' => null);
 if (empty($uploadData)) {
     http_response_code(400);
     $message['message'] = 'Invalid Upload ID';
-    echo json_encode($message);
-    exit;
+    exit(json_encode($message));
 }
 
 if (userCanDelete($uploadData, $db, $user)) {
@@ -46,8 +45,7 @@ if (userCanDelete($uploadData, $db, $user)) {
 } else {
     http_response_code(403);
     $message['message'] = 'You do not have permission to delete this file.';
-    echo json_encode($message);
-    exit;
+    exit(json_encode($message));
 }
 
 /**
