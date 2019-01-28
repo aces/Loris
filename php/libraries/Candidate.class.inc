@@ -427,7 +427,7 @@ class Candidate
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()];
+        return $ProjectList[$this->getProjectID()] ?? '';
     }
 
     /**
@@ -638,15 +638,13 @@ class Candidate
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-
-        $query  = "SELECT Visit_label
-            FROM session s JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-            ORDER BY Date_Visit";
+        $query  = "SELECT Visit_label FROM session 
+          LEFT JOIN candidate USING (CandID)
+          WHERE CandID = :cid AND VisitNo = 1
+          AND Entity_type <> 'Scanner'";
         $where  = array('cid' => $candID);
-        $vLabel = $db->pselectOne($query, $where);
-
-        return $vLabel;
+        $result = $db->pselectOne($query, $where);
+        return $result ?? '';
     }
 
     /**
