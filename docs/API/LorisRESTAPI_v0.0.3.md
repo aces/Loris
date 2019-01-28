@@ -816,6 +816,7 @@ scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 ```
 PUT /candidates/$CandID/$VisitLabel/dicoms/$Filename
 X-Is-Phantom: bool
+[X-Overwrite]: string
 ```
 
 Upload a tarred set of DICOM files that is compressed as a `.zip`,`.tar.gz` or 
@@ -825,9 +826,27 @@ $Filename must be named according to the format
 $PSCID_$CandID_$VisitLabel.ext where ext is one of the extensions above.
 
 X-Is-Phantom is a required header that must be sent as part of the request. 
+If the fileset a phantom, set X-Is-Phantom as follows:
 
-X-Is-Phantom must be set to `1` if the fileset is a phantom.
-X-Is-Phantom must be set to `0` for a fileset that is not a phantom.
+`X-Is-Phantom: 1`
+
+If the fileset is not a phantom, set X-Is-Phantom as follows:
+
+X-Is-Phantom: 0
+
+
+X-Overwrite is an optional header. It can be used to overwrite or rename an 
+the Dicom fileset that has been uploaded before. By default the server will 
+reject modifying a previously uploaded Dicom fileset.
+
+To overwrite the fileset, set X-Overwrite as follows:
+
+`X-Overwrite: overwrite`
+
+To rename the fileset, set X-Overwrite as follows:
+
+`X-Overwrite: rename`
+
 
 Returns JSON data upon success having the form:
 
