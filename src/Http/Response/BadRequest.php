@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * File contains the PSR15 ResponseInterface implementation for
+ * File contains the PSR7 ResponseInterface implementation for
  * Bad Request responses.
  *
  * PHP Version 7
