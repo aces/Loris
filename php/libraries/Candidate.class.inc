@@ -622,12 +622,13 @@ class Candidate
 
         $candID = $this->getCandID();
         $query  = "SELECT Visit_label FROM session 
-          WHERE CandID = :cid AND Date_visit IS NOT NULL 
-          ORDER BY Date_visit, ID ASC LIMIT 1";
+          LEFT JOIN candidate USING (CandID)
+          WHERE CandID = :cid AND VisitNo = 1
+          AND Entity_type <> 'Scanner'";
         $where  = array('cid' => $candID);
-        $result = $db->pselectCol($query, $where);
-
-        return (is_array($result) && count($result) > 0) ? array_shift($result) : '';
+        $result = $db->pselectOne($query, $where);
+        echo $result . "\n";
+        return $result ?? '';
     }
 
     /**
