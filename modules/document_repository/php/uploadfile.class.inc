@@ -78,8 +78,7 @@ class Uploadfile extends \NDB_Page
     }
     /**
  * Handles the document upload process
- *
- *
+     *
  * @return void
  */
     function uploadDocFile()
