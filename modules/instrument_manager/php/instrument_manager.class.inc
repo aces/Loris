@@ -16,7 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\EmptyStream;
 
-require_once __DIR__ . '/../../../php/libraries/FileUploadValidator.class.inc';
+require_once __DIR__ . '/../../../php/libraries/FileUploader.class.inc';
 
 /**
  * Instrument_manager
@@ -183,17 +183,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * they are just special text files, they are marked as
              * application/octet-stream upon upload.
              */
-            $validator = new \FileUploadValidator(
-                $this->path . 'project/instruments/',
+            $uploader = new \FileUploader(
+                new SplFileInfo($this->path . 'project/instruments/'),
+                0644,
+                false,
                 array('application/octet-stream')
             );
-            $success   = $validator->upload($request->getUploadedFiles(), 0644);
+            $success   = $uploader->upload($request->getUploadedFiles());
         }
 
         // Return appropriate error message if something has gone wrong.
         if (! $success) {
             if (empty($err)) {
-                $status = $validator->getResponseCode();
+                $status = $uploader->getResponseCode();
                 switch ($status) {
                 case 400:
                     $err = self::BAD_REQUEST;
