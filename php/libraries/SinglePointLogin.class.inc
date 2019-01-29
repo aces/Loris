@@ -509,25 +509,6 @@ class SinglePointLogin
     }
 
     /**
-     * Gives the number of failed login attempts that occurred in within the
-     * time window specified in $params. Used to determine whether a user's
-     * login request should be denied as a security precaution.
-     *
-     * @param string $query  The DB query.
-     * @param array  $params Username and time window.
-     *
-     * @return int The number of failed login attempts that occurred during the
-     *              time window
-     */
-    private function _getFailedLoginCount(
-        string $query,
-        array $params
-    ): int {
-        $result = \Database::singleton()->pselect($query, $params);
-        return intval($result[0]["COUNT(loginhistoryID)"]);
-    }
-
-    /**
      * Sets the session data (State object)
      *
      * @return void
