@@ -44,14 +44,14 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
 
         //Instantiate a helper module so we can use Imaging_Uploader module
         //ApiImagingUploader is just a random string.
-        //All other parametres to constructor are null
+        //All other parametres to constructor are set to empty
         $module = new \LORIS\imaging_uploader\Module("module", '');
         parent::__construct($module, '', '', '', 'ApiImagingUploader');
 
     }
 
     /**
-     * Returns true if the _saveFile has successfully
+     * Returns true if _saveFile has successfully
      * completed
      * Overload Imaging_Uploader::_process()
      *
@@ -71,7 +71,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
                 'ImagingUploaderAutoLaunch'
             );
             if ($ImagingUploaderAutoLaunch || $trigger_pipeline) {
-                // Instanciate the server process module to autoload
+                // Instantiate the server process module to autoload
                 // its namespace classes
                 $spm_module = \Module::factory('server_processes_manager');
                 // Perform the real upload on the server
@@ -151,7 +151,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return void
+     * @return bool 
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {
