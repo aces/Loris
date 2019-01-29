@@ -543,6 +543,17 @@ class User extends UserPermissions
      */
     function pwnedPassword(string $password): bool
     {
+
+        // If the project is configured to disable the Pwned Password check,
+        // always return false (meanning that the password has not been pwned).
+        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
+            'usePwnedPasswordsAPI'
+        )
+        ) {
+            error_log('Setting disabled!');
+            return false;
+        }
+
         /* The pwned passwords API searches a range of password hashes to
          * protect the actual SHA1 hash from being revealed.
          * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
