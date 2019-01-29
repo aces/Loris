@@ -33,13 +33,8 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      * @param string $VisitLabel The visit label to be serialized
      * @param string $Filename   The file name to be retrieved
      */
-    public function __construct(
-        string $method,
-        string $CandID,
-        string $VisitLabel,
-        string $Filename
-    ) {
-
+    public function __construct($method, $CandID, $VisitLabel, $Filename)
+    {
         ob_start();
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
@@ -78,7 +73,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return void but populates $this->JSON
      */
-    public function handleGET(): void
+    public function handleGET()
     {
         $fullDir = $this->getFullPath();
         ob_end_clean();
@@ -117,7 +112,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string of the header value
      */
-    protected function getHeader(string $headerName): string
+    protected function getHeader($headerName)
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->Database();
@@ -145,9 +140,9 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Calculate the entity tag for this image
      *
-     * @return ?string
+     * @return string
      */
-    public function calculateETag(): ?string
+    public function calculateETag()
     {
         return null;
     }
@@ -158,7 +153,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string
      */
-    protected function getFullPath(): string
+    protected function getFullPath()
     {
         return $this->getAssemblyRoot() . "/" . $this->getDatabaseDir();
     }
@@ -169,7 +164,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return string
      */
-    protected function getAssemblyRoot(): string
+    protected function getAssemblyRoot()
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->Config();

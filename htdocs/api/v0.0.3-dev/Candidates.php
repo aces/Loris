@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Handles a request to the candidates portion of the Loris API
  *
@@ -31,9 +31,9 @@ class Candidates extends APIBase
      * Create a Candidates request handler
      *
      * @param string $method The HTTP request method of the request
-     * @param ?array $data   The data that was POSTed to the request
+     * @param array  $data   The data that was POSTed to the request
      */
-    public function __construct(string $method, ?array $data=null)
+    public function __construct($method, $data=null)
     {
         $this->AllowedMethods = [
                                  'GET',
@@ -48,9 +48,9 @@ class Candidates extends APIBase
      * Calculate an ETag by taking a hash of the number of candidates in the
      * database and the time of the most recently changed one.
      *
-     * @return ?string An ETag for ths candidates object
+     * @return string An ETag for ths candidates object
      */
-    function calculateETag(): ?string
+    function calculateETag()
     {
         $ETagCriteria = $this->DB->pselectRow(
             "SELECT MAX(TestDate) as Time,
@@ -69,7 +69,7 @@ class Candidates extends APIBase
      *
      * @return void but populates $this->JSON
      */
-    public function handleGET(): void
+    public function handleGET()
     {
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
@@ -101,7 +101,7 @@ class Candidates extends APIBase
      *
      * @return void but populates $this->JSON and writes to DB
      */
-    public function handlePOST(): void
+    public function handlePOST()
     {
         $data = $this->RequestData;
         if ($data === null) {
@@ -192,15 +192,15 @@ class Candidates extends APIBase
     /**
      * Verifies that the field POSTed to the URL is valid.
      *
-     * @param array        $data   The data that was posted
-     * @param string       $field  The field to be validated in $data
-     * @param array|string $values Can either be an array of valid values for
+     * @param array  $data   The data that was posted
+     * @param string $field  The field to be validated in $data
+     * @param mixed  $values Can either be an array of valid values for
      *                       the field, or a string representing the format
      *                       expected of the data.
      *
      * @return void but will generate an error and exit if the value is invalid.
      */
-    protected function verifyField(array $data, string $field, $values): void
+    protected function verifyField($data, $field, $values)
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
@@ -230,15 +230,10 @@ class Candidates extends APIBase
      * @param string $sex      Biological sex of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
-     * @return int The ID of the newly-created Candidate
+     * @return none
      */
-    public function createNew(
-        string $centerID,
-        string $DoB,
-        string $edc,
-        string $sex,
-        string $PSCID
-    ): int {
+    public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
+    {
         return \Candidate::createNew(
             $centerID,
             $DoB,
