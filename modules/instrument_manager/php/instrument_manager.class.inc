@@ -152,7 +152,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $err = '';
         if (!$this->canWriteFiles()) {
             $err    = self::CANNOT_WRITE_FILES;
-            $status = 503;
+            $status = 500;
         }
 
         if ($this->instrumentExists($instrument)) {
@@ -216,7 +216,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     break;
                 default:
                     // 500 error message + any not specifically covered above.
-                    $err = 'Sorry, something went wrong.';
+                    $err = empty($err) ? 'Sorry, something went wrong.' : $err;
                 }
             }
             return (new \Loris\Http\Response())
