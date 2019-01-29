@@ -38,23 +38,23 @@ class FileUploader
      *
      * @param SplFileInfo $uploadDirectory    The target parent directory of files
      *                              uploaded using this instance.
-     * @param array  $permittedMIMETypes A whitelist of all MIME types that will
-     * be accepted by this instance. E.g. array('image/png', 'text/plain')
-     * @param int            $permissions   A UNIX permissions octet (e.g. 0644)
-     * @param bool           $overwrite     Whether existing files should be
+     * @param int         $permissions        A UNIX permissions octet (e.g. 0644)
+     * @param bool        $overwrite          Whether existing files should be
      *                                      overwritten.
+     * @param array       $permittedMIMETypes A whitelist of all MIME types that
+     * be accepted by this instance. E.g. array('image/png', 'text/plain')
      *
      * @return void
      */
     public function __construct(
-        SplFileInfo $uploadDirectory,
+        \SplFileInfo $uploadDirectory,
         int $permissions,
         bool $overwrite,
         array $permittedMIMETypes = array()
     ) {
         $this->uploadDirectory    = $uploadDirectory;
-        $this->permissions    = $permissions;
-        $this->overwrite    = $overwrite;
+        $this->permissions        = $permissions;
+        $this->overwrite          = $overwrite;
         $this->permittedMIMETypes = $permittedMIMETypes;
         $this->validate();
     }
@@ -102,7 +102,7 @@ class FileUploader
      * If the $overwrite parameter is set to true, existing files will be
      * overwritten.
      *
-     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles An array 
+     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles An array
      * of files uploaded to the server. These files must implement the PSR-7
      *                              UploadedFile interface.
      *
@@ -135,7 +135,7 @@ class FileUploader
             /* If file exists, set response code to 'Conflict' unless the
              * calling code wants to overwrite the file.
              */
-            if (file_exists($targetPath) && $overwrite === false) {
+            if (file_exists($targetPath) && $this->overwrite === false) {
                 $this->_responseCode = 409;
                 return false;
             }
@@ -153,10 +153,10 @@ class FileUploader
             }
 
             // Check that the file size does not exceed the upload limit
-            $limit = \Utility::getMaxUploadSize();
+            $limit = \Utility::returnBytes(\Utility::getMaxUploadSize());
             if ($uploadedFile->getSize() > $limit) {
                 error_log(
-                    "Uploaded file size {$uploadedFile->getSize} exceeds "
+                    "Uploaded file size {$uploadedFile->getSize()} exceeds "
                     . "limit of $limit"
                 );
                 $this->_responseCode = 400;
@@ -164,9 +164,18 @@ class FileUploader
             }
 
             // Move the file to $targetPath
-            $uploadedFile->moveTo($targetPath);
+            try {
+                $uploadedFile->moveTo($targetPath);
+            } catch (\Exception $e) {
+                error_log(
+                    'Could not upload file. An exception occurred in ' .
+                    'the UploadedFile object code: ' . $e
+                );
+                $this->_responseCode = 500;
+                return false;
+            }
 
-            chmod($targetPath, $permissions);
+            chmod($targetPath, $this->permissions);
         }
 
         // If all goes well, set response code to 'Created'

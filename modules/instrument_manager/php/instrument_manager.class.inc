@@ -184,12 +184,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * application/octet-stream upon upload.
              */
             $uploader = new \FileUploader(
-                new SplFileInfo($this->path . 'project/instruments/'),
+                new \SplFileInfo($this->path . 'project/instruments/'),
                 0644,
                 false,
                 array('application/octet-stream')
             );
-            $success   = $uploader->upload($request->getUploadedFiles());
+            $success  = $uploader->upload($request->getUploadedFiles());
         }
 
         // Return appropriate error message if something has gone wrong.
