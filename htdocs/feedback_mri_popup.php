@@ -49,8 +49,7 @@ if ($_POST['fire_away']) {
     // save all textual comments but only if there is an entry [sebas]
     // The foreach below is operating on an array even though phan doesn't
     // think so.
-    /* @phan-suppress-next-line PhanTypeMismatchForeach */
-    foreach ($_POST['savecomments']['text']
+    foreach (\Utility::asArray($_POST['savecomments']['text'])
         as $comment_type_id => $comment_message
     ) {
         if (trim($comment_message)) {
