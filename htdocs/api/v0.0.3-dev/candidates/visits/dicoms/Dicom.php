@@ -357,7 +357,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         // Instantiate the server process module to autoload
         // its namespace classes
         $spm_module = \Module::factory('server_processes_manager');
-        // Perform the real upload on the server
+        // Get a ServerProcessesMonitor instance
         $serverProcessesMonitor = new SP\ServerProcessesMonitor();
         $user      = \User::singleton();
         $user_name = $user->getUsername();
@@ -380,7 +380,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Get info about a Loris process
+     * Print info about a Loris process
      *
      * @param array $idsToMonitor     IDs of the server processes to monitor
      * @param int   $mri_upload_id    Upload id of the DICOM fileset
@@ -410,7 +410,9 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Get info about a Loris process
+     * Read in file stream and save to Temp directory.
+     * We need to save to a temp directory so that things can work with
+     * the imaging_uploader.class.inc module
      *
      * @param resource $dh       Destination directory
      * @param stromg   $filename Upload id of the DICOM fileset
