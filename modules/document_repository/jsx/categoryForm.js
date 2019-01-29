@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Loader from 'Loader';
 /**
  * Document Upload Form
  *
@@ -19,22 +20,20 @@ class DocCategoryForm extends React.Component {
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0,
-      uploadProgress: -1,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
-    this.fatchData = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
  fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data: data, isLoaded: true}))
       .catch((error) => {
-        this.setState({error: 'An error occurred when loading the form!'});
+        this.setState({error: true});
         console.error(error);
       });
 }
@@ -44,25 +43,13 @@ class DocCategoryForm extends React.Component {
 
   render() {
     // Data loading error
-    if (this.state.error !== undefined) {
-      return (
-        <div className="alert alert-danger text-center">
-          <strong>
-            {this.state.error}
-          </strong>
-        </div>
-      );
-    }
-
+    if (this.state.error) {
+       return <h3>An error occured while loading the page.</h3>;
+     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
@@ -73,31 +60,27 @@ class DocCategoryForm extends React.Component {
             name="docUpload"
             fileUpload={true}
             onSubmit={this.handleSubmit}
-            ref="form"
           >
             <h3>Add a category</h3><br/>
             <TextboxElement
-              name="category_name"
+              name="categoryName"
               label="Category Name"
               onUserInput={this.setFormData}
-              ref="category_name"
               required={true}
-              value={this.state.formData.category_name}
+              value={this.state.formData.categoryName}
             />
             <SelectElement
-              name="parent_id"
+              name="parentId"
               label="Parent"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
-              ref="parent_id"
               hasError={false}
-              value={this.state.formData.parent_id}
+              value={this.state.formData.parentId}
             />
             <TextareaElement
               name="comments"
               label="Comments"
               onUserInput={this.setFormData}
-              ref="comments"
               value={this.state.formData.comments}
             />
             <ButtonElement label="Add Category"/>
@@ -124,6 +107,7 @@ class DocCategoryForm extends React.Component {
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
+      this.setState({error: true});
       return;
     }
       this.uploadFile();
@@ -154,7 +138,6 @@ class DocCategoryForm extends React.Component {
         this.props.newCategoryState();
         this.setState({
           formData: {}, // reset form data after successful file upload
-          uploadProgress: -1,
         });
         swal('Add Successful!', '', 'success');
     });
@@ -181,6 +164,7 @@ class DocCategoryForm extends React.Component {
       } else if (formRefs[field]) {
         formRefs[field].props.hasError = true;
         isValidForm = false;
+        this.setState({error: true});
       }
     });
 
@@ -197,9 +181,7 @@ class DocCategoryForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({
-      formData: formData,
-    });
+    this.setState({formData});
   }
 }
 

@@ -71,9 +71,10 @@ class Uploadcategory extends \NDB_Page
     function uploadDocCategory()
     {
         $DB            = \Database::singleton();
-        $category_name = $_POST['category_name']; // required
-        $parent_id     = $_POST['parent_id']  !== '' ? $_POST['parent_id'] : null;
+        $category_name = $_POST['categoryName']; // required
+        $parent_id     = $_POST['parentId']  !== '' ? $_POST['parentId'] : null;
         $comment       = $_POST['comments']    !== '' ? $_POST['comments'] : null;
+        // todo check duplicate name category
         $DB->insert(
             "document_repository_categories",
             array(

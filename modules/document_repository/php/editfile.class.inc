@@ -58,7 +58,19 @@ class Editfile extends \NDB_Page
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("updaite")
+                        json_encode("update")
+                    )
+                );
+        }
+        if ($request->getMethod() == "DELETE") {
+            $this->deleteFile();
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withHeader("Allow", "DELETE")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                       json_encode("delete")
                     )
                 );
         }
@@ -74,11 +86,12 @@ class Editfile extends \NDB_Page
     {
         $db           = \Database::singleton();
         $user         = \User::singleton();
+        var_dump($_POST);
         $updateValues = [
                          'File_category' => $_POST['category'],
                          'For_site'      => $_POST['forSite'],
                          'Instrument'    => $_POST['instrument'],
-                         'comments'      => $_POST['comments'],
+                         'comments'      => ($_POST['comments']==null) ? NULL : $_POST['comments'],
                          'version'       => $_POST['version'],
                          'visitLabel'    => $_POST['visitLabel'],
                          'pscid'         => $_POST['pscid'],
@@ -92,5 +105,60 @@ class Editfile extends \NDB_Page
         } catch (\DatabaseException $e) {
             showError("Could not update the file. Please try again!");
         }
+    }
+    /**
+ * Handles the document edit process
+ *
+ * @throws \DatabaseException
+ *
+ * @return void
+ */
+    function deleteFile(): void
+    {
+      $user = \User::singleton();
+if (!$user->hasPermission('document_repository_delete')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+// create Database object
+$DB = \Database::singleton();
+
+$Notifier = new \NDB_Notifier(
+    "document_repository",
+    "delete"
+);
+
+$rid = basename($_SERVER['REQUEST_URI']);
+
+$fileName = $DB->pselectOne(
+    "Select File_name from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$userName = $DB->pselectOne(
+    "Select uploaded_by from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$dataDir  = $DB->pselectOne(
+    "Select Data_dir from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+
+
+//if user has document repository delete permission
+if ($user->hasPermission('document_repository_delete')) {
+    $DB->delete("document_repository", array("record_id" => $rid));
+    $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
+    $msg_data['document']       = $fileName;
+
+    $Notifier->notify($msg_data);
+}
+
+$path = __DIR__ . "/../user_uploads/$dataDir";
+
+//if (file_exists($path)) {
+//    unlink($path);
+//}
+
     }
 }

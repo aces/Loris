@@ -109,7 +109,6 @@ class DocEditForm extends React.Component {
         <FormElement
           name="docEdit"
           onSubmit={this.handleSubmit}
-          ref="form"
         >
           <h3>Edit Document Repository File</h3>
           <br />
@@ -118,7 +117,6 @@ class DocEditForm extends React.Component {
               label="Category"
               options={this.state.Data.categories}
               onUserInput={this.setFormData}
-              ref="category"
               hasError={false}
               required={true}
               disabled={true}
@@ -129,7 +127,6 @@ class DocEditForm extends React.Component {
               label="Site"
               options={this.state.Data.sites}
               onUserInput={this.setFormData}
-              ref="forSite"
               required={true}
               disabled={true}
               value={this.state.docData.forSite}
@@ -139,14 +136,12 @@ class DocEditForm extends React.Component {
               label="Instrument"
               options={this.state.Data.instruments}
               onUserInput={this.setFormData}
-              ref="instrument"
               value={this.state.docData.instrument}
             />
             <TextboxElement
               name="pscid"
               label="PSCID"
               onUserInput={this.setFormData}
-              ref="pscid"
               disable = {true}
               value={this.state.docData.pscid}
             />
@@ -154,21 +149,18 @@ class DocEditForm extends React.Component {
               name="visitLabel"
               label="Visit Label"
               onUserInput={this.setFormData}
-              ref="visitLabel"
               value={this.state.docData.visitLabel}
             />
             <TextareaElement
               name="comments"
               label="Comments"
               onUserInput={this.setFormData}
-              ref="comments"
               value={this.state.docData.comments}
             />
             <TextboxElement
               name="version"
               label="Version"
               onUserInput={this.setFormData}
-              ref="version"
               value={this.state.docData.version}
             />
           <ButtonElement label="Update File"/>

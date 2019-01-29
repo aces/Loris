@@ -15,27 +15,16 @@ class DocIndex extends React.Component {
       newCategory: false,
     };
 
-    /**
-     * Set filter to the element's ref for filtering
-     */
-    this.filter = null;
-    this.setFilterRef = (element) => {
-      this.filter = element;
-    };
-
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.newCategoryState = this.newCategoryState.bind(this);
   }
-   newCategoryState() {
-        this.setState({newCategory: true});
-    }
+
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
-
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -45,6 +34,10 @@ class DocIndex extends React.Component {
         this.setState({error: true});
     });
   }
+
+   newCategoryState() {
+        this.setState({newCategory: true});
+    }
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -53,13 +46,12 @@ class DocIndex extends React.Component {
  * @return {*} a formated table cell for a given column
  */
  formatColumn(column, cell, row) {
- const style = (row['Hide File'] === '1') ? 'bg-danger' : '';
- let result = <td className={style}>{cell}</td>;
+ let result = <td>{cell}</td>;
     switch (column) {
     case 'File Name':
     let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
     result = (
-      <td className= {style}>
+      <td>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
           {cell}
         </a>
@@ -68,35 +60,36 @@ class DocIndex extends React.Component {
       break;
     case 'Edit':
     let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
-    result = <td className={style}><a href={editURL}>Edit</a></td>;
+    result = <td><a href={editURL}>Edit</a></td>;
       break;
     case 'Delete File':
     let id = row['Edit'];
 function click() {
-swal({
-  title: 'Are you sure?',
-  text: 'Your will not be able to recover this file!',
-  type: 'warning',
-  showCancelButton: true,
-  confirmButtonClass: 'btn-danger',
-  confirmButtonText: 'Yes, delete it!',
-  closeOnConfirm: false,
-},
-function() {
-  swal('Deleted!', 'Your file has been deleted.', 'success');
-    $.ajax({
-    url: loris.BaseURL + '/document_repository/ajax/documentDelete.php',
-    type: 'POST',
-    data: {id: id},
-    success: function() {
-    location.reload();
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-    },
-  });
-});
+    swal({
+         title: 'Are you sure?',
+         text: 'Your will not be able to recover this file!',
+         type: 'warning',
+         showCancelButton: true,
+         confirmButtonClass: 'btn-danger',
+         confirmButtonText: 'Yes, delete it!',
+         closeOnConfirm: false,
+          },
+      function() {
+      let deleteurl = loris.BaseURL + '/document_repository/Editfile/' + id;
+         fetch(deleteurl, {
+      method: 'DELETE',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+    })
+    .then((resp) => resp.json())
+    .then(()=>{
+      location.reload();
+      swal('delete Successful!', '', 'success');
+    });
+      }
+    );
 }
-    result = <td className={style}><a onClick={click}>Delete</a></td>;
+    result = <td><a onClick={click}>Delete</a></td>;
       break;
     }
     return result;
@@ -191,16 +184,6 @@ function() {
   }
 }
 
-/* $(function() {
-  const docIndex = (
-    <div className="page-document">
-      <DocIndex DataURL={`${loris.BaseURL}/document_repository/?format=json`} />
-      hasPermission={loris.userHasPermission}
-    </div>
-  );
-
-  ReactDOM.render(docIndex, document.getElementById('lorisworkspace'));
-});*/
 window.addEventListener('load', () => {
   ReactDOM.render(
     <div className="page-document">
