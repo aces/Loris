@@ -159,8 +159,10 @@ class File_Upload
                 return false;
             }
         } else {
-            $this->file     =$this->CLFiles[$this->fieldName];
-            $this->fileInfo =$this->file['info'];
+            //$this->file     =$this->CLFiles[$this->fieldName];
+            //$this->fileInfo =$this->file['info'];
+            $this->file = $this->CLFiles[$this->fieldName]['file'];
+            $this->fileInfo = $this->CLFiles[$this->fieldName]['info'];
             return true;
         }
     }
