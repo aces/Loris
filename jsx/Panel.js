@@ -43,55 +43,17 @@ class Panel extends Component {
         'glyphicon pull-right glyphicon-chevron-up'
     );
 
-    let pencilGlyph;
-    if (this.props.edit) {
-      pencilGlyph = (
-        <span
-          className="glyphicon pull-right glyphicon-pencil"
-          style={{marginRight: '10px', cursor: 'pointer'}}
-          onClick={this.props.edit}
-        />
-      );
-    }
-
-    let plusGlyph;
-    if (this.props.add) {
-      plusGlyph = (
-        <span
-          className="glyphicon pull-right glyphicon-plus"
-          style={{marginRight: '10px', cursor: 'pointer'}}
-          onClick={this.props.add}
-        />
-      );
-    }
-
-    let removeGlyph;
-    if (this.props.cancel) {
-      removeGlyph = (
-        <span
-          className="glyphicon pull-right glyphicon-remove"
-          style={{marginRight: '10px', cursor: 'pointer'}}
-          onClick={this.props.cancel}
-        />
-      );
-    }
-
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
         className="panel-heading"
+        onClick={this.toggleCollapsed}
+        data-toggle="collapse"
+        data-target={'#' + this.props.id}
+        style={{cursor: 'pointer'}}
       >
-        <span
-          className={glyphClass}
-          onClick={this.toggleCollapsed}
-          data-toggle="collapse"
-          data-target={'#' + this.props.id}
-          style={{cursor: 'pointer'}}
-        />
-        {pencilGlyph}
-        {plusGlyph}
-        {removeGlyph}
         {this.props.title}
+        <span className={glyphClass}></span>
       </div>
     ) : '';
 

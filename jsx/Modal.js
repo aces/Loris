@@ -150,8 +150,6 @@ class Modal extends Component {
         </div>
       </div>
     );
-
-    return modal;
   }
 }
 
