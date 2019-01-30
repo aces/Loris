@@ -55,13 +55,12 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      * completed
      * Overload Imaging_Uploader::_process()
      *
-     * @param array $values           the array of values
-     * @param bool  $trigger_pipeline Trigger imaging pipeline manually
+     * @param array $values the array of values
      *
      * @return int ID (in the database) of the launched process
      * or false if processing was not attempted
      */
-    function _process($values, $trigger_pipeline=false)
+    function _process($values)
     {
         if ($this->_saveFile($values)) {
             // Save file succeeded. All that's left to do is launch the MRI
@@ -70,7 +69,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
             );
-            if ($ImagingUploaderAutoLaunch || $trigger_pipeline) {
+            if ($ImagingUploaderAutoLaunch) {
                 // Instantiate the server process module to autoload
                 // its namespace classes
                 $spm_module = \Module::factory('server_processes_manager');
