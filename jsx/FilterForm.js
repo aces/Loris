@@ -52,7 +52,7 @@ class FilterForm extends Component {
     });
 
     // Update parent component
-    //this.props.onUpdate(filter);
+    this.props.onUpdate(filter);
   }
 
   /**
@@ -178,9 +178,15 @@ class FilterForm extends Component {
     }
 
     return (
-      <FormElement {...this.props}>
-        {formChildren}
-      </FormElement>
+      <Panel
+        id={this.props.id}
+        height={this.props.height}
+        title={this.props.title}
+      >
+        <FormElement {...this.props}>
+          {formChildren}
+        </FormElement>
+      </Panel>
     );
   }
 }

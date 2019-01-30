@@ -375,7 +375,7 @@ SearchableDropdown.propTypes = {
   errorMessage: React.PropTypes.string,
   placeHolder: React.PropTypes.string,
   autoFocus: React.PropTypes.bool,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 SearchableDropdown.defaultProps = {
@@ -424,7 +424,7 @@ class SelectElement extends Component {
       }
     }
 
-    //TODO: use this concept elsewhere in the code.
+    // TODO: use this concept elsewhere in the code.
     this.props.onUserInput(this.props.name, value, id, type);
   }
 
@@ -451,7 +451,7 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.errorMessage || (this.props.required && this.props.value === "")) {
+    if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -530,7 +530,7 @@ SelectElement.propTypes = {
   sortByValue: React.PropTypes.bool,
   emptyOption: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 SelectElement.defaultProps = {
@@ -1092,18 +1092,6 @@ DateElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
-=======
-  name: React.PropTypes.string.isRequired,
-  label: React.PropTypes.string,
-  value: React.PropTypes.string,
-  id: React.PropTypes.string,
-  maxYear: React.PropTypes.string,
-  minYear: React.PropTypes.string,
-  disabled: React.PropTypes.bool,
-  required: React.PropTypes.bool,
-  errorMessage: React.PropTypes.func,
-  onUserInput: React.PropTypes.func
->>>>>>> [media] Remove unused code (#3705)
 };
 
 DateElement.defaultProps = {
@@ -1189,7 +1177,7 @@ TimeElement.propTypes = {
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 TimeElement.defaultProps = {
