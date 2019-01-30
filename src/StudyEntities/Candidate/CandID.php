@@ -35,9 +35,9 @@ class CandID extends ValidatableIdentifier
     }
 
     /**
-     * Validate that the value of the CandID is a string of length 6.
-     * This does not check for uniqueness in the database or any other
-     * state related facts.
+     * Validate that the value of the CandID is a string of 6 numeric characters
+     * with decimal value greater than 100000. This does not check for uniqueness
+     * in the database or any other state related facts.
      *
      * This function is called by the contructor of ValidatableIdentifier
      * to ensure that no CandID exists if it value is not valid.
@@ -48,7 +48,8 @@ class CandID extends ValidatableIdentifier
      */
     protected function validate(string $value): bool
     {
-        return preg_match('/[0-9]{6}/', $value) === 1;
+        return preg_match('/[0-9]{6}/', $value) === 1 &&
+            intval($value) >= 100000;
     }
 
     /**
