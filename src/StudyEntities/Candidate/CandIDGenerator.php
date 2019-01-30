@@ -11,6 +11,22 @@ class CandIDGenerator extends IdentifierGenerator
     private const MIN_CANDID = 100000;
     private const MAX_CANDID = 999999;
 
+    /**
+     * Creates a new CandIDGenerator by initializing properties based on class
+     * constants defined above.
+     */
+    public function __construct()
+    {
+        $this->generationMethod = 'random';
+        $this->length           = self::LENGTH;
+        $this->minValue         = self::MIN_CANDID;
+        $this->maxValue         = self::MAX_CANDID;
+        $this->alphabet         = range(0, 9);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function getExistingIDs(): array
     {
         // CandIDs have no prefix so the result of the query can be returned
@@ -19,15 +35,5 @@ class CandIDGenerator extends IdentifierGenerator
             'SELECT CandID from candidate',
             array()
         );
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->generationMethod = 'random';
-        $this->length           = self::LENGTH;
-        $this->minValue         = self::MIN_CANDID;
-        $this->maxValue         = self::MAX_CANDID;
-        $this->alphabet         = $this->ALPHABETS['numeric'];
     }
 }

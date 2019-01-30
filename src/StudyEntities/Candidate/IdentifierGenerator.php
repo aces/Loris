@@ -24,7 +24,7 @@ abstract class IdentifierGenerator
         // possible values (given by the size of the alphabet to the power of
         // number of characters in the ID).
         $sizeOfIDSpace = count($this->alphabet) ** $this->length;
-        if (count($this->getExistingIDs) >= $sizeOfIDSpace) {
+        if (count($this->getExistingIDs()) >= $sizeOfIDSpace) {
             throw new \LorisException(
                 'Cannot create new identifier because all valid identifiers ' .
                 'are in use!'
@@ -73,7 +73,7 @@ abstract class IdentifierGenerator
             }
         } while (
             in_array(
-                $this->padID($newID),
+                $this->padID(strval($newID)),
                 $this->getExistingIDs(),
                 true
             )
@@ -125,14 +125,5 @@ abstract class IdentifierGenerator
             strval($this->alphabet[0]),
             STR_PAD_LEFT
         );
-    }
-
-    public function __construct()
-    {
-        $this->ALPHABETS = array(
-                            'numeric'      => range(0, 9),
-                            'alpha'        => range('A', 'Z'),
-                            'alphanumeric' => array_merge(range(0, 9), range('A', 'Z')),
-                           );
     }
 }
