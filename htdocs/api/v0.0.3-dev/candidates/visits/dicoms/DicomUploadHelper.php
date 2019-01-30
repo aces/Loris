@@ -150,7 +150,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return bool 
+     * @return bool
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {
