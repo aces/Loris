@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use LORIS\StudyEntities\Candidate\CandIDGenerator;
 
 /* Define constants used by the file */
 // error codes
@@ -19,10 +20,6 @@ define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
-
-define('CANDIDATE_MIN_CANDID', 100000);
-define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDID_LENGTH', 6);
 define('PSCID_LENGTH', 3);
 
 /**
@@ -256,7 +253,7 @@ class Candidate
         }
 
         // Generate candid
-        $candID = Candidate::_generateCandID();
+        $candID = (new CandIDGenerator)->generate();
 
         // Check ID uniqueness. This can occur if two Candidates are created
         // at almost the same time and a race condition occurs on the server.
@@ -302,7 +299,7 @@ class Candidate
         $db->insert('candidate', $setArray);
 
         // return the new candid
-        return $candID;
+        return intval($candID);
     }
 
     /**
