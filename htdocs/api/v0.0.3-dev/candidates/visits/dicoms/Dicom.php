@@ -386,7 +386,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      * @param int   $mri_upload_id    Upload id of the DICOM fileset
      * @param bool  $trigger_pipeline Imaging pipeline manually triggered
      *
-     * @return an associative array of the current state of the processes.
+     * @return void but sets an associative array of the state of processes.
      */
     function printProcessResults($idsToMonitor,
         $mri_upload_id=null,

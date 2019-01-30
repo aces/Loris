@@ -57,7 +57,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      *
      * @param array $values the array of values
      *
-     * @return int ID (in the database) of the launched process
+     * @return bool or INT (in the database) of the launched process
      * or false if processing was not attempted
      */
     function _process($values)
