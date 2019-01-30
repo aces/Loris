@@ -121,7 +121,10 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
             $CommentTpl['select_name']        = $comment_array['field'];
             $CommentTpl['select_value_array'] = $comment_array['values'];
         }
-        $CommentTpl['selected'] = $comments->getMRIValue(intval($comment_array['field']));
+        $CommentTpl['selected'] = $comments
+            ->getMRIValue(
+                intval($comment_array['field'])
+            );
     }
 
     $CommentTpl['name'] = $comment_array['name'];
