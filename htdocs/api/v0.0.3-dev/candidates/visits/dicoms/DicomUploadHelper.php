@@ -12,8 +12,10 @@
  */
 namespace Loris\API\Candidates\Candidate\Visit\Dicoms;
 require_once __DIR__ . '/../../Visit.php';
-require_once __DIR__ . '/../../../../../../modules/imaging_uploader/php/imaging_uploader.class.inc';
-require_once __DIR__ . '/../../../../../../modules/imaging_uploader/php/module.class.inc';
+require_once __DIR__ .
+    '/../../../../../../modules/imaging_uploader/php/imaging_uploader.class.inc';
+require_once __DIR__ .
+    '/../../../../../../modules/imaging_uploader/php/module.class.inc';
 /**
  * Handles utility tasks for Dicom fileset upload and processing
  *
