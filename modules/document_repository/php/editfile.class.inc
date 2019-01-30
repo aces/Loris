@@ -86,15 +86,14 @@ class Editfile extends \NDB_Page
     {
         $db           = \Database::singleton();
         $user         = \User::singleton();
-        var_dump($_POST);
         $updateValues = [
-                         'File_category' => $_POST['category'],
-                         'For_site'      => $_POST['forSite'],
-                         'Instrument'    => $_POST['instrument'],
-                         'comments'      => ($_POST['comments']==null) ? NULL : $_POST['comments'],
-                         'version'       => $_POST['version'],
-                         'visitLabel'    => $_POST['visitLabel'],
-                         'pscid'         => $_POST['pscid'],
+                         'File_category' => isset($_POST['category']) ? $_POST['category'] : NULL,
+                         'For_site'      => isset($_POST['forSite']) ? $_POST['forSite'] : NULL,
+                         'Instrument'    => isset($_POST['instrument']) ? $_POST['instrument'] : NULL,
+                         'comments'      => isset($_POST['comments']) ? $_POST['comments'] : NULL,
+                         'version'       => isset($_POST['version']) ? $_POST['version'] : NULL,
+                         'visitLabel'    => isset($_POST['visitLabel']) ? $_POST['visitLabel'] : NULL,
+                         'pscid'         => isset($_POST['pscid']) ? $_POST['pscid'] : NULL,
                         ];
         try {
             $db->update(

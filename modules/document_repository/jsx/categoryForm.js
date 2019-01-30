@@ -23,7 +23,6 @@ class DocCategoryForm extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -101,15 +100,6 @@ class DocCategoryForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
-    let formData = this.state.formData;
-    let formRefs = this.refs;
-
-    // Validate the form
-    if (!this.isValidForm(formRefs, formData)) {
-      this.setState({error: true});
-      return;
-    }
       this.uploadFile();
   }
   /*
@@ -142,35 +132,6 @@ class DocCategoryForm extends React.Component {
         swal('Add Successful!', '', 'success');
     });
   }
-  /**
-   * Validate the form
-   *
-   * @param {object} formRefs - Object containing references to React form elements
-   * @param {object} formData - Object containing form data inputed by user
-   * @return {boolean} - true if all required fields are filled, false otherwise
-   */
-  isValidForm(formRefs, formData) {
-    let isValidForm = true;
-
-    let requiredFields = {
-      category: null,
-      site: null,
-      file: null,
-    };
-
-    Object.keys(requiredFields).map(function(field) {
-      if (formData[field]) {
-        requiredFields[field] = formData[field];
-      } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
-        isValidForm = false;
-        this.setState({error: true});
-      }
-    });
-
-    return isValidForm;
-  }
-
   /**
    * Set the form data based on state values of child elements/componenets
    *

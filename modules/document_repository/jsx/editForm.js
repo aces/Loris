@@ -1,4 +1,5 @@
 /* exported DocEditForm */
+import Loader from 'Loader';
 import PropTypes from 'prop-types';
 /**
  * Document Edit Form
@@ -17,6 +18,7 @@ class DocEditForm extends React.Component {
     this.state = {
       Data: {},
       docData: {},
+      formData: {},
       uploadResult: null,
       isLoaded: false,
       loadedData: 0,
@@ -24,7 +26,6 @@ class DocEditForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
@@ -36,17 +37,7 @@ class DocEditForm extends React.Component {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-      let formData = {
-          idDocFile: data.docData.id,
-          pscid: data.docData.pscid,
-          category: data.docData.category,
-          visitLabel: data.docData.visitLabel,
-          comments: data.docData.comments,
-          version: data.docData.version,
-          instrument: data.docData.instrument,
-          category: data.docData.category,
-          forSite: data.docData.forSite,
-        };
+       const formData = data.docData;
         this.setState({
           Data: data,
           docData: data.docData,
@@ -60,52 +51,18 @@ class DocEditForm extends React.Component {
 
   render() {
     // Data loading error
-    if (this.state.error !== undefined) {
-      return (
-        <div className="alert alert-danger text-center">
-          <strong>
-            {this.state.error}
-          </strong>
-        </div>
-      );
-    }
-
+    if (this.state.error) {
+       return <h3>An error occured while loading the page.</h3>;
+     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
+        <Loader/>
       );
     }
 
-    let alertMessage = '';
-    let alertClass = 'alert text-center hide';
-    let backURL = loris.BaseURL.concat('/document_repository/');
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === 'success') {
-        alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
-      } else if (this.state.uploadResult === 'error') {
-        alertClass = 'alert alert-danger text-center';
-        alertMessage = 'Failed to update the file';
-      }
-    }
-
     return (
-      <div>
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
-        </div>
-        {
-          this.state.uploadResult === 'success' ?
-          <a className="btn btn-primary" href={backURL}>Back to document repository</a> :
-          null
-        }
+        <div>
         <FormElement
           name="docEdit"
           onSubmit={this.handleSubmit}
@@ -179,7 +136,7 @@ class DocEditForm extends React.Component {
     let formData = this.state.docData;
     let formObject= new FormData();
     for (let key in formData) {
-      if (formData[key] !== '') {
+      if (formData[key] !== '' && formData[key] !== null && formData[key] !== undefined) {
         formObject.append(key, formData[key]);
       }
     }
@@ -208,24 +165,6 @@ class DocEditForm extends React.Component {
       docData[formElement] = value;
     this.setState({
       docData: docData,
-    });
-  }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    let self = this;
-
-    if (this.refs['alert-message'] === null) {
-      return;
-    }
-
-    let alertMsg = this.refs['alert-message'];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null,
-      });
     });
   }
 }

@@ -82,7 +82,7 @@ class Edit extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_delete');
+        return $user->hasPermission('document_repository_view');
     }
 
 }
