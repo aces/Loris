@@ -159,12 +159,12 @@ class File_Upload
                 return false;
             }
         } else {
-            //@NOTE: $this->file needs to be a class object with a 
+            //@NOTE: $this->file needs to be a class object with a
             //moveUploadedFile() method. So it cannot be an array
             //This needs discussion with Loris team!!
             //$this->file     =$this->CLFiles[$this->fieldName];
             //$this->fileInfo =$this->file['info'];
-            $this->file = $this->CLFiles[$this->fieldName]['file'];
+            $this->file     = $this->CLFiles[$this->fieldName]['file'];
             $this->fileInfo = $this->CLFiles[$this->fieldName]['info'];
             return true;
         }
