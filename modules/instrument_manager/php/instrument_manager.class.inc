@@ -16,8 +16,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\EmptyStream;
 
-require_once __DIR__ . '/../../../php/libraries/FileUploader.class.inc';
-
 /**
  * Instrument_manager
  *
