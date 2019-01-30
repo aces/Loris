@@ -70,7 +70,7 @@ class Editfile extends \NDB_Page
                 ->withHeader("Allow", "DELETE")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                       json_encode("delete")
+                        json_encode("delete")
                     )
                 );
         }
@@ -87,13 +87,20 @@ class Editfile extends \NDB_Page
         $db           = \Database::singleton();
         $user         = \User::singleton();
         $updateValues = [
-                         'File_category' => isset($_POST['category']) ? $_POST['category'] : NULL,
-                         'For_site'      => isset($_POST['forSite']) ? $_POST['forSite'] : NULL,
-                         'Instrument'    => isset($_POST['instrument']) ? $_POST['instrument'] : NULL,
-                         'comments'      => isset($_POST['comments']) ? $_POST['comments'] : NULL,
-                         'version'       => isset($_POST['version']) ? $_POST['version'] : NULL,
-                         'visitLabel'    => isset($_POST['visitLabel']) ? $_POST['visitLabel'] : NULL,
-                         'pscid'         => isset($_POST['pscid']) ? $_POST['pscid'] : NULL,
+                         'File_category' => isset($_POST['category']) ?
+                              $_POST['category'] : null,
+                         'For_site'      => isset($_POST['forSite']) ?
+                              $_POST['forSite'] : null,
+                         'Instrument'    => isset($_POST['instrument']) ?
+                              $_POST['instrument'] : null,
+                         'comments'      => isset($_POST['comments']) ?
+                              $_POST['comments'] : null,
+                         'version'       => isset($_POST['version']) ?
+                              $_POST['version'] : null,
+                         'visitLabel'    => isset($_POST['visitLabel']) ?
+                              $_POST['visitLabel'] : null,
+                         'pscid'         => isset($_POST['pscid']) ?
+                              $_POST['pscid'] : null,
                         ];
         try {
             $db->update(
@@ -114,50 +121,51 @@ class Editfile extends \NDB_Page
  */
     function deleteFile(): void
     {
-      $user = \User::singleton();
-if (!$user->hasPermission('document_repository_delete')) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-}
+        $user = \User::singleton();
+        if (!$user->hasPermission('document_repository_delete')) {
+            header("HTTP/1.1 403 Forbidden");
+            exit;
+        }
 
-// create Database object
-$DB = \Database::singleton();
+        // create Database object
+        $DB = \Database::singleton();
 
-$Notifier = new \NDB_Notifier(
-    "document_repository",
-    "delete"
-);
+        $Notifier = new \NDB_Notifier(
+            "document_repository",
+            "delete"
+        );
 
-$rid = basename($_SERVER['REQUEST_URI']);
+        $rid = basename($_SERVER['REQUEST_URI']);
 
-$fileName = $DB->pselectOne(
-    "Select File_name from document_repository where record_id =:identifier",
-    array(':identifier' => $rid)
-);
-$userName = $DB->pselectOne(
-    "Select uploaded_by from document_repository where record_id =:identifier",
-    array(':identifier' => $rid)
-);
-$dataDir  = $DB->pselectOne(
-    "Select Data_dir from document_repository where record_id =:identifier",
-    array(':identifier' => $rid)
-);
+        $fileName = $DB->pselectOne(
+            "Select File_name from document_repository
+             where record_id =:identifier",
+            array(':identifier' => $rid)
+        );
+        $userName = $DB->pselectOne(
+            "Select uploaded_by from document_repository
+             where record_id =:identifier",
+            array(':identifier' => $rid)
+        );
+        $dataDir  = $DB->pselectOne(
+            "Select Data_dir from document_repository where record_id =:identifier",
+            array(':identifier' => $rid)
+        );
 
+        //if user has document repository delete permission
+        if ($user->hasPermission('document_repository_delete')) {
+            $DB->delete("document_repository", array("record_id" => $rid));
+            $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
+            $msg_data['document']       = $fileName;
 
-//if user has document repository delete permission
-if ($user->hasPermission('document_repository_delete')) {
-    $DB->delete("document_repository", array("record_id" => $rid));
-    $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
-    $msg_data['document']       = $fileName;
+            $Notifier->notify($msg_data);
+        }
 
-    $Notifier->notify($msg_data);
-}
+        $path = __DIR__ . "/../user_uploads/$dataDir";
 
-$path = __DIR__ . "/../user_uploads/$dataDir";
-
-//if (file_exists($path)) {
-//    unlink($path);
-//}
+        if (file_exists($path)) {
+            unlink($path);
+        }
 
     }
 }
