@@ -48,18 +48,18 @@ class Panel extends Component {
       pencilGlyph = (
         <span
           className="glyphicon pull-right glyphicon-pencil"
-          style={{marginRight:'10px', cursor: 'pointer'}}
+          style={{marginRight: '10px', cursor: 'pointer'}}
           onClick={this.props.edit}
-        /> 
+        />
       );
-    } 
+    }
 
     let plusGlyph;
     if (this.props.add) {
       plusGlyph = (
         <span
           className="glyphicon pull-right glyphicon-plus"
-          style={{marginRight:'10px', cursor: 'pointer'}}
+          style={{marginRight: '10px', cursor: 'pointer'}}
           onClick={this.props.add}
         />
       );
@@ -70,7 +70,7 @@ class Panel extends Component {
       removeGlyph = (
         <span
           className="glyphicon pull-right glyphicon-remove"
-          style={{marginRight:'10px', cursor: 'pointer'}}
+          style={{marginRight: '10px', cursor: 'pointer'}}
           onClick={this.props.cancel}
         />
       );
@@ -81,7 +81,7 @@ class Panel extends Component {
       <div
         className="panel-heading"
       >
-        <span 
+        <span
           className={glyphClass}
           onClick={this.toggleCollapsed}
           data-toggle="collapse"
