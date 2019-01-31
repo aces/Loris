@@ -6,11 +6,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  *  Subtab: CNV
  */
 namespace LORIS\genomic_browser;
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class CNV_Browser extends \NDB_Menu_Filter
 {
     /**
@@ -58,7 +58,7 @@ class CNV_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
@@ -128,7 +128,7 @@ class CNV_Browser extends \NDB_Menu_Filter
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID=candidate.CenterID)
+            LEFT JOIN psc ON (psc.CenterID=candidate.RegistrationCenterID)
             JOIN CNV ON (candidate.CandID = CNV.CandID)
             LEFT JOIN genotyping_platform ON
               (CNV.PlatformID = genotyping_platform.PlatformID)
@@ -139,7 +139,8 @@ class CNV_Browser extends \NDB_Menu_Filter
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND candidate.RegistrationCenterID IN ("
+                            . $site_arr . ")";
         }
 
         $this->order_by = 'psc.Name, candidate.CandID DESC';
@@ -147,7 +148,7 @@ class CNV_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
                                'candidate.Sex',
@@ -173,32 +174,32 @@ class CNV_Browser extends \NDB_Menu_Filter
                                'genotyping_platform.Name',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'           => 'candidate.CenterID',
-                               'DCCID'              => 'candidate.CandID',
-                               'PSCID'              => 'candidate.PSCID',
-                               'sex'                => 'candidate.Sex',
-                               'SubprojectID'       => 'cohort.SubprojectID',
-                               'External_ID'        => 'candidate.ExternalID',
-                               'Show_Brief_Results' => 'show_brief_results',
-                               'CNV_Type'           => 'CNV.Type',
-                               'Copy_Num_Change'    => 'CNV.CopyNumChange',
-                               'CNV_Description'    => 'CNV.Description',
-                               'Event_Name'         => 'CNV.EventName',
-                               'Common_CNV'         => 'CNV.Common_CNV',
-                               'Characteristics'    => 'CNV.Characteristics',
-                               'Inheritance'        => 'CNV.Inheritance',
-                               'Array_Report'       => 'CNV.ArrayReport',
-                               'Markers'            => 'CNV.Markers',
-                               'Validation_Method'  => 'CNV.ValidationMethod',
-                               'Chromosome'         => 'CNV.Chromosome',
-                               'Strand'             => 'CNV.Strand',
-                               'genomic_range'      => 'genomic_range',
-                               'Gene_Symbol'        => 'CNV.OfficialSymbol',
-                               'Gene_Name'          => 'CNV.OfficialName',
-                               'Platform'           => 'genotyping_platform.Name',
-                              );
-
+        $ftf = array(
+                'centerID'           => 'candidate.RegistrationCenterID',
+                'DCCID'              => 'candidate.CandID',
+                'PSCID'              => 'candidate.PSCID',
+                'sex'                => 'candidate.Sex',
+                'SubprojectID'       => 'cohort.SubprojectID',
+                'External_ID'        => 'candidate.ExternalID',
+                'Show_Brief_Results' => 'show_brief_results',
+                'CNV_Type'           => 'CNV.Type',
+                'Copy_Num_Change'    => 'CNV.CopyNumChange',
+                'CNV_Description'    => 'CNV.Description',
+                'Event_Name'         => 'CNV.EventName',
+                'Common_CNV'         => 'CNV.Common_CNV',
+                'Characteristics'    => 'CNV.Characteristics',
+                'Inheritance'        => 'CNV.Inheritance',
+                'Array_Report'       => 'CNV.ArrayReport',
+                'Markers'            => 'CNV.Markers',
+                'Validation_Method'  => 'CNV.ValidationMethod',
+                'Chromosome'         => 'CNV.Chromosome',
+                'Strand'             => 'CNV.Strand',
+                'genomic_range'      => 'genomic_range',
+                'Gene_Symbol'        => 'CNV.OfficialSymbol',
+                'Gene_Name'          => 'CNV.OfficialName',
+                'Platform'           => 'genotyping_platform.Name',
+               );
+        $this->formToFilter = $ftf;
         return true;
     }
 

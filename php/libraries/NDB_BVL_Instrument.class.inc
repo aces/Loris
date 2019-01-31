@@ -1434,11 +1434,27 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
         return '';
+    }
+
+    /**
+     * Gets the subprojectID for the timepoint to which this instrument pertains
+     *
+     * @return int|null The subprojectID
+     */
+    function getSubprojectID(): ?int
+    {
+        $sessionID = $this->getSessionID();
+        if (!empty($sessionID)) {
+            $timepoint    = \Timepoint::singleton($sessionID);
+            $subprojectID = $timepoint->getSubprojectID();
+            return $subprojectID;
+        }
+        return null;
     }
 
 

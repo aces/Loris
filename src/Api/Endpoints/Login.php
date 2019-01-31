@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This implements the Login page class
  *
@@ -10,11 +10,11 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api;
+namespace LORIS\Api\Endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
+use \LORIS\Api\Endpoint;
 
 /**
  * A class for handling the api/v????/login endpoint.
@@ -25,7 +25,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-class Login extends APIEndpoint
+class Login extends Endpoint
 {
     /**
      * All users have access to the login endpoint to try and login.
@@ -79,12 +79,14 @@ class Login extends APIEndpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $requestdata = json_decode($request->getBody(), true);
+        $requestdata = json_decode((string) $request->getBody(), true);
         if (!isset($requestdata['username']) || !isset($requestdata['password'])) {
             return (new \LORIS\Http\Response())
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        '{ "error" : Missing username or password" }'
+                        json_encode(
+                            array('error' => 'Missing username or password')
+                        )
                     )
                 )
                 ->withStatus(400);
@@ -101,7 +103,7 @@ class Login extends APIEndpoint
                 return (new \LORIS\Http\Response())
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode(['token' => $token])
+                            json_encode(array('token' => $token))
                         )
                     )
                     ->withHeader("Content-Type", "application/json")
@@ -110,7 +112,9 @@ class Login extends APIEndpoint
                 return (new \LORIS\Http\Response())
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            ['error' => 'Unacceptable JWT key']
+                            json_encode(
+                                array('error' => 'Unacceptable JWT key')
+                            )
                         )
                     )
                     ->withHeader("Content-Type", "application/json")

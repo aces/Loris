@@ -396,7 +396,7 @@ class File_Upload
     * @return boolean true
     * @see    File_Upload::processFiles()
     */
-    function setFileHandler($fieldName, $className, $methods="")
+    function setFileHandler($fieldName, $className, $methods=array())
     {
         $default_methods =array(
                            "verify" => "isValid",

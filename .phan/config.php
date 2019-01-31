@@ -31,7 +31,6 @@ return [
 		"PhanUndeclaredTypeParameter",
 		"PhanUndeclaredConstant",
 		"PhanTypeMismatchForeach",
-		"PhanTypeMismatchDefault",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",
@@ -58,6 +57,7 @@ return [
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
+		"htdocs/api/",
 	],
     'autoload_internal_extension_signatures' => [
         // Xdebug stubs are bundled with Phan 0.10.1+/0.8.9+ for usage,

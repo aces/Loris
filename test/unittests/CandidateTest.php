@@ -29,7 +29,7 @@ class CandidateTest extends TestCase
      */
     private $_candidateInfo
         = array(
-           'CenterID'     => '2',
+           'RegistrationCenterID'     => '2',
            'CandID'       => '969664',
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
