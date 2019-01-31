@@ -68,6 +68,39 @@ class Image
     }
 
     /**
+     * Get file headers from paramter file
+     *
+     * @param string $headername $the parameter name to reteive
+     *
+     * @return string The value or an empty string
+     */
+    public function getHeader(string $headername): string
+    {
+        $dbrow = \NDB_Factory::singleton()
+             ->database()
+                ->pselectRow(
+                    '
+                       SELECT
+                         Value
+                       FROM
+                         parameter_file pf 
+                       JOIN parameter_type pt
+                         USING (ParameterTypeID)
+                       JOIN files f
+                         USING (FileID)
+                       WHERE
+                         f.FileID = :v_fileid AND
+                         pt.Name = :v_headername
+                      ',
+                    array(
+                     'v_fileid'     => $this->_fileid,
+                     'v_headername' => $headername,
+                    )
+                );
+        return $dbrow['Value'] ?? '';
+    }
+
+    /**
      * Creates a imutable object representation of this tarchive
      *
      * @return \LORIS\ImageDTO
