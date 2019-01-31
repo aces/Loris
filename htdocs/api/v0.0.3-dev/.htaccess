@@ -14,7 +14,6 @@ RewriteRule ^login[/]?$ /index.php [QSA,END]
 RewriteRule ^projects/? /index.php [QSA,END]
 
 ## Imaging API related URLs
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images$ candidates/visits/Images.php?CandID=$1&VisitLabel=$2&PrintImages=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/qc$ candidates/visits/images/qc/QC.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageQC=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/format/raw$ candidates/visits/images/format/Raw.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintRawFormat=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.-]+)/format/thumbnail$ candidates/visits/images/format/Thumbnail.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintThumbnailFormat=true [L]
@@ -36,3 +35,4 @@ RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/instruments/[a-zA-Z0-9_.]+/dde/fla
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/qc/imaging/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/?$ /index.php [QSA,END]
 RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/dicoms/[a-zA-Z0-9_.-]+/?$ /index.php [QSA,END]
+RewriteRule ^candidates/[0-9]+/[a-zA-Z0-9_.]+/images/?$ /index.php [QSA,END]

@@ -922,6 +922,23 @@ class TimePoint
     }
 
     /**
+     * Gets the Images of that session
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\ImageDTO[] A traversable of \LORIS\ImageDTO
+     */
+    public function getImages(\User $user): array
+    {
+        $provisioner = new \LORIS\api\VisitImagesRowProvisioner($this);
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
      * Gets the DicomTar of that session
      *
      * @param \User $user The requesting user
