@@ -287,7 +287,7 @@ class NDB_BVL_Instrument extends NDB_Page
         )) {
             //instrument permissions not used...
             return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
@@ -1417,7 +1417,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
