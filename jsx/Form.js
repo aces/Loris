@@ -26,6 +26,10 @@ CheckboxElement, ButtonElement, LorisElement
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * FormElement Component.
+ * Used for constructing form element.
+ */
 class FormElement extends Component {
   constructor(props) {
     super(props);
@@ -47,13 +51,13 @@ class FormElement extends Component {
       const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
       const value = filter[objKey].value ? filter[objKey].value : '';
       formElementsHTML.push(
-        <div key={'el_' + index} className={colClass}>
-          <LorisElement
-            element={filter[objKey]}
-            onUserInput={userInput}
-            value={value}
-          />
-        </div>
+          <div key={'el_' + index} className={colClass}>
+            <LorisElement
+              element={filter[objKey]}
+              onUserInput={userInput}
+              value={value}
+            />
+          </div>
       );
     }.bind(this));
 
@@ -68,7 +72,7 @@ class FormElement extends Component {
         elementClass = colClass;
       }
       formElementsHTML.push(
-        <div key={'el_child_' + key} className={elementClass}>{child}</div>
+          <div key={'el_child_' + key} className={elementClass}>{child}</div>
       );
     });
 
@@ -84,14 +88,14 @@ class FormElement extends Component {
   }
 
   render() {
-    let encType = this.props.fileUpload ? 'multipart/form-data' : null;
+    const encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
     // Generate form elements
-    let formElements = this.getFormElements();
+    const formElements = this.getFormElements();
 
     // Flexbox is set to ensure that columns of different heights
     // are displayed proportionally on the screen
-    let rowStyles = {
+    const rowStyles = {
       display: 'flex',
       flexWrap: 'wrap',
     };
@@ -177,7 +181,7 @@ class FieldsetElement extends Component {
         elementClass = colClass;
       }
       formElementsHTML.push(
-        <div key={'el_child_' + key} className={elementClass}>{child}</div>
+          <div key={'el_child_' + key} className={elementClass}>{child}</div>
       );
     });
     return formElementsHTML;
@@ -185,7 +189,7 @@ class FieldsetElement extends Component {
 
   render() {
     // Generate form elements
-    let formElements = this.getFormElements();
+    const formElements = this.getFormElements();
 
     return (
       <fieldset
@@ -225,7 +229,7 @@ class SearchableDropdown extends Component {
   }
 
   getKeyFromValue(value) {
-    let options = this.props.options;
+    const options = this.props.options;
     return Object.keys(options).find(function(o) {
       return options[o] === value;
     });
@@ -244,8 +248,8 @@ class SearchableDropdown extends Component {
   handleBlur(e) {
     // null out entry if not present in options in strict mode
     if (this.props.strictSearch) {
-      let value = e.target.value;
-      let options = this.props.options;
+      const value = e.target.value;
+      const options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
         document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
@@ -259,11 +263,11 @@ class SearchableDropdown extends Component {
   }
 
   render() {
-    let required = this.props.required ? 'required' : null;
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let sortByValue = this.props.sortByValue;
-    let options = this.props.options;
-    let strictMessage = 'Entry must be included in provided list of options.';
+    const required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const sortByValue = this.props.sortByValue;
+    const options = this.props.options;
+    const strictMessage = 'Entry must be included in provided list of options.';
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
@@ -299,10 +303,10 @@ class SearchableDropdown extends Component {
       }
     }
 
-    let newOptions = {};
+    const newOptions = {};
     let optionList = [];
     if (sortByValue) {
-      for (let key in options) {
+      for (const key in options) {
         if (options.hasOwnProperty(key)) {
           newOptions[options[key]] = key;
         }
@@ -400,7 +404,7 @@ class SelectElement extends Component {
 
   handleChange(e) {
     let value = e.target.value;
-    let options = e.target.options;
+    const options = e.target.options;
     const numOfOptions = options.length;
 
     // Multiple values
@@ -417,11 +421,11 @@ class SelectElement extends Component {
   }
 
   render() {
-    let multiple = this.props.multiple ? 'multiple' : null;
-    let required = this.props.required ? 'required' : null;
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let sortByValue = this.props.sortByValue;
-    let options = this.props.options;
+    const multiple = this.props.multiple ? 'multiple' : null;
+    const required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const sortByValue = this.props.sortByValue;
+    const options = this.props.options;
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
@@ -443,10 +447,10 @@ class SelectElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    let newOptions = {};
+    const newOptions = {};
     let optionList = [];
     if (sortByValue) {
-      for (let key in options) {
+      for (const key in options) {
         if (options.hasOwnProperty(key)) {
           newOptions[options[key]] = key;
         }
@@ -570,7 +574,7 @@ class TagsElement extends Component {
 
   // send pendingValKey as an argument in order to null out entered item
   handleAdd() {
-    let options = this.props.options;
+    const options = this.props.options;
     let value = this.props.value;
     // if using a datalist (search), set value to be the key in options
     if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
@@ -582,12 +586,12 @@ class TagsElement extends Component {
   }
 
   handleRemove(e) {
-    let value = e.target.getAttribute('data-item');
+    const value = e.target.getAttribute('data-item');
     this.props.onUserRemove(this.props.name, value);
   }
 
   getKeyFromValue(value) {
-    let options = this.props.options;
+    const options = this.props.options;
     return Object.keys(options).find(function(o) {
       return options[o] === value;
     });
@@ -614,7 +618,7 @@ class TagsElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
     let requiredHTML = null;
     let emptyOptionHTML = null;
     let errorMessage = null;
@@ -635,7 +639,7 @@ class TagsElement extends Component {
     }
 
     let input;
-    let options = this.props.options;
+    const options = this.props.options;
     // if options are given and useSearch is specified
     if (Object.keys(options).length > 0 && this.props.useSearch) {
       input = (
@@ -654,7 +658,9 @@ class TagsElement extends Component {
           <datalist id={this.props.id + '_list'}>
             {Object.keys(options).map(function(option) {
               return (
-                <option value={options[option]} key={option}>{options[option]}</option>
+                <option value={options[option]} key={option}>
+                  {options[option]}
+                </option>
               );
             })}
           </datalist>
@@ -694,7 +700,7 @@ class TagsElement extends Component {
 
     // iterate through added Tags items and render them
     // with deletion button
-    let items = this.props.items.map(function(item) {
+    const items = this.props.items.map(function(item) {
       let itmTxt;
       // in event that the passed item is a key of options,
       // render option value
@@ -705,19 +711,19 @@ class TagsElement extends Component {
         itmTxt = item;
       }
       return (
-          <button
-            className="btn btn-info btn-inline"
-            type="button"
-            onClick={this.handleRemove}
+        <button
+          className="btn btn-info btn-inline"
+          type="button"
+          onClick={this.handleRemove}
+          data-item={item}
+        >
+          {itmTxt}
+          &nbsp;
+          <span
+            className="glyphicon glyphicon-remove"
             data-item={item}
-          >
-            {itmTxt}
-            &nbsp;
-            <span
-              className="glyphicon glyphicon-remove"
-              data-item={item}
-            />
-          </button>
+          />
+        </button>
       );
     }, this);
     return (
@@ -735,7 +741,7 @@ class TagsElement extends Component {
             id={this.props.id + 'Add'}
             type="button"
             onClick={this.handleAdd}
-            >
+          >
             <span className="glyphicon glyphicon-plus"/>
             {this.props.btnLabel}
           </button>
@@ -812,8 +818,8 @@ class TextareaElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let requiredHTML = null;
 
     // Add required asterix
@@ -892,8 +898,8 @@ class TextboxElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
@@ -976,8 +982,8 @@ class DateElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let requiredHTML = null;
 
     // Add required asterix
@@ -1052,8 +1058,8 @@ class TimeElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let requiredHTML = null;
 
     // Add required asterix
@@ -1123,9 +1129,9 @@ class NumericElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
-    let requiredHTML = null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
+    const requiredHTML = null;
 
     return (
       <div className="row form-group">
@@ -1258,8 +1264,7 @@ class FileElement extends Component {
         </label>
         <div className="col-sm-9">
           <div className="input-group">
-            <div tabIndex="-1"
-                 className="form-control file-caption kv-fileinput-caption">
+            <div tabIndex="-1" className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
                 <span style={truncateEllipsisChild}>{fileName}</span>
               </div>
@@ -1376,7 +1381,9 @@ class LinkElement extends Component {
           {this.props.label}
         </label>
         <div className="col-sm-9">
-          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
+          <p className="form-control-static">
+            <a href={this.props.href}>{this.props.text}</a>
+          </p>
         </div>
       </div>
     );
@@ -1413,12 +1420,12 @@ class CheckboxElement extends React.Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'checkbox-inline col-sm-offset-3';
-    let label = null;
+    const label = null;
 
     // Add required asterix
     if (required) {
@@ -1527,31 +1534,31 @@ ButtonElement.defaultProps = {
   * React wrapper for <button> element that is used for Call to Actions, usually
   * outside the context of forms.
   */
- class CTA extends Component {
-   render() {
-     return (
-       <button
-         className={this.props.buttonClass}
-         onClick={this.props.onUserInput}
-       >
-         {this.props.label}
-       </button>
-     );
-   }
- }
+class CTA extends Component {
+  render() {
+    return (
+      <button
+        className={this.props.buttonClass}
+        onClick={this.props.onUserInput}
+      >
+        {this.props.label}
+      </button>
+    );
+  }
+}
 
-  CTA.propTypes = {
-   label: PropTypes.string,
-   buttonClass: PropTypes.string,
-   onUserInput: PropTypes.func,
- };
+CTA.propTypes = {
+  label: PropTypes.string,
+  buttonClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
 
-  CTA.defaultProps = {
-   buttonClass: 'btn btn-primary',
-   onUserInput: function() {
-     console.warn('onUserInput() callback is not set');
-   },
- };
+CTA.defaultProps = {
+  buttonClass: 'btn btn-primary',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
 
 /**
  * Generic form element.
@@ -1561,7 +1568,7 @@ class LorisElement extends Component {
     super(props);
   }
   render() {
-    let elementProps = this.props.element;
+    const elementProps = this.props.element;
     elementProps.ref = elementProps.name;
     elementProps.onUserInput = this.props.onUserInput;
 
@@ -1606,7 +1613,7 @@ class LorisElement extends Component {
         break;
       default:
         console.warn(
-          'Element of type ' + elementProps.type + ' is not currently implemented!'
+            'Element of type ' + elementProps.type + ' is not currently implemented!'
         );
         break;
     }

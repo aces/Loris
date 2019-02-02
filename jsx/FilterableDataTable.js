@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import Panel from 'jsx/Panel';
-import DataTable from 'jsx/DataTable';
-import Filter from 'jsx/Filter';
+import Panel from './Panel';
+import DataTable from './DataTable';
+import Filter from './Filter';
 
 /**
  * FilterableDataTable component.
  * A wrapper for all datatables that handles filtering.
  *
  * Handles the updating and clearing of the filter state based on changes sent
- * from the FitlerForm.
+ * from the FilterForm.
  *
  * Passes the Filter to the Datatable.
  *

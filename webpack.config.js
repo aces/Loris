@@ -1,16 +1,96 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const path = require('path');
-const fs = require('fs');
+'use strict';
 
-const config = [{
+const debug = true;
+const path = require('path');
+const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+/**
+ * recursiveIssuer
+ * @description Used for packaging css
+ * @param {object} m
+ * @return {(string|boolean)}
+ */
+function recursiveIssuer(m) {
+  if (m.issuer) {
+    return recursiveIssuer(m.issuer);
+  } else if (m.name) {
+    return m.name;
+  } else {
+    return false;
+  }
+}
+
+const utilities = {
   entry: {
-    './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
-    './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
-    './htdocs/js/components/MultiSelectDropdown.js': './jsx/MultiSelectDropdown.js',
-    './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
-    './htdocs/js/components/Form.js': './jsx/Form.js',
-    './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
+    utilities: [
+      './jsx/Form.js',
+      './jsx/Tabs.js',
+      './jsx/Panel.js',
+      './jsx/Modal.js',
+      './jsx/Loader.js',
+      './jsx/Filter.js',
+      './jsx/Markdown.js',
+      './jsx/DataTable.js',
+      './jsx/FilterForm.js',
+      './jsx/ProgressBar.js',
+      './jsx/Breadcrumbs.js',
+      './jsx/TriggerableModal',
+      './jsx/PaginationLinks.js',
+      './jsx/StaticDataTable.js',
+      './jsx/DynamicDataTable.js',
+      './jsx/FilterableDataTable.js',
+      './jsx/MultiSelectDropdown.js',
+    ],
+  },
+  output: {
+    path: path.resolve(__dirname + '/htdocs/vendor/dist', 'js'),
+    filename: '[name].bundle.js',
+    library: 'utilities',
+    libraryTarget: 'umd',
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      'React': 'react',
+    }),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
+      VERSION: JSON.stringify('v1'),
+      BROWSER_SUPPORTS_HTML5: true,
+    }),
+  ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          warnings: false,
+          mangle: !debug,
+          keep_fnames: debug,
+          compress: {
+            unused: !debug,
+          },
+        },
+      }),
+    ],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader?cacheDirectory',
+        enforce: 'pre',
+      },
+    ],
+  },
+  devtool: debug ? 'inline-source-map' : false,
+  mode: debug ? 'development' : 'production',
+};
+
+const lorisModules = {
+  entry: {
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
@@ -33,7 +113,7 @@ const config = [{
     './modules/genomic_browser/js/FileUploadModal.js': './modules/genomic_browser/jsx/FileUploadModal.js',
     './modules/genomic_browser/js/profileColumnFormatter.js': './modules/genomic_browser/jsx/profileColumnFormatter.js',
     './modules/imaging_browser/js/ImagePanel.js': './modules/imaging_browser/jsx/ImagePanel.js',
-      './modules/imaging_browser/js/imagingBrowserIndex.js': './modules/imaging_browser/jsx/imagingBrowserIndex.js',
+    './modules/imaging_browser/js/imagingBrowserIndex.js': './modules/imaging_browser/jsx/imagingBrowserIndex.js',
     './modules/instrument_builder/js/react.instrument_builder.js': './modules/instrument_builder/jsx/react.instrument_builder.js',
     './modules/instrument_builder/js/react.questions.js': './modules/instrument_builder/jsx/react.questions.js',
     './modules/instrument_manager/js/instrumentManagerIndex.js': './modules/instrument_manager/jsx/instrumentManagerIndex.js',
@@ -53,20 +133,41 @@ const config = [{
     './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
   },
   output: {
-    path: __dirname + '/',
+    path: path.resolve(__dirname + '/'),
     filename: '[name]',
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      'React': 'react',
+    }),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
+      VERSION: JSON.stringify('v1'),
+      BROWSER_SUPPORTS_HTML5: true,
+    }),
+  ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          warnings: false,
+          mangle: !debug,
+          keep_fnames: debug,
+          compress: {
+            unused: !debug,
+          },
+        },
+      }),
+    ],
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel-loader?cacheDirectory',
       },
       {
         test: /\.json$/,
@@ -98,34 +199,71 @@ const config = [{
     },
     extensions: ['*', '.js', '.jsx', '.json'],
   },
-  externals: {
-    react: 'React',
-  },
+  externals: ['React'],
   node: {
     fs: 'empty',
   },
-  devtool: 'source-map',
-  plugins: [],
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        uglifyOptions: {
-          compress: false,
-          ecma: 6,
-          mangle: false,
-        },
-        sourceMap: true,
-      }),
+  devtool: debug ? 'inline-source-map' : false,
+  mode: debug ? 'development' : 'production',
+};
+
+const styles = {
+  entry: {
+    loris: [
+      // './htdocs/css/overcast/jquery-ui-1.10.4.custom.css',
+      './htdocs/css/auto-complete.css',
+      './htdocs/css/c3.css',
+      // './htdocs/css/jquery-ui-1.10.4.custom.css',
+      './htdocs/css/jqueryslidemenu.css',
+      './htdocs/css/panel.css',
+      './htdocs/css/public_layout.css',
+      './htdocs/css/simple-sidebar.css',
     ],
   },
-}];
+  output: {
+    path: path.resolve(__dirname + '/htdocs/vendor/dist', 'css'),
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'loris',
+          test: (m, c, entry = 'loris') => {
+            return m.constructor.name === 'CssModule' &&
+              recursiveIssuer(m) === entry;
+          },
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+        use: 'url-loader',
+      },
+    ],
+  },
+  resolve: {
+    alias: {},
+    modules: [],
+    extensions: ['.css'],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
+  ],
+  mode: 'production',
+};
 
-// Support project overrides
-if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projConfig = require('./project/webpack-project.config.js');
-  config.push(projConfig);
-}
-
-module.exports = config;
+module.exports = [utilities, lorisModules, styles];

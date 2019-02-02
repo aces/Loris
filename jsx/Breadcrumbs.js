@@ -77,19 +77,19 @@ class Breadcrumbs extends Component {
       const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
-          <li key={'drop_' + i}>
-            <a href={url}>
-              {element.text}
-            </a>
-          </li>
+            <li key={'drop_' + i}>
+              <a href={url}>
+                {element.text}
+              </a>
+            </li>
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
-            <div>
-              {element.text}
-            </div>
-          </a>
+            <a key={'crumb_' + i} href={url} className='btn btn-primary'>
+              <div>
+                {element.text}
+              </div>
+            </a>
         );
       }
     }
@@ -98,10 +98,10 @@ class Breadcrumbs extends Component {
       breadcrumbDropdown = (
         <div className='btn-group ellipsis btn btn-primary'>
           <button type='button'
-                  className='dropdown-toggle'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'
+            className='dropdown-toggle'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
           >
             ...
           </button>
@@ -128,7 +128,7 @@ Breadcrumbs.propTypes = {
   breadcrumbs: PropTypes.array,
 };
 
-let RBreadcrumbs = React.createFactory(Breadcrumbs);
+const RBreadcrumbs = React.createFactory(Breadcrumbs);
 
 window.Breadcrumbs = Breadcrumbs;
 window.RBreadcrumbs = RBreadcrumbs;

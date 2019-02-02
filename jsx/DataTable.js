@@ -8,8 +8,9 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import PaginationLinks from 'jsx/PaginationLinks';
+import PaginationLinks from './PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
+import CTA from './Form';
 
 /**
  * Data Table component
@@ -66,7 +67,7 @@ class DataTable extends Component {
     }
 
     // Set rows per page
-    let rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
+    const rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
     this.setState({
       RowsPerPage: rowsPerPage,
     });
@@ -89,7 +90,7 @@ class DataTable extends Component {
       (this.state.SortColumn !== prevState.SortColumn ||
         this.state.SortOrder !== prevState.SortOrder)
     ) {
-      let index = this.getSortedRows();
+      const index = this.getSortedRows();
       const headerList = this.props.fields.map((field) => field.label);
       this.props.onSort(index, this.props.data, headerList);
     }
@@ -116,8 +117,8 @@ class DataTable extends Component {
   }
 
   changeRowsPerPage(val) {
-    let rowsPerPage = val.target.value;
-    let modulePrefs = this.modulePrefs;
+    const rowsPerPage = val.target.value;
+    const modulePrefs = this.modulePrefs;
 
     // Save current selection
     modulePrefs[loris.TestName].rowsPerPage = rowsPerPage;
@@ -132,7 +133,7 @@ class DataTable extends Component {
   }
 
   downloadCSV(csvData) {
-    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+    const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
       let dataURL;
@@ -166,8 +167,8 @@ class DataTable extends Component {
         Object.keys(this.props.filter).length :
         0
     );
-    let tableData = this.props.data;
-    let fieldData = this.props.fields;
+    const tableData = this.props.data;
+    const fieldData = this.props.fields;
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -181,7 +182,7 @@ class DataTable extends Component {
       let headerCount = 0;
       let keywordMatch = 0;
       for (let j = 0; j < fieldData.length; j++) {
-        let data = tableData[i] ? tableData[i][j] : null;
+        const data = tableData[i] ? tableData[i][j] : null;
         if (this.hasFilterKeyword((fieldData[j].filter || {}).name, data)) {
           headerCount++;
         }
@@ -199,7 +200,7 @@ class DataTable extends Component {
       }
     }
 
-    let hasFilters = (filterValuesCount !== 0);
+    const hasFilters = (filterValuesCount !== 0);
     if (filterMatchCount === 0 && hasFilters) {
       return 0;
     }
@@ -303,7 +304,7 @@ class DataTable extends Component {
 
     // Handle numeric inputs
     if (typeof filterData === 'number') {
-      let intData = Number.parseInt(data, 10);
+      const intData = Number.parseInt(data, 10);
       result = (filterData === intData);
     }
 
@@ -315,7 +316,7 @@ class DataTable extends Component {
           // Handles the case where the data is an array (typeof 'object')
           // and you want to search through it for
           // the string you are filtering by
-          let searchArray = data.map((e) => e.toLowerCase());
+          const searchArray = data.map((e) => e.toLowerCase());
           if (exactMatch) {
             result = searchArray.includes(searchKey);
           } else {
@@ -323,12 +324,12 @@ class DataTable extends Component {
           }
           break;
         default:
-            searchString = data.toLowerCase();
-            if (exactMatch) {
-              result = (searchString === searchKey);
-            } else {
-              result = (searchString.indexOf(searchKey) > -1);
-            }
+          searchString = data.toLowerCase();
+          if (exactMatch) {
+            result = (searchString === searchKey);
+          } else {
+            result = (searchString.indexOf(searchKey) > -1);
+          }
           break;
       }
     }
@@ -372,8 +373,8 @@ class DataTable extends Component {
         </div>
       );
     }
-    let rowsPerPage = this.state.RowsPerPage;
-    let headers = this.state.Hide.defaultColumn === true ? [] : [
+    const rowsPerPage = this.state.RowsPerPage;
+    const headers = this.state.Hide.defaultColumn === true ? [] : [
       <th key='th_col_0' onClick={this.setSortColumn(-1).bind(this)}>
         {this.props.RowNumLabel}
       </th>,
@@ -381,30 +382,30 @@ class DataTable extends Component {
 
     for (let i = 0; i < this.props.fields.length; i += 1) {
       if (this.props.fields[i].show === true) {
-        let colIndex = i + 1;
+        const colIndex = i + 1;
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
-            <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
+              <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.fields[i].label}
-            </th>
+                {this.props.fields[i].label}
+              </th>
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
-              {this.props.fields[i].label}
-            </th>
+              <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
+                {this.props.fields[i].label}
+              </th>
           );
         }
       }
     }
-    let rows = [];
+    const rows = [];
     let curRow = [];
-    let index = this.getSortedRows();
+    const index = this.getSortedRows();
     let matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
-    let filteredRows = this.countFilteredRows();
-    let currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
-    let filteredData = [];
+    const filteredRows = this.countFilteredRows();
+    const currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
+    const filteredData = [];
     let useKeyword = false;
 
     if (this.props.filter.keyword) {
@@ -413,8 +414,8 @@ class DataTable extends Component {
 
     // Push rows to data table
     for (let i = 0;
-         (i < this.props.data.length) && (rows.length < rowsPerPage);
-         i++
+      (i < this.props.data.length) && (rows.length < rowsPerPage);
+      i++
     ) {
       curRow = [];
 
@@ -449,7 +450,7 @@ class DataTable extends Component {
           filterLength = Object.keys(this.props.filter).length;
         }
 
-        let key = 'td_col_' + j;
+        const key = 'td_col_' + j;
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
@@ -462,9 +463,9 @@ class DataTable extends Component {
               row[field.label] = this.props.data[index[i].RowIdx][k];
             });
             data = this.props.getFormattedCell(
-              this.props.fields[j].label,
-              data,
-              row
+                this.props.fields[j].label,
+                data,
+                row
             );
           }
           if (data !== null) {
@@ -485,16 +486,16 @@ class DataTable extends Component {
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
           rows.push(
-            <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-              <td>{rowIndex}</td>
-              {curRow}
-            </tr>
+              <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+                <td>{rowIndex}</td>
+                {curRow}
+              </tr>
           );
         }
       }
     }
 
-    let RowsPerPageDropdown = (
+    const RowsPerPageDropdown = (
       <select
         className="input-sm perPage"
         onChange={this.changeRowsPerPage}
@@ -515,35 +516,35 @@ class DataTable extends Component {
       csvData = filteredData;
     }
 
-    let header = this.state.Hide.rowsPerPage === true ? '' : (
+    const header = this.state.Hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
           <div className="col-xs-12">
-          <div>
-            {rows.length} rows displayed of {filteredRows}.
-            (Maximum rows per page: {RowsPerPageDropdown})
-          </div>
-          <div className="pull-right" style={{marginTop: '-43px'}}>
-            {this.renderActions()}
-            <button
-              className="btn btn-primary"
-              onClick={this.downloadCSV.bind(null, csvData)}
-            >
+            <div>
+              {rows.length} rows displayed of {filteredRows}.
+              (Maximum rows per page: {RowsPerPageDropdown})
+            </div>
+            <div className="pull-right" style={{marginTop: '-43px'}}>
+              {this.renderActions()}
+              <button
+                className="btn btn-primary"
+                onClick={this.downloadCSV.bind(null, csvData)}
+              >
               Download Table as CSV
-            </button>
-            <PaginationLinks
-              Total={filteredRows}
-              onChangePage={this.changePage}
-              RowsPerPage={rowsPerPage}
-              Active={this.state.PageNumber}
-            />
-          </div>
+              </button>
+              <PaginationLinks
+                Total={filteredRows}
+                onChangePage={this.changePage}
+                RowsPerPage={rowsPerPage}
+                Active={this.state.PageNumber}
+              />
+            </div>
           </div>
         </div>
       </div>
     );
 
-    let footer = this.state.Hide.downloadCSV === true ? '' : (
+    const footer = this.state.Hide.downloadCSV === true ? '' : (
       <div>
         <div className="row">
           <div className="col-xs-12" style={{marginTop: '10px'}}>

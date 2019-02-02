@@ -1,0 +1,865 @@
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #FFF;
+    cursor: default;
+    overflow: auto;
+    -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+    -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+    box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+}
+
+.autocomplete-suggestion {
+    padding: 2px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.autocomplete-no-suggestion {
+    padding: 2px 5px;
+}
+
+.autocomplete-selected {
+    background: #F0F0F0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: bold;
+    color: #000;
+}
+
+.autocomplete-group {
+    padding: 2px 5px;
+}
+
+.autocomplete-group strong {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+    display: block;
+    border-bottom: 1px solid #000;
+}
+
+.form-autocomplete {
+    position: absolute;
+    z-index: 2;
+    background: transparent;
+}
+
+.form-autocomplete-hint {
+    color: #CCC;
+    position: absolute;
+    background: transparent;
+    z-index: 1;
+}
+
+/*-- Chart --*/
+
+.c3 svg {
+    font: 10px sans-serif;
+}
+
+.c3 path, .c3 line {
+    fill: none;
+    stroke: #000;
+}
+
+.c3 text {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.c3-legend-item-tile,
+.c3-xgrid-focus,
+.c3-ygrid,
+.c3-event-rect,
+.c3-bars path {
+    shape-rendering: crispEdges;
+}
+
+.c3-chart-arc path {
+    stroke: #fff;
+
+}
+
+.c3-chart-arc text {
+    fill: #fff;
+    font-size: 13px;
+}
+
+/*-- Axis --*/
+
+.c3-axis-x .tick {
+}
+
+.c3-axis-x-label {
+}
+
+.c3-axis-y .tick {
+}
+
+.c3-axis-y-label {
+}
+
+.c3-axis-y2 .tick {
+}
+
+.c3-axis-y2-label {
+}
+
+/*-- Grid --*/
+
+.c3-grid line {
+    stroke: #aaa;
+}
+
+.c3-grid text {
+    fill: #aaa;
+}
+
+.c3-xgrid, .c3-ygrid {
+    stroke-dasharray: 3 3;
+}
+
+.c3-xgrid-focus {
+}
+
+/*-- Text on Chart --*/
+
+.c3-text {
+}
+
+.c3-text.c3-empty {
+    fill: #808080;
+    font-size: 2em;
+}
+
+/*-- Line --*/
+
+.c3-line {
+    stroke-width: 1px;
+}
+
+/*-- Point --*/
+
+.c3-circle._expanded_ {
+    stroke-width: 1px;
+    stroke: white;
+}
+
+.c3-selected-circle {
+    fill: white;
+    stroke-width: 2px;
+}
+
+/*-- Bar --*/
+
+.c3-bar {
+    stroke-width: 0;
+}
+
+.c3-bar._expanded_ {
+    fill-opacity: 0.75;
+}
+
+/*-- Arc --*/
+
+.c3-chart-arcs-title {
+    font-size: 1.3em;
+}
+
+/*-- Focus --*/
+
+.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
+    stroke-width: 2px;
+}
+
+/*-- Region --*/
+
+.c3-region {
+    fill: steelblue;
+    fill-opacity: .1;
+}
+
+/*-- Brush --*/
+
+.c3-brush .extent {
+    fill-opacity: .1;
+}
+
+/*-- Select - Drag --*/
+
+.c3-dragarea {
+}
+
+/*-- Legend --*/
+
+.c3-legend-item {
+    font-size: 12px;
+}
+
+.c3-legend-background {
+    opacity: 0.75;
+    fill: white;
+    stroke: lightgray;
+    stroke-width: 1
+}
+
+/*-- Tooltip --*/
+
+.c3-tooltip {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+    empty-cells: show;
+    -webkit-box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    -moz-box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    opacity: 0.9;
+}
+
+.c3-tooltip tr {
+    border: 1px solid #CCC;
+}
+
+.c3-tooltip th {
+    background-color: #aaa;
+    font-size: 14px;
+    padding: 2px 5px;
+    text-align: left;
+    color: #FFF;
+}
+
+.c3-tooltip td {
+    font-size: 13px;
+    padding: 3px 6px;
+    background-color: #fff;
+    border-left: 1px dotted #999;
+}
+
+.c3-tooltip td > span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+}
+
+.c3-tooltip td.value {
+    text-align: right;
+}
+
+.c3-area {
+    stroke-width: 0;
+    opacity: 0.2;
+}
+
+.c3-chart-arcs .c3-chart-arcs-background {
+    fill: #e0e0e0;
+    stroke: none;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-unit {
+    fill: #000;
+    font-size: 16px;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-max {
+    fill: #777;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-min {
+    fill: #777;
+}
+
+.c3-chart-arc .c3-gauge-value {
+    fill: #000;
+    font-size: 28px;
+}
+
+.Account {
+    float: right;
+}
+
+.site {
+    padding-top: 8px;
+    padding-right: 7px;
+    float: right;
+    font-weight: normal;
+}
+
+.jqueryslidemenu {
+    font: Verdana-sans-serif;
+
+    z-index: 10;
+}
+
+.jqueryslidemenu ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    z-index: 10;
+    background: #064785;
+
+}
+
+/*Top level list items*/
+.jqueryslidemenu ul li {
+    position: relative;
+    display: inline;
+    float: left;
+    background: #064785;
+    z-index: 10;
+    font-size: 10px;
+}
+
+/*Top level menu link items style*/
+.jqueryslidemenu ul li a {
+    display: block;
+    background: #064785; /*background of tabs (default state)*/
+    padding: 8px 10px;
+    border-right: 1px solid #778;
+    border-bottom: 1px solid #778;
+    color: #2d2b2b;
+    text-decoration: none;
+    z-index: 10;
+}
+
+* html .jqueryslidemenu ul li a { /*IE6 hack to get sub menu links to behave correctly*/
+    display: inline-block;
+    border-top: 1px solid #778;
+}
+
+.jqueryslidemenu ul li a:link, .jqueryslidemenu ul li a:visited {
+    color: white;
+}
+
+.jqueryslidemenu ul li a:hover {
+    background: #999; /*tab link background during hover state*/
+    color: white;
+}
+
+/*1st sub level menu*/
+.jqueryslidemenu ul li ul {
+    position: absolute;
+    left: 0;
+    display: block;
+    visibility: hidden;
+    font-weight: normal;
+    width: 150px;
+}
+
+/*Sub level menu list items (undo style from Top level List Items)*/
+.jqueryslidemenu ul li ul li {
+    display: list-item;
+    float: none;
+}
+
+/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+.jqueryslidemenu ul li ul li ul {
+    top: 0;
+}
+
+/* Sub level menu links style */
+.jqueryslidemenu ul li ul li a {
+    font: normal 13px Verdana;
+    width: 160px; /*width of sub menus*/
+    padding: 5px;
+    margin: 0;
+    border-top-width: 0;
+    border-bottom: 1px solid gray;
+}
+
+.jqueryslidemenuz ul li ul li a:hover { /*sub menus hover style*/
+    background: gray; /*#eff9ff;*/
+    color: black;
+    z-index: -1;
+}
+
+
+/* This is a custom css file made to override some bootstrap elements. Likely will change the structure of this come production.
+Author: Evan McIlroy <evanmcilroy@gmail.com>*/
+
+.info,
+.info:hover {
+    color: #fff;
+}
+
+.example-enter {
+    opacity: 0.01;
+    transition: opacity .5s ease-in;
+}
+
+.example-enter.example-enter-active {
+    opacity: 1;
+}
+
+.example-leave {
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+.example-leave.example-leave-active {
+    opacity: 0.01;
+}
+
+.thread_entry {
+    background-color: rgba(221, 221, 221, 0.25)
+}
+
+.glyphs:before {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.breadcrumb-panel {
+    background-color: #064785;
+    color: #fff;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 5px 15px;
+}
+
+.navbar {
+    background-color: #064785;
+    border-width: 0 0 1px;
+    border-radius: 0;
+}
+
+.navbar-toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+.panel-heading a:after {
+    font-family: 'Glyphicons Halflings', serif;
+    content: "\e114";
+    float: right;
+    color: #064785;
+}
+
+.panel-heading a.collapsed:after {
+    content: "\e080";
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.panel-group {
+    margin: 10px 5px;
+}
+
+.navmenu {
+    width: 500px;
+    position: fixed;
+    z-index: 1040;
+    top: 0;
+    bottom: 0;
+}
+
+.panel-wrapper {
+    margin-right: -500px;
+    margin-top: 50px;
+    right: 0;
+    width: 500px;
+    background: #F5F5F5;
+    position: fixed;
+    height: 100%;
+    border-color: #064785;
+    border-left: 2px solid;
+    overflow-y: scroll;
+    z-index: 1000;
+    transition: all 0.4s ease 0s;
+    padding-bottom: 50px;
+}
+
+.bvl_panel {
+    padding-right: 500px;
+    transition: all 0.4s ease 0s;
+}
+
+.active_panel_footer {
+    padding-right: 500px;
+}
+
+.active_panel {
+    right: 500px;
+}
+
+.inactive_panel_page {
+    padding-right: 0;
+}
+
+.bvl_table_icons {
+    font-size: 15px;
+    float: right;
+    visibility: hidden;
+}
+
+.feedback_entries_body {
+    border-style: solid;
+    border-style-top: none;
+
+}
+
+.feedback_entries {
+    color: #ffffff;
+    background-color: rgb(28, 112, 182);
+}
+
+.feedback_entries:hover {
+    color: #000000;
+}
+
+.hide_sidebar {
+    left: 0;
+}
+
+@media (max-width: 884px) {
+    .active_panel {
+        right: 500px;
+    }
+
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-weight: 400;
+    font-style: normal;
+    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
+    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
+    local('PT Sans'),
+    local('PT-Sans-regular'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
+    url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-weight: 700;
+    font-style: normal;
+    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
+    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
+    local('PT Sans Bold'),
+    local('PT-Sans-700'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
+    url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
+}
+
+/* Stylesheet for login, reset password and request account pages */
+html, body {
+  margin:0;
+  padding:0;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 700;
+}
+
+.btn {
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
+}
+
+.header {
+    height: 100px;
+    background-color: #064785;
+    padding: 5px 0;
+}
+
+.flex-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.header .loris-logo {
+    margin-right: auto;
+}
+
+.header .loris-logo img {
+    height: 80px;
+}
+
+.header .github-logo {
+    margin-left: auto;
+}
+
+.header .github-logo img {
+    height: 40px;
+    padding-right: 10px;
+    opacity: 0.8;
+}
+
+.header .github-logo img:hover {
+    opacity: 1;
+    -webkit-transition: opacity 0.2s ease-in;
+    transition: opacity 0.2s ease-in;
+}
+
+.header .nav-link {
+    color: #fff;
+    font-size: 22px;
+    line-height: 130px;
+}
+
+.header .study-title {
+    width: 500px;
+    padding: 0 20px;
+    color: #eee;
+    font-size: 25px;
+    line-height: 1.15;
+    font-weight: 600;
+    font-variant: small-caps;
+    text-align: center;
+}
+
+.main-content {
+    background-color: #f8f8f8;
+    padding: 30px 0;
+    height: auto;
+    min-height: calc(100vh - 200px);
+}
+
+.main-content .study-panel,
+.main-content .login-panel {
+    min-height: 500px;
+}
+
+.main-content .login-panel form {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.main-content .login-panel .help-links {
+    text-align: center;
+}
+
+.main-content .login-panel .help-text {
+    font-size: 12px;
+    padding: 10px 0;
+    text-align: center;
+    color: #555;
+}
+
+.main-content .study-logo {
+    max-width: 200px;
+    margin: 0 auto 10px auto;
+    padding: 15px;
+}
+
+.main-content .study-logo img {
+    width: 100%;
+}
+
+.footer {
+    font-size: 12px;
+    text-align: center;
+    background-color: #064785;
+    color: #f8f8f8;
+    height: 60px;
+    padding: 15px;
+}
+
+.footer a {
+    color: #f8f8f8;
+    font-weight: 700;
+}
+
+.panel-center {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.panel-center form {
+    padding: 20px 25px;
+}
+
+.success-message {
+    text-align: center;
+    padding: 0 20px 40px 20px;
+}
+
+/* Tablets and bigger */
+@media (min-width: 768px) {
+    .header {
+        height: 140px;
+    }
+
+    .header .loris-logo img {
+        height: 130px;
+    }
+
+    .header .github-logo {
+        padding-right: 20px;
+    }
+
+    .main-content {
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Small desktops and bigger */
+@media (min-width: 991px) {
+    .header .loris-logo {
+        margin-right: 40px;
+    }
+}
+
+#sidebar-content {
+    padding-left: 25px;
+}
+
+.wrapper {
+    padding-left: 250px;
+    transition: all 0.4s ease 0s;
+}
+
+#sidebar-wrapper {
+    margin-left: -250px;
+    margin-top: 50px;
+    left: 250px;
+    width: 250px;
+    top: 0;
+    background: #E4EBF2;
+    border: 1px solid #C3D5DB;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.4s ease 0s;
+}
+
+#page-content-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    line-height: 40px;
+    text-indent: 20px;
+}
+
+.sidebar-nav li a {
+    color: white;
+    display: block;
+    text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    line-height: 60px;
+    font-size: 18px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+.content-header {
+    height: 65px;
+    line-height: 65px;
+}
+
+.content-header h1 {
+    margin: 0 0 0 20px;
+    line-height: 65px;
+    display: inline-block;
+}
+
+#menu-toggle {
+    display: none;
+}
+
+.inset {
+    padding: 20px;
+}
+
+.sidebar-div {
+    color: #064785;
+}
+
+.sidebar-div h3 {
+    color: #064785;
+}
+
+.sidebar-div a {
+    color: #064785;
+}
+
+@media (max-width: 884px) {
+
+    .wrapper {
+        padding-left: 0;
+    }
+
+    #sidebar-wrapper {
+        left: 0;
+        color: white;
+    }
+
+    .wrapper.active {
+        position: relative;
+        left: 250px;
+    }
+
+    .wrapper.active #sidebar-wrapper {
+        left: 250px;
+        width: 250px;
+        transition: all 0.4s ease 0s;
+    }
+
+    #menu-toggle {
+        display: inline-block;
+    }
+
+    .inset {
+        padding: 15px;
+    }
+
+}
+
