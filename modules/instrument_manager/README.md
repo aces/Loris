@@ -37,8 +37,7 @@ following permissions:
 * `instrument_manager_read`
 * `instrument_manager_write`
 
-The write permission additionally allows a user to upload new LORIS 
-instrument. 
+The write permission allows a user to upload new LORIS instrument. 
 
 ## Configurations
 
