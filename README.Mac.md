@@ -279,7 +279,11 @@ Type into your terminal and hit enter:
 pecl install ast-0.1.5;
 ```
 
-## 2.1 Install Loris
+## 2.1 Install Node.js
+Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and run the installer.
+
+
+## 2.2 Install Loris
 Paste into your terminal while hitting enter:
 ```
 cd ~/Development/GitHub/McGill/Loris
@@ -290,7 +294,7 @@ cd /tools
 ./install.sh
 ```
 
-## 2.1.1 Launch the Loris installer in your browser
+## 2.2.1 Launch the Loris installer in your browser
 Open a browser such as chrome and navigate to:
 ```
 localhost/installdb.php
