@@ -45,4 +45,8 @@ foreach($consentData as $key => $entry) {
             break;
     }
 }
-print_r($errors);
+if (empty($errors)) {
+    echo "There are no errors. No additional steps required.\n";
+} else {
+    print_r($errors);
+}
