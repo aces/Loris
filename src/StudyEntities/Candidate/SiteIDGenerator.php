@@ -92,7 +92,7 @@ class SiteIDGenerator extends IdentifierGenerator
         }
 
         try {
-            $seqValue = $this->getSeqAttribute($idStructure, $setting);
+            $seqValue = self::getSeqAttribute($idStructure, $setting);
         } catch (\ConfigurationException $e) {
             /* Throw a new exception so that we can inform developers whether
              * the ConfigurationException arose due to ExternalID or PSCID
@@ -162,7 +162,7 @@ class SiteIDGenerator extends IdentifierGenerator
         switch($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
-                $this->extractSeqAttribute($idStructure, 'type'),
+                self::extractSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'alpha'
                         || $x === 'alphanumeric'
@@ -172,7 +172,7 @@ class SiteIDGenerator extends IdentifierGenerator
             break;
         case 'prefix':
             $seqAttributes = array_filter(
-                $this->extractSeqAttribute($idStructure, 'type'),
+                self::extractSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'static' || $x === 'siteAbbrev';
                 }
@@ -182,7 +182,7 @@ class SiteIDGenerator extends IdentifierGenerator
             /* Other settings (i.e. 'length', 'min', 'max') can be extracted
              * directly as they are stored within distinct attributes.
              */
-            $seqAttributes = $this->extractSeqAttribute(
+            $seqAttributes = self::extractSeqAttribute(
                 $idStructure,
                 $setting
             );
@@ -209,7 +209,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return array The value(s) corresponding to $setting.
      */
-    private function extractSeqAttribute(
+    private static function extractSeqAttribute(
         array $idStructure,
         string $setting
     ): array {

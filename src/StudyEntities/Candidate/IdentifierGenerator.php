@@ -11,7 +11,6 @@ abstract class IdentifierGenerator
     protected $minValue;
     protected $maxValue;
     protected $prefix    = '';
-    protected $ALPHABETS = '';
 
     /**
     * Generates a new unused identifier to represent a Candidate in LORIS.
@@ -38,10 +37,14 @@ abstract class IdentifierGenerator
             break;
         case 'random':
             $id = $this->padID($this->generateRandomID());
-            // If the Random ID is already in use, increment it by using the
-            // generateSequentialID function with the random ID as a starting
+            // If the Random ID is already in use or is outside of the range 
+            // defined by minValue and maxValue, increment it by using the
+            // generateSequentialID function with the previous ID as a starting
             // point.
-            if (in_array($id, $this->getExistingIDs(), true)) {
+            if (in_array($id, $this->getExistingIDs(), true)
+                || strcmp(strval($id), strval($this->minValue)) < 0
+                || strcmp(strval($id), strval($this->maxValue)) > 0
+            ) {
                 $id = $this->generateSequentialID($id);
             }
             break;

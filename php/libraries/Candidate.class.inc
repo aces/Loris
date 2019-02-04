@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\CandIDGenerator;
 use LORIS\StudyEntities\Candidate\PSCIDGenerator;
 use LORIS\StudyEntities\Candidate\ExternalIDGenerator;
@@ -250,32 +251,8 @@ class Candidate
             $PSCID = (new PSCIDGenerator($site->getSiteAlias()))->generate();
         }
 
-        // Generate candid
-        $candID = (new CandIDGenerator())->generate();
-
-        // Check ID uniqueness. This can occur if two Candidates are created
-        // at almost the same time and a race condition occurs on the server.
-        $pscidUnique  = intval(
-            $db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $PSCID)
-            )
-        ) === 0;
-        $candIDUnique = intval(
-            $db->pselectOne(
-                "SELECT count(CandID) FROM candidate WHERE CandID=:CID",
-                array('CID' => $candID)
-            )
-        ) === 0;
-        if (! ($pscidUnique && $candIDUnique)) {
-            throw new Exception(
-                "Candidate identifiers are not unique. Can't continue."
-            );
-        }
-
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'CandID'               => $candID,
                      'RegistrationCenterID' => $centerID,
                      'PSCID'                => $PSCID,
                      'DoB'                  => $dateOfBirth,
@@ -294,10 +271,27 @@ class Candidate
             $setArray['ExternalID'] = $externalID;
         }
 
-        $db->insert('candidate', $setArray);
+        // Generate a new CandID and insert it into the DB. In case of a race
+        // condition, keep trying new IDs until an unused one is found.
+        do {
+            $invalidID = false;
+            // Generate candid
+            $candID = new CandID((new CandIDGenerator())->generate());
+            $setArray['CandID'] = (string) $candID;
+            try {
+                $db->insert('candidate', $setArray);
+            } catch (\DatabaseException | \DomainException $e) {
+                $invalidID = true;
+                // Occurs in the case of a race condition where another CandID
+                // with the same value has been inserted into the DB before this
+                // one.
+            }
+        } while ($invalidID === true);
 
-        // return the new candid
-        return intval($candID);
+        // Return the new CandID
+        // FIXME This class should be refactored to use the new CandID class
+        // instead of returning an integer.
+        return intval((string) $candID);
     }
 
     /**
