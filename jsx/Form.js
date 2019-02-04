@@ -368,14 +368,14 @@ SearchableDropdown.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]),
-  class: React.PropTypes.string,
-  disabled: React.PropTypes.bool,
-  required: React.PropTypes.bool,
-  sortByValue: React.PropTypes.bool,
-  errorMessage: React.PropTypes.string,
-  placeHolder: React.PropTypes.string,
-  autoFocus: React.PropTypes.bool,
-  onUserInput: React.PropTypes.func,
+  class: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  sortByValue: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  placeHolder: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  onUserInput: PropTypes.func,
 };
 
 SearchableDropdown.defaultProps = {
@@ -521,16 +521,16 @@ SelectElement.propTypes = {
     PropTypes.string,
     PropTypes.array,
   ]),
-  id: React.PropTypes.string,
-  class: React.PropTypes.string,
-  inputClass: React.PropTypes.string,
-  multiple: React.PropTypes.bool,
-  disabled: React.PropTypes.bool,
-  required: React.PropTypes.bool,
-  sortByValue: React.PropTypes.bool,
-  emptyOption: React.PropTypes.bool,
-  errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func,
+  id: PropTypes.string,
+  class: PropTypes.string,
+  inputClass: PropTypes.string,
+  multiple: PropTypes.bool,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  sortByValue: PropTypes.bool,
+  emptyOption: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
 };
 
 SelectElement.defaultProps = {
@@ -1081,7 +1081,6 @@ class DateElement extends Component {
 }
 
 DateElement.propTypes = {
-<<<<<<< 27ae8a8d4f5abc8ad574234df61684695ccb3827
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
@@ -1091,6 +1090,7 @@ DateElement.propTypes = {
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  errorMessage: PropTypes.func,
   onUserInput: PropTypes.func,
 };
 
@@ -1170,14 +1170,14 @@ class TimeElement extends Component {
 }
 
 TimeElement.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  label: React.PropTypes.string,
-  value: React.PropTypes.string,
-  id: React.PropTypes.string,
-  disabled: React.PropTypes.bool,
-  required: React.PropTypes.bool,
-  errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
 };
 
 TimeElement.defaultProps = {
@@ -1487,7 +1487,7 @@ LinkElement.defaultProps = {
  * Checkbox Component
  * React wrapper for a <input type="checkbox"> element.
  */
-class CheckboxElement extends React.Component {
+class CheckboxElement extends Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);

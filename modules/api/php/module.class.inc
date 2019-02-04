@@ -3,7 +3,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It handles the basic routing for the module.
  *
- * PHP Version 7
+ * PHP Version 5
  *
  * @category   API
  * @package    Main
