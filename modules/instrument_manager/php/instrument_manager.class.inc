@@ -131,7 +131,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
         // Ensure the server is properly configured.
         if (! $this->canWriteFiles()) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
