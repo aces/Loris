@@ -144,10 +144,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return array associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
-    function XINValidate(array $elements): array
+    function XINValidate(array $elements)
     {
         unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug = false;  //Turn this on to see rules debuggin output
