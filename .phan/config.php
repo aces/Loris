@@ -32,7 +32,6 @@ return [
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",
 		"PhanTypeArraySuspicious",
-        "PhanRedefineFunctionInternal",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
