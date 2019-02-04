@@ -119,7 +119,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         // Ensure the user is allowed to upload.
         if (! \User::singleton()->hasPermission('instrument_manager_write')) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -146,7 +146,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $instrument    = pathinfo($filename)['filename'];
 
         if ($this->instrumentExists($instrument)) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -168,7 +168,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -195,7 +195,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$this->isQuatUserConfigured()) {
             // If no quatUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(200, 'OK')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -235,7 +235,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "credentials supplied in the config file."
                 . print_r($object)
             );
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -246,7 +246,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
 
-        return (new \Zend\Diactoros\Response())
+        return (new \Loris\Http\Response())
             ->withStatus(201, 'Created')
             ->withBody(new EmptyStream());
     }
