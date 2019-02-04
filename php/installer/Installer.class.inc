@@ -12,8 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-use \LORIS\Installer\Database as Database;
-
+namespace LORIS\Installer;
 /**
  * The Installer class handles all the logic used by the installdb.php
  * script under htdocs. It's put in a class for testability (even if there
@@ -148,7 +147,7 @@ class Installer
                 . " Please check your system dependencies and try again.";
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->_lastErr = "You do not appear to have PDO support in your "
             . "version of PHP, which is required to access the database.";
             return false;
@@ -193,7 +192,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -223,7 +222,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -302,7 +301,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -346,7 +345,7 @@ class Installer
      * @param string   $setting The setting name to be updated.
      * @param string   $value   The value to set $setting to.
      *
-     * @return none
+     * @return void
      */
     private function _updateConfig($DB, $setting, $value)
     {
@@ -422,7 +421,7 @@ class Installer
         $connectHost = $DB->PDO->query(
             "SELECT host FROM `mysql`.`user`
 		WHERE CONCAT(user, '@', host)=CURRENT_USER"
-        )->fetch(PDO::FETCH_ASSOC);
+        )->fetch(\PDO::FETCH_ASSOC);
 
         if (!is_array($connectHost) || empty($connectHost['host'])) {
             // This should never happen. It would mean that the user
@@ -443,7 +442,7 @@ class Installer
              'q_host' => $connectHost,
             ]
         );
-        $results    = $userExistsQ->fetchAll(PDO::FETCH_ASSOC);
+        $results    = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
         $userExists = false;
 
         $quotedUser = $DB->PDO->quote($values['lorismysqluser']) .

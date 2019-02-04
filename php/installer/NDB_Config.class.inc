@@ -14,6 +14,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\Installer;
 
 /**
  * This NDB_Config class is a stub that gets autoloaded by the LORIS installer.

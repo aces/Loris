@@ -41,7 +41,8 @@
 
 // the installer directory doesn't get autoloaded by composer, so we
 // need to manually require this.
-require_once __DIR__ . "/../php/installer/Installer.class.inc";
+require_once __DIR__ . "/../vendor/autoload.php";
+
 
 // Since LORIS isn't configured yet, these classes from the php/
 // directory won't work. We need stubs for the installer to use, and
@@ -49,11 +50,9 @@ require_once __DIR__ . "/../php/installer/Installer.class.inc";
 // autoload the ones that we can't use which try to access config.xml.
 // We don't need to implement all the functionality, just enough for
 // smarty to use when it gets autoloaded.
-require_once __DIR__ . "/../php/installer/Database.class.inc";
-require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
 use \LORIS\Installer\Database as Database;
 
-$installer = new Installer("../project");
+$installer = new \LORIS\Installer\Installer();
 
 // Check the dependencies of this script.
 if ($installer->checkPreconditionsValid() === false) {
