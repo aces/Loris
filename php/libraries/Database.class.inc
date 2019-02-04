@@ -387,7 +387,6 @@ class Database
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
     ) : bool {
-    {
         if ($ignore && $onDuplicateUpdate) {
             throw new DatabaseException(
                 'The Database::_realinsert() function does not accept both ignore

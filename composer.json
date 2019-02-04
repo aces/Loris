@@ -28,6 +28,6 @@
         "psr-4": {
             "LORIS\\": "src/"
         },
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "php/interfaces", "modules/biobank/php"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "modules/biobank/php"]
     }
 }
