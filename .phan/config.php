@@ -19,8 +19,6 @@ return [
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
-		"PhanRedefineClass",
-		"PhanRedefinedExtendedClass",
 		"PhanUndeclaredMethod",
 		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
