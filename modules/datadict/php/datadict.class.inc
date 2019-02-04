@@ -46,9 +46,9 @@ class Datadict extends \NDB_Menu_Filter
     * Setup variables function
     *
     * @note   Setup variables function
-    * @return void
+    * @return string
     */
-    function _buildQuery()
+    function _buildQuery(): string
     {
         $select = " SELECT DISTINCT
          pt.sourceFrom as source_from,

@@ -436,8 +436,8 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
@@ -501,8 +501,8 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         $this->page = $instrument;
         $html       = $instrument->display();

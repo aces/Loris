@@ -746,9 +746,9 @@ class NDB_BVL_Feedback
      * @param string  $comment    The comment to add to the entry.
      * @param string  $username   The username of the entry author.
      *
-     * @return void
+     * @return array
      */
-    function createEntry($feedbackID, $comment, $username)
+    function createEntry($feedbackID, $comment, $username): array
     {
         // new DB Object
         $db =& Database::singleton();

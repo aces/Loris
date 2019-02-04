@@ -87,7 +87,7 @@ if ($userSingleton->hasPermission('document_repository_view')
                 'ERROR: Could not upload file. Contact your administrator.'
             );
         } else {
-            $success = $DB->insert(
+            $DB->insert(
                 'document_repository',
                 array(
                  'File_category' => $category,

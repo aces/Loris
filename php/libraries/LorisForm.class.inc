@@ -2154,7 +2154,7 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * @return void
+     * @return array
      */
     function getSubmitValues()
     {
