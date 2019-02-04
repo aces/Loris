@@ -313,18 +313,24 @@ class Document_Repository extends \NDB_Menu_Filter
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
         $dbresult = $DB->pselect($query, array());
+
+
+        // FIXME: the for-loop below is needlessly confusing. It appears
+        // to be trying to group the categories from the database into a
+        // tree by abusing undeclared properities on anonymous objects.
+        // (Most likely because references are required for the tree
+        // structure, so an associative array would work poorly.)
+        //
+        // This would probably be easier to understand and more
+        // robust with named classes and unit tests..
+        $refs = new \stdClass();
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;
-            // FIXME the for-loop below is pretty confusing and is not
-            // documented. This should be cleaned up and the phan suppressions
-            // removed.
             foreach ($results as $result) {
-                //@phan-suppress-next-line PhanUndeclaredVariable
                 $thisref = &$refs->{$result['id']};
                 if (empty($thisref)) {
                     $thisref = new \stdClass();
-                    //@phan-suppress-next-line PhanUndeclaredVariable
                     $refs->{$result['id']} =& $thisref;
                 }
                 foreach ($result as $k => $v) {
@@ -333,7 +339,6 @@ class Document_Repository extends \NDB_Menu_Filter
                 if ($result['parent_id'] == 0) {
                     $tree->{$result['id']} = &$thisref;
                 } else {
-                    //@phan-suppress-next-line PhanUndeclaredVariable
                     $refs->{$result['parent_id']}->children->{$result['id']}
                         = &$thisref;
                 }
