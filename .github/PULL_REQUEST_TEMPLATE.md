@@ -2,14 +2,10 @@
 
 
 
-### This resolves issue...
+___
 
-- [ ] Redmine? #
+*This and all upcoming PRs for the WIKI will contain one or a couple files at most. this will hopefully prevent PRs from staying open for very long periods.*
 
-- [ ] Github? #
+*This and all upcoming PRs are open to discussions and suggestions. Most of the content has been copied over from the existing WIKI with sometimes minor, major or total changes.*
 
-### To test this change...
-
-- [ ] 
-
-# If this sentence shows up it means I didn't read the instructions!
+*Feel free to make suggestions and/or push directly to the branch !!*
