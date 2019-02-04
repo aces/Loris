@@ -251,7 +251,7 @@ class Candidate
         }
 
         // Generate candid
-        $candID = (new CandIDGenerator)->generate();
+        $candID = (new CandIDGenerator())->generate();
 
         // Check ID uniqueness. This can occur if two Candidates are created
         // at almost the same time and a race condition occurs on the server.
@@ -290,7 +290,7 @@ class Candidate
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new ExternalIDGenerator)->generate();
+            $externalID = (new ExternalIDGenerator())->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
