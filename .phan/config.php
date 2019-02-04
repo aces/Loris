@@ -26,7 +26,6 @@ return [
         "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",
 		"PhanUndeclaredConstant",
-		"PhanTypeMismatchForeach",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",

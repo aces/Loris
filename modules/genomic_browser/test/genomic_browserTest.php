@@ -220,7 +220,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       * This function could test UI elemnts in each Tabs.
       *
       * @param string $url this is for the url which needs to be tested.
-      * @param string $ui  UI elements in each Tabs.
+      * @param array  $ui  UI elements in each Tabs.
       *
       * @return void
       */

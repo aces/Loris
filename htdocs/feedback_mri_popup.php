@@ -47,7 +47,7 @@ if ($_POST['fire_away']) {
     $comments->setPredefinedComments($_POST['savecomments']['predefined']);
 
     // save all textual comments but only if there is an entry [sebas]
-    foreach ($_POST['savecomments']['text']
+    foreach (\Utility::asArray($_POST['savecomments']['text'])
         as $comment_type_id => $comment_message
     ) {
         if (trim($comment_message)) {

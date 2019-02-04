@@ -41,7 +41,7 @@ class Stats_MRI extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of centers
+     * @param array  $Centers  the value of centers
      *
      * @return bool
      */
@@ -65,8 +65,8 @@ class Stats_MRI extends \NDB_Form
      * @param string $dropdown_name     the value of dropdown_name
      * @param string $dropdown_opt      the value of dropdown_opt
      * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centers           the value of centers
-     * @param string $data              the value of data
+     * @param array  $centers           the value of centers
+     * @param array  $data              the value of data
      * @param string $Subsection        the value of Subsection=''
      * @param string $disclamer         the value of disclamer=''
      * @param string $projectID         the value of projectID is null

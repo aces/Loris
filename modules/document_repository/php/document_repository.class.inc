@@ -218,7 +218,7 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * ParseTree function
      *
-     * @param string $treeToParse the value of treeToParse
+     * @param array $treeToParse the value of treeToParse
      *
      * @return array
      */
