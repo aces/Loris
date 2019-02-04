@@ -490,7 +490,7 @@ class File_Upload
      * @param string $dir  The target directory for the file.
      * @param string $name The proposed name for the file.
      *
-     * @return array New filename
+     * @return string New filename
      * @see    File_Upload::moveFile()
      */
     function nameToIncremental(string $dir, string $name): string
