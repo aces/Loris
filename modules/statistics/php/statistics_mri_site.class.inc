@@ -209,7 +209,7 @@ class Statistics_Mri_Site extends Statistics_Site
 
         $data = array();
         foreach ($this->issues as $issue) {
-            // FIXME The function _completeCount() seems ot be unfinished and
+            // FIXME The function _completeCount() seems to be unfinished and
             // always returns null.
             $complete_count = $this->_completeCount($centerID, $projectID, $issue);
 
