@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS publication_status;
 CREATE TABLE `publication_status` (
   `PublicationStatusID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  PRIMARY KEY(`PublicationStatusID`)
+  CONSTRAINT `PK_publication_status` PRIMARY KEY(`PublicationStatusID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 INSERT INTO publication_status (`Label`) VALUES ('Pending');
 INSERT INTO publication_status (`Label`) VALUES ('Approved');
@@ -23,11 +23,11 @@ CREATE TABLE `publication` (
     `Title` varchar(255) NOT NULL,
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
-    PRIMARY KEY(`PublicationID`),
-    CONSTRAINT `FK_publication_1` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
-    CONSTRAINT `FK_publication_2` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
-    CONSTRAINT `FK_publication_3` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_4` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
+    CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
+    CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
+    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Separate table for Keywords
@@ -35,7 +35,7 @@ DROP TABLE IF EXISTS publication_keyword;
 CREATE TABLE `publication_keyword` (
   `PublicationKeywordID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  PRIMARY KEY(`PublicationKeywordID`)
+  CONSTRAINT `PK_publication_keyword` PRIMARY KEY(`PublicationKeywordID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Publication - Keyword relational table
@@ -43,9 +43,9 @@ DROP TABLE IF EXISTS publication_keyword_rel;
 CREATE TABLE `publication_keyword_rel` (
   `PublicationID` int(10) unsigned NOT NULL,
   `PublicationKeywordID` int(10) unsigned NOT NULL,
-  PRIMARY KEY(PublicationID, PublicationKeywordID),
-  CONSTRAINT `FK_publication_keyword_1` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
-  CONSTRAINT `FK_publication_keyword_2` FOREIGN KEY(`PublicationKeywordID`) REFERENCES `publication_keyword` (`PublicationKeywordID`)
+  CONSTRAINT `PK_publication_keyword_rel` PRIMARY KEY(PublicationID, PublicationKeywordID),
+  CONSTRAINT `FK_publication_keyword_PublicationID` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_keyword_PublicationKeywordID` FOREIGN KEY(`PublicationKeywordID`) REFERENCES `publication_keyword` (`PublicationKeywordID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 
@@ -54,7 +54,7 @@ CREATE TABLE `publication_collaborator` (
   `PublicationCollaboratorID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Email` varchar(255),
-  PRIMARY KEY(`PublicationCollaboratorID`),
+  CONSTRAINT `PK_publication_collaborator` PRIMARY KEY(`PublicationCollaboratorID`),
   CONSTRAINT `UK_publication_collaborator_Email` UNIQUE (`Email`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
@@ -62,9 +62,9 @@ DROP TABLE IF EXISTS publication_collaborator_rel;
 CREATE TABLE `publication_collaborator_rel` (
   `PublicationID` int(10) unsigned NOT NULL,
   `PublicationCollaboratorID` int(10) unsigned NOT NULL,
-  PRIMARY KEY(PublicationID, PublicationCollaboratorID),
-  CONSTRAINT `FK_publication_collaborator_1` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
-  CONSTRAINT `FK_publication_collaborator_2` FOREIGN KEY(`PublicationCollaboratorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
+  CONSTRAINT `PK_publication_collaborator_rel` PRIMARY KEY(PublicationID, PublicationCollaboratorID),
+  CONSTRAINT `FK_publication_collaborator_rel_PublicationID` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_collaborator_rel_PublicationCollaboratorID` FOREIGN KEY(`PublicationCollaboratorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Publication - Variable of Interest  relational table
@@ -72,18 +72,18 @@ DROP TABLE IF EXISTS publication_parameter_type_rel;
 CREATE TABLE `publication_parameter_type_rel` (
     `PublicationID` int(10) unsigned NOT NULL,
     `ParameterTypeID` int(10) unsigned NOT NULL,
-    PRIMARY KEY (PublicationID, ParameterTypeID),
-    CONSTRAINT `FK_publication_parameter_type_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
-    CONSTRAINT `FK_publication_parameter_type_rel_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
+    CONSTRAINT `PK_publication_parameter_type_rel` PRIMARY KEY (PublicationID, ParameterTypeID),
+    CONSTRAINT `FK_publication_parameter_type_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_parameter_type_rel_ParameterTypeID` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 DROP TABLE IF EXISTS publication_test_names_rel;
 CREATE TABLE `publication_test_names_rel` (
     `PublicationID` int(10) unsigned NOT NULL,
     `TestNameID` int(10) unsigned NOT NULL,
-    PRIMARY KEY(`PublicationID`, `TestNameID`),
-    CONSTRAINT `FK_publication_test_names_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
-    CONSTRAINT `FK_publication_test_names_rel_2` FOREIGN KEY (`TestNameID`) REFERENCES `test_names` (`ID`)
+    CONSTRAINT `PK_publication_test_names_rel` PRIMARY KEY(`PublicationID`, `TestNameID`),
+    CONSTRAINT `FK_publication_test_names_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_test_names_rel_TestNameID` FOREIGN KEY (`TestNameID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Publication Uploads
@@ -91,7 +91,7 @@ DROP TABLE IF EXISTS publication_upload_type;
 CREATE TABLE `publication_upload_type` (
   `PublicationUploadTypeID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  PRIMARY KEY (`PublicationUploadTypeID`)
+  CONSTRAINT `PK_publication_upload_type` PRIMARY KEY (`PublicationUploadTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 INSERT INTO publication_upload_type (`Label`) VALUES ('Paper');
@@ -107,18 +107,18 @@ CREATE TABLE `publication_upload` (
     `URL` varchar(255) NOT NULL,
     `Version` varchar(255),
     `Citation` text,
-    PRIMARY KEY (`PublicationUploadID`),
-    CONSTRAINT `UK_publication_upload_1` UNIQUE (URL),
-    CONSTRAINT `FK_publication_upload_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
-    CONSTRAINT `FK_publication_upload_2` FOREIGN KEY (`PublicationUploadTypeID`) REFERENCES `publication_upload_type` (`PublicationUploadTypeID`)
+    CONSTRAINT `PK_publication_upload` PRIMARY KEY (`PublicationUploadID`),
+    CONSTRAINT `UK_publication_upload_URL` UNIQUE (URL),
+    CONSTRAINT `FK_publication_upload_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_upload_PublicationUploadTypeID` FOREIGN KEY (`PublicationUploadTypeID`) REFERENCES `publication_upload_type` (`PublicationUploadTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 DROP TABLE IF EXISTS publication_users_edit_perm_rel;
 CREATE TABLE `publication_users_edit_perm_rel` (
   `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
-  CONSTRAINT `FK_publication_users_edit_perm_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
-  CONSTRAINT `FK_publication_users_edit_perm_rel_2` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
+  CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 DELETE FROM LorisMenu WHERE Label='Publications';
