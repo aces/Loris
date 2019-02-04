@@ -4,4 +4,5 @@ RUN apt-get update && \
     apt-get install -y mysql-client libzip-dev
 
 # Install extensions through the scripts the container provides
-RUN docker-php-ext-install pdo_mysql zip
+RUN docker-php-ext-configure zip --with-libzip
+RUN docker-php-ext-install pdo_mysql
