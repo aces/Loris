@@ -58,6 +58,27 @@ class FeedbackMRI
     }
 
     /**
+     * Clears all predefined comments from the object
+     * (used prior to re-setting the list of predefined comments)
+     *
+     * @return bool true if operation succeeded
+     */
+    function clearPredefinedComments()
+    {
+        // start the query
+        $query = "DELETE FROM feedback_mri_comments WHERE ".$this->_buildWhere();
+
+        // limit to predefined comments
+        $query .= "AND PredefinedCommentID IS NOT NULL";
+
+        // run the query
+        $success = mysql_query($query);
+
+        // return success
+        return $success;
+    }
+
+    /**
      * Clears all comments from the object
      *
      * @return bool

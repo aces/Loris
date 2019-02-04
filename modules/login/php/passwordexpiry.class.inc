@@ -82,7 +82,7 @@ class PasswordExpiry extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return a (possibly empty) array of errors
+     * @return array (possibly empty) of errors
      */
     function _validate($values)
     {

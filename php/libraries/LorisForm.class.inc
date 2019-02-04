@@ -2172,7 +2172,7 @@ class LorisForm
      *
      * @param string $name The name of the element to extract.
      *
-     * @return useless object which has the same methods as
+     * @return \LorisFormElement useless object which has the same methods as
      *         those used by QuickForm, so that the LorisForm
      *         is API compatible.
      */
