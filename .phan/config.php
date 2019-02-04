@@ -28,7 +28,6 @@ return [
         "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",
 		"PhanUndeclaredConstant",
-		"PhanTypeMismatchDefault",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",
