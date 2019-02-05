@@ -501,6 +501,4 @@ class CandidateTest extends TestCase
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
-
-
 }

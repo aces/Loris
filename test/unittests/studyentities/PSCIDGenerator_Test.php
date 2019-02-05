@@ -111,7 +111,7 @@ class PSCIDGenerator_Test extends TestCase {
     }
 
     /**
-     * Test static function Candidate::_generatePSCID for config setting
+     * Test function PSCIDGenerator::_generateID for config setting
      * generation=sequential & type=numeric
      * For this test _generatePSCID should return 3rd generated PSCID,
      * since 2 other ones already exist in DB

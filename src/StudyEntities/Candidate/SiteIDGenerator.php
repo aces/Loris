@@ -5,7 +5,7 @@ namespace LORIS\StudyEntities\Candidate;
 class SiteIDGenerator extends IdentifierGenerator
 {
     /* Either 'PSCID' or 'ExternalID' */
-    private const LENGTH     = 3;
+    private const LENGTH     = 4;
     protected $kind;
 
     /**
