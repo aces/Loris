@@ -71,13 +71,13 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '999888',
-             'CenterID'    => '55',
-             'UserID'      => '1',
-             'PSCID'       => '8888',
-             'ProjectID'   => '7777',
-             'Entity_type' => 'Human',
-             'Active'      => 'Y',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
+             'UserID'               => '1',
+             'PSCID'                => '8888',
+             'ProjectID'            => '7777',
+             'Entity_type'          => 'Human',
+             'Active'               => 'Y',
             )
         );
         $this->DB->insert(
@@ -144,113 +144,113 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         //Insert an incomplete form data
-         $this->DB->insert(
-             "test_names",
-             array(
-              'ID'        => '111',
-              'Test_name' => 'TestName11111111111',
-             )
-         );
-         $this->DB->insert(
-             "flag",
-             array(
-              'ID'         => '111111',
-              'SessionID'  => '222222',
-              'Test_name'  => 'TestName11111111111',
-              'CommentID'  => 'commentID111',
-              'Data_entry' => 'In Progress',
-             )
-         );
+        $this->DB->insert(
+            "test_names",
+            array(
+             'ID'        => '111',
+             'Test_name' => 'TestName11111111111',
+            )
+        );
+        $this->DB->insert(
+            "flag",
+            array(
+             'ID'         => '111111',
+             'SessionID'  => '222222',
+             'Test_name'  => 'TestName11111111111',
+             'CommentID'  => 'commentID111',
+             'Data_entry' => 'In Progress',
+            )
+        );
          //Insert a demo data into conflicts_unresolved
-         $this->DB->insert(
-             "conflicts_unresolved",
-             array(
-              'TableName'      => 'TestTestTest',
-              'ExtraKeyColumn' => 'Test',
-              'ExtraKey1'      => 'Null',
-              'ExtraKey2'      => 'Null',
-              'FieldName'      => 'TestTestTest',
-              'CommentId1'     => '963443000111271151398976899',
-              'Value1'         => 'no',
-              'CommentId2'     => 'DDE_963443000111271151398976899',
-              'Value2'         => 'no',
-             )
-         );
-         $this->DB->insert(
-             "files",
-             array(
-              'FileID'       => '1111112',
-              'SessionID'    => '222222',
-              'SourceFileID' => '1111112',
-             )
-         );
+        $this->DB->insert(
+            "conflicts_unresolved",
+            array(
+             'TableName'      => 'TestTestTest',
+             'ExtraKeyColumn' => 'Test',
+             'ExtraKey1'      => 'Null',
+             'ExtraKey2'      => 'Null',
+             'FieldName'      => 'TestTestTest',
+             'CommentId1'     => '963443000111271151398976899',
+             'Value1'         => 'no',
+             'CommentId2'     => 'DDE_963443000111271151398976899',
+             'Value2'         => 'no',
+            )
+        );
+        $this->DB->insert(
+            "files",
+            array(
+             'FileID'       => '1111112',
+             'SessionID'    => '222222',
+             'SourceFileID' => '1111112',
+            )
+        );
 
-         $this->DB->insert(
-             "files_qcstatus",
-             array(
-              'FileID'   => '1111112',
-              'FileQCID' => '2222221',
-             )
-         );
-         $this->DB->insert(
-             "conflicts_resolved",
-             array(
-              'ResolvedID'          => '999999',
-              'UserID'              => 'demo',
-              'ResolutionTimestamp' => '2015-11-03 16:21:49',
-              'User1'               => 'Null',
-              'User2'               => 'Null',
-              'TableName'           => 'Test',
-              'ExtraKey1'           => 'NULL',
-              'ExtraKey2'           => 'NULL',
-              'FieldName'           => 'TestTestTest',
-              'CommentId1'          => '589569DCC000012291366553230',
-              'CommentId2'          => 'DDE_589569DCC000012291366653254',
-              'OldValue1'           => 'Mother',
-              'OldValue2'           => 'Father',
-              'NewValue'            => 'NULL',
-             )
-         );
-         $this->DB->insert(
-             "conflicts_unresolved",
-             array(
-              'TableName'      => 'TestTestTest',
-              'ExtraKeyColumn' => 'Test',
-              'ExtraKey1'      => 'Null',
-              'ExtraKey2'      => 'Null',
-              'FieldName'      => 'TestTestTest',
-              'CommentId1'     => 'commentID111',
-              'Value1'         => 'no',
-              'CommentId2'     => 'DDE_963443000111271151398976899',
-              'Value2'         => 'no',
-             )
-         );
-          $this->DB->insert(
-              "issues",
-              array(
-               'issueID'  => '999999',
-               'assignee' => 'UnitTester',
-               'status'   => 'new',
-               'priority' => 'low',
-               'reporter' => 'UnitTester',
-              )
-          );
-          $this->DB->insert(
-              "users",
-              array(
-               'ID'     => '9999991',
-               'UserID' => 'Tester1',
-              )
-          );
-          $this->DB->insert(
-              "document_repository",
-              array(
-               'record_id'  => '9999997',
-               'visitLabel' => null,
-               'Date_taken' => '2016-07-27 18:00:10',
-               'File_name'  => 'test.jpg',
-              )
-          );
+        $this->DB->insert(
+            "files_qcstatus",
+            array(
+             'FileID'   => '1111112',
+             'FileQCID' => '2222221',
+            )
+        );
+        $this->DB->insert(
+            "conflicts_resolved",
+            array(
+             'ResolvedID'          => '999999',
+             'UserID'              => 'demo',
+             'ResolutionTimestamp' => '2015-11-03 16:21:49',
+             'User1'               => 'Null',
+             'User2'               => 'Null',
+             'TableName'           => 'Test',
+             'ExtraKey1'           => 'NULL',
+             'ExtraKey2'           => 'NULL',
+             'FieldName'           => 'TestTestTest',
+             'CommentId1'          => '589569DCC000012291366553230',
+             'CommentId2'          => 'DDE_589569DCC000012291366653254',
+             'OldValue1'           => 'Mother',
+             'OldValue2'           => 'Father',
+             'NewValue'            => 'NULL',
+            )
+        );
+        $this->DB->insert(
+            "conflicts_unresolved",
+            array(
+             'TableName'      => 'TestTestTest',
+             'ExtraKeyColumn' => 'Test',
+             'ExtraKey1'      => 'Null',
+             'ExtraKey2'      => 'Null',
+             'FieldName'      => 'TestTestTest',
+             'CommentId1'     => 'commentID111',
+             'Value1'         => 'no',
+             'CommentId2'     => 'DDE_963443000111271151398976899',
+             'Value2'         => 'no',
+            )
+        );
+        $this->DB->insert(
+            "issues",
+            array(
+             'issueID'  => '999999',
+             'assignee' => 'UnitTester',
+             'status'   => 'new',
+             'priority' => 'low',
+             'reporter' => 'UnitTester',
+            )
+        );
+        $this->DB->insert(
+            "users",
+            array(
+             'ID'     => '9999991',
+             'UserID' => 'Tester1',
+            )
+        );
+        $this->DB->insert(
+            "document_repository",
+            array(
+             'record_id'  => '9999997',
+             'visitLabel' => null,
+             'Date_taken' => '2016-07-27 18:00:10',
+             'File_name'  => 'test.jpg',
+            )
+        );
     }
     /**
      * Delete the test data
@@ -300,8 +300,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'   => '999888',
-             'CenterID' => '55',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
@@ -426,7 +426,7 @@ class DashboardTest extends LorisIntegrationTest
      * the user belongs to and only the candidates that belong to the user's site
      * are considered for the computation of the number of incomplete forms.
      *
-     *  @return void
+     * @return void
      */
     public function testNewScans()
     {
@@ -454,7 +454,7 @@ class DashboardTest extends LorisIntegrationTest
      * entries in the Unresolved tab of the Conflict Resolver page.
      * Click on this task and check that you go to the Conflict Resolver page.
      *
-     *  @return void
+     * @return void
      */
     public function testConflictResolver()
     {
@@ -478,7 +478,7 @@ class DashboardTest extends LorisIntegrationTest
      *  user can see the issue panel.
      *  Click the issue link can access issue module.
      *
-     *  @return void
+     * @return void
      */
     public function testIssues()
     {
@@ -506,7 +506,7 @@ class DashboardTest extends LorisIntegrationTest
      * any filter if the user has 'Across all sites access candidates
      * profiles' permission).
      *
-     *  @return void
+     * @return void
      */
     public function testIncompleteForm()
     {
@@ -531,7 +531,7 @@ class DashboardTest extends LorisIntegrationTest
      * that page (with the Selection Filter correctly set) when you click
      * on the task.
      *
-     *  @return void
+     * @return void
      */
     public function testPendingUser()
     {
@@ -604,7 +604,7 @@ class DashboardTest extends LorisIntegrationTest
     /**
      *  If test on local machine, then run this function.
      *
-     *  @return void
+     * @return void
      */
     public function testLocal()
     {
@@ -695,7 +695,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * 5. Create a candidate and assign it to any site. Inactivate it.
-     * Make sure it is NOT taken into account in the gender
+     * Make sure it is NOT taken into account in the sex
      * breakdown view (recruitment panel).
      * 6. Check that site breakdown view (recruitment panel) is correct.
      *

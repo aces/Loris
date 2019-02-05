@@ -1,6 +1,6 @@
 # Timepoint Instrument List
 
-Once inside a time-point, users will see some general information about the candidate across the top of the screen, such as date of birth, gender, visit label, and subproject(cohort).
+Once inside a time-point, users will see some general information about the candidate across the top of the screen, such as date of birth, sex, visit label, and subproject(cohort).
 
 The blue sidebar panel contains key actions and flags to mark timepoint validity and completion status.  On mobile devices or in narrow browser windows, this sidebar panel is hidden but can be accessed by clicking the list icon in the top left-hand corner.
 

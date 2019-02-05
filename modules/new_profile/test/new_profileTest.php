@@ -58,8 +58,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("input", $edc2Field->getTagName());
         //$this->assertEquals("date", $edc2Field->getAttribute("type"));
 
-        $genderField = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $this->assertEquals("select", $genderField->getTagName());
+        $sexField = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+        $this->assertEquals("select", $sexField->getTagName());
 
         $projectField = $this->webDriver->findElement(
             WebDriverBy::Name("ProjectID")
@@ -149,8 +149,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.getElementsByClassName('input-date')[3].value='2000-05-30'"
         );
 
-        $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        $sex = $this->safeFindElement(WebDriverBy::Name("sex"));
+        $sex->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
@@ -179,8 +179,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.getElementsByClassName('input-date')[1].value='2000-05-01'"
         );
 
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        $sex = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+        $sex->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
@@ -205,8 +205,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
 
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        $sex = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+        $sex->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
@@ -235,8 +235,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
 
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        $sex = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+        $sex->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
@@ -253,8 +253,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-        $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        $sex = $this->safeFindElement(WebDriverBy::Name("sex"));
+        $sex->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();

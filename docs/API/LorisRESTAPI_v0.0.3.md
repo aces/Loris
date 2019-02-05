@@ -270,7 +270,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "Site"    : Site,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female"
+        "Sex"     : "Male|Female"
 }
 ```
 
@@ -301,7 +301,7 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female",
+        "Sex"     : "Male|Female",
         "Site"    : SiteName,
     }
 }
@@ -316,7 +316,7 @@ PSCID is only required if the generation type in the Loris config is set to
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
 a site other than the list of sitenames the user is affiliated with, and a 400 
-Bad Request if any data provided is invalid (PSCID format, date format, gender 
+Bad Request if any data provided is invalid (PSCID format, date format, sex
 something other than Male|Female, invalid project name, invalid sitename, etc). 
 A successful POST request will return a CandidateObject for the newly created 
 candidate.
@@ -758,42 +758,46 @@ object of the form:
         "Visit" : $VisitLabel,
     },
     "DicomTars" : 
-        [{
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-        "SeriesInfo" :
-            [{
-            "SeriesDescription" : "MPRAGE_ipat2",
-            "SeriesNumber" : "2",
-            "EchoTime" : "2.98",
-            "RepetitionTime" : "2300",
-            "InversionTime" : "900",
-            "SliceThickness" : "1",
-            "Modality" : "MR",
-            "SeriesUID" : "1.2.3.4.1107",
-            },
-            {
-            "SeriesDescription" : "BOLD Resting State",
-            "SeriesNumber" : "5",
-            "EchoTime" : "30",
-            "RepetitionTime" : "2100",
-            "InversionTime" : NULL,
-            "SliceThickness" : "3.5",
-            "Modality" : "MR",
-            "SeriesUID" : "3.4.5.6.1507",
-            }],
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
-        "SeriesInfo" :
-            [{
-            "SeriesDescription" : "MPRAGE_ipat2",
-            "SeriesNumber" : "2",
-            "EchoTime" : "2.98",
-            "RepetitionTime" : "2300",
-            "InversionTime" : "900",
-            "SliceThickness" : "1",
-            "Modality" : "MR",
-            "SeriesUID" : "1.7.8.9.1296",
-            }],
-    }],    
+    [
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+            "SeriesInfo" :
+                [{
+                    "SeriesDescription" : "MPRAGE_ipat2",
+                    "SeriesNumber" : "2",
+                    "EchoTime" : "2.98",
+                    "RepetitionTime" : "2300",
+                    "InversionTime" : "900",
+                    "SliceThickness" : "1",
+                    "Modality" : "MR",
+                    "SeriesUID" : "1.2.3.4.1107",
+                    },
+                    {
+                    "SeriesDescription" : "BOLD Resting State",
+                    "SeriesNumber" : "5",
+                    "EchoTime" : "30",
+                    "RepetitionTime" : "2100",
+                    "InversionTime" : NULL,
+                    "SliceThickness" : "3.5",
+                    "Modality" : "MR",
+                    "SeriesUID" : "3.4.5.6.1507",
+                }]
+        },
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+            "SeriesInfo" :
+                [{
+                "SeriesDescription" : "MPRAGE_ipat2",
+                "SeriesNumber" : "2",
+                "EchoTime" : "2.98",
+                "RepetitionTime" : "2300",
+                "InversionTime" : "900",
+                "SliceThickness" : "1",
+                "Modality" : "MR",
+                "SeriesUID" : "1.7.8.9.1296",
+                }]
+        }
+    ]    
 }
 ```
 

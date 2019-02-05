@@ -141,12 +141,12 @@ function editProbandInfoFields($db, $user)
     $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = $sanitize['ProbandGender'] ?? null;
-    $dob    = $sanitize['ProbandDoB'] ?? null;
+    $sex = $sanitize['ProbandSex'] ?? null;
+    $dob = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
-                     'ProbandGender' => $gender,
-                     'ProbandDoB'    => $dob,
+                     'ProbandSex' => $sex,
+                     'ProbandDoB' => $dob,
                     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);

@@ -46,9 +46,9 @@ class Datadict extends \NDB_Menu_Filter
     * Setup variables function
     *
     * @note   Setup variables function
-    * @return void
+    * @return string
     */
-    function _buildQuery()
+    function _buildQuery(): string
     {
         $select = " SELECT DISTINCT
          pt.sourceFrom as source_from,
@@ -155,7 +155,7 @@ class Datadict extends \NDB_Menu_Filter
             // special rule for dropdowns where value is numeric
             if (strtolower(substr($key, -8)) == 'centerid'
                 || strtolower(substr($key, -10)) == 'categoryid'
-                || strtolower(substr($key, -6)) == 'gender'
+                || strtolower(substr($key, -6)) == 'sex'
             ) {
                 $query .= " AND $key = '$val' ";
             } else {

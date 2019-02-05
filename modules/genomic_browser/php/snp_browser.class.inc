@@ -67,7 +67,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                           'psc.Name AS PSC',
                           'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
-                          'candidate.Gender',
+                          'candidate.Sex',
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
@@ -134,7 +134,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                     from session s GROUP BY s.CandID) AS cohort
             ON (cohort.CandID = candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
+            LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
             JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
             LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
             LEFT JOIN genotyping_platform ON
@@ -147,7 +147,8 @@ class SNP_Browser extends \NDB_Menu_Filter
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // restrict data to own site
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND candidate.RegistrationCenterID IN ("
+                            . $site_arr . ")";
         }
 
         $this->order_by = 'psc.Name, candidate.CandID DESC';
@@ -155,10 +156,10 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
-                               'candidate.Gender',
+                               'candidate.Sex',
                                'cohort.SubprojectID',
                                'candidate.DoB',
                                'candidate.ExternalID',
@@ -191,10 +192,10 @@ class SNP_Browser extends \NDB_Menu_Filter
                               );
 
         $ftf = array(
-                'centerID'            => 'candidate.CenterID',
+                'centerID'            => 'candidate.RegistrationCenterID',
                 'DCCID'               => 'candidate.CandID',
                 'PSCID'               => 'candidate.PSCID',
-                'gender'              => 'candidate.Gender',
+                'sex'                 => 'candidate.Sex',
                 'SubprojectID'        => 'cohort.SubprojectID',
                 'dob'                 => 'candidate.DoB',
                 'External_ID'         => 'candidate.ExternalID',
@@ -263,8 +264,8 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
-            'gender',
-            'Gender:',
+            'sex',
+            'Sex:',
             array(
              ''       => 'All',
              'Male'   => 'Male',
@@ -406,7 +407,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                  $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'gender'
+                || strtolower(substr($field, -3)) == 'sex'
                 || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))

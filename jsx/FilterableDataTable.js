@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 
@@ -43,10 +44,13 @@ class FilterableDataTable extends Component {
 
   render() {
     return (
-      <div>
+      <Panel
+        title={this.props.title}
+      >
         <Filter
           name={this.props.name + '_filter'}
           id={this.props.name + '_filter'}
+          title='Selection Filter'
           columns={this.props.columns}
           filter={this.state.filter}
           fields={this.props.fields}
@@ -58,8 +62,10 @@ class FilterableDataTable extends Component {
           fields={this.props.fields}
           filter={this.state.filter}
           getFormattedCell={this.props.getFormattedCell}
+          actions={this.props.actions}
         />
-      </div>);
+      </Panel>
+    );
   }
 }
 
@@ -69,11 +75,13 @@ FilterableDataTable.defaultProps = {
 
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
+  title: PropTypes.string,
   data: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
   fields: PropTypes.object.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
+  actions: PropTypes.object,
 };
 
 export default FilterableDataTable;

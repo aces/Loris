@@ -26,6 +26,10 @@ namespace LORIS\server_processes_manager;
  */
 class Server_Processes_Manager extends \NDB_Menu_Filter
 {
+    public $fieldOptions;
+
+    public $skipTemplate = true;
+
     /**
      * Determines whether the current user has access to the page.
      *
@@ -82,24 +86,6 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
 
     }
 
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-
-        $this->addBasicText('pid', 'PID:');
-        $this->addBasicText('type', 'Type:');
-        $this->addBasicText('userid', 'UserId:');
-
-        return;
-    }
     /**
      * Gathers JS dependecies and merge them with the parent
      *
@@ -112,9 +98,11 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/server_processes_manager/js/columnFormatter.js")
+            array(
+             $baseURL .
+             "/server_processes_manager/js/server_processes_managerIndex.js",
+            )
         );
     }
 
 }
-

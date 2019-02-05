@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class used for sending emails from Loris.
  * It handles all the details of getting setting the email headers,
@@ -8,7 +8,7 @@
  * Email templates should be in an email/ subdirectory of the smarty
  * template directory.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -47,15 +47,15 @@ class Email
      * @access public
      */
     static function send(
-        $to,
-        $template,
-        $tpl_data = array(),
-        $reply_to = '',
-        $from = '',
-        $cc = '',
-        $bcc = '',
-        $type="text/plain"
-    ) {
+        string $to,
+        string $template,
+        array $tpl_data = array(),
+        string $reply_to = '',
+        string $from = '',
+        string $cc = '',
+        string $bcc = '',
+        string $type="text/plain"
+    ): void {
         $config   =& NDB_Config::singleton();
         $defaults = $config->getSetting('mail');
 

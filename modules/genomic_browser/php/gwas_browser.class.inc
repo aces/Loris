@@ -180,7 +180,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
                  $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'gender'
                 || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))

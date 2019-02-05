@@ -26,7 +26,8 @@ namespace LORIS\data_integrity_flag;
  */
 class Data_Integrity_Flag extends \NDB_Menu_Filter
 {
-    public $AjaxModule = true;
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
 
     /**
      * Check user permissions
@@ -123,40 +124,20 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->query        = " FROM data_integrity_flag WHERE 1=1";
         $this->group_by     = '';
         $this->order_by     = 'dataflag_date desc';
-        $this->headers      = [
-                               'ID',
-                               'Visit Label',
-                               'Instrument',
-                               'Date',
-                               'Flag Status',
-                               'Comments',
-                               'UserID',
-                              ];
         $this->validFilters = [];
         $this->formToFilter = [];
-
-    }
-
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON()
-    {
-        $result           = $this->toArray();
-        $result['visits'] = \Utility::getVisitList();
-        $result['instruments']    = \Utility::getAllInstruments();
-        $result['users']          = ['admin' => 'admin'];
-        $result['flagStatusList'] = [
-                                     '1' => '1 - Ready For Review',
-                                     '2' => '2 - Review Completed',
-                                     '3' => '3 - Feedbacks Closed',
-                                     '4' => '4 - Finalization',
-                                    ];
-
-        return json_encode($result);
+        $flagStatusList     = [
+                               '1' => '1 - Ready For Review',
+                               '2' => '2 - Review Completed',
+                               '3' => '3 - Feedbacks Closed',
+                               '4' => '4 - Finalization',
+                              ];
+        $this->fieldOptions = [
+                               'visits'         => \Utility::getVisitList(),
+                               'instruments'    => \Utility::getAllInstruments(),
+                               'users'          => ['admin' => 'admin'],
+                               'flagStatusList' => $flagStatusList,
+                              ];
     }
 
     /**
@@ -174,9 +155,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
 
         return array_merge(
             $deps,
-            [
-             $baseURL . "/data_integrity_flag/js/index.js",
-            ]
+            [$baseURL . "/data_integrity_flag/js/dataIntegrityFlagIndex.js"]
         );
     }
 }

@@ -105,7 +105,7 @@ foreach ($instruments as $instrument) {
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and c.Active='Y' and s.CenterID <> 1 and s.CenterID in (select CenterID from psc where Study_site='Y') order by c.PSCID";
+$query = "select distinct c.PSCID, c.CandID, c.Sex, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and c.Active='Y' and s.CenterID <> 1 and s.CenterID in (select CenterID from psc where Study_site='Y') order by c.PSCID";
 $results = $DB->pselect($query, array());
 
 MapSubprojectID($results);

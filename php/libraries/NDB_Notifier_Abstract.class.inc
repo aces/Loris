@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * PHP Version 7
  *
@@ -119,12 +119,12 @@ abstract class NDB_Notifier_Abstract
      *                        by the notifier.
      */
     public function __construct(
-        $module_name,
-        $operation_type,
-        $extra_tpl_data,
-        $asAdmin
+        string $module_name,
+        string $operation_type,
+        array $extra_tpl_data,
+        bool $asAdmin
     ) {
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $this->module         = $module_name;
         $this->operation      = $operation_type;
@@ -174,7 +174,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array   User issuing notification in form [ID,name,email]
      */
-    public function getNotifier()
+    public function getNotifier(): array
     {
         return $this->notifier;
     }
@@ -184,7 +184,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array    Users receiving notifications from this module
      */
-    public function getNotified()
+    public function getNotified(): array
     {
         return $this->notified;
     }
@@ -194,10 +194,10 @@ abstract class NDB_Notifier_Abstract
      *
      * @return string   string in the form `First Last <email@domain.com>`
      */
-    private function _getLoggedInUser()
+    private function _getLoggedInUser(): string
     {
-        $user       =& User::singleton();
-        $info_array =array();
+        $user       = \User::singleton();
+        $info_array = array();
         $info_array['ID']    = $user->getData('ID');
         $info_array['name']  = $user->getFullname();
         $info_array['email'] = $user->getData('Email');
@@ -209,15 +209,14 @@ abstract class NDB_Notifier_Abstract
      *
      * @return string   string in the form `First Last <email@domain.com>`
      */
-    private function _getAdminUser()
+    private function _getAdminUser(): string
     {
-        $DB         = Database::singleton();
-        $result     = $DB->pselectRow(
+        $result           = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
             array()
         );
-        $info_array =array();
-        $info_array['ID']    = $result['ID'];
+        $info_array       =array();
+        $info_array['ID'] = $result['ID'];
         $info_array['name']  = $result['Real_name'];
         $info_array['email'] = $result['Email'];
         return $info_array;
@@ -230,13 +229,10 @@ abstract class NDB_Notifier_Abstract
      * @return array   2D list of user emails and/or phone numbers grouped by
      *                 available service.
      */
-    private function _get2DListToNotify()
+    private function _get2DListToNotify(): array
     {
-        $DB   = Database::singleton();
-        $user =& User::singleton();
-
         //array of sites concerned
-        $sites_concerned =  $user->getCenterIDs();
+        $sites_concerned =  \User::singleton()->getCenterIDs();
         $sql_sites       =implode(",", $sites_concerned);
 
         // query needs to take into account the notified user permissions.
@@ -272,10 +268,10 @@ abstract class NDB_Notifier_Abstract
 
         }
 
-        $result = $DB->pselect($query, $params);
+        $result = \Database::singleton()->pselect($query, $params);
 
         //parse $result and create 2D array
-        $n_list =array();
+        $n_list = array();
         foreach ($result as $row) {
             if ($this->_hasNotificationPermission($row['user'])) {
                 $n_list[$row['service']][$row['Real_name']] = $row['user'];
@@ -293,7 +289,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return bool   permissions sufficient for notification
      */
-    private function _hasNotificationPermission($uid)
+    private function _hasNotificationPermission(int $uid): bool
     {
         $DB      = Database::singleton();
         $current = $DB->pselect(
@@ -339,14 +335,12 @@ abstract class NDB_Notifier_Abstract
      *
      * @return string  email of the user
      */
-    protected function getEmail($uid)
+    protected function getEmail(int $uid): string
     {
-        $DB     = Database::singleton();
-        $result = $DB->pselectOne(
+        return \Database::singleton()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",
             array("uid" => $uid)
         );
-        return $result;
     }
 
     /**
@@ -354,17 +348,14 @@ abstract class NDB_Notifier_Abstract
      *
      * @param int $uid containing the userID
      *
-     * @return string  Phone number of the user
+     * @return ?string  Phone number of the user
      */
-    protected function getPhone($uid)
+    protected function getPhone(int $uid): ?string
     {
-        $DB     = Database::singleton();
-        $result = $DB->pselectOne(
+        return \Database::singleton()->pselectOne(
             "SELECT Phone FROM users WHERE ID=:uid",
             array("uid" => $uid)
         );
-
-        return $result;
     }
 
     /**
@@ -384,10 +375,13 @@ abstract class NDB_Notifier_Abstract
      *
      * @return void
      */
-    protected function log($trigger_user, $target_user, $service)
-    {
-        $DB = Database::singleton();
-        $DB->insert(
+    protected function log(
+        int $trigger_user,
+        int $target_user,
+        string $service
+    ): void {
+
+        \Database::singleton()->insert(
             'notification_history',
             array(
              "module_id"    => $this->getNotificationModuleID(
@@ -401,7 +395,6 @@ abstract class NDB_Notifier_Abstract
              "target_user"  => $target_user,
             )
         );
-
     }
 
     /**
@@ -410,7 +403,7 @@ abstract class NDB_Notifier_Abstract
      * @return array    associative 3D array grouped by module then operation
      *                  then description/services
      */
-    public static function getNotificationModuleServices()
+    public static function getNotificationModuleServices(): array
     {
         $DB = Database::singleton();
 
@@ -453,15 +446,12 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array    associative array of id=>services
      */
-    public static function getNotificationServices()
+    public static function getNotificationServices(): array
     {
-        $DB = Database::singleton();
-
-        $query  = "SELECT *
-                  FROM notification_services
-                    ";
-        $params = array();
-        $result = $DB->pselect($query, $params);
+        $result = \Database::singleton()->pselect(
+            'SELECT * FROM notification_services',
+            array()
+        );
 
         $n_services =array();
         foreach ($result as $row) {
@@ -476,15 +466,12 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array    associative array of id=>module/operation/description
      */
-    public static function getNotificationModules()
+    public static function getNotificationModules() :array
     {
-        $DB = Database::singleton();
-
-        $query  = "SELECT *
-                  FROM notification_modules
-                    ";
-        $params = array();
-        $result = $DB->pselect($query, $params);
+        $result = \Database::singleton()->pselect(
+            'SELECT * FROM notification_modules',
+            array()
+        );
 
         $n_modules =array();
         foreach ($result as $row) {
@@ -505,9 +492,10 @@ abstract class NDB_Notifier_Abstract
      *
      * @return int    ID of the module/operation combination
      */
-    public static function getNotificationModuleID($module,$operation_type)
-    {
-        $DB = Database::singleton();
+    public static function getNotificationModuleID(
+        string $module,
+        string $operation_type
+    ): int {
 
         $query  = "SELECT id
                   FROM notification_modules
@@ -518,9 +506,7 @@ abstract class NDB_Notifier_Abstract
                    "mn" => $module,
                    "ot" => $operation_type,
                   );
-        $result = $DB->pselectOne($query, $params);
-
-        return $result;
+        return intval(\Database::singleton()->pselectOne($query, $params));
     }
 
     /**
@@ -530,18 +516,14 @@ abstract class NDB_Notifier_Abstract
      *
      * @return int    ID of the module/operation combination
      */
-    public static function getNotificationServiceID($service)
+    public static function getNotificationServiceID(string $service): int
     {
-        $DB = Database::singleton();
-
         $query  = "SELECT id
                   FROM notification_services
                   WHERE service=:serv
                     ";
         $params = array("serv" => $service);
-        $result = $DB->pselectOne($query, $params);
-
-        return $result;
+        return intval(\Database::singleton()->pselectOne($query, $params));
     }
 
     /**
@@ -551,10 +533,8 @@ abstract class NDB_Notifier_Abstract
      *
      * @return array    associative array of id=>services
      */
-    public static function getUserNotificationModuleServices($uid)
+    public static function getUserNotificationModuleServices(int $uid): array
     {
-        $DB = Database::singleton();
-
         $query  = "
              SELECT 
                 nm.*, 
@@ -572,7 +552,7 @@ abstract class NDB_Notifier_Abstract
                                                       )
                       ";
         $params = array("uid" => $uid);
-        $result = $DB->pselect($query, $params);
+        $result = \Database::singleton()->pselect($query, $params);
 
         $user_n_list =array();
         foreach ($result as $row) {

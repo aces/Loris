@@ -227,8 +227,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *       .gz, .zip or .tgz
      *  - The uploaded file is copied to a newly created temporary folder
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return true on success, throws error otherwise
      */
@@ -430,8 +430,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
      *     PatientName
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return boolean
      */

@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -19,7 +19,7 @@ use \LORIS\Http\EmptyStream;
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -79,7 +79,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('superuser');
+        return $user->hasAnyPermission(
+            array(
+             'instrument_manager_read',
+             'instrument_manager_write',
+            )
+        );
     }
 
     /**
@@ -112,13 +117,26 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        if (!$this->canWriteFiles()) {
-            return (new \Zend\Diactoros\Response())
+        // Ensure the user is allowed to upload.
+        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
+            return (new \Loris\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => CANNOT_WRITE_FILES)
+                            array('error' => 'Forbidden')
+                        )
+                    )
+                );
+        }
+        // Ensure the server is properly configured.
+        if (! $this->canWriteFiles()) {
+            return (new \Loris\Http\Response())
+                ->withStatus(500, 'Internal Server Error')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => self::UPLOAD_INSTALL_FAILED)
                         )
                     )
                 );
@@ -128,7 +146,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $instrument    = pathinfo($filename)['filename'];
 
         if ($this->instrumentExists($instrument)) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -150,7 +168,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -177,7 +195,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$this->isQuatUserConfigured()) {
             // If no quatUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(200, 'OK')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -217,7 +235,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "credentials supplied in the config file."
                 . print_r($object)
             );
-            return (new \Zend\Diactoros\Response())
+            return (new \Loris\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -228,7 +246,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
 
-        return (new \Zend\Diactoros\Response())
+        return (new \Loris\Http\Response())
             ->withStatus(201, 'Created')
             ->withBody(new EmptyStream());
     }

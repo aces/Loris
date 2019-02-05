@@ -82,11 +82,11 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
-            throw new \LorisException("Page requires a timepoint to load");
+            throw new \NotFound("Page requires a timepoint to load");
         }
         $candidate = $this->candidate;
         if ($candidate === null) {
-            throw new \LorisException("Page requires a candidate to load");
+            throw new \NotFound("Page requires a candidate to load");
         }
 
         //These variable are only for checking the permissions.
@@ -146,7 +146,7 @@ class Instrument_List extends \NDB_Menu_Filter
             $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
-        $success = $controlPanel->save();
+        $controlPanel->save();
 
         // display the control panel
         $html = $controlPanel->display();
@@ -169,7 +169,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
-        $success = $battery->selectBattery($this->timePoint->getSessionID());
+        $battery->selectBattery($this->timePoint->getSessionID());
 
         $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
             $this->tpl_data['candID']
@@ -208,11 +208,11 @@ class Instrument_List extends \NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status  = new \NDB_BVL_InstrumentStatus;
-                $success = $status->select($instrument['CommentID']);
+                $status = new \NDB_BVL_InstrumentStatus;
+                $status->select($instrument['CommentID']);
 
                 $ddeStatus = new \NDB_BVL_InstrumentStatus;
-                $success   = $ddeStatus->select($instrument['DDECommentID']);
+                $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
 

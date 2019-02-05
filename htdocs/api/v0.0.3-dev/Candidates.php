@@ -73,8 +73,8 @@ class Candidates extends APIBase
     {
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
-                    EDC, DoB, Gender
-                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
+                    EDC, DoB, Sex
+                FROM candidate c JOIN psc s on (s.CenterID=c.RegistrationCenterID)
              WHERE Active='Y'
                 ",
             []
@@ -140,7 +140,7 @@ class Candidates extends APIBase
             $siteName = $data['Candidate']['Site'];
             // This will check that the SiteName provided is a valid one
             $this->verifyField($data, 'Site', $allSiteNames);
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'Sex', ['Male', 'Female']);
             $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             // Get the CenterID from the provided SiteName, and check if the
@@ -159,7 +159,7 @@ class Candidates extends APIBase
                     $centerID,
                     $data['Candidate']['DoB'],
                     $data['Candidate']['EDC'],
-                    $data['Candidate']['Gender'],
+                    $data['Candidate']['Sex'],
                     $data['Candidate']['PSCID']
                 );
                 $this->header("HTTP/1.1 201 Created");
@@ -227,18 +227,18 @@ class Candidates extends APIBase
      * @param string $centerID The center id of the candidate
      * @param string $DoB      Date of birth of the candidate
      * @param string $edc      EDC of the candidate
-     * @param string $gender   Gender of the candidate to be created
+     * @param string $sex      Biological sex of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
      * @return none
      */
-    public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
+    public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
     {
         return \Candidate::createNew(
             $centerID,
             $DoB,
             $edc,
-            $gender,
+            $sex,
             $PSCID
         );
     }

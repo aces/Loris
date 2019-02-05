@@ -93,7 +93,7 @@ class NDB_Caller
         ) {
             header("HTTP/1.1 303 See Other");
             $url  = $settings->getBaseURL();
-            $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
+            $url .= self::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
             return '';
@@ -436,8 +436,8 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
@@ -501,8 +501,8 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         $this->page = $instrument;
         $html       = $instrument->display();
@@ -538,6 +538,57 @@ class NDB_Caller
     function setDataEntryType(string $type): void
     {
         $this->DataEntry = $type;
+    }
+
+    /**
+     * This function takes two strings. If one string has a
+     * suffix which is a prefix of the other, it will return
+     * the part of the second string minus the common
+     * suffix/prefix.
+     *
+     * This is mostly used for removing pieces of a relative
+     * URL in a way that can be concatinated to an absolute
+     * URL without duplicating components. ie.
+     *
+     * removeCommonAffix("http://localhost/foo", "/foo/bar")
+     *
+     * would return "/bar", which can then be concatenated
+     * to "http://localhost/foo" to form the URL
+     * "http://loclahost/foo/bar"
+     *
+     * @param string $suffixStr The string which may contain a common affix
+     *                          at the end of the string
+     * @param string $prefixStr The string to compare the suffix string to
+     *
+     * @return string $prefixStr minus the largest common piece of $suffixStr
+     */
+    static function removeCommonAffix(
+        string $suffixStr,
+        string $prefixStr
+    ): string {
+        $lastFound = '';
+        // Start from the end of $suffixStr and work backwords, to make sure
+        // it fails fast in the event that there's nothing in common.
+        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
+            $piece = substr($suffixStr, $i);
+            $found = strpos($prefixStr, $piece);
+            if ($found === 0) {
+                // The current substring starts at index 0 in prefixStr, so we
+                // know that it's a prefix. Keep track of it.
+                $lastFound = $piece;
+            } else if ($found === false) {
+                // The current substring doesn't appear anywhere in
+                // $prefixStr, so return the last known complete prefix.
+                // There's no chance that a larger string is going to
+                // be a prefix either.
+                return substr($prefixStr, strlen($lastFound));
+            } else {
+                // Otherwise, the string appears somewhere, but isn't at the
+                // beginning of the string. Keep going because this might be
+                // the middle of a larger prefix.
+            }
+        }
+        return $prefixStr;
     }
 }
 

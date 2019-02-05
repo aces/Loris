@@ -144,8 +144,7 @@ class TimePoint
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
-                'Failed to retrieve data for timepoint '
-                . htmlspecialchars($sessionID)
+                "Failed to retrieve data for timepoint $sessionID"
             );
         }
         // New feature, older databases might not have the table created,
@@ -214,7 +213,7 @@ class TimePoint
         $db      = $factory->database();
 
         // select the candidate data
-        $query = "SELECT c.CenterID,
+        $query = "SELECT c.RegistrationCenterID,
                          IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo
                     FROM candidate AS c
                         LEFT OUTER JOIN session AS s USING (CandID)

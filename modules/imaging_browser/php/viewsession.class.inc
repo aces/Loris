@@ -325,8 +325,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets a rejected parameter according to its type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the rejected
+     * @param \MRIFile $file file object
+     * @param string   $type type of the rejected
      *
      * @return string The parameter of the rejected
      */
@@ -351,8 +351,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets the date according to the type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the date
+     * @param \MRIFile $file file object
+     * @param string   $type type of the date
      *
      * @return string The date if exists, if not an empty string
      */
@@ -637,9 +637,9 @@ class ViewSession extends \NDB_Form
      *
      * @param string $FileID the value of FileID
      *
-     * @return Selected status
+     * @return ?string
      */
-    function _getSelected($FileID)
+    function _getSelected($FileID): ?string
     {
 
         $selected = $this->DB->pselectOne(
@@ -704,7 +704,7 @@ class ViewSession extends \NDB_Form
         $subjectData['pscid'] = $candidate->getPSCID();
         $subjectData['dob']   = $candidate->getCandidateDoB();
         $subjectData['edc']   = $candidate->getCandidateEDC();
-        $subjectData['gender'] = $candidate->getCandidateGender();
+        $subjectData['sex']   = $candidate->getCandidateSex();
 
         // This doesn't work.
         //Need to find the proper way to get the TarchiveID.

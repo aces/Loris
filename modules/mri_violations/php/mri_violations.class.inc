@@ -246,7 +246,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 AND mpvs.CandID = s.CandID
             )
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
@@ -278,7 +278,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,

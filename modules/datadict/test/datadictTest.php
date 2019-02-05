@@ -104,7 +104,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFilters()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
 
         $searchKey = $this->webDriver->findElements(
             WebDriverBy::Name("keyword")
@@ -125,7 +125,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFiltersnotCaseSensitvie()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
 
         $searchKey = $this->webDriver->findElements(
             WebDriverBy::Name("keyword")
@@ -146,7 +146,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFiltersWithoutData()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
 
         $searchKey = $this->webDriver->findElements(
             WebDriverBy::Name("keyword")

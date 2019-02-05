@@ -1,6 +1,6 @@
----
---- Removing the unused IncomingPath configuration setting
----
+--
+-- Removing the unused IncomingPath configuration setting
+--
 
 DELETE FROM Config
   WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='IncomingPath');

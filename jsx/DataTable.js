@@ -34,6 +34,7 @@ class DataTable extends Component {
     this.countFilteredRows = this.countFilteredRows.bind(this);
     this.getSortedRows = this.getSortedRows.bind(this);//
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
+    this.renderActions = this.renderActions.bind(this);
   }
 
   componentDidMount() {
@@ -309,12 +310,26 @@ class DataTable extends Component {
     // Handle string inputs
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
-      searchString = data.toLowerCase();
-
-      if (exactMatch) {
-        result = (searchString === searchKey);
-      } else {
-        result = (searchString.indexOf(searchKey) > -1);
+      switch (typeof data) {
+        case 'object':
+          // Handles the case where the data is an array (typeof 'object')
+          // and you want to search through it for
+          // the string you are filtering by
+          let searchArray = data.map((e) => e.toLowerCase());
+          if (exactMatch) {
+            result = searchArray.includes(searchKey);
+          } else {
+            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
+          }
+          break;
+        default:
+            searchString = data.toLowerCase();
+            if (exactMatch) {
+              result = (searchString === searchKey);
+            } else {
+              result = (searchString.indexOf(searchKey) > -1);
+            }
+          break;
       }
     }
 
@@ -333,6 +348,20 @@ class DataTable extends Component {
     }
 
     return result;
+  }
+
+  renderActions() {
+    if (this.props.actions) {
+      return this.props.actions.map((action, key) => {
+        return (
+          <CTA
+            key={key}
+            label={action.label}
+            onUserInput={action.action}
+          />
+        );
+      });
+    }
   }
 
   render() {
@@ -487,41 +516,42 @@ class DataTable extends Component {
     }
 
     let header = this.state.Hide.rowsPerPage === true ? '' : (
-      <div className="table-header panel-heading">
+      <div className="table-header">
         <div className="row">
           <div className="col-xs-12">
+          <div>
             {rows.length} rows displayed of {filteredRows}.
             (Maximum rows per page: {RowsPerPageDropdown})
-            <div className="pull-right">
-              <PaginationLinks
-                Total={filteredRows}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
-              />
-            </div>
+          </div>
+          <div className="pull-right" style={{marginTop: '-43px'}}>
+            {this.renderActions()}
+            <button
+              className="btn btn-primary"
+              onClick={this.downloadCSV.bind(null, csvData)}
+            >
+              Download Table as CSV
+            </button>
+            <PaginationLinks
+              Total={filteredRows}
+              onChangePage={this.changePage}
+              RowsPerPage={rowsPerPage}
+              Active={this.state.PageNumber}
+            />
+          </div>
           </div>
         </div>
       </div>
     );
 
     let footer = this.state.Hide.downloadCSV === true ? '' : (
-      <div className="panel-footer table-footer">
+      <div>
         <div className="row">
-          <div className="col-xs-12">
-            <div className="col-xs-12 footerText">
+          <div className="col-xs-12" style={{marginTop: '10px'}}>
+            <div className="footerText">
               {rows.length} rows displayed of {filteredRows}.
               (Maximum rows per page: {RowsPerPageDropdown})
             </div>
-            <div className="col-xs-6">
-              <button
-                className="btn btn-primary downloadCSV"
-                onClick={this.downloadCSV.bind(null, csvData)}
-              >
-                Download Table as CSV
-              </button>
-            </div>
-            <div className="pull-right">
+            <div className="pull-right" style={{marginTop: '-23px'}}>
               <PaginationLinks
                 Total={filteredRows}
                 onChangePage={this.changePage}
@@ -535,7 +565,7 @@ class DataTable extends Component {
     );
 
     return (
-      <div className="panel panel-default">
+      <div style={{margin: '14px'}}>
         {header}
         <table className="table table-hover table-primary table-bordered" id="dynamictable">
           <thead>
@@ -558,6 +588,7 @@ DataTable.propTypes = {
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
   Hide: PropTypes.object,
+  actions: PropTypes.object,
 };
 DataTable.defaultProps = {
   RowNumLabel: 'No.',

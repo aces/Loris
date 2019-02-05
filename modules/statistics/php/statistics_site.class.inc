@@ -97,9 +97,9 @@ class Statistics_Site extends \NDB_Menu
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return ?string
      */
-    function _completeCount($centerID, $projectID, $instrument)
+    function _completeCount($centerID, $projectID, $instrument): ?string
     {
 
         $this->_checkCriteria($centerID, $projectID);

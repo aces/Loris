@@ -271,8 +271,8 @@ CREATE TABLE `candidate` (
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
-  `Gender` enum('Male','Female') DEFAULT NULL,
-  `CenterID` integer unsigned NOT NULL DEFAULT '0',
+  `Sex` enum('Male','Female') DEFAULT NULL,
+  `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
   `ProjectID` int(11) DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -286,16 +286,16 @@ CREATE TABLE `candidate` (
   `flagged_other_status` enum('not_answered') DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
-  `ProbandGender` enum('Male','Female') DEFAULT NULL,
+  `ProbandSex` enum('Male','Female') DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
-  KEY `FK_candidate_1` (`CenterID`),
+  KEY `FK_candidate_1` (`RegistrationCenterID`),
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
-  CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -466,7 +466,7 @@ CREATE TABLE `tarchive` (
   `PatientID` varchar(255) NOT NULL default '',
   `PatientName` varchar(255) NOT NULL default '',
   `PatientDoB` date default NULL,
-  `PatientGender` varchar(255) default NULL,
+  `PatientSex` varchar(255) default NULL,
   `neurodbCenterName` varchar(255) default NULL,
   `CenterName` varchar(255) NOT NULL default '',
   `LastUpdate` datetime default NULL,
@@ -993,11 +993,12 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('hardcopy request',0,'Hardcopy requests'),
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
     ('mri qc status',0,'MRI QC Status change'),
-    ('minc insertion',1,'Insertion of the mincs into the mri-table'),
+    ('minc insertion',1,'Insertion of a MINC file into the MRI tables (files/parameter_file)'),
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload runner',1,'Validation of DICOMS before uploading'),
-    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
+    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader'),
+    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)');
 
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
@@ -1579,7 +1580,8 @@ CREATE TABLE `parameter_type_category` (
 
 INSERT INTO `parameter_type_category` (Name, Type) VALUES
   ('MRI Variables','Metavars'),
-  ('Identifiers', 'Metavars');
+  ('Identifiers', 'Metavars'),
+  ('Electrophysiology Variables', 'Metavars');
 
 CREATE TABLE `parameter_type_category_rel` (
   `ParameterTypeID` int(11) unsigned NOT NULL default '0',

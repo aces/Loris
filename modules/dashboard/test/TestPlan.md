@@ -7,7 +7,7 @@
    [Automate Test]
 4. Switch to site breakdown and check that info in recruitment panel is correct.
    [Automate Test]
-5. Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the gender
+5. Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the sex
    breakdown view (recruitment panel).
    [Automate Test]
 6. Check that site breakdown view (recruitment panel) is correct.

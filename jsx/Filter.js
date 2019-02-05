@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Panel from 'Panel';
 
 /**
  * Filter component.
@@ -53,6 +52,9 @@ class Filter extends Component {
         case 'select':
           element = <SelectElement key={filter.name} options={filter.options}/>;
           break;
+        case 'multiselect':
+          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+          break;
         case 'date':
           element = <DateElement key={filter.name}/>;
           break;
@@ -77,14 +79,13 @@ class Filter extends Component {
 
   render() {
     return (
-      <Panel
-        height={this.props.height}
-        title={this.props.title}
+      <FormElement
+        id={this.props.id}
+        name={this.props.name}
       >
-        <FormElement
-          id={this.props.id}
-          name={this.props.name}
+        <FieldsetElement
           columns={this.props.columns}
+          legend={this.props.title}
         >
           {this.renderFilterFields()}
           <ButtonElement
@@ -92,26 +93,27 @@ class Filter extends Component {
             type="reset"
             onUserInput={this.props.clearFilter}
           />
-        </FormElement>
-      </Panel>
+        </FieldsetElement>
+      </FormElement>
     );
   }
 }
 
 Filter.defaultProps = {
-  height: '100%',
-  title: 'Selection Filter',
   id: null,
   clearFilter: function() {
     console.warn('onUpdate() callback is not set!');
   },
+  columns: 1,
 };
 Filter.propTypes = {
   filter: PropTypes.object.isRequired,
   clearFilter: PropTypes.func.isRequired,
   id: PropTypes.string,
-  height: PropTypes.string,
+  name: PropTypes.string,
+  columns: PropTypes.string,
   title: PropTypes.string,
+  fields: PropTypes.object.isRequired,
 };
 
 export default Filter;

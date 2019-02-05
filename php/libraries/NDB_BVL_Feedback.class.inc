@@ -452,7 +452,7 @@ class NDB_BVL_Feedback
         $query = "SELECT c.CandID as CandID,
                     c.PSCID as PSCID,
                     c.Ethnicity,
-                    c.Gender,
+                    c.Sex,
                     s.ID as SessionID,
                     s.Visit_label as Visit,
                     ft.Feedback_level as QC_Class,
@@ -469,7 +469,7 @@ class NDB_BVL_Feedback
         }
         $query .= " WHERE ft.Active ='Y'";
         if (!$hasReadPermission===true) {
-            $query            .= " AND FIND_IN_SET (c.CenterID,:CentID)";
+            $query            .= " AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
@@ -582,7 +582,7 @@ class NDB_BVL_Feedback
             $qparams['Username'] = $this->_username;
         } else {
             $query            .= " AND ft.Active ='Y' 
-                                   AND FIND_IN_SET (c.CenterID,:CentID)";
+                                   AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
@@ -746,9 +746,9 @@ class NDB_BVL_Feedback
      * @param string  $comment    The comment to add to the entry.
      * @param string  $username   The username of the entry author.
      *
-     * @return void
+     * @return array
      */
-    function createEntry($feedbackID, $comment, $username)
+    function createEntry($feedbackID, $comment, $username): array
     {
         // new DB Object
         $db =& Database::singleton();
@@ -770,13 +770,13 @@ class NDB_BVL_Feedback
      * Creates a new thread entry and (if allowed) updates the selected
      * thread's type/status/public
      *
-     * @param integer $feedbackID Thread ID being updated
-     * @param string  $comment    The comment to update the thread to
-     * @param integer $type       The typeID to update Feedback_type to
-     * @param string  $public     Y or N to update thread's public status to
-     * @param string  $status     Status of the thread (options from
+     * @param integer  $feedbackID Thread ID being updated
+     * @param string   $comment    The comment to update the thread to
+     * @param ?integer $type       The typeID to update Feedback_type to
+     * @param string   $public     Y or N to update thread's public status to
+     * @param string   $status     Status of the thread (options from
      *                            feedback_bvl_thread.Status)
-     * @param string  $fieldname  The optional fieldname that the thread is in
+     * @param string   $fieldname  The optional fieldname that the thread is in
      *                            reference to.
      *
      * @return void
@@ -784,7 +784,7 @@ class NDB_BVL_Feedback
     function updateThread(
         $feedbackID,
         $comment,
-        $type='',
+        $type=null,
         $public='',
         $status='',
         $fieldname =''
@@ -1059,29 +1059,26 @@ class NDB_BVL_Feedback
      * Returns false if the user doesn't have the appropriate permissions
      * or is not on one of the appropriate pages to return bvl_feedback.
      *
-     * @param test_name $test_name The name of the test to be checked.
+     * @param string $test_name The name of the test to be checked.
      *
-     * @return bool|object
+     * @return bool
      * @throws ConfigurationException
      * @throws Exception
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
-    static function bvlFeedbackPossible($test_name)
+    static function bvlFeedbackPossible(string $test_name): bool
     {
-        $user =& User::singleton();
-
-        if ($user->hasPermission('bvl_feedback')) {
+        if (\User::singleton()->hasPermission('bvl_feedback')) {
             if (($test_name === "timepoint_list")
                 || ($test_name === "instrument_list")
             ) {
                 return true;
             } else {
-                $Factory       = NDB_Factory::singleton();
-                $DB            = $Factory->database();
-                $instruments_q = $DB->pselectOne(
-                    "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
-                    array('testName' => $test_name)
-                );
+                $instruments_q = \NDB_Factory::singleton()->database()
+                    ->pselectOne(
+                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
+                        array('testName' => $test_name)
+                    );
                 if ($instruments_q == 1) {
                     return true;
                 }

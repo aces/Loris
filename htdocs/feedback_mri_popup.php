@@ -34,7 +34,7 @@ if (!$user->hasPermission('imaging_browser_qc')) {
 
 $tpl_data['has_permission'] = true;
 // instantiate feedback mri object
-$comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID']);
+$comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID'] ?? '');
 
 /*
  * UPDATE SECTION
@@ -47,7 +47,7 @@ if ($_POST['fire_away']) {
     $comments->setPredefinedComments($_POST['savecomments']['predefined']);
 
     // save all textual comments but only if there is an entry [sebas]
-    foreach ($_POST['savecomments']['text']
+    foreach (\Utility::asArray($_POST['savecomments']['text'])
         as $comment_type_id => $comment_message
     ) {
         if (trim($comment_message)) {
@@ -121,7 +121,10 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
             $CommentTpl['select_name']        = $comment_array['field'];
             $CommentTpl['select_value_array'] = $comment_array['values'];
         }
-        $CommentTpl['selected'] = $comments->getMRIValue($comment_array['field']);
+        $CommentTpl['selected'] = $comments
+            ->getMRIValue(
+                intval($comment_array['field'])
+            );
     }
 
     $CommentTpl['name'] = $comment_array['name'];

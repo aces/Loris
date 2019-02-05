@@ -9,7 +9,7 @@ class ProbandInfo extends React.Component {
     super(props);
 
     this.state = {
-      genderOptions: {
+      sexOptions: {
         Male: 'Male',
         Female: 'Female',
       },
@@ -43,7 +43,7 @@ class ProbandInfo extends React.Component {
       dataType: 'json',
       success: (data) => {
         const formData = {
-          ProbandGender: data.ProbandGender,
+          ProbandSex: data.ProbandSex,
           ProbandDoB: data.ProbandDoB,
           ProbandDoB2: data.ProbandDoB,
         };
@@ -182,7 +182,7 @@ class ProbandInfo extends React.Component {
 
     let dobRequired = false;
     let dob2Required = false;
-    if (this.state.formData.ProbandGender !== null) {
+    if (this.state.formData.ProbandSex !== null) {
       dobRequired = true;
     }
     if (this.state.formData.ProbandDoB !== null) {
@@ -285,12 +285,12 @@ class ProbandInfo extends React.Component {
             text={this.state.Data.candID}
           />
           <SelectElement
-            label="Proband Gender"
-            name="ProbandGender"
-            options={this.state.genderOptions}
-            value={this.state.formData.ProbandGender}
+            label="Proband Sex"
+            name="ProbandSex"
+            options={this.state.sexOptions}
+            value={this.state.formData.ProbandSex}
             onUserInput={this.setFormData}
-            ref="ProbandGender"
+            ref="ProbandSex"
             disabled={disabled}
             required={true}
           />

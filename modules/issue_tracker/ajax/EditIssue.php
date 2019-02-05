@@ -195,7 +195,7 @@ function validateInput($values)
         $validCenter = $db->pselectOne(
             "
             SELECT
-                CenterID = :center_id
+                RegistrationCenterID = :center_id as CenterID
             FROM
                 candidate
             WHERE
