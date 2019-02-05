@@ -9,7 +9,7 @@ class ExternalGenerator extends SiteIDGenerator
      */
     public function __construct(?string $prefix = null)
     {
-        $this->kind = 'PSCID';
+        $this->kind = 'ExternalID';
         parent::__construct($prefix);
     }
 }
