@@ -192,9 +192,9 @@ abstract class NDB_Notifier_Abstract
     /**
      * Gets information of logged in user and returns a name-email string combination
      *
-     * @return string   string in the form `First Last <email@domain.com>`
+     * @return array   string in the form `First Last <email@domain.com>`
      */
-    private function _getLoggedInUser(): string
+    private function _getLoggedInUser(): array
     {
         $user       = \User::singleton();
         $info_array = array();
@@ -209,7 +209,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return string   string in the form `First Last <email@domain.com>`
      */
-    private function _getAdminUser(): string
+    private function _getAdminUser(): array
     {
         $result           = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
@@ -285,11 +285,11 @@ abstract class NDB_Notifier_Abstract
      * Function asserting if given user should receive a notification
      * for this operation given his permissions.
      *
-     * @param int $uid containing the userID
+     * @param string $uid containing the userID
      *
      * @return bool   permissions sufficient for notification
      */
-    private function _hasNotificationPermission(int $uid): bool
+    private function _hasNotificationPermission(string $uid): bool
     {
         $DB      = Database::singleton();
         $current = $DB->pselect(
@@ -335,7 +335,7 @@ abstract class NDB_Notifier_Abstract
      *
      * @return string  email of the user
      */
-    protected function getEmail(int $uid): string
+    protected function getEmail(string $uid): string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",
@@ -376,8 +376,8 @@ abstract class NDB_Notifier_Abstract
      * @return void
      */
     protected function log(
-        int $trigger_user,
-        int $target_user,
+        string $trigger_user,
+        string $target_user,
         string $service
     ): void {
 
