@@ -51,7 +51,8 @@ class Uploadfile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-            $this->uploadDocFile();
+                                
+            if ($this->uploadDocFile()) {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -61,6 +62,18 @@ class Uploadfile extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
+             } else 
+             {
+               return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withHeader("Allow", "POST")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode("duplicate file name")
+                    )
+                );
+             }
         }
         if ($request->getMethod() == "GET") {
             $value =  $request->getQueryParams();
@@ -79,10 +92,11 @@ class Uploadfile extends \NDB_Page
     /**
  * Handles the document upload process
      *
- * @return void
+ * @return bool
  */
-    function uploadDocFile()
+    function uploadDocFile(): bool
     {
+        $uploadOK = false;
         $editNotifier   = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -140,6 +154,8 @@ class Uploadfile extends \NDB_Page
                 'ERROR: Could not upload file. Contact your administrator.'
             );
         } else {
+           // todo check duplicate file name 
+            if (!$this->existFilename($fileName)) {
             $success = $DB->insert(
                 'document_repository',
                 array(
@@ -149,7 +165,7 @@ class Uploadfile extends \NDB_Page
                  'version'       => $version,
                  'File_name'     => $fileName,
                  'File_size'     => $fileSize,
-                 'Data_dir'      => $fileName, // e.g. 'admin/file.png'
+                 'Data_dir'      => $fileName,
                  'uploaded_by'   => $name,
                  'Instrument'    => $instrument,
                  'PSCID'         => $pscid,
@@ -160,7 +176,10 @@ class Uploadfile extends \NDB_Page
             $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document']    = $fileName;
             $uploadNotifier->notify($msg_data);
+            $uploadOK = true;
+            }
         }
+       return $uploadOK;
     }
 
     /**
@@ -271,6 +290,26 @@ class Uploadfile extends \NDB_Page
         }
 
         return $selectOptions;
+    }
+ /**
+ * Check the find name in the database, if exists return false
+ *
+ * @param string $filename    file name
+ *
+ * @return bool
+ */
+    function existFilename(string $filename): bool
+    {
+        $DB    = \Database::singleton();
+        $fileCount   =  $DB->pselectOne(
+            "SELECT COUNT(*) FROM document_repository
+             WHERE File_Name=:name",
+             array('name' => $filename)
+         );
+        if ((int)$fileCount > 0) {
+           return true;
+        }
+        return false;
     }
 }
 
