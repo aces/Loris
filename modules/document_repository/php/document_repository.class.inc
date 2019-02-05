@@ -314,7 +314,6 @@ class Document_Repository extends \NDB_Menu_Filter
                     " ORDER BY parent_id ASC";
         $dbresult = $DB->pselect($query, array());
 
-
         // FIXME: the for-loop below is needlessly confusing. It appears
         // to be trying to group the categories from the database into a
         // tree by abusing undeclared properities on anonymous objects.
