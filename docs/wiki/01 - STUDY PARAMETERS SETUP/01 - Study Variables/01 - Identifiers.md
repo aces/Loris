@@ -58,7 +58,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  ```
  
  Options for the `type` element of the `<seq>` tag are:
-  - `siteAbbrev`: will draw from Alias field, in psc table
+  - `siteAbbrev`: will draw from Alias field, in the `psc` table
   - `numeric`: defines an integer, must be associated with a `minLength` element. 
   - `alphanumeric`: defines a string, must be associated with a `minLength` element.
          
