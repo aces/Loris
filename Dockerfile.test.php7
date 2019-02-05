@@ -1,6 +1,8 @@
 FROM php:7.2
 
-RUN apt-get install -y mysql-client
+RUN apt-get clean && \
+    apt-get update && \
+    apt-get install -y mysql-client
 
 # Install extensions through the scripts the container provides
 RUN docker-php-ext-install pdo_mysql
