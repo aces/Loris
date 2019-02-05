@@ -1,9 +1,68 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * This file contains unit tests for the PSCIDGenerator class.
+ *
+ * PHP Version 7
+ *
+ * @category Tests
+ * @package  StudyEntities
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+namespace LORIS\StudyEntitites\Candidate\Test;
+
 require_once __DIR__ . '/../../../vendor/autoload.php';
+
 use \PHPUnit\Framework\TestCase;
 use \LORIS\StudyEntities\Candidate\PSCIDGenerator;
 
+/**
+ * This file contains unit tests for the PSCIDGenerator class.
+ *
+ * PHP Version 7
+ *
+ * @category Tests
+ * @package  StudyEntities
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class PSCIDGenerator_Test extends TestCase {
+
+    private $_dbMock;
+    private $_configMock;
+    private $_configMap = array();
+
+    /**
+     * Sets up fixtures:
+     *  - _candidate object
+     *  - config and Database test doubles
+     *  - _factory
+     *
+     * This method is called before each test is executed.
+     *
+     * @return void
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->_configMap = array(
+            array(
+                'useProjects',
+                false,
+            ),
+            array(
+                'HeaderTable',
+                null,
+            ),
+        );
+        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $this->_factory   = \NDB_Factory::singleton();
+        $this->_factory->setConfig($this->_configMock);
+        $this->_factory->setDatabase($this->_dbMock);
+    }
 
     /**
      * Test PSCIDGenerator for config setting
@@ -42,11 +101,11 @@ class PSCIDGenerator_Test extends TestCase {
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
 
-        //mock Database::pselectOne(), returns count 0
-        //case when generated PSCID is not used, therefore not found in DB
-        $this->_dbMock->expects($this->once())
-            ->method('pselectOne')
-            ->willReturn(0);
+        #/mock Database::pselectOne(), returns count 0
+        #/case when generated PSCID is not used, therefore not found in DB
+        #$this->_dbMock->expects($this->once())
+        #   ->method('pselectOne')
+        #   ->willReturn(0);
 
         $this->assertRegExp('/AAA[0-9]{4}$/', (new PSCIDGenerator('AAA'))->generate());
     }

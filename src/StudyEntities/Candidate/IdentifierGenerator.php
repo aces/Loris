@@ -4,7 +4,6 @@ namespace LORIS\StudyEntities\Candidate;
 
 abstract class IdentifierGenerator
 {
-
     protected $generationMethod;
     protected $alphabet;
     protected $length;
@@ -62,11 +61,11 @@ abstract class IdentifierGenerator
         do {
             // Make sure $newID is greater than or equal to minimum and less
             // than or equal to maximum.
-            if (strcmp(strval(++$newID), $this->minValue) < 0) {
+            if (strcmp(strval($newID++), strval($this->minValue)) < 0) {
                 // If newID is less than the minimum, increment again.
                 continue;
             }
-            if (strcmp(strval($newID), $this->maxValue) > 0) {
+            if (strcmp(strval($newID), strval($this->maxValue)) > 0) {
                 // If newID has exceeded the maximum, wrap back around to the
                 // minimum possible value. We know that there is a free ID
                 // available somewhere in the range of possible IDs or else

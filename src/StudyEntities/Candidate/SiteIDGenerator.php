@@ -18,7 +18,7 @@ class SiteIDGenerator extends IdentifierGenerator
         // alphabet, length, and generation method (sequential or random) used
         // to create new IDs.
         $this->generationMethod = $this->getIDSetting('generation');
-        $this->length = $this->getIDSetting('length') ?? LENGTH;
+        $this->length = $this->getIDSetting('length') ?? self::LENGTH;
         $this->alphabet = $this->getIDSetting('alphabet');
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
@@ -51,12 +51,14 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     protected function getExistingIDs(): array
     {
-        return \Database::singleton()->pselectCol(
+        $ids = \Database::singleton()->pselectCol(
             "SELECT substring($this->kind, LENGTH('{$this->prefix}') +1)
             from candidate
             WHERE {$this->kind} LIKE '{$this->prefix}%'",
             array()
         );
+
+        return !empty($ids) ? $ids : array();
     }
     /**
      * Helper function used for extracting the values from the config
