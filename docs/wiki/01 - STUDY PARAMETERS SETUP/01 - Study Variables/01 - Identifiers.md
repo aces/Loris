@@ -4,7 +4,7 @@
 By default LORIS provides 2 different identifiers for each participant or subject: 
 
 - **CandID** also known as the **DCCID** : is a unique randomized 6-digit numeric ID (e.g. '436792').  It is completely anonymous, and is assigned automatically by Loris upon participant registration. 
-- **PSCID** (Project Study Centre ID) is configurable, can be manually entered when registering a participant, and may contain the site abbreviation, followed by sequential or randomized digits (e.g. 'MTL0006')
+- **PSCID** (Project Study Centre ID) is configurable, can be manually entered when registering a participant, and may contain the site abbreviation, followed by sequential or randomized characters (e.g. 'MTL0006')
 
 The format and the generation of the **PSCID** must be configured by an admin at the setup stage.
 
