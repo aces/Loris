@@ -26,7 +26,7 @@ class DocIndex extends React.Component {
       .then(() => this.setState({isLoaded: true}));
   }
   fetchData() {
-    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data}))
       .then(()=>this.setState({newCategory: false}))
@@ -164,7 +164,7 @@ function click() {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
-            DataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/Uploadfile`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
@@ -173,7 +173,7 @@ function click() {
         </TabPane>
         <TabPane TabId={tabList[2].id}>
           <DocCategoryForm
-            DataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/Uploadcategory`}
             refreshPage={this.fetchData}
             newCategoryState={this.newCategoryState}
@@ -188,7 +188,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <div className="page-document">
     <DocIndex
-      DataURL={`${loris.BaseURL}/document_repository/?format=json`}
+      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
       hasPermission={loris.userHasPermission}
     />
     </div>,

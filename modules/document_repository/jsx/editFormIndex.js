@@ -9,7 +9,7 @@ window.addEventListener('load', () => {
       <div className="row">
         <div className="col-md-9 col-lg-7">
           <DocEditForm
-            DataURL={`${loris.BaseURL}/document_repository/Uploadfile/?id=${args.id}`}
+            dataURL={`${loris.BaseURL}/document_repository/Uploadfile/?id=${args.id}`}
             action={`${loris.BaseURL}/document_repository/Editfile`}
           />
         </div>

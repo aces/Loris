@@ -27,24 +27,27 @@ class DocUploadForm extends React.Component {
     this.uploadFile = this.uploadFile.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
- fetchData() {
-    return fetch(this.props.DataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({Data: data, isLoaded: true}))
-      .catch((error) => {
-        this.setState({error: 'An error occurred when loading the form!'});
-        console.error(error);
-      });
-}
+
   componentDidMount() {
     this.fetchData();
   }
+
   componentWillReceiveProps(nextProps) {
     // Any time props.category changes, update state.
     if (nextProps.category) {
         this.fetchData();
       }
    }
+
+  fetchData() {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({Data: data, isLoaded: true}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
 
   render() {
     // Data loading error
@@ -145,7 +148,6 @@ class DocUploadForm extends React.Component {
       this.uploadFile();
         this.setState({
           formData: {}, // reset form data after successful file upload
-          uploadProgress: -1,
         });
       this.props.refreshPage();
   }
@@ -190,7 +192,7 @@ uploadFile() {
 }
 
 DocUploadForm.propTypes = {
-  DataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
 };
 

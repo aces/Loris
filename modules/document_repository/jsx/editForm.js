@@ -16,12 +16,11 @@ class DocEditForm extends React.Component {
     super(props);
 
     this.state = {
-      Data: {},
+      data: {},
       docData: {},
       formData: {},
       uploadResult: null,
       isLoaded: false,
-      loadedData: 0,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,12 +33,12 @@ class DocEditForm extends React.Component {
   }
 
   fetchData() {
-    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
        const formData = data.docData;
         this.setState({
-          Data: data,
+          data: data,
           docData: data.docData,
           formData: formData,
         });
@@ -72,7 +71,7 @@ class DocEditForm extends React.Component {
             <SelectElement
               name="category"
               label="Category"
-              options={this.state.Data.categories}
+              options={this.state.data.categories}
               onUserInput={this.setFormData}
               hasError={false}
               required={true}
@@ -82,7 +81,7 @@ class DocEditForm extends React.Component {
             <SelectElement
               name="forSite"
               label="Site"
-              options={this.state.Data.sites}
+              options={this.state.data.sites}
               onUserInput={this.setFormData}
               required={true}
               disabled={true}
@@ -91,7 +90,7 @@ class DocEditForm extends React.Component {
             <SelectElement
               name="instrument"
               label="Instrument"
-              options={this.state.Data.instruments}
+              options={this.state.data.instruments}
               onUserInput={this.setFormData}
               value={this.state.docData.instrument}
             />
@@ -170,13 +169,8 @@ class DocEditForm extends React.Component {
 }
 
 DocEditForm.propTypes = {
-  DataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
 };
-
-let RDocEditForm = React.createFactory(DocEditForm);
-
-window.DocEditForm = DocEditForm;
-window.RDocEditForm = RDocEditForm;
 
 export default DocEditForm;
