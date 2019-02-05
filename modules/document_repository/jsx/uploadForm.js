@@ -15,7 +15,7 @@ class DocUploadForm extends React.Component {
     super(props);
 
     this.state = {
-      Data: {},
+      data: {},
       formData: {},
       uploadResult: null,
       errorMessage: null,
@@ -42,7 +42,7 @@ class DocUploadForm extends React.Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({Data: data, isLoaded: true}))
+      .then((data) => this.setState({data: data, isLoaded: true}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -72,7 +72,7 @@ class DocUploadForm extends React.Component {
             <SelectElement
               name="category"
               label="Category"
-              options={this.state.Data.fieldOptions.fileCategories}
+              options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               hasError={false}
               required={true}
@@ -82,7 +82,7 @@ class DocUploadForm extends React.Component {
               name="forSite"
               label="Site"
               placeHolder="Search for site"
-              options={this.state.Data.fieldOptions.sites}
+              options={this.state.data.fieldOptions.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
               required={true}
@@ -91,7 +91,7 @@ class DocUploadForm extends React.Component {
             <SelectElement
               name="instrument"
               label="Instrument"
-              options={this.state.Data.fieldOptions.instruments}
+              options={this.state.data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               value={this.state.formData.instrument}
             />
