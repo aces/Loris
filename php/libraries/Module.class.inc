@@ -266,8 +266,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             $pagename = explode("/", $path)[0];
         }
 
+        $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
         try {
-            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             $page = $this->loadPage($pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
@@ -277,7 +277,6 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 $_REQUEST['subtest'] = $pagename;
             }
 
-            $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             if ($page->_hasAccess($user) !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
                     $user
