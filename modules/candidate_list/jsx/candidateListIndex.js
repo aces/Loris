@@ -322,6 +322,7 @@ class CandidateListIndex extends Component {
       {
         label: this.state.buttonLabel,
         action: toggleFilters,
+        name: 'advanced',
       },
       {
         label: 'Open Profile',

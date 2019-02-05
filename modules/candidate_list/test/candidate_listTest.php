@@ -159,20 +159,20 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Go through each element and ensure it's on the page after clicking
         // advanced
         $scanDoneOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("scan_done")
+            WebDriverBy::Name("scanDone")
         );
         $this->assertEquals("select", $scanDoneOptions->getTagName());
         $participantsStatusOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("Participant_Status")
+            WebDriverBy::Name("participantStatus")
         );
         $this->assertEquals("select", $participantsStatusOptions->getTagName());
-        $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("dob"));
+        $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoB"));
         $this->assertEquals("input", $dobOptions->getTagName());
         // Not currently done
         //$this->assertEquals("date",$dobOptions->getAttribute("type"));
         $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
         $this->assertEquals("select", $sexOptions->getTagName());
-        $numVisits = $this->webDriver->findElement(WebDriverBy::Name("Visit_Count"));
+        $numVisits = $this->webDriver->findElement(WebDriverBy::Name("visitCount"));
         $this->assertEquals("input", $dobOptions->getTagName());
         // Not currently done in Loris.
         //$this->assertEquals("number",$dobOptions->getAttribute("type"));
@@ -182,11 +182,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Not currently done
         //$this->assertEquals("date",$edcOptions->getAttribute("type"));
         $latestVisitOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("Latest_Visit_Status")
+            WebDriverBy::Name("latestVisitStatus")
         );
         $this->assertEquals("select", $latestVisitOptions->getTagName());
         $feedbackOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("Feedback")
+            WebDriverBy::Name("feedback")
         );
         $this->assertEquals("select", $feedbackOptions->getTagName());
     }
@@ -201,32 +201,32 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Search using PSCID TST0001
         // Verify that only one candidate is returned: TST0001
         $this->_assertSearchBy(
-            array('PSCID' => 'TST0001'),
+            array('pscid' => 'TST0001'),
             'TST0001'
         );
         // Enter something that does not even make sense in the PSCID field
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('PSCID' => 'PSCID that does not exist'),
+            array('pscid' => 'PSCID that does not exist'),
             null
         );
         // Search using a PSCID that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('PSCID' => 'TST0003'),
+            array('pscid' => 'TST0003'),
             null
         );
         // Search for candidate with PSCID tst0001
         // Verify that candidate TST0001 is returned (checks that searches
         // are case-insensitive)
         $this->_assertSearchBy(
-            array('PSCID' => 'tst0001'),
+            array('pscid' => 'tst0001'),
             'TST0001'
         );
         // Search for PSCID that contains string t0
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
-            array('PSCID' => 't0'),
+            array('pscid' => 't0'),
             'TST0001'
         );
     }
@@ -241,25 +241,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Search using an invalid DCCID
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => 'Not even a DCCID'),
+            array('dccid' => 'Not even a DCCID'),
             null
         );
         // Search using a valid DCCID that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => '666666'),
+            array('dccid' => '666666'),
             null
         );
         // Search using a valid DCCID substring that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => '800'),
+            array('dccid' => '800'),
             null
         );
         // Search for candidate with a DCCID substring that exists
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
-            array('DCCID' => '300001'),
+            array('dccid' => '300001'),
             '300001'
         );
     }
