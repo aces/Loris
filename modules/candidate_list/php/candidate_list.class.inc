@@ -1,24 +1,24 @@
 <?php
 /**
-* The candidate list menu
-*
-* PHP Version 5
-*
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * The candidate list menu
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\candidate_list;
 /**
  * Implements the candidate_list menu
  *
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Candidate_List extends \NDB_Menu_Filter
 {
@@ -135,7 +135,7 @@ class Candidate_List extends \NDB_Menu_Filter
         \Module::factory('candidate_parameters');
 
         // create user object
-        $user    =& \User::singleton();
+        $user   =& \User::singleton();
         $config =& \NDB_Config::singleton();
 
         // get the list of sites available for the user
@@ -161,19 +161,19 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         // get the list participant status options
-        $list_of_participant_status =
-        \Candidate::getParticipantStatusOptions();
+        $list_of_participant_status
+            = \Candidate::getParticipantStatusOptions();
         foreach ($list_of_participant_status as $id => $name) {
             $participant_status_options[$name] = $name;
         }
 
         $this->fieldOptions = [
-            'site'              => $site_options,
-            'project'           => $project_options,
-            'subproject'        => $subproject_options,
-            'participantstatus' => $participant_status_options,
-            'useedc'            => $config->getSetting("useEDC"),
-        ];
+                               'site'              => $site_options,
+                               'project'           => $project_options,
+                               'subproject'        => $subproject_options,
+                               'participantstatus' => $participant_status_options,
+                               'useedc'            => $config->getSetting("useEDC"),
+                              ];
 
         return true;
     }
