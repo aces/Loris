@@ -159,15 +159,6 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
-            if (is_null($center)
-                || is_null($vl)
-                || is_null($c)
-            ) {
-                throw new \LorisException(
-                    'Could not calculate behavioural statistics. CenterID, ' .
-                    'VisitLabel or tpl_data is null.'
-                );
-            }
 
             if (isset($c[$vl]['total'])) {
                 $c[$vl]['total'] += $row['val'];
@@ -191,20 +182,22 @@ class Stats_Behavioural extends \NDB_Form
                     $c['all']['complete'] = $row['val'];
                 }
             }
-            if ($c[$vl]['total'] != 0) {
-                if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['percent']
-                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                } else {
-                    $c[$vl]['percent'] = 0;
+            if (!empty($c)) {
+                if ($c[$vl]['total'] != 0) {
+                    if (isset($c[$vl]['complete'])) {
+                        $c[$vl]['percent']
+                            = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                    } else {
+                        $c[$vl]['percent'] = 0;
+                    }
                 }
-            }
-            if ($c['all']['total'] != 0) {
-                if (isset($c['all']['complete'])) {
-                    $c['all']['percent']
-                        = floor($c['all']['complete'] / $c['all']['total']*100);
-                } else {
-                    $c['all']['percent'] = 0;
+                if ($c['all']['total'] != 0) {
+                    if (isset($c['all']['complete'])) {
+                        $c['all']['percent']
+                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                    } else {
+                        $c['all']['percent'] = 0;
+                    }
                 }
             }
         }
@@ -232,15 +225,6 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
-            if (is_null($center)
-                || is_null($vl)
-                || is_null($c)
-            ) {
-                throw new \LorisException(
-                    'Could not calculate double data-entry behavioural ' .
-                    'statistics. CenterID, VisitLabel or tpl_data is null.'
-                );
-            }
 
             if (isset($c[$vl]['total'])) {
                 $c[$vl]['total'] += $row['val'];
@@ -264,20 +248,22 @@ class Stats_Behavioural extends \NDB_Form
                     $c['all']['complete'] = $row['val'];
                 }
             }
-            if ($c[$vl]['total'] != 0) {
-                if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['percent']
-                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                } else {
-                    $c[$vl]['percent'] = 0;
+            if (!empty($c)) {
+                if ($c[$vl]['total'] != 0) {
+                    if (isset($c[$vl]['complete'])) {
+                        $c[$vl]['percent']
+                            = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                    } else {
+                        $c[$vl]['percent'] = 0;
+                    }
                 }
-            }
-            if ($c['all']['total'] != 0) {
-                if (isset($c['all']['complete'])) {
-                    $c['all']['percent']
-                        = floor($c['all']['complete'] / $c['all']['total']*100);
-                } else {
-                    $c['all']['percent'] = 0;
+                if ($c['all']['total'] != 0) {
+                    if (isset($c['all']['complete'])) {
+                        $c['all']['percent']
+                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                    } else {
+                        $c['all']['percent'] = 0;
+                    }
                 }
             }
         }
