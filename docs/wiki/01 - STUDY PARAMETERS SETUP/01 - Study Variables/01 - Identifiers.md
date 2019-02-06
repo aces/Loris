@@ -51,6 +51,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  <PSCID>
      <generation>random</generation> 
      <structure>
+         <seq type="static">PROJ</seq>
          <seq type="siteAbbrev"/>
          <seq type="numeric" minLength="4"/>
      </structure>
@@ -59,8 +60,10 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  
  Options for the `type` element of the `<seq>` tag are:
   - `siteAbbrev`: will draw from Alias field, in the `psc` table
+  - `static`: will draw from the value defined in the `config.xml` file.
   - `numeric`: defines an integer, must be associated with a `minLength` element. 
-  - `alphanumeric`: defines a string, must be associated with a `minLength` element.
+  - `alphanumeric`: defines a string with letters and digits, must be associated with a `minLength` element.
+  - `alpha`: defines a string with letters only, must be associated with a `minLength` element.
          
 ### Adding subprojects from the API
  _not yet available. See [API documentation](../../../API/) for latest additions_
