@@ -38,7 +38,6 @@ const config = [{
     './modules/instrument_builder/js/react.questions.js': './modules/instrument_builder/jsx/react.questions.js',
     './modules/instrument_manager/js/instrumentManagerIndex.js': './modules/instrument_manager/jsx/instrumentManagerIndex.js',
     './modules/survey_accounts/js/surveyAccountsIndex.js': './modules/survey_accounts/jsx/surveyAccountsIndex.js',
-    './modules/server_processes_manager/js/columnFormatter.js': './modules/server_processes_manager/jsx/columnFormatter.js',
     './modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': './modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
     './modules/mri_violations/js/columnFormatter.js': './modules/mri_violations/jsx/columnFormatter.js',
     './modules/mri_violations/js/columnFormatterUnresolved.js': './modules/mri_violations/jsx/columnFormatterUnresolved.js',
