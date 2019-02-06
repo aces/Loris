@@ -47,7 +47,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     i.assignee,
                     i.status,
                     i.priority,
-                    i.centerID,
+                    i.centerID as centerId,
                     c.PSCID as pscid,
                     s.Visit_label as visitLabel,
                     i.dateCreated,
@@ -82,7 +82,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = $row['CenterID'];
+            $cid = $row['centerId'];
             unset($row['CenterID']);
             return new IssueRow($row, $cid);
     }
