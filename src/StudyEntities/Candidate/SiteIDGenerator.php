@@ -47,12 +47,11 @@ class SiteIDGenerator extends IdentifierGenerator
                 'Values not configured properly for ' . get_class($this) . '. '
                 . 'Please correct your configuration file.'
                 . "Length: `{$this->length}`\n"
-                . "Alphabet: `{$this->alphabet}`\n"
+                . "Alphabet: `" . implode($this->alphabet) . "`\n"
                 . "Min: `{$this->minValue}`\n"
                 . "Max: `{$this->maxValue}`\n"
                 . "Length: `{$this->prefix}`\n"
                 . "Generation: `{$this->generationMethod}`\n"
-                . ($this->alphabet instanceof Countable)
             );
         }
         if ($this->kind !== 'PSCID' && $this->kind !== 'ExternalID') {
@@ -61,6 +60,17 @@ class SiteIDGenerator extends IdentifierGenerator
                 '"ExternalID", or "CandID"'
             );
         }
+    }
+
+    /**
+     * Generates a new ID for use in the rest of LORIS.
+     * This function should be updated to use PSCID and ExternalID classes when
+     * they are created. See CandIDGenerator for an example.
+     *
+     * @return string
+     */
+    public function generate() {
+        return $this->createNewID();
     }
 
     /**

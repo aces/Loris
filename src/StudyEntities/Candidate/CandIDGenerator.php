@@ -2,6 +2,8 @@
 
 namespace LORIS\StudyEntities\Candidate;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
 class CandIDGenerator extends IdentifierGenerator
 {
     /**
@@ -22,6 +24,15 @@ class CandIDGenerator extends IdentifierGenerator
         $this->minValue         = self::MIN_CANDID;
         $this->maxValue         = self::MAX_CANDID;
         $this->alphabet         = range(0, 9);
+    }
+
+    public function generate(): CandID {
+        $this->checkIDRangeFull();
+        return new CandID(
+            strval(
+                random_int($this->minValue, $this->maxValue)
+            )
+        );
     }
 
     /**

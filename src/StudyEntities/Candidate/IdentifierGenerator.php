@@ -16,18 +16,9 @@ abstract class IdentifierGenerator
     *
     * @return string The new identifier
     */
-    public function generate(): string
+    public function createNewID(): string
     {
-        // Check that the number of existing IDs does not exceed the range of
-        // possible values (given by the size of the alphabet to the power of
-        // number of characters in the ID).
-        $sizeOfIDSpace = count($this->alphabet) ** $this->length;
-        if (count($this->getExistingIDs()) >= $sizeOfIDSpace) {
-            throw new \LorisException(
-                'Cannot create new identifier because all valid identifiers ' .
-                'are in use!'
-            );
-        }
+        $this->checkIDRangeFull();
 
         $id = '';
         switch ($this->generationMethod) {
@@ -127,5 +118,21 @@ abstract class IdentifierGenerator
             strval($this->alphabet[0]),
             STR_PAD_LEFT
         );
+    }
+
+    /**
+     * @throws \LorisException
+     */
+    protected function checkIDRangeFull() {
+        // Check that the number of existing IDs does not exceed the range of
+        // possible values (given by the size of the alphabet to the power of
+        // number of characters in the ID).
+        $sizeOfIDSpace = count($this->alphabet) ** $this->length;
+        if (count($this->getExistingIDs()) >= $sizeOfIDSpace) {
+            throw new \LorisException(
+                'Cannot create new identifier because all valid identifiers ' .
+                'are in use!'
+            );
+        }
     }
 }

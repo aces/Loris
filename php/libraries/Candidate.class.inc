@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\CandIDGenerator;
 use LORIS\StudyEntities\Candidate\PSCIDGenerator;
 use LORIS\StudyEntities\Candidate\ExternalIDGenerator;
@@ -273,10 +272,11 @@ class Candidate
 
         // Generate a new CandID and insert it into the DB. In case of a race
         // condition, keep trying new IDs until an unused one is found.
+        $generator = new CandIDGenerator();
         do {
             $invalidID = false;
             // Generate candid
-            $candID = new CandID((new CandIDGenerator())->generate());
+            $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             try {
                 $db->insert('candidate', $setArray);
