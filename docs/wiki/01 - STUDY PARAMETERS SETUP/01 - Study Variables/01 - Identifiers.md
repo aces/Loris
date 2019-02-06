@@ -60,7 +60,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  
  Options for the `type` element of the `<seq>` tag are:
   - `siteAbbrev`: will draw from Alias field, in the `psc` table
-  - `static`: will draw from the value defined in the `config.xml` file.
+  - `static`: A string value that will be used as a fixed prefix. Value defined in the `config.xml` file.
   - `numeric`: defines an integer, must be associated with a `minLength` element. 
   - `alphanumeric`: defines a string with letters and digits, must be associated with a `minLength` element.
   - `alpha`: defines a string with letters only, must be associated with a `minLength` element.
