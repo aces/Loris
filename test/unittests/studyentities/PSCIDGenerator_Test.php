@@ -97,6 +97,13 @@ class PSCIDGenerator_Test extends TestCase {
                 ),
             ),
         );
+        $this->_configMock->method('getSetting')
+            ->will($this->returnValueMap($this->_configMap));
+        //mock Database::pselectOne(), returns count 0
+        //case when generated PSCID is not used, therefore not found in DB
+        #$this->_dbMock->expects($this->once())
+        #    ->method('pselectOne')
+        #    ->willReturn(0);
 
         $this->assertRegExp('/AAA[0-9]{4}$/', (new PSCIDGenerator('AAA'))->generate());
     }
