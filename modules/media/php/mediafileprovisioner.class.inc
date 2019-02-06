@@ -41,7 +41,8 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     c.PSCID as pscid,
                     s.Visit_label as visitLabel,
                     l.language_label as languageLabel,
-               			(SELECT Full_name FROM test_names WHERE Test_name=m.instrument) as fullName,
+                    (SELECT Full_name FROM test_names
+                      WHERE Test_name=m.instrument) as fullName,
                			s.CenterID as centerId,
                			m.uploaded_by as uploadedBy,
                			m.date_taken as dateTaken,
