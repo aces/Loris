@@ -61,5 +61,8 @@ class CandIDGenerator_Test extends TestCase {
         $this->assertTrue(is_numeric($stringified));
         $this->assertGreaterThanOrEqual(self::MIN_CANDID, intval($stringified));
         $this->assertLessThanOrEqual(self::MAX_CANDID, intval($stringified));
+        // Leverage validation of CandID object to ensure that the ID generated
+        // is valid.
+        new CandID((new CandIDGenerator)->generate());
     }
 }
