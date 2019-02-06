@@ -35,6 +35,26 @@ class SiteIDGenerator extends IdentifierGenerator
     }
 
     protected function validate(): void {
+        if (empty($this->generationMethod)
+            || empty($this->length)
+            || empty($this->alphabet)
+            || empty($this->minValue)
+            || empty($this->maxValue)
+            || empty($this->prefix)
+            || !is_array($this->alphabet)
+        ) {
+            throw new \DomainException(
+                'Values not configured properly for ' . get_class($this) . '. '
+                . 'Please correct your configuration file.'
+                . "Length: `{$this->length}`\n"
+                . "Alphabet: `{$this->alphabet}`\n"
+                . "Min: `{$this->minValue}`\n"
+                . "Max: `{$this->maxValue}`\n"
+                . "Length: `{$this->prefix}`\n"
+                . "Generation: `{$this->generationMethod}`\n"
+                . ($this->alphabet instanceof Countable)
+            );
+        }
         if ($this->kind !== 'PSCID' && $this->kind !== 'ExternalID') {
             throw new DomainException(
                 'Argument for "kind" variable must be either "PSCID", ' .

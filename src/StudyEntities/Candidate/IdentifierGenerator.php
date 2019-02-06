@@ -5,7 +5,7 @@ namespace LORIS\StudyEntities\Candidate;
 abstract class IdentifierGenerator
 {
     protected $generationMethod;
-    protected $alphabet;
+    protected $alphabet = array();
     protected $length;
     protected $minValue;
     protected $maxValue;
