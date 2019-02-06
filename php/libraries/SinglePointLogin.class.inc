@@ -469,11 +469,11 @@ class SinglePointLogin
         $longLockoutThreshold  = 15;
 
         // SQL code to run.
-        $query  = "SELECT COUNT(loginhistoryID) as loginattempts" .
+        $query  = "SELECT COUNT(loginhistoryID) as loginattempts " .
             "FROM user_login_history " .
             "WHERE userID = :username " .
-            "AND Success = 'N' " .
             "AND IP_address = :ip " .
+            "AND Success = 'N' " .
             "AND Login_timestamp > ( " .
             "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(), ".
             "INTERVAL :timeWindowInMinutes MINUTE), " .
@@ -484,6 +484,7 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
+        error_log($_SERVER['REMOTE_ADDR']);
         $params = array(
                    'username'            => $username,
                    'timeWindowInMinutes' => $shortWindowInMinutes,
