@@ -2,7 +2,7 @@
 /**
  * Unit test for Candidate class
  *
- * PHP Version 7
+ * PHP Version 5
  *
  * @category Tests
  * @package  Main
@@ -501,4 +501,6 @@ class CandidateTest extends TestCase
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
+
+
 }
