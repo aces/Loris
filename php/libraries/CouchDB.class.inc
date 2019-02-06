@@ -533,6 +533,11 @@ class CouchDB
         }
         $json = $this->_getRelativeURL($url);
         $data = json_decode($json, true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
             return array();
@@ -712,6 +717,11 @@ class CouchDB
             return $query;
         }
         $data = json_decode($query, true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
 
         if (isset($data['error']) && $data['error'] == 'not_found') {
             return array();

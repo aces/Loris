@@ -22,7 +22,6 @@ return [
 		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
-        "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchArgumentInternal",

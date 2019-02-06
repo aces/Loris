@@ -218,7 +218,8 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             return;
         }
-        $condition1 = isset($_REQUEST['setSubmitted']);
+        $condition1 = isset($_REQUEST['setSubmitted'])
+            && !empty($_REQUEST['setSubmitted']);
         $condition2 = $condition1 ?
             $_REQUEST['setSubmitted'] == 'N' :
             false;

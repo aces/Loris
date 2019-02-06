@@ -220,6 +220,12 @@ class TimePoint
                     WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null)
                     GROUP BY c.CandID";
         $row   = $db->pselectRow($query, array('CaID' => $candID));
+        if (is_null($row)) {
+            throw new \LorisException(
+                "No candidate information exists for Candidate $candID. "
+                . "TimePoint cannot be created."
+            );
+        }
 
         // if this is a web hit (thus state exists)
         if (isset($_SESSION) && is_object($_SESSION['State'])) {

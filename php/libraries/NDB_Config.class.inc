@@ -419,28 +419,28 @@ class NDB_Config
      *
      * @param integer $ProjectID The ProjectID we want settings for
      *
-     * @return array of settings for this project.
+     * @return ?array of settings for this project or null in case of error.
      */
-    function getProjectSettings(int $ProjectID): array
+    function getProjectSettings(int $ProjectID): ?array
     {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
-        try
-        {
-            $info =$DB->pselectRow(
-                "SELECT * FROM Project WHERE ProjectID=:sp",
-                array('sp' => $ProjectID)
-            );
-        } catch (DatabaseException $e)
-        {
+        try {
+            $info = \NDB_Factory::singleton()
+                ->database()
+                ->pselectRow(
+                    "SELECT * FROM Project WHERE ProjectID=:sp",
+                    array('sp' => $ProjectID)
+                );
+        } catch (\DatabaseException $e) {
             return null;
         }
         //Format the result into config.xml format.
-        return array(
-                'id'                => $info['ProjectID'],
-                'Name'              => $info['Name'],
-                'recruitmentTarget' => $info['recruitmentTarget'],
-               );
+        return is_null($info) ?
+            null
+            : array(
+               'id'                => $info['ProjectID'],
+               'Name'              => $info['Name'],
+               'recruitmentTarget' => $info['recruitmentTarget'],
+              );
     }
 
     /**

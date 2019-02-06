@@ -159,6 +159,15 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
+            if (is_null($center)
+                || is_null($vl)
+                || is_null($c)
+            ) {
+                throw new \LorisException(
+                    'Could not calculate behavioural statistics. CenterID, ' .
+                    'VisitLabel or tpl_data is null.'
+                );
+            }
 
             if (isset($c[$vl]['total'])) {
                 $c[$vl]['total'] += $row['val'];
@@ -223,6 +232,15 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
+            if (is_null($center)
+                || is_null($vl)
+                || is_null($c)
+            ) {
+                throw new \LorisException(
+                    'Could not calculate double data-entry behavioural ' .
+                    'statistics. CenterID, VisitLabel or tpl_data is null.'
+                );
+            }
 
             if (isset($c[$vl]['total'])) {
                 $c[$vl]['total'] += $row['val'];
