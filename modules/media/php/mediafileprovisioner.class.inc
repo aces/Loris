@@ -42,7 +42,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     s.Visit_label as visitLabel,
                     l.language_label as languageLabel,
                			(SELECT Full_name FROM test_names WHERE Test_name=m.instrument) as fullName,
-               			s.CenterID as centerID,
+               			s.CenterID as centerId,
                			m.uploaded_by as uploadedBy,
                			m.date_taken as dateTaken,
                			substring(m.comments, 1, 50) as comments,

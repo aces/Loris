@@ -51,7 +51,7 @@ class MediaFile implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Returns the CenterID for this intance, for filters such as
+     * Returns the CenterID for this instance, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
      * @return integer The CenterID
