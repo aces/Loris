@@ -47,3 +47,37 @@
 	| `OptimumMaxDays `    | Candidate's maximum age in days for visit to be flagged as _within **optimal** parameters of the study_   | The only effect of this field is a YES/NO flag showing up on the instrument_list page|
 	| `WindowMidpointDays `| Candidate's ideal age in days for a visit                                                                 |  |
 	
+
+- Table: `Project`
+ 
+ 	*This table stores the list of projects configured for the study.*
+ 
+	|         Field        |                  Description                  |                                        Notes                                                 |
+	|:--------------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------------------:|
+	| `ProjectID`          | Identifier of the project                     | Avoid setting this field explicitly when inserting data, it auto increments.                 |
+	| `Name`               | Full name of the project                      |                                                                                              |
+	| `recruitmentTarget`  | Expected number of candidates to be recruited |                                                                                              |
+
+
+- Table: `subproject`
+ 
+ 	*This table stores the list of subprojects configured for the study.*
+ 
+	|        Field       |                  Description                  |                                     Notes                                    |
+	|:------------------:|:---------------------------------------------:|:----------------------------------------------------------------------------:|
+	| `SubprojectID`     | Identifier of the subproject                  | Avoid setting this field explicitly when inserting data, it auto increments. |
+	| `title`            | Name of the subproject                        |                                                                              |
+	| `useEDC`           | Use the Expected date Of Confinement          |                                                                              |
+	| `WindowDifference` |                                               | Deprecated ??                                                                |
+	| `RecruitmentTarget`| Expected number of candidates to be recruited |                                                                              |
+	
+	
+- Table: `project_subproject_rel`
+ 
+ 	*This table stores the association of projects with subprojects*
+ 
+	|            Field          |                    Description                   |                                     Notes                                    |
+	|:-------------------------:|:------------------------------------------------:|:----------------------------------------------------------------------------:|
+	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. |
+	| `ProjectID `              | Project identifier                               |                                                                              |
+	| `SubprojectID `           | Subproject identifier                            |                                                                              |
