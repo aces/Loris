@@ -8,7 +8,7 @@ Field Types, by Category :
 
 <u>Information</u>
 
-  • Header :: Used to specify a title for the page or section of the instrument. Text will appear in boldface at the centre of the page.
+  • Header :: Used to specify a title for the page or section of the instrument. Text will appear in boldface at the center of the page.
 
   • Label :: Functions as a subtitle to introduce a subset of questions
 

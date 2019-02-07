@@ -4,7 +4,7 @@
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
@@ -135,7 +135,7 @@ function uploadFile()
         ]
     );
 
-    if (!isset($sessionID) || count($sessionID) < 1) {
+    if (!isset($sessionID) || strlen($sessionID) < 1) {
         showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'."
@@ -196,35 +196,35 @@ function viewData()
 function getUploadFields()
 {
 
-    $db =& Database::singleton();
+    $db   = \NDB_Factory::singleton()->database();
+    $user = \User::singleton();
 
-    $instruments = $db->pselect(
-        "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
-    );
-    $candidates  = $db->pselect(
-        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
-        []
+    // Select only candidates that have had visit at user's sites
+    $qparam       = array();
+    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
+                      FROM candidate c
+                      LEFT JOIN session s USING (CandID)
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
+
+    if (!$user->hasPermission('access_all_profiles')) {
+        $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
+        $qparam['cid'] = implode(",", $user->getCenterIDs());
+    } else {
+        $sessionQuery .= " ORDER BY c.PSCID ASC";
+    }
+    $sessionRecords = $db->pselect(
+        $sessionQuery,
+        $qparam
     );
 
-    $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList  = toSelect($candidates, "PSCID", null);
-    $candIdList      = toSelect($candidates, "CandID", "PSCID");
+    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
+    $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData    = [];
-    $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
-        "FROM candidate c ".
-        "LEFT JOIN session s USING(CandID) ".
-        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
-        "ORDER BY c.PSCID ASC",
-        []
-    );
-
+    $sessionData = [];
     foreach ($sessionRecords as $record) {
 
         // Populate sites
@@ -312,7 +312,6 @@ function getUploadFields()
 
     $result = [
                'candidates'  => $candidatesList,
-               'candIDs'     => $candIdList,
                'visits'      => $visitList,
                'instruments' => $instrumentsList,
                'sites'       => $siteList,

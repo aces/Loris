@@ -17,6 +17,11 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// We don't want PHP to automatically add cache control headers unless
+// we explicitly generate them in the request response. (This needs
+// to be done before NDB_Client starts the PHP session.)
+session_cache_limiter("");
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();

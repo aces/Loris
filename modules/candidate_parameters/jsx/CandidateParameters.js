@@ -5,12 +5,34 @@ import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
 import {Tabs, TabPane} from 'Tabs';
 
+/**
+ * Candidate Parameters Module page.
+ *
+ * Serves as an entry point to the module, rendering Candidate Parameters Component page on load.
+ *
+ * Renders Candidate Parameters main page, consisting of the following components:
+ * - CandidateInfo
+ * - ParticipantStatus
+ * - ProbandInfo
+ * - FamilyInfo
+ * - ConsentStatus
+ * - Tabs
+ *
+ * @author Loris Team
+ * @version 1.0.0
+ *
+ */
 class CandidateParameters extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.getTabPanes = this.getTabPanes.bind(this);
+  }
 
   getTabPanes(tabList) {
     const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
     const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
-    const tabPanes = Object.keys(tabList).map(function(key) {
+    const tabPanes = Object.keys(tabList).map(key => {
       const TabContent = tabList[key].component;
       return (
         <TabPane TabId={tabList[key].id} key={key}>
@@ -60,7 +82,25 @@ class CandidateParameters extends React.Component {
   }
 }
 
-CandidateParameters.propTypes = {};
-CandidateParameters.defaultProps = {};
+CandidateParameters.propTypes = {
+  candID: React.PropTypes.string.isRequired
+};
 
-export default CandidateParameters;
+/**
+ * Render Candidate Parameters component on page load
+ */
+const args = QueryString.get(document.currentScript.src);
+
+window.addEventListener("load", () => {
+  const candidateParameters = (
+    <div className="page-candidate-parameters">
+      <CandidateParameters
+        Module="candidate_parameters"
+        candID={args.candID}
+      />
+    </div>
+  );
+
+  ReactDOM.render(candidateParameters, document.getElementById("lorisworkspace"));
+});
+

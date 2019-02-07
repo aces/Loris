@@ -33,7 +33,7 @@
           {$study_title}
         </div>
         <div class="github-logo">
-          <a href="https://github.com/aces/Loris" target="_blank">
+          <a href="https://github.com/aces/Loris" target="_blank" rel="noopener noreferrer">
             <img src="{$baseurl}/images/GitHub-Mark-Light-64px.png" alt="Github"/>
           </a>
         </div>
