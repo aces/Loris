@@ -58,4 +58,6 @@ The tarchive tables used by the DICOM archive must be populated by
 the imaging `dicomTar.pl` script before there is any data in the module.
 
 The menu for the DICOM Archive module links to the imaging browser
-module, for scans which have been successfully inserted.
+module, for scans which have been successfully inserted. Clicking on this link
+will download a copy of the DICOM tar file. Note that the `PatientName` field is
+prepended to the downloaded file though it is not stored this way on the server.

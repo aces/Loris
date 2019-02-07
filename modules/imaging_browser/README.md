@@ -92,3 +92,5 @@ For downloading large DICOM files, it may be necessary to increase the
   as configured by the study.
 - The control panel on the "View Session" page includes links to the DICOM Archive 
   and download capabilities for any DICOM tars associated with the given session.
+  Note that DICOM downloads will be prepended with the `PatientName` field 
+  though they are not actually stored this way on the filesystem.

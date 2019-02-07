@@ -286,7 +286,7 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             //instrument permissions not used...
             return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
