@@ -396,7 +396,7 @@ class Database
             $query = "INSERT INTO $table SET ";
         }
         $prepQ  = $query;
-        $query .= $this->_implodeWithKeys(', ', $set);
+        $query .= $this->_implodeWithKeys(', ', $set, 'set_');
 
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
@@ -461,7 +461,7 @@ class Database
     function replace(string $table, array $set): void
     {
         $query  = "REPLACE INTO $table SET ";
-        $query .= $this->_implodeWithKeys(', ', $set);
+        $query .= $this->_implodeWithKeys(', ', $set, 'set_');
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -548,9 +548,9 @@ class Database
          * the top of the page when showDatabaseQueries is on. It isn't
          * actually executed. */
         $query  = "UPDATE $table SET ";
-        $query .= $this->_implodeWithKeys(', ', $set);
+        $query .= $this->_implodeWithKeys(', ', $set, 'set_');
         $query .= " WHERE ";
-        $where  = $this->_implodeWithKeys(' AND ', $i_where);
+        $where  = $this->_implodeWithKeys(' AND ', $i_where, 'where_');
 
         /* This generates the version of the update statement which is
          * executed. */
@@ -607,7 +607,7 @@ class Database
     function delete(string $table, array $where): void
     {
         $query  = "DELETE FROM $table WHERE ";
-        $where  = $this->_implodeWithKeys(' AND ', $where);
+        $where  = $this->_implodeWithKeys(' AND ', $where, 'where_');
         $query .= $where;
 
         if (DEBUG) {
@@ -981,22 +981,26 @@ class Database
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string               $glue      The glue to pass to php's implode
-     *                                        function
-     * @param array<string,string> $dataArray The array with keys to implode
+     * @param string $glue      The glue to pass to php's implode function
+     * @param array  $dataArray The array with keys to implode
+     * @param string $clause    The type of clause set_|where_
      *
      * @return string
      */
-    function _implodeWithKeys(string $glue, array $dataArray): string
-    {
+    function _implodeWithKeys(
+        string $glue,
+        array $dataArray,
+        string $clause = 'set_'
+    ): string {
         $output = array();
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
 
         foreach ($dataArray as $key => $item ) {
-            if ($item===null || $item==='') {
-                $output[] = "`$key`=NULL";
+            if (is_null($item)) {
+                $output[] = $clause == 'where_'
+                ? "`$key` IS NULL" : "`$key` = NULL";
             } else {
                 $item     = $this->quote((string) $item);
                 $output[] = "`$key`=$item";
@@ -1036,12 +1040,16 @@ class Database
 
         $output = array();
         foreach ($dataArray as $key => $item ) {
-            $varname  = str_replace("%", "_percent_", $key);
-            $output[] = "`$key`=:$prefix$varname";
-            if ($exec_vals !== null) {
-                $exec_vals["$prefix$varname"] = $item;
+            $varname = str_replace("%", "_percent_", $key);
+            if (is_null($item)) {
+                $output[] = $prefix == 'where_'
+                ? "`$key` IS NULL" : "`$key` = NULL";
+            } else {
+                $output[] = "`$key`=:$prefix$varname";
+                if ($exec_vals !== null) {
+                    $exec_vals["$prefix$varname"] = $item;
+                }
             }
-
         }
         return implode($glue, $output);
     }
