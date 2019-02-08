@@ -151,7 +151,6 @@ class SearchableDropdown extends React.Component {
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.getTextInputValue = this.getTextInputValue.bind(this);
   }
 
   getKeyFromValue(value) {
@@ -168,6 +167,7 @@ class SearchableDropdown extends React.Component {
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
+    this.props.onUserInput(this.props.name + '_temp', e.target.value);
     this.props.onUserInput(this.props.name, value);
   }
 
@@ -178,14 +178,10 @@ class SearchableDropdown extends React.Component {
       let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
+        this.props.onUserInput(this.props.name + '_temp', '');
         this.props.onUserInput(this.props.name, '');
       }
     }
-  }
-
-  getTextInputValue() {
-    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
   }
 
   render() {
@@ -224,7 +220,7 @@ class SearchableDropdown extends React.Component {
         value = options[this.props.value];
         // else, use input text value
       } else {
-        value = this.getTextInputValue();
+        value = this.props.tempVal;
       }
     }
 
@@ -274,6 +270,8 @@ SearchableDropdown.propTypes = {
     React.PropTypes.string,
     React.PropTypes.array
   ]),
+  // tempVal to retain intermediary user input
+  tempVal: React.PropTypes.string,
   class: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
@@ -288,6 +286,7 @@ SearchableDropdown.defaultProps = {
   strictSearch: true,
   label: '',
   value: undefined,
+  tempVal: undefined,
   id: null,
   class: '',
   disabled: false,
