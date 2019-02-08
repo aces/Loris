@@ -1,4 +1,4 @@
-FROM mysql:5.5
+FROM mysql:5.7
 
 COPY SQL/0000-00-00-schema.sql /0000-00-00-schema.sql
 COPY SQL/0000-00-01-Permission.sql /0000-00-01-Permission.sql

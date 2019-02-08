@@ -237,7 +237,7 @@ class SinglePointLogin
      * Checks whether a given username and password are valid
      *
      * @param string $username The username to validate
-     * @param string $password The username to validate
+     * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
      *                         out a login or password expiry
@@ -245,7 +245,7 @@ class SinglePointLogin
      *                         If false, it won't provide any output
      *                         in those situation.
      *
-     * @return bool true if the username and password are valid
+     * @return bool False unless account is valid and password correct.
      * @access public
      */
     function passwordAuthenticate($username, $password, $redirect = true)
@@ -308,85 +308,96 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (($row['User_count'] ?? 0) == 1) {
-            // validate passsword
-            $oldhash = $row['Password_hash'];
-            if (password_verify($password, $oldhash)) {
-                if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                    $user =& User::factory($username);
-                    $user->updatePassword($password);
-                }
-
-                if ($row['Active'] == 'N'
-                    || $this->disabledDueToInactivity($username, 365)
-                ) {
-                    $this->_lastError = "Your account has been deactivated."
-                        . " Please contact your project administrator to"
-                        . " reactivate this account.";
-                    $this->insertFailedDetail(
-                        "user account not active",
-                        $setArray
-                    );
-
-                    return false;
-                }
-
-                // check if the account is longer active
-                $date       = new DateTime();
-                $currentDay = $date->getTimestamp();
-
-                if (($row['active_to'] != null)
-                    && ($currentDay > strtotime($row['active_to']))
-                ) {
-                    $this->_lastError = "Your account has expired."
-                        . " Please contact your project administrator to re-activate"
-                        . " this account.";
-                    return false;
-
-                }
-
-                // check if the account is active
-                if (($row['active_from'] != null)
-                    && ($currentDay < strtotime($row['active_from']))
-                ) {
-                    $this->_lastError = "Your account is not active yet."
-                        ." According to our records it will be active from 
-			{$row['active_from']}"
-                        . " Please contact your project administrator";
-                    return false;
-
-                }
-
-                if ($row['Pending_approval'] == 'Y') {
-                    $this->_lastError = "Your account has not yet been activated."
-                        . " Please contact your project administrator to activate"
-                        . " this account.";
-                    $this->insertFailedDetail("user account pending", $setArray);
-                    return false;
-                }
-
-                // save the new password if the last password expired
-                if ($row['Expired']) {
-                    $success = $this->save();
-
-                    if ($success == false) {
-                        if ($redirect) {
-                            $this->showPasswordExpiryScreen();
-                        }
-                        return false;
-                    }
-                }
-
-                // user is valid
-                $this->_username = $row['UserID'];
-
-                $DB->insert('user_login_history', $setArray);
-                return true;
-            }
+        if (intval($row['User_count'] ?? 0) !== 1) {
+            /* Display generic failure message to front-end so that an
+             * attacker will have a harder time knowing the difference
+             * between a bad username and a bad password.
+             */
+            $this->_lastError = "Incorrect username or password.";
+            return false;
         }
+        // Validate passsword
+        $oldhash = $row['Password_hash'];
+        if (password_verify($password, $oldhash)) {
+            // Rehash according to latest standards if necessary.
+            if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+                $user = \User::factory($username);
+                $user->updatePassword($password);
+            }
 
-        // bad usename or password
-        $this->_lastError = "Incorrect email or password";
+            // Check whether the account is expired.
+            $date       = new DateTime();
+            $currentDay = $date->getTimestamp();
+
+            if (($row['active_to'] != null)
+                && ($currentDay > strtotime($row['active_to']))
+            ) {
+                $this->_lastError = "Your account has expired."
+                    . " Please contact your project administrator to re-activate"
+                    . " this account.";
+                return false;
+            }
+
+            // Check if the account is active.
+            if (($row['active_from'] != null)
+                && ($currentDay < strtotime($row['active_from']))
+            ) {
+                $this->_lastError = "Your account is not active yet."
+                    ." According to our records it will be active from 
+            {$row['active_from']}"
+                . " Please contact your project administrator";
+                return false;
+            }
+
+            // Check whether account needs to be approved by an admin
+            if ($row['Pending_approval'] == 'Y') {
+                $this->_lastError = "Your account has not yet been activated."
+                    . " Please contact your project administrator to activate"
+                    . " this account.";
+                $this->insertFailedDetail("user account pending", $setArray);
+                return false;
+            }
+            if ($row['Active'] == 'N'
+                || $this->disabledDueToInactivity($username, 365)
+            ) {
+                $this->_lastError = "Your account has been deactivated."
+                    . " Please contact your project administrator to"
+                    . " reactivate this account.";
+                $this->insertFailedDetail(
+                    "user account not active",
+                    $setArray
+                );
+
+                return false;
+            }
+
+            // Save the new password if the last password expired
+            if ($row['Expired']) {
+                $success = $this->save();
+
+                if ($success == false) {
+                    if ($redirect) {
+                        $this->showPasswordExpiryScreen();
+                    }
+                    return false;
+                }
+            }
+            // Allow a user to login if none of the previous cases have occurred
+            $this->_username = $row['UserID'];
+
+            $DB->insert('user_login_history', $setArray);
+            return true;
+        }
+        /* When the password is wrong, log this detail for rate-limiting
+         * purposes.
+         */
+        $this->insertFailedDetail(
+            "Bad password",
+            $setArray
+        );
+
+        // Fail by default with a generic error message
+        $this->_lastError = "Incorrect username or password.";
         return false;
     }
 

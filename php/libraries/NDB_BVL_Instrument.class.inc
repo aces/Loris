@@ -287,7 +287,7 @@ class NDB_BVL_Instrument extends NDB_Page
         )) {
             //instrument permissions not used...
             return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
@@ -1417,7 +1417,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
@@ -2051,7 +2051,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i
+            "SELECT i.Date_taken, c.DoB FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2081,7 +2081,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
-            "SELECT c.PSCID FROM $this->testName i
+            "SELECT c.PSCID FROM $this->table i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2251,7 +2251,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
 
         $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
 

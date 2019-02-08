@@ -25,6 +25,8 @@ namespace LORIS\help_editor;
  */
 class Help_Editor extends \NDB_Menu_Filter
 {
+    public $skipTemplate = true;
+
      /**
        *  Checking user permissions
        *
@@ -53,27 +55,25 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "helpChild.content as Content";
-        $this->columns  = array(
-                           'helpChild.helpID as helpID',
-                           'helpChild.topic as Topic',
-                           'helpChild.parentID as Parent_ID',
-                           'helpParent.parentID as ParentTopic_ID',
-                           'helpParent.topic as Parent_Topic',
-                           $contentColumn,
-                          );
-        $this->query    = $query;
-        $this->order_by = 'helpChild.helpID';
-        $this->headers  = array(
-                           'HelpID',
-                           'Topic',
-                           'ParentID',
-                           'ParentTopicID',
-                           'Parent_Topic',
-                           'Content',
-                          );
-        $this->tpl_data['hiddenHeaders']
-            = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);
+        $contentColumn      = "helpChild.content as Content";
+        $this->columns      = array(
+                               'helpChild.helpID as helpID',
+                               'helpChild.topic as Topic',
+                               'helpChild.parentID as Parent_ID',
+                               'helpParent.parentID as ParentTopic_ID',
+                               'helpParent.topic as Parent_Topic',
+                               $contentColumn,
+                              );
+        $this->query        = $query;
+        $this->order_by     = 'helpChild.helpID';
+        $this->headers      = array(
+                               'HelpID',
+                               'Topic',
+                               'ParentID',
+                               'ParentTopicID',
+                               'Parent_Topic',
+                               'Content',
+                              );
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter  = array('topic' => 'helpChild.topic');
@@ -97,68 +97,26 @@ class Help_Editor extends \NDB_Menu_Filter
 
         // add form elements
         $this->addBasicText('topic', 'Help topic:');
-        $this->addBasicText('keyword', 'Search keyword');
+        $this->addBasicText('keyword', 'Search keyword:');
     }
-
-     /**
-       * SetDataTableRows
-       *
-       * @param int $count the value of count
-       *
-       * @return void
-       */
-    function _setDataTableRows($count)
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string json encoded string of the headers and data from this table
+     */
+    function toJSON()
     {
-        $DB = \Database::singleton();
-        //Get the default values
-        // $result will contain an array of size n by 2.
-        // this must be transposed to create a dictionary of IDs to Topics
-        $result = $DB->pselect("SELECT helpID, topic from help", array());
-        foreach ($result as $row) {
-            $helpTopics[$row['helpID']] = $row['topic'];
-        }
-        $x = 0;
+        $result = $this->toArray();
+        $result['hiddenHeaders'] = [
+                                    'HelpID',
+                                    'ParentID',
+                                    'ParentTopicID',
+                                   ];
+        $result['form']          = $this->form->form;
 
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                // Set front-end values for child topics
-                $helpID = array_search($val, $helpTopics);
-                if ($key === 'Topic') {
-                    // $helpID will be a string representing a number or false
-                    // so this logic statement should not provide unexpected results
-                    // should $helpID = "0", for example
-                    if (!$helpID) {
-                        error_log("Could not find helpID for value $val");
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['helpID'] = $helpID;
-                    }
-                    // set frontend parentID to item's parent topic, if it exists
-                    $this->tpl_data['items'][$x][$i]['parentID']
-                        = $item['Parent_Topic'];
-                    // set item's parent topic to backend parent, if it exists
-                    if (array_key_exists($item['Parent_Topic'], $helpTopics)) {
-                        $item['Parent_Topic'] = $helpTopics[$item['Parent_Topic']];
-                    }
-                    // this is to make sure sorting is done
-                    // on the topic and not the ID
-                }
-                // Set front-end values for parent topics
-                if ($key === 'Parent_Topic') {
-                    $this->tpl_data['items'][$x][$i]['parentID'] = '-1';
-                    $this->tpl_data['items'][$x][$i]['helpID']   = $helpID;
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = utf8_encode($val);
-
-                $i++;
-            }
-            $x++;
-        }
-        return true;
+        return json_encode($result);
     }
-
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -172,10 +130,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-             $baseURL . "/help_editor/js/help_editor_helper.js",
-             $baseURL . "/help_editor/js/columnFormatter.js",
-            )
+            array($baseURL . "/help_editor/js/help_editor.js")
         );
     }
 }

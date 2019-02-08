@@ -6,7 +6,10 @@
     "doc": "docs",
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "sweetalert2": "^7.29.2"
+  },
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-loader": "6.2.10",

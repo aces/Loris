@@ -231,17 +231,19 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 SeriesUID,
                 md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run))
                   as hash,
-                mri_protocol_violated_scans.ID as join_id,
+                mpvs.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
-            FROM mri_protocol_violated_scans
+            FROM mri_protocol_violated_scans AS mpvs
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID
+            ON (violations_resolved.ExtID=mpvs.ID
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
             LEFT JOIN candidate c
-            ON (mri_protocol_violated_scans.CandID = c.CandID)
+            ON (mpvs.CandID = c.CandID)
             LEFT JOIN session s
-            ON (mri_protocol_violated_scans.CandID = s.CandID)
+            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label 
+                AND mpvs.CandID = s.CandID
+            )
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL"
@@ -261,27 +263,27 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                               TimeRun
                    )
                 ) as hash,
-                mri_violations_log.LogID as join_id,
+                mrl.LogID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
-            FROM mri_violations_log
+            FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type
-            ON (mri_scan_type.ID=mri_violations_log.Scan_type)
+            ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mri_violations_log.LogID 
+            ON (violations_resolved.ExtID=mrl.LogID 
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
-            ON (mri_violations_log.CandID=c.CandID)
+            ON (mrl.CandID=c.CandID)
             LEFT JOIN session s
-            ON (mri_violations_log.CandID = s.CandID)
+            ON (mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
-                c.ProjectID as Project,
-                s.SubprojectID as Subproject,
+                null,
+                null,
                 MincFile,
                 null,
                 Reason,
@@ -294,18 +296,12 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                    )
                 ) as hash,
                 MRICandidateErrors.ID as join_id,
-                p.CenterID as Site,
+                null,
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 
             AND violations_resolved.TypeTable='MRICandidateErrors')
-            LEFT JOIN candidate c
-            ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
-            LEFT JOIN session s
-            ON (c.CandID = s.CandID)
-            LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL)
             as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
