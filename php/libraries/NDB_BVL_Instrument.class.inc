@@ -752,7 +752,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if ($this->jsonData !== true) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
-            $result = $db->update(
+            $db->update(
                 $this->table,
                 $values,
                 array('CommentID' => $this->getCommentID())
@@ -2099,9 +2099,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $age = array();
         if (empty($date)) {
-            $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
+            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
         } else {
-            $age = Utility::calculateAge($result['DoB'], $date);
+            $age = Utility::calculateAge($dates['DoB'], $date);
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
