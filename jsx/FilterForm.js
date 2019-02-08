@@ -64,7 +64,7 @@ class FilterForm extends React.Component {
   }
 
   /**
-   * Itterates through FilterForm children, sets necessary callback functions
+   * Iterates through FilterForm children, sets necessary callback functions
    * and initializes filterTable
    *
    * @return {Array} formChildren - array of children with necessary props

@@ -94,7 +94,8 @@ class Stats_Demographic extends \NDB_Form
         // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
         $tpl_data  = array();
-        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
+        $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
+            htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb('statistics');

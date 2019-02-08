@@ -38,15 +38,15 @@ class Stats_MRI extends \NDB_Form
     /**
      * InCenter function
      *
-     * @param string $centerID the value of centreID
-     * @param string $Centres  the value of Centres
+     * @param string $centerID the value of centerID
+     * @param string $Centers  the value of centers
      *
      * @return bool
      */
-    function _inCenter($centerID, $Centres)
+    function _inCenter($centerID, $Centers)
     {
-        foreach ($Centres as $Centre) {
-            if ($Centre['NumericID'] == $centerID) {
+        foreach ($Centers as $Center) {
+            if ($Center['NumericID'] == $centerID) {
                 return true;
             }
         }
@@ -63,7 +63,7 @@ class Stats_MRI extends \NDB_Form
      * @param string $dropdown_name     the value of dropdown_name
      * @param string $dropdown_opt      the value of dropdown_opt
      * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centres           the value of centres
+     * @param string $centers           the value of centers
      * @param string $data              the value of data
      * @param string $Subsection        the value of Subsection=''
      * @param string $disclamer         the value of disclamer=''
@@ -78,7 +78,7 @@ class Stats_MRI extends \NDB_Form
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centres,
+        $centers,
         $data,
         $Subsection="",
         $disclamer='',
@@ -102,7 +102,7 @@ class Stats_MRI extends \NDB_Form
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
-        $tpl_data['Centers']          = $centres;
+        $tpl_data['Centers']          = $centers;
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
@@ -123,7 +123,7 @@ class Stats_MRI extends \NDB_Form
              */
             if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
-                && $this->_inCenter($center, $centres)
+                && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
                 /* This array contains all the $subcategories as keys as well

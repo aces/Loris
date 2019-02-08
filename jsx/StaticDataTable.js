@@ -322,8 +322,7 @@ var StaticDataTable = React.createClass({
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
         searchString = data.toLowerCase();
-
-        match = (searchString.indexOf(searchKey) > -1);
+        match = (searchString === searchKey);
         if (match) {
           result = true;
         }

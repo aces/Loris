@@ -23,7 +23,17 @@ class DataIntegrityFlag extends React.Component {
       formData: {}
     };
 
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = element => {
+      this.filter = element;
+    };
+
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -76,10 +86,6 @@ class DataIntegrityFlag extends React.Component {
       {id: "setflag", label: "Update"}
     ];
 
-    const filterRef = function(f) {
-      this.filter = f;
-    }.bind(this);
-
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -87,7 +93,7 @@ class DataIntegrityFlag extends React.Component {
             Module={this.props.Module}
             name="data_integrity_filter"
             id="data_integrity_filter"
-            ref={filterRef}
+            ref={this.setFilterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}

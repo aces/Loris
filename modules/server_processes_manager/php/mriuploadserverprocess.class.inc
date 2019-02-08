@@ -31,12 +31,6 @@ class MriUploadServerProcess extends AbstractServerProcess
     const PROCESS_TYPE = 'mri_upload';
 
     /**
-     * Basename of the file used to set the environment variables before the
-     * upload can take place.
-     */
-    const ENVIRONMENT_BASENAME = 'environment';
-
-    /**
      * Path of the imaging upload script (relative the MRI files base path
      * found in the config).
      */
@@ -95,15 +89,9 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
         }
 
-        try {
-            $this->_mriCodePath = $config->getSetting('MRICodePath');
-        } catch(\ConfigurationException $exception) {
-            error_log(
-                "Unable to construct MriUploadTask: 
-                 config setting MRICodePath undefined"
-            );
-            throw $exception;
-        }
+        $this->_mriCodePath     = $config->getSetting('MRICodePath');
+        $this->_prodFile        = $config->getSetting('MriConfigFile');
+        $this->_environmentFile = $config->getSetting('EnvironmentFile');
 
         // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
