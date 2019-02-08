@@ -167,7 +167,7 @@ class SearchableDropdown extends React.Component {
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
-    this.props.onUserInput(this.props.name + '_temp', e.target.value);
+    this.props.onUserInput(this.props.name + 'Temp', e.target.value);
     this.props.onUserInput(this.props.name, value);
   }
 
@@ -178,7 +178,7 @@ class SearchableDropdown extends React.Component {
       let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        this.props.onUserInput(this.props.name + '_temp', '');
+        this.props.onUserInput(this.props.name + 'Temp', '');
         this.props.onUserInput(this.props.name, '');
       }
     }
