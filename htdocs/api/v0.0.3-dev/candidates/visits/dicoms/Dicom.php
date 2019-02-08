@@ -286,7 +286,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Perform the actual upload by executing the imaging uploader pipeline
      *
-     * @param mixed  $mri_upload_id      The upload id of the mri
+     * @param mixed  $mri_upload_id      The upload id of the DICOM fileset
      * @param string $uploaded_file_path The path to the uploaded file on Loris
      * @param bool   $trigger_pipeline   Trigger imaging pipeline manually
      *
@@ -318,7 +318,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Check if MRI Upload data (mri upload id etc) are valid before triggering
+     * Check if imaging Upload data (mri_upload_id etc) are valid before triggering
      * the Imaging pipeline
      *
      * @param mixed $data The data to validate
@@ -380,7 +380,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Print info about a Loris process
+     * Print info about a LORIS process
      *
      * @param array $idsToMonitor     IDs of the server processes to monitor
      * @param int   $mri_upload_id    Upload id of the DICOM fileset
