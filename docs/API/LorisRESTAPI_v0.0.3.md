@@ -836,8 +836,8 @@ If the fileset is not a phantom, set X-Is-Phantom as follows:
 
 
 X-Overwrite is an optional header. It can be used to overwrite or rename 
-the Dicom fileset that has been uploaded before. By default the server will 
-reject modifying a previously uploaded Dicom fileset.
+the DICOM fileset that has been uploaded before. By default the server will 
+reject modifying a previously uploaded DICOM fileset.
 
 To overwrite the fileset, set X-Overwrite as follows:
 
@@ -857,10 +857,11 @@ Returns JSON data upon success having the form:
 }
 ```
 
-mri_upload_id is the Upload ID for the DICOM fileset.
+mri_upload_id is the UploadID field of the mri_upload table for the DICOM 
+fileset that has been uploaded.
 
 A file that has been succesfully uploaded will live in the location that is 
-specified in Loris for 'MRI-Upload Directory' in the "Paths" configuration.
+specified in LORIS for 'MRI-Upload Directory' in the "Paths" configuration.
 
 ### 5.3 Process DICOM fileset
 ```
