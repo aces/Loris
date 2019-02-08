@@ -51,9 +51,9 @@ class Uploadfile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-                                
+
             if ($this->uploadDocFile()) {
-            return (new \LORIS\Http\Response())
+                return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
@@ -62,9 +62,9 @@ class Uploadfile extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
-             } else 
+            } else
              {
-               return (new \LORIS\Http\Response())
+                return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withHeader("Allow", "POST")
@@ -73,7 +73,7 @@ class Uploadfile extends \NDB_Page
                         json_encode("duplicate file name")
                     )
                 );
-             }
+            }
         }
         if ($request->getMethod() == "GET") {
             $value =  $request->getQueryParams();
@@ -96,7 +96,7 @@ class Uploadfile extends \NDB_Page
  */
     function uploadDocFile(): bool
     {
-        $uploadOK = false;
+        $uploadOK       = false;
         $editNotifier   = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -154,32 +154,32 @@ class Uploadfile extends \NDB_Page
                 'ERROR: Could not upload file. Contact your administrator.'
             );
         } else {
-           // todo check duplicate file name 
+            // todo check duplicate file name
             if (!$this->existFilename($fileName)) {
-            $success = $DB->insert(
-                'document_repository',
-                array(
-                 'File_category' => $category,
-                 'For_site'      => $site,
-                 'comments'      => $comments,
-                 'version'       => $version,
-                 'File_name'     => $fileName,
-                 'File_size'     => $fileSize,
-                 'Data_dir'      => $fileName,
-                 'uploaded_by'   => $name,
-                 'Instrument'    => $instrument,
-                 'PSCID'         => $pscid,
-                 'visitLabel'    => $visit,
-                 'File_type'     => $fileType,
-                )
-            );
-            $msg_data['newDocument'] = $baseURL . "/document_repository/";
-            $msg_data['document']    = $fileName;
-            $uploadNotifier->notify($msg_data);
-            $uploadOK = true;
+                $success = $DB->insert(
+                    'document_repository',
+                    array(
+                     'File_category' => $category,
+                     'For_site'      => $site,
+                     'comments'      => $comments,
+                     'version'       => $version,
+                     'File_name'     => $fileName,
+                     'File_size'     => $fileSize,
+                     'Data_dir'      => $fileName,
+                     'uploaded_by'   => $name,
+                     'Instrument'    => $instrument,
+                     'PSCID'         => $pscid,
+                     'visitLabel'    => $visit,
+                     'File_type'     => $fileType,
+                    )
+                );
+                $msg_data['newDocument'] = $baseURL . "/document_repository/";
+                $msg_data['document']    = $fileName;
+                $uploadNotifier->notify($msg_data);
+                $uploadOK = true;
             }
         }
-       return $uploadOK;
+        return $uploadOK;
     }
 
     /**
@@ -291,23 +291,23 @@ class Uploadfile extends \NDB_Page
 
         return $selectOptions;
     }
- /**
+    /**
  * Check the find name in the database, if exists return false
  *
- * @param string $filename    file name
+ * @param string $filename file name
  *
  * @return bool
  */
     function existFilename(string $filename): bool
     {
-        $DB    = \Database::singleton();
-        $fileCount   =  $DB->pselectOne(
+        $DB        = \Database::singleton();
+        $fileCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository
              WHERE File_Name=:name",
-             array('name' => $filename)
-         );
+            array('name' => $filename)
+        );
         if ((int)$fileCount > 0) {
-           return true;
+            return true;
         }
         return false;
     }
