@@ -405,7 +405,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                 $this->JSON = array("processes" => $processesInfo);
             }
         } else if ($trigger_pipeline) {
-            $msg        = "Could not launch processing.";
+            $msg        = "Could not launch processing. Process list is empty.";
             $this->JSON = array_merge($this->JSON, array("error" => $msg));
         }
     }
