@@ -85,9 +85,42 @@ class CouchDBInstrumentImporter
         }
     }
 
-    function generateDocumentSQL($instrument)
+    function generateDocumentSQL($instrument, $JSONData)
     {
-        return "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM $instrument i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'";
+        $select = "SELECT 
+                        c.PSCID, 
+                        s.Visit_label, 
+                        f.Administration, 
+                        f.Data_entry, 
+                        f.Validity, 
+                        CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, 
+                        CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete ";
+        $from = "FROM 
+                        flag f 
+                        JOIN session s ON (s.ID=f.SessionID) 
+                        JOIN candidate c ON (c.CandID=s.CandID) 
+                        LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) ";
+        $where = "WHERE 
+                        f.CommentID NOT LIKE 'DDE%' 
+                        AND s.Active='Y' AND c.Active='Y'";
+
+        if ($JSONData) {
+            // the data is in the flag table, add the data column to the query
+            $extraSelect = ", f.Data ";
+
+            return $select . $extraSelect . $from . $where;
+        } else {
+            // add the SQL table to the query
+            $extraSelect = ", i.* ";
+            $extraJoin = "JOIN Clinical_CBC i ON (i.CommentID=f.CommentID) ";
+
+            return $select . $extraSelect . $from . $extraJoin . $where;
+
+        }
+
+
+        return
+            "";
     }
     function UpdateCandidateDocs($Instruments)
     {
@@ -97,12 +130,31 @@ class CouchDBInstrumentImporter
                     'unchanged' => 0,
                    );
         foreach ($Instruments as $instrument => $name) {
+            // Since the testname does not always match the table name in the database
+            // we need to instantiate the object to get the table name
+            // we need to check if it is a JSONData instrument or SQL data
+            $instrumentObj = \NDB_BVL_Instrument::factory(
+                $_REQUEST['test_name'],
+                '',
+                ''
+            );
+            $tableName = $instrumentObj->table;
+            $JSONData = $instrumentObj->isJSONData();
+
             $this->CouchDB->beginBulkTransaction();
-            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($instrument), array('inst' => $instrument));
+            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($instrument, $JSONData), array('inst' => $instrument));
             $preparedStatement->execute();
             while ($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID = $row['CommentID'];
-                $docdata   = $row;
+
+                if ($JSONData) {
+                    //Transform JSON object into an array and add treat it the same as SQL
+                    $instrumentData = json_decode($row['Data']);
+                    unset($row['Data']);
+                    $docdata = $row + $instrumentData;
+                } else {
+                    $docdata   = $row;
+                }
                 unset($docdata['CommentID']);
                 unset($docdata['PSCID']);
                 unset($docdata['Visit_label']);
