@@ -2067,11 +2067,11 @@ class NDB_BVL_Instrument extends NDB_Page
             );
             return json_decode($jsondata, true);
         } else {
-            $defaults = $db->pselect(
+            $defaults = $db->pselectRow(
                 "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
                 array('CID' => $instrumentInstance->getCommentID())
             );
-            return $defaults[0];
+            return $defaults ?? array();
         }
     }
 
