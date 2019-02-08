@@ -2092,10 +2092,10 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge(string $date): array
     {
-	    $dates = array(
-		    'Date_taken' => $this->getFieldValue('Date_taken'),
-		    'DoB'        => $this->getDoB(),
-	    );
+        $dates = array(
+                  'Date_taken' => $this->getFieldValue('Date_taken'),
+                  'DoB'        => $this->getDoB(),
+                 );
 
         $age = array();
         if (empty($date)) {
@@ -2629,7 +2629,13 @@ class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
-    public function isJSONData() : bool
+    /**
+     * Returns true if this instrument saves its data in JSON format to
+     * the flag column, rather than directly in MySQL tables.
+     *
+     * @return bool true if data is saved in the flag table
+     */
+    public function usesJSONData() : bool
     {
         return $this->jsonData;
     }

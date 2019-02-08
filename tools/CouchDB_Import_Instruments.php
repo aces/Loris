@@ -85,7 +85,7 @@ class CouchDBInstrumentImporter
         }
     }
 
-    function generateDocumentSQL($instrument, $JSONData)
+    function generateDocumentSQL(string $tablename) : string
     {
         $select = "SELECT 
                         c.PSCID, 
@@ -104,23 +104,18 @@ class CouchDBInstrumentImporter
                         f.CommentID NOT LIKE 'DDE%' 
                         AND s.Active='Y' AND c.Active='Y'";
 
-        if ($JSONData) {
-            // the data is in the flag table, add the data column to the query
+        if ($tablename === "") {
+            // the data is in the flag table, add the data column to the query and
+            // do not join the table.
             $extraSelect = ", f.Data ";
 
             return $select . $extraSelect . $from . $where;
-        } else {
-            // add the SQL table to the query
-            $extraSelect = ", i.* ";
-            $extraJoin = "JOIN Clinical_CBC i ON (i.CommentID=f.CommentID) ";
-
-            return $select . $extraSelect . $from . $extraJoin . $where;
-
         }
 
-
-        return
-            "";
+        // add the SQL table to the query
+        $extraSelect = ", i.* ";
+        $extraJoin = "JOIN $tablename i ON (i.CommentID=f.CommentID) ";
+        return $select . $extraSelect . $from . $extraJoin . $where;
     }
     function UpdateCandidateDocs($Instruments)
     {
@@ -138,11 +133,14 @@ class CouchDBInstrumentImporter
                 '',
                 ''
             );
-            $tableName = $instrumentObj->table;
-            $JSONData = $instrumentObj->isJSONData();
+            $JSONData = $instrumentObj->usesJSONData();
+            $tableName = "";
+            if ($JSONData === false) {
+                $tableName = $instrumentObj->table;
+            }
 
             $this->CouchDB->beginBulkTransaction();
-            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($instrument, $JSONData), array('inst' => $instrument));
+            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($tableName), array('inst' => $instrument));
             $preparedStatement->execute();
             while ($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID = $row['CommentID'];
