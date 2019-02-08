@@ -64,6 +64,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Visit Count'         => '#dynamictable > thead > tr > th:nth-child(12)',
             'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(13)',
             'Feedback'            => '#dynamictable > thead > tr > th:nth-child(14)',
+            'AdvancedFilter'      => '.pull-right > .btn:nth-child(1)',
            );
 
     /**
@@ -136,10 +137,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
-        $basicButton = $this->webDriver->findElement(WebDriverBy::Name("advanced"));
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
-        $this->assertEquals("Advanced", $basicButton->getAttribute("value"));
+        $element = $this->_loadingUI['AdvancedFilter'];
+            $buttonText = $this->webDriver->executescript(
+                "return document.querySelector('$element').textContent"
+            );
+        $this->assertContains("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -154,8 +158,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
-        $basicButton = $this->webDriver->findElement(WebDriverBy::Name("advanced"));
-        $basicButton->click();
+                $element = $this->_loadingUI['AdvancedFilter'];
+           $this->webDriver->executescript(
+                "return document.querySelector('$element').click()"
+            );
         // Go through each element and ensure it's on the page after clicking
         // advanced
         $scanDoneOptions = $this->webDriver->findElement(
