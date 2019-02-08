@@ -1,5 +1,7 @@
 <?php
 
+#!/usr/bin/php
+
 /**
  * this tools scores any registered instrument that was build using the NDB_BVL_Instrument class and that has a working score() method.
  * the cmd-line arguments need to contain a valid test_name and 'all' or 'one' + candid and SessionID
@@ -15,8 +17,17 @@
  * @package behavioural
  */
 
+//Ensure php version compatability
+//taken from php.net notes
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
+
+if (version_compare(phpversion(),'4.3.0','<'))
+{
+    define('STDIN',fopen("php://stdin","r"));
+    register_shutdown_function( create_function( '' , 'fclose(STDIN);
+                fclose(STDOUT); fclose(STDERR); fclose($logfp); return true;' ) );
+}
 
 /**
  * HELP SCREEN
@@ -43,9 +54,11 @@ if (!empty($argv[3])) $candID = $argv[3];
 if (!empty($argv[4])) $sessionID = $argv[4];
 
 
+require_once __DIR__ . "/../vendor/autoload.php";
 /**
  * inititalize
  */
+set_include_path(get_include_path().":../php/libraries:");
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();

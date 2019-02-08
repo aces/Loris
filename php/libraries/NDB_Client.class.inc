@@ -94,10 +94,11 @@ class NDB_Client
         }
 
         $config_additions = $DB->pselectOne(
-            "SELECT c.Value
-            FROM Config c
-            JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
-            WHERE cs.Name=:nm",
+            "
+		SELECT c.Value
+		FROM Config c
+			JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
+		WHERE cs.Name=:nm",
             array("nm" => "CSPAdditionalHeaders")
         );
         if (empty($config_additions)) {

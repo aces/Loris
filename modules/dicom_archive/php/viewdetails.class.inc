@@ -146,71 +146,26 @@ class ViewDetails extends \NDB_Form
     function _validateNamesIds()
     {
         $config =& \NDB_Config::singleton();
-        $db     = \Database::singleton();
         $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
-        // escape any forward slashes
-        $pNameRegex      = preg_replace(
-            '/\//',
-            '\/',
-            $dicomArchiveSettings['patientNameRegex']
-        );
-        $legoPhanRegex   = preg_replace(
-            '/\//',
-            '\/',
-            $dicomArchiveSettings['LegoPhantomRegex']
-        );
-        $livingPhanRegex = preg_replace(
-            '/\//',
-            '\/',
-            $dicomArchiveSettings['LivingPhantomRegex']
-        );
-        $pIDRegex        = preg_replace(
-            '/\//',
-            '\/',
-            $dicomArchiveSettings['patientIDRegex']
-        );
-
-        $isPhantom = $db->pselectRow(
-            "SELECT IsPhantom FROM mri_upload WHERE SessionID=:sid",
-            array('sid' => $this->tpl_data['archive']['SessionID'])
-        )['IsPhantom'] ?? null;
-
-        if ($isPhantom === 'Y') {
-             $isValid = preg_match(
-                 "/$legoPhanRegex/",
-                 $this->tpl_data['archive']['PatientName']
-             ) || preg_match(
-                 "/$livingPhanRegex/",
-                 $this->tpl_data['archive']['PatientName']
-             );
-        } else if ($isPhantom === 'N') {
-            $isValid = preg_match(
-                "/$pNameRegex/",
-                $this->tpl_data['archive']['PatientName']
-            );
+        if ((preg_match(
+            $dicomArchiveSettings['patientNameRegex'],
+            $this->tpl_data['archive']['PatientName']
+        )) || (preg_match(
+            $dicomArchiveSettings['LegoPhantomRegex'],
+            $this->tpl_data['archive']['PatientName']
+        )) || (preg_match(
+            $dicomArchiveSettings['LivingPhantomRegex'],
+            $this->tpl_data['archive']['PatientName']
+        ))) {
+            $this->tpl_data['archive']['patientNameValid'] = 1;
         } else {
-            // if scan was uploaded via non-imaging uploader method
-            // run patient name through all regex validations
-            $isValid = (preg_match(
-                "/$pNameRegex/",
-                $this->tpl_data['archive']['PatientName']
-            )) || (preg_match(
-                "/$legoPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
-            )) || (preg_match(
-                "/$livingPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
-            ));
-        }
-
-        $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
-        if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['patientNameValid'] = 0;
+            $this->tpl_data['archive']['PatientName']      = "INVALID - HIDDEN";
         }
 
         if (preg_match(
-            "/$pIDRegex/",
+            $dicomArchiveSettings['patientIDRegex'],
             $this->tpl_data['archive']['PatientID']
         )) {
             $this->tpl_data['archive']['patientIDValid'] = 1;

@@ -7,11 +7,15 @@ Options -Indexes
 RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
 
-# Login
-RewriteRule ^login[/]?$ /index.php [QSA,END]
-
+RewriteRule ^login Login.php?PrintLogin=true [L]
 # Projects API rewrite rules
-RewriteRule ^projects/? /index.php [QSA,END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2&PrintInstrumentForm=true [L]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Project=$1&Visits=true&PrintProjectJSON=true [L]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true&PrintProjectJSON=true [L]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true&PrintProjectJSON=true&InstrumentDetails=true [L]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true&PrintProjectJSON=true [L]
+
+RewriteRule ^projects(/*)$ Projects.php?PrintProjects=true [L]
 
 # Candidates API rewrite rules
 
@@ -35,4 +39,3 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/header
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/full$ candidates/visits/images/headers/Full.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintHeadersFull=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/(.*)$ candidates/visits/images/headers/Specific.php?CandID=$1&VisitLabel=$2&Filename=$3&Header=$4&PrintSpecificHeader=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)$ candidates/visits/images/Image.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageData=true [L]
-

@@ -18,7 +18,6 @@ $request = $_SERVER['REQUEST_URI'];
 if ($request != '/'
     && file_exists(__DIR__ . $request)
     && $request != "/acknowledgements/"
-    && strpos($request, "/api/") === false
 ) {
     // FIXME: Should this be in the main index.php to prevent the need
     // for 2 router files? (The AjaxHelper needs to be handled separatedly)

@@ -23,7 +23,7 @@ class LorisLoginTest extends LorisIntegrationTest
        $login->click();
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-       $this->assertContains("Incorrect username or password", $bodyText);
+       $this->assertContains("Incorrect email or password", $bodyText);
     }
 
     function testLoginSuccess()

@@ -101,7 +101,7 @@ class NDB_BVL_Battery
      *                              for
      * @param string  $stage        Either 'visit' or 'screening'
      * @param string  $visit_label  The visit label to create a battery for.
-     * @param integer $center_ID    The center of the candidate having a battery
+     * @param integer $center_ID    The centre of the candidate having a battery
      *                              created
      * @param boolean $firstVisit   Whether this is a first visit battery.
      *                              true means ONLY first visit
@@ -191,11 +191,8 @@ class NDB_BVL_Battery
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
 
-        // instantiate instrument object to get table name attribute
-        $obj = NDB_BVL_Instrument::factory($testName, '', '');
-
         // insert into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $commentID));
+        $success = $DB->insert($testName, array('CommentID' => $commentID));
 
         // insert into the flag table
         $success = $DB->insert(
@@ -212,7 +209,7 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
+        $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
         $success = $DB->insert(

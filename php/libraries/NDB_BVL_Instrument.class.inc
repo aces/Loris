@@ -1417,27 +1417,11 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
         return '';
-    }
-
-    /**
-     * Gets the subprojectID for the timepoint to which this instrument pertains
-     *
-     * @return int|null The subprojectID
-     */
-    function getSubprojectID(): ?int
-    {
-        $sessionID = $this->getSessionID();
-        if (!empty($sessionID)) {
-            $timepoint    = \Timepoint::singleton($sessionID);
-            $subprojectID = $timepoint->getSubprojectID();
-            return $subprojectID;
-        }
-        return null;
     }
 
 
@@ -2067,7 +2051,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->table i
+            "SELECT i.Date_taken, c.DoB FROM $this->testName i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2097,7 +2081,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
-            "SELECT c.PSCID FROM $this->table i
+            "SELECT c.PSCID FROM $this->testName i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
@@ -2267,7 +2251,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
 
         $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
 

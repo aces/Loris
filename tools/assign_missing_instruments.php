@@ -111,7 +111,7 @@ function populateVisitLabel($result, $visit_label)
         $visit_label
     );
 
-    $diff = array_unique(array_diff($defined_battery, $actual_battery));
+    $diff =array_diff($defined_battery, $actual_battery);
     if (!empty($diff)) {
         echo "\n CandID: ".$timePoint->getCandID()."  Visit Label:  ".
         $timePoint->getVisitLabel()."\nMissing Instruments:\n";

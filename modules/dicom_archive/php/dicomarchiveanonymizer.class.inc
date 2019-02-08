@@ -53,43 +53,13 @@ class DICOMArchiveAnonymizer implements Mapper
         $newrow = json_decode($resource->toJSON(), true);
         $cid    = $resource->getCenterID();
 
-        // escape any forward slashes
-        $pNameRegex      = preg_replace(
-            '/\//',
-            '\/',
-            $config['patientNameRegex']
-        );
-        $legoPhanRegex   = preg_replace(
-            '/\//',
-            '\/',
-            $config['LegoPhantomRegex']
-        );
-        $livingPhanRegex = preg_replace(
-            '/\//',
-            '\/',
-            $config['LivingPhantomRegex']
-        );
-        $pIDRegex        = preg_replace(
-            '/\//',
-            '\/',
-            $config['patientIDRegex']
-        );
-        if (!preg_match(
-            "/$pNameRegex/",
-            $newrow['Patient Name']
-        )
-            && !preg_match(
-                "/$legoPhanRegex/",
-                $newrow['Patient Name']
-            )
-            && !preg_match(
-                "/$livingPhanRegex/",
-                $newrow['Patient Name']
-            )
+        if (!preg_match($config['patientNameRegex'], $newrow['Patient Name'])
+            && !preg_match($config['LegoPhantomRegex'], $newrow['Patient Name'])
+            && !preg_match($config['LivingPhantomRegex'], $newrow['Patient Name'])
         ) {
             $newrow['Patient Name'] = 'INVALID - HIDDEN';
         }
-        if (!preg_match("/$pIDRegex/", $newrow['Patient ID'])) {
+        if (!preg_match($config['patientIDRegex'], $newrow['Patient ID'])) {
             $newrow['Patient ID'] = 'INVALID - HIDDEN';
         }
         return new DICOMArchiveRow($newrow, $cid);

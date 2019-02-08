@@ -82,7 +82,7 @@ class ModuleFileRouter implements RequestHandlerInterface
         );
 
         if (is_file($fullpath)) {
-            $resp = (new \LORIS\Http\Response)
+            $resp = (new \Zend\Diactoros\Response)
                 ->withStatus(200)
                 ->withBody(new \Zend\Diactoros\Stream($fullpath));
             if ($this->contenttype != "") {

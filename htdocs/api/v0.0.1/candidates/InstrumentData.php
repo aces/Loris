@@ -127,12 +127,10 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         if (!$this->bFlags) {
             $Values = \NDB_BVL_Instrument::loadInstanceData($this->Instrument);
 
-            unset(
-                $Values['CommentID'],
-                $Values['UserID'],
-                $Values['Testdate'],
-                $Values['Data_entry_completion_status']
-            );
+            unset($Values['CommentID']);
+            unset($Values['UserID']);
+            unset($Values['Testdate']);
+            unset($Values['Data_entry_completion_status']);
 
             $this->JSON[$this->Instrument->testName] = $Values;
         } else {

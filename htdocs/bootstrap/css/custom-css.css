@@ -454,16 +454,6 @@ a.btn.btn-primary {
   word-wrap: break-word;
 }
 
-/* Necessary formatting for swal2 while still with bootstrap v3 */
-.swal2-popup {
-  font-size: 1.6rem
-}
-
-/* Places swal above all other divs */
-.swal2-container {
-  z-index: 9999
-}
-
 /* Loader customizations */
 
 .loader {

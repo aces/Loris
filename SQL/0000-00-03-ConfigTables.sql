@@ -151,11 +151,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'QCed2_step', 'DTIPrep protocol step at which a secondary QCed dataset is produced (for example one without motion correction and eddy current correction would be saved at INTERLACE_outputDWIFileNameSuffix step of DTIPrep)', 1, 0, 'text', ID, 'Secondary QCed dataset', 17 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_series_description', 'Series description to be excluded from insertion into the database (typically localizers and scouts)', 1, 1, 'text', ID, 'Series description to exclude from imaging insertion', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ComputeDeepQC', 'Determines whether a call is made from LORIS-MRI to the DeepQC app for automatic QC prediction', 1, 0, 'boolean', ID, 'Compute automatic QC', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MriConfigFile', 'Name of the MRI config file (stored in dicom-archive/.loris_mri/)', 1, 0, 'text', ID, 'Name of the MRI config file', 19 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EnvironmentFile', 'Name of the environment file that need to be sourced for the imaging pipeline', 1, 0, 'text', ID, 'Name of the environment file', 20 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'compute_snr_modalities', 'Modalities for which the SNR should be computed when running the insertion MRI scripts', 1, 1, 'scan_type', ID, 'Modalities on which SNR should be calculated', 21 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reference_scan_type_for_defacing', 'Scan type to use as a reference for registration when defacing anatomical images (typically a T1W image)', 1, 0, 'scan_type', ID, 'Scan type to use as a reference for defacing (typically a T1W image)', 22 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'modalities_to_deface', 'Modalities for which defacing should be run and defaced image inserted in the database', 1, 1, 'scan_type', ID, 'Modalities on which to run the defacing pipeline', 23 FROM ConfigSettings WHERE Name="imaging_pipeline";
+
 --
 -- Filling Config table with default values
 --
@@ -208,10 +204,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "http://localhost/" FROM ConfigS
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientIDRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientNameRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./" FROM ConfigSettings WHERE Name="patientIDRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="patientNameRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=44;
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=45;
@@ -250,14 +246,3 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "localizer" FROM ConfigSettings 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "scout" FROM ConfigSettings cs WHERE cs.Name="excluded_series_description";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/issue_tracker" FROM ConfigSettings WHERE Name="issue_tracker_url";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'prod' FROM ConfigSettings cs WHERE cs.Name="mriConfigFile";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'environment' FROM ConfigSettings cs WHERE cs.Name="EnvironmentFile";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'flair' FROM ConfigSettings WHERE Name="compute_snr_modalities";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="reference_scan_type_for_defacing";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'flair' FROM ConfigSettings WHERE Name="modalities_to_deface";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="modalities_to_deface";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";

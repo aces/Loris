@@ -24,17 +24,7 @@ class DicomArchive extends React.Component {
       filter: {}
     };
 
-    /**
-     * Set filter to the element's ref for filtering
-     */
-    this.filter = null;
-    this.setFilterRef = element => {
-      this.filter = element;
-    };
-
-    /**
-     * Bind component instance to custom methods
-     */
+    // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -71,7 +61,7 @@ class DicomArchive extends React.Component {
   }
 
   resetFilters() {
-    this.filter.clearFilter();
+    this.refs.dicomFilter.clearFilter();
   }
 
   render() {
@@ -93,7 +83,7 @@ class DicomArchive extends React.Component {
           Module="dicom_archive"
           name="dicom_filter"
           id="dicom_filter"
-          ref={this.setFilterRef}
+          ref="dicomFilter"
           columns={2}
           formElements={this.state.Data.form}
           onUpdate={this.updateFilter}

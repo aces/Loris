@@ -70,7 +70,7 @@ class Project
                 );
 
                 if (empty($projectData)) {
-                    throw new \NotFound("No project named: $projectName");
+                    throw new \LorisException("No project named: $projectName");
                 }
 
                 $project = new Project();
