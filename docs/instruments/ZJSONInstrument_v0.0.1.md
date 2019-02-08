@@ -221,8 +221,7 @@ object has the following format:
                   "nameOfField",
                       ...
                 ]
-            },
-            ...
+            }
         ]
     }
 }
@@ -269,12 +268,7 @@ Each type of field may contain type specific options. These options will be brok
                     "displayIf": string, /* LORIS Logic Parser formula */
                     "disableIf": string, /* LORIS Logic Parser formula */
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -289,10 +283,8 @@ This will be the data type of the field's value within the `data` component upon
 ```js
 {
     "data" : {
-        "nameOfField" : `schema.fields.nameOfField.type`, 
-        ... 
-    },
-    ...
+        "nameOfField" : `schema.fields.nameOfField.type`
+    }
 }
 ```
 
@@ -320,12 +312,7 @@ The `rules` object contains 3 rules for validation and display: requireIf, displ
                     "displayIf": string, /* LORIS Logic Parser formula */
                     "disableIf": string, /* LORIS Logic Parser formula */
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -384,12 +371,7 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -434,12 +416,7 @@ The format is as follows:
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -475,7 +452,8 @@ A numeric field takes an int or a decimal as data input. It has the form of:
                 "rules": {
                     ...
                 }
-            ...
+        ...
+}
 ```
 
 `options.minValue`: Integer or decimal, depending on `nameOfField.type`.
@@ -487,11 +465,9 @@ A numeric field takes an int or a decimal as data input. It has the form of:
 
 `options.requireResponse`: Boolean. Default is true.
                            True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a
-                           condition - it is always either true or false.
-
-                           If true, an implementation should automatically add a 'not_answered'
-                           value, e.g. rendered as a checkbox, to allow explicit non-answering while                            still requiring some input value.
+                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+                           If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
+                           explicit non-answering while still requiring some input value.
 
 ### 3.2.4: Date and Time
 
@@ -516,28 +492,21 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
 `options.minValue`: Date or time, depending on `nameOfField.type`.
                     The earliest date or time the data can be.
 
-`options.maxValue`: Date or time, depending on 'nameOfField.type`.
+`options.maxValue`: Date or time, depending on `nameOfField.type`.
                     The latest date or time the data can be.
 
 `options.requireResponse`: Boolean. Default is true.
                            True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a
-                           condition - it is always either true or false.
-
-                           If true, an implementation should automatically add a 'not_answered'
-                           value, e.g. rendered as a checkbox, to allow explicit non-answering while                            still requiring some input value.
+                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+                           If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
+                           explicit non-answering while still requiring some input value.
 
 `options.readonly`: Boolean.
                     True or false that the field is read only i.e. not editable on the front-end but
@@ -565,21 +534,14 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
 `options.requireResponse`: Boolean. Default is true.
                            True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a
-                           condition - it is always either true or false.
-
-                           If true, a data input of "false" cannot be submitted, and a 'not_answered'                           value cannot be given.
+                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+                           If true, a data input of "false" cannot be submitted, and a 'not_answered' value cannot be given.
 
 `options.readonly`: Boolean.
                     True or false that the field is read only i.e. not editable on the front-end but
@@ -609,12 +571,7 @@ represented on the front-end by an input element. Its value is instead calculate
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -645,12 +602,7 @@ In general, a helper object has the same format as a field:
                     "displayIf": string, /* LORIS Logic Parser formula */
                     "disableIf": string, /* LORIS Logic Parser formula */
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -661,9 +613,8 @@ In general, a helper object has the same format as a field:
                The human readable description of this helper, provided in every available language,
                and also the text to be displayed in the instrument.
 
-               It may be rendered on the front-end as a header, depending on the helper type
-               i.e. this will be the content of the static helper itself, the header of the
-               section helper, or column header for the table.
+It may be rendered on the front-end as a header, depending on the helper type i.e. this will be the
+content of the static helper itself, the header of the section helper, or column header for the table.
 
 `options`: Required object of type-specific keys.
            It contains the type-dependent options for this helper, further described in section
@@ -678,7 +629,7 @@ While instrument `fields` have corresponding `data` associated with it upon form
 ### 4.1.1: Static
 
 A `helper` of type "static" represents headings, sub-headings, labels, or informational text that is required in
-an instrument. These can be rendered on the front-end as a `header`, `static`, or `link` element.
+an instrument. These can be rendered on the front-end as a header, static, or link element.
 Static helpers are some text displayed to provide information and without an accompanying data input.
 Static helpers do not have an `options` key.
 
@@ -695,12 +646,7 @@ Static helpers do not have an `options` key.
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -731,12 +677,7 @@ They often have rules which work together and may be interdependent. Groups have
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
@@ -769,21 +710,15 @@ as a "group" helper.
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
 `options.order`: Required array of strings.
-                 An array of the names of `fields` or `helpers`, in order, that are to be formatted
-                 within the row. It may contain any field, but only helpers of the type "static" and                  "group".
+                 An array of the names of `fields` or `helpers`, in order, that are to be
+                 formatted within the row. It may contain any field, but only helpers of the type "static" and "group".
 
-                 The size of this array must equal the `options.colSize` value of the table to which
-                 the row belongs.
+The size of this array must equal the `options.colSize` value of the table to which the row belongs.
 
 ### 4.1.4: Table
 
@@ -817,12 +752,7 @@ A table contains only "row" helpers whose `options.order` array must be of the s
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 `options.colSize` : Required int.
@@ -835,14 +765,15 @@ A table contains only "row" helpers whose `options.order` array must be of the s
                  An array of the names of `row` helpers, in order, that are to be formatted
                  within this table.
 
-                 The size of this array must equal `options.rowSize`.
+The size of this array must equal `options.rowSize`.
 
-                 At each index (or column) of every "row" element, the `helper` or `field` that is
-                 referenced inside that index has to have its `description` match. This description
-                 will be rendered as the column header if `options.showColHeaders` is true.
+At each index (or column) of every "row" element, the `helper` or `field` that is
+referenced inside that index has to have its `description` match. This description
+will be rendered as the column header if `options.showColHeaders` is true.
 
-                 The only exception is that a "static" helper will never have a corresponding header,                 as its `description` is the static text itself. A column of static elements can have
-                 an empty column header. This is true for only static elements.
+The only exception is that a "static" helper will never have a corresponding header, 
+as its `description` is the static text itself. A column of static elements can have
+an empty column header. This is true for only static elements.
 
 `options.showColHeaders`: Boolean. Default is true.
                           True or false that the table's column headers will be displayed as taken
@@ -857,8 +788,7 @@ A table contains only "row" helpers whose `options.order` array must be of the s
 
 ### 4.1.5: Section
 
-A helper of type "section" is a vertical grouping of elements whose `rules` can affect its children's
-rules.
+A helper of type "section" is a vertical grouping of elements whose `rules` can affect its children's rules.
 
 ```js
 {
@@ -866,7 +796,7 @@ rules.
         ...
         "helpers" : {
             "nameOfHelper" : {
-                "type": "group",
+                "type": "section",
                 "description": {
                     ...
                 },
@@ -881,29 +811,24 @@ rules.
                 "rules": {
                     ...
                 }
-            },
-            ...
-        },
         ...
-    },
-    ...
 }
 ```
 
-`options.order`: Required array of strings.
-                 An array of the names of `fields` or `helpers`, in order, that are to be formatted
-                 within this group. It may contain any field, but only helpers of the type "static".
+`options.order`: Required array of strings. An array of the names of `fields` or `helpers`, in order, that are to be
+                 formatted within this group. It may contain any field, but only helpers of the type "static".
 
-`options.showDesc`: Boolean. Default is true.
-                    True or false that the section's `description` is displayed as the header for
+`options.showDesc`: Boolean. Default is true. True or false that the section's `description` is displayed as the header for
                     section of elements.
 
-                    An implementation could choose to set this key to false, and display an
-                    independent "static" helper as a header instead.
+An implementation could choose to set this key to false, and display an independent "static" helper as a header instead.
  
 # 5.0: UI Properties
 
-The UI component of the Z-JSON Instrument contains information on how we render our `fields` and `helpers` objects on the front-end. It is composed of JSON objects whose keys match those of the field or helper object it's describing. This component should only make decisions on which HTML or HTML Form element those objects get rendered as, and nothing else. It may also provide additional UI properties that assist in the rendering.
+The UI component of the Z-JSON Instrument contains information on how we render our `fields` and `helpers` objects
+on the front-end. It is composed of JSON objects whose keys match those of the field or helper object it's describing.
+This component should only make decisions on which HTML or HTML Form element those objects get rendered as,
+and nothing else. It may also provide additional UI properties that assist in the rendering.
 
 The UI component object has the following general format:
 
@@ -922,41 +847,37 @@ The UI component object has the following general format:
 }
 ```
 
-A UI object type may or may not have type-specific `options` that configure the rendering of the front-end
-element.
+A UI object type may or may not have type-specific `options` that configure the rendering of the front-end element.
 
 ## 5.1 UI Types
 
 For fields:
 
-- [checkbox](#5.1.1-checkbox-element)
-- [date](#5.1.2-date-element)
-- [number](#5.1.3-numeric-element)
-- [radio](#5.1.4-radiobutton-element)
-- [select](#5.1.5-select-element)
-- [text](#5.1.6-text-element)
-- [textarea](#5.1.7-textarea-element)
-- [time](#5.1.8-time-element)
+- [checkbox](#511-checkbox-element)
+- [date](#512-date-element)
+- [number](#513-numeric-element)
+- [radio](#514-radiobutton-element)
+- [select](#515-select-element)
+- [text](#516-text-element)
+- [textarea](#517-textarea-element)
+- [time](#518-time-element)
 
 For helpers:
 
-- [header](#5.1.9-headeR) (from h1 to h6)
-- [link](#5.1.10-link)
-- [static](#5.1.11-static)
+- [header](#519-headeR) (from h1 to h6)
+- [link](#5110-link)
+- [static](#5111-static)
 
-These are all mappable to some LORIS React Form element, except for `header` which is native to HTML.
+These are all mappable to some LORIS React Form element, except for "header" which is native to HTML.
 
 ### 5.1.1 Checkbox Element
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
-            "type" : "checkbox",
-        },
-    ...
+            "type" : "checkbox"
+        }
     }
 }
 ```
@@ -965,13 +886,10 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
-            "type" : "date",
-        },
-    ...
+            "type" : "date"
+        }
     }
 }
 ```
@@ -980,13 +898,10 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
-            "type" : "number",
-        },
-    ...
+            "type" : "number"
+        }
     }
 }
 ```
@@ -995,7 +910,6 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
         ...
         "nameOfRadioButtons" : {
@@ -1003,25 +917,22 @@ These are all mappable to some LORIS React Form element, except for `header` whi
             "options" : {
                 "vertical" : boolean
             }
-        },
-    ...
+        }
     }
 }
 ```
 
-`options.vertical`: Boolean. True or false that the radio group is rendered vertically. The default value is false, or horizontally. 
+`options.vertical`: Boolean. True or false that the radio group is rendered vertically. The default value is false, or
+horizontally. 
 
 ### 5.1.5 Select Element
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
-            "type" : "select",
-        },
-    ...
+            "type" : "select"
+        }
     }
 }
 ```
@@ -1030,16 +941,13 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
             "type" : "text",
             "options": {
                 "placeholder": string
             }
-        },
-    ...
+        }
     }
 }
 ```
@@ -1050,16 +958,13 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
             "type" : "textarea",
             "options": {
                 "placeholder": string
             }
-        },
-    ...
+        }
     }
 }
 ```
@@ -1070,50 +975,42 @@ These are all mappable to some LORIS React Form element, except for `header` whi
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
-            "type" : "time",
-        },
-    ...
+            "type" : "time"
+        }
     }
 }
 ```
 
 ### 5.1.9 Header Element
 
-A header element renders a `static helper` that should be displayed with some level of prominence.
+A header element renders a "static" `helper` that should be displayed with some level of prominence.
 
 ```js
 {
-    ...
     "ui": {
-        ...
         "nameOfField" : {
             "type" : "header",
             "options": {
                 "level": int
             }
-        },
-    ...
+        }
     }
 }
 ```
 
-`options.level`: Int. The number indicating the level of the html heading element to be rendered i.e. h1, the highest and most prominent, and h6, the lowest and reserved for subheadings.
+`options.level`: Int. The number indicating the level of the html heading element to be rendered i.e. h1, the highest
+and most prominent, and h6, the lowest and reserved for subheadings.
 
 ### 5.1.10 Link Element
 
 ```js
 {
-    ...
     "ui": {
-        ...
-        "nameOfField" : {
+        "nameOfHelper" : {
             "type" : "link",
-        },
-    ...
+        }
     }
 }
 ```
@@ -1122,13 +1019,10 @@ A header element renders a `static helper` that should be displayed with some le
 
 ```js
 {
-    ...
     "ui": {
-        ...
-        "nameOfTextElement" : {
-            "type" : "static",
-        },
-    ...
+        "nameOfHelper" : {
+            "type" : "static"
+        }
     }
 }
 ```
