@@ -6,7 +6,7 @@
 **Sites** are defined in the `psc` table of the database.
 
 LORIS' default schema defines the first psc (CenterID=1) as the
-Data Coordinating Center or #DCC#.  This site is generally used as
+Data Coordinating Center or "DCC".  This site is generally used as
 dummy data and is assumed by the codebase to store non-study data,
 and so it not recommended to modify or use this site for registering
 real study data.
