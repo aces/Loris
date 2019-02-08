@@ -36,7 +36,7 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
 
     /**
      * Process processes an incoming request by delegating to $handler,
-     * and adds an HTTP ETag header to the response if possible.
+     * and adds an HTTP Content-Length header to the response if possible.
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request.
      * @param RequestHandlerInterface $handler The PSR15 handler to delegate
@@ -54,28 +54,21 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             return $handler->handle($request);
         }
 
-        $clientETag   = $request->getHeaderLine("If-None-Match") ?? false;
-        $endpointETag = $handler->ETag($request);
-        if ($clientETag  && $endpointETag === $clientETag) {
-            if ($endpointETag == $clientETag) {
+        $clientETag = $request->getHeaderLine("If-None-Match") ?? false;
+        if ($clientETag  && $handler->ETag($request) === $clientETag) {
+            if ($handler->ETag($request) == $clientETag) {
                 // It matches, so just return a 304 Not modified instead of
                 // doing any work.
-                return (new \LORIS\Http\Response())
-                    ->withStatus(304)
-                    ->withHeader('ETag', $endpointETag);
+                return (new \LORIS\Http\Response())->withStatus(304);
             }
         }
-
+    
         // It either doesn't match or the client didn't send an ETag. In either
         // case, we calculate one and add it to the response header after calling
         // the handler.
-        $response = $handler->handle($request);
-        if (empty($response->getHeaderLine('Etag'))) {
-            $response = $response->withHeader(
-                "ETag",
-                $handler->ETag($request)
-            );
-        }
-        return $response;
+        return $handler->handle($request)->withHeader(
+            "ETag",
+            $handler->ETag($request)
+        );
     }
 }
