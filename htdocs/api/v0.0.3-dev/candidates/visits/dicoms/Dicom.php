@@ -189,7 +189,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                 true
             );
         } else {
-            $msg = "Could not find file.";
+            $msg = "Could not find file " . $data->Filename;
             $this->header("HTTP/1.1 500 Internal Server Error");
             $this->error($msg);
             $this->JSON = array("error" => $msg);
