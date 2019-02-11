@@ -239,8 +239,6 @@ class Next_Stage extends \NDB_Form
         // check date pairs
         if (empty($values['date1'])) {
             $errors['date1'] .= "Date is required. \n";
-        } elseif (!\Utility::_checkDate($values['date1'])) {
-            $errors['date1'] .= "Date is not a valid date. \n";
         }
 
         if ($values['date1'] != $values['date2']) {
