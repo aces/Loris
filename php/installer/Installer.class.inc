@@ -335,7 +335,7 @@ class Installer
         // what it is, as long as the server always uses the same one to
         // validate tokens. So we use the new user password code to generate a
         // really long password and use that as the key.
-        $this->_updateConfig($DB, "JWTKey", User::newPassword(64));
+        $this->_updateConfig($DB, "JWTKey", \User::newPassword(64));
     }
 
     /**
