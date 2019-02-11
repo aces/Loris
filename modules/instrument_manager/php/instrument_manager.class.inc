@@ -153,15 +153,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $status = 500;
         }
 
-        if ($this->instrumentExists($instrument)) {
-            return new \LORIS\Http\Response\Conflict(
-                self::ALREADY_INSTALLED
-            );
-        }
-
         $fullpath = $this->path . "project/instruments/" . $filename;
-
-        if (file_exists($fullpath)) {
+        if (file_exists($fullpath) || $this->instrumentExists($instrument)) {
             /**
              * Don't update the file if it already exists on the back-end.
              * Instead, inform users that an administrator must install it on
