@@ -250,8 +250,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "document.querySelector('$btn').click();"
         );
         // input PSCID and DCCID
-        $dccid = ".col-xs-12:nth-child(1) > .row .form-control";
-        $pscid = ".col-xs-12:nth-child(2).form-control";
+        $dccid = "#lorisworkspace > div > div:nth-child(1) > div >".
+                 " div:nth-child(2)>form>div>div:nth-child(1)>div>div>input";
+        $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
+                 " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
         $this->webDriver->executescript(
             "input = document.querySelector('$dccid');
@@ -273,10 +275,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         //to do check the url
         $this->webDriver->executescript(
             "document.querySelector('$btn').click();"
-        );
+        );sleep(2);
         $URL =  $this->webDriver->executescript("return window.location.href;");
         $this->assertContains("300001", $URL);
-
         $this->resetPermissions();
     }
     /**
