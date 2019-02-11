@@ -140,7 +140,7 @@ class Installer
         // Check that the PDO is able to connect to MySQL.
         try {
             // and check that the MySQL driver is available.
-            $drivers = PDO::getAvailableDrivers();
+            $drivers = \PDO::getAvailableDrivers();
             if (in_array("mysql", $drivers) == false) {
                 $this->_lastErr = "You do not appear to have MySQL support"
                 . " available in PHP. Aborting.\n"
