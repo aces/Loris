@@ -251,12 +251,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         // input PSCID and DCCID
         $pscid = ".col-xs-12:nth-child(1) > .row .form-control";
-        $dccid = ".col-xs-12:nth-child(2) > .row .form-control";
+        $dccid = ".col-xs-12:nth-child(2).form-control";
         // to do react input value
         $this->webDriver->executescript(
             "input = document.querySelector('$dccid');
                  lastValue = input.value;
-                 input.value = 'MTL001';
+                 input.value = '300001';
                  event = new Event('input', { bubbles: true });
                  input._valueTracker.setValue(lastValue);
                  input.dispatchEvent(event);"
@@ -264,7 +264,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "input = document.querySelector('$pscid');
                  lastValue = input.value;
-                 input.value = '300001';
+                 input.value = 'MTL001';
                  event = new Event('input', { bubbles: true });
                  input._valueTracker.setValue(lastValue);
                  input.dispatchEvent(event);"
