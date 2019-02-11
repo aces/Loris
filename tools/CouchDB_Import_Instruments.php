@@ -92,7 +92,8 @@ class CouchDBInstrumentImporter
                         s.Visit_label, 
                         f.Administration, 
                         f.Data_entry, 
-                        f.Validity, 
+                        f.Validity,
+                        f.CommentID, 
                         CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, 
                         CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete ";
         $from = "FROM 
@@ -129,7 +130,7 @@ class CouchDBInstrumentImporter
             // we need to instantiate the object to get the table name
             // we need to check if it is a JSONData instrument or SQL data
             $instrumentObj = \NDB_BVL_Instrument::factory(
-                $_REQUEST['test_name'],
+                $instrument,
                 '',
                 ''
             );
@@ -147,12 +148,13 @@ class CouchDBInstrumentImporter
 
                 if ($JSONData) {
                     //Transform JSON object into an array and add treat it the same as SQL
-                    $instrumentData = json_decode($row['Data']);
+                    $instrumentData = json_decode($row['Data'], true) ?? array();
                     unset($row['Data']);
                     $docdata = $row + $instrumentData;
                 } else {
                     $docdata   = $row;
                 }
+
                 unset($docdata['CommentID']);
                 unset($docdata['PSCID']);
                 unset($docdata['Visit_label']);
@@ -160,7 +162,7 @@ class CouchDBInstrumentImporter
                 unset($docdata['city_of_birth']);
                 unset($docdata['city_of_birth_status']);
 
-                if (is_numeric($docdata['Examiner'])) {
+                if (isset($docdata['Examiner']) && is_numeric($docdata['Examiner'])) {
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $row['Examiner']));
                 }
                 $doc     = array(

@@ -12,7 +12,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
-require_once __DIR__ . "/generic_includes.php";
+require_once __DIR__ . "/../generic_includes.php";
 
 if ($argc < 2) {
     fwrite(STDERR, "Usage: $argv[0] instrumentname\n");

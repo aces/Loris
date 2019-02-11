@@ -432,7 +432,7 @@ class CouchDB
      */
     function _postURL(
         string $url,
-        array $data,
+        string $data,
         array $headers = array(),
         bool $printValue = false
     ): ?string {
