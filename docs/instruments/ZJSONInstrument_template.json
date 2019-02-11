@@ -1,0 +1,82 @@
+{
+  "schema": {
+    "meta": {
+      "createdBy": "",
+      "createdOn": "",
+      "createdWith": "",
+      "defaultLanguage": "en-CA",
+      "derivedFrom": "",
+      "importedFrom": "",
+      "includeMetaDataFields": true,
+      "instrumentVersion": "",
+      "lastUpdateOn": "",
+      "longName": {
+          "en-CA": "",
+          "fr-CA": ""
+      },
+      "multilingual": true,
+      "previousVersion": "",
+      "schemaVersion": "",
+      "shortName": ""
+    },
+    "fields": {
+      "nameOfField" : {
+        "type": "",
+        "description": {
+            "en-CA": "",
+            "fr-CA": ""
+        },
+        "options": {
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      }
+    },
+    "helpers": {
+      "nameOfHelper": {
+        "type": "",
+        "description": {
+          "en-CA": "",
+          "fr-CA": ""
+        },
+        "options": {
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      }
+    },
+    "setup": [
+      {
+        "name": "",
+        "type": "page",
+        "description": "",
+        "order": [
+          "nameOfHelper",
+          "nameOfField"
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "nameOfField": {
+      "type": "",
+      "options": {
+
+      }
+    },
+    "nameOfHelper": {
+      "type": "",
+      "options": {
+
+      }
+    }
+  }
+}
