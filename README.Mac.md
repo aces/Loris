@@ -2,7 +2,7 @@
 ### We recommend installing LORIS on Ubuntu or CentOS
 #### macOS is no longer supported for "production" as of v15.10. 
 
-This is a guide on how to get a LORIS instance Running on your apple computer for development. You're expected to have basic understanding of using a terminal and editing configuration files. 
+This is a guide on how to get a LORIS instance running on your Apple computer for development. You're expected to have basic understanding of using a terminal and editing configuration files. 
 For production, we recommend installing LORIS on Ubuntu or CentOS.
 
 # 1. System Requirements
@@ -32,7 +32,7 @@ You should have a GitHub account and git installed on your local development mac
 
 You should now have your own repository on Github of Loris.
 
-## 1.2 Clone your fork of Loris, to your local machine.
+## 1.2 Clone your fork of Loris to your local machine.
 
 Create a directory for development and where you will clone your fork of Loris.
 
@@ -42,15 +42,15 @@ In this example, the finished result will be: ~/Development/GitHub/Loris
 
 Paste the following in your terminal and hit enter:
 ```
-mkdir ~/Development ~/Development/GitHub
+mkdir -p ~/Development/GitHub
 ```
 
-**b.** clone your fork to ~/Development/GitHub
+**b.** Clone your fork to ~/Development/GitHub
 
 Paste the following lines in your terminal, and replace <your_username> with your github username before pressing enter.
 ```
 cd ~/Development/GitHub
-clone https://github.com/<your_username>/Loris.git
+git clone https://github.com/<your_username>/Loris.git
 ```
 
 ## 1.3 Install XCode Command Line Tools
@@ -87,21 +87,12 @@ Modify the apache configuration file for our development environment.
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
 
-**a.** Find the line:
-```
-Listen 8080
-```
-and replace to:
-```
-Listen 80
-```
-
-**b.** Find & modify the ServerName to:
+**a.** Find & modify the ServerName to:
 ```
 ServerName localhost
 ```
 
-**c.** Find & modify the DocumentRoot and Directory of apache to:
+**b.** Find & modify the DocumentRoot and Directory of apache to:
 ```
 DocumentRoot "/usr/local/var/www"
 <Directory "/usr/local/var/www">
@@ -112,7 +103,7 @@ DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 <Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
 ```
 
-**d.** In the same <Directory> block, modify AllowOverride to allow all:
+**c.** In the same <Directory> block, modify AllowOverride to allow all:
 ```
 # AllowOverride controls what directives may be placed in .htaccess files.
 # It can be "All", "None", or any combination of the keywords:
@@ -121,18 +112,18 @@ DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 AllowOverride All
 ```
 
-**e.** Enable mod_rewrite which is commented out by default:
+**d.** Enable mod_rewrite which is commented out by default:
 ```
 LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so
 ```
 
-**f.** Modify the User & Group (replace your_user again with your macOS user) to:
+**e.** Modify the User & Group (replace your_user again with your macOS user) to:
 ```
 User your_user
 Group staff
 ```
 
-**g.** Modify the ServerName to:
+**f.** Modify the ServerName to:
 ```
 ServerName localhost
 ```
@@ -288,9 +279,9 @@ cd /tools
 ```
 
 ## 2.2.1 Launch the Loris installer in your browser
-Open a browser such as chrome and navigate to:
+Open a browser (we officially support Firefox & Chrome) and navigate to:
 ```
-localhost/installdb.php
+localhost:8080/installdb.php
 ```
 
-Once finished hooray, Loris should accessible at http://localhost and you can start developing!
+Once finished hooray, Loris should accessible at http://localhost:8080 and you can start developing!
