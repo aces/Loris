@@ -36,20 +36,20 @@ You should now have your own repository on Github of Loris.
 
 Create a directory for development and where you will clone your fork of Loris.
 
-In this example, the finished result will be: ~/Development/GitHub/McGill/Loris
+In this example, the finished result will be: ~/Development/GitHub/Loris
 
 **a.** Create the directory for development and where the fork will reside.
 
 Paste the following in your terminal and hit enter:
 ```
-mkdir ~/Development ~/Development/GitHub ~/Development/GitHub/McGill
+mkdir ~/Development ~/Development/GitHub
 ```
 
-**b.** clone your fork to ~/Development/GitHub/McGill
+**b.** clone your fork to ~/Development/GitHub
 
 Paste the following lines in your terminal, and replace <your_username> with your github username before pressing enter.
 ```
-cd ~/Development/GitHub/McGill
+cd ~/Development/GitHub
 clone https://github.com/<your_username>/Loris.git
 ```
 
@@ -59,11 +59,8 @@ Type the following in your terminal and hit enter:
 xcode-select --install
 ```
 
-## 1.4 Install Homebrew
-The install script, to paste in your terminal:
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
+## 1.4 Install [Homebrew](https://brew.sh)
+Visit the official website of Homebrew and install by running their installer script in your terminal.
 
 ## 1.5 Install Apache (a.k.a httpd)
 The following commands will install apache and launch it as a service on startup:
@@ -111,8 +108,8 @@ DocumentRoot "/usr/local/var/www"
 ```
 and replace to (note: <your_user> should be your macOS user):
 ```
-DocumentRoot "/Users/<your_user>/Development/GitHub/McGill/Loris/htdocs/"
-<Directory "/Users/<your_user>/Development/GitHub/McGill/Loris/htdocs/">
+DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
+<Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
 ```
 
 **d.** In the same <Directory> block, modify AllowOverride to allow all:
@@ -227,11 +224,7 @@ sudo apachectl -k restart
 
 ### 1.7.2 (Optional) Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx)
 
-**a.** Paste the following into your terminal while hitting enter:
-```
-curl -L https://gist.githubusercontent.com/rhukster/073a2c1270ccb2c6868e7aced92001cf/raw > /usr/local/bin/xdebug
-chmod +x /usr/local/bin/xdebug
-```
+**a.** Install from the github repository.
 
 **b.** Terminal command to view Xdebug state:
 ```
@@ -286,7 +279,7 @@ Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and
 ## 2.2 Install Loris
 Paste into your terminal while hitting enter:
 ```
-cd ~/Development/GitHub/McGill/Loris
+cd ~/Development/GitHub/Loris
 composer install
 npm install
 npm run compile
