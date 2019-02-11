@@ -89,10 +89,14 @@
                 <thead>
                 <tr class="info">
                     {assign var=count value=0}
+                    {assign var=protocolGroupColIndex value=-1}
                     {foreach from=$mri_protocol_header item=mp}
                         <th id="header_{$count}">
                             {$mp}
                         </th>
+                        {if $mp == 'Protocol Group'}
+                            {assign var=protocolGroupColIndex value=$count}
+                        {/if}
                         {assign var=count value=$count+1}
                     {/foreach}
                 </tr>
@@ -103,11 +107,18 @@
 
                     <tr>
                         {foreach from=$mp item=row}
-                            {if $violated_scans_modifications}
-                                <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-                                    {else}
-                                <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+                            {if in_array($mp.ID, $last_protocol_id_in_group) && $mp.ID != $last_protocol_id}
+                                {assign var=rowBorder value='style="border-bottom: 1px solid #000;"'}
+                            {else}
+                                {assign var=rowBorder value=''}
                             {/if}
+                            
+                            {if $violated_scans_modifications && $ccount != $protocolGroupColIndex}
+                              <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true" nowrap {$rowBorder}>
+                            {else}
+                              <td id="row_{$mp.ID}_td_{$ccount}" class='description' nowrap {$rowBorder}>
+                            {/if}
+                            
                             {$row}
                             {$k}
                             </td>

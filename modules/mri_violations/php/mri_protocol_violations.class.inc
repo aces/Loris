@@ -85,39 +85,55 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.time_run',
         );
         $this->headers      = array(
-            'CandID',
-            'PSCID',
-            'Time_Run',
-            'Series_Description',
-            'Minc_Location',
-            'PatientName',
-            'TR',
-            'TE',
-            'TI',
-            'Slice_Thickness',
-            'Xspace',
-            'Yspace',
-            'Zspace',
-            'Xstep',
-            'Ystep',
-            'Zstep',
-            'Time',
-            'SeriesUID',
-            'TarchiveID',
-        );
+                               'CandID',
+                               'PSCID',
+                               'Time_Run',
+                               'Series_Description',
+                               'Minc_Location',
+                               'PatientName',
+                               'MRI_Protocol_Group',
+                               'TR',
+                               'TE',
+                               'TI',
+                               'Slice_Thickness',
+                               'Xspace',
+                               'Yspace',
+                               'Zspace',
+                               'Xstep',
+                               'Ystep',
+                               'Zstep',
+                               'Time',
+                               'SeriesUID',
+                               'TarchiveID',
+                              );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->query        = " FROM mri_protocol_violated_scans mpv
+                 LEFT JOIN mri_protocol_group mpg ON
+                 (mpg.MriProtocolGroupID=mpv.MriProtocolGroupID)
                  LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
         $this->formToFilter = array(
-            'CandID'            => 'mpv.CandID',
-            'PSCID'             => 'mpv.PSCID',
-            'PatientName'       => 'mpv.PatientName',
-            'SeriesUID'         => 'mpv.SeriesUID',
-            'SeriesDescription' => 'mpv.series_description',
-            'TimeRun'           => 'mpv.time_run',
-        );
-        $this->tpl_data['mri_protocol_data']   = $this->getMRIProtocolData();
+                               'CandID'            => 'mpv.CandID',
+                               'PSCID'             => 'mpv.PSCID',
+                               'PatientName'       => 'mpv.PatientName',
+                               'SeriesUID'         => 'mpv.SeriesUID',
+                               'SeriesDescription' => 'mpv.series_description',
+                               'TimeRun'           => 'mpv.time_run',
+                              );
+        $this->tpl_data['mri_protocol_data'] = $this->getMRIProtocolData();
+
+        // Number of rows in the mri_protocol table
+        $mriProtocolCount = count($this->tpl_data['mri_protocol_data']);
+
+        // Array that contains the last protocol ID of each protocol group, for each
+        // group
+        $this->tpl_data['last_protocol_id_in_group'] =
+            $this->getLastProtocolIDInGroup($this->tpl_data['mri_protocol_data']);
+
+        // The ID of the last line in the mri_protocol table
+        $this->tpl_data['last_protocol_id'] =
+            $this->tpl_data['mri_protocol_data'][$mriProtocolCount - 1]['ID'];
+
         $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
     }
@@ -164,21 +180,50 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
         $mri_protocols = $db->pselect(
-            "SELECT p.ID, Center_name, ScannerID, CONCAT(
-                p.Scan_type,
-                IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
-            ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-            TI_max, slice_thickness_min, slice_thickness_max,
-            xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-            zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-            zstep_min, zstep_max, time_min, time_max,series_description_regex
-            FROM mri_protocol as p
-            LEFT JOIN mri_scan_type as s
-            ON p.Scan_type=s.ID",
+            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID, 
+                    CONCAT(p.Scan_type,
+                           IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
+                          ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+                    TI_max, slice_thickness_min, slice_thickness_max,
+                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+                    zstep_min, zstep_max, time_min, time_max,series_description_regex
+             FROM mri_protocol as p
+             LEFT JOIN mri_protocol_group_rel mpgr 
+             ON (mpgr.MriProtocolID=p.ID)
+             LEFT JOIN mri_protocol_group mpg 
+             ON (mpg.MriProtocolGroupID=mpgr.MriProtocolGroupID)
+             LEFT JOIN mri_scan_type as s 
+             ON p.Scan_type=s.ID
+             ORDER BY mpg.MriProtocolGroupID DESC",
             array()
         );
         return $mri_protocols;
     }
+
+    /**
+     * For each MRI protocol group, gets the last protocol ID in the result
+     * set that belongs to the given group.
+     *
+     * @param $mriProtocolData array of lines in the mri_protocol table, ordered
+     *                               by MRI protocol group ID.
+     *
+     * @return array list of the last MRI protocol IDs for each group.
+     */
+    function getLastProtocolIDInGroup($mriProtocolData)
+    {
+        $lastProtocolIDInGroup = array();
+        for ($i=0; $i < count($mriProtocolData); $i++) {
+            if ($i == count($mriProtocolData)
+                || ($mriProtocolData[$i]['Protocol Group'] != $mriProtocolData[$i+1]['Protocol Group'])
+            ) {
+                $lastProtocolIDInGroup[] = $mriProtocolData[$i]['ID'];
+            }
+        }
+
+        return $lastProtocolIDInGroup;
+    }
+
     /**
      * Gathers JS dependecies and merge them with the parent
      *
