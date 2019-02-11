@@ -53,6 +53,8 @@ require_once __DIR__ . "/../vendor/autoload.php";
 use \LORIS\Installer\Database as Database;
 
 $installer = new \LORIS\Installer\Installer();
+$factory = \NDB_Factory::singleton();
+$factory->setConfig(\LORIS\Installer\NDB_Config::singleton());
 
 // Check the dependencies of this script.
 if ($installer->checkPreconditionsValid() === false) {
@@ -218,6 +220,7 @@ tplvar('use_existing_database');
 tplvar('use_existing_tables');
 tplvar('use_existing_configs');
 tplvar('lorismysql_already_created');
+
 $smarty = new Smarty_NeuroDB;
 $smarty->assign($tpl_data);
 $smarty->display('install.tpl');

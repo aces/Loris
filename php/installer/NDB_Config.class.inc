@@ -31,14 +31,14 @@ namespace LORIS\Installer;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Config
+class NDB_Config extends \NDB_Config
 {
     /**
      * Returns a single NDB_Config object.
      *
      * @return NDB_Config
      */
-    public static function singleton()
+    public static function &singleton(?string $configFile=NULL) : \NDB_Config
     {
         static $cfg = null;
         if (is_null($cfg)) {
