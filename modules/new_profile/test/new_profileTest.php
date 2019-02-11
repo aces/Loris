@@ -215,10 +215,11 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("New candidate created", $bodyText);
         $this->deleteCandidate("BBQ0000");
+        $this->resetStudySite();
     }
 
     /**
-     * Tests that candidate is created
+     * Creates two candidates and ensures that their PSCIDs are sequential.
      *
      * @return void
      */
