@@ -250,8 +250,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "document.querySelector('$btn').click();"
         );
         // input PSCID and DCCID
-        $pscid = ".col-xs-12:nth-child(1) > .row .form-control";
-        $dccid = ".col-xs-12:nth-child(2).form-control";
+        $dccid = ".col-xs-12:nth-child(1) > .row .form-control";
+        $pscid = ".col-xs-12:nth-child(2).form-control";
         // to do react input value
         $this->webDriver->executescript(
             "input = document.querySelector('$dccid');
