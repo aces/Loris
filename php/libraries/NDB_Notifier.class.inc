@@ -85,20 +85,21 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     private function _sendEmails(): void
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
+            $notifierID = $this->notifier->getData('ID');
+            $fromEmail  = $this->notifier->getData('Email');
             $this->tpl_data['notified_user'] = $name;
-            $this->tpl_data['notifier_user']
-                = $this->notifier['name'].' <'.$this->notifier['email'].'>';
-            $email =$this->getEmail($uid);
+            $this->tpl_data['notifier_user'] = "$notifierID <$fromEmail>";
+            $toEmail = $this->getEmail($uid);
 
-            if ($this->notifier['ID'] === $uid) {
+            if ($notifierID === $uid) {
                 // TODO send confirmation email instead
             } else {
                 Email::send(
-                    $email,
+                    $toEmail,
                     $this->template,
                     $this->tpl_data
                 );
-                $this->log($this->notifier['ID'], $uid, 'email_text');
+                $this->log($notifierID, $uid, 'email_text');
             }
         }
     }
