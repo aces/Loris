@@ -834,7 +834,7 @@ class Utility
      *
      * @return bool True if the date is invalid, false if it's valid.
      */
-    static function _checkDate($dateElement): bool
+    static function _checkDate(array $dateElement): bool
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
