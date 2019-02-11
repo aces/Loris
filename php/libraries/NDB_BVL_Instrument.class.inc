@@ -1517,7 +1517,7 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $this->_save(array("Data_entry_completion_status"=>$status));
+        $this->_save(array("Data_entry_completion_status" => $status));
     }
 
     /**
@@ -2071,8 +2071,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * the date will be calculated based on the value of the Date_taken
      * field in the database.
      *
-     * @param string $date The date that the age is to
-     *                    be calculated based on.
+     * @param string $date (optional) The date that the age is to
+     *                     be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
