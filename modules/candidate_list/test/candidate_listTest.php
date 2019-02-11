@@ -29,12 +29,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $visitLabel = ".col-xs-12:nth-child(4) .form-control";
     static $site = ".col-xs-12:nth-child(5) .form-control, select";
     static $project = ".col-xs-12:nth-child(6) .form-control, select";
-    static $sex= ".col-xs-12:nth-child(12) .form-control, select";
+    static $sex= "#candidateList_filter > div > div > fieldset > div:nth-child(12) > div > div > select";
     static $entityType = ".col-xs-12:nth-child(8) .form-control, select";   
     static $advancedFilter = ".pull-right > .btn:nth-child(1)";
     static $openProfile = ".pull-right > .btn:nth-child(2)";      
     static $clearFilter=".col-sm-9 > .btn"; 
     static $display = ".table-header .col-xs-12 > div:nth-child(1)";
+    static $pscidLink = "tr:nth-child(1) a";
 
     /**
      * Backs up the useEDC config value and sets the value to a known
@@ -171,19 +172,16 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this-> _testFilter(self::$site, "167", '2');
         $this-> _testFilter(self::$entityType, "3 rows", '1');
 
-        // todo: fix the sex filter
         // test advanced filter - sex
-               // Switch to Advanced mode
-        // $btn = self::$advancedFilter;
-        //   $this->webDriver->executescript(
-        //        "return document.querySelector('$btn').click()"
-        //    );
-       // $this-> _testFilter(self::$sex, "20 rows displayed of 663", 'Female');
-       //          $btn = self::$advancedFilter;
-       //    $this->webDriver->executescript(
-       //         "return document.querySelector('$btn').click()"
-       //     );
-       // $this-> _testFilter(self::$sex, "20 rows displayed of 663", 'Male'); 
+        // Switch to Advanced mode
+         $btn = self::$advancedFilter;
+           $this->webDriver->executescript(
+                "return document.querySelector('$btn').click()"
+            );
+        //female
+        $this-> _testFilter(self::$sex, "20 rows displayed of 331", '1');
+        // male
+        $this-> _testFilter(self::$sex, "20 rows displayed of 326", '2'); 
         
     }
     /**
@@ -241,7 +239,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testDataEntryAndOpenProfile()
     {
-  $this->markTestSkipped("do it on monday!");
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
@@ -254,19 +251,49 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $dccid = ".col-xs-12:nth-child(2) > .row .form-control";
         // to do react input value
         $this->webDriver->executescript(
-       "document.querySelector('$pscid').value='300001';"
+                 "input = document.querySelector('$dccid');
+                 lastValue = input.value;
+                 input.value = 'MTL001';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);"
         );
         $this->webDriver->executescript(
-       "document.querySelector('$dccid').value='MTL001';"
+                 "input = document.querySelector('$pscid');
+                 lastValue = input.value;
+                 input.value = '300001';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);"
         );
         $btn = ".col-sm-12 > .row .btn";  
         //to do check the url
         $this->webDriver->executescript(
        "document.querySelector('$btn').click();"
         );
+        $URL =  $this->webDriver->executescript("return window.location.href;");
         $this->assertContains("300001", $URL);
      
         $this->resetPermissions();
+    }
+    /**
+     * Tests that, click the pscid link, and it will goto the candidate profile page
+     *
+     * @return void
+     */
+    function testPscidLink()
+    {
+        $this->safeGet($this->url . "/candidate_list/");
+       $link = self::$pscidLink;
+       $this->webDriver->executescript(
+          "document.querySelector('$link').click();"
+        );
+                $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains(
+            "Candidate Profile",
+            $bodyText
+        );
     }
 
 }
