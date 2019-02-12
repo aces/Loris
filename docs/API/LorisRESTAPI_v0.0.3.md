@@ -822,8 +822,9 @@ X-Is-Phantom: bool
 Upload a tarred set of DICOM files that is compressed as a `.zip`,`.tar.gz` or 
 `.tgz`. $Filename must be the full name of the fileset and its extension.
 
-$Filename must be named according to the format 
-$PSCID_$CandID_$VisitLabel.ext where ext is one of the extensions above.
+$Filename must be named according to the format listed under "Requirements"
+at this link;
+https://github.com/aces/Loris/blob/master/modules/imaging_uploader/README.md#requirements
 
 X-Is-Phantom is a required header that must be sent as part of the request. 
 If the is fileset a phantom, set X-Is-Phantom as follows:
