@@ -127,12 +127,12 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
 
         // Array that contains the last protocol ID of each protocol group, for each
         // group
-        $this->tpl_data['last_protocol_id_in_group'] =
-            $this->getLastProtocolIDInGroup($this->tpl_data['mri_protocol_data']);
+        $this->tpl_data['last_protocol_id_in_group']
+            = $this->getLastProtocolIDInGroup($this->tpl_data['mri_protocol_data']);
 
         // The ID of the last line in the mri_protocol table
-        $this->tpl_data['last_protocol_id'] =
-            $this->tpl_data['mri_protocol_data'][$mriProtocolCount - 1]['ID'];
+        $this->tpl_data['last_protocol_id']
+            = $this->tpl_data['mri_protocol_data'][$mriProtocolCount - 1]['ID'];
 
         $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
@@ -205,19 +205,19 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      * For each MRI protocol group, gets the last protocol ID in the result
      * set that belongs to the given group.
      *
-     * @param $mriProtocolData array of lines in the mri_protocol table, ordered
-     *                               by MRI protocol group ID.
+     * @param array $mp lines in the mri_protocol table, ordered
+     *                  by MRI protocol group ID.
      *
      * @return array list of the last MRI protocol IDs for each group.
      */
-    function getLastProtocolIDInGroup($mriProtocolData)
+    function getLastProtocolIDInGroup(array $mp) : array
     {
         $lastProtocolIDInGroup = array();
-        for ($i=0; $i < count($mriProtocolData); $i++) {
-            if ($i == count($mriProtocolData)
-                || ($mriProtocolData[$i]['Protocol Group'] != $mriProtocolData[$i+1]['Protocol Group'])
+        for ($i=0; $i < count($mp); $i++) {
+            if ($i == (count($mp)-1)
+                || ($mp[$i]['Protocol Group'] != $mp[$i+1]['Protocol Group'])
             ) {
-                $lastProtocolIDInGroup[] = $mriProtocolData[$i]['ID'];
+                $lastProtocolIDInGroup[] = $mp[$i]['ID'];
             }
         }
 
