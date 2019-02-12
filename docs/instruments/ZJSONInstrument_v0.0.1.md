@@ -459,7 +459,7 @@ A numeric field takes an int or a decimal as data input. It has the form of:
 `options.minValue`: Integer or decimal, depending on `nameOfField.type`.
                     A number representing the minimum value that the data can be.
 
-`options.maxValue`: Integer or decimal, depending on 'nameOfField.type`.
+`options.maxValue`: Integer or decimal, depending on `nameOfField.type`.
                     A number greater than or equal to `options.minValue` representing the maximum
                     value that the data can be.
 
@@ -856,7 +856,7 @@ For fields:
 - [checkbox](#511-checkbox-element)
 - [date](#512-date-element)
 - [number](#513-numeric-element)
-- [radio](#514-radiobutton-element)
+- [radio](#514-radio-button-element)
 - [select](#515-select-element)
 - [text](#516-text-element)
 - [textarea](#517-textarea-element)
@@ -864,9 +864,9 @@ For fields:
 
 For helpers:
 
-- [header](#519-headeR) (from h1 to h6)
-- [link](#5110-link)
-- [static](#5111-static)
+- [header](#519-header-element) (from h1 to h6)
+- [link](#5110-link-element)
+- [static](#5111-static-element)
 
 These are all mappable to some LORIS React Form element, except for "header" which is native to HTML.
 
