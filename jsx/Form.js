@@ -213,16 +213,16 @@ class SearchableDropdown extends React.Component {
     }
 
     // determine value to place into text input
-    let value;
+    let value = '';
     // use value in options if valid
-    if (this.props.value !== undefined) {
-      if (Object.keys(options).indexOf(this.props.value) > -1) {
-        value = options[this.props.value];
-        // else, use input text value
-      } else {
-        value = this.props.tempVal;
-      }
+    if (this.props.value !== undefined &&
+      Object.keys(options).indexOf(this.props.value) > -1) {
+      value = options[this.props.value];
+      // else, use input text value
+    } else if (this.props.tempVal !== undefined) {
+      value = this.props.tempVal;
     }
+    console.log('V: ' +value);
 
     return (
       <div className={elementClass}>
