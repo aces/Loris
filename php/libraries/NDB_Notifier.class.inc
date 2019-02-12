@@ -85,8 +85,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     private function _sendEmails(): void
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
-            $notifierID = $this->notifier->getData('ID');
-            $senderEmail  = $this->notifier->getData('Email');
+            $notifierID  = $this->notifier->getData('ID');
+            $senderEmail = $this->notifier->getData('Email');
             $this->tpl_data['notified_user'] = $name;
             $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
             $recipientEmail = $this->getEmail($uid);
