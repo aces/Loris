@@ -384,8 +384,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      *
      * @param array $idsToMonitor     IDs of the server processes to monitor
      * @param int   $mri_upload_id    UploadID of the DICOM fileset
-     * @param bool  $trigger_pipeline whether to trigger the LORIS-MRI insertion 
-     * pipeline manually
+     * @param bool  $trigger_pipeline whether to trigger the LORIS-MRI insertion
+     *                                pipeline manually
      *
      * @return void but sets an associative array of the state of processes.
      */
