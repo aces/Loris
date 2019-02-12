@@ -214,8 +214,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New candidate created", $bodyText);
-        $this->deleteCandidate("BBQ0000");
-        $this->resetStudySite();
     }
 
     /**
