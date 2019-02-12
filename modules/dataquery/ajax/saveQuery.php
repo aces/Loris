@@ -72,6 +72,7 @@ $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
 
+$query = array();
 if ($_REQUEST['OverwriteQuery'] === "true") {
     unset($baseDocument['_id']);
     $cdb->replaceDoc($qid, $baseDocument);

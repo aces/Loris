@@ -115,12 +115,15 @@ class Issue_Tracker_ControlPanel
 
 class IssueNavigation
 {
+
+    var $urlParams = array();
+
     /**
     *  Gets the session
     *
     * @param int $issueID sessionID
     *
-    * @return null
+    * @return void
     */
     function __construct($issueID = null)
     {

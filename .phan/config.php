@@ -18,7 +18,6 @@ return [
 	"suppress_issue_types" => [
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
-        "PhanTypeMismatchDimAssignment",
 		"PhanUndeclaredMethod",
 		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
