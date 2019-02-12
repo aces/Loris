@@ -166,7 +166,7 @@ class NDB_Config
     {
         $retVal   = array();
         $children = $xml->children();
-        if (count($children) > 0) {
+        if ($children->count() > 0) {
             foreach ($children as $child) {
                 $name      = $child->getName();
                 $tagExists = isset($retVal[$name]) && is_array($retVal[$name]);
@@ -216,7 +216,7 @@ class NDB_Config
         } else {
             $retVal     = $xml->__toString();
             $attributes = $xml->attributes();
-            if (count($attributes) > 0) {
+            if ($attributes->count() > 0) {
                 $retVal = array(
                            '#' => $retVal,
                            '@' => array(),

@@ -189,23 +189,22 @@ class ViewSession extends \NDB_Form
                 }
             }
 
-            $FileID       = $fileRow['FileID'];
-            $Filename     = basename($FileObj->getParameter('File'));
-            $CheckPic     = "/mri/jiv/get_file.php?file=pic/".
-                                         $FileObj->getParameter(
-                                             'check_pic_filename'
-                                         );
-            $FullFilename = $FileObj->getParameter('File');
-            $JivFilename  = basename($FileObj->getParameter('File'));
-            $JivAddress   = str_replace(
+            $FullFilename     = $FileObj->getParameter('File') ?? '';
+            $checkPicFilename = $FileObj->getParameter(
+                'check_pic_filename'
+            ) ?? '';
+            $FileID           = $fileRow['FileID'];
+            $Filename         = $JivFilename = basename($FullFilename);
+            $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
+            $JivAddress       = str_replace(
                 '_check.jpg',
                 '',
-                $FileObj->getParameter('check_pic_filename')
+                $checkPicFilename
             );
-            $New          = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
+            $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
-            $Pipeline     = $FileObj->getParameter('Pipeline');
-            $OutputType   = $FileObj->getParameter('OutputType');
+            $Pipeline   = $FileObj->getParameter('Pipeline');
+            $OutputType = $FileObj->getParameter('OutputType');
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
             $Algorithm           = $FileObj->getParameter('Algorithm');
@@ -226,21 +225,24 @@ class ViewSession extends \NDB_Form
                 2
             );
             $RepetitionTime      = number_format(
-                (int)$FileObj->getParameter('repetition_time')*1000,
+                (int)$FileObj->getParameter('repetition_time') * 1000,
                 2
             );
             $SliceThickness      = number_format(
-                $FileObj->getParameter('slice_thickness'),
+                intval($FileObj->getParameter('slice_thickness')),
                 2
             );
-            $Time    = number_format($FileObj->getParameter('time'), 2);
+            $Time    = number_format(
+                intval($FileObj->getParameter('time')),
+                2
+            );
             $Comment = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
                 'processing:total_rejected'
             );
             $SourceFile         = basename(
-                $FileObj->getParameter('processing:sourceFile')
+                $FileObj->getParameter('processing:sourceFile') ?? ''
             );
             $Tool = $FileObj->getParameter('Tool');
             $SlicewiseRejected     = $this->_getRejected(
@@ -255,11 +257,11 @@ class ViewSession extends \NDB_Form
                 $FileObj,
                 'intergradient'
             );
-            $Xstep       = number_format($FileObj->getParameter('xstep'), 2);
-            $Ystep       = number_format($FileObj->getParameter('ystep'), 2);
-            $Zstep       = number_format($FileObj->getParameter('zstep'), 2);
+            $Xstep       = number_format(intval($FileObj->getParameter('xstep')), 2);
+            $Ystep       = number_format(intval($FileObj->getParameter('ystep')), 2);
+            $Zstep       = number_format(intval($FileObj->getParameter('zstep')), 2);
             $Selected    = $this->_getSelected(
-                (int)$FileObj->getParameter('FileID')
+                (int) $FileObj->getParameter('FileID')
             );
             $QCStatus    = $FileObj->getParameter('QCStatus');
             $QCDate      = $FileObj->getParameter('QCLastChangeTime');
@@ -330,13 +332,13 @@ class ViewSession extends \NDB_Form
      *
      * @return string The parameter of the rejected
      */
-    function _getRejected($file, $type)
+    function _getRejected(\MRIFile $file, string $type): string
     {
         $array     = array();
         $parameter = 'processing:' . $type . '_rejected';
         if (preg_match(
             "/(Directions)([^\(]+)(\(\d+\))/",
-            $file->getParameter($parameter),
+            $file->getParameter($parameter) ?? '',
             $array
         )
         ) {
@@ -355,18 +357,25 @@ class ViewSession extends \NDB_Form
      * @param \MRIFile $file file object
      * @param string   $type type of the date
      *
-     * @return string The date if exists, if not an empty string
+     * @return int|string The date if exists, if not an empty string
      */
-    function _getDate($file, $type)
+    function _getDate(\MRIFile $file, string $type)
     {
         $array = array();
         if (preg_match(
             "/(\d{4})-?(\d{2})-?(\d{2})/",
-            $file->getParameter($type),
+            $file->getParameter($type) ?? '',
             $array
         )
         ) {
-            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
+            return mktime(
+                12,
+                0,
+                0,
+                (int) $array[2],
+                (int) $array[3],
+                (int) $array[1]
+            );
         } else {
             return "";
         }

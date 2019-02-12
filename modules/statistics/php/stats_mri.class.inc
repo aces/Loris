@@ -58,34 +58,34 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string $sectionHeader     the value of sectionHeader
-     * @param string $tableHeader       the value of tableHeader
-     * @param string $subcats           the value of subcats
-     * @param string $visits            the value of visits
-     * @param string $dropdown_name     the value of dropdown_name
-     * @param string $dropdown_opt      the value of dropdown_opt
-     * @param string $dropdown_selected the value of dropdown_selected
-     * @param array  $centers           the value of centers
-     * @param array  $data              the value of data
-     * @param string $Subsection        the value of Subsection=''
-     * @param string $disclamer         the value of disclamer=''
-     * @param string $projectID         the value of projectID is null
+     * @param string  $sectionHeader     the value of sectionHeader
+     * @param string  $tableHeader       the value of tableHeader
+     * @param array   $subcats           the value of subcats
+     * @param array   $visits            the value of visits
+     * @param string  $dropdown_name     the value of dropdown_name
+     * @param string  $dropdown_opt      the value of dropdown_opt
+     * @param string  $dropdown_selected the value of dropdown_selected
+     * @param array   $centers           the value of centers
+     * @param array   $data              the value of data
+     * @param string  $Subsection        the value of Subsection=''
+     * @param string  $disclamer         the value of disclamer=''
+     * @param ?string $projectID         the value of projectID is null
      *
      * @return string
      */
     function renderStatsTable($sectionHeader,
         $tableHeader,
-        $subcats,
-        $visits,
+        array $subcats,
+        array $visits,
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centers,
-        $data,
+        array $centers,
+        array $data,
         $Subsection="",
         $disclamer='',
         $projectID=null
-    ) {
+    ): string {
 
         $tpl_data = array();
         // Sanitize test name if present. Otherwise use empty string.
