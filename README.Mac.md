@@ -1,4 +1,4 @@
-# LORIS (macOS) Development Guide
+# Install a developer instance of LORIS on macOS
 ### We recommend installing LORIS on Ubuntu or CentOS
 #### macOS is no longer supported for "production" as of v15.10. 
 
@@ -92,12 +92,7 @@ sudo open -e /usr/local/etc/httpd/httpd.conf
 ServerName localhost
 ```
 
-**b.** Find & modify the DocumentRoot and Directory of apache to:
-```
-DocumentRoot "/usr/local/var/www"
-<Directory "/usr/local/var/www">
-```
-and replace to (note: <your_user> should be your macOS user):
+**b.** Find the lines for `DocumentRoot` and Directory in apache and change them to:
 ```
 DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 <Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
@@ -185,7 +180,7 @@ pecl install xdebug
 
 ### 1.7.1 Configure Xdebug for local development
 
-**a.** Comment out or remove the entry, zend_extensions=“xdebug.so” from the top of your php.ini (Note: replace your_php_version with the correct php version installed):
+**a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your php.ini (Note: replace your_php_version with the correct php version installed):
 ```
 sudo open -e /usr/local/etc/php/<your_php_version>/php.ini
 ```
@@ -215,7 +210,7 @@ sudo apachectl -k restart
 
 ### 1.7.2 (Optional) Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx)
 
-**a.** Install from the github repository.
+**a.** Install from the GitHub repository.
 
 **b.** Terminal command to view Xdebug state:
 ```
@@ -228,9 +223,9 @@ xdebug on
 xdebug off
 ```
 
-## 1.8 Install MySQL
+## 1.8 Install the database
 
-We’re installing MariaDB (fork of mysql)
+We’re installing MariaDB (fork of mysql).
 
 **a.** Paste the commands into your terminal while hitting enter:
 ```
@@ -245,7 +240,7 @@ brew services start mariadb
 mysql_secure_installation
 ```
 
-### 1.8.1 (recommended) MySQL GUI tool
+### 1.8.1 MySQL GUI tool (recommended)
 
 [Sequel Pro](https://sequelpro.com/test-builds) (free)
 
@@ -271,9 +266,7 @@ Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and
 Paste into your terminal while hitting enter:
 ```
 cd ~/Development/GitHub/Loris
-composer install
-npm install
-npm run compile
+make dev
 cd /tools
 ./install.sh
 ```
