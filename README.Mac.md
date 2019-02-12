@@ -1,3 +1,4 @@
+### These instructions last tested for LORIS version v20.*
 # Install a developer instance of LORIS on macOS
 ### We recommend installing LORIS on Ubuntu or CentOS
 #### macOS is no longer supported for "production" as of v15.10. 
