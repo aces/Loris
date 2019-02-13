@@ -51,7 +51,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Current logged in user issuing the notification.
      *
-     * @var array [ID,name,email]
+     * @var \User
      */
     protected $notifier;
 
@@ -129,7 +129,7 @@ abstract class NDB_Notifier_Abstract
         $this->module         = $module_name;
         $this->operation      = $operation_type;
         $this->notified       = $this->_get2DListToNotify();
-        $this->notifier       = $this->_getLoggedInUser();
+        $this->notifier       = \User::singleton();
         $this->_adminNotifier = $this->_getAdminUser();
         $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
         $this->tpl_data['baseurl']    = $config->getSetting('url');
@@ -190,32 +190,17 @@ abstract class NDB_Notifier_Abstract
     }
 
     /**
-     * Gets information of logged in user and returns a name-email string combination
-     *
-     * @return string   string in the form `First Last <email@domain.com>`
-     */
-    private function _getLoggedInUser(): string
-    {
-        $user       = \User::singleton();
-        $info_array = array();
-        $info_array['ID']    = $user->getData('ID');
-        $info_array['name']  = $user->getFullname();
-        $info_array['email'] = $user->getData('Email');
-        return $info_array;
-    }
-
-    /**
      * Gets information of admin user and returns a name-email string combination
      *
-     * @return string   string in the form `First Last <email@domain.com>`
+     * @return array Containing UserID, Real_name, and Email of an admin user
      */
-    private function _getAdminUser(): string
+    private function _getAdminUser(): array
     {
         $result           = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
             array()
         );
-        $info_array       =array();
+        $info_array       = array();
         $info_array['ID'] = $result['ID'];
         $info_array['name']  = $result['Real_name'];
         $info_array['email'] = $result['Email'];
