@@ -170,7 +170,7 @@ LoadModule php7_module /usr/local/opt/php@<version>/lib/httpd/modules/libphp7.so
 sudo apachectl -k restart
 ```
 
-## 1.7 Installing Xdebug
+## 1.7 (Optional) Installing Xdebug
 
 Xdebug allows debugging with breakpoints (such as when using an IDE ex. Intellij).
 
