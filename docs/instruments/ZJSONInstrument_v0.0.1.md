@@ -35,7 +35,7 @@ instrument data.
     }
 }
 ```
-The core schema describes the instrument's data structure and format, while the UI component decides certain
+The core schema describes the instrument's data structure and format, while the UI component defines
 front-end properties. Both the schema and the UI component are required in order to have a fully loaded and
 rendered instrument. These components can be defined either within the same JSON object, or independently. This is
 also true for the instrument data component.
