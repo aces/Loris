@@ -228,7 +228,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // An exit code of 0 is a success and 1 means failure
         if ($status) {
             error_log(
-                "The installation of $instrument->table.sql failed. "
+                "The installation of $instrument.sql failed. "
                 . "Either: the instrument table exists (but is not in the "
                 . "test_names table), or "
                 . "LORIS could not connect to the database using the "

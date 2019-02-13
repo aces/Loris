@@ -71,7 +71,7 @@ class PasswordReset extends \NDB_Form
                   $password = \User::newPassword();
                   // reset the password in the database
                   // expire password so user must change it upon login
-                  $success = $user->updatePassword($password, '1999-01-01');
+                  $user->updatePassword($password, '1999-01-01');
                 if ($success === false) {
                      error_log("Could not update password for $username");
                     return;
