@@ -7,7 +7,6 @@
  *
  * @category Main
  * @package  LORIS
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -19,7 +18,6 @@
  *
  * @category Main
  * @package  LORIS
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
