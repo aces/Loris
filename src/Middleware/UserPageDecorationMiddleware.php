@@ -17,12 +17,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
     public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS)
     {
-        $this->JSFiles = $JS;
+        $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
-        $this->Config = $config;
-        $this->BaseURL = $baseurl;
+        $this->Config   = $config;
+        $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
-        $this->user = $user;
+        $this->user     = $user;
     }
 
     /**
@@ -39,7 +39,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
-        $user = $request->getAttribute("user");
+        $user     = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
@@ -68,7 +68,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
             $tpl_data['candidate'] = $candidate->getData();
         }
-        $tpl_data['candID']      = $candID ?? '';
+        $tpl_data['candID'] = $candID ?? '';
 
         $timepoint = $request->getAttribute("TimePoint");
         if (!empty($timepoint)) {
@@ -211,10 +211,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Finally, the actual content and render it..
         $tpl_data += array(
-            'jsfiles'   => $this->JSFiles,
-            'cssfiles'  => $this->CSSFiles,
-            'workspace' => $undecorated->getBody(),
-        );
+                      'jsfiles'   => $this->JSFiles,
+                      'cssfiles'  => $this->CSSFiles,
+                      'workspace' => $undecorated->getBody(),
+                     );
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
