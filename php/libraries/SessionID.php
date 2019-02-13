@@ -5,20 +5,19 @@
  *
  * PHP Version 7
  *
- * @category StudyEntities
+ * @category Main
  * @package  LORIS
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\StudyEntities\Candidate;
 
 /**
  * A representation of a SessionID object. A SessionID is always an integer with a
  * maximum of 10 digits (as definied in the database `session` table.
  *
- * @category StudyEntities
+ * @category Main
  * @package  LORIS
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @author   John Saigle <john.saigle@mcin.ca>
@@ -40,7 +39,7 @@ class SessionID extends ValidatableIdentifier
     /**
      * Validate that the value of the SessionID is a positive integer that does
      * not exceed 10 digits in length.
-     * This does not check for uniqueness in the database or any other 
+     * This does not check for uniqueness in the database or any other
      * state-related facts.
      *
      * This function is called by the contructor of ValidatableIdentifier
