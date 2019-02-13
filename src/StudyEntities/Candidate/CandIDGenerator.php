@@ -51,8 +51,8 @@ class CandIDGenerator extends IdentifierGenerator
      * @return CandID The newly-created CandID object.
      */
     public function createIDAndInsertWithValues(array $setArray): CandID {
+        $invalidID = false;
         do {
-            $invalidID = false;
             // Generate candid and insert into setArray
             $candID = $this->generate();
             $setArray['CandID'] = (string) $candID;
