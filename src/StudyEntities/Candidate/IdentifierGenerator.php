@@ -46,7 +46,7 @@ abstract class IdentifierGenerator
 
     protected function generateSequentialID(string $id = ''): string
     {
-        $newID = $id ?? max($this->getExistingIDs());
+        $newID = !empty($id) ? $id : max($this->getExistingIDs());
         // Increment newID until we find an unused value within the boundaries
         // of $min and $max.
         do {
