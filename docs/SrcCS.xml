@@ -2,7 +2,7 @@
 <ruleset name="Loris Standard">
     <description>The coding standard for the Loris project</description>
 
-    <!-- Include the PEAR standard -->
+    <!-- Include the PSR2 standard -->
     <rule ref="PSR2"/>
 
     <!-- Pieces of other standards to include... -->
