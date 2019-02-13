@@ -34,6 +34,14 @@ class SiteIDGenerator extends IdentifierGenerator
         $this->validate();
     }
 
+    /**
+     * Throws an exception if values extracted from the configuration settings
+     * are not well-formed.
+     *
+     * @throws \DomainException
+     *
+     * @return void
+     */
     protected function validate(): void {
         if (empty($this->generationMethod)
             || empty($this->length)
@@ -52,12 +60,6 @@ class SiteIDGenerator extends IdentifierGenerator
                 . "Max: `{$this->maxValue}`\n"
                 . "Length: `{$this->prefix}`\n"
                 . "Generation: `{$this->generationMethod}`\n"
-            );
-        }
-        if ($this->kind !== 'PSCID' && $this->kind !== 'ExternalID') {
-            throw new DomainException(
-                'Argument for "kind" variable must be either "PSCID", ' .
-                '"ExternalID", or "CandID"'
             );
         }
     }
