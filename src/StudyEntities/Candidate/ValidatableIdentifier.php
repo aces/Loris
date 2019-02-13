@@ -28,7 +28,7 @@ abstract class ValidatableIdentifier implements Identifier
     /**
      * The Identifier's value
      *
-     * @var int|string The identifier value to be validated
+     * @var string The identifier value to be validated
      */
     protected $value;
 
