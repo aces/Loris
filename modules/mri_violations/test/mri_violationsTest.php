@@ -173,7 +173,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'series_description' => 'Test Description',
              'SeriesUID'          => '5555',
              'TarchiveID'         => '263',
-             'MriProtocolGroupID' => 1
+             'MriProtocolGroupID' => 1,
             )
         );
         $this->DB->insert(
@@ -187,7 +187,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'series_description' => 'Test Series Description',
              'SeriesUID'          => '5556',
              'TarchiveID'         => '264',
-             'MriProtocolGroupID' => 1
+             'MriProtocolGroupID' => 1,
             )
         );
         $this->DB->insert(
