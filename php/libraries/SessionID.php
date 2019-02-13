@@ -45,23 +45,25 @@ class SessionID extends ValidatableIdentifier
      * This function is called by the contructor of ValidatableIdentifier
      * to ensure that no SessionID exists if its value is not valid.
      *
-     * @param int $value The value to be validated
+     * @param string $value The value to be validated
      *
      * @return bool True if the value format is valid
      */
-    protected function validate(int $value): bool
+    protected function validate(string $value): bool
     {
-        return ($value > 0) && (strlen((string) $value <= 10));
+        return (intval($value) > 0)
+            && (strlen($value) <= 10)
+            && (is_integer($value));
     }
 
     /**
      * Generates a string representation of this SessionID.
      *
-     * @return string The strin representation of the SessionID int value.
+     * @return string The SessionID value.
      */
     public function __toString(): string
     {
-        return strval($this->value);
+        return $this->value;
     }
 }
 
