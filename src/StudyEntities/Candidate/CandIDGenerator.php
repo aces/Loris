@@ -26,6 +26,12 @@ class CandIDGenerator extends IdentifierGenerator
         $this->alphabet         = range(0, 9);
     }
 
+    /**
+     * Creates a new CandidateID. Also queries the database to ensure that all
+     * possible CandIDs have not been exhausted.
+     *
+     * @return CandID The new identifier.
+     */
     public function generate(): CandID {
         $this->checkIDRangeFull();
         return new CandID(
@@ -33,6 +39,33 @@ class CandIDGenerator extends IdentifierGenerator
                 random_int($this->minValue, $this->maxValue)
             )
         );
+    }
+
+    /**
+     * Wrapper for \Database::insert() to add new Candidate information to the
+     * database. This function will generate new IDs in the edge-case that a
+     * race condition occurs and causes an error upon insertion.
+     *
+     * @param array $setArray An associative array of column names and values.
+     *
+     * @return CandID The newly-created CandID object.
+     */
+    public function createIDAndInsertWithValues(array $setArray): CandID {
+        do {
+            $invalidID = false;
+            // Generate candid and insert into setArray
+            $candID = $this->generate();
+            $setArray['CandID'] = (string) $candID;
+            try {
+                \Database::singleton()->insert('candidate', $setArray);
+            } catch (\DatabaseException | \DomainException $e) {
+                $invalidID = true;
+                // Occurs in the case of a race condition where another CandID
+                // with the same value has been inserted into the DB before this
+                // one.
+            }
+        } while ($invalidID === true);
+        return $candID;
     }
 
     /**

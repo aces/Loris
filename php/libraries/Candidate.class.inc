@@ -211,7 +211,6 @@ class Candidate
         ?int $projectID = null
     ): int {
         $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -270,23 +269,9 @@ class Candidate
             $setArray['ExternalID'] = $externalID;
         }
 
-        // Generate a new CandID and insert it into the DB. In case of a race
-        // condition, keep trying new IDs until an unused one is found.
-        $generator = new CandIDGenerator();
-        do {
-            $invalidID = false;
-            // Generate candid
-            $candID = $generator->generate();
-            $setArray['CandID'] = (string) $candID;
-            try {
-                $db->insert('candidate', $setArray);
-            } catch (\DatabaseException | \DomainException $e) {
-                $invalidID = true;
-                // Occurs in the case of a race condition where another CandID
-                // with the same value has been inserted into the DB before this
-                // one.
-            }
-        } while ($invalidID === true);
+        // Generate a new CandID and insert it into the database.
+        $candID = (new CandIDGenerator())
+            ->createIDAndInsertWithValues($setArray);
 
         // Return the new CandID
         // FIXME This class should be refactored to use the new CandID class
