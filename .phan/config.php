@@ -31,6 +31,10 @@ return [
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",
 		"PhanTypeArraySuspicious",
+        "PhanTypeExpectedObjectPropAccess",
+        "PhanTypeSuspiciousStringExpression",
+        "PhanContinueTargetingSwitch",
+        "PhanTypeVoidAssignment"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
