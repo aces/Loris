@@ -12,6 +12,7 @@
  */
 
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -24,7 +25,8 @@ use \Psr\Http\Message\ServerRequestInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-interface ETagCalculator {
+interface ETagCalculator
+{
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
      * an incoming HTTP request.

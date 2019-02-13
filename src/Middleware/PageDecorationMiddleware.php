@@ -1,5 +1,6 @@
 <?php
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
@@ -10,10 +11,12 @@ use \Psr\Http\Server\RequestHandlerInterface;
  * appropriate middleware to add the decorations for the user class
  * accessing the page and the page type being accessed.
  */
-class PageDecorationMiddleware implements MiddlewareInterface {
+class PageDecorationMiddleware implements MiddlewareInterface
+{
     protected $page;
     protected $user;
-    public function __construct(\User $user) {
+    public function __construct(\User $user)
+    {
         $this->user = $user;
     }
     /**
@@ -24,7 +27,8 @@ class PageDecorationMiddleware implements MiddlewareInterface {
      *
      * @return ResponseInterface The response with the page content
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         $baseURL = $request->getAttribute("baseurl");
         $config  = \NDB_Config::singleton();
         $page = $request->getAttribute("pageclass") ?? new \NDB_Page(new \Module("", ""), "", "", "", "");

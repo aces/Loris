@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="Loris Standard">
+    <description>The coding standard for the external src files</description>
+
+    <!-- Include the PEAR standard -->
+    <rule ref="PSR2"/>
+
+    <!-- Pieces of other standards to include... -->
+
+</ruleset>

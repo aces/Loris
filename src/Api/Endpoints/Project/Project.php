@@ -104,21 +104,21 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
-        case 'candidates':
-            $handler = new Candidates($this->project);
-            break;
-        case 'images':
-            $handler = new Images($this->project);
-            break;
-        case 'instruments':
-            $handler = new Instruments($this->project);
-            break;
-        case 'visits':
-            $handler = new Visits($this->project);
-            break;
-        default:
-            return new \LORIS\Http\Response\NotFound();
+        switch ($subendpoint) {
+            case 'candidates':
+                $handler = new Candidates($this->project);
+                break;
+            case 'images':
+                $handler = new Images($this->project);
+                break;
+            case 'instruments':
+                $handler = new Instruments($this->project);
+                break;
+            case 'visits':
+                $handler = new Visits($this->project);
+                break;
+            default:
+                return new \LORIS\Http\Response\NotFound();
         }
 
         $newrequest = $request

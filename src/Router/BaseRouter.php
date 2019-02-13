@@ -13,6 +13,7 @@
  */
 
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
@@ -73,7 +74,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $modulename = "dashboard";
             }
             $request = $request->withURI($uri->withPath("/"));
-        } else if ($path[0] === "/") {
+        } elseif ($path[0] === "/") {
             $path    = substr($path, 1);
             $request = $request->withURI($uri->withPath($path));
         }
@@ -108,7 +109,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             switch (count($components)) {
             case 1:
                 $request = $request
-                    ->withAttribute("baseurl", rtrim($baseurl->__toString(), '/'))
+                    ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
                 $module  = \Module::factory("timepoint_list");
                 $mr      = new ModuleRouter($module, $this->moduledir);
@@ -137,6 +138,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $this->user
         ))->process(
             $request,
-            new NoopResponder(new \LORIS\Http\Error($request, 404)));
+            new NoopResponder(new \LORIS\Http\Error($request, 404))
+        );
     }
 }

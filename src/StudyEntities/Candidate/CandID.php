@@ -80,4 +80,3 @@ class CandID extends ValidatableIdentifier
         return $this->value;
     }
 }
-

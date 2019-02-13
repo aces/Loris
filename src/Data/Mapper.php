@@ -12,6 +12,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\Data;
+
 /**
  * A Mapper represents an object that maps data from one DataInstance type to
  * another.

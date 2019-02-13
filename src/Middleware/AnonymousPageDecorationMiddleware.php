@@ -1,17 +1,20 @@
 <?php
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
-class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
+class AnonymousPageDecorationMiddleware implements MiddlewareInterface
+{
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
     protected $BaseURL;
 
-    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS) {
+    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS)
+    {
         $this->JSFiles = $JS;
         $this->CSSFiles = $CSS;
         $this->Config = $config;
@@ -26,7 +29,8 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
      *
      * @return ResponseInterface The response with the page content
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         // Basic page outline variables
         $tpl_data = array(
             'study_title' => $this->Config->getSetting('title'),

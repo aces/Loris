@@ -13,6 +13,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\Data\Provisioners;
+
 use \LORIS\Data\DataInstance;
 
 /**
@@ -56,7 +57,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return DataInstance The row converted to a DataInstance
      */
-    public abstract function getInstance($row) : DataInstance;
+    abstract public function getInstance($row) : DataInstance;
 
     /**
      * GetAllInstances implements the abstract method from
@@ -114,4 +115,3 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
         return $iterator;
     }
 }
-

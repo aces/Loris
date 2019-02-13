@@ -15,10 +15,10 @@
  * @see https://www.php-fig.org/psr/psr-7/
  */
 namespace LORIS\Http;
+
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
 
 /**
  * A StringStream provides a simple wrapper over a string to convert
@@ -58,7 +58,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
         try {
             $this->rewind();
             return $this->getContents();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return "";
         }
     }
@@ -266,7 +266,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
      */
-    public function getMetadata($key=null)
+    public function getMetadata($key = null)
     {
         $metadata = stream_get_meta_data($this->stream);
         if ($key === null) {
@@ -286,7 +286,8 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * @return ResponseInterface A response whose body consists of this string
 
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
             return (new \Zend\Diactoros\Response())
                         ->withBody($this);
     }

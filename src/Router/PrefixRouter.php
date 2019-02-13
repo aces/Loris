@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\URIInterface;
 use \Psr\Http\Message\ResponseInterface;

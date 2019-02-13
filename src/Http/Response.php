@@ -22,8 +22,6 @@ namespace LORIS\Http;
  *
  * It is intended to reduce our coupling to any particular PSR15 implementation.
  */
-class Response 
-    extends \Zend\Diactoros\Response 
-    implements \Psr\Http\Message\ResponseInterface
+class Response extends \Zend\Diactoros\Response implements \Psr\Http\Message\ResponseInterface
 {
 }

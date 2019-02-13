@@ -1,17 +1,22 @@
 <?php
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use \Psr\Http\Server\{MiddlewareInterface;
+    use RequestHandlerInterface
+};
 
-class UserPageDecorationMiddleware implements MiddlewareInterface {
+class UserPageDecorationMiddleware implements MiddlewareInterface
+{
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
     protected $BaseURL;
     protected $PageName;
 
-    public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS) {
+    public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS)
+    {
         $this->JSFiles = $JS;
         $this->CSSFiles = $CSS;
         $this->Config = $config;
@@ -29,7 +34,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
      *
      * @return ResponseInterface a PSR15 response of handler, after adding decorations.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface { 
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
@@ -122,7 +128,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
         // User related template variables that used to be in main.php.
         $site_arr = $this->user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
+        foreach ($site_arr as $key => $val) {
             $site[$key]        = & \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
@@ -195,7 +201,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'workspace' => $undecorated->getBody(),
                      );
 
-        if ($page instanceOf \NDB_Page) {
+        if ($page instanceof \NDB_Page) {
             $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
         }
 

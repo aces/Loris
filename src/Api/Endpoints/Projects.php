@@ -15,6 +15,7 @@ namespace LORIS\Api\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
+
 /**
  * A class for handling the api/v????/projects endpoint.
  *
