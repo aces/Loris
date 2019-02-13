@@ -5,7 +5,7 @@ both of which can be found in the same directory.
 
 The Z-JSON Instrument is the JSON representation of a LORIS instrument. Describing an instrument as a JSON
 object will allow the instrument to be language-independent, human readable, and shareable across different
-platforms. This schema will become an important part of the LORIS API and the New Instrument Builder, and was built
+platforms. This schema was built
 to be compatible with both the [ReproNim JSON-LD Form Schema](https://github.com/ReproNim/schema-standardization)
 and [NDAR](https://ndar.nih.gov/data_dictionary.html).
 

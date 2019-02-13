@@ -57,7 +57,10 @@
       {
         "name": "",
         "type": "page",
-        "description": "",
+        "description": {
+          "en-CA": "",
+          "fr-CA": ""
+        },
         "order": [
           "nameOfHelper",
           "nameOfField"
