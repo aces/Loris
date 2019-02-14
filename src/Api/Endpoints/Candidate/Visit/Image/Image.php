@@ -103,8 +103,37 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
+        $image = $this->_getImage(
+             $request->getAttribute('user')
+        );
+        if ($image === null) {
+            // Subendpoint requires an Image
+            return new \LORIS\Http\Response\NotFound();
+        }
+
         // Delegate to sub-endpoints
-        return new \LORIS\Http\Response\NotImplemented();
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'format':
+            $handler = new Format($this->visit, $image);
+            break;
+        case 'headers':
+            $handler = new Headers($this->visit, $image);
+            break;
+        case 'qc':
+            $handler = new Qc($this->visit, $image);
+            break;
+        default:
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
+        return $handler->process(
+            $newrequest,
+            $handler
+        );
     }
 
     /**
@@ -117,24 +146,13 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $images = $this->visit->getImages(
-                $request->getAttribute('user')
-            );
-
-            $filename = $this->filename;
-            $filtered = array_filter(
-                $images,
-                function ($item) use ($filename) {
-                    return $item->getFilename() == $filename;
-                }
-            );
-
-            if (empty($filtered)) {
+            $imagedto = $this->visit->getImage($this->filename);
+            if (empty($imagedto)) {
                 return new \LORIS\Http\Response\NotFound();
             }
 
-            $image = new \LORIS\Image(array_pop($filtered)->getFileid());
-
+            $image = new \LORIS\Image($imagedto->getFileid());
+// TODO ::  is minc instead???
             $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
                 'application/x.minc2' : 'application/octet-stream';
 

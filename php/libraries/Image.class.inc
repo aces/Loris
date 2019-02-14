@@ -29,6 +29,11 @@ class Image
 
     private $_filelocation;
 
+    private $_outputtype;
+
+    private $_acquisitionprotocol;
+
+    private $_filetype;
     /**
      * Constructor
      *
@@ -68,7 +73,7 @@ class Image
     }
 
     /**
-     * Get file headers from paramter file
+     * Get a specific file header from paramter file
      *
      * @param string $headername $the parameter name to reteive
      *
@@ -98,6 +103,41 @@ class Image
                     )
                 );
         return $dbrow['Value'] ?? '';
+    }
+
+    /**
+     * Get all headers from paramter file
+     *
+     * @return array An associative array of {Name => value}
+     */
+    public function getHeaders(): array
+    {
+        $dbrows = \NDB_Factory::singleton()
+             ->database()
+                ->pselect(
+                    '
+                       SELECT
+                         pt.Name as name,
+                         pf.Value as value
+                       FROM
+                         parameter_file pf 
+                       JOIN parameter_type pt
+                         USING (ParameterTypeID)
+                       JOIN files f
+                         USING (FileID)
+                       WHERE
+                         f.FileID = :v_fileid
+                      ',
+                    array('v_fileid' => $this->_fileid)
+                );
+        return array_reduce(
+            $dbrows,
+            function ($carry, $row) {
+                $carry[$row['name']] = $row['value'];
+                return $carry;
+            },
+            array()
+        );
     }
 
     /**
