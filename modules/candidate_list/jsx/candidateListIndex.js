@@ -92,12 +92,12 @@ class CandidateListIndex extends Component {
     if (column === 'Scan Done' && cell === 'Y') {
       return (
         <td className="scanDoneLink">
-        <a href="#"
-          onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
-          {pscid: row['PSCID']})}
-        >
-          {cell}
-        </a>
+          <a href="#"
+            onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
+            {pscid: row['PSCID']})}
+          >
+            {cell}
+          </a>
         </td>
     );
     }
@@ -291,15 +291,10 @@ class CandidateListIndex extends Component {
 
     // Basic/Advanced toggle
     const toggleFilters = () => {
-      const newFilterState = this.state.hideFilter === true ? false : true;
-      let newLabel = '';
-      if (this.state.buttonLabel === 'Show Advanced Filters') {
-        newLabel = 'Hide Advanced Filters';
-      } else {
-        newLabel = 'Show Advanced Filters';
-      }
-      this.setState({hideFilter: newFilterState});
-      this.setState({buttonLabel: newLabel});
+      const hideFilter = !this.state.hideFilter;
+      const buttonLabel = hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters';
+      this.setState({hideFilter: hideFilter});
+      this.setState({buttonLabel: buttonLabel});
     };
 
     // Open profile modal window
@@ -353,11 +348,11 @@ CandidateListIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-  <CandidateListIndex
-  dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
-  hasPermission={loris.userHasPermission}
-  baseURL={loris.BaseURL}
-  />,
-  document.getElementById('lorisworkspace')
-);
+    <CandidateListIndex
+      dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
+      hasPermission={loris.userHasPermission}
+      baseURL={loris.BaseURL}
+    />,
+    document.getElementById('lorisworkspace')
+  );
 });

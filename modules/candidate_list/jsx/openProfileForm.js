@@ -94,8 +94,7 @@ class OpenProfileForm extends Component {
     return (
       <FormElement
         name='openprofile'
-        onSubmit={this.validateAndSubmit}
-        onUserInput={this.validateAndSubmit}>
+        onSubmit={this.validateAndSubmit}>
         <TextboxElement
           name='CandID'
           label='DCCID'

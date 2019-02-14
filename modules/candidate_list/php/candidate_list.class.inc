@@ -49,8 +49,8 @@ class Candidate_List extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user   = \User::singleton();
+        $config = \NDB_Config::singleton();
 
         $this->skipTemplate = true;
 
@@ -135,8 +135,8 @@ class Candidate_List extends \NDB_Menu_Filter
         \Module::factory('candidate_parameters');
 
         // create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user   = \User::singleton();
+        $config = \NDB_Config::singleton();
 
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
