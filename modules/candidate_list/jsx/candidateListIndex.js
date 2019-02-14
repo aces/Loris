@@ -293,8 +293,7 @@ class CandidateListIndex extends Component {
     const toggleFilters = () => {
       const hideFilter = !this.state.hideFilter;
       const buttonLabel = hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters';
-      this.setState({hideFilter: hideFilter});
-      this.setState({buttonLabel: buttonLabel});
+      this.setState({hideFilter, buttonLabel});
     };
 
     // Open profile modal window
