@@ -18,7 +18,7 @@
         "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": ">1.0"
+        "phan/phan": ">1.2.2"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"

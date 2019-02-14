@@ -1080,7 +1080,7 @@ class NDB_BVL_Instrument extends NDB_Page
             ) {
 
                 if (array_key_exists("Y", $formDateValue)) {
-                    $yearString = $formDateValue[Y];
+                    $yearString = $formDateValue['Y'];
                 } else {
                     $yearString = "0001";
                 }
