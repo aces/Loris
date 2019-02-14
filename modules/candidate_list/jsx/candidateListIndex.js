@@ -157,24 +157,6 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'Project',
-        'show': true,
-        'filter': {
-          name: 'project',
-          type: 'select',
-          options: options.project,
-        },
-      },
-      {
-        'label': 'Subproject',
-        'show': true,
-        'filter': {
-          name: 'subproject',
-          type: 'select',
-          options: options.subproject,
-        },
-      },
-      {
         label: 'Entity Type',
         show: true,
         filter: {
@@ -286,6 +268,29 @@ class CandidateListIndex extends Component {
             hide: this.state.hideFilter,
           },
         }
+      );
+    }
+
+    if (options.useprojects === 'true') {
+      fields.push(
+        {
+          'label': 'Project',
+          'show': true,
+          'filter': {
+            name: 'project',
+            type: 'select',
+            options: options.project,
+          },
+        },
+        {
+          'label': 'Subproject',
+          'show': true,
+          'filter': {
+            name: 'subproject',
+            type: 'select',
+            options: options.subproject,
+          },
+        },
       );
     }
 

@@ -167,12 +167,14 @@ class Candidate_List extends \NDB_Menu_Filter
             $participant_status_options[$name] = $name;
         }
 
+        $useProjects = $config->getSetting("useProjects");
         $this->fieldOptions = [
                                'site'              => $site_options,
                                'project'           => $project_options,
                                'subproject'        => $subproject_options,
                                'participantstatus' => $participant_status_options,
                                'useedc'            => $config->getSetting("useEDC"),
+                               'useprojects'       => $useProjects,
                               ];
 
         return true;
