@@ -6,7 +6,7 @@ both of which can be found in the same directory.
 The Z-JSON Instrument is the JSON representation of a LORIS instrument. Describing an instrument as a JSON
 object will allow the instrument to be language-independent, human readable, and shareable across different
 platforms. This schema was built
-to be compatible with both the [ReproNim JSON-LD Form Schema](https://github.com/ReproNim/schema-standardization)
+to be interoperable with both the [ReproNim JSON-LD Form Schema](https://github.com/ReproNim/schema-standardization)
 and [NDAR](https://ndar.nih.gov/data_dictionary.html).
 
 # 0.0: Contents
@@ -35,17 +35,11 @@ instrument data.
     }
 }
 ```
-The core schema describes the instrument's data structure and format, while the UI component decides certain
-front-end properties. Both the schema and the UI component are required in order to have a fully loaded and
-rendered instrument. These components can be defined either within the same JSON object, or independently. This is
-also true for the instrument data component.
+The instrument data component is a JSON object of clinical data collected by the instrument. Once the instrument is administered, the data collected will be stored in this data component. The instrument data is, however, handled separately.
 
-The instrument data component is a JSON object of clinical data collected by the instrument. An implementation of
-the Z-JSON can be composed of only the core schema and the UI component, with the data component becoming
-available only after the instrument is administered. Certainly, as the data belongs to a study's candidate, there will be
-many data components to one Z-JSON implementation. The data component will consist of key-value pairs that map
-each instrument field's ID to the value of its corresponding front-end input element. This value will be the data
-collected by the instrument.
+The core schema describes the instrument's data structure and format, while the UI component defines
+front-end properties. Both the schema and the UI component are required in order for the instrument to be ready for front-end rendering. These components can be defined either within the same JSON object, or independently. This is
+also true for the instrument data component which can be added to the same JSON object for a self-contained package.
 
 # 2.0: Schema Overview
 
@@ -55,9 +49,15 @@ The core schema is a JSON object consisting of 4 keys: meta, fields, helpers, an
 {
     "schema" : {
         "fields" : {
+            "nameOfField" : {
+
+            },
             ...
         },
         "helpers" : {
+            "nameOfHelper" : {
+
+            },
             ...
         },
         "meta" : {
@@ -70,13 +70,12 @@ The core schema is a JSON object consisting of 4 keys: meta, fields, helpers, an
     ...
 }
 ```
-The `meta` key contains important metadata for the instrument, while the `fields` and `helpers` keys contain JSON
-objects of data fields and layout elements that make up the instrument. While these 3 keys are unordered JSON
-objects, the `setup` key points to an ordered array of page objects. This key defines the page structure of the
+The `meta` key contains metadata for the instrument, while the `fields` and `helpers` keys contain JSON
+objects of data fields and layout elements that make up the instrument. Since JSON objects' key ordering cannot be relied upon, the `setup` key points to an array of ordered page objects. This key defines the page structure of the
 instrument as well as the order in which the field or helper elements are rendered. The value of these keys are
 described in more detail below.
 
-All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention. They also appear alphabetically
+All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
 inside each JSON object.
 
 ## 2.1: Instrument Metadata
@@ -96,9 +95,10 @@ inside each JSON object.
             "instrumentVersion": string,
             "lastUpdateOn": string,
             "longName": {
+                "languageTag1": string,
+                "languageTag2": string,
                 ...
             },
-            "multilingual": boolean,
             "previousVersion": string,
             "schemaVersion": string,
             "shortName": string
@@ -109,18 +109,17 @@ inside each JSON object.
 }
 ```
 
-The metadata object contains useful information such as the version of the instrument, its name, its description, and
+The metadata object contains information such as the version of the instrument, its name, its description, and
 some provenance data. The value of each key is defined as such:
 
 `meta.createdBy`: String.
 
-The developer or user responsible for creating the Z-JSON Instrument e.g. the Z-JSON Instrument of a paper instrument,
-created by some study, will be `createdBy` *this* LORIS developer.
+The developer or user responsible for creating the Z-JSON Instrument.
 
 `meta.createdOn`: String.
 
-The date of creation of the Z-JSON Instrument. Each new version of an instrument will have a new `createdOn` date. Small
-changes, such as bug fixes, that do not require the creation of a new verion of an instrument should use `meta.lastUpdateOn`
+The date of creation of the Z-JSON Instrument in the format 'YYYY-MM-DD'. Each new version of an instrument will have a new `createdOn` date. Small
+changes, such as bug fixes, that do not require the creation of a new version of an instrument should use `meta.lastUpdateOn`
 instead to track updates.
                  
 `meta.createdWith`: String.
@@ -130,13 +129,12 @@ The software or tool responsible for the creation of the ZJSON Instrument i.e. t
 `meta.defaultLanguage`: Required String.
                         
 The default (human communication) language of the instrument, represented by an IETF BCP 47 (RFC 5646 Standard) language tag e.g. "en-CA".
-It is important to set the default language as it is used as a key in other locations of the `schema` object. This key is required to be compatible with
-ReproNim's JSON-LD Instrument.
+It is important to set the default language as it is used as a key in other locations of the `schema` object.
 
 `meta.derivedFrom`: String.
                     
 The resource instrument that the Z-JSON Instrument derived from as a result of significant content modification such that the instrument is no longer the same                    
-instrument, and the creation of a new version does not suffice.
+instrument, and the creation of a new version does not suffice. What is considered significant here is not defined in this specification, but is instead up to the author to decide.
                     
 This level of modification does not include format transcription i.e. linst to
 JSON, unless the content of the instrument has also been modified. The
@@ -144,11 +142,9 @@ JSON, unless the content of the instrument has also been modified. The
 
 `meta.importedFrom`: String.
 
-The resource instrument that this Z-JSON Instrument was converted from, given
-that the imported content is preserved, and only its format is modified.
+The resource instrument that this Z-JSON Instrument was converted from, if it was imported from another format and is otherwise unmodified. If any modifications to the content of the instrument are madeafter conversion, this value should be empty and `meta.derivedFrom` used instead.
 
-If the Z-JSON instrument is an original instrument, the value of this key is
-null.
+If the Z-JSON instrument is an original instrument, the value of this key is empty.
 
 `meta.includeMetaDataFields`: Boolean. 
 
@@ -205,8 +201,7 @@ The name of the Z-JSON Instrument JSON file will follow the format *shortName_in
 
 ## 2.2: Page Setup
 
-The `setup` key contains an array of objects that represent a page (or LORIS subtest) of an instrument. Each page
-object has the following format:
+The `setup` key contains an array of objects that each represent a page (or LORIS subtest) of an instrument.
 
 ```js
 {
@@ -227,10 +222,13 @@ object has the following format:
 }
 ```
 
+Each page object has the following keys:
+
+
 `setup.name`: String.
               The name and ID of the page object.
 
-`setup.typ`: Required string with value "page".
+`setup.type`: Required string with value "page".
 
 `setup.description`: Required string. The label or title of the page that will be rendered on the front-end as a link to the
 page.
@@ -250,25 +248,22 @@ Each type of field may contain type specific options. These options will be brok
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": string,
-                "description": {
-                    "lang1": string,
-                    "lang2": string,
-                        ...
-                },
-                "options": {
-                    ...
-                },
-                "rules": {
-                    "requireIf": string, /* LORIS Logic Parser formula */
-                    "displayIf": string, /* LORIS Logic Parser formula */
-                    "disableIf": string, /* LORIS Logic Parser formula */
-                }
-        ...
+    "nameOfField" : {
+        "type": string,
+        "description": {
+            "lang1": string,
+            "lang2": string,
+                ...
+        },
+        "options": {
+            ...
+        },
+        "rules": {
+            "requireIf": string, /* LORIS Logic Parser formula */
+            "displayIf": string, /* LORIS Logic Parser formula */
+            "disableIf": string, /* LORIS Logic Parser formula */
+        }
+      }
 }
 ```
 
@@ -317,7 +312,7 @@ The `rules` object contains 3 rules for validation and display: requireIf, displ
 ```
 
 The value of these keys are string expressions of logical formulas. These formulas, when calculated, evaluate to true
-or false on the front-end. The formulas are parsed and calculated using the Evaluator function of the LORIS Logic
+or false. The formulas are parsed and calculated using the Evaluator function of the LORIS Logic
 Parser, [LParse](https://gitlab.com/zainvirani/LParse). The currently supported logic operations are available in the LParse [README.md](https://gitlab.com/zainvirani/LParse/blob/master/README.md), as well as
 instructions on how to customize functions. 
 
@@ -342,36 +337,34 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "enum",
-                "description": {
-                    ...
+    "nameOfField" : {
+        "type": "enum",
+        "description": {
+            ...
+        },
+        "options": {
+            "values" : [
+                {
+                    "description" : string, /* If `meta.multilingual` is false */
+                    "value" : string
                 },
-                "options": {
-                    "values" : [
-                        {
-                            "description" : string, /* If `meta.multilingual` is false */
-                            "value" : string
-                        },
-                        {
-                            "description" : {       /* If `meta.multilingual` is true */
-                                "lang1": string,
-                                "lang2": string
-                            },
-                            "value" : string
-                        },
-                        ...
-                    ],
-                    "allowMultipleValues": boolean,
-                    "requireResponse": boolean
+                {
+                    "description" : {       /* If `meta.multilingual` is true */
+                        "lang1": string,
+                        "lang2": string
+                    },
+                    "value" : string
                 },
-                "rules": {
-                    ...
-                }
-        ...
+                ...
+            ],
+            "allowMultipleValues": boolean,
+            "requireResponse": boolean,
+            "readonly": boolean
+        },
+        "rules": {
+            ...
+        }
+    }
 }
 ```
 
@@ -385,10 +378,10 @@ from. These objects have a `description` and a `value` key:
 
     `value`: Required string of all the choices. The values are set as strings to allow for string key values such as 'dont_know'.
 
-`options.allowMultipleValues`: Boolean. Default is false. True if multiple values may be selected at once. False if only
+`options.allowMultipleValues`: Required boolean. True if multiple values may be selected at once. False if only
 one value may be selected.
 
-`options.requireResponse`: Boolean. Default is true. True or false that an input is required. This key is different to
+`options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to
 `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
 
 If true, an implementation should automatically add a 'not_answered' value to allow explicit non-answering while still requiring
@@ -401,22 +394,20 @@ The format is as follows:
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "string",
-                "description": {
-                    ...
-                },
-                "options": {
-                    "regex" : string,
-                    "requireResponse": boolean
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfField" : {
+        "type": "string",
+        "description": {
+            ...
+        },
+        "options": {
+            "regex" : string,
+            "requireResponse": boolean,
+            "readonly": boolean
+        },
+        "rules": {
+            ...
+        }
+    }
 }
 ```
 
@@ -424,11 +415,11 @@ The format is as follows:
                  A regex that the field's data must conform to. If not defined, no rules are
                  enforced.
 
-`options.requireResponse`: Boolean. Default is true. True or false that an input is required.
+`options.requireResponse`: Required boolean. True or false that an input is required.
 
 This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
-If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while
-still requiring some input value.
+If true, an implementation should automatically add a 'not_answered' value e.g. rendered as a checkbox, to allow explicit non-answering while
+still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered.
 
 ### 3.2.3: Numeric - Int and Decimal
 
@@ -436,23 +427,21 @@ A numeric field takes an int or a decimal as data input. It has the form of:
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "integer" OR "decimal",
-                "description" : {
-                    ...
-                },
-                "options": {
-                    "minValue" : `nameOfField.type`,
-                    "maxValue" : `nameOfField.type`, 
-                    "requireResponse" : boolean,
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfField" : {
+        "type": "integer" OR "decimal",
+        "description" : {
+            ...
+        },
+        "options": {
+            "minValue" : `nameOfField.type`,
+            "maxValue" : `nameOfField.type`, 
+            "requireResponse" : boolean,
+            "readonly": boolean
+        },
+        "rules": {
+            ...
+        }
+    }
 }
 ```
 
@@ -463,7 +452,7 @@ A numeric field takes an int or a decimal as data input. It has the form of:
                     A number greater than or equal to `options.minValue` representing the maximum
                     value that the data can be.
 
-`options.requireResponse`: Boolean. Default is true.
+`options.requireResponse`: Required boolean.
                            True or false that an input is required. This key is different to
                            `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
                            If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
@@ -475,24 +464,21 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "date" OR "time",
-                "description" : {
-                    ...
-                },
-                "options": {
-                    "minValue" : `nameOfField.type`,
-                    "maxValue" : `nameOfField.type`, 
-                    "requireResponse" : boolean,
-                    "readonly" : boolean,
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfField" : {
+        "type": "date" OR "time",
+        "description" : {
+            ...
+        },
+        "options": {
+            "minValue" : `nameOfField.type`,
+            "maxValue" : `nameOfField.type`, 
+            "requireResponse" : boolean,
+            "readonly" : boolean,
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
@@ -502,7 +488,7 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 `options.maxValue`: Date or time, depending on `nameOfField.type`.
                     The latest date or time the data can be.
 
-`options.requireResponse`: Boolean. Default is true.
+`options.requireResponse`: Required Boolean.
                            True or false that an input is required. This key is different to
                            `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
                            If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
@@ -519,26 +505,23 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "boolean",
-                "description" : {
-                    ...
-                },
-                "options": {
-                    "requireResponse" : boolean,
-                    "readonly" : boolean,
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfField" : {
+        "type": "boolean",
+        "description" : {
+            ...
+        },
+        "options": {
+            "requireResponse" : boolean,
+            "readonly" : boolean,
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
-`options.requireResponse`: Boolean. Default is true.
+`options.requireResponse`: Required boolean.
                            True or false that an input is required. This key is different to
                            `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
                            If true, a data input of "false" cannot be submitted, and a 'not_answered' value cannot be given.
@@ -555,23 +538,20 @@ represented on the front-end by an input element. Its value is instead calculate
 
 ```js
 {
-    "schema" : {
-        ...
-        "fields" : {
-            "nameOfField" : {
-                "type": "score",
-                "description" : {
-                    ...
-                },
-                "options": {
-                    "scoringFormula" : string,
-                    "readonly" : boolean,
-                    "hideInSurvey" : boolean,
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfField" : {
+        "type": "score",
+        "description" : {
+            ...
+        },
+        "options": {
+            "scoringFormula" : string,
+            "readonly" : boolean,
+            "hideInSurvey" : boolean,
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
@@ -585,36 +565,33 @@ In general, a helper object has the same format as a field:
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": string,
-                "description": {
-                    "lang1": string,
-                    "lang2": string
-                },
-                "options": {
-                    ...
-                },
-                "rules": {
-                    "requireIf": string, /* LORIS Logic Parser formula */
-                    "displayIf": string, /* LORIS Logic Parser formula */
-                    "disableIf": string, /* LORIS Logic Parser formula */
-                }
-        ...
+    "nameOfHelper" : {
+        "type": string,
+        "description": {
+            "lang1": string,
+            "lang2": string
+        },
+        "options": {
+            ...
+        },
+        "rules": {
+            "requireIf": string, /* LORIS Logic Parser formula */
+            "displayIf": string, /* LORIS Logic Parser formula */
+            "disableIf": string, /* LORIS Logic Parser formula */
+        }
+    } 
 }
 ```
 
 `type`: Required string.
-        It represents the helper's data type i.e. static, section, table, etc.
+        It represents the helper's data type i.e. statictext, section, table, etc.
 
 `description`: Required string.
                The human readable description of this helper, provided in every available language,
                and also the text to be displayed in the instrument.
 
 It may be rendered on the front-end as a header, depending on the helper type i.e. this will be the
-content of the static helper itself, the header of the section helper, or column header for the table.
+content of the statictext helper itself, the header of the section helper, or column header for the table.
 
 `options`: Required object of type-specific keys.
            It contains the type-dependent options for this helper, further described in section
@@ -622,31 +599,28 @@ content of the static helper itself, the header of the section helper, or column
 
 `rules`: Required object with keys whose value may be an empty string as described for `fields`.
 While instrument `fields` have corresponding `data` associated with it upon form submission, a `helper` is rendered on the front-end as an integral element that however does not collect data. There are
-5 types of helpers: the static element, and 4 other layout-specific formatting elements, group, row, table, and section.
+5 types of helpers: the static text element, and 4 other layout-specific formatting elements, group, row, table, and section.
 
 ## 4.1: Helper Types
 
-### 4.1.1: Static
+### 4.1.1: Static Text
 
-A `helper` of type "static" represents headings, sub-headings, labels, or informational text that is required in
+A `helper` of type "statictext" represents headings, sub-headings, labels, or informational text that is required in
 an instrument. These can be rendered on the front-end as a header, static, or link element.
 Static helpers are some text displayed to provide information and without an accompanying data input.
 Static helpers do not have an `options` key.
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": "static",
-                "description": {
-                    ...
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfHelper" : {
+        "type": "statictext",
+        "description": {
+            ...
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
@@ -659,31 +633,28 @@ They often have rules which work together and may be interdependent. Groups have
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": "group",
-                "description": {
-                    ...
-                },
-                "options": {
-                    "order": [
-                        string,
-                        string,
-                        ...
-                    ]
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfHelper" : {
+        "type": "group",
+        "description": {
+            ...
+        },
+        "options": {
+            "order": [
+                string,
+                string,
+                ...
+            ]
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
 `options.order`: Required array of strings.
                  An array of the names of `fields` or `helpers`, in order, that are to be formatted
-                 within this group. It may contain any field, but only helpers of the type "static".
+                 within this group. It may contain any field, but only helpers of the type "statictext".
  
 ### 4.1.3: Row
 
@@ -692,31 +663,28 @@ as a "group" helper.
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": "row",
-                "description": {
-                    ...
-                },
-                "options": {
-                    "order": [
-                        string,
-                        string,
-                        ...
-                    ]
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfHelper" : {
+        "type": "row",
+        "description": {
+            ...
+        },
+        "options": {
+            "order": [
+                string,
+                string,
+                ...
+            ]
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
 `options.order`: Required array of strings.
                  An array of the names of `fields` or `helpers`, in order, that are to be
-                 formatted within the row. It may contain any field, but only helpers of the type "static" and "group".
+                 formatted within the row. It may contain any field, but only helpers of the type "statictext" and "group".
 
 The size of this array must equal the `options.colSize` value of the table to which the row belongs.
 
@@ -729,30 +697,27 @@ A table contains only "row" helpers whose `options.order` array must be of the s
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": "table",
-                "description": {
-                    ...
-                },
-                "options": {
-                    "colSize" : int,
-                    "rowSize" : int,
-                    "order": [
-                        string,
-                        string,
-                        ...
-                    ],
-                    "showColHeaders" : boolean,
-                    "showDesc" : boolean,
-                    "showAsFooter": boolean,
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfHelper" : {
+        "type": "table",
+        "description": {
+            ...
+        },
+        "options": {
+            "colSize" : int,
+            "rowSize" : int,
+            "order": [
+                string,
+                string,
+                ...
+            ],
+            "showColHeaders" : boolean,
+            "showDesc" : boolean,
+            "showAsFooter": boolean,
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 `options.colSize` : Required int.
@@ -771,18 +736,18 @@ At each index (or column) of every "row" element, the `helper` or `field` that i
 referenced inside that index has to have its `description` match. This description
 will be rendered as the column header if `options.showColHeaders` is true.
 
-The only exception is that a "static" helper will never have a corresponding header, 
-as its `description` is the static text itself. A column of static elements can have
-an empty column header. This is true for only static elements.
+The only exception is that a "statictext" helper will never have a corresponding header, 
+as its `description` is the static text itself. A column of static text elements can have
+an empty column header. This is true for only static text elements.
 
-`options.showColHeaders`: Boolean. Default is true.
+`options.showColHeaders`: Required boolean.
                           True or false that the table's column headers will be displayed as taken
                           from each column's fields' matching `description`.
 
-`options.showDesc`: Boolean. Default is true.
+`options.showDesc`: Required boolean.
                     True or false that the table's `description` is displayed.
 
-`options.showAsFooter`: Boolean. Default is false.
+`options.showAsFooter`: Required boolean.
                         True or false that the description is displayed as a footer, instead of a
                         header.
 
@@ -792,36 +757,33 @@ A helper of type "section" is a vertical grouping of elements whose `rules` can 
 
 ```js
 {
-    "schema" : {
-        ...
-        "helpers" : {
-            "nameOfHelper" : {
-                "type": "section",
-                "description": {
-                    ...
-                },
-                "options": {
-                    "order": [
-                        string,
-                        string,
-                        ...
-                    ],
-                    "showDesc" : boolean
-                },
-                "rules": {
-                    ...
-                }
-        ...
+    "nameOfHelper" : {
+        "type": "section",
+        "description": {
+            ...
+        },
+        "options": {
+            "order": [
+                string,
+                string,
+                ...
+            ],
+            "showDesc" : boolean
+        },
+        "rules": {
+            ...
+        }
+    } 
 }
 ```
 
 `options.order`: Required array of strings. An array of the names of `fields` or `helpers`, in order, that are to be
-                 formatted within this group. It may contain any field, but only helpers of the type "static".
+                 formatted within this group. It may contain any field, but only helpers of the type "statictext".
 
-`options.showDesc`: Boolean. Default is true. True or false that the section's `description` is displayed as the header for
+`options.showDesc`: Required boolean. True or false that the section's `description` is displayed as the header for
                     section of elements.
 
-An implementation could choose to set this key to false, and display an independent "static" helper as a header instead.
+An implementation could choose to set this key to false, and display an independent "statictext" helper as a header instead.
  
 # 5.0: UI Properties
 
@@ -866,7 +828,7 @@ For helpers:
 
 - [header](#519-header-element) (from h1 to h6)
 - [link](#5110-link-element)
-- [static](#5111-static-element)
+- [statictext](#5111-static-text-element)
 
 These are all mappable to some LORIS React Form element, except for "header" which is native to HTML.
 
@@ -874,10 +836,8 @@ These are all mappable to some LORIS React Form element, except for "header" whi
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "checkbox"
-        }
+    "nameOfField" : {
+        "type" : "checkbox"
     }
 }
 ```
@@ -886,11 +846,9 @@ These are all mappable to some LORIS React Form element, except for "header" whi
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "date"
-        }
-    }
+    "nameOfField" : {
+        "type" : "date"
+    } 
 }
 ```
 
@@ -898,11 +856,9 @@ These are all mappable to some LORIS React Form element, except for "header" whi
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "number"
-        }
-    }
+    "nameOfField" : {
+        "type" : "number"
+    } 
 }
 ```
 
@@ -910,13 +866,10 @@ These are all mappable to some LORIS React Form element, except for "header" whi
 
 ```js
 {
-    "ui": {
-        ...
-        "nameOfRadioButtons" : {
-            "type" : "radio",
-            "options" : {
-                "vertical" : boolean
-            }
+    "nameOfField" : {
+        "type" : "radio",
+        "options" : {
+            "vertical" : boolean
         }
     }
 }
@@ -929,10 +882,8 @@ horizontally.
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "select"
-        }
+    "nameOfField" : {
+        "type" : "select"
     }
 }
 ```
@@ -941,12 +892,10 @@ horizontally.
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "text",
-            "options": {
-                "placeholder": string
-            }
+    "nameOfField" : {
+        "type" : "text",
+        "options": {
+            "placeholder": string
         }
     }
 }
@@ -958,12 +907,10 @@ horizontally.
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "textarea",
-            "options": {
-                "placeholder": string
-            }
+    "nameOfField" : {
+        "type" : "textarea",
+        "options": {
+            "placeholder": string
         }
     }
 }
@@ -975,26 +922,22 @@ horizontally.
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "time"
-        }
+    "nameOfField" : {
+        "type" : "time"
     }
 }
 ```
 
 ### 5.1.9 Header Element
 
-A header element renders a "static" `helper` that should be displayed with some level of prominence.
+A header element renders a "statictext" `helper` that should be displayed with some level of prominence.
 
 ```js
 {
-    "ui": {
-        "nameOfField" : {
-            "type" : "header",
-            "options": {
-                "level": int
-            }
+    "nameOfHelper" : {
+        "type" : "header",
+        "options": {
+            "level": int
         }
     }
 }
@@ -1007,9 +950,10 @@ and most prominent, and h6, the lowest and reserved for subheadings.
 
 ```js
 {
-    "ui": {
-        "nameOfHelper" : {
-            "type" : "link",
+    "nameOfHelper" : {
+        "type" : "link",
+        "options": {
+            "url" : string
         }
     }
 }
@@ -1019,10 +963,8 @@ and most prominent, and h6, the lowest and reserved for subheadings.
 
 ```js
 {
-    "ui": {
-        "nameOfHelper" : {
-            "type" : "static"
-        }
+    "nameOfHelper" : {
+        "type" : "static"
     }
 }
 ```
