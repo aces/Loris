@@ -36,9 +36,12 @@ class NDB_Config extends \NDB_Config
     /**
      * Returns a single NDB_Config object.
      *
+     * @param ?string $configFile Unused, for signature compatibility with
+     *                            \NDB_Config
+     *
      * @return NDB_Config
      */
-    public static function &singleton(?string $configFile=NULL) : \NDB_Config
+    public static function &singleton(?string $configFile=null) : \NDB_Config
     {
         static $cfg = null;
         if (is_null($cfg)) {
