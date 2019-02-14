@@ -481,28 +481,27 @@ class Instrument_Manager extends \NDB_Menu_Filter
             }
             switch($type) {
             case 'page':
-                continue;
             case 'table':
             case 'title':
-                continue; // Should these two do something special?
+                break;
             case 'selectmultiple': // fallthrough, both selectmultiple and text
                 // require varchar to save
             case 'text':
                 $error = $this->checkType($instname, $name, 'varchar');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'textarea':
                 $error = $this->checkType($instname, $name, 'text');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'date':
                 $error = $this->checkType($instname, $name, 'date');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'select':
