@@ -30,6 +30,7 @@ class CandidateListIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.toggleFilters = this.toggleFilters.bind(this);
   }
 
   show(state) {
@@ -65,6 +66,13 @@ class CandidateListIndex extends Component {
         console.error(error);
       });
   }
+
+  // Basic/Advanced toggle
+  toggleFilters() {
+    const hideFilter = !this.state.hideFilter;
+    const buttonLabel = hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters';
+    this.setState({hideFilter, buttonLabel});
+  };
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -294,12 +302,6 @@ class CandidateListIndex extends Component {
       );
     }
 
-    // Basic/Advanced toggle
-    const toggleFilters = () => {
-      const hideFilter = !this.state.hideFilter;
-      const buttonLabel = hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters';
-      this.setState({hideFilter, buttonLabel});
-    };
 
     // Open profile modal window
     const profileForm = (
@@ -320,7 +322,7 @@ class CandidateListIndex extends Component {
     const actions = [
       {
         label: this.state.buttonLabel,
-        action: toggleFilters,
+        action: this.toggleFilters,
         name: 'advanced',
       },
       {
