@@ -369,8 +369,8 @@ abstract class NDB_Notifier_Abstract
     /**
      * Logs in the history table the notifications that have been sent
      *
-     * @param string    $trigger_user user that triggered the notification system
-     * @param string    $target_user  user that receives a notification from the system
+     * @param string $trigger_user user that triggered the notification system
+     * @param string $target_user  user that receives a notification from the system
      * @param string $service      notification service used for this message
      *
      * @return void
