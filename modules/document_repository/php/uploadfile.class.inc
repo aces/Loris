@@ -62,8 +62,7 @@ class Uploadfile extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
-            } else
-             {
+            } else {
                 return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
