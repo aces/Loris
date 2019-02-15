@@ -207,7 +207,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Gets information of admin user and returns a name-email string combination
      *
-     * @return string   string in the form `First Last <email@domain.com>`
+     * @return array  `First Last <email@domain.com>`
      */
     private function _getAdminUser(): array
     {
@@ -331,7 +331,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Get email of a user from his ID
      *
-     * @param int $uid containing the userID
+     * @param string $uid containing the userID
      *
      * @return string  email of the user
      */
@@ -369,8 +369,8 @@ abstract class NDB_Notifier_Abstract
     /**
      * Logs in the history table the notifications that have been sent
      *
-     * @param int    $trigger_user user that triggered the notification system
-     * @param int    $target_user  user that receives a notification from the system
+     * @param string    $trigger_user user that triggered the notification system
+     * @param string    $target_user  user that receives a notification from the system
      * @param string $service      notification service used for this message
      *
      * @return void
