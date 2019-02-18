@@ -2101,10 +2101,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $age = array();
         if (empty($date)) {
             $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
-            print_r("a");
         } else {
             $age = Utility::calculateAge($result['DoB'], $date);
- print_r("b");
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
