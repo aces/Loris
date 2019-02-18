@@ -29,26 +29,22 @@ use \LORIS\Http\EmptyStream;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
-    const ALREADY_INSTALLED = 'This instrument already exists in the ' .
+    const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
                                   'test battery.';
-
-    const CANNOT_WRITE_FILES = 'Automatic installation of instruments is ' .
+    const CANNOT_WRITE_FILES    = 'Automatic installation of instruments is ' .
                                   'not possible given the current server ' .
                                   'configuration. Please contact your ' .
                                   'administrator if you require this ' .
                                   'functionality.';
-
-    const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
+    const FILE_ALREADY_EXISTS   = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
                                   'install the instrument.';
-    const BAD_REQUEST         = 'Uploaded file is not of type LINST or is ' .
-                                'too large.';
-
+    const BAD_REQUEST           = 'Uploaded file is not of type LINST or is ' .
+                                  'too large.';
     const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
                                   'installation failed. Please contact your ' .
                                   'administrator.';
-
-    const UPLOAD_NO_INSTALL = 'File upload is successful but the ' .
+    const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
                                   'instrument needs to be installed manually.';
 
     /**
@@ -143,18 +139,27 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     )
                 );
         }
+
+        // Do pre-processing before uploading files.
+        if (!$this->canWriteFiles()) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(500, 'Internal Server Error')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => self::CANNOT_WRITE_FILES)
+                        )
+                    )
+                );
+        }
+
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
-        // Do pre-processing before uploading files.
-        $err = '';
-        if (!$this->canWriteFiles()) {
-            $err    = self::CANNOT_WRITE_FILES;
-            $status = 500;
-        }
+        $targetdir     = new \SplFileInfo($this->path . 'project/instruments/');
+        $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
-        $fullpath = $this->path . "project/instruments/" . $filename;
-        if (file_exists($fullpath) || $this->instrumentExists($instrument)) {
+        if ($this->instrumentExists($instrument)) {
             /**
              * Don't update the file if it already exists on the back-end.
              * Instead, inform users that an administrator must install it on
@@ -163,64 +168,32 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            $err    = self::ALREADY_INSTALLED;
-            $status = 409;
-        }
-
-        // Attempt file upload if no errors encountered so far.
-        $success = false;
-        if (empty($err)) {
-            /* Although only .linst files should be uploaded to this module, and
-             * they are just special text files, they are marked as
-             * application/octet-stream upon upload.
-             */
-            $uploader = new \FileUploader(
-                new \SplFileInfo($this->path . 'project/instruments/'),
-                0644,
-                false,
-                array('application/octet-stream')
-            );
-            $success  = $uploader->upload($request->getUploadedFiles());
-        }
-
-        // Return appropriate error message if something has gone wrong.
-        if (! $success) {
-            if (empty($err)) {
-                $status = $uploader->getResponseCode();
-                switch ($status) {
-                case 400:
-                    $err = self::BAD_REQUEST;
-                    break;
-                case 403:
-                    $err = self::CANNOT_WRITE_FILES;
-                    break;
-                case 409:
-                    if (file_exists($fullpath)) {
-                        /* This should only happen for users on a system where
-                         * automatic installation is disabled (ie. has no
-                         * quatUser), as the above 409 error (the
-                         * instrumentExists() check) will return before this
-                         * one.
-                         */
-                        $err = self::FILE_ALREADY_EXISTS;
-                    }
-                    break;
-                default:
-                    // 500 error message + any not specifically covered above.
-                    $err = empty($err) ? 'Sorry, something went wrong.' : $err;
-                }
-            }
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => $err)
+                            array('error' => self::ALREADY_INSTALLED)
                         )
                     )
                 );
         }
-        // From here on we assume that file upload has completed successfully.
+
+        /* Although only .linst files should be uploaded to this module, and
+         * they are just special text files, they are marked as
+         * application/octet-stream upon upload.
+         */
+
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'application/octet-stream'
+            );
+
+        $response = $uploader->handle($request);
+
+        if ($response->getStatusCode() !== 200) {
+            return $response;
+        }
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
@@ -243,8 +216,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                         json_encode(
                             array('message' => self::UPLOAD_NO_INSTALL)
                         )
-                    )
-                );
         }
 
         // Install the instrument by directly sourcing the SQL file
