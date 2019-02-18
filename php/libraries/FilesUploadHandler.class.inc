@@ -36,7 +36,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     /**
      * The target upload directory.
      *
-     * @var SplFileInfo
+     * @var \SplFileInfo
      */
     private $_uploadDirectory;
 
@@ -64,7 +64,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     /**
      * Create new instance of a File Uploader.
      *
-     * @param SplFileInfo $uploadDirectory The target upload directory
+     * @param \SplFileInfo $uploadDirectory The target upload directory
      */
     public function __construct(\SplFileInfo $uploadDirectory)
     {
