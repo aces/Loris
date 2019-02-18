@@ -318,7 +318,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @param string  $elname     The element to be validate
      * @param array   $elements   array of values from current page.
-     * @param boolean $registered Array of all rules which have been
+     * @param array $registered Array of all rules which have been
      *                            registered.
      *
      * @return boolean true if the element passes, false if it fails a rule.
@@ -326,7 +326,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function DINRunElementRules(
         string $elname,
         array $elements,
-        bool $registered
+        array $registered
     ): bool {
         foreach ($registered['rules'] AS $rule) {
             //Loop through the assigned rules (which is the array of formatted
