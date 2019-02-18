@@ -40,7 +40,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string $query  The SQL query to prepare and run
      * @param array  $params The prepared statement bind parameters
      */
-    function __construct(string $query, array $params)
+    public function __construct(string $query, array $params)
     {
         $this->query  = $query;
         $this->params = $params;
@@ -74,7 +74,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return \Traversable which returns DataInstance for row when traversed.
      */
-    function getAllInstances() : \Traversable
+    public function getAllInstances() : \Traversable
     {
         $DB      = (\NDB_Factory::singleton())->database();
         $stmt    = $DB->prepare($this->query);

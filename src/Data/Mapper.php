@@ -45,5 +45,5 @@ interface Mapper
      *
      * @return DataInstance a new DataInstance with the map applied.
      */
-    function map(\User $user, DataInstance $resource) : DataInstance;
+    public function map(\User $user, DataInstance $resource) : DataInstance;
 }

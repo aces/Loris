@@ -23,6 +23,6 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 # PSR2. Until they are cleaned up we cannot include this test in our static
 # analysis without breaking Travis. This is not a priority issue but at some
 # point the issues should be remedied and the following line uncommented.
-#vendor/bin/phpcs --standard=docs/SrcCS.xml --extensions=php/php,inc/php src/ || exit $?;
+vendor/bin/phpcs --standard=docs/SrcCS.xml --extensions=php/php,inc/php src/ || exit $?;
 
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;

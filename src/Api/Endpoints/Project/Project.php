@@ -96,7 +96,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            $this->_getProject($this->project->getName())
+                            $this->getProject($this->project->getName())
                         )
                     )
                 );
@@ -140,7 +140,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * @throws \NotFound When the project name does not exists
      * @return array The representation of a project
      */
-    private function _getProject(string $name): array
+    private function getProject(string $name): array
     {
         if (!isset($this->responseCache[$name])) {
             $meta = array('Project' => $name);
@@ -177,7 +177,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $body = $this->_getProject($this->project->getName());
+        $body = $this->getProject($this->project->getName());
 
         return md5(json_encode($body));
     }

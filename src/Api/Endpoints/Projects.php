@@ -39,7 +39,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    private function hasAccess(\User $user) : bool
     {
         return !($user instanceof \LORIS\AnonymousUser);
     }
@@ -87,7 +87,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 1) {
-            $projects = $this->_getProjectList();
+            $projects = $this->getProjectList();
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withBody(
@@ -120,7 +120,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return array of projects
      */
-    private function _getProjectList() : array
+    private function getProjectList() : array
     {
         if (isset($this->projectsCache)) {
             return $this->projectsCache;
@@ -166,6 +166,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_getProjectList()));
+        return md5(json_encode($this->getProjectList()));
     }
 }

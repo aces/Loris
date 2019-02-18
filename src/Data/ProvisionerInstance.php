@@ -144,4 +144,4 @@ abstract class ProvisionerInstance implements Provisioner
 
         return $rows;
     }
-};
+}
