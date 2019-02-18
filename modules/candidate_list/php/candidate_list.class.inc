@@ -66,34 +66,19 @@ class Candidate_List extends \NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel',
                           'psc.Name AS RegistrationSite',
+                          'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
+                          'c.Entity_type AS EntityType',
+                          'MAX(s.Scan_done) as scanDone',
+                          'COALESCE(pso.Description,"Active") AS ParticipantStatus',
+                          'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
+                          'c.Sex',
+                          'COUNT(DISTINCT s.Visit_label) AS VisitCount',
+                          "IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback",
+                          'max(s.Current_stage) AS LatestVisitStatus',
                          );
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
         }
-        $this->columns = array_merge(
-            $this->columns,
-            array(
-             'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
-             'c.Entity_type AS EntityType',
-             'MAX(s.Scan_done) as scanDone',
-             "COALESCE(pso.Description,'Active') AS ParticipantStatus",
-             'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-             'c.Sex',
-            )
-        );
-
-        // Need distinct because of joining with feedback_bvl_thread
-        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
-        $FeedbackSQL   = 'IFNULL(MIN(feedback_bvl_thread.Status+0),0)';
-
-        $this->columns = array_merge(
-            $this->columns,
-            array(
-             "$VisitCountSQL AS VisitCount",
-             "$FeedbackSQL AS Feedback",
-             'max(s.Current_stage) AS LatestVisitStatus',
-            )
-        );
 
         if ($config->getSetting("useEDC") === "true") {
             $this->columns[] = 'DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
