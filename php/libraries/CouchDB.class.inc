@@ -206,7 +206,7 @@ class CouchDB
     private function __construct(
         string $database = '',
         string $host = '',
-        int   $port = 5984,
+        int    $port = 5984,
         string $user = '',
         string $password = ''
     ) {
