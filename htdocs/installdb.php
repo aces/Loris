@@ -53,6 +53,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 use \LORIS\Installer\Database as Database;
 
 $installer = new \LORIS\Installer\Installer();
+
 $factory = \NDB_Factory::singleton();
 $factory->setConfig(\LORIS\Installer\NDB_Config::singleton());
 
