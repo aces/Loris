@@ -50,9 +50,9 @@ class Login extends Endpoint
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return boolean true if access is permitted
+     * @return boolean True always
      */
-    private function hasAccess(\User $user) : bool
+    public function hasAccess(\User $user) : bool
     {
         // Anyone can try and login. Even you.
         return true;
