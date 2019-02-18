@@ -25,8 +25,8 @@ class Project
 {
     private static $_instances = array();
 
-    private $_projectId;
-    private $_projectName;
+    protected $_projectId;
+    protected $_projectName;
     private $_recruitmentTarget;
 
     /**
@@ -158,11 +158,11 @@ class Project
     /**
      * Set this project's id
      *
-     * @param int|null $projectId This project's id
+     * @param integer $projectId This project's id
      *
      * @return void
      */
-    public function setId(int $projectId = null): void
+    public function setId(int $projectId): void
     {
         $this->_projectId = $projectId;
     }
