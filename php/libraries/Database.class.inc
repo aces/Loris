@@ -101,7 +101,9 @@ class Database
             }
         } else {
             // name the connection
-            $connection = md5($database.$host.$username.$password.$trackChanges);
+            $input      = $database.$host.$username.$password;
+            $input     .= $trackChanges ? 'yes' : 'no';
+            $connection = md5($input);
 
             // create the connection if none exists
             if (empty($connections[$connection])) {
