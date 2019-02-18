@@ -76,7 +76,6 @@ instrument as well as the order in which the field or helper elements are render
 described in more detail below.
 
 All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
-inside each JSON object.
 
 ## 2.1: Instrument Metadata
 
@@ -142,7 +141,7 @@ JSON, unless the content of the instrument has also been modified. The
 
 `meta.importedFrom`: String.
 
-The resource instrument that this Z-JSON Instrument was converted from, if it was imported from another format and is otherwise unmodified. If any modifications to the content of the instrument are madeafter conversion, this value should be empty and `meta.derivedFrom` used instead.
+The resource instrument that this Z-JSON Instrument was converted from, if it was imported from another format and is otherwise unmodified. If any modifications to the content of the instrument are made after conversion, this value should be empty and `meta.derivedFrom` used instead.
 
 If the Z-JSON instrument is an original instrument, the value of this key is empty.
 
@@ -384,8 +383,8 @@ one value may be selected.
 `options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to
 `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
 
-If true, an implementation should automatically add a 'not_answered' value to allow explicit non-answering while still requiring
-some input value. This choice is added here instead of in `options.values` to allow for consistency with other field types.
+If true, an implementation should automatically add a 'not_answered' value e.g. rendered as a checkbox, to allow explicit non-answering while
+still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered. This choice is added here instead of in `options.values` to allow for consistency with other field types.
 
 ### 3.2.2: String
 
@@ -488,11 +487,9 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 `options.maxValue`: Date or time, depending on `nameOfField.type`.
                     The latest date or time the data can be.
 
-`options.requireResponse`: Required Boolean.
-                           True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
-                           If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
-                           explicit non-answering while still requiring some input value.
+`options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+
+If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while still requiring some input value.
 
 `options.readonly`: Boolean.
                     True or false that the field is read only i.e. not editable on the front-end but
@@ -958,6 +955,8 @@ and most prominent, and h6, the lowest and reserved for subheadings.
     }
 }
 ```
+
+`options.url`: Required string. The url to which the link element navigates on click.
 
 ### 5.1.11 Static Element
 
