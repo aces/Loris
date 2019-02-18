@@ -350,7 +350,7 @@ class SinglePointLogin
                 return false;
             }
 
-            // check if the account is longer active
+            // check if the account is no longer active
             $date       = new DateTime();
             $currentDay = $date->getTimestamp();
 
@@ -462,7 +462,7 @@ class SinglePointLogin
         $shortWindowInMinutes = 15;
         $longWindowInMinutes  = 60;
         /* These represent Y and Y' above, but with more helpful names.
-         * These values represent the maximum umber of attempts a user may make
+         * These values represent the maximum number of attempts a user may make
          * to login before being locked out.
          */
         $shortLockoutThreshold = 10;
