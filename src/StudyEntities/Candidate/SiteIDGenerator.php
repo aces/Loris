@@ -237,7 +237,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * for $setting.
      *
      * @param array  $idStructure Settings concerning ID structure extracted
-     *                  from project/config.sml
+     *                  from project/config.xml
      * @param string $setting     The name of the variable for which we want the
      *                  value.
      *
