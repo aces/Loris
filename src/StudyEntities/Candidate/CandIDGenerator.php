@@ -33,39 +33,23 @@ class CandIDGenerator extends IdentifierGenerator
      * @return CandID The new identifier.
      */
     public function generate(): CandID {
-        $this->checkIDRangeFull();
-        return new CandID(
-            strval(
-                random_int($this->minValue, $this->maxValue)
-            )
-        );
-    }
-
-    /**
-     * Wrapper for \Database::insert() to add new Candidate information to the
-     * database. This function will generate new IDs in the edge-case that a
-     * race condition occurs and causes an error upon insertion.
-     *
-     * @param array $setArray An associative array of column names and values.
-     *
-     * @return CandID The newly-created CandID object.
-     */
-    public function createIDAndInsertWithValues(array $setArray): CandID {
-        $invalidID = false;
-        do {
-            // Generate candid and insert into setArray
-            $candID = $this->generate();
-            $setArray['CandID'] = (string) $candID;
-            try {
-                \Database::singleton()->insert('candidate', $setArray);
-            } catch (\DatabaseException | \DomainException $e) {
-                $invalidID = true;
-                // Occurs in the case of a race condition where another CandID
-                // with the same value has been inserted into the DB before this
-                // one.
-            }
-        } while ($invalidID === true);
-        return $candID;
+        $validID = false;
+        while (! $validID) {
+            $this->checkIDRangeFull();
+            $id = new CandID(
+                strval(
+                    random_int($this->minValue, $this->maxValue)
+                )
+            );
+            // Check if the ID is in use. If so, the loop will continue and a new
+            // ID will be generated.
+            $validID = \Database::singleton()
+                ->pselectOne(
+                    "SELECT count(CandID) FROM candidate WHERE CandID=:id",
+                    array('id' => (string) $id)
+                ) == 0;
+        }
+        return $id;
     }
 
     /**

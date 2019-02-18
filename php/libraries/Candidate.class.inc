@@ -270,8 +270,24 @@ class Candidate
         }
 
         // Generate a new CandID and insert it into the database.
-        $candID = (new CandIDGenerator())
-            ->createIDAndInsertWithValues($setArray);
+        $generator = new CandIDGenerator();
+        // declare the variable to avoid static analysis warnings
+        $invalidID = false;
+        do {
+            // Reset on each iteration
+            $invalidID = false;
+            // Generate candid and insert into setArray
+            $candID = $generator->generate();
+            $setArray['CandID'] = (string) $candID;
+            try {
+                \Database::singleton()->insert('candidate', $setArray);
+            } catch (\DatabaseException | \DomainException $e) {
+                // Occurs in the case of a race condition where another CandID
+                // with the same value has been inserted into the DB before this
+                // one.
+                $invalidID = true;
+            }
+        } while ($invalidID);
 
         // Return the new CandID
         // FIXME This class should be refactored to use the new CandID class
