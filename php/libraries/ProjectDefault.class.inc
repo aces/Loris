@@ -30,7 +30,7 @@ class ProjectDefault extends Project
      */
     private function __construct()
     {
-        $this->_projectId = null;
+        $this->_projectId = 1;
         $this->_projectName = 'loris';
     }
 
