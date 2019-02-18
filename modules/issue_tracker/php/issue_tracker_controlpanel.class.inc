@@ -116,7 +116,7 @@ class Issue_Tracker_ControlPanel
 class IssueNavigation
 {
 
-    var $urlParams = array();
+    public $urlParams = array();
 
     /**
     *  Gets the session
