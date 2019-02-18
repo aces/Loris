@@ -81,6 +81,13 @@ sudo apachectl stop
 sudo apachectl -k restart
 ```
 
+
+#### An alternative to Apache is using php -S in the htdocs directory.
+```
+php -S localhost:8000 -t . router.php
+```
+Logs will be sent to stderr.
+
 ### 1.5.1 Modify Apache Configuration
 
 Modify the apache configuration file for our development environment.
