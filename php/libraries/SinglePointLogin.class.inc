@@ -458,15 +458,15 @@ class SinglePointLogin
          * after Y minutes.
          */
 
-        // These represent X and X' above, but with more helpful names.
-        $shortWindowInMinutes = 15;
-        $longWindowInMinutes  = 60;
-        /* These represent Y and Y' above, but with more helpful names.
+        /* These represent X and X' above, but with more helpful names.
          * These values represent the maximum number of attempts a user may make
          * to login before being locked out.
          */
         $shortLockoutThreshold = 10;
         $longLockoutThreshold  = 15;
+        // These represent Y and Y' above, but with more helpful names.
+        $shortWindowInMinutes = 15;
+        $longWindowInMinutes  = 60;
 
         // SQL code to run.
         $query = "SELECT COUNT(loginhistoryID) as loginattempts " .
