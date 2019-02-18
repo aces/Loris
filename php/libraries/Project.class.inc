@@ -158,7 +158,7 @@ class Project
     /**
      * Set this project's id
      *
-     * @param integer $projectId This project's id
+     * @param int|null $projectId This project's id
      *
      * @return void
      */
