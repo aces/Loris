@@ -170,11 +170,6 @@ a new version be created, was last made.
 The value of each key will be the long, human readable version of the instrument's name
 - its title - provided in every language that the instrument comes in.
 
-`meta.multilingual`: Boolean.
-
-True or false that the instrument is available in more than one language that is
-its `defaultLanguage`.
-
 `meta.previousVersion`: String.
 
 The previous version of the Z-JSON Instrument, if significant changes
@@ -250,8 +245,8 @@ Each type of field may contain type specific options. These options will be brok
     "nameOfField" : {
         "type": string,
         "description": {
-            "lang1": string,
-            "lang2": string,
+            "languageTag1": string,
+            "languageTag2": string,
                 ...
         },
         "options": {
@@ -282,8 +277,8 @@ This will be the data type of the field's value within the `data` component upon
 }
 ```
 
-`description`: Required string. The human readable description of this field, provided in every available language. It
-may be rendered on the front-end as a question, or label, text.
+`description`: Required object with IETF BCP 47 language tags as keys. The value of each key is a string that is the human readable description of this field, provided in every available language. It
+may be rendered on the front-end as a question, label or text.
 
 `options`: Required object of type-specific keys. It contains the type-dependent options for this field, further
 described in section [3.2: Field Types](#32-field-types).
@@ -344,13 +339,9 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
         "options": {
             "values" : [
                 {
-                    "description" : string, /* If `meta.multilingual` is false */
-                    "value" : string
-                },
-                {
-                    "description" : {       /* If `meta.multilingual` is true */
-                        "lang1": string,
-                        "lang2": string
+                    "description" : {
+                        "languageTag1": string,
+                        "languageTag2": string
                     },
                     "value" : string
                 },
@@ -367,15 +358,11 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
 }
 ```
 
-`options.values`: Required array of JSON objects that specify the ordered list of choices that the data is to be selected
-from. These objects have a `description` and a `value` key:
+`options.values`: Required array of JSON objects that specify the ordered list of choices that the data is to be selected from. These objects have a `description` and a `value` key:
 
-    `description`: Required string if `meta.multilingual` is false. Required object with keys as language tags and values
-                   as strings if `meta.multilingual` is true.
+    `description`: Required object with IETF BCP 47 language tags as keys. The value of each key is a string that describes the choice value in human friendly text, and in every available language.
 
-                   Describes list of values in human friendly text, and in every available language.
-
-    `value`: Required string of all the choices. The values are set as strings to allow for string key values such as 'dont_know'.
+    `value`: Required string of the choice. The value is set as a string to allow for string key values such as 'dont_know'.
 
 `options.allowMultipleValues`: Required boolean. True if multiple values may be selected at once. False if only
 one value may be selected.
@@ -565,8 +552,8 @@ In general, a helper object has the same format as a field:
     "nameOfHelper" : {
         "type": string,
         "description": {
-            "lang1": string,
-            "lang2": string
+            "languageTag1": string,
+            "languageTag2": string
         },
         "options": {
             ...
@@ -583,8 +570,7 @@ In general, a helper object has the same format as a field:
 `type`: Required string.
         It represents the helper's data type i.e. statictext, section, table, etc.
 
-`description`: Required string.
-               The human readable description of this helper, provided in every available language,
+`description`: Required object with IETF BCP 47 language tags as keys. The value of each key is a string that is the human readable description of this helper, provided in every available language,
                and also the text to be displayed in the instrument.
 
 It may be rendered on the front-end as a header, depending on the helper type i.e. this will be the
