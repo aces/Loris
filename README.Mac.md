@@ -1,10 +1,11 @@
-### These instructions last tested for LORIS version v20.*
-# Install a developer instance of LORIS on macOS
-### We recommend installing LORIS on Ubuntu or CentOS
-#### macOS is no longer supported for "production" as of v15.10. 
+## Important Notes: 
+- we recommend installing LORIS on Ubuntu or CentOS as macOS is no longer supported for "production" as of v15.10
+- these instructions were last tested on LORIS version v20.*
 
-This is a guide on how to get a LORIS instance running on your Apple computer for development. You're expected to have basic understanding of using a terminal and editing configuration files. 
-For production, we recommend installing LORIS on Ubuntu or CentOS.
+# How to install a developer instance of LORIS on macOS
+
+This is a guide on how to get a LORIS instance running on your Apple computer for development. You're expected to have basic understanding of using a terminal and editing configuration files.
+For production servers, we recommend installing LORIS on Ubuntu or CentOS.
 
 # 1. System Requirements
 
@@ -29,15 +30,11 @@ You should have a GitHub account and git installed on your local development mac
 ## 1.1 On Github, create your own fork of Loris.
 
 1) Navigate to [github.com/aces/Loris](https://github.com/aces/Loris)
-2) Click the Fork button
+2) Click on the Fork button.
 
-You should now have your own repository on Github of Loris.
+You should now have your own Loris repository on Github.
 
 ## 1.2 Clone your fork of Loris to your local machine.
-
-Create a directory for development and where you will clone your fork of Loris.
-
-In this example, the finished result will be: ~/Development/GitHub/Loris
 
 **a.** Create the directory for development and where the fork will reside.
 
@@ -211,12 +208,12 @@ xdebug.remote_connect_back=0
 xdebug.idekey=phpstorm
 ```
 
-#### Restart apache and it will reload with Xdebug configured.
+#### Restart apache with Xdebug configured.
 ```
 sudo apachectl -k restart
 ```
 
-### 1.7.2 (Optional) Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx)
+### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (recommended)
 
 **a.** Install from the GitHub repository.
 
@@ -235,7 +232,7 @@ xdebug off
 
 We’re installing MariaDB (fork of mysql).
 
-**a.** Paste the commands into your terminal while hitting enter:
+**a.** Paste the commands into your terminal and hit enter:
 ```
 brew update
 brew upgrade
@@ -271,7 +268,7 @@ Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and
 
 
 ## 2.2 Install Loris
-Paste into your terminal while hitting enter:
+Paste into your terminal and hit enter:
 ```
 cd ~/Development/GitHub/Loris
 make dev
@@ -285,4 +282,4 @@ Open a browser (we officially support Firefox & Chrome) and navigate to:
 localhost:8080/installdb.php
 ```
 
-Once finished hooray, Loris should accessible at http://localhost:8080 and you can start developing!
+Once finished hooray, LORIS should be accessible at http://localhost:8080 and you can start developing!
