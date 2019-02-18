@@ -14,7 +14,7 @@
 
 /**
  * A representation of a SessionID object. A SessionID is always an integer with a
- * maximum of 10 digits (as definied in the database `session` table.
+ * maximum of 10 digits (as defined in the database `session` table).
  *
  * @category Main
  * @package  LORIS
