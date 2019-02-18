@@ -597,9 +597,9 @@ class TimePoint
     /**
      * Returns the list of BVLQC exclusion statuses
      *
-     * @return string
+     * @return array
      */
-    function getBVLQCExclusionStatusList(): string
+    function getBVLQCExclusionStatusList(): array
     {
         return $this->bvlQcExclusionStatuses;
     }
