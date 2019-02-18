@@ -373,6 +373,11 @@ one value may be selected.
 If true, an implementation should automatically add a 'not_answered' value e.g. rendered as a checkbox, to allow explicit non-answering while
 still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered. This choice is added here instead of in `options.values` to allow for consistency with other field types.
 
+`options.readonly`: Required boolean.
+                    True or false that the field is read only i.e. not editable on the front-end but
+                    submittable on save. This key is different to `rules.disableIf` in that it is not
+                    dependent on a condition, and a 'disabled' field is not submittable.
+
 ### 3.2.2: String
 
 A string field takes in a string as data input, either via a text element or a text area element.
@@ -406,6 +411,11 @@ The format is as follows:
 This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
 If true, an implementation should automatically add a 'not_answered' value e.g. rendered as a checkbox, to allow explicit non-answering while
 still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered.
+
+`options.readonly`: Required boolean.
+                    True or false that the field is read only i.e. not editable on the front-end but
+                    submittable on save. This key is different to `rules.disableIf` in that it is not
+                    dependent on a condition, and a 'disabled' field is not submittable.
 
 ### 3.2.3: Numeric - Int and Decimal
 
@@ -444,6 +454,11 @@ A numeric field takes an int or a decimal as data input. It has the form of:
                            If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
                            explicit non-answering while still requiring some input value.
 
+`options.readonly`: Required boolean.
+                    True or false that the field is read only i.e. not editable on the front-end but
+                    submittable on save. This key is different to `rules.disableIf` in that it is not
+                    dependent on a condition, and a 'disabled' field is not submittable.
+
 ### 3.2.4: Date and Time
 
 A date field takes a data type of form "YYYY-MM-DD". A time field takes a data type of form "HH:MM". The general format is as follows:
@@ -478,7 +493,7 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 
 If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while still requiring some input value.
 
-`options.readonly`: Boolean.
+`options.readonly`: Required boolean.
                     True or false that the field is read only i.e. not editable on the front-end but
                     submittable on save. This key is different to `rules.disableIf` in that it is not
                     dependent on a condition, and a 'disabled' field is not submittable.
@@ -510,7 +525,7 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
                            `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
                            If true, a data input of "false" cannot be submitted, and a 'not_answered' value cannot be given.
 
-`options.readonly`: Boolean.
+`options.readonly`: Required boolean.
                     True or false that the field is read only i.e. not editable on the front-end but
                     submittable on save. This key is different to `rules.disableIf` in that it is not
                     dependent on a condition, and a 'disabled' field is not submittable.
@@ -538,6 +553,14 @@ represented on the front-end by an input element. Its value is instead calculate
     } 
 }
 ```
+`options.scoringFormula`: Required string. An expression of a logical formula to be calculated by LORIS LParse. The formula is evaluated to true or false if a boolean score, or a numeric if a number score. The result is dependent and defined by the value of this key.
+
+`options.readonly`: Required boolean.
+                    True or false that the field is read only i.e. not editable on the front-end but
+                    submittable on save. This key is different to `rules.disableIf` in that it is not
+                    dependent on a condition, and a 'disabled' field is not submittable.
+
+`options.hideInSurvey`: Required boolean. True or false that this score field will be hidden and not displayed when the instrument is in survey mode.
 
 # 4.0: Helper Elements
 
