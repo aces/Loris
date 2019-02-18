@@ -128,7 +128,7 @@ class ConflictDetector
     {
         \Database::singleton()->delete(
             'conflicts_unresolved',
-            array('CommendId1' => $commentId)
+            array('CommentId1' => $commentId)
         );
     }
 
