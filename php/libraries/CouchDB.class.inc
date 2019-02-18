@@ -199,14 +199,14 @@ class CouchDB
      *
      * @param string $database The couchDB database name
      * @param string $host     The couchDB host name
-     * @param ?int   $port     The couchDB port number
+     * @param int    $port     The couchDB port number
      * @param string $user     The couchDB user name
      * @param string $password The couchDB password
      */
     private function __construct(
         string $database = '',
         string $host = '',
-        ?int   $port = null,
+        int   $port = 5984,
         string $user = '',
         string $password = ''
     ) {
