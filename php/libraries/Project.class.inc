@@ -162,7 +162,7 @@ class Project
      *
      * @return void
      */
-    public function setId(int $projectId): void
+    public function setId(int $projectId = null): void
     {
         $this->_projectId = $projectId;
     }
