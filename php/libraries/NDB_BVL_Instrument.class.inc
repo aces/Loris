@@ -2079,13 +2079,13 @@ class NDB_BVL_Instrument extends NDB_Page
      * the date will be calculated based on the value of the Date_taken
      * field in the database.
      *
-     * @param array $date (optional) The date that the age is to
+     * @param string $date The date that the age is to
      *                    be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
-    function getCandidateAge(array $date = array()): array
+    function getCandidateAge(string $date): array
     {
         $CommentID = $this->getCommentID();
 
@@ -2101,8 +2101,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $age = array();
         if (empty($date)) {
             $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
+            print_r("a");
         } else {
             $age = Utility::calculateAge($result['DoB'], $date);
+ print_r("b");
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
