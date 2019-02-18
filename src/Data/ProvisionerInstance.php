@@ -34,7 +34,7 @@ abstract class ProvisionerInstance implements Provisioner
      * The parent which this provisioner is derived from to apply
      * $this->modifier to.
      */
-    private $_parent = null;
+    private $parent = null;
 
     /**
      * Filters (and Mappers) to apply to the data from this Provisioner
@@ -64,7 +64,7 @@ abstract class ProvisionerInstance implements Provisioner
     public function filter(Filter $filter) : Provisioner
     {
         $d           = clone $this;
-        $d->_parent  = &$this;
+        $d->parent   = &$this;
         $d->modifier = $filter;
         return $d;
     }
@@ -79,7 +79,7 @@ abstract class ProvisionerInstance implements Provisioner
     public function map(Mapper $map) : Provisioner
     {
         $d           = clone $this;
-        $d->_parent  = &$this;
+        $d->parent   = &$this;
         $d->modifier = $map;
         return $d;
     }
@@ -104,8 +104,8 @@ abstract class ProvisionerInstance implements Provisioner
     public function execute(\User $user) : \Traversable
     {
         $rows = new \EmptyIterator();
-        if ($this->_parent != null) {
-            $rows = $this->_parent->execute($user);
+        if ($this->parent != null) {
+            $rows = $this->parent->execute($user);
         } else {
             $rows = $this->getAllInstances();
         }

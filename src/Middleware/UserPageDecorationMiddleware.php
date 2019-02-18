@@ -3,9 +3,8 @@ namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\{MiddlewareInterface;
-    use RequestHandlerInterface
-};
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
@@ -15,8 +14,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $BaseURL;
     protected $PageName;
 
-    public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS)
-    {
+    public function __construct(
+        \User $user,
+        string $baseurl,
+        string $pagename,
+        \NDB_Config $config,
+        array $JS,
+        array $CSS
+    ) {
+    
         $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
         $this->Config   = $config;

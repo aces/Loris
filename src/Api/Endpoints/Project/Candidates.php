@@ -95,7 +95,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withBody(
                 new \LORIS\Http\StringStream(
                     json_encode(
-                        $this->_toArray($request)
+                        $this->toArray($request)
                     )
                 )
             );
@@ -108,7 +108,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return array
      */
-    private function _toArray(ServerRequestInterface $request): array
+    private function toArray(ServerRequestInterface $request): array
     {
         $projectname = $this->project->getName();
 
@@ -135,6 +135,6 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray($request)));
+        return md5(json_encode($this->toArray($request)));
     }
 }

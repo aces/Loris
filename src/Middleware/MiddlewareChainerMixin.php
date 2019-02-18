@@ -60,4 +60,4 @@ trait MiddlewareChainerMixin
         $cur->next = $next;
         return $new;
     }
-};
+}
