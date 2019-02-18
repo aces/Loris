@@ -319,7 +319,6 @@ class SinglePointLogin
         }
         /* Check whether a user's account is locked due to too many bad login
          * attempts before actually trying to authenticate their credentials.
-         * Doing so can help mititgate timing attacks against the server.
          */
         if ($this->accountLocked($_POST['username'])) {
             $this->_lastError = 'This account is currently suspended due '
