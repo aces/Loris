@@ -468,7 +468,7 @@ class SinglePointLogin
         $longWindowInMinutes  = 60;
 
         // SQL code to run.
-        $query = "SELECT COUNT(loginhistoryID) as loginattempts " .
+        $query  = "SELECT COUNT(loginhistoryID) as loginattempts " .
             "FROM user_login_history " .
             "WHERE userID = :username " .
             "AND IP_address = :ip " .
