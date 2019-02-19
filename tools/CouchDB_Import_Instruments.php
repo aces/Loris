@@ -19,7 +19,7 @@ class CouchDBInstrumentImporter
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
-            $couchConfig['port'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );
