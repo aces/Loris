@@ -1,10 +1,10 @@
-### Brief summary of changes
+## Brief summary of changes
 
 
-### Testing instructions (if applicable)
+#### Testing instructions (if applicable)
 
 1.
 
-### Links to related tickets (GitHub, Redmine, ...)
+#### Links to related tickets (GitHub, Redmine, ...)
 
 *
