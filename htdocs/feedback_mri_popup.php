@@ -127,7 +127,9 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
             );
     }
 
-    $CommentTpl['name'] = $comment_array['name'];
+    if (is_array($comment_array)) {
+        $CommentTpl['name'] = $comment_array['name'];
+    }
 
     // get the list of predefined comments for the current type
     $predefined_comments = $comments->getAllPredefinedComments($comment_type_id);
