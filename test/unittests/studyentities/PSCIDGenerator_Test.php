@@ -82,7 +82,7 @@ class PSCIDGenerator_Test extends TestCase {
                     '#' => '',
                     '@' => array(
                         'type'      => 'numeric',
-                        'minLength' => '4',
+                        'length' => '4',
                     ),
                 ),
             ),
@@ -123,7 +123,7 @@ class PSCIDGenerator_Test extends TestCase {
                     '#' => '',
                     '@' => array(
                         'type'      => 'numeric',
-                        'minLength' => '4',
+                        'length' => '4',
                     ),
                 ),
             ),
@@ -143,6 +143,96 @@ class PSCIDGenerator_Test extends TestCase {
 
 
         $generator = new PSCIDGenerator('AB');
-        $this->assertEquals('AB0000', $generator->generate());
+        $this->assertEquals('AB0000', (new PSCIDGenerator('AB'))->generate());
+    }
+
+    /**
+     * Test function PSCIDGenerator::generate for config settings:
+     * generation=sequential & type=numeric with a fixed prefix.
+     *
+     * @covers IdentifierGenerator::generate()
+     * @return void
+     */
+    public function testGeneratePSCIDForStaticPrefix()
+    {
+
+        $seq = array(
+            'seq' => array(
+                0 => array(
+                    '#' => 'XXL',
+                    '@' => array('type' => 'static'),
+                ),
+                1 => array(
+                    '#' => '',
+                    '@' => array(
+                        'type'      => 'numeric',
+                        'length' => '3',
+                    ),
+                ),
+            ),
+        );
+        $this->_configMap = array(
+            array(
+                'PSCID',
+                array(
+                    'generation' => 'sequential',
+                    'structure'  => $seq,
+                ),
+            ),
+        );
+
+        $this->_configMock->method('getSetting')
+            ->will($this->returnValueMap($this->_configMap));
+
+        $this->assertEquals('XXL000', (new PSCIDGenerator())->generate());
+    }
+    /**
+     * Test function PSCIDGenerator::generate for config settings:
+     * generation=sequential & type=numeric with a fixed prefix.
+     *
+     * @covers IdentifierGenerator::generate()
+     * @return void
+     */
+    public function testConflictingConfigSettingsCauseException()
+    {
+
+        $seq = array(
+            'seq' => array(
+                0 => array(
+                    '#' => 'XXL',
+                    '@' => array('type' => 'static'),
+                ),
+                1 => array(
+                    '#' => '',
+                    '@' => array(
+                        'type'      => 'numeric',
+                        'length' => '3',
+                    ),
+                ),
+                // The array below conflicts with the one above.
+                2 => array(
+                    '#' => '',
+                    '@' => array(
+                        'type'      => 'alphanumeric',
+                        'length' => '4',
+                    ),
+                ),
+            ),
+        );
+        $this->_configMap = array(
+            array(
+                'PSCID',
+                array(
+                    'generation' => 'sequential',
+                    'structure'  => $seq,
+                ),
+            ),
+        );
+
+        $this->_configMock->method('getSetting')
+            ->will($this->returnValueMap($this->_configMap));
+
+        $this->expectException(\LorisException::class);
+        (new PSCIDGenerator())->generate();
     }
 }
