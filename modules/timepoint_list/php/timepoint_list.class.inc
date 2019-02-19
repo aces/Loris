@@ -14,6 +14,7 @@ namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * The timepoint list menu
@@ -39,7 +40,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function _hasAccess(\User $user) : bool
     {
-        $candidate =& \Candidate::singleton($this->candID);
+        $candidate = \Candidate::singleton($this->candID);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -84,7 +85,7 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $attribute = $request->getAttribute("CandID");
+        $attribute = new CandID($request->getAttribute("CandID"));
         if ($attribute !== null) {
             // FIXME: Update the code to add the singleton here, not the identifier.
             $this->candID = $attribute;
@@ -253,12 +254,12 @@ class Timepoint_List extends \NDB_Menu
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string $candID    candID
+     * @param CandID $candID    candID
      * @param string $sessionID sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID = null)
+    function getFeedbackPanel(CandID $candID, $sessionID = null)
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID);
         $html          = $feedbackPanel->display();

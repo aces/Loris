@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use LORIS\StudyEntities\Candidate\CandID;
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -42,21 +43,21 @@ class Candidate
      * candID, and will only ever instantiate one object in
      * the event that it's called multiple times.
      *
-     * @param integer $candID A 6 digit Loris CandID that matches
+     * @param CandID $candID A 6 digit Loris CandID that matches
      *                        a candidate in the candidate table
      *
      * @return Candidate the Candidate object
      * @static
      */
-    static public function &singleton(int $candID)
+    static public function &singleton(CandID $candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
-        if (!isset($candidateList[$candID])) {
-            $candidateList[$candID] = new Candidate();
-            $candidateList[$candID]->select($candID);
+        if (!isset($candidateList[strval($candID)])) {
+            $candidateList[strval($candID)] = new Candidate();
+            $candidateList[strval($candID)]->select($candID);
         }
 
-        return $candidateList[$candID];
+        return $candidateList[strval($candID)];
     }
 
     /**
@@ -64,13 +65,13 @@ class Candidate
      * information from the database and populating it into the
      * Candidate object. Used by singleton method.
      *
-     * @param integer $candID The 6 digit Loris CandID
+     * @param CandID $candID The 6 digit Loris CandID
      *
      * @return void As a side-effect loads candidate into current
      *              object
      * @throws DatabaseException | LorisException
      */
-    public function select(int $candID): void
+    public function select(CandID $candID): void
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
