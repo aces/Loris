@@ -298,7 +298,7 @@ The `rules` object contains three rules for validation and display: requireIf, d
 
 The value of these keys are string expressions of logical formulas. These formulas, when calculated, evaluate to true
 or false. The formulas are parsed and calculated using the Evaluator function of the LORIS Logic
-Parser, [LParse](https://gitlab.com/zainvirani/LParse). The currently supported logic operations are available in the LParse [README.md](https://gitlab.com/zainvirani/LParse/blob/master/README.md), as well as
+Parser, [LParse](https://gitlab.com/zainvirani/LParse). The currently supported logic operations are available in the accompanying [LORISLogicParser.md](https://github.com/aces/Loris/blob/minor/docs/instruments/LORISLogicParser.md), as well as
 instructions on how to customize functions. 
 
 `rules.requireIf`: String. True or false that the field requires data input, given the condition in the string expression.
