@@ -132,7 +132,7 @@ class SiteIDGenerator extends IdentifierGenerator
              * the ConfigurationException arose due to ExternalID or PSCID
              * settings.
              */
-            throw new LorisException(
+            throw new \LorisException(
                 "Cannot create new candidate because of a configuration " .
                 "error in settings for {$this->kind} structure. Details: "
                 . $e->getMessage()
