@@ -25,8 +25,8 @@ class Project
 {
     private static $_instances = array();
 
-    protected $_projectId;
-    protected $_projectName;
+    private $_projectId;
+    private $_projectName;
     private $_recruitmentTarget;
 
     /**
@@ -150,7 +150,7 @@ class Project
      *
      * @return integer This project's id
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->_projectId;
     }
