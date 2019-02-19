@@ -16,7 +16,7 @@ abstract class IdentifierGenerator
     *
     * @return string The new identifier
     */
-    public function createNewID(): string
+    protected function createNewID(): string
     {
         $this->checkIDRangeFull();
 
@@ -46,6 +46,12 @@ abstract class IdentifierGenerator
 
     protected function generateSequentialID(string $id = ''): string
     {
+        // If this is the first ID ever created, return the minimum value.
+        if (count($this->getExistingIDs()) < 1) {
+            return $this->minValue;
+        }
+        // Create the new ID by incrementing the value of the $id parameter OR
+        // by incrementing the highest existing ID.
         $newID = !empty($id) ? $id : max($this->getExistingIDs());
         // Increment newID until we find an unused value within the boundaries
         // of $min and $max.

@@ -2,7 +2,7 @@
 
 namespace LORIS\StudyEntities\Candidate;
 
-class ExternalGenerator extends SiteIDGenerator
+class ExternalIDGenerator extends SiteIDGenerator
 {
     /**
      * Generates ExternalIDs.
