@@ -39,6 +39,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     static $clearFilter = ".col-sm-9 > .btn";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
+    static $display = ".table-header .col-xs-12 > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -144,10 +145,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
+            $row      = self::$display;
             $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('#lorisworkspace > div >".
-                " div.panel.panel-default > div.table-header.panel-heading".
-                " > div > div').textContent"
+                "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
             $this->assertContains($records, $bodyText);
