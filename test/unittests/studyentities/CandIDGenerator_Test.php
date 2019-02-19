@@ -49,9 +49,6 @@ class CandIDGenerator_Test extends TestCase {
      */
     public function testGeneratesCandIDObject()
     {
-        $this->_dbMock->expects($this->once())
-            ->method('pselectOne')
-            ->will($this->returnValue(1));
         $this->assertInstanceOf(
             CandID::class,
             (new CandIDGenerator())->generate()
