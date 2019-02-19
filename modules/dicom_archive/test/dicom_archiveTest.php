@@ -38,7 +38,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                             ">div>div>fieldset>div:nth-child(5)>div>div>input";
     static $clearFilter = ".col-sm-9 > .btn";
     // first row of react table
-    static $table = "#dynamictable > tbody > tr:nth-child(1)";
+    static $table   = "#dynamictable > tbody > tr:nth-child(1)";
     static $display = ".table-header .col-xs-12 > div:nth-child(1)";
     /**
      * Insert testing data into the database
