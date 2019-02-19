@@ -1,0 +1,532 @@
+{
+  "schema": {
+    "meta": {
+      "createdBy": "Zaliqa Rosli",
+      "createdOn": "2019-02-19",
+      "createdWith": "",
+      "defaultLanguage": "en-CA",
+      "derivedFrom": "",
+      "importedFrom": "bmi.linst",
+      "includeMetaDataFields": true,
+      "instrumentVersion": "",
+      "lastUpdateOn": "",
+      "longName": {
+          "en-CA": "BMI Calculator"
+      },
+      "multilingual": false,
+      "previousVersion": "",
+      "schemaVersion": "v0.0.1-dev",
+      "shortName": "bmi"
+    },
+    "fields": {
+      "unit_classification" : {
+        "type": "enum",
+        "description": {
+            "en-CA": "Choose unit of measurement"
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Metric"
+              },
+              "value": "metriC"
+            },
+            {
+              "description": {
+                "en-CA": "Imperial"
+              },
+              "value": "imperial"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_feet" : {
+        "type": "decimal",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "minValue": "",
+          "maxValue": "",
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
+          "showDesc": false
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_feet_status" : {
+        "type": "enum",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Not Answered"
+              },
+              "value": "not_answered"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": false,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_inches" : {
+        "type": "decimal",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "minValue": "",
+          "maxValue": "",
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
+          "showDesc": false
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_inches_status" : {
+        "type": "enum",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Not Answered"
+              },
+              "value": "not_answered"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": false,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "weight_lbs" : {
+        "type": "decimal",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "minValue": "",
+          "maxValue": "",
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
+          "showDesc": false
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "weight_lbs_status" : {
+        "type": "enum",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Not Answered"
+              },
+              "value": "not_answered"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": false,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_cms" : {
+        "type": "decimal",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "minValue": "",
+          "maxValue": "",
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
+          "showDesc": false
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "height_cms_status" : {
+        "type": "enum",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Not Answered"
+              },
+              "value": "not_answered"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": false,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "weight_kgs" : {
+        "type": "decimal",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "minValue": "",
+          "maxValue": "",
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
+          "showDesc": false
+
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "weight_kgs_status" : {
+        "type": "enum",
+        "description": {
+            "en-CA": ""
+        },
+        "options": {
+          "values": [
+            {
+              "description": {
+                "en-CA": "Not Answered"
+              },
+              "value": "not_answered"
+            }
+          ],
+          "allowMultipleValues": false,
+          "requireResponse": false,
+          "readonly": false,
+          "hideInSurvey": false
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "bmi" : {
+        "type": "score",
+        "description": {
+            "en-CA": "Your BMI"
+        },
+        "options": {
+          "scoringFormula": "",
+          "readonly": true,
+          "hideInSurvey": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "bmi_category" : {
+        "type": "score",
+        "description": {
+            "en-CA": "Your BMI Classification"
+        },
+        "options": {
+          "scoringFormula": "",
+          "readonly": true,
+          "hideInSurvey": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      }
+    },
+    "helpers": {
+      "noteUnits": {
+        "type": "statictext",
+        "description": {
+          "en-CA": "Note: Please enter measurements in Standard OR Metric units"
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "sectionStandard": {
+        "type": "section",
+        "description": {
+          "en-CA": "Standard units"
+        },
+        "options": {
+          "order": [
+            "groupHeightFeet",
+            "groupHeightInches",
+            "groupWeightLbs"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "sectionMetric": {
+        "type": "section",
+        "description": {
+          "en-CA": "Metric units"
+        },
+        "options": {
+          "order": [
+            "groupHeighCms",
+            "groupWeightKgs"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "groupHeightFeet": {
+        "type": "group",
+        "description": {
+          "en-CA": "Your height (feet) :"
+        },
+        "options": {
+          "order": [
+            "height_feet",
+            "height_feet_status"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "groupHeightInches": {
+        "type": "group",
+        "description": {
+          "en-CA": "Your height (inches) :"
+        },
+        "options": {
+          "order": [
+            "height_inches",
+            "height_inches_status"
+
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "groupWeightLbs": {
+        "type": "group",
+        "description": {
+          "en-CA": "Your weight (lbs) :"
+        },
+        "options": {
+          "order": [
+            "weight_lbs",
+            "weight_lbs_status"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "groupHeightCms": {
+        "type": "group",
+        "description": {
+          "en-CA": "Your height (cms) :"
+        },
+        "options": {
+          "order": [
+            "height_cms",
+            "height_cms_status"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      },
+      "groupWeightKgs": {
+        "type": "group",
+        "description": {
+          "en-CA": "Your weight (kgs) :"
+        },
+        "options": {
+          "order": [
+            "weight_kgs",
+            "weight_kgs_status"
+          ],
+          "showDesc": true
+        },
+        "rules": {
+          "requireIf": "",
+          "displayIf": "",
+          "disableIf": "" 
+        }
+      }
+    },
+    "setup": [
+      {
+        "name": "topPage",
+        "type": "page",
+        "description": {
+          "en-CA": "Top"
+        },
+        "order": [
+          "noteUnits",
+          "unit_classification",
+          "sectionStandard",
+          "sectionMetric",
+          "bmi",
+          "bmi_category"
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "noteUnits": {
+      "type": "static"
+    },
+    "unit_classification": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "height_feet": {
+      "type": "number"
+    },
+    "height_feet_status": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "height_inches": {
+      "type": "number"
+    },
+    "height_inches_status": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "weight_lbs": {
+      "type": "number"
+    },
+    "weight_lbs_status": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "height_cms": {
+      "type": "number"
+    },
+    "height_cms_status": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "weight_kgs": {
+      "type": "number"
+    },
+    "weight_kgs_status": {
+      "type": "select",
+      "options": {
+        "showEmptyOption" : true
+      }
+    },
+    "bmi": {
+      "type": "static"
+    },
+    "bmi_category": {
+      "type": "static"
+    }
+  }
+}

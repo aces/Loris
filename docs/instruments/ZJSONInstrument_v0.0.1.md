@@ -341,7 +341,8 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
             "allowMultipleValues": boolean,
             "requireResponse": boolean,
             "readonly": boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -388,7 +389,8 @@ The format is as follows:
             "regex" : string,
             "requireResponse": boolean,
             "readonly": boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -430,7 +432,8 @@ A numeric field takes an int or a decimal as data input. It has the form:
             "maxValue" : `nameOfField.type`, 
             "requireResponse" : boolean,
             "readonly": boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -475,7 +478,8 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
             "maxValue" : `nameOfField.type`, 
             "requireResponse" : boolean,
             "readonly" : boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -515,7 +519,8 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
         "options": {
             "requireResponse" : boolean,
             "readonly" : boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -551,7 +556,8 @@ represented on the front-end by an input element. Its value is instead calculate
         "options": {
             "scoringFormula" : string,  /* LORIS Logic Parser formula */
             "readonly" : boolean,
-            "hideInSurvey" : boolean
+            "hideInSurvey" : boolean,
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -656,7 +662,8 @@ They often have rules which work together and may be interdependent. Groups have
                 string,
                 string,
                 ...
-            ]
+            ],
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -686,7 +693,8 @@ as a "group" helper.
                 string,
                 string,
                 ...
-            ]
+            ],
+            "showDesc" : boolean
         },
         "rules": {
             ...
@@ -841,7 +849,7 @@ For helpers:
 
 - [header](#519-header-element) (from h1 to h6)
 - [link](#5110-link-element)
-- [statictext](#5111-static-text-element)
+- [static](#5111-static-element)
 
 ### 5.1.1 Checkbox Element
 
@@ -894,7 +902,10 @@ rendered horizontally.
 ```js
 {
     "nameOfField" : {
-        "type" : "select"
+        "type" : "select",
+        "options" : {
+            "showEmptyOption" : boolean
+        }
     }
 }
 ```
