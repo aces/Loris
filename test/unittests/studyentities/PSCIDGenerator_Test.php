@@ -104,10 +104,8 @@ class PSCIDGenerator_Test extends TestCase {
     }
 
     /**
-     * Test function PSCIDGenerator::_generateID for config setting
+     * Test function PSCIDGenerator::generate for config settings:
      * generation=sequential & type=numeric
-     * For this test _generatePSCID should return 3rd generated PSCID,
-     * since 2 other ones already exist in DB
      *
      * @covers IdentifierGenerator::generate()
      * @return void
@@ -143,15 +141,8 @@ class PSCIDGenerator_Test extends TestCase {
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
 
-        //mock pselectOne
-        // First 2 calls to select one return count = 1
-        //case when first 2 generated PSCIDs already exist in DB
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->will($this->onConsecutiveCalls(1, 1, 0));
 
         $generator = new PSCIDGenerator('AB');
         $this->assertEquals('AB0000', $generator->generate());
-        $this->assertEquals('AB0000', (new PSCIDGenerator('AB'))->generate());
     }
 }
