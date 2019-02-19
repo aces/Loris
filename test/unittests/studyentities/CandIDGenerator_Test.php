@@ -13,10 +13,6 @@ class CandIDGenerator_Test extends TestCase {
     private $_configMock;
     private $_configMap = array();
 
-    /* These values should match the constants in CandIDGenerator and CandID */
-    private const MIN_CANDID = 100000;
-    private const MAX_CANDID = 999999;
-
     /**
      * Sets up fixtures:
      *  - config and Database test doubles
@@ -39,10 +35,26 @@ class CandIDGenerator_Test extends TestCase {
                 null,
             ),
         );
-        #$this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        #$this->_dbMock     = $this->getMockBuilder('Database')->getMock();
-        #$this->_factory   = \NDB_Factory::singleton();
-        #$this->_factory->setConfig($this->_configMock);
-        #$this->_factory->setDatabase($this->_dbMock);
+        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $this->_factory   = \NDB_Factory::singleton();
+        $this->_factory->setConfig($this->_configMock);
+        $this->_factory->setDatabase($this->_dbMock);
+    }
+
+    /**
+     * Makes sure the Generator actually generates a CandID object.
+     *
+     * @return void
+     */
+    public function testGeneratesCandIDObject()
+    {
+        $this->_dbMock->expects($this->once())
+            ->method('pselectOne')
+            ->will($this->returnValue(1));
+        $this->assertInstanceOf(
+            CandID::class,
+            (new CandIDGenerator())->generate()
+        );
     }
 }

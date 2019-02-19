@@ -99,11 +99,6 @@ class PSCIDGenerator_Test extends TestCase {
         );
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
-        //mock Database::pselectOne(), returns count 0
-        //case when generated PSCID is not used, therefore not found in DB
-        #$this->_dbMock->expects($this->once())
-        #    ->method('pselectOne')
-        #    ->willReturn(0);
 
         $this->assertRegExp('/AAA[0-9]{4}$/', (new PSCIDGenerator('AAA'))->generate());
     }
@@ -114,7 +109,7 @@ class PSCIDGenerator_Test extends TestCase {
      * For this test _generatePSCID should return 3rd generated PSCID,
      * since 2 other ones already exist in DB
      *
-     * @covers Candidate::_generatePSCID
+     * @covers IdentifierGenerator::generate()
      * @return void
      */
     public function testGeneratePSCIDForSequentialNumericGeneration()
@@ -151,10 +146,12 @@ class PSCIDGenerator_Test extends TestCase {
         //mock pselectOne
         // First 2 calls to select one return count = 1
         //case when first 2 generated PSCIDs already exist in DB
-    #    $this->_dbMock->expects($this->any())
-    #        ->method('pselectOne')
-    #        ->will($this->onConsecutiveCalls(1, 1, 0));
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->will($this->onConsecutiveCalls(1, 1, 0));
 
-        $this->assertEquals('AB0001', (new PSCIDGenerator('AB'))->generate());
+        $generator = new PSCIDGenerator('AB');
+        $this->assertEquals('AB0000', $generator->generate());
+        $this->assertEquals('AB0000', (new PSCIDGenerator('AB'))->generate());
     }
 }

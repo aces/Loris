@@ -241,7 +241,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("PSCID: BBQ0000", $bodyText);
+        $this->assertContains("PSCID: BBQ0001", $bodyText);
 
         $this->webDriver->get($this->url . "/new_profile/");
 
@@ -259,10 +259,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("PSCID: BBQ0001", $bodyText);
+        $this->assertContains("PSCID: BBQ0002", $bodyText);
 
-        $this->deleteCandidate("BBQ0000");
         $this->deleteCandidate("BBQ0001");
+        $this->deleteCandidate("BBQ0002");
         $this->resetStudySite();
     }
 }

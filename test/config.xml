@@ -36,7 +36,7 @@
             <generation>sequential</generation>
             <structure>
                 <seq type="siteAbbrev"/>
-                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
+                <seq type="alphanumeric" min="0001" length="4"/> <!-- Ex: AAA1-->
             </structure>
         </PSCID>
         
