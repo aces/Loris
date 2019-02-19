@@ -483,7 +483,6 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        error_log($_SERVER['REMOTE_ADDR']);
         $params = array(
                    'username'            => $username,
                    'timeWindowInMinutes' => $shortWindowInMinutes,
