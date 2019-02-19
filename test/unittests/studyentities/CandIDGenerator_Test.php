@@ -45,24 +45,4 @@ class CandIDGenerator_Test extends TestCase {
         #$this->_factory->setConfig($this->_configMock);
         #$this->_factory->setDatabase($this->_dbMock);
     }
-
-    /**
-     * Ensure that a generated CandID is within the minimum and maximum range.
-     *
-     * @covers CandIDGenerator::generate()
-     * @return void
-     */
-    public function testGeneratedCandIDIsWithinBounds()
-    {
-        $candidateID = (new CandIDGenerator)->generate();
-        
-        $stringified = (string) $candidateID;
-        $is_numeric = is_numeric($stringified);
-        $this->assertTrue(is_numeric($stringified));
-        $this->assertGreaterThanOrEqual(self::MIN_CANDID, intval($stringified));
-        $this->assertLessThanOrEqual(self::MAX_CANDID, intval($stringified));
-        // Leverage validation of CandID object to ensure that the ID generated
-        // is valid.
-        new CandID((new CandIDGenerator)->generate());
-    }
 }
