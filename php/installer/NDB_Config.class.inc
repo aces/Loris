@@ -58,7 +58,7 @@ class NDB_Config extends \NDB_Config
      *
      * @return mixed the setting value
      */
-    public function getSetting($setting)
+    public function getSetting(string $setting)
     {
         // the base path is used by smarty, so calculate it relative
         // to the current directory. Nothing else needs to be supported.
