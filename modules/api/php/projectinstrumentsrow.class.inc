@@ -27,7 +27,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     protected $DBRow;
 
     /**
-     * Create a new ProjectImagesRow
+     * Create a new ProjectImagesRow.
      *
      * @param array $row An array of image propeties
      */
