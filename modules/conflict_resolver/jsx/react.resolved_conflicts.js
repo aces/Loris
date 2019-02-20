@@ -34,14 +34,11 @@ class UnresolvedConflictsPane extends Component {
     rowHeaders.forEach(function(header, index) {
       row[header] = rowData[index];
     });
-    let value1;
-    let value2;
-    let hash;
 
     if (column === 'Correct Answer') {
-      value1 = row.Value1;
-      value2 = row.Value2;
-      hash = row.Hash;
+      const value1 = row.Value1;
+      const value2 = row.Value2;
+      const hash = row.Hash;
       return <td>
         <select name={hash} className='form-control input-sm'>
           <option value='none'>Unresolved</option>
@@ -188,7 +185,7 @@ class ConflictResolverApp extends React.Component {
         }}
       />
     );
-    let tabList = [
+    const tabList = [
       {
         id: 'UnresolvedConflicts',
         label: 'Unresolved Conflicts',
@@ -286,7 +283,7 @@ window.onload = function() {
   ReactDOM.render(conflictResolver, document.getElementById('conflictResolver'));
 
   // Prevent tab switching
-  let refresh = setInterval(function() {
+  const refresh = setInterval(function() {
     if (document.getElementById('tab-ResolvedConflicts')) {
       $('#tab-ResolvedConflicts').click(function(event) {
         event.preventDefault();
