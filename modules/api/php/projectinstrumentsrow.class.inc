@@ -82,7 +82,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Retruns this row's subgroupname
+     * Retruns this row's subgroupname.
      *
      * @return string
      */
