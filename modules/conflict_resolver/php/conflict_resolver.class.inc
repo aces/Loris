@@ -32,12 +32,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      * Returns true if the user has permission to access
      * the conflict resolver module
      *
-     * @return true if user has permission
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return ($user->hasPermission('conflict_resolver'));
     }
 
