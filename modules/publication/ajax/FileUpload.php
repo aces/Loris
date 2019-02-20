@@ -115,6 +115,7 @@ function uploadPublication() : void
         // INSERT INTO publication_parameter_type_rel
         insertVOIs($pubID);
     } catch (Exception $e) {
+        cleanup($pubID);
         showPublicationError($e->getMessage(), 500, $pubID);
     }
 
@@ -394,10 +395,11 @@ function cleanup(int $pubID) : void
         $where
     );
     if (!empty($files)) {
-        $conf = \NDB_Config::singleton();
-        $base = $conf->getSetting('publication_uploads');
+        $config = \NDB_Config::singleton();
+        $src    = $config->getSetting('publication_uploads');
+        $dest   = $config->getSetting('publication_deletions');
         foreach ($files as $f) {
-            unlink($base . $f);
+            rename($src . $f, $dest . $f);
         }
         $db->delete('publication_upload', $where);
     }
@@ -519,7 +521,7 @@ function editProject() : void
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
-
+    
     // build array of changed values
     $toUpdate        = array();
     $leadInvToUpdate = array();
@@ -872,9 +874,6 @@ function editUploads($id) : void
  */
 function showPublicationError($message, $code = 500, $pubID = null) : void
 {
-    if (isset($pubID)) {
-        cleanup($pubID);
-    }
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }

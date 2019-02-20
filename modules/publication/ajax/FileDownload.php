@@ -20,7 +20,7 @@ if (userCanDownload($user)) {
     $file     = basename($_GET['File']);
     $config   = NDB_Config::singleton();
     $path     = $config->getSetting('publication_uploads');
-    $filePath = basename($path . $file);
+    $filePath = $path . $file;
 
     if (!file_exists($filePath)) {
         error_log("ERROR: File $filePath does not exist");
@@ -33,7 +33,7 @@ if (userCanDownload($user)) {
     header('Content-Description: File Transfer');
     header('Content-Type: application/force-download');
     header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" .  $filePath . "\"");
+    header("Content-disposition: attachment; filename=\"" .  $file . "\"");
     readfile($filePath);
 } else {
     http_response_code(403);
