@@ -82,7 +82,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Creates a new providionner with user specific filter
+     * Creates a new providionner with user specific filter.
      *
      * @param \User $user The requesting user
      *
