@@ -116,7 +116,7 @@ function uploadPublication() : void
         insertVOIs($pubID);
     } catch (Exception $e) {
         cleanup($pubID);
-        showPublicationError($e->getMessage(), 500, $pubID);
+        showPublicationError($e->getMessage(), 500);
     }
 
     notify($pubID, 'submission');
@@ -140,27 +140,23 @@ function processFiles($pubID) : void
     $publicationPath = $config->getSetting('publication_uploads');
 
     if (!is_dir($publicationPath)) {
-        showPublicationError(
-            "Error! The upload folder '$publicationPath' does not exist!",
-            500,
-            $pubID
+        throw new ConfigurationException(
+            "Error! The upload folder '$publicationPath' does not exist!"
         );
     }
 
     foreach ($_FILES as $name => $values) {
         $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
-            showPublicationError("File $fileName already exists!", 409, $pubID);
+            throw new LorisException("File $fileName already exists!");
         }
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            showPublicationError(
+            throw new LorisException(
                 "Please make sure your file has a valid extension: " .
-                $values['name'],
-                400,
-                $pubID
+                $values['name']
             );
         }
         $pubTypeID       = $_POST['publicationType_'.$index] ?? null;
@@ -177,10 +173,8 @@ function processFiles($pubID) : void
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
         } else {
-            showPublicationError(
-                "Could not upload the file. Please try again!",
-                500,
-                $pubID
+            throw new LorisException(
+                "Could not upload the file. Please try again!"
             );
         }
     }
@@ -362,7 +356,7 @@ function insertVOIs(int $pubID) : void
                 $pubParamTypeRelInsert
             );
         } else {
-            showPublicationError("Unknown variable of interest: $vf", 400, $pubID);
+            throw new LorisException("Unknown variable of interest: $vf");
         }
     }
 }
@@ -423,7 +417,7 @@ function notify($pubID, $type) : void
                      );
 
     if (!in_array($type, $acceptedTypes)) {
-        showPublicationError("Unexpected notification type: $type", 400, $pubID);
+        showPublicationError("Unexpected notification type: $type", 400);
     }
 
     $db        = \Database::singleton();
@@ -502,7 +496,7 @@ function editProject() : void
             );
         }
     } else {
-        showPublicationError('No Publication ID provided');
+        showPublicationError('No Publication ID provided', 400);
     }
 
     $title            = $_POST['title'] ?? null;
