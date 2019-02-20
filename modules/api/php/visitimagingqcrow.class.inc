@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for visit imaging qc
+ * This class implements a data Instance for visit imaging qc.
  *
  * PHP Version 7
  *
