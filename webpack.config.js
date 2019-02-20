@@ -45,8 +45,6 @@ const config = [{
     './modules/mri_violations/js/columnFormatterUnresolved.js': './modules/mri_violations/jsx/columnFormatterUnresolved.js',
     './modules/mri_violations/js/mri_protocol_violations_columnFormatter.js': './modules/mri_violations/jsx/mri_protocol_violations_columnFormatter.js',
     './modules/user_accounts/js/userAccountsIndex.js': './modules/user_accounts/jsx/userAccountsIndex.js',
-    './modules/conflict_resolver/js/resolved_conflicts_columnFormatter.js': './modules/conflict_resolver/jsx/resolved_conflicts_columnFormatter.js',
-    './modules/conflict_resolver/js/unresolved_columnFormatter.js': './modules/conflict_resolver/jsx/unresolved_columnFormatter.js',
     './modules/examiner/js/examinerIndex.js': './modules/examiner/jsx/examinerIndex.js',
     './modules/help_editor/js/help_editor.js': './modules/help_editor/jsx/help_editor.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
