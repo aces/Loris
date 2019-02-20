@@ -152,7 +152,7 @@ class DocUploadForm extends React.Component {
       this.props.refreshPage();
   }
 
-uploadFile() {
+  uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
     let formObject= new FormData();
@@ -161,7 +161,7 @@ uploadFile() {
         formObject.append(key, formData[key]);
       }
     }
-   fetch(this.props.action, {
+    fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',

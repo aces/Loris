@@ -35,9 +35,9 @@ class DocIndex extends React.Component {
     });
   }
 
-   newCategoryState() {
-        this.setState({newCategory: true});
-    }
+  newCategoryState() {
+    this.setState({newCategory: true});
+  }
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -47,15 +47,15 @@ class DocIndex extends React.Component {
  */
  formatColumn(column, cell, row) {
  let result = <td>{cell}</td>;
-    switch (column) {
-    case 'File Name':
-    let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
-    result = (
-      <td>
-        <a href={downloadURL} target="_blank" download={row['File Name']}>
-          {cell}
-        </a>
-      </td>
+   switch (column) {
+   case 'File Name':
+   let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
+   result = (
+     <td>
+       <a href={downloadURL} target="_blank" download={row['File Name']}>
+         {cell}
+       </a>
+     </td>
     );
       break;
     case 'Edit':
@@ -64,36 +64,35 @@ class DocIndex extends React.Component {
       break;
     case 'Delete File':
     let id = row['Edit'];
-function click() {
-    swal({
-         title: 'Are you sure?',
-         text: 'Your will not be able to recover this file!',
-         type: 'warning',
-         showCancelButton: true,
-         confirmButtonClass: 'btn-danger',
-         confirmButtonText: 'Yes, delete it!',
-         closeOnConfirm: false,
-          },
+    function click() {
+      swal({
+        title: 'Are you sure?',
+        text: 'Your will not be able to recover this file!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Yes, delete it!',
+        closeOnConfirm: false,
+      },
       function() {
-      let deleteurl = loris.BaseURL + '/document_repository/Editfile/' + id;
-         fetch(deleteurl, {
-      method: 'DELETE',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-    })
-    .then((resp) => resp.json())
-    .then(()=>{
-      location.reload();
-      swal('delete Successful!', '', 'success');
-    });
+        let deleteurl = loris.BaseURL + '/document_repository/Editfile/' + id;
+          fetch(deleteurl, {
+          method: 'DELETE',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          }).then((resp) => resp.json())
+            .then(()=>{
+              location.reload();
+              swal('delete Successful!', '', 'success');
+            });
       }
-    );
-}
+      );
+    }
     result = <td><a onClick={click}>Delete</a></td>;
       break;
     }
     return result;
-}
+  }
 
   render() {
     // If error occurs, return a message.

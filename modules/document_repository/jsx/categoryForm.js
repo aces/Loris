@@ -49,9 +49,7 @@ class DocCategoryForm extends React.Component {
      }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <Loader/>
-      );
+      return (<Loader/>);
     }
 
     return (
