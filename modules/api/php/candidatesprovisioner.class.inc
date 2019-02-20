@@ -16,7 +16,7 @@ namespace LORIS\api;
 
 /**
  * This class implements a data provisioner to get all possible rows
- * for the candidates endpoint
+ * for the candidates endpoint.
  *
  * PHP Version 7
  *
