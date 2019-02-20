@@ -61,7 +61,7 @@ class VisitDicomRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Returns a DataInstance implementation instance
+     * Returns a DataInstance implementation instance.
      *
      * @param array $row The database row from the LORIS Database class.
      *
