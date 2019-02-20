@@ -20,7 +20,7 @@ The following list provides foresight into the proceeding sections and recommend
  * pkg-config
  * Composer
  * Node.js (npm)
- * MySQL (tested with MariaDB)
+ * MySQL (tested with 10.3.12-MariaDB)
  * Xdebug (tested on v2.6.1)
  
 # 1.1 Pre-Requirements
