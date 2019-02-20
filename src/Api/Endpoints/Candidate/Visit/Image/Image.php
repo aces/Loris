@@ -103,25 +103,17 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
-        $image = $this->_getImage(
-             $request->getAttribute('user')
-        );
-        if ($image === null) {
-            // Subendpoint requires an Image
-            return new \LORIS\Http\Response\NotFound();
-        }
-
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'format':
-            $handler = new Format($this->visit, $image);
+            $handler = new Format($this->visit, $this->filename);
             break;
         case 'headers':
-            $handler = new Headers($this->visit, $image);
+            $handler = new Headers($this->visit, $this->filename);
             break;
         case 'qc':
-            $handler = new Qc($this->visit, $image);
+            $handler = new Qc($this->visit, $this->filename);
             break;
         default:
             return new \LORIS\Http\Response\NotFound();
@@ -146,13 +138,13 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $imagedto = $this->visit->getImage($this->filename);
-            if (empty($imagedto)) {
-                return new \LORIS\Http\Response\NotFound();
+            try {
+                $imagedto = $this->visit->getImageByFilename($this->filename);
+            } catch (\NotFound $e) {
+                return new \LORIS\Http\Response\NotFound($e->getMessage());
             }
 
             $image = new \LORIS\Image($imagedto->getFileid());
-// TODO ::  is minc instead???
             $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
                 'application/x.minc2' : 'application/octet-stream';
 
@@ -160,7 +152,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->config()
                 ->getSetting('mincPath');
 
-            $fullpath = $imagepath . $image->asDTO()->getFilelocation();
+            $fullpath = $imagepath . $imagedto->getFilelocation();
 
             $info = new \SplFileInfo($fullpath);
             if (!$info->isFile()) {

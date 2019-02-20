@@ -939,6 +939,42 @@ class TimePoint
     }
 
     /**
+     * Gets a specific Image of that session whit a given filename
+     *
+     * @param \User $user The requesting user
+     *
+     * @throws \NotFound
+     * @return \LORIS\ImageDTO
+     */
+    public function getImageByFilename(string $filename): \LORIS\ImageDTO
+    {
+        $db   = \NDB_Factory::singleton()->database();
+        $stmt = $db->prepare(
+            'SELECT
+               FileID
+             FROM
+               files
+             WHERE
+               SessionID = :v_sessionid AND
+               File LIKE :v_filename'
+        );
+
+        $rows = $db->execute(
+            $stmt,
+            array(
+             'v_filename'  => '%' . $filename,
+             'v_sessionid' => $this->getSessionID(),
+            )
+        );
+
+        if (empty($rows)) {
+            throw new \NotFound($filename . ' not found.');
+        }
+
+        return (new \LORIS\Image($rows[0]['FileID']))->asDTO();
+    }
+
+    /**
      * Gets the DicomTar of that session
      *
      * @param \User $user The requesting user
