@@ -1,6 +1,6 @@
 <?php
 /**
- * Create both PSCID and DCCID for a candidate 
+ * Create both PSCID and DCCID for a candidate
  *
  * PHP Version 7
  *
@@ -15,7 +15,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Create PSCID and DCCID for a candidate  
+ * Create PSCID and DCCID for a candidate
  *
  * @category Main
  * @package  Candidate_List
