@@ -66,7 +66,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /candidates/$candid
+     * Handles a request that starts with /candidates/$candid.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
