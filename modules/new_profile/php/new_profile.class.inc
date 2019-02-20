@@ -27,7 +27,7 @@ class New_Profile extends \NDB_Page
     public $result;
     public $AjaxModule   = true;
     public $skipTemplate = true;
-    
+
     /**
      * Tie the access to a data_entry permission
      *
@@ -54,9 +54,9 @@ class New_Profile extends \NDB_Page
      */
     function setup()
     {
-        $DB = \Database::singleton();
-        $config    = \NDB_Config::singleton();
-        $user      = \User::singleton();
+        $DB     = \Database::singleton();
+        $config = \NDB_Config::singleton();
+        $user   = \User::singleton();
         $this->result['startYear']  = $config->getSetting('startYear');
         $this->result['endYear']    = $config->getSetting('endYear');
         $this->result['ageMax']     = $config->getSetting('ageMax');
@@ -97,12 +97,14 @@ class New_Profile extends \NDB_Page
         }
         return true;
     }
-   /**
+    /**
     * Call toJSON to display a json file on the page.
+    *
+    * @return string a json
     */
     function display()
     {
-       return $this->toJSON();
+        return $this->toJSON();
     }
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved

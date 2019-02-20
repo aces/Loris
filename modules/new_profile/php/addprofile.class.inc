@@ -48,8 +48,7 @@ class AddProfile extends \NDB_Page
     }
 
     /**
-     * This acts as an AJAX endpoint that only returns a "0" or "1" depending
-     * on whether the candidate passed exists.
+     * This function will return a json file with DCCID and PSCID
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -57,13 +56,25 @@ class AddProfile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // Ensure it's a POST request.
+        if ($request->getMethod() != "POST") {
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(405)
+                ->withHeader("Allow", "POST")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        "Only POST requests are allowed"
+                    )
+                );
+        }
         $values    = $request->getParsedBody();
         $DB        = \Database::singleton();
         $user      = \User::singleton();
         $config    = \NDB_Config::singleton();
         $site_arr  = $user->getData('CenterIDs');
         $num_sites = count($site_arr);
-        if ($num_sites >1) {
+        if ($num_sites >=1) {
             $candID = \Candidate::createNew(
                 $values['site'],
                 $values['dateTaken'],
