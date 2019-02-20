@@ -358,7 +358,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         // create DB object
         $DB =& \Database::singleton();
 
-        $qparams = array();
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
@@ -436,7 +435,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 'Headers' => $unanonymized['Headers'],
                 'Data'    => $data,
                );
-
     }
 
     /**

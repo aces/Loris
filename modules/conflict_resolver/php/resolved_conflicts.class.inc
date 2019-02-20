@@ -213,7 +213,6 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         // create DB object
         $DB =& \Database::singleton();
 
-        $qparams = array();
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
@@ -283,9 +282,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
                 'Headers' => $unanonymized['Headers'],
                 'Data'    => $data,
                );
-
     }
-
 
     /**
      * Gathers JS dependencies and merge them with the parent
