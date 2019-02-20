@@ -17,7 +17,7 @@ namespace LORIS\api;
 use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
  * This class implements a data provisioner to get all possible rows
- * for the /candidates/$candid/$visit_label/images endpoint
+ * for the /candidates/$candid/$visit_label/images endpoint.
  *
  * PHP Version 7
  *
