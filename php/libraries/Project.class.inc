@@ -150,7 +150,7 @@ class Project
      *
      * @return integer This project's id
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->_projectId;
     }
@@ -158,11 +158,11 @@ class Project
     /**
      * Set this project's id
      *
-     * @param integer $projectId This project's id
+     * @param integer|null $projectId This project's id
      *
      * @return void
      */
-    public function setId(int $projectId): void
+    public function setId(int $projectId = null): void
     {
         $this->_projectId = $projectId;
     }
