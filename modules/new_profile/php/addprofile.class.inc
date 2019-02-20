@@ -1,10 +1,6 @@
 <?php
 /**
- * The validateIDs endpoint is used to verify whether or not
- * a candidate PSCID and CandID match
- *
- * It takes two parameters (PSCID and CandID) and returns either
- * "1" or "0".
+ * Create both PSCID and DCCID for a candidate 
  *
  * PHP Version 7
  *
@@ -19,7 +15,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Implements the ValidateIDs endpoint
+ * Create PSCID and DCCID for a candidate  
  *
  * @category Main
  * @package  Candidate_List
@@ -79,7 +75,7 @@ class AddProfile extends \NDB_Page
                 $values['site'],
                 $values['dateTaken'],
                 $values['edcDateTaken'] ?? null,
-                $values['gender'],
+                $values['sex'],
                 $values['pscid'] ?? null
             );
         } else {
@@ -89,7 +85,7 @@ class AddProfile extends \NDB_Page
                 $centerID,
                 $values['dateTaken'],
                 $values['edcDateTaken'] ?? null,
-                $values['gender'],
+                $values['sex'],
                 $values['pscid'] ?? null
             );
         }

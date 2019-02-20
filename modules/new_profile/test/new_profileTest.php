@@ -33,7 +33,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
                          " div > div:nth-child(4)>div>div:nth-child(1)>div>input";
     public $edcConfirm = "#default-panel > div > form >".
                          " div > div:nth-child(4)>div>div:nth-child(2)>div>input";
-    public $gender     = "#default-panel > div > form >".
+    public $sex    = "#default-panel > div > form >".
                          " div > div:nth-child(5) > div > div > select";
     public $site       = "#default-panel > div > form >".
                          " div > div:nth-child(6) > div > div > select";
@@ -140,9 +140,9 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->setUpConfigSetting("useEDC", "false");
         $this->setUpConfigSetting("useProjects", "false");
         $this->webDriver->get($this->url . "/new_profile/");
-        // send a key to gender
+        // send a key to sex
         $this->webDriver->executescript(
-            "document.querySelector('$this->gender').value='male'"
+            "document.querySelector('$this->sex').value='male'"
         );
         // send a key to site
         $this->webDriver->executescript(

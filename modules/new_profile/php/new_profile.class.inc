@@ -64,7 +64,7 @@ class New_Profile extends \NDB_Page
         $this->result['dobFormat']  = $config->getSetting('dobFormat');
         $this->result['edc']        = $config->getSetting('useEDC');
         $this->result['useProject'] = $config->getSetting('useProjects');
-        $this->result['gender']     = [
+        $this->result['sex']     = [
                                        'male'   => "Male",
                                        'female' => "Female",
                                       ];
@@ -114,8 +114,7 @@ class New_Profile extends \NDB_Page
      */
     function toJSON()
     {
-        $results = $this->result;
-        return json_encode($results);
+        return json_encode($this->result);
     }
     /**
      * Include additional JS files:
