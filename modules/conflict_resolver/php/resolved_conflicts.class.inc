@@ -59,12 +59,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         }
 
         $this->columns = array(
-            'conflicts_resolved.TableName as instrument',
-            'session.CandID as candID',
-            'candidate.PSCID as pscid',
-            'session.Visit_label as visit_label',
-            'conflicts_resolved.ResolutionTimestamp as timestamp',
-        );
+                          'conflicts_resolved.TableName as instrument',
+                          'session.CandID as candID',
+                          'candidate.PSCID as pscid',
+                          'session.Visit_label as visit_label',
+                          'conflicts_resolved.ResolutionTimestamp as timestamp',
+                         );
 
         if ($useProjects) {
             $this->columns[] = 'Project.Name as Project';
@@ -73,12 +73,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array(
-                'conflicts_resolved.FieldName as question',
-                'conflicts_resolved.OldValue1 as correct_answer',
-                'conflicts_resolved.NewValue  as new_value',
-                'conflicts_resolved.OldValue2 as old_value2',
-                'session.CenterID as CenterID',
-                '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
+             'conflicts_resolved.FieldName as question',
+             'conflicts_resolved.OldValue1 as correct_answer',
+             'conflicts_resolved.NewValue  as new_value',
+             'conflicts_resolved.OldValue2 as old_value2',
+             'session.CenterID as CenterID',
+             '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
             )
         );
         $this->query   = ' FROM conflicts_resolved
@@ -99,12 +99,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->order_by = 'conflicts_resolved.TableName, session.Visit_label';
 
         $this->headers = array(
-            'Instrument',
-            'CandID',
-            'PSCID',
-            'Visit Label',
-            'Resolution Timestamp',
-        );
+                          'Instrument',
+                          'CandID',
+                          'PSCID',
+                          'Visit Label',
+                          'Resolution Timestamp',
+                         );
 
         if ($useProjects) {
             $this->headers = array_merge(
@@ -115,12 +115,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->headers =array_merge(
             $this->headers,
             array(
-                'Question',
-                'Correct Answer',
-                'New Value',
-                'Old Value2',
-                'CenterID',
-                'Site',
+             'Question',
+             'Correct Answer',
+             'New Value',
+             'Old Value2',
+             'CenterID',
+             'Site',
             )
         );
     }
@@ -174,16 +174,16 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             'candID',
             'CandID:',
             array(
-                'size'      => 9,
-                'maxlength' => 6,
+             'size'      => 9,
+             'maxlength' => 6,
             )
         );
         $this->addBasicText(
             'pSCID',
             'PSCID:',
             array(
-                'size'      => 9,
-                'maxlength' => 7,
+             'size'      => 9,
+             'maxlength' => 7,
             )
         );
         $this->addBasicText('question', 'Question:');
@@ -280,9 +280,9 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             $data[] = $row;
         }
         return array(
-            'Headers' => $unanonymized['Headers'],
-            'Data'    => $data,
-        );
+                'Headers' => $unanonymized['Headers'],
+                'Data'    => $data,
+               );
 
     }
 
@@ -300,7 +300,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . '/conflict_resolver/js/react.resolved_conflicts.js',
+             $baseURL . '/conflict_resolver/js/react.resolved_conflicts.js',
             )
         );
     }
