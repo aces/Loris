@@ -521,7 +521,7 @@ function editProject() : void
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
-    
+
     // build array of changed values
     $toUpdate        = array();
     $leadInvToUpdate = array();
@@ -868,11 +868,10 @@ function editUploads($id) : void
  *
  * @param string $message error message to display
  * @param int    $code    HTTP response code
- * @param int    $pubID   publication ID for cleanup of bad posts
  *
  * @return void
  */
-function showPublicationError($message, $code = 500, $pubID = null) : void
+function showPublicationError($message, $code = 500) : void
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
