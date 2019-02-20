@@ -132,7 +132,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *
