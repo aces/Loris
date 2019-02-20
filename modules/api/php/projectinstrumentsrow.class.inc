@@ -62,7 +62,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Returns this row's shortname
+     * Returns this row's shortname.
      *
      * @return string
      */
