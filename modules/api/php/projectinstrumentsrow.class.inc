@@ -92,7 +92,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Checks if this instrument is part of the double data entry instruments
+     * Checks if this instrument is part of the double data entry instruments.
      * This use \Utility::getAllDDEInstruments() because the information is not
      * in the database and the instrument class do not provide a isDDE function.
      *
