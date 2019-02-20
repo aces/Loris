@@ -148,7 +148,7 @@ FormElement.defaultProps = {
 class SearchableDropdown extends React.Component {
   constructor() {
     super();
-    this.state = {currentInput : ''};
+    this.state = {currentInput: ''};
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
@@ -168,7 +168,6 @@ class SearchableDropdown extends React.Component {
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
-    //this.props.onUserInput(this.props.name + 'Temp', e.target.value);
     this.setState({currentInput: e.target.value});
     this.props.onUserInput(this.props.name, value);
   }
@@ -180,7 +179,6 @@ class SearchableDropdown extends React.Component {
       let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        //this.props.onUserInput(this.props.name + 'Temp', '');
         this.setState({currentInput: ''});
         this.props.onUserInput(this.props.name, '');
       }
