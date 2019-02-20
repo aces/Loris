@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the visit's dicoms endpoint class
+ * This implements the visit's dicoms endpoint class.
  *
  * PHP Version 7
  *
