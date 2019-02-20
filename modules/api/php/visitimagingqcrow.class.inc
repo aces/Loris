@@ -28,7 +28,7 @@ class VisitImagingQcRow implements \LORIS\Data\DataInstance
     protected $DBRow;
 
     /**
-     * Create a new CandidatesRow
+     * Create a new CandidatesRow.
      *
      * @param array $row An array of candidate's propeties
      */
