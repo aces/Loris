@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
-
 /**
  * This file contains the React classes for conflict resolver
  * module.
@@ -208,9 +207,9 @@ class ConflictResolverApp extends Component {
         <div>
           <FilterForm
             Module='conflict_resolver'
-            name='conflict_resolver_filter'
             id='conflict_resolver_filter'
             ref='conflict_resolver_Filter'
+            name='conflict_resolver_filter'
             columns={2}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}

@@ -201,9 +201,9 @@ class ConflictsResolvedApp extends Component {
         <div>
           <FilterForm
             Module='conflictResolver'
-            name='conflict_resolver_filter'
             id='conflict_resolver_filter'
             ref='conflict_resolver_Filter'
+            name='conflict_resolver_filter'
             columns={2}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
