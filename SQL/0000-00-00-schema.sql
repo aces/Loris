@@ -1485,7 +1485,8 @@ CREATE TABLE `parameter_type_category` (
 
 INSERT INTO `parameter_type_category` (Name, Type) VALUES
   ('MRI Variables','Metavars'),
-  ('Identifiers', 'Metavars');
+  ('Identifiers', 'Metavars'),
+  ('Electrophysiology Variables', 'Metavars');
 
 CREATE TABLE `parameter_type_category_rel` (
   `ParameterTypeID` int(11) unsigned NOT NULL default '0',

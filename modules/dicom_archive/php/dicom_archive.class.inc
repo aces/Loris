@@ -4,7 +4,7 @@
  * This class features the code for the menu portion
  * of the Loris dicom archive.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -96,7 +96,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->addBasicText('archiveLocation', 'Archive Location');
         $this->addBasicText('seriesuid', 'Series UID');
     }
-
 
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
