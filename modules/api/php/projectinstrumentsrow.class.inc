@@ -47,7 +47,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Provide an array representation of this instrument row
+     * Provide an array representation of this instrument row.
      *
      * @return array
      */
