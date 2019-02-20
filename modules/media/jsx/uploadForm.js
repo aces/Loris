@@ -128,7 +128,6 @@ class MediaUploadForm extends React.Component {
               ref="forSite"
               required={true}
               value={this.state.formData.forSite}
-              tempVal={this.state.formData.forSiteTemp}
             />
             <SelectElement
               name="instrument"
