@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
 
@@ -163,17 +164,10 @@ class ConflictResolverApp extends Component {
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
-    let tabs = [];
+    const tabs = [];
     tabs.push(
       <UnresolvedConflictsPane
         TabId='UnresolvedConflicts'

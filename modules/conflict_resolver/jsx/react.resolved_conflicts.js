@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
-
 /**
- * This file contains the React classes for conflict resolver
+ * This file contains the React classes for conflicts resolved
  * module.
  */
 
 /**
- * This is the React class for Unresolved Conflicts
+ * This is the React class for building the instrument
  */
-class UnresolvedConflictsPane extends Component {
+class ResolvedConflictsPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,20 +33,25 @@ class UnresolvedConflictsPane extends Component {
 
     rowHeaders.forEach(function(header, index) {
       row[header] = rowData[index];
-    });
+    }, this);
 
     if (column === 'Correct Answer') {
-      const value1 = row.Value1;
-      const value2 = row.Value2;
-      const hash = row.Hash;
-      return <td>
-        <select name={hash} className='form-control input-sm'>
-          <option value='none'>Unresolved</option>
-          <option value='1'>{value1}</option>
-          <option value='2'>{value2}</option>
-        </select>
-      </td>;
+      let correctAnswer = '';
+      const newValue = row['New Value'];
+      const oldValue1 = row['Correct Answer'];
+      const oldValue2 = row.OldValue2;
+
+      if (newValue === '1' && oldValue1 !== null) {
+        correctAnswer = oldValue1;
+      }
+
+      if (newValue === '2' && oldValue2 !== null) {
+        correctAnswer = oldValue2;
+      }
+
+      return <td>{correctAnswer}</td>;
     }
+
     return <td>{cell}</td>;
   }
 
@@ -54,33 +59,22 @@ class UnresolvedConflictsPane extends Component {
   render() {
     return (
       <TabPane Title='' {...this.props}>
-        <form method='post'
-              action={this.props.url.base + '/conflict_resolver/'}
-              name='conflict_resolver' id='conflict_resolver'>
-
-          <RDynamicDataTable
-            DataURL={this.props.url.data.unresolved}
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
-            Filter={this.state.filter}
-            getFormattedCell={this.formatColumn}
-          />
-
-          <div className='pull-right'>
-            <input className='btn btn-sm btn-primary' name='fire_away' value='Save' type='submit'/>
-            <input className='btn btn-sm btn-primary' value='Reset' type='reset' style={{marginLeft: 3 + 'px'}}/>
-          </div>
-
-        </form>
+        <RDynamicDataTable
+          DataURL={this.props.url.data.resolved}
+          Data={this.state.Data.Data}
+          Headers={this.state.Data.Headers}
+          Filter={this.state.filter}
+          getFormattedCell={this.formatColumn}
+        />
       </TabPane>
     );
   }
 }
-UnresolvedConflictsPane.propTypes = {
+ResolvedConflictsPane.propTypes = {
   url: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
 };
-UnresolvedConflictsPane.defaultProps = {
+ResolvedConflictsPane.defaultProps = {
   module: '',
   url: {
     base: '',
@@ -95,14 +89,14 @@ UnresolvedConflictsPane.defaultProps = {
 /**
  * This is the React class for the conflict resolver
  */
-class ConflictResolverApp extends React.Component {
+class ConflictsResolvedApp extends Component {
   constructor(props) {
     super(props);
 
     loris.hiddenHeaders = [
-      'Value1',
-      'Value2',
-      'Hash',
+      'New Value',
+      'Old Value2',
+      'CenterID',
       'Site',
     ];
 
@@ -129,7 +123,7 @@ class ConflictResolverApp extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.url.data.unresolved, {
+    $.ajax(this.props.url.data.resolved, {
       method: 'GET',
       dataType: 'json',
       success: function(data) {
@@ -163,20 +157,13 @@ class ConflictResolverApp extends React.Component {
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
-    let tabs = [];
+    const tabs = [];
     tabs.push(
-      <UnresolvedConflictsPane
-        TabId='UnresolvedConflicts'
+      <ResolvedConflictsPane
+        TabId='ResolvedConflicts'
         key={1}
         url={this.props.url}
         data={this.state.Data}
@@ -213,7 +200,7 @@ class ConflictResolverApp extends React.Component {
       <div>
         <div>
           <FilterForm
-            Module='conflict_resolver'
+            Module='conflictResolver'
             name='conflict_resolver_filter'
             id='conflict_resolver_filter'
             ref='conflict_resolver_Filter'
@@ -231,7 +218,7 @@ class ConflictResolverApp extends React.Component {
           </FilterForm>
         </div>
         <div>
-          <Tabs tabs={tabList} defaultTab='UnresolvedConflicts'>
+          <Tabs tabs={tabList} defaultTab='ResolvedConflicts'>
             {tabs}
           </Tabs>
         </div>
@@ -239,11 +226,11 @@ class ConflictResolverApp extends React.Component {
     );
   }
 }
-ConflictResolverApp.propTypes = {
+ConflictsResolvedApp.propTypes = {
   module: PropTypes.string.isRequired,
   url: PropTypes.object.isRequired,
 };
-ConflictResolverApp.defaultProps = {
+ConflictsResolvedApp.defaultProps = {
   module: '',
   url: {
     base: '',
@@ -259,7 +246,7 @@ ConflictResolverApp.defaultProps = {
  */
 window.onload = function() {
   const conflictResolver = (
-    <ConflictResolverApp
+    <ConflictsResolvedApp
       module={'conflictResolver'}
       url={{
         base: loris.BaseURL,
@@ -285,9 +272,9 @@ window.onload = function() {
   // Prevent tab switching
   const refresh = setInterval(function() {
     if (document.getElementById('tab-ResolvedConflicts')) {
-      $('#tab-ResolvedConflicts').click(function(event) {
+      $('#tab-UnresolvedConflicts').click(function(event) {
         event.preventDefault();
-        window.location.href = loris.BaseURL + '/conflict_resolver/resolved_conflicts/';
+        window.location.href = loris.BaseURL + '/conflict_resolver/';
         return false;
       });
       clearInterval(refresh);
