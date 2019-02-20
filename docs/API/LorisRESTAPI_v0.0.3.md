@@ -581,7 +581,23 @@ Returns file level QC information. It will return a JSON object of the form:
         "File" : $Filename
     },
     "QC" : "Pass|Fail",
-    "Selected" : boolean
+    "Selected" : boolean,
+    "Caveats" : [
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        },
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        }
+    ]
 }
 ```
 
@@ -668,7 +684,7 @@ will return a JSON object of the form:
     "Description" : {
         "SeriesName" : "",
         "SeriesDescription"  : ""
-    }
+    },
     "Dimensions" : {
         "XSpace" : {
             "Length" : "",
@@ -686,6 +702,13 @@ will return a JSON object of the form:
             "Length" : "",
             "StepSize" : ""
         }
+    },
+    "ScannerInfo" : {
+      "Manufacturer" : $scannerManufacturer,
+      "Model" : $scannerModel,
+      "SoftwareVersion" : $scannerSoftwareVersion,
+      "SerialNumber" : $scannerSerialNumber,
+      "FieldStrength" : $scannerFieldStrength
     }
 }
 ```
@@ -758,42 +781,46 @@ object of the form:
         "Visit" : $VisitLabel,
     },
     "DicomTars" : 
-        [{
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-        "SeriesInfo" :
-            [{
-            "SeriesDescription" : "MPRAGE_ipat2",
-            "SeriesNumber" : "2",
-            "EchoTime" : "2.98",
-            "RepetitionTime" : "2300",
-            "InversionTime" : "900",
-            "SliceThickness" : "1",
-            "Modality" : "MR",
-            "SeriesUID" : "1.2.3.4.1107",
-            },
-            {
-            "SeriesDescription" : "BOLD Resting State",
-            "SeriesNumber" : "5",
-            "EchoTime" : "30",
-            "RepetitionTime" : "2100",
-            "InversionTime" : NULL,
-            "SliceThickness" : "3.5",
-            "Modality" : "MR",
-            "SeriesUID" : "3.4.5.6.1507",
-            }],
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
-        "SeriesInfo" :
-            [{
-            "SeriesDescription" : "MPRAGE_ipat2",
-            "SeriesNumber" : "2",
-            "EchoTime" : "2.98",
-            "RepetitionTime" : "2300",
-            "InversionTime" : "900",
-            "SliceThickness" : "1",
-            "Modality" : "MR",
-            "SeriesUID" : "1.7.8.9.1296",
-            }],
-    }],    
+    [
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+            "SeriesInfo" :
+                [{
+                    "SeriesDescription" : "MPRAGE_ipat2",
+                    "SeriesNumber" : "2",
+                    "EchoTime" : "2.98",
+                    "RepetitionTime" : "2300",
+                    "InversionTime" : "900",
+                    "SliceThickness" : "1",
+                    "Modality" : "MR",
+                    "SeriesUID" : "1.2.3.4.1107",
+                    },
+                    {
+                    "SeriesDescription" : "BOLD Resting State",
+                    "SeriesNumber" : "5",
+                    "EchoTime" : "30",
+                    "RepetitionTime" : "2100",
+                    "InversionTime" : NULL,
+                    "SliceThickness" : "3.5",
+                    "Modality" : "MR",
+                    "SeriesUID" : "3.4.5.6.1507",
+                }]
+        },
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+            "SeriesInfo" :
+                [{
+                "SeriesDescription" : "MPRAGE_ipat2",
+                "SeriesNumber" : "2",
+                "EchoTime" : "2.98",
+                "RepetitionTime" : "2300",
+                "InversionTime" : "900",
+                "SliceThickness" : "1",
+                "Modality" : "MR",
+                "SeriesUID" : "1.7.8.9.1296",
+                }]
+        }
+    ]    
 }
 ```
 

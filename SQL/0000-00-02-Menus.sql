@@ -77,7 +77,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Genomic Browser', 'genomic_browser/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 6),
     ('Data Release', 'data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7),
     ('Acknowledgements', 'acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 8),
-    ('Issue Tracker', 'issue_tracker/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 9);
+    ('Issue Tracker', 'issue_tracker/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 9),
+    ('Quality Control', 'quality_control/', (SELECT ID FROM LorisMenu as L Where Label='Tools'), 10);
 
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
@@ -187,7 +188,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='superuser' AND m.Label='Instrument Manager';
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='instrument_manager_read' AND m.Label='Instrument Manager';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='instrument_manager_write' AND m.Label='Instrument Manager';
 
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
@@ -216,5 +219,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_read' AND m.Label='Media';
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
+
+
 
 

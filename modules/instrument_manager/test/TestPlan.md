@@ -1,8 +1,8 @@
 # Instrument Manager Test Plan
 
-1. User has access to Instrument Manager if he/she has permission “superuser”.
+1. User has access to Instrument Manager only if they have permission “instrument_manager”.
    [Automation Testing]
-2. Check that `Instrument Manager` menu-item exists on a default install under Admin menu-item (for superusers).
+2. Check that `Instrument Manager` menu-item exists on a default install under Admin menu-item 
    [Automation Testing]
 3. Check that the warning text is accurate if the `project/instruments` or `project/sql_tables` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
    [Manual Testing]

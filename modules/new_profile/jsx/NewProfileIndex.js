@@ -46,7 +46,7 @@ class NewProfileIndex extends React.Component {
       });
   }
 
-    validate() {
+    validateMatchDate() {
         const data = this.state.formData;
         let isError = false;
         if (data.dateTaken !== data.dateTakenConfirm) {
@@ -62,14 +62,14 @@ class NewProfileIndex extends React.Component {
     }
 
 
-    /**
+  /**
    * Handles form submission
    *
    * @param {event} e - Form submition event
    */
     handleSubmit(e) {
         e.preventDefault();
-        const err = this.validate();
+        const err = this.validateMatchDate();
         this.setState(
             {
                 errMessage: '',
@@ -78,7 +78,7 @@ class NewProfileIndex extends React.Component {
         if (err) {
             this.setState(
                 {
-                    errMessage: 'Date of birth fields must match',
+                    errMessage: 'Date of Birth or EDC fields must match',
                     isCreated: false,
                 }
             );
@@ -90,7 +90,6 @@ class NewProfileIndex extends React.Component {
         formObject.append(key, formData[key]);
       }
     }
-/* eslint-disable no-console */
    fetch(this.props.submitURL, {
       method: 'POST',
       cache: 'no-cache',
@@ -104,7 +103,6 @@ class NewProfileIndex extends React.Component {
     });
                 }
     }
-/* eslint-enable no-console */
 
     /**
    * Set the form data based on state values of child elements/componenets
@@ -136,7 +134,6 @@ class NewProfileIndex extends React.Component {
                    label ="Project"
                    options ={this.state.configData.project}
                    onUserInput ={this.setFormData}
-                   ref ="project"
                    value ={this.state.formData.project}
                    required ={true}
                  />
@@ -151,7 +148,6 @@ class NewProfileIndex extends React.Component {
                    minYear ="2000"
                    maxYear ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="edcDateTaken1"
                    value ={this.state.formData.edcDateTaken}
                    required ={true}
                  />
@@ -161,7 +157,6 @@ class NewProfileIndex extends React.Component {
                    minYear ="2000"
                    maxYear ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="edcDateTaken2"
                    value ={this.state.formData.edcDateTakenConfirm}
                    required ={true}
                  />
@@ -174,7 +169,6 @@ class NewProfileIndex extends React.Component {
                    name ="pscid"
                    label ="PSCID"
                    onUserInput ={this.setFormData}
-                   ref ="pscid"
                    value ={this.state.formData.pscid}
                    required ={true}
                   />
@@ -185,7 +179,6 @@ class NewProfileIndex extends React.Component {
                 <FormElement
                  name ="newProfileForm"
                  onSubmit ={this.handleSubmit}
-                 ref ="form"
                 >
                  <label className ="error">{this.state.errMessage}</label>
                  <DateElement
@@ -194,7 +187,6 @@ class NewProfileIndex extends React.Component {
                    minYear ="2000"
                    maxYear ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="dateTaken1"
                    value ={this.state.formData.dateTaken}
                    required ={true}
                  />
@@ -204,7 +196,6 @@ class NewProfileIndex extends React.Component {
                    minYear ="2000"
                    maxYear ="2017"
                    onUserInput ={this.setFormData}
-                   ref ="dateTaken2"
                    value ={this.state.formData.dateTakenConfirm}
                    required ={true}
                  />
@@ -214,7 +205,6 @@ class NewProfileIndex extends React.Component {
                    label ="Gender"
                    options ={this.state.configData.gender}
                    onUserInput ={this.setFormData}
-                   ref ="gender"
                    value ={this.state.formData.gender}
                    required ={true}
                  />
@@ -223,7 +213,6 @@ class NewProfileIndex extends React.Component {
                    label ="Site"
                    options ={this.state.configData.site}
                    onUserInput ={this.setFormData}
-                   ref ="site"
                    value ={this.state.formData.site}
                    required ={true}
                  />

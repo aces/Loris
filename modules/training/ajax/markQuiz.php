@@ -97,9 +97,9 @@ function correct($instrumentID, $question, $answer)
  *
  * @param int $instrumentID The ID of the instrument
  *
- * @return nothing
+ * @return bool
  */
-function markQuiz($instrumentID)
+function markQuiz($instrumentID): bool
 {
     $correct = true;
     foreach ($_POST as $question => $answer) {

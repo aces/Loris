@@ -310,12 +310,26 @@ class DataTable extends Component {
     // Handle string inputs
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
-      searchString = data.toLowerCase();
-
-      if (exactMatch) {
-        result = (searchString === searchKey);
-      } else {
-        result = (searchString.indexOf(searchKey) > -1);
+      switch (typeof data) {
+        case 'object':
+          // Handles the case where the data is an array (typeof 'object')
+          // and you want to search through it for
+          // the string you are filtering by
+          let searchArray = data.map((e) => e.toLowerCase());
+          if (exactMatch) {
+            result = searchArray.includes(searchKey);
+          } else {
+            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
+          }
+          break;
+        default:
+            searchString = data.toLowerCase();
+            if (exactMatch) {
+              result = (searchString === searchKey);
+            } else {
+              result = (searchString.indexOf(searchKey) > -1);
+            }
+          break;
       }
     }
 
@@ -338,14 +352,13 @@ class DataTable extends Component {
 
   renderActions() {
     if (this.props.actions) {
-      return this.props.actions.map((action) => {
+      return this.props.actions.map((action, key) => {
         return (
-          <button
-            className="btn btn-primary"
-            onClick={action.action}
-          >
-            {action.label}
-          </button>
+          <CTA
+            key={key}
+            label={action.label}
+            onUserInput={action.action}
+          />
         );
       });
     }

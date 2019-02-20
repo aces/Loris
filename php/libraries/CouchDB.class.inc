@@ -199,14 +199,14 @@ class CouchDB
      *
      * @param string $database The couchDB database name
      * @param string $host     The couchDB host name
-     * @param string $port     The couchDB port number
+     * @param int    $port     The couchDB port number
      * @param string $user     The couchDB user name
      * @param string $password The couchDB password
      */
     private function __construct(
         string $database = '',
         string $host = '',
-        string $port = '',
+        int    $port = 5984,
         string $user = '',
         string $password = ''
     ) {
@@ -260,7 +260,7 @@ class CouchDB
 
                 $database = $couchConfig['dbName'];
                 $host     = $couchConfig['hostname'];
-                $port     = $couchConfig['port'];
+                $port     = intval($couchConfig['port']);
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
@@ -281,7 +281,7 @@ class CouchDB
                 $couchConfig = $config->getSetting("CouchDB");
 
                 $host     = $couchConfig['hostname'];
-                $port     = $couchConfig['port'];
+                $port     = intval($couchConfig['port']);
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(

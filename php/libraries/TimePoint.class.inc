@@ -213,7 +213,7 @@ class TimePoint
         $db      = $factory->database();
 
         // select the candidate data
-        $query = "SELECT c.CenterID,
+        $query = "SELECT c.RegistrationCenterID,
                          IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo
                     FROM candidate AS c
                         LEFT OUTER JOIN session AS s USING (CandID)
@@ -597,9 +597,9 @@ class TimePoint
     /**
      * Returns the list of BVLQC exclusion statuses
      *
-     * @return string
+     * @return array
      */
-    function getBVLQCExclusionStatusList(): string
+    function getBVLQCExclusionStatusList(): array
     {
         return $this->bvlQcExclusionStatuses;
     }

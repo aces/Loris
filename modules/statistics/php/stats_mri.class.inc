@@ -41,7 +41,7 @@ class Stats_MRI extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of centers
+     * @param array  $Centers  the value of centers
      *
      * @return bool
      */
@@ -65,8 +65,8 @@ class Stats_MRI extends \NDB_Form
      * @param string $dropdown_name     the value of dropdown_name
      * @param string $dropdown_opt      the value of dropdown_opt
      * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centers           the value of centers
-     * @param string $data              the value of data
+     * @param array  $centers           the value of centers
+     * @param array  $data              the value of data
      * @param string $Subsection        the value of Subsection=''
      * @param string $disclamer         the value of disclamer=''
      * @param string $projectID         the value of projectID is null
@@ -256,7 +256,7 @@ class Stats_MRI extends \NDB_Form
         }
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
-            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $Param_Site          ='AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
             $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
         } else {
             $Param_Site = '';
@@ -361,7 +361,7 @@ class Stats_MRI extends \NDB_Form
 
         $result = $DB->pselect(
             "SELECT s.SubprojectID,
-                    c.CenterID,
+                    s.CenterID,
                     s.Visit_label as VLabel,
                     $CaseStatement as Subcat,
                     COUNT(*) as val
@@ -379,7 +379,7 @@ class Stats_MRI extends \NDB_Form
                     $Param_Project
               GROUP BY Subcat,
                     s.SubprojectID,
-                    c.CenterID,
+                    s.CenterID,
                     s.Visit_label",
             $bigTable_params
         );

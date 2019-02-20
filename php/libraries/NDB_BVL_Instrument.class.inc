@@ -286,7 +286,7 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             //instrument permissions not used...
             return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
@@ -499,10 +499,9 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save(): bool
     {
-        $scoreResult = '';
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
-            $scoreResult = $this->score();
+            $this->score();
 
             // determine the data entry completion status, and store that in
             // the database
@@ -1081,19 +1080,19 @@ class NDB_BVL_Instrument extends NDB_Page
             ) {
 
                 if (array_key_exists("Y", $formDateValue)) {
-                    $yearString = $formDateValue[Y];
+                    $yearString = $formDateValue['Y'];
                 } else {
                     $yearString = "0001";
                 }
 
                 if (array_key_exists("M", $formDateValue)) {
-                    $monthString = $formDateValue[M];
+                    $monthString = $formDateValue['M'];
                 } else {
                     $monthString = "01";
                 }
 
                 if (array_key_exists("d", $formDateValue)) {
-                    $dayString = $formDateValue[d];
+                    $dayString = $formDateValue['d'];
                 } else {
                     $dayString = "01";
                 }
@@ -1104,12 +1103,12 @@ class NDB_BVL_Instrument extends NDB_Page
                 || array_key_exists("i", $formDateValue)
             ) {
                 if (array_key_exists("H", $formDateValue)) {
-                    $hourString = $formDateValue[H];
+                    $hourString = $formDateValue['H'];
                 } else {
                     $hourString = "01";
                 }
                 if (array_key_exists("i", $formDateValue)) {
-                    $minuteString = $formDateValue[i];
+                    $minuteString = $formDateValue['i'];
                 } else {
                     $minuteString = "01";
                 }
@@ -1434,11 +1433,27 @@ class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         if (!empty($sessionID)) {
-            $timepoint  = \Timepoint::singleton($sessionID);
+            $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
         }
         return '';
+    }
+
+    /**
+     * Gets the subprojectID for the timepoint to which this instrument pertains
+     *
+     * @return int|null The subprojectID
+     */
+    function getSubprojectID(): ?int
+    {
+        $sessionID = $this->getSessionID();
+        if (!empty($sessionID)) {
+            $timepoint    = \Timepoint::singleton($sessionID);
+            $subprojectID = $timepoint->getSubprojectID();
+            return $subprojectID;
+        }
+        return null;
     }
 
 
@@ -2201,7 +2216,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-            $success      = $controlPanel->select($_REQUEST['commentID']);
+            $controlPanel->select($_REQUEST['commentID']);
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
@@ -2211,12 +2226,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $TestName = $this->testName;
             if (file_exists(
                 $BasePath
-                . "NDB_BVL_Instrument_$TestName.class.inc"
+                    . "NDB_BVL_Instrument_$TestName.class.inc"
             )
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
-                $success = $controlPanel->save();
+                $controlPanel->save();
             }
 
             // display the control panel

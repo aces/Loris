@@ -126,7 +126,7 @@ class MriUploadServerProcess extends AbstractServerProcess
     public function getShellCommand()
     {
         // Sanitize variables before using in exec statement.
-        $env            = $this->_mriCodePath . '/' . self::ENVIRONMENT_BASENAME;
+        $env            = $this->_mriCodePath . '/' . $this->_environmentFile;
         $env            = escapeshellarg($env);
         $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
         $uploadScript   = escapeshellarg($uploadScript);
@@ -155,7 +155,7 @@ class MriUploadServerProcess extends AbstractServerProcess
      * @param int    $exitCode process exit code.
      * @param string $endTime  time at which the process ended.
      *
-     * @return string process exit text.
+     * @return string|null process exit text.
      */
     public function computeExitText($exitCode, $endTime)
     {

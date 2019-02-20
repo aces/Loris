@@ -27,7 +27,9 @@ namespace LORIS\imaging_browser;
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
-    var $AjaxModule = true;
+    var $AjaxModule      = true;
+    public $skipTemplate = true;
+    public $fieldOptions;
     /**
      * Determine whether the user has permission to view this page
      *
@@ -64,8 +66,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
-
-        $all_scan_types_2d = $DB->pselect(
+        $all_scan_types_2d  = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
@@ -92,26 +93,34 @@ class Imaging_Browser extends \NDB_Menu_Filter
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
             $acqpif       = '';
+            $newQueryCase = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
-                    $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
+                    $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))";
                 } else {
-                    $acqpif .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
+                    $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
                         DISTINCT AcquisitionProtocolID))>0 ";
+                    $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))";
                 }
                 $isFirst = false;
             }
-            $acqpif .= ",'new','')";
+            $acqpif       .= ",'new','')";
+            $newQueryCase .=")";
         } else {
             $this->acqpid = '';
             $acqpif       = "'new'";
+            $newQueryCase ='';
         }
 
         $NewDataSubquery = "CASE 
             COALESCE(Max(fqc.QCLastChangeTime), 'new')
             WHEN 'new' THEN {$acqpif}
             WHEN ''    THEN {$acqpif}
+            WHEN NULL  THEN {$acqpif}
             ELSE ''
             END";
 
@@ -132,17 +141,24 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 WHEN 'Fail' THEN
                     IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
                 WHEN 'Pass' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
+                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass') 
                 ELSE s.MRIQCStatus
             END 
             ";
 
-        $this->query = " FROM psc AS p 
+        $PendingNewquery = "CASE 
+    WHEN s.MRIQCPending='Y' THEN 'P'
+    WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'
+      
+END";
+        $this->query     = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            LEFT JOIN mri_scan_type modality ON 
+            (f.AcquisitionProtocolID=modality.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -153,7 +169,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             JOIN files_qcstatus USING (FileID) 
             WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
             AND files_qcstatus.QCStatus IN (1, 2) 
-            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . "
+            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . " 
             ON (" . $DB->escape($pass[$key]) . ".SessionID=f.SessionID) ";
         }
 
@@ -165,8 +181,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->query .= $left_joins;
         $this->query .= $where;
 
-        $config =& \NDB_Config::singleton();
-        $user   =& \User::singleton();
+        $config = \NDB_Config::singleton();
+        $user   = \User::singleton();
         $DB     = \Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr = implode(",", $user->getCenterIDs());
@@ -180,14 +196,14 @@ class Imaging_Browser extends \NDB_Menu_Filter
                 }
             } else {
                 if ($user->hasPermission('imaging_browser_phantom_allsites')) {
-                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ") 
+                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr) 
                                       OR c.Entity_type = 'Scanner') ";
                 } else if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
-                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ")
+                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr)
                                       OR (c.Entity_type = 'Scanner'
                                       AND s.CenterID IN (" . $site_arr . "))) ";
                 } else {
-                    $this->query .= " AND c.CenterID IN (" . $site_arr . ") ";
+                    $this->query .= " AND c.RegistrationCenterID IN ($site_arr) ";
                 }
             }
         }
@@ -207,7 +223,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         }
 
         $this->columns = array(
-                          'p.MRI_alias as Site',
+                          'p.Name as Site',
                           'c.PSCID as PSCID',
                           'c.CandID as DCCID',
                           's.visit_label as Visit_Label',
@@ -220,30 +236,16 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
-            $modalities_subquery_as,
-            array('s.ID as sessionID')
+            array(
+             's.ID as sessionID',
+             'GROUP_CONCAT(DISTINCT modality.ID) as sequenceType',
+             "$PendingNewquery as pending",
+            ),
+            $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
-
-        $this->headers = array(
-                          'Site',
-                          'PSCID',
-                          'DCCID',
-                          'Visit_Label',
-                          'Visit_QC_Status',
-                          'First_Acquisition',
-                          'First_Insertion',
-                          'Last_QC',
-                          'New_Data',
-                          'Links',
-                         );
-        $this->headers = array_merge(
-            $this->headers,
-            $as,
-            array('sessionID')
-        );
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
@@ -255,43 +257,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             );
             array_splice($this->headers, 3, 0, 'Project');
         }
-
-        $this->validFilters = array(
-                               'c.PSCID',
-                               's.Visit_label',
-                               'c.CandID',
-                               'c.ProjectID',
-                               's.CenterID',
-                               's.MRIQCStatus',
-                               'pending',
-                               'f.AcquisitionProtocolID',
-                              );
-
-        $this->formToFilter    = array(
-                                  'pscid'         => 'c.PSCID',
-                                  'VL'            => 's.Visit_label',
-                                  'DCCID'         => 'c.CandID',
-                                  'ProjectID'     => 'c.ProjectID',
-                                  'SiteID'        => 's.CenterID',
-                                  'VisitQCStatus' => 's.MRIQCStatus',
-                                  'Pending'       => 'pending',
-                                  'Scan_type'     => 'f.AcquisitionProtocolID',
-                                 );
-        $this->EqualityFilters = array('f.AcquisitionProtocolID');
-        $this->searchKeyword   = array();
-
-        $this->tpl_data['numTimepoints'] = 0;
-
-        // This variable will be used by the columnFormatter javascript
-        // to set the default hidden columns in the data table.
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            array_map(
-                function ($header) {
-                    return ucwords(str_replace('_', ' ', $header));
-                },
-                array('sessionID')
-            )
-        );
     }
 
     /**
@@ -303,172 +268,116 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
         // create user object
-        $user          =& \User::singleton();
-        $list_of_sites = array();
+        $user     = \User::singleton();
+        $siteList = array();
 
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')
             || $user->hasPermission('imaging_browser_phantom_allsites')
         ) {
-            // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
+            // get the list of study sites
+            $siteList = \Utility::getSiteList();
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
             }
         } else {
-            // allow only to view own site data
-            $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = \Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
         }
 
         $DB    = \Database::singleton();
-        $allAr = array('' => 'All');
+        $allAr = array();
 
-        $this->addBasicText(
-            'pscid',
-            'PSCID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addBasicText(
-            'VL',
-            'Visit Label',
-            array(
-             'size'      => "10",
-             "maxlength" => "25",
-            )
-        );
-        $this->addBasicText(
-            'DCCID',
-            'DCCID',
-            array(
-             'size'      => 10,
-             "maxlength" => 25,
-            )
+        $config = \NDB_Config::singleton();
+
+        $toTable_scan_types = $config->getSetting('tblScanTypes');
+
+        $all_scan_types_2d = $DB->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri",
+            array()
         );
 
-        $config =& \NDB_Config::singleton();
+        foreach ($all_scan_types_2d as $row) {
+            $type = $row['Scan_type'];
+            $all_scan_types[$row['ID']] = $type;
+        }
+
+        // Get the intersection between all the scan types and those
+        // that are desired to go into imaging browser table, based on
+        // array values rather than keys (hence the array_flip), then flip
+        // the resulting array back to revert it to a key/value (i.e.
+        // acquisition protocol ID/scan type) combination.
+
+        $scan_id_types          =array_flip(
+            array_intersect_key(
+                array_flip($all_scan_types),
+                array_flip($toTable_scan_types)
+            )
+        );
+        $modalities_subquery_as = array();
+        $as = array();
+
+        foreach ($scan_id_types as $key => $value) {
+            $modalities_subquery[$key] = $value;
+            $as[$key] = $scan_id_types[$key] . '_QC_Status';
+            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
+                ' as ' .
+                $as[$key];
+        }
+
         if ($config->getSetting('useProjects') === "true") {
             $list_of_projects = $allAr;
             $projectList      = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] =$value;
+            foreach ($projectList as $key => $project) {
+                unset($projectList[$key]);
+                $list_of_projects[$project] = $project;
             }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects);
         }
 
-        $this->addSelect('SiteID', 'Site', $list_of_sites);
-        $this->addSelect(
-            'VisitQCStatus',
-            'Visit QC Status',
-            array(
-             ''     => 'All',
-             'Pass' => 'Pass',
-             'Fail' => 'Fail',
-            )
-        );
+            $visitQCStatus = array(
+                              'Pass' => 'Pass',
+                              'Fail' => 'Fail',
+                             );
 
-        $this->addSelect(
-            'Pending',
-            'Pending and New',
-            array(
-             ''   => 'All',
-             'P'  => 'Pending',
-             'N'  => 'New',
-             'PN' => 'Pending or New',
-            )
-        );
+            $pending = array(
+                        'P' => 'Pending',
+                        'N' => 'New',
+                       );
 
-        //query to get scan types that exist for the project
-        $types_q    = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri
+            $types_q    = $DB->pselect(
+                "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
-        $scan_types = $allAr;
-        foreach ($types_q as $row) {
-            $type = $row['Scan_type'];
-            $scan_types[$row['ID']] = $type;
-        }
-        $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
-
-        $outputTypes = $DB->pselect(
-            "SELECT DISTINCT OutputType AS outputType 
-            FROM files WHERE FileType='mnc' AND OutputType!='native'",
-            array()
-        );
-
-        $this->tpl_data['outputTypes'] = array_merge(
-            array(
-             array('outputType' => 'native'),
-             array('outputType' => 'selected'),
-            ),
-            $outputTypes
-        );
-
-        $this->tpl_data['numOutputTypes'] = count($outputTypes);
-        $this->addBasicText(
-            'keyword',
-            'Search keyword in Comments',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
-    }
-
-    /**
-     * Overwrites the function to add a customized filter
-     * for Pending and New
-     *
-     * @param string $prepared_key filter key
-     * @param string $field        filter field
-     * @param string $val          filter value
-     *
-     * @return string the new query
-     */
-    function _addValidFilters($prepared_key, $field, $val)
-    {
-        $query = '';
-        if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'pending' && $field !='AcquisitionProtocolID') {
-                if (in_array($field, $this->CheckboxFilters) && $val) {
-                    $query .= " AND $field";
-                } elseif (strtolower(substr($field, -8)) == 'centerid'
-                    || strtolower(substr($field, -10)) == 'categoryid'
-                    || strtolower(substr($field, -6)) == 'sex'
-                    || (isset($this->EqualityFilters)
-                    && in_array($field, $this->EqualityFilters))
-                ) {
-                    $query .= " AND $field = :v_$prepared_key";
-                    // $qparams["v_$prepared_key"] = $val;
-                } else {
-                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
-                }
-            } else if ($field == 'pending') {
-                switch ($val) {
-                case "P":
-                    $query .= " AND s.MRIQCPending='Y'";
-                    break;
-                case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $this->acqpid;
-                    break;
-                case "PN":
-                    $query .= " AND (s.MRIQCPending='Y' 
-                        OR (fqc.QCFirstChangeTime IS NULL ". $this->acqpid ."))";
-                    break;
-                }
-            } else if ($field == 'AcquisitionProtocolID') {
-                $query .= " AND $field = :v_$prepared_key";
+                array()
+            );
+            $scan_types = $allAr;
+            foreach ($types_q as $key=>$sequenceType) {
+                $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
             }
-        }
-        return $query;
-    }
 
+            $outputTypes = $DB->pselect(
+                "SELECT DISTINCT OutputType AS outputType 
+            FROM files WHERE FileType='mnc' AND OutputType!='native'",
+                array()
+            );
+
+            $this->fieldOptions = [
+                                   'sites'         => $siteList,
+                                   'projects'      => $list_of_projects,
+                                   'visitQCStatus' => $visitQCStatus,
+                                   'sequenceTypes' => $scan_types,
+                                   'pendingNew'    => $pending,
+                                   'configLabels'  => $scan_id_types,
+                                  ];
+
+            $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+    }
     /**
      * Converts this menu filter to an array of the form
      *
@@ -513,6 +422,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
     }
 
 
+
     /**
      * Include the column formatter
      *
@@ -525,8 +435,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/imaging_browser/js/columnFormatter.js",
-             $baseurl . "/imaging_browser/js/onSort.js",
+             $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
             )
         );
     }

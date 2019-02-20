@@ -22,11 +22,12 @@ namespace LORIS\new_profile;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class New_Profile extends \NDB_Menu_Filter
+class New_Profile extends \NDB_Page
 {
     public $result;
     public $AjaxModule   = true;
     public $skipTemplate = true;
+    
     /**
      * Tie the access to a data_entry permission
      *
@@ -53,9 +54,8 @@ class New_Profile extends \NDB_Menu_Filter
      */
     function setup()
     {
-        parent::setup();
-               $DB = \Database::singleton();
-        $config    =& \NDB_Config::singleton();
+        $DB = \Database::singleton();
+        $config    = \NDB_Config::singleton();
         $user      = \User::singleton();
         $this->result['startYear']  = $config->getSetting('startYear');
         $this->result['endYear']    = $config->getSetting('endYear');
@@ -96,6 +96,13 @@ class New_Profile extends \NDB_Menu_Filter
             $result['pscidSet'] = "true";
         }
         return true;
+    }
+   /**
+    * Call toJSON to display a json file on the page.
+    */
+    function display()
+    {
+       return $this->toJSON();
     }
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved

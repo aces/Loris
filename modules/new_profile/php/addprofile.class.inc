@@ -27,12 +27,12 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Addprofile extends \NDB_Page
+class AddProfile extends \NDB_Page
 {
     public $skipTemplate = true;
 
     /**
-     * Same as the permissions for the main menu filter page.
+     * Same as the permissions for the main page.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -57,9 +57,6 @@ class Addprofile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        //todo : import ajax file and return with dccid and pcsid
-        //       $data   = json_decode($request->getBody()->getContents(), true);
-        //        json_encode($request->getParsedBody())
         $values    = $request->getParsedBody();
         $DB        = \Database::singleton();
         $user      = \User::singleton();

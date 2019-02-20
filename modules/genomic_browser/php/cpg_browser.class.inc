@@ -6,11 +6,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Xavier <xavierlb.mavan@gmail.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Xavier <xavierlb.mavan@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class CpG_Browser extends \NDB_Menu_Filter
 {
 
@@ -60,7 +60,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
@@ -145,7 +145,7 @@ class CpG_Browser extends \NDB_Menu_Filter
                     from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc
-                ON (psc.CenterID = candidate.CenterID)
+                ON (psc.CenterID = candidate.RegistrationCenterID)
             LEFT JOIN genomic_sample_candidate_rel gscr
                 ON (gscr.CandID = candidate.CandID)
             LEFT JOIN genomic_cpg cpg
@@ -163,7 +163,7 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND candidate.RegistrationCenterID IN ($site_arr)";
         }
 
         $this->order_by = 'psc.Name, candidate.CandID DESC';
@@ -171,7 +171,7 @@ class CpG_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
                                'candidate.Sex',
@@ -202,38 +202,39 @@ class CpG_Browser extends \NDB_Menu_Filter
                                'platform.Name',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'           => 'candidate.CenterID',
-                               'DCCID'              => 'candidate.CandID',
-                               'PSCID'              => 'candidate.PSCID',
-                               'sex'                => 'candidate.Sex',
-                               'SubprojectID'       => 'cohort.SubprojectID',
-                               'dob'                => 'candidate.DoB',
-                               'Show_Brief_Results' => 'show_brief_results',
-                               'cpg_name'           => 'cpg.cpg_name',
-                               'Beta_value'         => 'cpg.beta_value',
-                               'Chromosome'         => 'gca.Chromosome',
-                               'Gene_Symbol'        => 'gca.gene_name',
-                               'Platform'           => 'platform.Name',
-                               'Strand'             => 'gca.Strand',
-                               'StartLoc'           => 'gca.StartLoc',
-                               'EndLoc'             => 'gca.EndLoc',
-                               'genomic_range'      => 'genomic_range',
-                               'Assembly'           => 'gca.genome_build',
-                               'Context'            => 'gca.island_relation',
-                               'Design'             => 'gca.design_type',
-                               'Color'              => 'gca.color_channel',
-                               'SNP_10'             => 'gca.probe_snp_10',
-                               'Gene_Grp'           => 'gca.gene_group',
-                               'Island_Loc'         => 'gca.island_loc',
-                               'Fantom_Prom'        => 'gca.fantom_promoter_loc',
-                               'DMR'                => 'gca.dmr',
-                               'Enhancer'           => 'gca.enhancer',
-                               'HMM_Island'         => 'gca.hmm_island_loc',
-                               'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
-                               'Reg_Feature_Grp'    => 'gca.reg_feature_group',
-                               'DHS'                => 'gca.dhs',
-                              );
+        $ftf = array(
+                'centerID'           => 'candidate.RegistrationCenterID',
+                'DCCID'              => 'candidate.CandID',
+                'PSCID'              => 'candidate.PSCID',
+                'sex'                => 'candidate.Sex',
+                'SubprojectID'       => 'cohort.SubprojectID',
+                'dob'                => 'candidate.DoB',
+                'Show_Brief_Results' => 'show_brief_results',
+                'cpg_name'           => 'cpg.cpg_name',
+                'Beta_value'         => 'cpg.beta_value',
+                'Chromosome'         => 'gca.Chromosome',
+                'Gene_Symbol'        => 'gca.gene_name',
+                'Platform'           => 'platform.Name',
+                'Strand'             => 'gca.Strand',
+                'StartLoc'           => 'gca.StartLoc',
+                'EndLoc'             => 'gca.EndLoc',
+                'genomic_range'      => 'genomic_range',
+                'Assembly'           => 'gca.genome_build',
+                'Context'            => 'gca.island_relation',
+                'Design'             => 'gca.design_type',
+                'Color'              => 'gca.color_channel',
+                'SNP_10'             => 'gca.probe_snp_10',
+                'Gene_Grp'           => 'gca.gene_group',
+                'Island_Loc'         => 'gca.island_loc',
+                'Fantom_Prom'        => 'gca.fantom_promoter_loc',
+                'DMR'                => 'gca.dmr',
+                'Enhancer'           => 'gca.enhancer',
+                'HMM_Island'         => 'gca.hmm_island_loc',
+                'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
+                'Reg_Feature_Grp'    => 'gca.reg_feature_group',
+                'DHS'                => 'gca.dhs',
+               );
+        $this->formToFilter = $ftf;
 
         $this->EqualityFilters = array(
                                   'candidate.Sex',
@@ -440,7 +441,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      * @note overloaded function
      *
      * @return string
-    */
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = ''; //initialize
