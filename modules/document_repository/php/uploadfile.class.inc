@@ -21,7 +21,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Uploadfile extends \NDB_Page
+class UploadFile extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -42,7 +42,7 @@ class Uploadfile extends \NDB_Page
     }
 
     /**
-     * Handle a post form
+     * Handle a form
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -50,13 +50,12 @@ class Uploadfile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() == "POST") {
-
-            if ($this->uploadDocFile()) {
+        switch ($request->getMethod()) {
+          case "POST":
+            if ($this->uploadDocFile($request)) {
                 return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully")
@@ -66,35 +65,41 @@ class Uploadfile extends \NDB_Page
                 return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("duplicate file name")
                     )
                 );
             }
-        }
-        if ($request->getMethod() == "GET") {
-            $value =  $request->getQueryParams();
-            $id    = $value['id'];
+          break;
+          case "GET":
+           $path = $request->getQueryParams();
+           $id = basename($path['lorispath']);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode($this->getUploadDocFields($id))
                     )
                 );
+          break;
+          default:
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(405)
+                ->withHeader("Allow", "GET and POST");
         }
     }
-    /**
+/**
  * Handles the document upload process
-     *
+ *
  * @return bool
  */
-    function uploadDocFile(): bool
+    function uploadDocFile($request): bool
     {
+        $req            = $request->getParsedBody();
+        $uploadedFiles  = $request->getUploadedFiles();
         $uploadOK       = false;
         $editNotifier   = new \NDB_Notifier(
             "document_repository",
@@ -110,21 +115,23 @@ class Uploadfile extends \NDB_Page
         $base           = $config->getSetting('base');
         $name           = \User::singleton()->getUsername();
         $DB       = \Database::singleton();
-        $category = $_POST['category']; // required
-        $site     = $_POST['forSite']       !== '' ? $_POST['forSite'] : null;
+        $category = $req['category']; // required
+        $site     = $req['forSite']       !== '' ? $req['forSite'] : null;
 
         $site       = $DB->pselectOne(
             "SELECT CenterID FROM psc WHERE Name=:name",
             array('name' => $site)
         );
-        $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
-        $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
-        $visit      = $_POST['visitLabel']      !== '' ? $_POST['visitLabel'] : null;
-        $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
-        $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
-        $fileSize   = $_FILES["file"]["size"];
-        $fileName   = $_FILES["file"]["name"];
-        $fileType   = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+        $instrument = $req['instrument'] !== '' ? $req['instrument'] : null;
+        $pscid      = $req['pscid']      !== '' ? $req['pscid'] : null;
+        $visit      = $req['visitLabel'] !== '' ? $req['visitLabel'] : null;
+        $comments   = $req['comments']   !== '' ? $req['comments'] : null;
+        $version    = $req['version']    !== '' ? $req['version'] : null;
+
+        $uploadedFile = $uploadedFiles['file'];
+        $fileSize   = $uploadedFile->getSize();
+        $fileName   = $uploadedFile->getClientFileName();
+        $fileType   = pathinfo($fileName, PATHINFO_EXTENSION);
         $uploadPath = "$base/modules/document_repository/user_uploads/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
@@ -141,20 +148,17 @@ class Uploadfile extends \NDB_Page
                     "User uploads path in Document Repository is not writable."
                 );
             }
-            mkdir($uploadPath, 0770);
+            if (!mkdir($uploadPath, 0770)){
+                throw new \LorisException(
+                    "User can't make a directory."
+                );
+            }
         }
-        // Copy the uploaded file to the user's upload folder if possible.
-        // Insert a record of the file into the document_repository table
-        if (!move_uploaded_file(
-            $_FILES['file']['tmp_name'],
-            $uploadPath . $fileName
-        )) {
-            throw new LorisException(
-                'ERROR: Could not upload file. Contact your administrator.'
-            );
-        } else {
-            // todo check duplicate file name
-            if (!$this->existFilename($fileName)) {
+
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK &&
+            !$this->existFilename($fileName)) {
+                $uploadedFile->moveTo($uploadPath.$fileName);
+             
                 $success = $DB->insert(
                     'document_repository',
                     array(
@@ -176,7 +180,6 @@ class Uploadfile extends \NDB_Page
                 $msg_data['document']    = $fileName;
                 $uploadNotifier->notify($msg_data);
                 $uploadOK = true;
-            }
         }
         return $uploadOK;
     }
@@ -255,7 +258,7 @@ class Uploadfile extends \NDB_Page
                 $depth       += 1;
                 $parent_id    = $value['parent_id'];
                 $query        = "SELECT * FROM document_repository_categories".
-                            " where id=$parent_id";
+                            " WHERE id=$parent_id";
                 $value        = $DB->pselectRow($query, array());
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }

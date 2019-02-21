@@ -1,5 +1,8 @@
 <?php
 /**
+ * It includes two functions.Post method handles updating a file.
+ * Delete method handles deleting a file 
+ * 
  * PHP Version 7
  *
  * @category Main
@@ -21,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Editfile extends \NDB_Page
+class EditFile extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -50,105 +53,105 @@ class Editfile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() == "POST") {
-            $this->editDocFile();
+        switch ($request->getMethod()) {
+          case "POST":
+            $this->editDocFile($request);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("update")
                     )
                 );
-        }
-        if ($request->getMethod() == "DELETE") {
-            $this->deleteFile();
+          break;
+          case "DELETE":
+           $path = $request->getQueryParams();
+           $id = basename($path['lorispath']);
+            $this->deleteFile($id);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "DELETE")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("delete")
                     )
                 );
+          break;
+          default:
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(405)
+                ->withHeader("Allow", "POST and DELETE");
         }
     }
-    /**
- * Handles the document edit process
+/**
+ * Handles the document editing process
  *
  * @throws \DatabaseException
  *
  * @return void
  */
-    function editDocFile(): void
+    function editDocFile($request): void
     {
         $db           = \Database::singleton();
         $user         = \User::singleton();
+        $req          = $request->getParsedBody();
         $updateValues = [
-                         'File_category' => isset($_POST['category']) ?
-                              $_POST['category'] : null,
-                         'For_site'      => isset($_POST['forSite']) ?
-                              $_POST['forSite'] : null,
-                         'Instrument'    => isset($_POST['instrument']) ?
-                              $_POST['instrument'] : null,
-                         'comments'      => isset($_POST['comments']) ?
-                              $_POST['comments'] : null,
-                         'version'       => isset($_POST['version']) ?
-                              $_POST['version'] : null,
-                         'visitLabel'    => isset($_POST['visitLabel']) ?
-                              $_POST['visitLabel'] : null,
-                         'pscid'         => isset($_POST['pscid']) ?
-                              $_POST['pscid'] : null,
+                         'File_category' => isset($req['category']) ?
+                              $req['category'] : null,
+                         'For_site'      => isset($req['forSite']) ?
+                              $req['forSite'] : null,
+                         'Instrument'    => isset($req['instrument']) ?
+                              $req['instrument'] : null,
+                         'comments'      => isset($req['comments']) ?
+                              $req['comments'] : null,
+                         'version'       => isset($req['version']) ?
+                              $req['version'] : null,
+                         'visitLabel'    => isset($req['visitLabel']) ?
+                              $req['visitLabel'] : null,
+                         'pscid'         => isset($req['pscid']) ?
+                              $req['pscid'] : null,
                         ];
         try {
             $db->update(
                 'document_repository',
                 $updateValues,
-                ['record_id' => $_POST['id']]
+                ['record_id' => $req['id']]
             );
         } catch (\DatabaseException $e) {
             showError("Could not update the file. Please try again!");
         }
     }
     /**
- * Handles the document edit process
+ * Handles the document deleting process
  *
  * @throws \DatabaseException
  *
  * @return void
  */
-    function deleteFile(): void
+    function deleteFile($rid): void
     {
-        $user = \User::singleton();
-        if (!$user->hasPermission('document_repository_delete')) {
-            header("HTTP/1.1 403 Forbidden");
-            exit;
-        }
-
         // create Database object
         $DB = \Database::singleton();
-
+        $user     = \User::singleton();
         $Notifier = new \NDB_Notifier(
             "document_repository",
             "delete"
         );
 
-        $rid = basename($_SERVER['REQUEST_URI']);
-
         $fileName = $DB->pselectOne(
-            "Select File_name from document_repository
-             where record_id =:identifier",
+            "SELECT File_name FROM document_repository
+             WHERE record_id =:identifier",
             array(':identifier' => $rid)
         );
         $userName = $DB->pselectOne(
-            "Select uploaded_by from document_repository
-             where record_id =:identifier",
+            "SELECT uploaded_by FROM document_repository
+             WHERE record_id =:identifier",
             array(':identifier' => $rid)
         );
         $dataDir  = $DB->pselectOne(
-            "Select Data_dir from document_repository where record_id =:identifier",
+            "SELECT Data_dir FROM document_repository WHERE record_id =:identifier",
             array(':identifier' => $rid)
         );
 

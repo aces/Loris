@@ -59,7 +59,7 @@ class DocIndex extends React.Component {
     );
       break;
     case 'Edit':
-    let editURL = loris.BaseURL + '/document_repository/edit/?id=' + row['Edit'];
+    let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
     result = <td><a href={editURL}>Edit</a></td>;
       break;
     case 'Delete File':
@@ -75,7 +75,7 @@ class DocIndex extends React.Component {
         closeOnConfirm: false,
       },
       function() {
-        let deleteurl = loris.BaseURL + '/document_repository/Editfile/' + id;
+        let deleteurl = loris.BaseURL + '/document_repository/EditFile/' + id;
           fetch(deleteurl, {
           method: 'DELETE',
           cache: 'no-cache',
@@ -164,7 +164,7 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/Uploadfile`}
+            action={`${loris.BaseURL}/document_repository/UploadFile`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
             category={this.state.newCategory}
@@ -173,7 +173,7 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[2].id}>
           <DocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/Uploadcategory`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
             refreshPage={this.fetchData}
             newCategoryState={this.newCategoryState}
           />

@@ -1,5 +1,6 @@
 <?php
 /**
+ * This class handles a post request to upload a new category.
  * PHP Version 7
  *
  * @category Main
@@ -13,15 +14,15 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Implements the ValidateIDs endpoint
- *
+ * This class handles a post request to upload a new category.
+ * PHP Version 7
  * @category Main
  * @package  Document_Repository
  * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Uploadcategory extends \NDB_Page
+class UploadCategory extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -51,16 +52,20 @@ class Uploadcategory extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() == "POST") {
-            $this->uploadDocCategory();
+            $this->uploadDocCategory($request);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
-                ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully")
                     )
                 );
+        } else { 
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(405)
+                ->withHeader("Allow", "POST");  
         }
     }
     /**
@@ -68,12 +73,13 @@ class Uploadcategory extends \NDB_Page
  *
  * @return void
  */
-    function uploadDocCategory()
+    function uploadDocCategory($request): void
     {
         $DB            = \Database::singleton();
-        $category_name = $_POST['categoryName']; // required
-        $parent_id     = $_POST['parentId']  !== '' ? $_POST['parentId'] : null;
-        $comment       = $_POST['comments']    !== '' ? $_POST['comments'] : null;
+        $req          = $request->getParsedBody(); 
+        $category_name = $req['categoryName']; // required
+        $parent_id     = $req['parentId']  !== '' ? $req['parentId'] : null;
+        $comment       = $req['comments']    !== '' ? $req['comments'] : null;
         // todo check duplicate name category
         $DB->insert(
             "document_repository_categories",
