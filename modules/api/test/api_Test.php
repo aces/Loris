@@ -1,0 +1,100 @@
+<?php
+/**
+ * This contains tests relevant to the Login endpoint
+ *
+ * PHP Version 7
+ *
+ * @category   API
+ * @package    Tests
+ * @subpackage Login
+ * @author     Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
+ */
+namespace LORIS\api\Test;
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * PHPUnit class for API Login tests
+ *
+ * @category   API
+ * @package    Tests
+ * @subpackage Login
+ * @author     Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
+ */
+class ApiLoginTest extends TestCase
+{
+    /**
+     * A blankc server request
+     *
+     * @var ServerRequest
+     */
+    protected $request;
+
+    /**
+     * Set a blank server request and the mock authenticator.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->request = new \Zend\Diactoros\ServerRequest();
+
+        $this->_authenticator = $this->createMock('\SinglePointLogin');
+    }
+
+    /**
+     * This checks if, given correct credentials, a HTTP 200 response
+     * is return and that its body is a JSON string with a token key.
+     *
+     * @return void
+     */
+    public function testLoginSuccess(): void
+    {
+        $this->_authenticator->expects($this->once())
+            ->method('passwordAuthenticate')
+            ->with('test_username', 'test_password')
+            ->willReturn(true);
+
+        $this->_login = $this->getMockBuilder('\LORIS\Api\Endpoints\Login')
+            ->setMethods(['getLoginAuthenticator', 'getEncodedToken'])
+            ->getMock();
+
+        $this->_login->expects($this->once())
+            ->method('getLoginAuthenticator')
+            ->willReturn($this->_authenticator);
+
+        $this->_login->expects($this->once())
+            ->method('getEncodedToken')
+            ->willReturn('jwt_token');
+
+        $request = $this->request
+            ->withAttribute('pathparts', array('login'))
+            ->withAttribute('LORIS-API-Version', 'v0.0.3-dev')
+            ->withAttribute('user', new \LORIS\AnonymousUser())
+            ->withMethod('POST')
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    '{"username":"test_username", "password":"test_password"}'
+                )
+            );
+
+        $response = $this->_login->handle($request);
+
+        error_log('testLoginSuccess is running');
+
+        $this->assertEquals(
+            200,
+            $response->getStatusCode()
+        );
+
+        $this->assertEquals(
+            array('token' => 'jwt_token'),
+            json_decode($response->getBody(), true)
+        );
+    }
+}
+
