@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * This file implements a data provisioner to get all possible rows
- * for the projects/$projectname/instruments endpoint
+ * for the projects/$projectname/instruments endpoint.
  *
  * PHP Version 7
  *
@@ -17,7 +17,7 @@ namespace LORIS\api;
 use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
  * This class implements a data provisioner to get all possible rows
- * for the projects/$projectname/instruments endpoint
+ * for the projects/$projectname/instruments endpoint.
  *
  * PHP Version 7
  *

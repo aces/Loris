@@ -25,7 +25,7 @@ class VisitDicomRow implements \LORIS\Data\DataInstance
     protected $DBRow;
 
     /**
-     * Create a new CandidatesRow
+     * Create a new CandidatesRow.
      *
      * @param array $row An array of that tarchive properties
      */

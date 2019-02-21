@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the visit's dicoms endpoint class
+ * This implements the visit's dicoms endpoint class.
  *
  * PHP Version 7
  *
@@ -66,7 +66,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /candidates/$candid
+     * Handles a request that starts with /candidates/$candid.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -108,7 +108,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body
+     * Create an array representation of this endpoint's reponse body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -132,7 +132,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *

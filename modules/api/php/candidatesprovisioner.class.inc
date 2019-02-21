@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * This file implements a data provisioner to get all possible rows
- * for the candidates endpoint
+ * for the candidates endpoint.
  *
  * PHP Version 7
  *
@@ -16,7 +16,7 @@ namespace LORIS\api;
 
 /**
  * This class implements a data provisioner to get all possible rows
- * for the candidates endpoint
+ * for the candidates endpoint.
  *
  * PHP Version 7
  *
@@ -58,7 +58,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     }
 
     /**
-     * Creates a new providionner with user specific filter
+     * Creates a new providionner with user specific filter.
      *
      * @param \User $user The requesting user
      *

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for project's instruments
+ * This class implements a data Instance for project's instruments.
  *
  * PHP Version 7
  *
@@ -27,7 +27,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     protected $DBRow;
 
     /**
-     * Create a new ProjectImagesRow
+     * Create a new ProjectImagesRow.
      *
      * @param array $row An array of image properties
      */
@@ -47,7 +47,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Provide an array representation of this instrument row
+     * Provide an array representation of this instrument row.
      *
      * @return array
      */
@@ -62,7 +62,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Returns this row's shortname
+     * Returns this row's shortname.
      *
      * @return string
      */
@@ -72,7 +72,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Returns this row's fullname
+     * Returns this row's fullname.
      *
      * @return string
      */
@@ -82,7 +82,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Retruns this row's subgroupname
+     * Retruns this row's subgroupname.
      *
      * @return string
      */
@@ -92,7 +92,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Checks if this instrument is part of the double data entry instruments
+     * Checks if this instrument is part of the double data entry instruments.
      * This use \Utility::getAllDDEInstruments() because the information is not
      * in the database and the instrument class do not provide a isDDE function.
      *

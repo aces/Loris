@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for visit imaging qc
+ * This class implements a data Instance for visit imaging qc.
  *
  * PHP Version 7
  *
@@ -28,7 +28,7 @@ class VisitImagingQcRow implements \LORIS\Data\DataInstance
     protected $DBRow;
 
     /**
-     * Create a new CandidatesRow
+     * Create a new CandidatesRow.
      *
      * @param array $row An array of candidate's properties
      */
