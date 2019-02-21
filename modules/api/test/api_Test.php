@@ -14,6 +14,7 @@
 namespace LORIS\api\Test;
 
 use PHPUnit\Framework\TestCase;
+use \Zend\Diactoros\ServerRequest;
 
 /**
  * PHPUnit class for API Login tests
@@ -28,20 +29,13 @@ use PHPUnit\Framework\TestCase;
 class ApiLoginTest extends TestCase
 {
     /**
-     * A blankc server request
-     *
-     * @var \Psr\Http\Message\ServerRequestInterface
-     */
-    protected $request;
-
-    /**
      * Set a blank server request and the mock authenticator.
      *
      * @return void
      */
     public function setUp()
     {
-        $this->request = new \Zend\Diactoros\ServerRequest();
+        $this->_request = new ServerRequest();
 
         $this->_authenticator = $this->createMock('\SinglePointLogin');
     }
@@ -71,7 +65,7 @@ class ApiLoginTest extends TestCase
             ->method('getEncodedToken')
             ->willReturn('jwt_token');
 
-        $request = $this->request
+        $request = $this->_request
             ->withAttribute('pathparts', array('login'))
             ->withAttribute('LORIS-API-Version', 'v0.0.3-dev')
             ->withAttribute('user', new \LORIS\AnonymousUser())
