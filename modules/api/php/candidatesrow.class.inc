@@ -51,7 +51,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
                 'Site'    => $this->DBRow['SiteName'],
                 'EDC'     => $this->DBRow['EDC'],
                 'DoB'     => $this->DBRow['DoB'],
-                'Gender'  => $this->DBRow['Sex'],
+                'Sex'     => $this->DBRow['Sex'],
                );
 
         return json_encode($obj);

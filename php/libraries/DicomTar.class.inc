@@ -177,30 +177,6 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Accessor for tarchiveid
-     *
-     * @return ?int|null
-     */
-    public function getTarchiveid(): ?int
-    {
-        return $this->_tarchiveid;
-    }
-
-    /**
-     * Returns a new instance of this class with the new value
-     *
-     * @param int $tarchiveid The new tarchiveid
-     *
-     * @return DicomTarDTO
-     */
-    public function withTarchiveid($tarchiveid): DicomTarDTO
-    {
-        $new = clone($this);
-        $new->_tarchiveid = $tarchiveid;
-        return $new;
-    }
-
-    /**
      * Accessor for tarname
      *
      * @return string|null
@@ -208,20 +184,6 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     public function getTarname(): ?string
     {
         return $this->_tarname;
-    }
-
-    /**
-     * Returns a new instance of this class with the new value
-     *
-     * @param string $tarname The new tarname
-     *
-     * @return DicomTarDTO
-     */
-    public function withTarname($tarname): DicomTarDTO
-    {
-        $new           = clone($this);
-        $new->_tarname = $tarname;
-        return $new;
     }
 
     /**
@@ -235,20 +197,6 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Returns a new instance of this class with the new value
-     *
-     * @param string $archivelocation The new ArchiveLocation
-     *
-     * @return DicomTarDTO
-     */
-    public function withArchiveLocation($archivelocation): DicomTarDTO
-    {
-        $new = clone($this);
-        $new->_archivelocation = $archivelocation;
-        return $new;
-    }
-
-    /**
      * Accessor for patientname
      *
      * @return string|null
@@ -256,20 +204,6 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     public function getPatientname(): ?string
     {
         return $this->_patientname;
-    }
-
-    /**
-     * Returns a new instance of this class with the new value
-     *
-     * @param string $patientname The new patientname
-     *
-     * @return DicomTarDTO
-     */
-    public function withPatientname(string $patientname): DicomTarDTO
-    {
-        $new = clone($this);
-        $new->_patientname = $patientname;
-        return $new;
     }
 
     /**
@@ -318,11 +252,11 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
  */
 class DicomSerieDTO
 {
-    private $_id;
+    private $_seriesid;
 
-    private $_description;
+    private $_seriesdescription;
 
-    private $_number;
+    private $_seriesnumber;
 
     private $_echotime;
 
@@ -360,15 +294,15 @@ class DicomSerieDTO
         ?string $modality,
         ?string $seriesuid
     ) {
-        $this->_id          = $id;
-        $this->_description = $description;
-        $this->_number      = $number;
-        $this->_echotime    = $echotime;
-        $this->_repetitiontime = $repetitiontime;
-        $this->_inversiontime  = $inversiontime;
-        $this->_slicethickness = $slicethickness;
-        $this->_modality       = $modality;
-        $this->_seriesuid      = $seriesuid;
+        $this->_seriesid          = $id;
+        $this->_seriesdescription = $description;
+        $this->_seriesnumber      = $number;
+        $this->_echotime          = $echotime;
+        $this->_repetitiontime    = $repetitiontime;
+        $this->_inversiontime     = $inversiontime;
+        $this->_slicethickness    = $slicethickness;
+        $this->_modality          = $modality;
+        $this->_seriesuid         = $seriesuid;
     }
 
     /**
@@ -376,29 +310,29 @@ class DicomSerieDTO
      *
      * @return ?int
      */
-    public function getId()
+    public function getTarchiveSeriesID()
     {
-        return $this->_id;
+        return $this->_seriesid;
     }
 
     /**
-     * Accessor for description
+     * Accessor for seriesdescription
      *
      * @return ?string
      */
-    public function getDescription()
+    public function getSeriesDescription()
     {
-        return $this->_description;
+        return $this->_seriesdescription;
     }
 
     /**
-     * Accessor for number
+     * Accessor for seriesnumber
      *
      * @return ?int
      */
-    public function getNumber()
+    public function getSeriesNumber()
     {
-        return $this->_number;
+        return $this->_seriesnumber;
     }
 
     /**
@@ -422,7 +356,7 @@ class DicomSerieDTO
     }
 
     /**
-     * Accessor for invertiontime
+     * Accessor for inversiontime
      *
      * @return ?string
      */
@@ -469,7 +403,7 @@ class DicomSerieDTO
     public function toArray(): array
     {
         return array(
-                'id'             => $this->_id,
+                'id'             => $this->_seriesid,
                 'description'    => $this->_description,
                 'number'         => $this->_number,
                 'echotime'       => $this->_echotime,

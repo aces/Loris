@@ -58,7 +58,7 @@ class VisitImagesRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Returns an instance of a ProjectInstrumentsRow object for a given
+     * Returns an instance of a Image object for a given
      * table row.
      *
      * @param array $row The database row from the LORIS Database class.

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This file implements a data provisioner to get all instrument names
+ * This file implements a data provisioner to get all Dicoms
  * of a visit.
  *
  * PHP Version 7
@@ -16,8 +16,8 @@ namespace LORIS\api;
 
 use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
- * This class implements a data provisioner to get all possible rows
- * for the projects/$projectname/instruments endpoint
+ * This class implements a data provisioner to get all Dicoms
+ * from a Visit.
  *
  * PHP Version 7
  *
@@ -30,8 +30,7 @@ use \LORIS\Data\Provisioners\DBRowProvisioner;
 class VisitDicomsRowProvisioner extends DBRowProvisioner
 {
     /**
-     * Create a RowProvisioner, which gets rows for
-     * projects/$projectname/instruments endpoint.
+     * Create a RowProvisioner, which gets rows for a Visit Dicoms
      *
      * @param \Timepoint $timepoint The requested timepoint
      */
@@ -58,7 +57,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Returns an instance of a ProjectInstrumentsRow object for a given
+     * Returns an instance of a DicomTar object for a given
      * table row.
      *
      * @param array $row The database row from the LORIS Database class.

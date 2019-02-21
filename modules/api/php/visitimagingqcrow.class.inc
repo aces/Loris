@@ -30,7 +30,7 @@ class VisitImagingQcRow implements \LORIS\Data\DataInstance
     /**
      * Create a new CandidatesRow
      *
-     * @param array $row An array of candidate's propeties
+     * @param array $row An array of candidate's properties
      */
     public function __construct(array $row)
     {

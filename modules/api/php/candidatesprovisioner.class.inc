@@ -44,7 +44,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                s.Name as SiteName,
                c.EDC as EDC,
                c.DoB as DoB,
-               c.Gender as Sex
+               c.Sex as Sex
              FROM
                candidate c
              JOIN psc s

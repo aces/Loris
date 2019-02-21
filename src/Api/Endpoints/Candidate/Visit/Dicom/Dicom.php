@@ -105,7 +105,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body
+     * Create an array representation of this endpoint's response body
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -114,23 +114,17 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $dicomtars = $this->visit->getDicomTars(
-                $request->getAttribute('user')
-            );
-
-            $tarname = $this->tarname;
-            $dicom   = array_filter(
-                $dicomtars,
-                function ($item) use ($tarname) {
-                    return $item->getTarname() == $tarname;
-                }
-            );
+            try {
+                $dicom = $this->visit->getDicomTarByFilename($this->tarname);
+            } catch (\NotFound $e) {
+                return new \LORIS\Http\Response\NotFound();
+            }
 
             $tarchivepath = \NDB_factory::singleton()
                 ->config()
                 ->getSetting('tarchiveLibraryDir');
 
-            $fullpath = $tarchivepath . array_pop($dicom)->getArchiveLocation();
+            $fullpath = $tarchivepath . $dicom->getArchiveLocation();
             $info     = new \SplFileInfo($fullpath);
             if (!$info->isFile()) {
                 return new \LORIS\Http\Response\NotFound();

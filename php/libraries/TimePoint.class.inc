@@ -939,43 +939,39 @@ class TimePoint
     }
 
     /**
-     * Gets a specific Image of that session whit a given filename
+     * Gets the first Image of that session matching a given filename
      *
-     * @param \User $user The requesting user
+     * @param string $filename The requested filename
      *
      * @throws \NotFound
      * @return \LORIS\ImageDTO
      */
     public function getImageByFilename(string $filename): \LORIS\ImageDTO
     {
-        $db   = \NDB_Factory::singleton()->database();
-        $stmt = $db->prepare(
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
             'SELECT
                FileID
              FROM
                files
              WHERE
                SessionID = :v_sessionid AND
-               File LIKE :v_filename'
-        );
-
-        $rows = $db->execute(
-            $stmt,
+               File LIKE :v_filename',
             array(
              'v_filename'  => '%' . $filename,
              'v_sessionid' => $this->getSessionID(),
             )
         );
 
-        if (empty($rows)) {
+        if (empty($row)) {
             throw new \NotFound($filename . ' not found.');
         }
 
-        return (new \LORIS\Image($rows[0]['FileID']))->asDTO();
+        return (new \LORIS\Image($row['FileID']))->asDTO();
     }
 
     /**
-     * Gets the DicomTar of that session
+     * Gets the DicomTars of that session
      *
      * @param \User $user The requesting user
      *
@@ -989,6 +985,38 @@ class TimePoint
             ->getRows($user);
 
         return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first DicomTar of that session matching a given filename
+     *
+     * @param string $tarname The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\DicomTarDTO
+     */
+    public function getDicomTarByFilename(string $tarname): \LORIS\DicomTarDTO
+    {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            'SELECT
+               TarchiveID as tarchiveid
+             FROM
+               tarchive
+             WHERE
+               tarchive.SessionID = :v_sessionid AND
+               tarchive.ArchiveLocation LIKE :v_basename',
+            array(
+             'v_sessionid' => $this->getSessionID(),
+             'v_basename'  => '%' . $tarname,
+            )
+        );
+
+        if (empty($row)) {
+            throw new \NotFound($tarname . ' not found.');
+        }
+
+        return (new \LORIS\DicomTar($row['tarchiveid']))->asDTO();
     }
 
 }

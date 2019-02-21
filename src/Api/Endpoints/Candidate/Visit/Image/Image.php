@@ -129,7 +129,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body
+     * Create an array representation of this endpoint's response body
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -144,7 +144,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return new \LORIS\Http\Response\NotFound($e->getMessage());
             }
 
-            $image = new \LORIS\Image($imagedto->getFileid());
+            $image    = new \LORIS\Image($imagedto->getFileid());
             $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
                 'application/x.minc2' : 'application/octet-stream';
 

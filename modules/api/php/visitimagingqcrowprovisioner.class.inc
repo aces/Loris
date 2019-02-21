@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This file implements a data provisioner to get all instrument names
+ * This file implements a data provisioner to get all qc data from an image
  * of a visit.
  *
  * PHP Version 7
@@ -17,7 +17,7 @@ namespace LORIS\api;
 use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
  * This class implements a data provisioner to get all possible rows
- * for the projects/$projectname/instruments endpoint
+ * for a visit imaging qc data.
  *
  * PHP Version 7
  *
@@ -30,8 +30,8 @@ use \LORIS\Data\Provisioners\DBRowProvisioner;
 class VisitImagingQcRowProvisioner extends DBRowProvisioner
 {
     /**
-     * Create a RowProvisioner, which gets rows for
-     * projects/$projectname/instruments endpoint.
+     * Create a RowProvisioner, which gets rows for to get all Imaging qc data
+     * for a Visit.
      *
      * @param \Timepoint $timepoint The requested timepoint
      */
@@ -54,7 +54,7 @@ class VisitImagingQcRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Returns an instance of a ProjectInstrumentsRow object for a given
+     * Returns an instance of a VisitImagingQcRow object for a given
      * table row.
      *
      * @param array $row The database row from the LORIS Database class.

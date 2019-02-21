@@ -29,7 +29,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     /**
      * Create a new ProjectImagesRow
      *
-     * @param array $row An array of image propeties
+     * @param array $row An array of image properties
      */
     public function __construct(array $row)
     {

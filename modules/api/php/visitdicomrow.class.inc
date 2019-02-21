@@ -27,7 +27,7 @@ class VisitDicomRow implements \LORIS\Data\DataInstance
     /**
      * Create a new CandidatesRow
      *
-     * @param array $row An array of that tarchive propeties
+     * @param array $row An array of that tarchive properties
      */
     public function __construct(array $row)
     {

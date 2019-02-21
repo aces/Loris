@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * File describe the Image class
+ * File that describe the Image class
  *
  * PHP Version 7
  *
@@ -13,7 +13,7 @@
 namespace LORIS;
 
 /**
- * This class defines a Image to allows one to type hint function's parameters
+ * This class defines an Image to allow one to type hint function's parameters
  *
  *  @category Imaging
  *  @package  Main
@@ -34,10 +34,11 @@ class Image
     private $_acquisitionprotocol;
 
     private $_filetype;
+
     /**
      * Constructor
      *
-     * @param ?int $fileid This File unique id
+     * @param ?int $fileid This Image FileID
      */
     public function __construct(?int $fileid)
     {
@@ -60,7 +61,7 @@ class Image
                     array('v_fileid' => $fileid)
                 );
             if (empty($dbrow)) {
-                throw new \NotFound('There is no file with that id');
+                throw new \NotFound('There is no file with that FileID');
             }
 
             $this->_fileid       = $fileid;
@@ -75,7 +76,7 @@ class Image
     /**
      * Get a specific file header from paramter file
      *
-     * @param string $headername $the parameter name to reteive
+     * @param string $headername The parameter name to retreive
      *
      * @return string The value or an empty string
      */
@@ -106,9 +107,9 @@ class Image
     }
 
     /**
-     * Get all headers from paramter file
+     * Get all headers from the parameter files tablei for that Image.
      *
-     * @return array An associative array of {Name => value}
+     * @return array An associative array of {Name => Value}
      */
     public function getHeaders(): array
     {
@@ -141,7 +142,7 @@ class Image
     }
 
     /**
-     * Creates a imutable object representation of this tarchive
+     * Creates an immutable object representation of this Image
      *
      * @return \LORIS\ImageDTO
      */
@@ -159,8 +160,8 @@ class Image
 }
 
 /**
- * This class defines a ImageDTO which is an immutable representation of a
- * Image object.
+ * This class defines an ImageDTO which is an immutable representation of a
+ * Image object. Its purpose is to provide accessors to an Image properties.
  *
  *  @category Imaging
  *  @package  Main
@@ -210,7 +211,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Accessor for fileid
+     * Accessor for fileid.
      *
      * @return int
      */
@@ -220,10 +221,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * METHODDESCRIPTION
+     * Accessor for filename.
      *
-     * @access public
-     * @return RETURNTYPE RETURNDESCRIPTION
+     * @return string
      */
     public function getFilename()
     {
@@ -231,10 +231,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * METHODDESCRIPTION
+     * Accessor for filelocation.
      *
-     * @access public
-     * @return RETURNTYPE RETURNDESCRIPTION
+     * @return string
      */
     public function getFilelocation()
     {
@@ -242,10 +241,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * METHODDESCRIPTION
+     * Accessor for outputtype.
      *
-     * @access public
-     * @return RETURNTYPE RETURNDESCRIPTION
+     * @return string
      */
     public function getOutputtype()
     {
@@ -253,10 +251,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * METHODDESCRIPTION
+     * Accessor for acquisitionprotocol.
      *
-     * @access public
-     * @return RETURNTYPE RETURNDESCRIPTION
+     * @return string
      */
     public function getAcquisitionprotocol()
     {
@@ -264,10 +261,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * METHODDESCRIPTION
+     * Accessor for filetype.
      *
-     * @access public
-     * @return RETURNTYPE RETURNDESCRIPTION
+     * @return string
      */
     public function getFiletype()
     {

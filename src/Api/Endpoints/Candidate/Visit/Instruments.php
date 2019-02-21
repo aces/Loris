@@ -133,7 +133,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body
+     * Create an array representation of this endpoint's response body
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
