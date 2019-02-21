@@ -41,7 +41,7 @@ class Dicoms
         $this->meta['Visit']  = $timepoint->getVisitLabel();
 
         $this->dicomtars[] = array_map(
-            'Dicoms::_formatDicomTars',
+            'self::_formatDicomTars',
             $dicoms
         );
     }
@@ -59,7 +59,7 @@ class Dicoms
         return array(
                 'Tarname'    => $dicom->getTarname(),
                 'SeriesInfo' => array_map(
-                    'Dicoms::_formatSeries',
+                    'self::_formatSeries',
                     $dicom->getSeries()
                 ),
                );
