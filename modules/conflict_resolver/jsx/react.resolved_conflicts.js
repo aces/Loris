@@ -59,12 +59,13 @@ class ResolvedConflictsPane extends React.Component {
   render() {
     return (
       <TabPane Title='' {...this.props}>
-        <RDynamicDataTable
+        <DynamicDataTable
           DataURL={this.props.url.data.resolved}
           Data={this.state.Data.Data}
           Headers={this.state.Data.Headers}
           Filter={this.state.filter}
           getFormattedCell={this.formatColumn}
+          hiddenHeaders={loris.hiddenHeaders}
         />
       </TabPane>
     );

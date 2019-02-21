@@ -555,6 +555,7 @@ StaticDataTable.propTypes = {
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
   Hide: PropTypes.object,
+  hiddenHeaders: PropTypes.array,
 };
 StaticDataTable.defaultProps = {
   Headers: [],

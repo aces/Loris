@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
+import DynamicDataTable from 'jsx/DynamicDataTable';
 /**
  * This file contains the React classes for conflict resolver
  * module.
@@ -17,6 +18,7 @@ class UnresolvedConflictsPane extends Component {
     this.state = {
       Data: this.props.data,
     };
+    console.log(this.props.data);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
@@ -47,9 +49,18 @@ class UnresolvedConflictsPane extends Component {
         </select>
       </td>;
     }
+
+    // console.log('Headers:');
+    // console.log(this.state.Data.Headers);
+    //
+    // console.log('Data:');
+    // console.log(this.state.Data.Data[0]);
+    //
+    // console.log('Filter:');
+    // console.log(this.state.filter);
+
     return <td>{cell}</td>;
   }
-
   // Render the HTML
   render() {
     return (
@@ -58,12 +69,13 @@ class UnresolvedConflictsPane extends Component {
               action={this.props.url.base + '/conflict_resolver/'}
               name='conflict_resolver' id='conflict_resolver'>
 
-          <RDynamicDataTable
+          <DynamicDataTable
             DataURL={this.props.url.data.unresolved}
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
             getFormattedCell={this.formatColumn}
+            hiddenHeaders={loris.hiddenHeaders}
           />
 
           <div className='pull-right'>
@@ -251,6 +263,8 @@ ConflictResolverApp.defaultProps = {
  * Render conflictResolver on page load
  */
 window.onload = function() {
+  console.log('check:');
+  console.log(loris);
   const conflictResolver = (
     <ConflictResolverApp
       module={'conflictResolver'}
