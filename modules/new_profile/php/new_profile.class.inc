@@ -74,7 +74,7 @@ class New_Profile extends \NDB_Form
             $values['edc1'] ?? null,
             $values['sex'],
             $values['PSCID'] ?? null,
-            intval($values['ProjectID']) ?? null
+            isset($values['ProjectID']) ? intval($values['ProjectID']) : null
         );
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
