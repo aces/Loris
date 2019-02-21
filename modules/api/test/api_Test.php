@@ -30,7 +30,7 @@ class ApiLoginTest extends TestCase
     /**
      * A blankc server request
      *
-     * @var ServerRequest
+     * @var \Psr\Http\Message\ServerRequestInterface
      */
     protected $request;
 
