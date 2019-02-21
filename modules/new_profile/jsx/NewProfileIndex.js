@@ -46,8 +46,9 @@ class NewProfileIndex extends React.Component {
       });
   }
   /**
-   * It will check the date of birth and DEC, the date fileds must match.
-   * If there is a error, it will return true.
+   * It checks the date of birth and Expected Date of Confinement,
+   * the date fields must match.
+   * If there is a mismatch, this function will return true.
    *
    * @return {boolean}
    */
