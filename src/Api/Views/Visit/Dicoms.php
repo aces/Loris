@@ -54,7 +54,7 @@ class Dicoms
      *
      * @return array
      */
-    private function _formatDicomTars(DicomTarDTO $dicom): array
+    private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
         return array(
                 'Tarname'    => $dicom->getTarname(),
@@ -73,7 +73,7 @@ class Dicoms
      *
      * @return array
      */
-    private function _formatSeries(DicomSeriesDTO $series): array
+    private static function _formatSeries(DicomSeriesDTO $series): array
     {
         return array(
                 'SeriesDescription' => $series->getSeriesDescription(),
