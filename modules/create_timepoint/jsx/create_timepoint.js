@@ -66,7 +66,6 @@ class CreateTimepoint extends React.Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    console.log('componentDidMount');
     this.collectParams();
     this.fetchInitializerData();
   }
@@ -99,8 +98,6 @@ class CreateTimepoint extends React.Component {
       async: true,
       data: send,
       success: function(data) {
-        console.log('ajax - success');
-        console.log('data is: ' + JSON.stringify(data));
         // Populate the form errors.
         if (data.errors && data.errors.length > 0) {
           this.setState({errors: data.errors});
@@ -171,7 +168,6 @@ class CreateTimepoint extends React.Component {
   populateErrors(values) {
     let errors = [];
     Object.keys(values).forEach(function(key) {
-      // console.log(key, values[key]);
       errors.push(
         <div className='col-xs-12 col-sm-12 col-md-12'>
           <label className='error form-group'>
@@ -188,7 +184,6 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    console.log('handleSubmit fired.');
     const send = {
       command: 'create',
       candID: this.state.url.params.candID,
@@ -203,8 +198,6 @@ class CreateTimepoint extends React.Component {
       dataType: 'json',
       data: send,
       success: function(data) {
-        console.log('ajax - success');
-        console.log('data is: ' + JSON.stringify(data));
         if (data.status === 'error') {
           // Populate the form errors.
           if (data.errors) {
