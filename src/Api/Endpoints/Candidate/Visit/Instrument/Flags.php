@@ -97,8 +97,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'PUT':
         case 'PATCH':
-            // There was no difference in the implementation of those methods
-            return $this->_handlePUT($request);
+            // TODO :: I don`t think this was working in v0.0.3-dev
+            return new \LORIS\Http\Response\NotImplemented();
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
