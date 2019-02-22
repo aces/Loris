@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\document_repository;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 /**
  * Create the form for document_repository/edit page
  *
