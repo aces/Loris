@@ -87,8 +87,6 @@ class ApiLoginTest extends TestCase
             array('token' => 'jwt_token'),
             json_decode($response->getBody(), true)
         );
-
-        $this->assertTrue(false, 'The test is running');
     }
 }
 

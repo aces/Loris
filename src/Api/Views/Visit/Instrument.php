@@ -11,8 +11,6 @@
 
 namespace LORIS\Api\Views\Visit;
 
-use \LORIS\DicomTarDTO;
-use \LORIS\DicomSeriesDTO;
 /**
  * Creates a representation of a visit intrument following the api response
  * specifications.
