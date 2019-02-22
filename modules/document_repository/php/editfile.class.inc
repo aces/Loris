@@ -1,8 +1,9 @@
 <?php
 /**
- * It includes two functions.Post method handles updating a file.
- * Delete method handles deleting a file 
- * 
+ * It includes two functions.
+ * Post method handles updating a file.
+ * Delete method handles deleting a file.
+ *
  * PHP Version 7
  *
  * @category Main
@@ -16,6 +17,10 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
+ * It includes two functions.
+ * Post method handles updating a file.
+ * Delete method handles deleting a file.
+ *
  * PHP Version 7
  *
  * @category Main
@@ -54,7 +59,7 @@ class EditFile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
-          case "POST":
+        case "POST":
             $this->editDocFile($request);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -65,9 +70,9 @@ class EditFile extends \NDB_Page
                     )
                 );
           break;
-          case "DELETE":
-           $path = $request->getQueryParams();
-           $id = basename($path['lorispath']);
+        case "DELETE":
+            $path = $request->getQueryParams();
+            $id   = basename($path['lorispath']);
             $this->deleteFile($id);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -78,15 +83,17 @@ class EditFile extends \NDB_Page
                     )
                 );
           break;
-          default:
+        default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
                 ->withHeader("Allow", "POST and DELETE");
         }
     }
-/**
+    /**
  * Handles the document editing process
+ *
+ * @param ServerRequestInterface $request The incoming PSR7 request
  *
  * @throws \DatabaseException
  *
@@ -126,6 +133,8 @@ class EditFile extends \NDB_Page
     /**
  * Handles the document deleting process
  *
+ * @param string $rid the file id
+ *
  * @throws \DatabaseException
  *
  * @return void
@@ -133,7 +142,7 @@ class EditFile extends \NDB_Page
     function deleteFile($rid): void
     {
         // create Database object
-        $DB = \Database::singleton();
+        $DB       = \Database::singleton();
         $user     = \User::singleton();
         $Notifier = new \NDB_Notifier(
             "document_repository",

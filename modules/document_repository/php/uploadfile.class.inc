@@ -1,5 +1,7 @@
 <?php
 /**
+ * This class handles upload a file function,
+ * also includs the duplicate file name check.
  * PHP Version 7
  *
  * @category Main
@@ -13,6 +15,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
+ * This class handles upload a file function,
+ * also includs the duplicate file name check.
  * PHP Version 7
  *
  * @category Main
@@ -26,7 +30,7 @@ class UploadFile extends \NDB_Page
     public $skipTemplate = true;
 
     /**
-     * Same as the permissions for the main menu filter page.
+     * Same as the permissions for the page.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -42,7 +46,7 @@ class UploadFile extends \NDB_Page
     }
 
     /**
-     * Handle a form
+     * Handle a form, check the depulicate file name
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -51,7 +55,7 @@ class UploadFile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
-          case "POST":
+        case "POST":
             if ($this->uploadDocFile($request)) {
                 return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -71,10 +75,10 @@ class UploadFile extends \NDB_Page
                     )
                 );
             }
-          break;
-          case "GET":
-           $path = $request->getQueryParams();
-           $id = basename($path['lorispath']);
+            break;
+        case "GET":
+            $path = $request->getQueryParams();
+            $id   = basename($path['lorispath']);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -84,15 +88,17 @@ class UploadFile extends \NDB_Page
                     )
                 );
           break;
-          default:
+        default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
                 ->withHeader("Allow", "GET and POST");
         }
     }
-/**
+    /**
  * Handles the document upload process
+ *
+ * @param ServerRequestInterface $request The incoming PSR7 request
  *
  * @return bool
  */
@@ -129,10 +135,10 @@ class UploadFile extends \NDB_Page
         $version    = $req['version']    !== '' ? $req['version'] : null;
 
         $uploadedFile = $uploadedFiles['file'];
-        $fileSize   = $uploadedFile->getSize();
-        $fileName   = $uploadedFile->getClientFileName();
-        $fileType   = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath = "$base/modules/document_repository/user_uploads/";
+        $fileSize     = $uploadedFile->getSize();
+        $fileName     = $uploadedFile->getClientFileName();
+        $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uploadPath   = "$base/modules/document_repository/user_uploads/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
@@ -148,17 +154,18 @@ class UploadFile extends \NDB_Page
                     "User uploads path in Document Repository is not writable."
                 );
             }
-            if (!mkdir($uploadPath, 0770)){
+            if (!mkdir($uploadPath, 0770)) {
                 throw new \LorisException(
                     "User can't make a directory."
                 );
             }
         }
 
-        if ($uploadedFile->getError() === UPLOAD_ERR_OK &&
-            !$this->existFilename($fileName)) {
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK
+            && !$this->existFilename($fileName)
+        ) {
                 $uploadedFile->moveTo($uploadPath.$fileName);
-             
+
                 $success = $DB->insert(
                     'document_repository',
                     array(
@@ -185,7 +192,7 @@ class UploadFile extends \NDB_Page
     }
 
     /**
- * Returns a list of fields from database
+ * Returns a list of categories fields from database
  *
  * @param String $id id of the Doc file
  *

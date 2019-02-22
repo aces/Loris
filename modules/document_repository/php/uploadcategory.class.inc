@@ -16,6 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * This class handles a post request to upload a new category.
  * PHP Version 7
+ *
  * @category Main
  * @package  Document_Repository
  * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
@@ -61,22 +62,24 @@ class UploadCategory extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
-        } else { 
+        } else {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
-                ->withHeader("Allow", "POST");  
+                ->withHeader("Allow", "POST");
         }
     }
     /**
  * Handles the upload category process
+ *
+ * @param ServerRequestInterface $request The incoming PSR7 request
  *
  * @return void
  */
     function uploadDocCategory($request): void
     {
         $DB            = \Database::singleton();
-        $req          = $request->getParsedBody(); 
+        $req           = $request->getParsedBody();
         $category_name = $req['categoryName']; // required
         $parent_id     = $req['parentId']  !== '' ? $req['parentId'] : null;
         $comment       = $req['comments']    !== '' ? $req['comments'] : null;

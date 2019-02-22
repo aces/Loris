@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_Form_document_repository class
+ * This file loads the Edit file page
  *
  * PHP Version 7
  *
