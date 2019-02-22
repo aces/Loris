@@ -78,8 +78,6 @@ class ApiLoginTest extends TestCase
 
         $response = $handler->handle($request);
 
-        error_log('testLoginSuccess is running');
-
         $this->assertEquals(
             200,
             $response->getStatusCode()
@@ -89,6 +87,8 @@ class ApiLoginTest extends TestCase
             array('token' => 'jwt_token'),
             json_decode($response->getBody(), true)
         );
+
+        $this->assertTrue(false, 'The test is running');
     }
 }
 
