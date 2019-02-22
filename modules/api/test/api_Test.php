@@ -53,15 +53,15 @@ class ApiLoginTest extends TestCase
             ->with('test_username', 'test_password')
             ->willReturn(true);
 
-        $this->_login = $this->getMockBuilder('\LORIS\Api\Endpoints\Login')
+        $handler = $this->getMockBuilder('\LORIS\Api\Endpoints\Login')
             ->setMethods(['getLoginAuthenticator', 'getEncodedToken'])
             ->getMock();
 
-        $this->_login->expects($this->once())
+        $handler->expects($this->once())
             ->method('getLoginAuthenticator')
             ->willReturn($this->_authenticator);
 
-        $this->_login->expects($this->once())
+        $handler->expects($this->once())
             ->method('getEncodedToken')
             ->willReturn('jwt_token');
 
@@ -76,7 +76,7 @@ class ApiLoginTest extends TestCase
                 )
             );
 
-        $response = $this->_login->handle($request);
+        $response = $handler->handle($request);
 
         error_log('testLoginSuccess is running');
 

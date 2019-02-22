@@ -128,13 +128,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         if (!isset($this->cache)) {
-            $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
-                $this->instrument
-            );
-
             $body = (new \LORIS\Api\Views\Visit\Instrument(
                 $this->visit,
-                $instrumentdata
+                $this->instrument
             ))->toArray();
 
             $this->cache = new \LORIS\Http\Response\JsonResponse(
