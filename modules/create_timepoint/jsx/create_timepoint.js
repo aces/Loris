@@ -28,15 +28,12 @@ class CreateTimepoint extends React.Component {
           psc: false,
         },
         options: {
-          subproject: {
-            control: 'control',
-            experiment: 'experiment',
-          },
+          subproject: {},
           visit: {},
           psc: {},
         },
         value: {
-          subproject: 'control',
+          subproject: '',
           visit: '',
           psc: '',
         },
