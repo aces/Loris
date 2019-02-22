@@ -8,7 +8,7 @@ RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
 
 # Login
-RewriteRule ^login[/]?$ /index.php [QSA,END]
+RewriteRule ^login/?$ /index.php [QSA,END]
 
 # Projects API rewrite rules
 RewriteRule ^projects/? /index.php [QSA,END]

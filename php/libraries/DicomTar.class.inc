@@ -114,7 +114,7 @@ class DicomTar
 
         return array_map(
             function ($row) {
-                return new \LORIS\DicomSerieDTO(
+                return new \LORIS\DicomSeriesDTO(
                     intval($row['id']),
                     $row['description'],
                     intval($row['number']),
@@ -156,18 +156,18 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Constructor
      *
-     * @param ?int          $tarchiveid      The TarchiveID
-     * @param ?string       $tarname         The dicom filename
-     * @param ?string       $archivelocation The dicom file location
-     * @param ?string       $patientname     The PatientName
-     * @param DicomSerieDTO ...$series       An array of dicom series
+     * @param ?int           $tarchiveid      The TarchiveID
+     * @param ?string        $tarname         The dicom filename
+     * @param ?string        $archivelocation The dicom file location
+     * @param ?string        $patientname     The PatientName
+     * @param DicomSeriesDTO ...$series       An array of dicom series
      */
     public function __construct(
         ?int $tarchiveid,
         ?string $tarname,
         ?string $archivelocation,
         ?string $patientname,
-        DicomSerieDTO ...$series
+        DicomSeriesDTO ...$series
     ) {
         $this->_tarchiveid      = $tarchiveid;
         $this->_tarname         = $tarname;
@@ -209,7 +209,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Accessor for series
      *
-     * @return DicomSerieDTO[]
+     * @return DicomSeriesDTO[]
      */
     public function getSeries(): array
     {
@@ -250,7 +250,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris/
  */
-class DicomSerieDTO
+class DicomSeriesDTO
 {
     private $_seriesid;
 
