@@ -754,7 +754,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $values,
             array('CommentID' => $this->getCommentID())
         );
-
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
@@ -2554,6 +2553,26 @@ class NDB_BVL_Instrument extends NDB_Page
     function validate($values)
     {
         return $this->determineDataEntryAllowed();
+    }
+
+    /**
+     * Gets the flags of that instrument
+     *
+     * @return \Flags
+     */
+    public function getFlags(): \Flags
+    {
+        $row = \NDB_Factory::singleton()->database()->pselectRow(
+            'SELECT
+               Data_entry as dataentry,
+               Administration as administration,
+               Validity as validity
+             FROM
+               flag
+             WHERE CommentID = :v_commentid',
+            array('v_commentid' => $this->getCommentId())
+        );
+        return new \Flags(...array_values($row));
     }
 
     /**

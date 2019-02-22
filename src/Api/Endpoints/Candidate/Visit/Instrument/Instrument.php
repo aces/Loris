@@ -89,7 +89,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($flags) {
             // Delegate to sub-endpoints
-            $handler = new Flags($this->instrument);
+            $handler = new Flags($this->visit, $this->instrument);
 
             return $handler->process(
                 $request,
@@ -142,6 +142,82 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
+     * Handles a PUT request
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        // TODO :: Check permissions. How??
+
+        if (!$this->instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
+
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!$this->instrument->validate($data)) {
+            return new \LORIS\Http\Response\Forbidden(
+                'Could not update.'
+            );
+        }
+
+        try {
+            $instrumentname = $this->instrument->testName;
+            $this->instrument->clearInstrument();
+            $this->instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
+    /**
+     * Handles a PATCH request.
+     * Same as handlePatch but the instrument is not cleared before save
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        // TODO :: Check permissions. How??
+
+        if (!$this->instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
+
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!$this->instrument->validate($data)) {
+            return new \LORIS\Http\Response\Forbidden(
+                'Could not update.'
+            );
+        }
+
+        try {
+            $instrumentname = $this->instrument->testName;
+            $this->instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
+    /**
      * Implements the ETagCalculator interface
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
@@ -150,7 +226,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        return md5($this->instrument->toJSON());
     }
 }
 
