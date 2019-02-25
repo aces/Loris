@@ -52,7 +52,7 @@ class Biobank extends \NDB_Menu_Filter
         $this->AjaxModule   = true;
     }
 
-    // TODO: Revisit file uploading mechanism. This should likely be done
+    // TODO: Revisit file downloading mechanism. This should likely be done
     // somewhere else using different code. Perhaps John S. can provide some
     // clarity.
     /**
