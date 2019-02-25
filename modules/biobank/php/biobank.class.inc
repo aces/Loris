@@ -90,7 +90,7 @@ class Biobank extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array 
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
