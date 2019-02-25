@@ -53,6 +53,9 @@ abstract class Process implements \JsonSerializable
     {
     }
 
+    // XXX: I'm not sure if ID is necessary in the context of process objects
+    // since they are always incorporated into a specimen object. @Rida, any
+    // thoughts?
     /**
      * Sets the specimen's ID
      *
@@ -166,7 +169,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets the Data array that contains custom attributes and values.
      *
-     * @param array $data of custom attributes and values.
+     * @param ?array $data of custom attributes and values.
      *
      * @return void
      */

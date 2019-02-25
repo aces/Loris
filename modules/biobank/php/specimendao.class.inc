@@ -98,7 +98,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       bs.Quantity, 
                       bs.UnitID,
                       bsf.FreezeThawCycle,
-                      bs.CandidateID,
+                      s.CandidateID,
                       bs.SessionID, 
                       bspr.PoolID,
                       bsc.Quantity as CollectionQuantity,
@@ -123,6 +123,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                FROM biobank_specimen bs
                LEFT JOIN biobank_specimen_freezethaw bsf
                  USING (SpecimenID)
+               LEFT JOIN session s
+                 ON bs.SessionID=s.ID
                LEFT JOIN biobank_specimen_pool_rel bspr
                  USING (SpecimenID)
                LEFT JOIN biobank_specimen_collection bsc
@@ -570,7 +572,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                          'SpecimenTypeID' => $specimen['typeId'],
                          'Quantity'       => $specimen['quantity'],
                          'UnitID'         => $specimen['unitId'],
-                         'CandidateID'    => $specimen['candidateId'],
                          'SessionID'      => $specimen['sessionId'],
                         );
 

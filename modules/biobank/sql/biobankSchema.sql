@@ -182,7 +182,6 @@ CREATE TABLE `biobank_specimen` (
   `SpecimenTypeID` integer unsigned NOT NULL,
   `Quantity` DECIMAL(10, 3) NOT NULL,
   `UnitID` integer unsigned NOT NULL,
-  `CandidateID` int(6) NOT NULL,
   `SessionID` integer unsigned UNSIGNED NOT NULL,
   CONSTRAINT `PK_biobank_specimen` PRIMARY KEY (`SpecimenID`),
   CONSTRAINT `FK_biobank_specimen_ContainerID`
@@ -193,9 +192,6 @@ CREATE TABLE `biobank_specimen` (
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_UnitID` 
     FOREIGN KEY (`UnitID`) REFERENCES `biobank_unit` (`UnitID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_specimen_CandidateID`
-    FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`CandID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_SessionID`
     FOREIGN KEY (`SessionID`) REFERENCES `session`(`ID`)
