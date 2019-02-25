@@ -30,7 +30,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $site           = ".col-xs-12:nth-child(5) .form-control, select";
     static $project        = ".col-xs-12:nth-child(6) .form-control, select";
     static $sex            = "#candidateList_filter > div > div > fieldset >".
-                             " div:nth-child(12) > div > div > select";
+                             " div:nth-child(11) > div > div > select";
     static $entityType     = ".col-xs-12:nth-child(8) .form-control, select";
     static $advancedFilter = ".pull-right > .btn:nth-child(1)";
     static $openProfile    = ".pull-right > .btn:nth-child(2)";
