@@ -222,7 +222,7 @@ class ContainerController
      */
     private function validateBarcode($container) : void
     {
-        if (is_null($barcode)) {
+        if (is_null($container->getBarcode())) {
             throw new \BadRequest('Barcode value must be set');
         }
 
