@@ -62,7 +62,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's ID
      *
-     * @param int $id the container's ID
+     * @param ?int $id the container's ID
      *
      * @return void
      */
