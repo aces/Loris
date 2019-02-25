@@ -240,7 +240,7 @@ class ViewDetails extends \NDB_Form
             return false;
         }
         if (!isset($protocolMin) && !isset($protocolMax)) {
-            return false;
+            return true;
         } elseif (isset($protocolMin) && $protocolMax == null) {
             return $protocolMin <= $seriesRange;
         } elseif (!isset($protocolMax) && $protocolMin == null) {
