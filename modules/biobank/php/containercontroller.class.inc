@@ -71,7 +71,7 @@ class ContainerController
     public function getInstances() : array
     {
         $this->validatePermission('GET');
-        $containers  = [];
+        $containers  = array();
         $containerIt = $this->dao->execute($this->user);
         foreach ($containerIt as $id => $container) {
             $containers[$id] = $container;
