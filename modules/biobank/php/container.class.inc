@@ -294,7 +294,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the container's current coordinate in storage
      *
-     * @return int
+     * @return ?int
      */
     public function getCoordinate() : ?int
     {
