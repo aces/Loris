@@ -171,7 +171,7 @@ class ContainerController
     /**
      * Checks User Permissions for creating or updating Container Objects.
      *
-     * @param string $action User requested action.
+     * @param string $method User requested method.
      *
      * @return void
      */
