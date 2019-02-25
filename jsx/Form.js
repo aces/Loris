@@ -148,10 +148,10 @@ FormElement.defaultProps = {
 class SearchableDropdown extends React.Component {
   constructor() {
     super();
+    this.state = {currentInput: ''};
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.getTextInputValue = this.getTextInputValue.bind(this);
   }
 
   getKeyFromValue(value) {
@@ -163,11 +163,12 @@ class SearchableDropdown extends React.Component {
 
   handleChange(e) {
     let value = this.getKeyFromValue(e.target.value);
-    // if not in strict mode and key value is not defined (i.e., not in options)
+    // if not in strict mode and key value is undefined (i.e., not in options prop)
     // set value equal to e.target.value
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
+    this.setState({currentInput: e.target.value});
     this.props.onUserInput(this.props.name, value);
   }
 
@@ -178,14 +179,19 @@ class SearchableDropdown extends React.Component {
       let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
+        this.setState({currentInput: ''});
         this.props.onUserInput(this.props.name, '');
       }
     }
   }
 
-  getTextInputValue() {
-    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
+  componentDidUpdate(prevProps) {
+    // need to clear out currentInput for when props.value gets wiped
+    // if the previous value prop contained data and the current one doesn't
+    // clear currentInput
+    if (prevProps.value && !this.props.value) {
+      this.setState({currentInput: ''});
+    }
   }
 
   render() {
@@ -217,15 +223,14 @@ class SearchableDropdown extends React.Component {
     }
 
     // determine value to place into text input
-    let value;
+    let value = '';
     // use value in options if valid
-    if (this.props.value !== undefined) {
-      if (Object.keys(options).indexOf(this.props.value) > -1) {
-        value = options[this.props.value];
-        // else, use input text value
-      } else {
-        value = this.getTextInputValue();
-      }
+    if (this.props.value !== undefined &&
+      Object.keys(options).indexOf(this.props.value) > -1) {
+      value = options[this.props.value];
+      // else, use input text value
+    } else if (this.state.currentInput) {
+      value = this.state.currentInput;
     }
 
     return (
