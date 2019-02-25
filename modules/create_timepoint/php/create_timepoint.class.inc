@@ -27,6 +27,8 @@ class Create_Timepoint extends \NDB_Form
 {
 
     public $skipTemplate = true; // stops from looking for a smarty template
+    public $AjaxModule   = true;
+    protected $candidate;
 
     /**
      * Determine whether the user has permission to view this page
@@ -49,6 +51,11 @@ class Create_Timepoint extends \NDB_Form
             )
             )
         );
+    }
+
+    function setup()
+    {
+        parent::setup();
     }
 
     /**

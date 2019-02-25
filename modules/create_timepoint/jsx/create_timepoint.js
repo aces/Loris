@@ -88,46 +88,116 @@ class CreateTimepoint extends React.Component {
       identifier: this.state.url.params.identifier,
       subprojectID: this.state.form.subproject,
     };
-    const url = this.props.DataURL + '/create_timepoint/ajax/timepoint.php';
-    $.ajax({
-      url: url,
-      type: 'POST',
-      async: true,
-      data: send,
-      success: function(data) {
-        // Populate the form errors.
-        if (data.errors && data.errors.length > 0) {
-          this.setState({errors: data.errors});
-        }
-        // Populate the select options for subproject.
-        if (data.subproject) {
-          this.state.form.options.subproject = data.subproject;
-          this.state.form.value.subproject = Object.keys(data.subproject)[0];
-          this.state.form.display.subproject = true;
-          this.setState(this.state);
-        }
-        // Populate the select options for psc.
-        if (data.psc) {
-          this.state.form.options.psc = data.psc;
-          this.state.form.value.psc = Object.keys(data.psc)[0];
-          this.state.form.display.psc = true;
-          this.setState(this.state);
-        }
-        // Populate the select options for visit.
-        if (data.visit) {
-          // Store the (complete) visit selection information.
-          this.state.storage.visit = data.visit;
-          // Handle visit selection.
-          this.handleVisitLabel();
-        }
-        // Display form to user.
-        this.setState({isLoaded: true});
-      }.bind(this),
-      error: function(e, error) {
-        this.populateErrors({message: 'Server error.'});
-        this.setState({isLoaded: true});
-      }.bind(this),
-    });
+    const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
+
+    // (async () => {
+    //   const rawResponse = await fetch(url, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(send),
+    //   });
+    //   const content = await rawResponse.json();
+    //
+    //   console.log(content);
+    // })();
+
+
+    const URLSearchParams = Object.keys(send).map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(send[key]);
+    }).join('&');
+
+    console.log('url is ' + url);
+    fetch(
+      url, {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: URLSearchParams,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          console.log(data);
+          // Populate the form errors.
+          if (data.errors && data.errors.length > 0) {
+            this.setState({errors: data.errors});
+          }
+          // Populate the select options for subproject.
+          if (data.subproject) {
+            this.state.form.options.subproject = data.subproject;
+            this.state.form.value.subproject = Object.keys(data.subproject)[0];
+            this.state.form.display.subproject = true;
+            this.setState(this.state);
+          }
+          // Populate the select options for psc.
+          if (data.psc) {
+            this.state.form.options.psc = data.psc;
+            this.state.form.value.psc = Object.keys(data.psc)[0];
+            this.state.form.display.psc = true;
+            this.setState(this.state);
+          }
+          // Populate the select options for visit.
+          if (data.visit) {
+            // Store the (complete) visit selection information.
+            this.state.storage.visit = data.visit;
+            // Handle visit selection.
+            this.handleVisitLabel();
+          }
+          // Display form to user.
+          this.setState({isLoaded: true});
+        }).catch((error) => {
+          console.log('error:');
+          console.log(error);
+          this.populateErrors({message: 'Server error.'});
+          this.setState({isLoaded: true});
+        });
+    // $.ajax({
+    //   url: url,
+    //   type: 'POST',
+    //   async: true,
+    //   data: send,
+    //   success: function(data) {
+    //     // Populate the form errors.
+    //     if (data.errors && data.errors.length > 0) {
+    //       this.setState({errors: data.errors});
+    //     }
+    //     // Populate the select options for subproject.
+    //     if (data.subproject) {
+    //       this.state.form.options.subproject = data.subproject;
+    //       this.state.form.value.subproject = Object.keys(data.subproject)[0];
+    //       this.state.form.display.subproject = true;
+    //       this.setState(this.state);
+    //     }
+    //     // Populate the select options for psc.
+    //     if (data.psc) {
+    //       this.state.form.options.psc = data.psc;
+    //       this.state.form.value.psc = Object.keys(data.psc)[0];
+    //       this.state.form.display.psc = true;
+    //       this.setState(this.state);
+    //     }
+    //     // Populate the select options for visit.
+    //     if (data.visit) {
+    //       // Store the (complete) visit selection information.
+    //       this.state.storage.visit = data.visit;
+    //       // Handle visit selection.
+    //       this.handleVisitLabel();
+    //     }
+    //     // Display form to user.
+    //     this.setState({isLoaded: true});
+    //   }.bind(this),
+    //   error: function(e, error) {
+    //     this.populateErrors({message: 'Server error.'});
+    //     this.setState({isLoaded: true});
+    //   }.bind(this),
+    // });
   }
   /**
    * Visit Labels refreshes when Subproject changes.
@@ -189,11 +259,13 @@ class CreateTimepoint extends React.Component {
       psc: this.state.form.value.psc,
       visit: this.state.form.value.visit,
     };
-    const url = this.props.DataURL + '/create_timepoint/ajax/timepoint.php';
-    $.ajax(url, {
+    const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
+    $.ajax({
+      url: url,
       method: 'POST',
-      dataType: 'json',
+      async: true,
       data: send,
+      credentials: 'same-origin',
       success: function(data) {
         if (data.status === 'error') {
           // Populate the form errors.
