@@ -282,7 +282,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's current coordinate in storage
      *
-     * @param int $coordinate the container's current coordinate
+     * @param ?int $coordinate the container's current coordinate
      *
      * @return void
      */
