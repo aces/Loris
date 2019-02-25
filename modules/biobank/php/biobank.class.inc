@@ -63,7 +63,7 @@ class Biobank extends \NDB_Menu_Filter
      *
      * @return ResponseInterface the outgoing PSR7 response.
      */
-    function downloadFile($file, $user) : ResponseInterface
+    function downloadFile(\SplFileObject $file) : ResponseInterface
     {
         if (!$user->hasPermission('biobank_specimen_view')) {
             throw new \Forbidden('Permission to download file is denied');
