@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use LORIS\StudyEntities\Candidate\CandID;
 /**
  * Unit test for Candidate class
  *
@@ -30,7 +31,7 @@ class CandidateTest extends TestCase
     private $_candidateInfo
         = array(
            'RegistrationCenterID'     => '2',
-           'CandID'       => '969664',
+           'CandID'       => new CandID('969664'),
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
@@ -149,7 +150,6 @@ class CandidateTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
 
         $this->_candidate = new Candidate();
-        
     }
 
     /**
@@ -176,7 +176,8 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
         //validate _candidate Info
         $this->assertEquals($this->_candidateInfo, $this->_candidate->getData());
 
@@ -189,24 +190,6 @@ class CandidateTest extends TestCase
             $expectedTimepoints,
             $this->_candidate->getListOfTimePoints()
         );
-    }
-
-    /**
-     * Test select() method fails when invalid _candidate ID is passed
-     *
-     * @return void
-     * @covers Candidate::select
-     * @throws LorisException
-     */
-    public function testsSelectFailsWhenInvalidCandidateIdPassed()
-    {
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn(null);
-        
-        $this->expectException('LorisException');
-        $this->_candidate->select(88888);
-
     }
 
     /**
@@ -421,6 +404,10 @@ class CandidateTest extends TestCase
         $this->assertEquals(
             $this->_candidateInfo['Sex'],
             $this->_candidate->getCandidateSex()
+        $this->assertTrue(
+            $this->_candidate->setData(
+                array('RegisteredBy' => 'TestUser')
+            )
         );
     }
 
@@ -540,6 +527,8 @@ class CandidateTest extends TestCase
                 $subprojects
             );
 
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
         $expectedSubprojects = array(
                                    1 => 1,
                                    2 => 2
@@ -554,7 +543,7 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getValidSubprojects returns array() when there are no subprojects 
+     * Test getValidSubprojects returns array() when there are no subprojects
      * in DB.
      *
      * @covers Candidate::getValidSubprojects
@@ -571,7 +560,7 @@ class CandidateTest extends TestCase
                 $subprojects
             );
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals($this->_candidate->getValidSubprojects(), array());
     }
@@ -591,7 +580,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('V01');
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals('V01', $this->_candidate->getFirstVisit());
     }
 
@@ -660,7 +649,7 @@ class CandidateTest extends TestCase
     public function testGetSessionIDForExistingVisit()
     {
         $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(97, $this->_candidate->getSessionID(1));
         $this->assertEquals(98, $this->_candidate->getSessionID(2));
@@ -675,7 +664,7 @@ class CandidateTest extends TestCase
     public function testGetSessionIDReturnsNullForNoneExistingVisit()
     {
         $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertNull($this->_candidate->getSessionID(0));
     }
@@ -693,7 +682,12 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn(array('CandID' => 969664));
 
-        $this->assertTrue(Candidate::candidateExists(969664, 'AAA0011'));
+        $this->assertTrue(
+            Candidate::candidateExists(
+                $this->_candidateInfo['CandID'],
+                'AAA0011'
+            )
+        );
     }
 
     /**
@@ -709,7 +703,12 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn(null);
 
-        $this->assertFalse(Candidate::candidateExists(123, 'Test'));
+        $this->assertFalse(
+            Candidate::candidateExists(
+                new CandID(123123),
+                'Test'
+            )
+        );
     }
 
     /**

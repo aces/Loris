@@ -76,7 +76,7 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $CandArray = array('Candidate' => $candID);
+        $CandArray = array('Candidate' => (string) $candID);
 
         // make a local reference to the Database object
         $db = $factory->database();
@@ -297,13 +297,13 @@ class Candidate
      * Used to check that PSCID matches CandID when entered into the boxes
      * on the candidate_list form
      *
-     * @param int    $candID 6 digit Loris CandID
+     * @param CandID $candID 6 digit Loris CandID
      * @param string $PSCID  project study center ID
      *
      * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
      * @throws DatabaseException
      */
-    static function candidateExists(int $candID, string $PSCID): bool
+    static function candidateExists(CandID $candID, string $PSCID): bool
     {
         // make a local reference to the Database object
         $factory = NDB_Factory::singleton();
