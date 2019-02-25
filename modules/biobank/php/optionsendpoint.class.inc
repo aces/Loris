@@ -106,7 +106,7 @@ class OptionsEndpoint implements RequestHandlerInterface
      *                                                                           
      * @return array All options required by the Biobank Module                 
      */                                                                         
-    function getOptions($db, $user)                                             
+    function getOptions(\Database $db, \User $user)                                             
     {                                                                           
         $contCont = new ContainerController($db, $user);                        
         $specCont = new SpecimenController($db, $user);                         
