@@ -335,7 +335,7 @@ function insertVOIs(int $pubID) : void
     $voiFields = json_decode($_POST['voiFields']);
     foreach ($voiFields as $vf) {
         // search test_names for value
-        if (in_array($vf, $testNames)) {
+        if (in_array($vf, $testNames, true)) {
             $pubTNRelInsert = array(
                                'TestNameID'    => array_search($vf, $testNames),
                                'PublicationID' => $pubID,
