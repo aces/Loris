@@ -2,9 +2,14 @@
 /**
  * This script is the part of the second step for normalizing the mri_protocol table
  * and mri_protocol_checks table.
- * It populates the new min & max columns for each field that can contain ranges and
- * returns SQL statements to remove the old %_range columns if the option "tosql" is set.
- * This script must be run AFTER running this patch:
+ * It populates the new min & max columns for each field that can contain ranges. 
+ *   - If the script is run with the option "tosql", the SQL statements to remove the
+ *     old "%_range" columns will be written in file
+ *     $LORIS/project/tables_sql/DELETE_mri_protocol_range_columns.sql
+ *   - If the script is run without the option "tosql", the SQL statements to
+ *     remove the old "%_range" columns will be printed in the terminal.
+ *
+ * NOTE: this script must be run AFTER running this patch:
  * /var/www/loris/SQL/New_patches/2018-02-27_normalize_mri_protocol_sql.
  *
  * "Usage: php normalize_mri_protocol_range_data.php [tosql]";
@@ -18,7 +23,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris
  */
-require_once 'generic_includes.php';
+require_once __DIR__ . '/../generic_includes.php';
 require_once 'Database.class.inc';
 require_once 'Utility.class.inc';
 
@@ -98,12 +103,14 @@ $tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
 foreach ($tables_to_normalize as $table) {
     split_ranges($table, $printToSQL, $output);
 }
-$filename = __DIR__ . "/../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
-echo("Please run the SQL patch found in: " . $filename . "\n"); 
+$filename = __DIR__ . "/../../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
+if ($printToSQL) {
+    echo("Please run the SQL patch found in: " . $filename . "\n");
+}
 
 function _exportSQL ($output) {
     //export file
-    $filename = __DIR__ . "/../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
+    $filename = __DIR__ . "/../../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
     $fp       = fopen($filename, "a");
     fwrite($fp, $output);
     fclose($fp);
