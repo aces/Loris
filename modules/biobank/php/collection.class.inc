@@ -2,7 +2,7 @@
 /**
  * Specimen Object Class
  * This class contains an instance of a database handling that is needed to
- * permanently store and retrieve Specimen Object instances.
+ * permanently store and retrieve Collection Object instances.
  *
  * PHP Version 7.2
  *
