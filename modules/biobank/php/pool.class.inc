@@ -182,7 +182,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return int
      */
-    public function getCenterID() : int
+    public function getCenterId() : int
     {
         return $this->centerId;
     }

@@ -52,14 +52,11 @@ class Biobank extends \NDB_Menu_Filter
         $this->AjaxModule   = true;
     }
 
-    // TODO: Revisit file downloading mechanism. This should likely be done
-    // somewhere else using different code. Perhaps John S. can provide some
-    // clarity.
+    // TODO: Move this to another class.
     /**
      * Allows files to be downloaded
      *
-     * @param file $file File to be downloaded
-     * @param user $user User to be checked for permission
+     * @param \SplFileObject $file File to be downloaded
      *
      * @return ResponseInterface the outgoing PSR7 response.
      */

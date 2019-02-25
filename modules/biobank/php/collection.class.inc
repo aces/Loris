@@ -43,7 +43,8 @@ class Collection extends Process
     private $unitId;   //int
 
     /**
-     * Sets the current amount of specimen available
+     * Sets the current quantity of specimen available. This associated unit
+     * can be found in the `biobank_unit` using the unit ID.
      *
      * @param float $quantity the current amount of specimen available
      *
