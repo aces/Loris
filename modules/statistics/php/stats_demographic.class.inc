@@ -47,7 +47,7 @@ class Stats_Demographic extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $centers  the value of Centers
+     * @param array  $centers  the value of Centers
      *
      * @return bool
      */
@@ -70,8 +70,8 @@ class Stats_Demographic extends \NDB_Form
      * @param string $dropdownName     the value of dropdownName
      * @param string $dropdownOpt      the value of dropdownOpt
      * @param string $dropdownSelected the value of dropdownSelected
-     * @param string $centers          the value of centers
-     * @param string $data             the value of data
+     * @param array  $centers          the value of centers
+     * @param array  $data             the value of data
      * @param string $subsection       the value of subsection=''
      * @param string $disclamer        the value of disclamer=''
      * @param string $projectID        the value of projectID is null

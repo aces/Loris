@@ -17,35 +17,73 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'generic_includes.php';
-
-$config   = NDB_Config::singleton();
-$database = $config->getSetting('database');
+require_once __DIR__ . '/../generic_includes.php';
 
 $instruments = Utility::getAllInstruments();
 
-$confirm =false;
-if (!empty($argv[1]) && $argv[1] == 'confirm') {
+if (empty($argv[1])
+    || (!empty($argv[1])
+    && ($argv[1] === 'help' || ($argv[1] !== 'check' && $argv[1] !== 'confirm')))
+    || in_array('-h', $argv, true)
+    || !empty($argv[2])
+) {
+    showHelp();
+}
+
+$confirm = false;
+if ($argv[1] == 'confirm') {
     $confirm = true;
 }
 
-$incorrectAges = array();
-$nullAges      = array();
+$incorrectAges  = array();
+$nullAges       = array();
+$verifiedTables = array();
 
 foreach ($instruments as $inst=>$fullName) {
 
-    if (!$DB->tableExists($inst)) {
-        echo $inst." does not have a table in the Database\n";
+    //Check what database table is associated with this instrument
+    echo "Instrument: $inst ($fullName)\n";
+    try {
+        $instrument = NDB_BVL_Instrument::factory($inst, "", "");
+    } catch (Exception $e) {
+        echo "\t$inst does not seem to be a valid instrument.\n";
+        continue;
+    }
+
+    $table = $instrument->table;
+
+    if (in_array($table, $verifiedTables, true)) {
+        echo "\tTable $table has already been verified. skipping.\n";
+        continue;
+    } else {
+        //Add table name to repertoire to make sure it is not checked again
+        //in case 2+ instruments use the same table
+        $verifiedTables[] = $table;
+    }
+
+    if (!$DB->tableExists($table)) {
+        echo "\tTable $table for instrument $inst does not exist in the Database\n";
         continue;
     } else if (strpos('_proband', $inst) !== false) {
-        echo $inst." is a Proband instrument and should be handled seperately.\n";
+        echo "\t$inst is a Proband instrument and should be handled seperately.\n";
+        continue;
+    }
+
+    // Skip if Date taken does not exist
+    if (!$DB->columnExists($inst, 'Date_taken')) {
+        echo "\t$inst does not use a `Date_taken` field and should be handled separately.\n";
+        continue;
+    }
+    // Skip if Date taken does not exist
+    if (!$DB->columnExists($inst, 'Candidate_Age')) {
+        echo "\t$inst does not use a `Candidate_Age` field and should be handled separately.\n";
         continue;
     }
 
     //Get instrument SQL table
     $DBInstTable = $DB->pselect(
-        "SELECT * 
-         FROM $inst i 
+        "SELECT i.CommentID, Date_taken, Candidate_Age
+         FROM $table i 
             LEFT JOIN flag f ON (i.commentID=f.CommentID)
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
@@ -53,26 +91,21 @@ foreach ($instruments as $inst=>$fullName) {
         array()
     );
 
-    // Break if Date taken does not exist
-    if (!$DB->columnExists($inst, 'Date_taken')) {
-        echo $inst." does not use a `Date_taken` field and should be handled seperately.\n";
-        continue;
-    }
-
     foreach ($DBInstTable as $k => $row) {
-        // Get Instrument Instance
+        // Get Instrument Instance with commentID
         try {
             $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], '', false);
-        } catch (LorisException $e) {
-            echo "$inst instrument row with CommentID: ".$row['CommentID']." was ".
+        } catch (Exception $e) {
+            echo "\t$inst instrument row with CommentID: ".$row['CommentID']." was ".
                 " Ignored for one of the following reasons:\n".
                 "  - The candidate is inactive.\n".
                 "  - The session is inactive.\n\n";
             continue;
         }
+
         if (!$instrument) {
             // instrument does not exist
-            echo $inst." for CommentID:$row[CommentID] could not be instantiated.\n";
+            echo "\t$inst for CommentID:$row[CommentID] could not be instantiated.\n";
             continue;
         }
 
@@ -106,9 +139,7 @@ foreach ($instruments as $inst=>$fullName) {
 
             //Fix the saved values if confirm and trouble flags enabled
             if ($trouble && $confirm) {
-                //                $date = explode('-', $row['Date_taken']);
-                //                $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
-                echo "Fixing age in instrument: ".$inst." for CommentID: ".$commentID."\n";
+                echo "\tFixing age for CommentID: ".$commentID."\n";
                 $instrument->_saveValues(array('Date_taken' => $dateTaken));
             }
         }
@@ -132,4 +163,23 @@ if (!empty($incorrectAges)) {
 
 if (!$confirm) {
     echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
+}
+
+/*
+ * Prints the usage and example help text and stop program
+ */
+function showHelp()
+{
+    echo "*** Fix Candidate Age ***\n\n";
+
+    echo "Usage: php fix_candidate_age.php [confirm | check | help | -h]\n";
+    echo "Example: php fix_candidate_age.php help\n";
+    echo "Example: php fix_candidate_age.php check\n";
+    echo "Example: php fix_candidate_age.php confirm\n\n";
+
+    echo "When the 'check' option is used, the script only detects and reports 
+    miscalculated and NULL ages. 
+    Using the 'confirm' option will apply the necessary corrections to the data.\n\n";
+
+    die();
 }

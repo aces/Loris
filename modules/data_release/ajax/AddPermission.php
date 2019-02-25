@@ -26,7 +26,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
         $userid          = $_POST['userid'];
         $data_release_id = $_POST['data_release_id'];
-        $success         = $DB->insertIgnore(
+        $DB->insertIgnore(
             'data_release_permissions',
             array(
              'userid'          => $userid,
@@ -49,8 +49,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
             array('drv' => $data_release_version)
         );
         foreach ($IDs as $ID) {
-
-            $success = $DB->insertIgnore(
+            $DB->insertIgnore(
                 'data_release_permissions',
                 array(
                  'userid'          => $userid,

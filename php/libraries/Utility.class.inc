@@ -948,11 +948,11 @@ class Utility
      *
      * @param string $val The formatted string
      *
-     * @return int|string The formatted string represented as bytes
+     * @return int The string's value converted to a number of bytes.
      *
      * @note taken from http://php.net/manual/en/function.ini-get.php
      */
-    static function returnBytes(string $val)
+    static function returnBytes(string $val) : int
     {
         $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);

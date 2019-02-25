@@ -49,8 +49,8 @@ return 0;
 /**
  * Create chart labels (dates)
  *
- * @param date $startDate start date of recruitment
- * @param date $endDate   end date of recruitment
+ * @param string $startDate start date of recruitment
+ * @param string $endDate   end date of recruitment
  *
  * @return array
  */
