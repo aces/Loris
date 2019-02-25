@@ -74,7 +74,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the container's ID
      *
-     * @return int
+     * @return ?int
      */
     public function getId() : ?int
     {
