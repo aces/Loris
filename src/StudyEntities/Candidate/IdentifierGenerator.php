@@ -1,9 +1,37 @@
 <?php declare(strict_types=1);
+/**
+ * This file contains a class to act as a generic way to generate the various
+ * LORIS identifiers used in the codebase (CandID, PSCID, ExternalID). It
+ * handles the creation and validation of new IDs using various generation
+ * methods.
+ *
+ * PHP Version 7
+ *
+ * @category StudyEntities
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\StudyEntities\Candidate;
+/**
+ * This class serves as a generic parent for identifier generators.
+ *
+ * PHP Version 7
+ *
+ * @category StudyEntities
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 abstract class IdentifierGenerator
 {
+    private const RANGE_FULL = 
+                'Cannot create new identifier because all valid identifiers ' .
+                'are in use!'
     protected $generationMethod;
     protected $alphabet = array();
     protected $length;
@@ -18,6 +46,7 @@ abstract class IdentifierGenerator
     */
     protected function createNewID(): string
     {
+        // Check that it is possible to create a new ID.
         $this->checkIDRangeFull();
 
         $id = '';
@@ -44,6 +73,17 @@ abstract class IdentifierGenerator
         return $this->prefix . $id;
     }
 
+    /**
+     * Creates a new ID representing the next ID in a given sequence as defined
+     * by configuration settings. By default this function will increment the 
+     * value of the largest existing ID in the database. If $id is passed,
+     * the new ID will be an incremented value of that parameter.
+     *
+     * @param string $id An existing ID. This function will increment based on
+     *                                      this value if present.
+     *
+     * @return string The new ID.
+     */
     protected function generateSequentialID(string $id = ''): string
     {
         // If this is the first ID ever created, return the minimum value.
@@ -53,22 +93,27 @@ abstract class IdentifierGenerator
         // Create the new ID by incrementing the value of the $id parameter OR
         // by incrementing the highest existing ID.
         $newID = !empty($id) ? $id : max($this->getExistingIDs());
+
         // Increment newID until we find an unused value within the boundaries
         // of $min and $max.
         do {
+            $newID++;
+
+            // Check that it is possible to create a new ID.
+            $this->checkIDRangeFull();
+
+            // If the $newID generated is greater than or equal to the max
+            // value, then all possible IDs have been exhausted (since IDs
+            // cannot be re-used without causing ambiguity in the data).
+            if (strcmp(strval($newID), strval($this->maxValue)) >= 0) {
+                throw new \LorisException(self::RANGE_FULL);
+            }
+
             // Make sure $newID is greater than or equal to minimum and less
             // than or equal to maximum.
-            if (strcmp(strval($newID++), strval($this->minValue)) < 0) {
+            if (strcmp(strval($newID), strval($this->minValue)) < 0) {
                 // If newID is less than the minimum, increment again.
                 continue;
-            }
-            if (strcmp(strval($newID), strval($this->maxValue)) > 0) {
-                // If newID has exceeded the maximum, wrap back around to the
-                // minimum possible value. We know that there is a free ID
-                // available somewhere in the range of possible IDs or else
-                // _generateID above will have thrown an exception. This allows
-                // us to increment $newID until we find a free space.
-                $newID = $this->minValue;
             }
         } while (
             in_array(
@@ -89,6 +134,9 @@ abstract class IdentifierGenerator
      */
     protected function generateRandomID(): string
     {
+        // Check that it is possible to create a new ID.
+        $this->checkIDRangeFull();
+
         $id = '';
         while (strlen($id) < $this->length) {
             $id .= $this->alphabet[random_int(0, count($this->alphabet) - 1)];
@@ -97,14 +145,9 @@ abstract class IdentifierGenerator
     }
 
     /**
-     * Queries the database for PSCIDs starting with a prefix. This is used to
-     * get all existing IDs for a given site. The prefix will be stripped from
-     * the IDs as the calling code will be interested in and aware of the Site
-     * corresponding to the prefix. Returning the bare IDs allows for easier
-     * processing.
+     * Queries the database for existing IDs.
      *
-     * @return string[] The IDs retrieved from the database with the prefix
-     *                      stripped. E.g. MON1234 becomes 1234.
+     * @return string[] The IDs retrieved from the database.
      */
     abstract protected function getExistingIDs(): array;
 
@@ -127,18 +170,19 @@ abstract class IdentifierGenerator
     }
 
     /**
+     * Check that the number of existing IDs does not exceed the range of
+     * possible values (given by the size of the alphabet to the power of
+     * number of characters in the ID).
+     *
      * @throws \LorisException
      */
-    protected function checkIDRangeFull() {
+    protected function checkIDRangeFull(): void {
         // Check that the number of existing IDs does not exceed the range of
         // possible values (given by the size of the alphabet to the power of
         // number of characters in the ID).
         $sizeOfIDSpace = count($this->alphabet) ** $this->length;
         if (count($this->getExistingIDs()) >= $sizeOfIDSpace) {
-            throw new \LorisException(
-                'Cannot create new identifier because all valid identifiers ' .
-                'are in use!'
-            );
+            throw new \LorisException(self::RANGE_FULL);
         }
     }
 }

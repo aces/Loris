@@ -78,8 +78,16 @@ class SiteIDGenerator extends IdentifierGenerator
     /**
      * {@inheritDoc}
      *
+     * Get all existing IDs for a given site. The prefix will be stripped from
+     * the IDs as the calling code will be interested in and aware of the Site
+     * corresponding to the prefix. Returning the bare IDs allows for easier
+     * processing.
+     *
      * The parameters $kind and $prefix should never be user-controllable as
      * this creates a SQL injection risk.
+     *
+     * @return string[] The IDs retrieved from the database with the prefix
+     *                      stripped. E.g. MON1234 becomes 1234.
      */
     protected function getExistingIDs(): array
     {
@@ -143,9 +151,9 @@ class SiteIDGenerator extends IdentifierGenerator
             case 'alpha':
                 return range('A', 'Z');
             case 'numeric':
-                return range(0, 9);
+                return range('0', '9');
             case 'alphanumeric':
-                return array_merge(range(0, 9), range('A', 'Z'));
+                return array_merge(range('0', '9'), range('A', 'Z'));
             }
         }
 
