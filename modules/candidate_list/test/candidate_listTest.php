@@ -28,10 +28,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
     static $visitLabel     = ".col-xs-12:nth-child(4) .form-control";
     static $site           = ".col-xs-12:nth-child(5) .form-control, select";
-    static $project        = ".col-xs-12:nth-child(6) .form-control, select";
+    static $entityType     = ".col-xs-12:nth-child(7) .form-control, select";
     static $sex            = "#candidateList_filter > div > div > fieldset >".
                              " div:nth-child(11) > div > div > select";
-    static $entityType     = ".col-xs-12:nth-child(8) .form-control, select";
+    static $project        = ".col-xs-12:nth-child(15) .form-control, select";
     static $advancedFilter = ".pull-right > .btn:nth-child(1)";
     static $openProfile    = ".pull-right > .btn:nth-child(2)";
     static $clearFilter    =".col-sm-9 > .btn";
