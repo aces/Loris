@@ -344,7 +344,7 @@ function insertVOIs(int $pubID) : void
                 'publication_test_names_rel',
                 $pubTNRelInsert
             );
-        } elseif (in_array($vf, $paramTypes)) {
+        } elseif (in_array($vf, $paramTypes, true)) {
             $ptID = array_search($vf, $paramTypes, true);
             $pubParamTypeRelInsert = array(
                                       'ParameterTypeID' => $ptID,
