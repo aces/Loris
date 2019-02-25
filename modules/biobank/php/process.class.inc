@@ -56,7 +56,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets the specimen's ID
      *
-     * @param string $id the specimen's ID
+     * @param ?int $id the specimen's ID
      *
      * @return void
      */
@@ -68,7 +68,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the specimen's ID
      *
-     * @return string
+     * @return ?int
      */
     public function getId() : ?int
     {
@@ -78,7 +78,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets the ID of the specimen's center at time of processing.
      *
-     * @param string $centerId the ID of the processing center
+     * @param int $centerId the ID of the processing center
      *
      * @return void
      */
@@ -90,7 +90,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the ID of the specimen's processing center
      *
-     * @return string
+     * @return int
      */
     public function getCenterId() : int
     {
@@ -144,7 +144,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets processing comments
      *
-     * @param string $comments comments relating to processing
+     * @param ?string $comments comments relating to processing
      *
      * @return void
      */
@@ -156,7 +156,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the processing comments
      *
-     * @return string
+     * @return ?string
      */
     public function getComments() : ?string
     {
@@ -178,7 +178,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the Data array that contains custom attributes and values.
      *
-     * @return string
+     * @return ?array
      */
     public function getData() : ?array
     {

@@ -178,7 +178,7 @@ class PoolController
         $specimenIds = $pool->getSpecimenIds();
         if (count($specimenIds) < 2) {
             throw new \BadRequest(
-                'Atleast 2 specimens must be provided to create 
+                'At least 2 specimens must be provided to create 
                                 a Pool'
             );
         }

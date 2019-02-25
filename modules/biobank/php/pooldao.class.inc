@@ -218,10 +218,10 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
-     * This method takes a Pool Object and prepares the data to be inserted into
-     * the database by converting it to a data array.
+     * This function takes a Pool array and prepares the data to be inserted
+     * into the database by converting it to a data array.
      *
-     * @param Pool $pool Pool Object to be converted
+     * @param array $pool Pool array to be converted
      *
      * @return array $data Array containing the data to be inserted
      */
@@ -253,7 +253,9 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      * This function takes an array that resulted from an SQL query and
      * indexes it in a format that can be used by the rest of the code.
      *
-     * @param array $data Values to be reassigned.
+     * @param array $data        Values to be reassigned.
+     * @param array $specimenIds List of specimen IDs associated with the given
+     *                           Pool.
      *
      * @return array
      */
@@ -301,7 +303,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      *
      * @return array Pool Array.
      */
-    public function getArrayFromInstance(Pool $pool) {
+    public function getArrayFromInstance(Pool $pool) : array
+    {
         return $pool->jsonSerialize();
     }
 }

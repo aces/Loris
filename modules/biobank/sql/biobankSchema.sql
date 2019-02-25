@@ -121,8 +121,8 @@ CREATE TABLE `biobank_container` (
   `ContainerStatusID` integer unsigned NOT NULL,
   `OriginCenterID` integer unsigned NOT NULL,
   `CurrentCenterID` integer unsigned NOT NULL,
-  `DateTimeCreate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `DateTimeUpdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DateTimeCreate` DATETIME NOT NULL DEFAULT NOW(),
+  `DateTimeUpdate` DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),
   CONSTRAINT `PK_biobank_container` PRIMARY KEY (`ContainerID`),
   CONSTRAINT `FK_biobank_container_ContainerTypeID`
     FOREIGN KEY (`ContainerTypeID`) REFERENCES `biobank_container_type`(`ContainerTypeID`)  

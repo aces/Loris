@@ -30,9 +30,9 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
 {
 
     /**
-     * Global variable $primary that determines whether to filter primary or 
-     * non primary containers. If the value is '1', primary containers will be
-     * filtered. If the value '0', non primary containers will be filtered.
+     * $primary determines whether to filter primary or non primary containers.
+     * If the value is '1', primary containers will be filtered. If the value
+     * '0', non primary containers will be filtered.
      */
     private $primary;
 
@@ -53,9 +53,6 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
         $db           = \Database::singleton();
         $containerDAO = new ContainerDAO($db);
         $containerTypes = $containerDAO->getContainerTypes();
-        if ($containerTypes[$container->getTypeId()]['primary'] === $this->primary) {
-            return false;
-        }
-        return true;
+        return $containerTypes[$container->getTypeId()]['primary'] === $this->primary;
     }
 }

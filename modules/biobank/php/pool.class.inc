@@ -70,7 +70,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the pool's ID
      *
-     * @return int
+     * @return ?int
      */
     public function getId() : ?int
     {
