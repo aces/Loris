@@ -63,13 +63,13 @@ function readAnswer($possibleAnswers, $defaultAnswer) : string
  * failure (a 0 exit code in bash is a success. Anything else is considered an
  * error here.
  *
- * @param string $cmd An executable bash command
+ * @param string $cmd An executable shell command
  *
- * @return bool True if bash command exits normally. False otherwise.
+ * @return bool True if command exits normally. False otherwise.
  */
 function doExec($cmd) : bool
 {
-    echo "[+] Executing bash command `$cmd`... " . PHP_EOL;
+    echo "[+] Executing command `$cmd`... " . PHP_EOL;
     exec($cmd, $output, $status);
     if ($status !== 0) {
         echo bashErrorToString($cmd, $output, $status);
