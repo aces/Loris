@@ -79,7 +79,7 @@ class Collection extends Process
     /**
      * Gets the ID of the specimen's unit of quantity
      *
-     * @return string
+     * @return int
      */
     public function getUnitId() : int
     {
