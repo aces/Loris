@@ -272,7 +272,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the IDs of the children containers
      *
-     * @return array
+     * @return ?array
      */
     public function getChildContainerIds() : ?array
     {
