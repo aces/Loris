@@ -75,7 +75,7 @@ class Biobank extends \NDB_Menu_Filter
         $filePath = $path . $fileName;
 
         if (!file_exist($filePath)) {
-            error_log('ERRO: File'.$filePath.' does not exist');
+            error_log('ERROR: File'.$filePath.' does not exist');
             throw new \NotFound('File was not found');
         }
 
