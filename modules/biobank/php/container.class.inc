@@ -250,7 +250,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the parent container's ID
      *
-     * @return int or void
+     * @return int|null
      */
     public function getParentContainerId() : ?int
     {
