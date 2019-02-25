@@ -67,7 +67,7 @@ class Collection extends Process
     /**
      * Sets the ID of the specimen's unit of quantity
      *
-     * @param string $unitId the ID of the quantity's unit
+     * @param int $unitId the ID of the quantity's unit
      *
      * @return void
      */
