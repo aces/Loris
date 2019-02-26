@@ -27,7 +27,8 @@ CREATE TABLE `publication` (
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
+    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
+    CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Separate table for Keywords
@@ -35,7 +36,8 @@ DROP TABLE IF EXISTS publication_keyword;
 CREATE TABLE `publication_keyword` (
   `PublicationKeywordID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  CONSTRAINT `PK_publication_keyword` PRIMARY KEY(`PublicationKeywordID`)
+  CONSTRAINT `PK_publication_keyword` PRIMARY KEY(`PublicationKeywordID`),
+  CONSTRAINT `UK_publication_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Publication - Keyword relational table
@@ -91,7 +93,8 @@ DROP TABLE IF EXISTS publication_upload_type;
 CREATE TABLE `publication_upload_type` (
   `PublicationUploadTypeID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  CONSTRAINT `PK_publication_upload_type` PRIMARY KEY (`PublicationUploadTypeID`)
+  CONSTRAINT `PK_publication_upload_type` PRIMARY KEY (`PublicationUploadTypeID`),
+  CONSTRAINT `UK_publication_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 INSERT INTO publication_upload_type (`Label`) VALUES ('Paper');
