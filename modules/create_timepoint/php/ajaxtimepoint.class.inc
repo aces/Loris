@@ -77,8 +77,15 @@ class AjaxTimepoint extends \NDB_Page
                 $user->getData('CenterIDs')
             ))
         ) {
-            header('HTTP/1.1 403 Forbidden');
-            exit;
+            return (new \Loris\Http\Response())
+                ->withStatus(403, 'Forbidden')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => 'Forbidden')
+                        )
+                    )
+                );
         }
 
         /**
