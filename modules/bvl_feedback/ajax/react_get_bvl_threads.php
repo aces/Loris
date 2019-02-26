@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 
 set_include_path(
     __DIR__ . "/../../../project/libraries:" .
-    __DIR__ . "../../../php/libraries:"
+    __DIR__ . "/../../../php/libraries:"
 );
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
