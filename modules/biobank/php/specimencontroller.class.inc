@@ -88,17 +88,16 @@ class SpecimenController
      * sent to the DAO to be saved.
      *
      * @param array $list  a list of specimen and container arrays to be created.
-     * @param array $files a list a of files to be saved.
      *
      * @return void
      */
-    public function createInstances(array $list, $files) : void
+    public function createInstances(array $list) : void
     {
         $this->validatePermission('POST');
 
         foreach ($list as $i => $item) {
             $containerList[$i] = $item['container'];
-            $specimenList[$i]  = $this->prepare($item['specimen'], $files);
+            $specimenList[$i]  = $this->prepare($item['specimen']);
         }
 
         $contController = new ContainerController($this->db, $this->user);
@@ -118,31 +117,27 @@ class SpecimenController
      * database.
      *
      * @param array $specimenArray specimen array to be created
-     * @param array $files         files to be saved
      *
      * @return void
      */
-    public function updateInstance(array $specimenArray, array $files) : void
+    public function updateInstance(array $specimenArray) : void
     {
         $this->validatePermission('PUT');
-        $specimen = $this->prepare($specimenArray, $files);
+        $specimen = $this->prepare($specimenArray);
         $this->dao->saveInstance($specimen);
     }
 
     /**
-     * Converts data into a specimen intance validates the specimen and any
-     * associated files.
+     * Converts data into a specimen intance validates the specimen.
      *
      * @param array $data  Specimen data to be instantiated
-     * @param array $files Files associated with the specimen
      *
      * @return Specimen $specimen to be submitted
      */
-    private function prepare(array $specimenArray, ?array $files = null) : Specimen
+    private function prepare(array $specimenArray) : Specimen
     {
         $specimen = $this->dao->getInstanceFromArray($specimenArray);
         $this->validateInstance($specimen);
-        $this->validateFiles($files);
 
         return $specimen;
     }
@@ -522,49 +517,27 @@ class SpecimenController
         //   - validating for that datatype
     }
 
-    // TODO: Take a look at this validation function because it was simply taken
-    // From media.
-    // TODO: Make sure to use PSR7 standards for upload.
-    // TODO: Ask John S. for clarity and if he has a better solution.
     /**
      * Validates Uploaded Files
      *
-     * @param array $files files to be validated
+     * @param ServerRequestInterface $request The invoming PSR7 request
+     *                                        containing the files to be
+     *                                        uploaded.
      *
-     * @throws Exception if the provided files do not meet validation
-     *                   requirements.
-     * @return void
+     * @return ResponseInterface
      */
-    private function validateFiles(?array $files = null) : void
+    private function uploadFiles(ServerRequestInterface $request) : void
     {
-        if (!empty($files)) {
-            $config    = \NDB_Config::singleton();
-            $mediaPath = $config->getSetting('mediaPath');
+        $config    = \NDB_Config::singleton();
+        $path      = $config->getSetting('biobankPath');
+        $targetdir = new \SplFileInfo($path);
 
-            if (!isset($mediaPath)) {
-                throw new \BadRequest('Error! Media path is not set in Loris Settings!');
-            }
+        // TODO: query MIME Types from sql table.
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'text/plain'
+            );
 
-            if (!file_exists($mediaPath)) {
-                throw new \BadRequest("Error! The upload folder '.$mediaPath.' does not exist!");
-            }
-
-            foreach ($files as $file) {
-                $fileName  = $file['name'];
-                $extension = pathinfo($fileName)['extension'];
-
-                if (!isset($extension)) {
-                    throw new \BadRequest('Please make sure your file has a valid extension.');
-                }
-
-                // XXX: Decide if the file should wait to be uploaded, until it's
-                // guaranteed that the specimen can be updated.
-                if (move_uploaded_file($file['tmp_name'], $mediaPath . $fileName)) {
-                    //TODO: look into NDB_notifier?
-                } else {
-                    throw new \BadRequest('Could not upload the file. Please try again!');
-                }
-            }
-        }
+        return $uploader->handle($request);
     }
 }

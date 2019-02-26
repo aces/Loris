@@ -68,7 +68,7 @@ class Biobank extends \NDB_Menu_Filter
 
         $fileName = basename($file);
         $config   = \NDB_Config::singleton();
-        $path     = $config->getSetting('mediaPath');
+        $path     = $config->getSetting('biobankPath');
         $filePath = $path . $fileName;
 
         if (!file_exists($filePath)) {

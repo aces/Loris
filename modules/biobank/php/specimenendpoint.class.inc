@@ -79,33 +79,45 @@ class SpecimenEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $response;
         $db       = \Database::singleton();
         $user     = $request->getAttribute('user');
         $specCont = new SpecimenController($db, $user);
 
         try {
+            // XXX: Not sure if I'm using this file uploader properly. John S.
+            // or Xavier please check this. Perhaps this should be sent to an
+            // entirely different endpoint and not handled within the specimen
+            // endpoint.
             switch($request->getMethod()) {
             case 'GET':
                 $specimens = $specCont->getInstances();
-                return new \LORIS\Http\Response\OK($specimens);
+                $response = new \LORIS\Http\Response\OK($specimens);
             case 'POST':
                 $specimens = json_decode($request->getBody()->getContents(), true);
-                $files     = $request->getUploadedFiles()['files'];
-                $specCont->createInstances($specimens, $files);
+                $specCont->createInstances($specimens);
+                $fileResponse = $specCont->uploadFiles($request);
+                if ($fileResponse->getStatusCode() !== 200) {
+                    return $fileResponse;
+                }
                 return new \LORIS\Http\Response\OK();
             case 'PUT':
                 $specimens = json_decode($request->getBody()->getContents(), true);
-                $files     = $request->getParsedBody()['files'];
                 $specCont->updateInstances($specimens, $files);
+                $fileResponse = $specCont->uploadFiles($request);
+                if ($fileResponse->getStatusCode() !== 200) {
+                    return $fileResponse;
+                }
                 return new \LORIS\Http\Response\OK();
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             }
+
         } catch (\Invalid $e) {
             return \LORIS\Http\Response\BadRequest($e->getMessage());
         } catch (\Forbidden $e) {
             return \LORIS\Http\Response\Forbidden($e->getMessage());
-        }
+        } 
     }
 }
