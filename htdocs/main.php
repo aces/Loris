@@ -12,7 +12,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use LORIS\StudyEntities\Candidate\CandID;
+
 $tpl_data = array();
+
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
     header("Access-Control-Allow-Credentials: true");
