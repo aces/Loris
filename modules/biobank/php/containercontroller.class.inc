@@ -226,13 +226,15 @@ class ContainerController
             throw new \BadRequest('Barcode value must be set');
         }
 
-        if (!isset($container->getId())) {
-            $containerList = $this->dao->selectInstances();
-            foreach ($containerList as $c) {
-                $b = $c->getBarcode();
-                if ($b === $barcode) {
-                    throw new \BadRequest('Barcode must be unique');
-                }
+        $id            = $container->getId();
+        $barcode       = $container->getBarcode();
+        $containerList = $this->dao->selectInstances();
+        foreach ($containerList as $c) {
+            $b = $c->getBarcode();
+            $i = $c->getId();
+            // If the barcodes are identical but the ids are not
+            if ($b === $barcode && $i !== $id) {
+                throw new \BadRequest('Barcode must be unique');
             }
         }
 

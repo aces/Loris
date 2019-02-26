@@ -111,7 +111,20 @@ INSERT INTO `permissions` VALUES
     (49,'data_release_upload', 'Data Release: Upload file', 2),
     (50,'data_release_edit_file_access', 'Data Release: Grant other users view-file permissions', 2),
     (51,'instrument_manager_read', 'Instrument Manager: View module', 2),
-    (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2);
+    (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
+    (53, 'biobank_specimen_view', 'Biobank: View Specimen Data', 2),                
+    (54, 'biobank_specimen_create', 'Biobank: Create Specimen Data', 2),            
+    (55, 'biobank_specimen_update', 'Biobank: Update Specimen Data', 2),            
+    (56, 'biobank_specimen_alter', 'Biobank: Alter Specimen Data', 2),              
+    (57, 'biobank_container_view', 'Biobank: View Container Data', 2),              
+    (58, 'biobank_container_create', 'Biobank: Create Container Data', 2),          
+    (59, 'biobank_container_update', 'Biobank: Update Container Data', 2),          
+    (60, 'biobank_container_delete', 'Biobank: Delete Container Data', 2),          
+    (61, 'biobank_pool_view', 'Biobank: View Pool Data', 2),                        
+    (62, 'biobank_pool_create', 'Biobank: Create Pool Data', 2),                    
+    (63, 'biobank_pool_update', 'Biobank: Update Pool Data', 2),                    
+    (64, 'biobank_pool_delete', 'Biobank: Delete Pool Data', 2),                    
+    (65, 'biobank_access', 'Biobank: Access the Biobank Module', 2);   
 
 
 INSERT INTO `user_perm_rel` (userID, permID)

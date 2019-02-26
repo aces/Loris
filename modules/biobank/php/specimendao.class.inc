@@ -98,7 +98,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       bs.Quantity, 
                       bs.UnitID,
                       bsf.FreezeThawCycle,
-                      s.CandidateID,
+                      s.CandID as CandidateID,
                       bs.SessionID, 
                       bspr.PoolID,
                       bsc.Quantity as CollectionQuantity,

@@ -387,22 +387,6 @@ CREATE TABLE `biobank_specimen_pool_rel` (
     ON UPDATE RESTRICT ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `biobank_container_psc_rel` (
-  `ContainerID` integer unsigned NOT NULL, 
-  `SourceCenterID` integer unsigned NOT NULL,
-  `DestinationCenterID` integer unsigned NOT NULL,
-  CONSTRAINT `PK_biobank_container_psc_rel_ContainerID` PRIMARY KEY (`ContainerID`),
-  CONSTRAINT `FK_biobank_container_psc_rel_ContainerID`
-    FOREIGN KEY (`ContainerID`) REFERENCES `biobank_container` (`ContainerID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_container_psc_rel_SourceCenterID`
-    FOREIGN KEY (`SourceCenterID`) REFERENCES `psc` (`CenterID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_container_psc_rel_DestinationCenterID`
-    FOREIGN KEY (`DestinationCenterID`) REFERENCES `psc` (`CenterID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `biobank_container_parent` (
   `ContainerID` integer unsigned NOT NULL,
   `ParentContainerID` integer unsigned NOT NULL,
@@ -426,6 +410,36 @@ CREATE TABLE `biobank_container_parent` (
 
 
 /*INSERTS*/
+
+/*Loris Menu*/
+UPDATE LorisMenu SET `OrderNumber`=7 WHERE `Label`='Admin';
+
+INSERT INTO LorisMenu (Label, OrderNumber) VALUES
+    ('Biobank', 6)
+;
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES                  
+    ('Specimens', 'biobank#specimens/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1),
+    ('Containers', 'biobank#containers/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 2),
+    ('Pools', 'biobank#pools/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 3)
+;
+
+/*Permissions*/
+INSERT INTO permissions (code, description, categoryID) VALUES
+    ('biobank_specimen_view', 'Biobank: View Specimen Data', 2),
+    ('biobank_specimen_create', 'Biobank: Create Specimen Data', 2),
+    ('biobank_specimen_update', 'Biobank: Update Specimen Data', 2),
+    ('biobank_specimen_alter', 'Biobank: Alter Specimen Data', 2),
+    ('biobank_container_view', 'Biobank: View Container Data', 2),
+    ('biobank_container_create', 'Biobank: Create Container Data', 2),
+    ('biobank_container_update', 'Biobank: Update Container Data', 2),
+    ('biobank_container_delete', 'Biobank: Delete Container Data', 2),
+    ('biobank_pool_view', 'Biobank: View Pool Data', 2),
+    ('biobank_pool_create', 'Biobank: Create Pool Data', 2),
+    ('biobank_pool_update', 'Biobank: Update Pool Data', 2),
+    ('biobank_pool_delete', 'Biobank: Delete Pool Data', 2),
+    ('biobank_access', 'Biobank: Access the Biobank Module', 2)
+;
 
 /*Global*/
 INSERT INTO biobank_datatype (Datatype)

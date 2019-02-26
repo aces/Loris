@@ -37,21 +37,35 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      * These variables are directly mapped to the fields of the database schema
      * that describe a specimen entity.
      *
+     * @var int         $id
+     * @var int         $containerId
+     * @var int         $typeId
+     * @var float       $quantity
+     * @var int         $unitId
+     * @var int         $fTCycle
+     * @var array       $parentSpecimenIds
+     * @var int         $candidateId
+     * @var int         $sessionId
+     * @var int         $poolId
+     * @var Collection  $collection
+     * @var Preparation $preparation
+     * @var Analysis    $analysis
+     *
      * @access private
      */
-    private $id;                //int
-    private $containerId;       //int
-    private $typeId;            //int
-    private $quantity;          //float
-    private $unitId;            //int
-    private $fTCycle;           //int
-    private $parentSpecimenIds; //array
-    private $candidateId;       //int
-    private $sessionId;         //int
-    private $poolId;            //int
-    private $collection;        //array
-    private $preparation;       //array
-    private $analysis;          //array
+    private $id;                
+    private $containerId;       
+    private $typeId;            
+    private $quantity;          
+    private $unitId;            
+    private $fTCycle;           
+    private $parentSpecimenIds; 
+    private $candidateId;       
+    private $sessionId;         
+    private $poolId;            
+    private $collection;        
+    private $preparation;       
+    private $analysis;          
 
     /**
      * Initiliazes a new instance of the Specimen Class
