@@ -335,20 +335,11 @@ CreateTimepoint.propTypes = {
 /**
  * Render create_timepoint on page load.
  */
-window.onload = function() {
-  const createTimepoint = (
-    <CreateTimepoint
-      dataURL={loris.BaseURL}
-    />
+window.addEventListener('load', () => {
+  ReactDom.render(
+      <CreateTimepoint
+        dataURL={`${loris.BaseURL}/create_timepoint/AjaxTimepoint`}
+      />,
+      document.getElementById('lorisworkspace')
   );
-
-  // Create a wrapper div in which React component will be loaded
-  const browserDOM = document.createElement('div');
-  browserDOM.id = 'page_create_timepoint';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById('lorisworkspace');
-  rootDOM.appendChild(browserDOM);
-
-  ReactDOM.render(createTimepoint, document.getElementById('page_create_timepoint'));
-};
+});
