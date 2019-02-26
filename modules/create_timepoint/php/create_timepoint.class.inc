@@ -12,6 +12,7 @@
  */
 
 namespace LORIS\create_timepoint;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The forms for the new profile menu
@@ -46,7 +47,7 @@ class Create_Timepoint extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $candidate =& \Candidate::singleton($this->identifier);
+        $candidate = \Candidate::singleton(new CandID($this->identifier));
 
         // check user permissions
         return (
@@ -116,9 +117,9 @@ class Create_Timepoint extends \NDB_Form
     {
         parent::setup();
 
-        $this->candidate = \Candidate::singleton($this->identifier);
+        $this->candidate = \Candidate::singleton(new CandID($this->identifier));
 
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         if (!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])) {
             $this->subprojectID =$_GET['subprojectID'];
         }
@@ -133,7 +134,7 @@ class Create_Timepoint extends \NDB_Form
 
         $this->addHidden('candID', $sanitizedIdentifier);
 
-        $candidate =& \Candidate::singleton($this->identifier);
+        $candidate = \Candidate::singleton(new CandID($this->identifier));
         // List of all subprojects from config file
         $allSubprojects = \Utility::getSubprojectList();
         if (empty($allSubprojects)) {
@@ -272,7 +273,7 @@ class Create_Timepoint extends \NDB_Form
             "dropdown.";
         }
 
-        $candid       = $this->identifier;
+        $candid       = new CandID($this->identifier);
         $subprojectID = $val['subprojectID'];
         $visitLabel   = $val['visitLabel'] ?? '';
 

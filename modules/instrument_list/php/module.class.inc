@@ -66,9 +66,9 @@ class Module extends \Module
         try {
             $attribute = $request->getAttribute("CandID");
             if ($attribute !== null) {
-                $candidate = \Candidate::singleton(intval($attribute));
+                $candidate = \Candidate::singleton(new CandID($attribute));
             } else {
-                $candidate = \Candidate::singleton(intval($gets['candID']) ?? -1);
+                $candidate = \Candidate::singleton(new CandID($gets['candID']));
             }
             $request = $request->withAttribute("Candidate", $candidate);
 

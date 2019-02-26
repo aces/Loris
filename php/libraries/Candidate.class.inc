@@ -195,7 +195,7 @@ class Candidate
      *                                           if available
      * @param int|null    $registrationProjectID The project ID, if available
      *
-     * @return int   $candID      candidate id of the new candidate
+     * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
@@ -206,7 +206,7 @@ class Candidate
         string $sex,
         ?string $PSCID = null,
         int $registrationProjectID = null
-    ): int {
+    ): CandID {
         $factory = NDB_Factory::singleton();
 
         $site = \Site::singleton($centerID);
@@ -671,6 +671,125 @@ class Candidate
     }
 
     /**
+    * Generates a new random CandID
+    *
+    * @return integer An unused random 6 digit candidate id
+    */
+    static function _generateCandID(): CandID
+    {
+        // get a database connection
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        // generate a candidate id
+        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+
+        // make sure the cand id is not used
+        while ($db->pselectOne(
+            "SELECT count(CandID) FROM candidate WHERE CandID=:CaID",
+            array('CaID' => $candID)
+        ) > 0) {
+            // pick a new candidate id
+            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        }
+
+        return new CandID(strval($candID));
+    }
+
+    /**
+    * Generates a new PSCID in the format defined by the config file
+    *
+    * @param string $prefix The prefix to use for the PSCID
+    *
+    * @return string Project candidate id in format defined by config.xml
+    */
+    static function _generatePSCID(string $prefix): string
+    {
+        // get a database connection
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $config = $factory->config();
+
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
+
+        // run one first time, then loop until the pscid is not used
+        do {
+            // pick a new pscid
+            if ($PSCIDSettings['generation'] == 'sequential') {
+                if (!empty($pscid)) {
+                    $pscid++;
+                } else {
+                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
+                }
+            } else {
+                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+            }
+
+            if ($pscid == '') {
+                throw new LorisException(
+                    "Well this is embarrassing, our automated PSCID generator "
+                    . "is about to enter an infinite loop."
+                );
+            }
+
+            // check if the pscid is used
+        } while (
+            $db->pselectOne(
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
+                array('PID' => $pscid)
+            ) > 0
+        );
+
+        return $pscid;
+    }
+
+    /**
+     * Generates a new ExternalID in the format defined by the config file.
+     * This is based on _generatePSCID.
+     *
+     * @return string Anonymized ExternalID for distributing data
+     */
+    static function _generateExternalID(): string
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $ExternalIDSettings = $config->getSetting('ExternalID');
+        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
+
+        $db = $factory->database();
+
+        do {
+            // generate a new external ID
+            if ($ExternalIDSettings['generation'] == 'sequential') {
+                if (!empty($externalID)) {
+                    $externalID++;
+                } else {
+                    $externalID = Candidate::generateFirstStringFromArrays(
+                        $ExternalIDArrays
+                    );
+                }
+            } else {
+                $externalID = Candidate::generateRandomStringFromArrays(
+                    $ExternalIDArrays
+                );
+            }
+
+            // check if the external ID is used
+        } while (
+            $db->pselectOne(
+                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
+                array('EID' => $externalID)
+            )  > 0
+        );
+
+        return $externalID;
+    }
+
+    /**
+>>>>>>> bc2afe2db... More instances of CandID
      * Validate's that a PSCID matches the format defined by project
      * config
      *
