@@ -216,25 +216,29 @@ class CreateTimepoint extends React.Component {
       visit: state.form.value.visit,
     });
     const url = this.props.dataURL + '/create_timepoint/AjaxTimepoint';
-    $.ajax({
-      url: url,
-      method: 'POST',
-      async: true,
-      data: send,
-      credentials: 'same-origin',
-      success: function(data) {
-        if (data.status === 'error') {
-          // Populate the form errors.
-          if (data.errors) {
-            this.populateErrors(data.errors);
+    fetch(
+      url, {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          if (data.status === 'error') {
+            // Populate the form errors.
+            if (data.errors) {
+              this.populateErrors(data.errors);
+            }
+          } else {
+            this.setState({success: true});
           }
-        } else {
-          this.setState({success: true});
-        }
-      }.bind(this),
-      error: function(error) {
-        this.populateErrors({message: 'Server error.'});
-      }.bind(this),
     });
   }
   /**
