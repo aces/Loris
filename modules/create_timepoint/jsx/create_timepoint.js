@@ -79,35 +79,26 @@ class CreateTimepoint extends React.Component {
     this.setState(this.state);
   }
   /**
+   * Used with sending POST data to the server.
+   * @param {object} json - json object converted for POST.
+   * @return {string} send in POST to server.
+   */
+  urlSearchParams(json) {
+    return Object.keys(json).map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+    }).join('&');
+  }
+  /**
    * Retrieve data from the provided URL and save it in state.
    */
   fetchInitializerData() {
-    const send = {
+    const send = this.urlSearchParams({
       command: 'initialize',
       candID: this.state.url.params.candID,
       identifier: this.state.url.params.identifier,
       subprojectID: this.state.form.subproject,
-    };
+    });
     const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
-
-    // (async () => {
-    //   const rawResponse = await fetch(url, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(send),
-    //   });
-    //   const content = await rawResponse.json();
-    //
-    //   console.log(content);
-    // })();
-
-
-    const URLSearchParams = Object.keys(send).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(send[key]);
-    }).join('&');
 
     console.log('url is ' + url);
     fetch(
@@ -120,7 +111,7 @@ class CreateTimepoint extends React.Component {
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: URLSearchParams,
+        body: send,
       }
     ).then((response) => response.json())
       .then(
@@ -159,49 +150,9 @@ class CreateTimepoint extends React.Component {
           this.populateErrors({message: 'Server error.'});
           this.setState({isLoaded: true});
         });
-    // $.ajax({
-    //   url: url,
-    //   type: 'POST',
-    //   async: true,
-    //   data: send,
-    //   success: function(data) {
-    //     // Populate the form errors.
-    //     if (data.errors && data.errors.length > 0) {
-    //       this.setState({errors: data.errors});
-    //     }
-    //     // Populate the select options for subproject.
-    //     if (data.subproject) {
-    //       this.state.form.options.subproject = data.subproject;
-    //       this.state.form.value.subproject = Object.keys(data.subproject)[0];
-    //       this.state.form.display.subproject = true;
-    //       this.setState(this.state);
-    //     }
-    //     // Populate the select options for psc.
-    //     if (data.psc) {
-    //       this.state.form.options.psc = data.psc;
-    //       this.state.form.value.psc = Object.keys(data.psc)[0];
-    //       this.state.form.display.psc = true;
-    //       this.setState(this.state);
-    //     }
-    //     // Populate the select options for visit.
-    //     if (data.visit) {
-    //       // Store the (complete) visit selection information.
-    //       this.state.storage.visit = data.visit;
-    //       // Handle visit selection.
-    //       this.handleVisitLabel();
-    //     }
-    //     // Display form to user.
-    //     this.setState({isLoaded: true});
-    //   }.bind(this),
-    //   error: function(e, error) {
-    //     this.populateErrors({message: 'Server error.'});
-    //     this.setState({isLoaded: true});
-    //   }.bind(this),
-    // });
   }
   /**
    * Visit Labels refreshes when Subproject changes.
-   *
    */
   handleVisitLabel() {
     this.state.form.options.visit = this.state.storage.visit[
@@ -251,14 +202,14 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    const send = {
+    const send = this.urlSearchParams({
       command: 'create',
       candID: this.state.url.params.candID,
       identifier: this.state.url.params.identifier,
       subproject: this.state.form.value.subproject,
       psc: this.state.form.value.psc,
       visit: this.state.form.value.visit,
-    };
+    });
     const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
     $.ajax({
       url: url,
