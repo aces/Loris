@@ -441,6 +441,12 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_access', 'Biobank: Access the Biobank Module', 2)
 ;
 
+/*Config*/
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+    SELECT 'biobankPath', 'Path to Biobank data files', 1, 0, 'text', ID, 'Biobank', 10
+    FROM ConfigSettings
+    WHERE Name="paths";
+
 /*Global*/
 INSERT INTO biobank_datatype (Datatype)
 VALUES  ('boolean'),
