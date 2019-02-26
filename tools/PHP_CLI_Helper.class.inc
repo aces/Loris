@@ -38,7 +38,7 @@ function writeQuestion($question, $answers) : void
 
 /**
  * Gets user input from STDIN and checks if it matches an option in
- * $possibleAnswers.  If not, the default answer is used.  Inteded to follow
+ * $possibleAnswers.  If not, the default answer is used.  Intended to follow
  * function writeQuestion
  *
  * @param array $possibleAnswers Possible answers to a prompt
