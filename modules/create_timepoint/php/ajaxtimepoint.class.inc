@@ -4,7 +4,7 @@
  *
  * Used to retrieve info & create timepoint by the create_timepoint form.
  * Ensures the user can create timepoint before processing
- * the $_POST (array) data.
+ * the POST body (array) data.
  *
  * PHP Version 7
  *
@@ -63,13 +63,14 @@ class AjaxTimepoint extends \NDB_Page
         /**
          * Parse POST request body.
          */
-        $_POST = $request->getParsedBody();
+        $postResponse = $request->getParsedBody();
 
         /**
          * User permission verification.
          */
         $user       =& \User::singleton();
-        $identifier = isset($_POST['identifier']) ? $_POST['identifier'] : '';
+        $identifier = isset($postResponse['identifier'])
+            ? $postResponse['identifier'] : '';
         $candidate  =& \Candidate::singleton($identifier);
         if (!$user->hasPermission('data_entry')
             && !(in_array(
@@ -89,14 +90,14 @@ class AjaxTimepoint extends \NDB_Page
         }
 
         /**
-         * Sanitize $_POST data.
+         * Sanitize $postResponse data.
          */
-        $_POST = $this->sanitizer($_POST);
+        $postResponse = $this->sanitizer($postResponse);
 
         /**
          * Response to reply.
          */
-        $response = $this->processRequest($_POST);
+        $response = $this->processRequest($postResponse);
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
@@ -110,7 +111,7 @@ class AjaxTimepoint extends \NDB_Page
     }
 
     /**
-     * Sanitize the $_POST data.
+     * Sanitize the $postResponse data.
      *
      * @param array $values that have been sanitized.
      *
