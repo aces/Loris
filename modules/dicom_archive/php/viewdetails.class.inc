@@ -250,15 +250,10 @@ class ViewDetails extends \NDB_Form
         $sliceThickness = $series['SliceThickness'];
 
         foreach ($this->protocols as $protocol) {
-            if (((! $protocol['TR_min'] && ! $protocol['TR_max'])
-                || $this->_inRange($tr, $protocol['TR_min'], $protocol['TR_max']))
-                && ((! $protocol['TE_min'] && ! $protocol['TE_max'])
-                || $this->_inRange($te, $protocol['TE_min'], $protocol['TE_max']))
-                && ((! $protocol['TI_min'] && ! $protocol['TI_max'])
-                || $this->_inRange($ti, $protocol['TI_min'], $protocol['TI_max']))
-                && ((! $protocol['slice_thickness_min']
-                && ! $protocol['slice_thickness_max'])
-                || $this->_inRange(
+            if (($this->_inRange($tr, $protocol['TR_min'], $protocol['TR_max']))
+                && ($this->_inRange($te, $protocol['TE_min'], $protocol['TE_max']))
+                && ($this->_inRange($ti, $protocol['TI_min'], $protocol['TI_max']))
+                && ($this->_inRange(
                     $sliceThickness,
                     $protocol['slice_thickness_min'],
                     $protocol['slice_thickness_max']
@@ -290,7 +285,7 @@ class ViewDetails extends \NDB_Form
             return true;
         } elseif (isset($protocolMin) && $protocolMax == null) {
             return $protocolMin <= $seriesRange;
-        } elseif (!isset($protocolMax) && $protocolMin == null) {
+        } elseif (isset($protocolMax) && $protocolMin == null) {
             return $seriesRange <= $protocolMax;
         } else {
             return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
