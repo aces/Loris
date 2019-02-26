@@ -1,6 +1,6 @@
 -- Adds the option to toggle the usage of the Pwned Passwords
 -- API (https://haveibeenpwned.com/API/v2#PwnedPasswords) in a project. This
--- is be enabled by default to allow for a higher level of security. This
+-- is enabled by default to allow for a higher level of security. This
 -- setting is added to allow projects to disable the API check in case of
 -- networking issues.
 INSERT INTO ConfigSettings
