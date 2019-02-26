@@ -98,7 +98,7 @@ class CreateTimepoint extends React.Component {
       identifier: this.state.url.params.identifier,
       subprojectID: this.state.form.subproject,
     });
-    const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
+    const url = this.props.dataURL + '/create_timepoint/AjaxTimepoint';
 
     fetch(
       url, {
@@ -206,7 +206,7 @@ class CreateTimepoint extends React.Component {
       psc: this.state.form.value.psc,
       visit: this.state.form.value.visit,
     });
-    const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
+    const url = this.props.dataURL + '/create_timepoint/AjaxTimepoint';
     $.ajax({
       url: url,
       method: 'POST',
@@ -329,7 +329,7 @@ class CreateTimepoint extends React.Component {
 }
 CreateTimepoint.propTypes = {
   Module: PropTypes.string,
-  DataURL: PropTypes.string,
+  dataURL: PropTypes.string,
 };
 
 /**
@@ -339,7 +339,7 @@ window.onload = function() {
   const createTimepoint = (
     <CreateTimepoint
       Module='create_timepoint'
-      DataURL={loris.BaseURL}
+      dataURL={loris.BaseURL}
     />
   );
 
