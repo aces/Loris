@@ -244,7 +244,6 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'subproject'}
         name={'subproject'}
-        ref={'subproject'}
         label={'Subproject'}
         value={this.state.form.value.subproject}
         options={this.state.form.options.subproject}
@@ -259,7 +258,6 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'psc'}
         name={'psc'}
-        ref={'psc'}
         label={'Site'}
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
@@ -274,7 +272,6 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'visit'}
         name={'visit'}
-        ref={'visit'}
         label={'Visit label'}
         value={this.state.form.value.visit}
         options={this.state.form.options.visit}
@@ -294,7 +291,6 @@ class CreateTimepoint extends React.Component {
             <FormElement
               name={'timepointInfo'}
               fileUpload={false}
-              ref={'form'}
               class={'form-group col-sm-12'}
               onSubmit={this.handleSubmit}
             >
