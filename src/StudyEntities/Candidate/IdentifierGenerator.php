@@ -31,7 +31,7 @@ abstract class IdentifierGenerator
 {
     private const RANGE_FULL = 
                 'Cannot create new identifier because all valid identifiers ' .
-                'are in use!'
+                'are in use!';
     protected $generationMethod;
     protected $alphabet = array();
     protected $length;
