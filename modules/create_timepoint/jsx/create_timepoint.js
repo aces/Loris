@@ -337,9 +337,9 @@ CreateTimepoint.propTypes = {
  */
 window.addEventListener('load', () => {
   ReactDom.render(
-      <CreateTimepoint
-        dataURL={`${loris.BaseURL}/create_timepoint/AjaxTimepoint`}
-      />,
-      document.getElementById('lorisworkspace')
+    <CreateTimepoint
+      dataURL={`${loris.BaseURL}/create_timepoint/AjaxTimepoint`}
+    />,
+    document.getElementById('lorisworkspace')
   );
 });
