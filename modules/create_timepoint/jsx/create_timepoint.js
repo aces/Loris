@@ -338,7 +338,6 @@ CreateTimepoint.propTypes = {
 window.onload = function() {
   const createTimepoint = (
     <CreateTimepoint
-      Module='create_timepoint'
       dataURL={loris.BaseURL}
     />
   );
