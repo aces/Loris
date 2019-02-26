@@ -1,214 +1,50 @@
 #!/usr/bin/env php
-# This script verifies a development installation of LORIS by ensuring that
-# the system has all of the required dependencies such as the correct PHP and
-# Apache versions as well as other miscellaneous extensions and system tools.
-#
-# Production environments should not run this tool as their dependency 
-# management should be performed by a proper package such as a .deb file.
-#
-# Currently only Ubuntu environments are supported by this script.
-<?php
-error_reporting(E_ALL);
+<?php declare(strict_types=1);
 
-// Go to LORIS root.
-chdir(dirname(__FILE__) . '/..');
-require('tools/PHP_CLI_Helper.class.inc');
+require('UbuntuBootstrapper.php');
+$b = new UbuntuBootstrapper($argv);
 
-//TODO: Update these values as time passes 
-$required_major_php = 7;
-$required_minor_php = 2;
-$required_major_apache = 2;
-$required_minor_apache = 4;
-// PHP version required for LORIS.
-$required_php = "$required_major_php.$required_minor_php";
+// Generate a report detailing the status of the user's development
+// environment.
+$report = array();
 
-/* Validate apache */
-// Get string representation of apache version number
-$apache_parts = explode(
-    '/', 
-    // this command yields e.g. Apache/2.4.34
-    shell_exec(
-        "apache2 -v | " . 
-        "head -n 1 | " .
-        "cut -d ' ' -f 3"
-    )
-);
-$apache_version = end($apache_parts);
-/* Look for the string "$major.$minor" in info string. Also match on versions
- * higher than minor version because we want AT LEAST that version.
- */
-$pattern = "/$required_major_apache\.[$required_minor_apache-9].[0-9]/";
-// When preg_match returns 0 it means no match was found.
-if (preg_match($pattern, $apache_version) === 0) {
-    $required_apache = "$required_major_apache.$required_minor_apache";
-    die(
-        "ERROR: LORIS requires Apache v$required_apache or higher."
-        . PHP_EOL
-        . "This must be done manually as it has possible security ramifications."
-        . PHP_EOL
+// Check PHP
+if (!$b->phpRequirementSatisfied()) {
+    $report[] = sprintf(
+        "LORIS requires at least PHP version %s, but %s is installed.",
+        $b->PHP_MAJOR_VERSION_REQUIRED . '.' . $b->PHP_MINOR_VERSION_REQUIRED,
+        PHP_VERSION
+    );
+}
+// Check Apache
+if (!$b->apacheRequirementSatisfied()) {
+    $report[] = sprintf(
+        "LORIS requires at least Apache version %s, but %s is installed.",
+        $b->APACHE_MAJOR_VERSION_REQUIRED . '.' . $b->APACHE_MINOR_VERSION_REQUIRED,
+        PHP_VERSION
     );
 }
 
-// NOTE Update as time passes.
-// Dependencies last updated for version: 20.0.1
-// This list should consist only of packages that can be installed via apt on
-// Ubuntu environments and must not include libraries that should be installed
-// via tools such as npm and composer.
-$apt_dependencies = array(
-                       "wget",
-                       "zip",
-                       "unzip",
-                       "php-json",
-                       "npm",
-                       "software-properties-common",
-                       "php-ast",
-                       "php$required_php",
-                       "php$required_php-mysql",
-                       "php$required_php-xml",
-                       "php$required_php-json",
-                       "php$required_php-mbstring",
-                       "php$required_php-gd",
-                       "libapache2-mod-php$required_php",
-                      );
-
-if (
-    !(installMissingRequirements($apt_dependencies))
-    && (installAptPackages($apt_dependencies))
-) {
-    die(
-        'Could not upgrade all required packages. Exiting.'
-        . PHP_EOL
-    );
+// Check "packages" -- apt, MySQL extensions, and other misc. tools
+$missingPackages = $b->getMissingPackages();
+if (count($missingPackages) > 0) {
+    $report[] = "Found missing packages required by LORIS:";
+    foreach($missingPackages as $name) {
+        $report[] = "\t- $name";
+    }
+    $report[] = "These may be installed by running this script with the " .
+        "--install flag.";
 }
 
+// Print results
+echo implode(PHP_EOL, $report);
 
-// Run package managers and add dev flag if supplied to the script
-if (runPackageManagers(isset($argv[1]) && $argv[1] === 'dev')) {
-    echo '[**] Dependencies up-to-date.' . PHP_EOL;
-}
-
-/**
- * Prints a list of missing apt packages and prompts user to install them.
- *
- * @param array $requirements Required packages determined missing earlier.
- *
- * @return bool True if all packages install properly. False otherwise.
- */
-function installMissingRequirements(array $requirements): bool
+// Install packages if requested to by user.
+if (isset($argv[1])
+    && $argv[1] === '--install') 
 {
-    $to_install = getMissingRequirements($requirements);
-    if (empty($to_install)) {
-        return true;
-    }
-    echo '[-] Required package(s) not installed:' . PHP_EOL;
-    foreach ($to_install as $tool) {
-        echo "\t* {$tool}" . PHP_EOL;
-    }
-    $answers       = [
-                      'Y',
-                      'n',
-                     ];
-    $defaultAnswer = 'Y';
-    writeQuestion('Install now?', $answers);
-    $answer = readAnswer($answers, $defaultAnswer);
-    if ($answer != 'Y') {
-        echo '[-] Not installing requirements...' . PHP_EOL;
-        return false;
-    }
-    echo '[*] Installing requirements...' . PHP_EOL;
-    return installAptPackages($to_install);
+    $b->installPackages($missingPackages);
 }
 
-/**
- * Takes an array of packages to install using apt-get.  Uses exec to install
- * or upgrade apt packages based on $upgrade_mode.
- *
- * @param array $packages     List of apt packages to install.
- * @param bool  $upgrade_mode If true, only upgrades packages. False to install.
- *
- * @return bool true if all packages installed properly. False otherwise.
- */
-function installAptPackages(array $packages, bool $upgrade_mode = false): bool
-{
-    foreach ($packages as $package) {
-        if (installAptPackage($package, $upgrade_mode) !== true) {
-            return false;
-        }
-    }
-    return true;
-}
+/* END SCRIPT */
 
-/**
- * Installs or upgrades an individual apt package.
- *
- * @param string $name         Name of package to install
- * @param bool   $only_upgrade Whether to upgrade or install a package
- *
- * @return bool True if package installed/upgraded successfull. Otherwise false
- */
-function installAptPackage(string $name, bool $only_upgrade = false): bool
-{
-    if ($only_upgrade) {
-        $cmd = "sudo apt-get install --only-upgrade ";
-    } else {
-        $cmd = "sudo apt-get install ";
-    }
-    $cmd .= escapeshellarg($name);
-    return doExec($cmd);
-}
-
-/**
- * Runs 3rd-party package managers using exec
- *
- * @param bool $dev Whether the script should be run in Dev mode.
- *
- * @return bool True if all commands execute correctly. False otherwise
- */
-function runPackageManagers(bool $dev = false): bool
-{
-    if (posix_geteuid() === 0) {
-        echo "[-] ERROR: Refusing to run package managers as root. Please "
-            . "try again with a lower-privileged user or without sudo."
-            . PHP_EOL;
-        return false;
-    }
-
-    // Run dependency/package managers
-    $cmd = 'composer install';
-    if ($dev) {
-        $cmd .= ' --no-dev';
-    }
-    if (doExec($cmd) === false) {
-        return false;
-    }
-
-    $cmd = 'npm install';
-    if (doExec($cmd) === false) {
-        return false;
-    }
-
-    $cmd = 'git describe --tags --always > VERSION';
-    if (doExec($cmd) === false) {
-        return false;
-    }
-    return true;
-}
-
-/**
- * Check if all tools in $required are installed
- *
- * @param array $required Packages required by LORIS
- *
- * @return array of names of missing requirements
- */
-function getMissingRequirements(array $required): array
-{
-    $missing = [];
-    foreach ($required as $tool) {
-        if (!installed($tool)) {
-            $missing[] = $tool;
-        }
-    }
-
-    return $missing;
-}
