@@ -13,6 +13,7 @@ declare(strict_types=1);
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\new_profile;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\StudyEntities\Candidate\CandID;

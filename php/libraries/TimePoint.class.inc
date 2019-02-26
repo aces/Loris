@@ -3,7 +3,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -259,7 +259,7 @@ class TimePoint
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID $candid       The candidate identifier
+     * @param CandID  $candid       The candidate identifier
      * @param integer $subprojectID The subprojectID
      * @param string  $visitLabel   The visit label
      *
@@ -387,10 +387,10 @@ class TimePoint
     function getCandID(): CandID
     {
         /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
+         * which returns values in string format. CandID is used here to
+         * ensure we return a validated CandID object.
          */
-        return $this->_timePointInfo["CandID"];
+        return new CandID($this->_timePointInfo["CandID"]);
     }
 
     /**

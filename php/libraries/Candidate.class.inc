@@ -94,7 +94,7 @@ class Candidate
         $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
             );
@@ -169,10 +169,9 @@ class Candidate
         $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
-        foreach ($row AS $value) {
+        foreach ($row as $value) {
             $this->listOfTimePoints[] = intval($value["ID"]);
         }
-
     }
 
     /**
@@ -673,7 +672,7 @@ class Candidate
     /**
     * Generates a new random CandID
     *
-    * @return integer An unused random 6 digit candidate id
+    * @return CandID An unused random 6 digit candidate id
     */
     static function _generateCandID(): CandID
     {
