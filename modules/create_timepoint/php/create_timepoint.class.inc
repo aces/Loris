@@ -22,7 +22,6 @@ namespace LORIS\create_timepoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-
 class Create_Timepoint extends \NDB_Form
 {
 
@@ -51,11 +50,6 @@ class Create_Timepoint extends \NDB_Form
             )
             )
         );
-    }
-
-    function setup()
-    {
-        parent::setup();
     }
 
     /**

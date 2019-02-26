@@ -100,7 +100,6 @@ class CreateTimepoint extends React.Component {
     });
     const url = this.props.DataURL + '/create_timepoint/AjaxTimepoint';
 
-    console.log('url is ' + url);
     fetch(
       url, {
         method: 'POST',
@@ -116,7 +115,6 @@ class CreateTimepoint extends React.Component {
     ).then((response) => response.json())
       .then(
         (data) => {
-          console.log(data);
           // Populate the form errors.
           if (data.errors && data.errors.length > 0) {
             this.setState({errors: data.errors});
@@ -145,8 +143,6 @@ class CreateTimepoint extends React.Component {
           // Display form to user.
           this.setState({isLoaded: true});
         }).catch((error) => {
-          console.log('error:');
-          console.log(error);
           this.populateErrors({message: 'Server error.'});
           this.setState({isLoaded: true});
         });

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ajax timepoint methods.
+ * POST request methods.
  *
  * Used to retrieve info & create timepoint by the create_timepoint form.
  * Ensures the user can create timepoint before processing
@@ -20,33 +20,18 @@ namespace LORIS\create_timepoint;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
+/**
+ * The NDB_Page for the POST requests.
+ *
+ * @category Loris
+ * @package  Create_Timepoint
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class AjaxTimepoint extends \NDB_Page
 {
     public $skipTemplate = true;
-
-//    /**
-//     * Same as the permissions for the main page.
-//     *
-//     * @param \User $user The user whose access is being checked
-//     *
-//     * @return bool true iff the user has access to this page.
-//     * @throws \LorisException
-//     */
-//    function _hasAccess(\User $user) : bool
-//    {
-////        //$_POST      = $request->getParsedBody();
-////        $candidate =& \Candidate::singleton($this->identifier);
-////        // check user permissions
-////        return (
-////            $user->hasPermission('data_entry') &&
-////            (in_array(
-////                $candidate->getData('RegistrationCenterID'),
-////                $user->getData('CenterIDs')
-////            )
-////            )
-////        );
-//        return true;
-//    }
 
     /**
      * This function will return a json file with DCCID and PSCID
@@ -60,7 +45,9 @@ class AjaxTimepoint extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // Ensure it's a POST request.
+        /**
+         * Ensure it's a POST request.
+         */
         if ($request->getMethod() != 'POST') {
             return (new \LORIS\Http\Response())
                 ->withHeader('Content-Type', 'application/json')
@@ -73,13 +60,35 @@ class AjaxTimepoint extends \NDB_Page
                 );
         }
 
+        /**
+         * Parse POST request body.
+         */
         $_POST = $request->getParsedBody();
+
+        /**
+         * User permission verification.
+         */
+        $user       =& \User::singleton();
+        $identifier = isset($_POST['identifier']) ? $_POST['identifier'] : '';
+        $candidate  =& \Candidate::singleton($identifier);
+        if (!$user->hasPermission('data_entry')
+            && !(in_array(
+                $candidate->getData('RegistrationCenterID'),
+                $user->getData('CenterIDs')
+            ))
+        ) {
+            header('HTTP/1.1 403 Forbidden');
+            exit;
+        }
 
         /**
          * Sanitize $_POST data.
          */
         $_POST = $this->sanitizer($_POST);
 
+        /**
+         * Response to reply.
+         */
         $response = $this->processRequest($_POST);
 
         return (new \LORIS\Http\Response())
