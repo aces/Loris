@@ -167,7 +167,7 @@ function processFiles($pubID) : void
         $pubUploadInsert = array(
                             'PublicationID'           => $pubID,
                             'PublicationUploadTypeID' => $pubTypeID,
-                            'Filename'                     => basename($fileName),
+                            'Filename'                => basename($fileName),
                             'Citation'                => $pubCitation,
                             'Version'                 => $pubVersion,
                            );
