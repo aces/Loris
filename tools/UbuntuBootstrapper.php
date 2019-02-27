@@ -1,12 +1,9 @@
 <?php declare(strict_types=1);
-/* This script verifies a development installation of LORIS by ensuring that
- * the system has all of the required dependencies such as the correct PHP and
- * Apache versions as well as other miscellaneous extensions and system tools.
+/* This file contains functions used to satisfy LORIS system requirements on
+ * Ubuntu environments.
  *
- * Production environments should not run this tool as their dependency 
+ * Production environments should not use this tool as their dependency 
  * management should be performed by a proper package such as a .deb file.
- *
- * Currently only Ubuntu environments are supported by this script.
  *
  * @author John Saigle <john.saigle@mcin.ca>
  */
@@ -19,13 +16,21 @@ error_reporting(E_ALL);
  */
 class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
 
+    /* @var array $requirements An array of names of packages that can be
+     * installed via apt on Ubuntu environments.
+     */
     var $requirements = array();
 
-    public function __construct(array $args) {
-        parent::__construct();
+    public function __construct(array $args = array()) {
+        parent::__construct($args);
         $required_php = self::PHP_MAJOR_VERSION_REQUIRED 
             . '.' 
             . self::PHP_MINOR_VERSION_REQUIRED;
+        
+        // Dependencies last updated for version: 20.0.1
+        // This list should consist only of packages that can be installed via apt on
+        // Ubuntu environments and must not include libraries that should be installed
+        // via tools such as npm and composer.
         $this->requirements = array(
             "wget",
             "zip",
@@ -43,17 +48,19 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
             "libapache2-mod-php$required_php",
         );
     }
-    // Dependencies last updated for version: 20.0.1
-    // This list should consist only of packages that can be installed via apt on
-    // Ubuntu environments and must not include libraries that should be installed
-    // via tools such as npm and composer.
 
+    /**
+     * {@inheritDoc}
+     */
     public function phpRequirementSatisfied(): bool {
         return PHP_MAJOR_VERSION >= self::PHP_MAJOR_VERSION_REQUIRED
             && PHP_MINOR_VERSION >= self::PHP_MINOR_VERSION_REQUIRED;
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public function apacheRequirementSatisfied(): bool {
         // Get string representation of apache version number
         $apache_parts = explode(
@@ -79,12 +86,14 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
         return preg_match($pattern, $apache_version) !== 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function installPackages(array $packages): bool
     {
         if (count($packages) === 0) {
             return true;
         }
-        echo '[*] Installing requirements...' . PHP_EOL;
         foreach ($packages as $p) {
             if ($this->installPackage($p) === false) {
                 return false;
@@ -93,12 +102,18 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     function installed(string $tool) : bool
     {
-        return $this->doExec("which $tool") || $this->doExec("dpkg -s $tool");
+        return $this->doExec("dpkg -s $tool");
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     function installPackage(string $name): bool
     {
         $cmd = "sudo apt-get install ";
@@ -106,6 +121,9 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
         return $this->doExec($cmd);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     function getMissingPackages(): array
     {
         $missing = array();
@@ -114,7 +132,6 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
                 $missing[] = $tool;
             }
         }
-
         return $missing;
     }
 }

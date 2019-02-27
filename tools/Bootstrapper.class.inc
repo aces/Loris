@@ -1,5 +1,19 @@
 <?php declare(strict_types=1);
+/**
+ * This file contains an interface that defines functions used to bootstrap a
+ * system to be ready to use LORIS. It also includes constants used to determine
+ * minimum software requirements. 
+ */
 
+/**
+ * Defines an interface to be extended by classes corresponding to different
+ * UNIX-like distributions. LORIS requires a minimum PHP and Apache version as
+ * well as various system tools and PHP extensions in order to function. As
+ * different systems will have differnt package managers and other programs used
+ * to manage software, this cannot be done in a generic way. The classes
+ * implementing this interface are responsible for using the appropriate OS tools
+ * to satisfy
+ */
 interface Bootstrapper {
 
     /* Declare constants used in the script to represent the minimum versions of 
@@ -15,7 +29,9 @@ interface Bootstrapper {
     const APACHE_MINOR_VERSION_REQUIRED = 4;
 
     /**
-     * Make sure that the installed version of PHP is sufficient.
+     * Whether the PHP version used by the system is sufficient to run LORIS.
+     * Should check both the major and minor versions of PHP using the built-in
+     * PHP constants PHP_MAJOR_VERSION and PHP_MINOR_VERSION.
      *
      * @return bool Whether the requirement is met.
      */
@@ -29,7 +45,8 @@ interface Bootstrapper {
     function apacheRequirementSatisfied(): bool;
 
     /**
-     * Returns whether a given package is installed,
+     * Returns whether a given package is installed on the system. Examples
+     * include the zip tool or the php-ast extension.
      *
      * @param string $tool Name of tool
      *
@@ -38,7 +55,8 @@ interface Bootstrapper {
     function installed(string $name): bool;
 
     /**
-     * Installs or upgrades an individual package.
+     * Installs or upgrades an individual package. Should use a system package
+     * manager such as apt, yum, etc.
      *
      * @param string $name         Name of package to install
      *
@@ -47,9 +65,11 @@ interface Bootstrapper {
     function installPackage(string $name): bool;
 
     /**
-     * Installs a group of packages.
+     * Installs a group of packages by calling the installPackage function
+     * using a loop structure. Should use the output of getMissingPackages()
+     * as its argument.
      *
-     * @param array $packages     List of apt packages to install.
+     * @param array $packages     List of packages to install.
      *
      * @return bool true if all packages installed properly. False otherwise.
      */
@@ -57,6 +77,9 @@ interface Bootstrapper {
 
     /**
      * Return a list of the packages that are not installed but are required.
+     * This should be done by checking a class variable containing the list of
+     * names of packages to install. This function should iterate over this list
+     * using the installed() function.
      *
      * @param array $required Packages required by LORIS
      *

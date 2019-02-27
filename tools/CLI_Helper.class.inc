@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once('generic_includes.php');
 
 class CLI_Helper
 {
@@ -15,6 +16,7 @@ class CLI_Helper
         if (in_array('-v', $args, true)
             || in_array('--verbose', $args, true)
         ) {
+            echo 'got verbose';
             $this->verbose = true;
         }
     }
@@ -68,16 +70,18 @@ class CLI_Helper
     }
 
     /**
-     * Returns the OS distribution based on the /etc/os-release file
+     * Returns the OS distribution based on the /etc/os-release file.
      *
-     * @return string The distribution
+     * @return string The distribution.
      */
     function getDistro() {
+        // This command matches the one used in install.sh
         exec(
             "hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' '",
             $output,
             $status
         );
-        return $output;
+        // The first line of the output should be the name of the distro
+        return $output[0];
     }
 }

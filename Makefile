@@ -14,7 +14,10 @@ javascript:
 	npm install
 	npm run compile
 
-dev: VERSION phpdev javascript
+dev: VERSION phpdev javascript bootstrap
+
+bootstrap:
+	php tools/bootstrap.php
 
 clean:
 	rm -f smarty/templates_c/*

@@ -1,8 +1,26 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+/**
+ * This file contains a script used to set-up a developer instance of LORIS by
+ * validating that the system has the required software installed.
+ */
 
-require('UbuntuBootstrapper.php');
-$b = new UbuntuBootstrapper($argv);
+require_once('CLI_Helper.class.inc');
+$helper = new CLI_Helper($argv);
+$distro = $helper->getDistro();
+
+// Create boostrap object based on operating system
+switch ($distro) {
+case 'Ubuntu':
+    require('UbuntuBootstrapper.php');
+    $b = new UbuntuBootstrapper($argv);
+    break;
+default:
+    exit(
+        "Bootstrapping is not supported for your distribution ($distro)"
+        . PHP_EOL
+    );
+}
 
 // Generate a report detailing the status of the user's development
 // environment.
@@ -32,19 +50,24 @@ if (count($missingPackages) > 0) {
     foreach($missingPackages as $name) {
         $report[] = "\t- $name";
     }
-    $report[] = "These may be installed by running this script with the " .
-        "--install flag.";
+    if (!installMode()) {
+        $report[] = "These may be installed by running this script with the " .
+            "--install flag.";
+    }
 }
 
 // Print results
-echo implode(PHP_EOL, $report);
+echo implode(PHP_EOL, $report) . PHP_EOL;
 
 // Install packages if requested to by user.
-if (isset($argv[1])
-    && $argv[1] === '--install') 
-{
+if (installMode()) {
+    echo '[*] Installing requirements...' . PHP_EOL;
     $b->installPackages($missingPackages);
 }
 
 /* END SCRIPT */
+
+function installMode(): bool {
+    return isset($argv[1]) && ($argv[1] === '--install');
+}
 
