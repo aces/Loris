@@ -64,10 +64,10 @@ class New_Profile extends \NDB_Page
         $this->result['dobFormat']  = $config->getSetting('dobFormat');
         $this->result['edc']        = $config->getSetting('useEDC');
         $this->result['useProject'] = $config->getSetting('useProjects');
-        $this->result['sex']        = [
-                                       'male'   => "Male",
-                                       'female' => "Female",
-                                      ];
+        $this->result['sex']        = array(
+                                       'male'   => 'Male',
+                                       'female' => 'Female',
+                                      );
         $this->result['pscidSet']   = "false";
         //get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
@@ -132,5 +132,4 @@ class New_Profile extends \NDB_Page
             [$baseURL . "/new_profile/js/NewProfileIndex.js"]
         );
     }
-
 }

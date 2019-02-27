@@ -48,23 +48,23 @@ class NewProfileIndex extends React.Component {
   /**
    * It checks the date of birth and Expected Date of Confinement,
    * the date fields must match.
-   * If there is a mismatch, this function will return true.
+   * If match, this function will return true.
    *
    * @return {boolean}
    */
   validateMatchDate() {
     const data = this.state.formData;
-    let isError = false;
+    let dateMatch = true;
     if (data.dateTaken !== data.dateTakenConfirm) {
-      isError = true;
+      dateMatch = false;
     }
-    let decError = false;
+    let edcMatch = true;
     if (this.state.configData['edc'] === 'true' &&
       data.edcDateTaken !== data.edcDateTakenConfirm
     ) {
-      decError = true;
+      edcMatch = false;
     }
-    return isError || decError;
+    return dateMatch && edcMatch;
   }
 
   /**
@@ -74,11 +74,9 @@ class NewProfileIndex extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    const err = this.validateMatchDate();
-    this.setState({errMessage: ''});
-    if (err) {
-      this.setState(
-      {
+    const match = this.validateMatchDate();
+    if (!match) {
+      this.setState({
         errMessage: 'Date of Birth or EDC fields must match',
         isCreated: false,
       });
@@ -90,27 +88,22 @@ class NewProfileIndex extends React.Component {
           formObject.append(key, formData[key]);
         }
       }
-      fetch(
-          this.props.submitURL,
-          {
-            method: 'POST',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            body: formObject,
-          }
-        )
-        .then((resp) => resp.json())
-        .then(
-          (data) => {
-            this.setState({newData: data});
-            this.setState({isCreated: true});
-          }
-        );
+      fetch(this.props.submitURL, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject,
+        })
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.setState({newData: data});
+        this.setState({isCreated: true});
+       });
     }
   }
 
   /**
-   * Set the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/components
    *
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
@@ -134,11 +127,11 @@ class NewProfileIndex extends React.Component {
     }
     let profile = null;
     let edc = null;
+    let edcConfirm = null;
     let project = null;
     let pscid = null;
     if (this.state.configData['useProject'] === 'true') {
       project =
-        <div >
         <SelectElement
           name = "project"
           label = "Project"
@@ -146,12 +139,10 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.project}
           required = {true}
-        />
-        </div>;
+        />;
     }
     if (this.state.configData['edc'] === 'true') {
       edc =
-        <div>
         <DateElement
           name = "edcDateTaken"
           label = "Expected Date of Confinement"
@@ -160,7 +151,8 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.edcDateTaken}
           required = {true}
-        />
+        />;
+      edcConfirm =
         <DateElement
           name = "edcDateTakenConfirm"
           label = "Confirm EDC"
@@ -169,20 +161,17 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.edcDateTakenConfirm}
           required = {true}
-        />
-        </div>;
+        />;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       pscid =
-        <div >
         <TextboxElement
           name = "pscid"
           label = "PSCID"
           onUserInput = {this.setFormData}
           value = {this.state.formData.pscid}
           required = {true}
-        />
-        </div>;
+        />;
     }
     if (!this.state.isCreated) {
       profile =
@@ -211,6 +200,7 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />
         {edc}
+        {edcConfirm}
         <SelectElement
           name = "sex"
           label = "Sex"
@@ -234,28 +224,22 @@ class NewProfileIndex extends React.Component {
     } else {
       profile =
         <div>
-        <p>New candidate created.DCCID:{this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
-        <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
-        <p><a href = "/new_profile/" > Recruit another candidate </a></p>
+          <p>New candidate created.DCCID:{this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
+          <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
+          <p><a href = "/new_profile/" > Recruit another candidate </a></p>
         </div>;
     }
-    return (<div><Panel>{profile}</Panel></div>);
+    return (<Panel title="Create a new profile">{profile}</Panel>);
   }
 }
 window.addEventListener(
   'load',
   () => {
     ReactDOM.render(
-     <NewProfileIndex dataURL = {
-        `${loris.BaseURL}/new_profile/?format=json`
-      }
-      submitURL = {
-        `${loris.BaseURL}/new_profile/AddProfile`
-      }
-      hasPermission = {
-        loris.userHasPermission
-      }/>,
-      document.getElementById('lorisworkspace')
-    );
-  }
+      <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
+        submitURL = {`${loris.BaseURL}/new_profile/AddProfile`}
+        hasPermission = {loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace'));
+        }
 );
