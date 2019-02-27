@@ -3,16 +3,24 @@
 /**
  * This file contains a script used to set-up a developer instance of LORIS by
  * validating that the system has the required software installed.
+ *
+ * PHP Version 7
+ *
+ * @category Set-up
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 
-require_once('CLI_Helper.class.inc');
+require_once 'CLI_Helper.class.inc';
 $helper = new CLI_Helper($argv);
 $distro = $helper->getDistro();
 
 // Create boostrap object based on operating system
 switch ($distro) {
 case 'Ubuntu':
-    require('UbuntuBootstrapper.php');
+    include 'UbuntuBootstrapper.php';
     $b = new UbuntuBootstrapper($argv);
     break;
 default:
@@ -47,7 +55,7 @@ if (!$b->apacheRequirementSatisfied()) {
 $missingPackages = $b->getMissingPackages();
 if (count($missingPackages) > 0) {
     $report[] = "Found missing packages required by LORIS:";
-    foreach($missingPackages as $name) {
+    foreach ($missingPackages as $name) {
         $report[] = "\t- $name";
     }
     if (!installMode()) {
@@ -67,7 +75,13 @@ if (installMode()) {
 
 /* END SCRIPT */
 
-function installMode(): bool {
-    return isset($argv[1]) && ($argv[1] === '--install');
+/**
+ * Whether this script is in "install mode" as determined by a command-line flag.
+ *
+ * @return bool True if '-i' or '--install' is present in CLI arguments.
+ */
+function installMode(): bool
+{
+    return in_array('-i', $argv, true) || in_array('--install', $argv, true);
 }
 

@@ -13,7 +13,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/in
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs || exit $?;
 
 # Run PHPCS on some scripts  -- fixing the files format later
-# vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Confirm_Integrity.php
+vendor/bin/phpcs --standard=docs/LorisCS.xml tools/bootstrap.php tools/Bootstrapper.class.inc tools/UbuntuBootstrapper.php tools/CLI_Helper.class.inc
 
 # Run PHPCS on all modules
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/ || exit $?;

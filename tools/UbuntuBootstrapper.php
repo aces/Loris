@@ -1,73 +1,103 @@
 <?php declare(strict_types=1);
-/* This file contains functions used to satisfy LORIS system requirements on
+/**
+ * This file contains functions used to satisfy LORIS system requirements on
  * Ubuntu environments.
  *
- * Production environments should not use this tool as their dependency 
+ * Production environments should not use this tool as their dependency
  * management should be performed by a proper package such as a .deb file.
  *
- * @author John Saigle <john.saigle@mcin.ca>
+ * PHP Version 7
+ *
+ * @category Set-up
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-require_once('CLI_Helper.class.inc');
-require_once('Bootstrapper.class.inc');
+require_once 'CLI_Helper.class.inc';
+require_once 'Bootstrapper.class.inc';
 error_reporting(E_ALL);
 /**
+ * This class contains an implementation of the Bootstrapper interface and
+ * provides functionality that can satisfy system requirements on developer
+ * environments in order to successfully run the LORIS software.
  *
- * @author John Saigle <john.saigle@mcin.ca>
+ * @category Set-up
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
+class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
+{
 
     /* @var array $requirements An array of names of packages that can be
      * installed via apt on Ubuntu environments.
      */
     var $requirements = array();
 
-    public function __construct(array $args = array()) {
+    /**
+     * Creates a new object from the class.
+     *
+     * @param array $args A copy of the command-line arguments used to run a
+     * calling script.
+     *
+     * @return void
+     */
+    public function __construct(array $args = array())
+    {
         parent::__construct($args);
-        $required_php = self::PHP_MAJOR_VERSION_REQUIRED 
-            . '.' 
+        $required_php = self::PHP_MAJOR_VERSION_REQUIRED
+            . '.'
             . self::PHP_MINOR_VERSION_REQUIRED;
-        
+
         // Dependencies last updated for version: 20.0.1
-        // This list should consist only of packages that can be installed via apt on
-        // Ubuntu environments and must not include libraries that should be installed
-        // via tools such as npm and composer.
+        // This list should consist only of packages that can be installed
+        // via apt on Ubuntu environments and must not include libraries that
+        // should be installed via tools such as npm and composer.
         $this->requirements = array(
-            "wget",
-            "zip",
-            "unzip",
-            "php-json",
-            "npm",
-            "software-properties-common",
-            "php-ast",
-            "php$required_php",
-            "php$required_php-mysql",
-            "php$required_php-xml",
-            "php$required_php-json",
-            "php$required_php-mbstring",
-            "php$required_php-gd",
-            "libapache2-mod-php$required_php",
-        );
+                               "wget",
+                               "zip",
+                               "unzip",
+                               "php-json",
+                               "npm",
+                               "software-properties-common",
+                               "php-ast",
+                               "php$required_php",
+                               "php$required_php-mysql",
+                               "php$required_php-xml",
+                               "php$required_php-json",
+                               "php$required_php-mbstring",
+                               "php$required_php-gd",
+                               "libapache2-mod-php$required_php",
+                              );
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return bool Whether the requirement is met.
      */
-    public function phpRequirementSatisfied(): bool {
+    public function phpRequirementSatisfied(): bool
+    {
         return PHP_MAJOR_VERSION >= self::PHP_MAJOR_VERSION_REQUIRED
             && PHP_MINOR_VERSION >= self::PHP_MINOR_VERSION_REQUIRED;
     }
-    
+
 
     /**
      * {@inheritDoc}
+     *
+     * @return bool Whether the requirement is met.
      */
-    public function apacheRequirementSatisfied(): bool {
+    public function apacheRequirementSatisfied(): bool
+    {
         // Get string representation of apache version number
         $apache_parts = explode(
-            '/', 
+            '/',
             // this command yields e.g. Apache/2.4.34
             shell_exec(
-                "apache2 -v | " . 
+                "apache2 -v | " .
                 "head -n 1 | " .
                 "cut -d ' ' -f 3"
             )
@@ -86,8 +116,25 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
         return preg_match($pattern, $apache_version) !== 0;
     }
 
+
     /**
      * {@inheritDoc}
+     *
+     * @param string $name Name of package to install
+     *
+     * @return bool True if package installed/upgraded successfull. Otherwise false
+     */
+    function installed(string $name) : bool
+    {
+        return $this->doExec("dpkg -s $tool");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param array $packages List of packages to install.
+     *
+     * @return bool true if all packages installed properly. False otherwise.
      */
     public function installPackages(array $packages): bool
     {
@@ -102,27 +149,25 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    function installed(string $tool) : bool
-    {
-        return $this->doExec("dpkg -s $tool");
-    }
-
 
     /**
      * {@inheritDoc}
+     *
+     * @param string $name Name of package to install
+     *
+     * @return bool True if package installed/upgraded successfull. Otherwise false
      */
     function installPackage(string $name): bool
     {
-        $cmd = "sudo apt-get install ";
+        $cmd  = "sudo apt-get install ";
         $cmd .= escapeshellarg($name);
         return $this->doExec($cmd);
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return array of names of missing requirements
      */
     function getMissingPackages(): array
     {

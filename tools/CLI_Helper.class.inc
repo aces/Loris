@@ -1,22 +1,45 @@
 <?php declare(strict_types=1);
-require_once('generic_includes.php');
+/**
+ * This file contains a single class containing functions to help with common
+ * tasks in PHP command-line scripts.
+ *
+ * PHP Version 7
+ *
+ * @category Set-up
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+require_once 'generic_includes.php';
 
+/**
+ * Contains miscellaneous helper functions commonly used by command-line scripts
+ * written in PHP. It can be instantiated directly or extended by child classes
+ * so that they have some typical functions included.
+ *
+ * @category Set-up
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class CLI_Helper
 {
     /* Whether to print debug statements.*/
     var $verbose = false;
 
     /**
-     * Constructor for CLI helper. Optionally takes a copy of the calling codes
+     * Constructor for CLI helper. Optionally takes a copy of the calling code's
      * arguments.
      *
      * @param array $args A copy of $argv
      */
-    public function __construct(array $args = array()) {
+    public function __construct(array $args = array())
+    {
         if (in_array('-v', $args, true)
             || in_array('--verbose', $args, true)
         ) {
-            echo 'got verbose';
             $this->verbose = true;
         }
     }
@@ -74,7 +97,8 @@ class CLI_Helper
      *
      * @return string The distribution.
      */
-    function getDistro() {
+    function getDistro()
+    {
         // This command matches the one used in install.sh
         exec(
             "hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' '",
