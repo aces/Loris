@@ -27,7 +27,7 @@ namespace LORIS\biobank;
  * @subpackage Biobank
  * @author     Henri Rabalais <henri.rabalais@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-  @link       https://www.github.com/aces/Loris/
+ * @link       https://www.github.com/aces/Loris/
  */
 class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 {
@@ -349,8 +349,8 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                     array('ContainerID' => $containerId)
                 );
             }
-            // If insert:
         } else {
+            // If insert:
             $containerId = $this->db->getLastInsertId();
             // set the respective data array index to the value of the new
             // container ID.
@@ -476,7 +476,6 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getArrayFromSQL(array $data, array $childContainerIds) : array
     {
-        // TODO: check type before typecasting.
         return array(
                 'id'                => intval($data['ContainerID']),
                 'barcode'           => $data['Barcode'],

@@ -586,8 +586,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                            'Quantity'   => $collection['quantity'],
                            'UnitID'     => $collection['untiId'],
                            'CenterID'   => $collection['centerId'],
-                           'Date'       => (new \DateTime($collection['date']))->format('Y-m-d H:i'),
-                           'Time'       => (new \DateTime($collection['time']))->format('Y-m-d H:i'),
+                           'Date'       => \Utility::toMysqlDateFormat($collection['date']),
+                           'Time'       => \Utility::toMysqlDateFormat($collection['time']),
                            'Comments'   => $collection['comments'],
                           );
         $collectionData['Data'] = $collection['data'] ? json_encode($collection['data']) : null;
@@ -598,8 +598,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                                         'SpecimenID'         => $specimen['id'],
                                         'SpecimenProtocolID' => $preparation['protocolId'],
                                         'CenterID'           => $preparation['centerId'],
-                                        'Date'               => (new \DateTime($preparation['date']))->format('Y-m-d H:i'),
-                                        'Time'               => (new \DateTime($preparation['time']))->format('Y-m-d H:i'),
+                                        'Date'               => \Utility::toMysqlDateFormat($preparation['date']),
+                                        'Time'               => \Utility::toMysqlDateFormat($preparation['time']),
                                         'Comments'           => $preparation['comments'],
                                        );
             $preparationData['Data'] = $preparation['data'] ? json_encode($preparation['data']) : null;
@@ -611,8 +611,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                                      'SpecimenID'       => $specimen['id'],
                                      'SpecimenMethodID' => $analysis['methodId'],
                                      'CenterID'         => $analysis['centerId'],
-                                     'Date'             => (new \DateTime($analysis['date']))->format('Y-m-d H:i'),
-                                     'Time'             => (new \DateTime($analysis['time']))->format('Y-m-d H:i'),
+                                     'Date'             => \Utility::toMysqlDateFormat($analysis['date']),
+                                     'Time'             => \Utility::toMysqlDateFormat($analysis['time']),
                                      'Comments'         => $analysis['comments'],
                                     );
             $analysisData['Data'] = $analysis['data'] ? json_encode($analysis['data']) : null;
@@ -638,7 +638,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getArrayFromSQL(array $data, array $parentSpecimenIds) : array
     {
-        // TODO: check type before typecasting.
         return array(
                 'id'                => intval($data['SpecimenID']),
                 'containerId'       => intval($data['ContainerID']),

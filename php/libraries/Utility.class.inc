@@ -869,6 +869,19 @@ class Utility
     }
 
     /**
+     * Takes a date string of any format and returns a date string in a format
+     * compatible with mySQL.
+     *
+     * @param string $date to be converted
+     *
+     * @return string
+     */
+    static function toMysqlDateFormat(string $date) : string
+    {
+        return (new \DateTime($date))->format('Y-m-d H:i');
+    }
+
+    /**
      * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.)
      * and returns value in bytes
      *
