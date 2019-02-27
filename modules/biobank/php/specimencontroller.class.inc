@@ -87,7 +87,7 @@ class SpecimenController
      * the saved containers are set to the specimen instances which are then
      * sent to the DAO to be saved.
      *
-     * @param array $list  a list of specimen and container arrays to be created.
+     * @param array $list a list of specimen and container arrays to be created.
      *
      * @return void
      */
@@ -130,7 +130,7 @@ class SpecimenController
     /**
      * Converts data into a specimen intance validates the specimen.
      *
-     * @param array $data  Specimen data to be instantiated
+     * @param array $specimenArray Specimen data to be instantiated
      *
      * @return Specimen $specimen to be submitted
      */
@@ -184,13 +184,13 @@ class SpecimenController
     /**
      * Checks User Permissions for creating or updating Specimen Objects.
      *
-     * @param string $action User requested action
+     * @param string $method User requested action
      *
      * @return void
      */
-    private function validatePermission(string $action) : void
+    private function validatePermission(string $method) : void
     {
-        switch($action) {
+        switch($method) {
         case 'GET':
             if (!$this->user->hasPermission('biobank_specimen_view')) {
                 throw new \Forbidden('Specimen: View Permission Denied');

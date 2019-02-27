@@ -30,8 +30,8 @@ namespace LORIS\biobank;
 class ContainerController
 {
 
-    const minTemp = -273.15;
-    const maxTemp = 1000;
+    const MINTEMP = -273.15;
+    const MAXTEMP = 1000;
 
     /**
      * Global variable $db
@@ -179,9 +179,9 @@ class ContainerController
      *
      * @return void
      */
-    private function validatePermission(string $action) : void
+    private function validatePermission(string $method) : void
     {
-        switch($action) {
+        switch($method) {
         case 'GET':
             if (!$this->user->hasPermission('biobank_container_view')) {
                 throw new \Forbidden('Container: View Permission Denied');
@@ -288,8 +288,8 @@ class ContainerController
         if (!(is_numeric($temperature) && is_float(floatval($temperature)))) {
             throw new \BadRequest('Temperature must be a number.');
         }
-        if ($temperature < minTemp || $temperature > maxTemp) {
-            throw new \BadRequest('Temperature must be between '.minTemp.'°C and '.maxTemp.'°C.');
+        if ($temperature < MINTEMP || $temperature > MAXTEMP) {
+            throw new \BadRequest('Temperature must be between '.MINTEMP.'°C and '.MAXTEMP.'°C.');
         }
     }
 

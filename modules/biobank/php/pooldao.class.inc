@@ -100,7 +100,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     {
         // TODO: query date and time format from backend to know how to query
         // them from the database.
-        $query  = "SELECT bp.PoolID,
+        $query = "SELECT bp.PoolID,
                           bp.Label,
                           bp.CenterID,
                           bp.Date,
@@ -111,7 +111,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
-     * This function returns an array of all the Specimen Ids that are 
+     * This function returns an array of all the Specimen Ids that are
      * associated with the given Pool Instance's ID in the
      * biobank_specimen_pool_rel table.
      *
@@ -121,7 +121,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getSpecimenIdsFromId(int $id) : array
     {
-        $query       = 'SELECT SpecimenID
+        $query = 'SELECT SpecimenID
                         FROM biobank_specimen_pool_rel
                         WHERE PoolID=:i';
         return $this->db->pselectcol($query, array('i' => $id));
@@ -181,7 +181,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     {
         //Convert Pool to SQL format.
         $poolArray = getArrayFromInstance();
-        $data = $this->getSQLFromArray($poolArray);
+        $data      = $this->getSQLFromArray($poolArray);
 
         // TODO: Introduce a SQL Transaction here with a try catch.
         // Insert or Update the biobank_pool table with respective data.
@@ -248,7 +248,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
                 'biobank_specimen_pool_rel' => $specimenPoolData,
                );
     }
-    
+
     /**
      * This function takes an array that resulted from an SQL query and
      * indexes it in a format that can be used by the rest of the code.

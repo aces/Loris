@@ -52,17 +52,17 @@ class OptionsEndpoint implements RequestHandlerInterface
         return ['GET'];
     }
 
-    /**                                                                         
-     * This function passes the request to the handler. This is necessary since 
-     * the Endpoint bypass the Module class.                                    
-     *                                                                          
-     * XXX: This function should be extracted to a parent class.                   
-     *                                                                          
-     * @param ServerRequestInterface  $request The PSR7 request.                
-     * @param RequestHandlerInterface $handler The request handler.             
-     *                                                                          
-     * @return ResponseInterface The outgoing PSR7 response.                    
-     */  
+    /**
+     * This function passes the request to the handler. This is necessary since
+     * the Endpoint bypass the Module class.
+     *
+     * XXX: This function should be extracted to a parent class.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request.
+     * @param RequestHandlerInterface $handler The request handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -98,41 +98,41 @@ class OptionsEndpoint implements RequestHandlerInterface
         }
     }
 
-    /**                                                                            
-     * Retrieves all options for populating forms and mapping front-end data.   
-     *                                                                          
-     * @param Database $db   Database instance                                  
-     * @param User     $user User instance                                       
-     *                                                                           
-     * @return array All options required by the Biobank Module                 
-     */                                                                         
-    function getOptions(\Database $db, \User $user)                                             
-    {                                                                           
-        $contCont = new ContainerController($db, $user);                        
-        $specCont = new SpecimenController($db, $user);                         
-                                                                                
+    /**
+     * Retrieves all options for populating forms and mapping front-end data.
+     *
+     * @param Database $db   Database instance
+     * @param User     $user User instance
+     *
+     * @return array All options required by the Biobank Module
+     */
+    function getOptions(\Database $db, \User $user)
+    {
+        $contCont = new ContainerController($db, $user);
+        $specCont = new SpecimenController($db, $user);
+
         // XXX: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
-        // provide Candidate Objects.    
-        $query      = 'SELECT CandID as id, PSCID as pscid FROM candidate';     
-        $candidates = $db->pselectWithIndexKey($query, array(), 'id');          
-                                                                                
+        // provide Candidate Objects.
+        $query      = 'SELECT CandID as id, PSCID as pscid FROM candidate';
+        $candidates = $db->pselectWithIndexKey($query, array(), 'id');
+
         // XXX: This should eventually be replaced by a call directly to a
         // Session endpoint or Session controller that will be able to provide
-        // Session Objects.        
-        $query    = 'SELECT ID as id, Visit_label as label FROM session';       
-        $sessions = $db->pselectWithIndexKey($query, array(), 'id');            
-                                                                                
+        // Session Objects.
+        $query    = 'SELECT ID as id, Visit_label as label FROM session';
+        $sessions = $db->pselectWithIndexKey($query, array(), 'id');
+
         // XXX: This should eventually be replaced by a call directly to a
         // Center Endpoint or Center Controller that will be able to provide
-        // Center Objects.      
-        $centers = \Utility::getSiteList();                                     
-        foreach ($centers as $id => $center) {                                  
-            if ($user->hasCenter($id) === false) {                              
-                unset($centers[$id]);                                           
-            }                                                                   
-        }                                                                       
-                                                                                
+        // Center Objects.
+        $centers = \Utility::getSiteList();
+        foreach ($centers as $id => $center) {
+            if ($user->hasCenter($id) === false) {
+                unset($centers[$id]);
+            }
+        }
+
         // XXX: This should eventually be replaced by a call directly to a
         // Session Controller or Session Options endpoint that will be able to
         // provide these options.
@@ -142,25 +142,25 @@ class OptionsEndpoint implements RequestHandlerInterface
                          s.CenterID as centerId                                 
                  FROM candidate c                                               
                  LEFT JOIN session s                                            
-                   USING(CandID)';                                              
-        $result = $db->pselect($query, array());                                
-        $candidateSessions = array();                                           
-        $sessionCenters    = array();                                           
-        foreach ($result as $row) {                                             
-            foreach ($row as $column=>$value) {                                 
+                   USING(CandID)';
+        $result = $db->pselect($query, array());
+        $candidateSessions = array();
+        $sessionCenters    = array();
+        foreach ($result as $row) {
+            foreach ($row as $column=>$value) {
                 $candidateSessions[$row['candidateId']][$row['sessionId']]['label'] = $row['label'];
                 $sessionCenters[$row['sessionId']]['centerId'] = $row['centerId'];
-            }                                                                   
-        }                                                                       
-                                                                                
-        return array(                                                           
-                'candidates'        => $candidates,                             
-                'sessions'          => $sessions,                               
-                'centers'           => $centers,                                
-                'candidateSessions' => $candidateSessions,                      
-                'sessionCenters'    => $sessionCenters,                         
-                'container'         => $contCont->getOptions(),                 
-                'specimen'          => $specCont->getOptions(),                 
-               );                                                               
-    }             
+            }
+        }
+
+        return array(
+                'candidates'        => $candidates,
+                'sessions'          => $sessions,
+                'centers'           => $centers,
+                'candidateSessions' => $candidateSessions,
+                'sessionCenters'    => $sessionCenters,
+                'container'         => $contCont->getOptions(),
+                'specimen'          => $specCont->getOptions(),
+               );
+    }
 }

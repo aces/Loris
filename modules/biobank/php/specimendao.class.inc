@@ -474,7 +474,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     {
         // Converts Specimen Object into SQL format.
         $specimenArray = $this->getArrayFromInstance($specimen);
-        $data = $this->getSQLFromArray($specimenArray);
+        $data          = $this->getSQLFromArray($specimenArray);
 
         // TODO: Look into implementing a transaction here
         // $this->db->_PDO->beginTransaction();
@@ -492,7 +492,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             // If update:
             // XXX: Logic will likely eventually go here.
         } else {
-        // If insert:
+            // If insert:
             $specimenId = $this->db->getLastInsertId();
             // set the respective data array index to the value of the new
             // specimen ID
@@ -712,7 +712,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      *
      * @return array Specimen Array
      */
-    public function getArrayFromInstance(Specimen $specimen) {
+    public function getArrayFromInstance(Specimen $specimen)
+    {
         return $specimen->jsonSerialize();
     }
 }

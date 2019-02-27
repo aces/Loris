@@ -52,19 +52,19 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @access private
      */
-    private $id;                
-    private $containerId;       
-    private $typeId;            
-    private $quantity;          
-    private $unitId;            
-    private $fTCycle;           
-    private $parentSpecimenIds; 
-    private $candidateId;       
-    private $sessionId;         
-    private $poolId;            
-    private $collection;        
-    private $preparation;       
-    private $analysis;          
+    private $id;
+    private $containerId;
+    private $typeId;
+    private $quantity;
+    private $unitId;
+    private $fTCycle;
+    private $parentSpecimenIds;
+    private $candidateId;
+    private $sessionId;
+    private $poolId;
+    private $collection;
+    private $preparation;
+    private $analysis;
 
     /**
      * Initiliazes a new instance of the Specimen Class

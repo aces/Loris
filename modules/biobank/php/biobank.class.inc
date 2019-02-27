@@ -52,42 +52,12 @@ class Biobank extends \NDB_Menu_Filter
         $this->AjaxModule   = true;
     }
 
-    // TODO: Move this to another class.
-    /**
-     * Allows files to be downloaded
-     *
-     * @param \SplFileObject $file File to be downloaded
-     *
-     * @return ResponseInterface the outgoing PSR7 response.
-     */
-    function downloadFile(\SplFileObject $file) : ResponseInterface
-    {
-        if (!$user->hasPermission('biobank_specimen_view')) {
-            throw new \Forbidden('Permission to download file is denied');
-        }
-
-        $fileName = basename($file);
-        $config   = \NDB_Config::singleton();
-        $path     = $config->getSetting('biobankPath');
-        $filePath = $path . $fileName;
-
-        if (!file_exists($filePath)) {
-            error_log('ERROR: File '.$filePath.' does not exist');
-            throw new \NotFound('File was not found');
-        }
-
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'image/jpeg')
-            ->withHeaer('Content-Length', (string) filesize($file))
-            ->withBody(new \LORIS\Http\StringStream($filePath));
-    }
-
     /**
      * Include additional CSS files:
      *
      * @return array of javascript to be inserted
      */
-    function getCSSDependencies(): array 
+    function getCSSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

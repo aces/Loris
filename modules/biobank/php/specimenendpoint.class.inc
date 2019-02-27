@@ -49,15 +49,19 @@ class SpecimenEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return ['GET', 'PUT', 'POST'];
+        return [
+                'GET',
+                'PUT',
+                'POST',
+               ];
     }
 
     /**
      * This function passes the request to the handler. This is necessary since
      * the Endpoint bypass the Module class.
      *
-     * XXX: This function should be extracted to a parent class. 
-     * 
+     * TODO: This function should be extracted to a parent class.
+     *
      * @param ServerRequestInterface  $request The PSR7 request.
      * @param RequestHandlerInterface $handler The request handler.
      *
@@ -85,10 +89,6 @@ class SpecimenEndpoint implements RequestHandlerInterface
         $specCont = new SpecimenController($db, $user);
 
         try {
-            // XXX: Not sure if I'm using this file uploader properly. John S.
-            // or Xavier please check this. Perhaps this should be sent to an
-            // entirely different endpoint and not handled within the specimen
-            // endpoint.
             switch($request->getMethod()) {
             case 'GET':
                 $specimens = $specCont->getInstances();
@@ -114,10 +114,10 @@ class SpecimenEndpoint implements RequestHandlerInterface
                     ->withHeader('Allow', $this->allowedMethods());
             }
 
-        } catch (\Invalid $e) {
+        } catch (\BadRequest $e) {
             return \LORIS\Http\Response\BadRequest($e->getMessage());
         } catch (\Forbidden $e) {
             return \LORIS\Http\Response\Forbidden($e->getMessage());
-        } 
+        }
     }
 }

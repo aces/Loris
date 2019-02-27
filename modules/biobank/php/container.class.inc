@@ -37,7 +37,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * These properties describe a container entity.
      *
-     * @var int   $id 
+     * @var int   $id
      * @var int   $barcode
      * @var int   $typeId
      * @var int   $dimensionId
@@ -51,17 +51,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @access private
      */
-    private $id;                
-    private $barcode;           
-    private $typeId;            
-    private $dimensionId;       
-    private $temperature;       
-    private $statusId;          
-    private $originId;          
-    private $centerId;          
-    private $parentContainerId; 
-    private $childContainerIds; 
-    private $coordinate;        
+    private $id;
+    private $barcode;
+    private $typeId;
+    private $dimensionId;
+    private $temperature;
+    private $statusId;
+    private $originId;
+    private $centerId;
+    private $parentContainerId;
+    private $childContainerIds;
+    private $coordinate;
 
     /**
      * Initiliazes a new instance of the Container Class
@@ -159,9 +159,9 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * Sets the container's temperature
+     * Sets the container's temperature in Celsius.
      *
-     * @param float $temperature the container's temperature
+     * @param float $temperature the container's temperature.
      *
      * @return void
      */
@@ -171,7 +171,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * Gets the container's temperature
+     * Gets the container's temperature in Celsius.
      *
      * @return float
      */

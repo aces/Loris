@@ -49,20 +49,24 @@ class ContainerEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return ['GET', 'PUT', 'POST'];
+        return [
+                'GET',
+                'PUT',
+                'POST',
+               ];
     }
 
-    /**                                                                         
-     * This function passes the request to the handler. This is necessary since 
-     * the Endpoint bypass the Module class.                                    
-     *                                                                          
-     * XXX: This function should be extracted to a parent class.                   
-     *                                                                          
-     * @param ServerRequestInterface  $request The PSR7 request.                
-     * @param RequestHandlerInterface $handler The request handler.             
-     *                                                                          
-     * @return ResponseInterface The outgoing PSR7 response.                    
-     */  
+    /**
+     * This function passes the request to the handler. This is necessary since
+     * the Endpoint bypass the Module class.
+     *
+     * XXX: This function should be extracted to a parent class.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request.
+     * @param RequestHandlerInterface $handler The request handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -79,8 +83,8 @@ class ContainerEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db            = \Database::singleton();
-        $user          = $request->getAttribute('user');
+        $db       = \Database::singleton();
+        $user     = $request->getAttribute('user');
         $contCont = new ContainerController($db, $user);
 
         try {

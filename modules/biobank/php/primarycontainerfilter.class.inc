@@ -36,7 +36,14 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
      */
     private $primary;
 
-    function __construct($primary) {
+    /**
+     * Class constructor.
+     *
+     * @param int $primary A value of '0' or '1' which indicates if the
+     *                     container is primary.
+     */
+    function __construct(int $primary)
+    {
         $this->primary = $primary;
     }
 

@@ -90,7 +90,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getInstanceDataFromId(int $id)
     {
-        $query = 'SELECT bc.ContainerID,
+        $query     = 'SELECT bc.ContainerID,
                      bc.Barcode,
                      bc.ContainerTypeID,
                      bct.ContainerCapacityID,
@@ -125,7 +125,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getChildContainerIds(int $id) : array
     {
-         $query       = 'SELECT ContainerID
+         $query = 'SELECT ContainerID
                    FROM biobank_container_parent
                    WHERE ParentContainerID=:i';
          $childContainerIds = $this->db->pselectCol($query, array('i' => $id));
@@ -328,7 +328,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     {
         // Converts Container Object into SQL format.
         $containerArray = $this->getArrayFromInstance($container);
-        $data = $this->getSQLFromArray($containerArray);
+        $data           = $this->getSQLFromArray($containerArray);
 
         // Inserts or Updates the biobank_container table with given data.
         $this->db->insertOnDuplicateUpdate(
@@ -470,7 +470,8 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * indexes it in a format that is expected from the from the rest of the
      * code.
      *
-     * @param array $data Values to be instantiated.
+     * @param array $data              Values to be instantiated.
+     * @param array $childContainerIds List of child container ids.
      *
      * @return array
      */
@@ -520,13 +521,14 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
     /**
      * A wrapper function for the jsonSerialize method of the Specimen Instance
-     * Class. This converts the Container Instance into an array. 
+     * Class. This converts the Container Instance into an array.
      *
      * @param Container $container Container Instance.
      *
      * @return array Container arrray.
      */
-    public function getArrayFromInstance(Container $container) {
+    public function getArrayFromInstance(Container $container)
+    {
         return $container->jsonSerialize();
     }
 

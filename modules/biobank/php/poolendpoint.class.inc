@@ -49,20 +49,23 @@ class PoolEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return ['GET', 'POST'];
+        return [
+                'GET',
+                'POST',
+               ];
     }
 
-    /**                                                                         
-     * This function passes the request to the handler. This is necessary since 
-     * the Endpoint bypass the Module class.                                    
-     *                                                                          
-     * XXX: This function should be extracted to a parent class.                   
-     *                                                                          
-     * @param ServerRequestInterface  $request The PSR7 request.                
-     * @param RequestHandlerInterface $handler The request handler.             
-     *                                                                          
-     * @return ResponseInterface The outgoing PSR7 response.                    
-     */  
+    /**
+     * This function passes the request to the handler. This is necessary since
+     * the Endpoint bypass the Module class.
+     *
+     * XXX: This function should be extracted to a parent class.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request.
+     * @param RequestHandlerInterface $handler The request handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -96,7 +99,7 @@ class PoolEndpoint implements RequestHandlerInterface
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             }
-        } catch (\Invalid $e) {
+        } catch (\BadRequest $e) {
             return \LORIS\Http\Response\BadRequest($e->getMessage());
         } catch (\Forbidden $e) {
             return \LORIS\Http\Response\Forbidden($e->getMessage());

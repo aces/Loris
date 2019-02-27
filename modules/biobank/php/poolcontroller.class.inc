@@ -116,13 +116,13 @@ class PoolController
     /**
      * Checks user Permissions for given requested action.
      *
-     * @param string $action to be executed.
+     * @param string $method to be executed.
      *
      * @return void
      */
-    private function validatePermission(string $action) : void
+    private function validatePermission(string $method) : void
     {
-        switch ($action) {
+        switch ($method) {
         case 'GET':
             if (!$this->user->hasPermission('biobank_pool_view')) {
                 throw new \Forbidden('Pool: View Permission Denied');

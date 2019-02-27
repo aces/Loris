@@ -47,14 +47,14 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @access private
      */
-    private $id;          
-    private $label;       
-    private $specimenIds; 
-    private $candidateId; 
-    private $sessionId;   
-    private $centerId;    
-    private $date;        
-    private $time;        
+    private $id;
+    private $label;
+    private $specimenIds;
+    private $candidateId;
+    private $sessionId;
+    private $centerId;
+    private $date;
+    private $time;
 
     /**
      * Initiliazes a new instance of the Pool Class
@@ -246,7 +246,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        // TODO: Date and Time formats should be gotten from some sort of 
+        // TODO: Date and Time formats should be gotten from some sort of
         // config setting.
         return array(
                 'id'          => $this->id,
