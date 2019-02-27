@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'generic_includes.php';
 
 /**
  * Contains miscellaneous helper functions commonly used by command-line scripts
