@@ -526,7 +526,7 @@ class SpecimenController
      *
      * @return ResponseInterface
      */
-    private function uploadFiles(ServerRequestInterface $request) : void
+    private function uploadFiles(ServerRequestInterface $request) : ResponseInterface
     {
         $config    = \NDB_Config::singleton();
         $path      = $config->getSetting('biobankPath');

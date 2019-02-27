@@ -316,8 +316,8 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
         $collection->setQuantity($data['quantity']);
         $collection->setUnitId($data['unitId']);
         $collection->setCenterId($data['centerId']);
-        $collection->setDate($data['date']);
-        $collection->setTime($data['time']);
+        $collection->setDate(new \DateTime($data['date']));
+        $collection->setTime(new \DateTime($data['time']));
         $collection->setComments($data['comments']);
         $collection->setData($data['data']);
         $this->collection = $collection;
@@ -348,8 +348,8 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
             $preparation = new Preparation();
             $preparation->setProtocolId($data['protocolId']);
             $preparation->setCenterId($data['centerId']);
-            $preparation->setDate($data['date']);
-            $preparation->setTime($data['time']);
+            $preparation->setDate(new \DateTime($data['date']));
+            $preparation->setTime(new \DateTime($data['time']));
             $preparation->setData($data['data']);
             $preparation->setComments($data['comments']);
             $this->preparation = $preparation;
@@ -381,8 +381,8 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
             $analysis = new Analysis();
             $analysis->setMethodId($data['methodId']);
             $analysis->setCenterId($data['centerId']);
-            $analysis->setDate($data['date']);
-            $analysis->setTime($data['time']);
+            $analysis->setDate(new \DateTime($data['date']));
+            $analysis->setTime(new \DateTime($data['time']));
             $analysis->setData($data['data']);
             $analysis->setComments($data['comments']);
             $this->analysis = $analysis;

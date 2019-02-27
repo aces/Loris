@@ -586,8 +586,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                            'Quantity'   => $collection['quantity'],
                            'UnitID'     => $collection['untiId'],
                            'CenterID'   => $collection['centerId'],
-                           'Date'       => $collection['date'],
-                           'Time'       => $collection['time'],
+                           'Date'       => new DateTime($collection['date'])->format('Y-m-d H:i'),
+                           'Time'       => new DateTime($collection['time'])->format('Y-m-d H:i'),
                            'Comments'   => $collection['comments'],
                           );
         $collectionData['Data'] = $collection['data'] ? json_encode($collection['data']) : null;
@@ -598,8 +598,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                                         'SpecimenID'         => $specimen['id'],
                                         'SpecimenProtocolID' => $preparation['protocolId'],
                                         'CenterID'           => $preparation['centerId'],
-                                        'Date'               => $preparation['date'],
-                                        'Time'               => $preparation['time'],
+                                        'Date'               => new DateTime($preparation['date'])->format('Y-m-d H:i'),
+                                        'Time'               => new DateTime($preparation['time'])->format('Y-m-d H:i'),
                                         'Comments'           => $preparation['comments'],
                                        );
             $preparationData['Data'] = $preparation['data'] ? json_encode($preparation['data']) : null;
@@ -611,8 +611,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                                      'SpecimenID'       => $specimen['id'],
                                      'SpecimenMethodID' => $analysis['methodId'],
                                      'CenterID'         => $analysis['centerId'],
-                                     'Date'             => $analysis['date'],
-                                     'Time'             => $analysis['time'],
+                                     'Date'             => new DateTime($analysis['date'])->format('Y-m-d H:i'),
+                                     'Time'             => new DateTime($analysis['time'])->format('Y-m-d H:i'),
                                      'Comments'         => $analysis['comments'],
                                     );
             $analysisData['Data'] = $analysis['data'] ? json_encode($analysis['data']) : null;

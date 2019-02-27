@@ -29,6 +29,10 @@ namespace LORIS\biobank;
  */
 class ContainerController
 {
+
+    const minTemp = -273.15;
+    const maxTemp = 1000;
+
     /**
      * Global variable $db
      *
@@ -284,8 +288,8 @@ class ContainerController
         if (!(is_numeric($temperature) && is_float(floatval($temperature)))) {
             throw new \BadRequest('Temperature must be a number.');
         }
-        if ($temperature < -273.15 || $temperature > 1000) {
-            throw new \BadRequest('Temperature must be between -273.15°C and 1000°C.');
+        if ($temperature < minTemp || $temperature > maxTemp) {
+            throw new \BadRequest('Temperature must be between '.minTemp.'°C and '.maxTemp.'°C.');
         }
     }
 

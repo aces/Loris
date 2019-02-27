@@ -103,11 +103,11 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets the date of collection
      *
-     * @param string $date the date of processing
+     * @param \DateTime $date the date of processing
      *
      * @return void
      */
-    public function setDate(string $date) : void
+    public function setDate(\DateTime $date) : void
     {
         $this->date = $date;
     }
@@ -115,21 +115,21 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the date of processing
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getDate() : string
+    public function getDate() : DateTime
     {
         return $this->date;
     }
 
     /**
-     * Sets the time of collection
+     * Sets the time of processing
      *
-     * @param string $time the time of processing
+     * @param \DateTime $time the time of processing
      *
      * @return void
      */
-    public function setTime(string $time) : void
+    public function setTime(\DateTime $time) : void
     {
         $this->time = $time;
     }
@@ -137,9 +137,9 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the time of processing
      *
-     * @return string
+     * @return DateTime
      */
-    public function getTime() : string
+    public function getTime() : DateTime
     {
         return $this->time;
     }
@@ -195,11 +195,13 @@ abstract class Process implements \JsonSerializable
      */
     public function jsonSerialize() : array
     {
+        // TODO: Date and Time formats should be gotten from some sort of config
+        // setting.
         return array(
                 'id'       => $this->id,
                 'centerId' => $this->centerId,
-                'date'     => $this->date,
-                'time'     => $this->time,
+                'date'     => $this->date->format('d-m-Y'),
+                'time'     => $this->time->format('H:i'),
                 'comments' => $this->comments,
                 'data'     => $this->data,
                );

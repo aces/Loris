@@ -92,7 +92,7 @@ class SpecimenEndpoint implements RequestHandlerInterface
             switch($request->getMethod()) {
             case 'GET':
                 $specimens = $specCont->getInstances();
-                $response = new \LORIS\Http\Response\OK($specimens);
+                return new \LORIS\Http\Response\OK($specimens);
             case 'POST':
                 $specimens = json_decode($request->getBody()->getContents(), true);
                 $specCont->createInstances($specimens);
