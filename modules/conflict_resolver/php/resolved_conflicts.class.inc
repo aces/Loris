@@ -81,18 +81,18 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
              '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
             )
         );
-        $this->query   = ' FROM conflicts_resolved
+        $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
-            WHERE 1=1';
+            WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $site_arr     = implode(',', $user->getCenterIDs());
-            $this->query .= ' AND candidate.CenterID IN (' . $site_arr . ')';
+            $this->query .= ' AND session.CenterID IN (' . $site_arr . ')';
         }
 
         $this->group_by = '';
