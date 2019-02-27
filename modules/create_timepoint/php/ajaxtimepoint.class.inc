@@ -211,7 +211,7 @@ class AjaxTimepoint extends \NDB_Page
         $visit_options      = array();
         $visitLabelSettings = $config->getSetting('visitLabel');
         foreach (
-            \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
+            \Utility::toArray($visitLabelSettings) as $visitLabel
         ) {
             if (!empty($values['subproject'])) {
                 if (isset($visitLabel['generation'])
