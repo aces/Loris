@@ -145,6 +145,8 @@ function processFiles($pubID) : void
         );
     }
 
+    // append trailing slash if trailing slash isn't present in configured directory
+    $publicationPath .= substr($publicationPath, -1) === '/' ? '' : '/';
     foreach ($_FILES as $name => $values) {
         $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
@@ -165,7 +167,7 @@ function processFiles($pubID) : void
         $pubUploadInsert = array(
                             'PublicationID'           => $pubID,
                             'PublicationUploadTypeID' => $pubTypeID,
-                            'URL'                     => basename($fileName),
+                            'Filename'                     => basename($fileName),
                             'Citation'                => $pubCitation,
                             'Version'                 => $pubVersion,
                            );
@@ -283,7 +285,7 @@ function insertKeywords(int $pubID) : void
             array('kw' => $kw)
         );
         // if it doesn't, add it to keyword table and retrieve ID
-        if (!$kwID) {
+        if (empty($kwID)) {
             $kwInsert = array('Label' => $kw);
             $db->insert(
                 'publication_keyword',
@@ -385,7 +387,7 @@ function cleanup(int $pubID) : void
     }
 
     $files = $db->pselectCol(
-        'SELECT URL FROM publication_upload WHERE PublicationID=:PublicationID',
+        'SELECT Filename FROM publication_upload WHERE PublicationID=:PublicationID',
         $where
     );
     if (!empty($files)) {

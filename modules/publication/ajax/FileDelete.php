@@ -17,7 +17,7 @@ $db       = \Database::singleton();
 $user     = \User::singleton();
 $config   = \NDB_Config::singleton();
 
-$query      = "SELECT PublicationID, URL ".
+$query      = "SELECT PublicationID, Filename ".
     "FROM publication_upload ".
     "WHERE PublicationUploadID=:upid";
 $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
@@ -37,8 +37,8 @@ if (userCanDelete($uploadData, $db, $user)) {
         array('PublicationUploadID' => $uploadID)
     );
 
-    $src  = $config->getSetting('publication_uploads') . $uploadData['URL'];
-    $dest = $config->getSetting('publication_deletions') . $uploadData['URL'];
+    $src  = $config->getSetting('publication_uploads') . $uploadData['Filename'];
+    $dest = $config->getSetting('publication_deletions') . $uploadData['Filename'];
 
     rename($src, $dest);
 

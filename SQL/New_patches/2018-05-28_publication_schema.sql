@@ -107,11 +107,11 @@ CREATE TABLE `publication_upload` (
     `PublicationUploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationID` int(10) unsigned NOT NULL,
     `PublicationUploadTypeID` int(2) unsigned NOT NULL,
-    `URL` varchar(255) NOT NULL,
+    `Filename` varchar(255) NOT NULL,
     `Version` varchar(255),
     `Citation` text,
     CONSTRAINT `PK_publication_upload` PRIMARY KEY (`PublicationUploadID`),
-    CONSTRAINT `UK_publication_upload_URL` UNIQUE (URL),
+    CONSTRAINT `UK_publication_upload_Filename` UNIQUE (Filename),
     CONSTRAINT `FK_publication_upload_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
     CONSTRAINT `FK_publication_upload_PublicationUploadTypeID` FOREIGN KEY (`PublicationUploadTypeID`) REFERENCES `publication_upload_type` (`PublicationUploadTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
