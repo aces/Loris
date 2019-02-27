@@ -42,13 +42,16 @@ if (!$b->phpRequirementSatisfied()) {
         PHP_VERSION
     );
 }
-// Check Apache
+// Check Apache -- note that this is a "soft" requirement as development can
+// be done using a local PHP server instead of using Apache.
 if (!$b->apacheRequirementSatisfied()) {
     $report[] = sprintf(
         "LORIS requires at least Apache version %s, but %s is installed.",
         $b->APACHE_MAJOR_VERSION_REQUIRED . '.' . $b->APACHE_MINOR_VERSION_REQUIRED,
         PHP_VERSION
     );
+    $report[] = 'Development is possible using a local server but Apache ' .
+        'cannot be used.';
 }
 
 // Check "packages" -- apt, MySQL extensions, and other misc. tools

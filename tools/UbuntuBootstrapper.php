@@ -92,17 +92,22 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
      */
     public function apacheRequirementSatisfied(): bool
     {
-        // Get string representation of apache version number
-        $apache_parts = explode(
-            '/',
-            // this command yields e.g. Apache/2.4.34
-            shell_exec(
-                "apache2 -v | " .
-                "head -n 1 | " .
-                "cut -d ' ' -f 3"
-            )
+        // Get string representation of apache version number.
+        // This command yields e.g. Apache/2.4.34
+        $cmdOutput = shell_exec(
+            "apache2 -v | " .
+            "head -n 1 | " .
+            "cut -d ' ' -f 3"
         );
-        $apache_version = end($apache_parts);
+        if (is_null($cmdOutput)) {
+            // Apache2 is not installed.
+            return false;
+        }
+        $apacheParts   = explode(
+            '/',
+            $cmdOutput
+        );
+        $apacheVersion = end($apacheParts);
 
         // Look for the string "$major.$minor" in info string. Also match on versions
         // higher than minor version because we want AT LEAST that version.
@@ -113,7 +118,7 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
         );
 
         // When preg_match returns 0 it means no match was found.
-        return preg_match($pattern, $apache_version) !== 0;
+        return preg_match($pattern, $apacheVersion) !== 0;
     }
 
 
