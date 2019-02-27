@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * File contains the PSR7 ResponseInterface implementation for
- * Bad Request responses.
+ * File contains the PSR7 ResponseInterface implementation for OK responses.
  *
  * PHP Version 7
  *
@@ -20,25 +19,24 @@ use \LORIS\Http\Response\JsonResponse;
 
 /**
  * A LORIS Http Response is an implementation of the PSR15 ResponseInterface
- * to use in LORIS specific for 400 Bad Request.
+ * to use in LORIS specific for 200 OK.
  *
  * @category PSR15
  * @package  Http
- * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
+ * @author   Henri Rabalais <henri.rabalais@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class BadRequest extends JsonResponse
+class OK extends JsonResponse
 {
     /**
-     * Create a Json response specific to 400 Bad Request
+     * Create a Json response specific to 200 OK.
      *
-     * @param string $msg The error message
+     * @param array $msg The response message.
      */
-    public function __construct(string $msg = 'bad request')
+    public function __construct(array $msg)
     {
-        $body = array('error' => $msg);
-        parent::__construct($body, 400);
+        parent::__construct($msg, 200);
     }
 }
 
