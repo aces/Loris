@@ -1,9 +1,4 @@
-# LORIS Logic Parser
-
-- [JS Use](#js-use)
-- [PHP Use](#php-use)
-- [Development](#development)
-- [Syntax](#syntax)
+# LORIS Logic Parser Syntax
 
 The parser provides a human readable syntax for front end equation building, real-time calculations, and back end validation. 
 
@@ -18,50 +13,7 @@ This ReadMe breaks down the different parts of the Parser and lists syntax rules
 
 Note that this parser is made up of two separate components: a JS parser and a PHP parser, both of which use the same syntax detailed below.
 
-# JS Use
-At the top of your JS file add `import { Evaluator } from 'Parser';` (change the path based on your directory location).
-<br>Call `Evaluator(LOGIC_STRING, SCOPE)` to evaluate an equation.
-
-# PHP Use
-At the top of your PHP file add `include 'Parser/php/evaluator.php';`. 
-<br>Call the evaluator with `Evaluator::evaluate($equation, $this->scope);`.
-
-# Development
-To add, delete, or edit functions, simply edit `js/Functions.js` and `php/functions.php`.
-
-If you wish to make changes to the syntax, first be sure you cannot implement the same functionality with a function call. If not, proceed with the instructions below.
-
-NOTE: Please make sure all changes are mirrored on both the JS and PHP sides of the parser. Discrepancies will cause more headaches than you or I wish to deal with. ALL changes to ANY part of the parser on the JS or PHP side MUST be unit tested! Integration tests to come.
-
-### Prerequisites for Development
-
- * [Jison](jison.org) (only required for changes in syntax)
-
- Note that end users do not require Jison, only the Jison-generated parser file.
-
-### Syntax and Operator Changes
-Changing syntax (or adding unary/binary operators) requires changes to `jison/logicParser.jison` as well as `php/lexer.php` and `php/parser.php`. See specifics below.
-
-### Jison/JS Grammar Specifics
-In `logicParser.jison`, tokens are defined at the top, precedence and assertions are set below that, 
-and finally the grammar itself is defined below that.
-The output is a simple object defining a tag, operation, and arguments. `tag` indicates the operation type to be handled in `Evaluator.js`. `op` indicates the operation to be executed (defined in `Functions.js`). Lastly, `args` defines the arguments of the operation as objects, which allows nested operations.
-See [Jison documentation](jison.org) for grammar and Flex pattern matching specifications.
-
-After your changes are made run `jison jison/logicParser.jison` and replace `js/logicParser.js` with the output file.
-
-### PHP Grammar Specifics
-Tokens are defined in `lexer.php`. Precedence and assertions are defined by the order of parsing functions in `parser.php`. The grammar is defined in `lexer.php`. Similarly to JS, an array defining `tag`, `op`, and `args` is output to `evaluator.php`.
-
-### Evaluator Changes
-To add new types of operations, add a case to the switch statement in `js/Evaluator.js` and `php/evaluator.php`.
-
-### Unit Testing
-JS tests can be added to `Loris/test/js-tests/Parser.test.js`. Run tests with `npm run tests:unit:js:watch`.
-
-PHP tests can be added to `Loris/test/unittests/ParserTest.php`. Run tests with `Loris/vendor/bin/phpunit --configuration phpunit.xml --testsuite 'PHPParserTest'`.
-
-# Syntax
+## Syntax
 Note that all whitespace (spaces or tabs) is ignored in the parser.
 
 ### Value Inputs
@@ -90,7 +42,7 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | multiply  	| a * b  	|                                                                     	|
 | divide    	| a / b  	| cannot divide by 0                                                	|
 | exponent  	| a ^ b  	|                                                                     	|
-| percentage  	| a %   	| divides the value of a by 100                                         |
+| percentage  | a %   	| divides the value of a by 100                                         |
 | factorial  	| a !   	| returns a factorial<br>supports 0 or positive numbers divisible by 0.5  |
 
 ### Boolean/Comparison Operations (returns true or false)
@@ -117,8 +69,8 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | not a number       	| isNaN(a)             	| returns true if a is not a number                                                    	|
 | modulo             	| mod(a, b)            	| returns the remainder of a / b                                                       	|
 | round              	| round(a, b)          	| rounds a to b decimal places; note all rounding functions support trailing 0s        	|
-| round up           	| roundup(a, b)        	| rounds a up to b decimal places                                                      	|
-| round down         	| rounddown(a,b)       	| rounds a down to b decimal places                                                    	|
+| round up           	| ceil(a, b)        	  | rounds a up to b decimal places                                                      	|
+| round down         	| floor(a,b)       	    | rounds a down to b decimal places                                                    	|
 | square root        	| sqrt(a)              	|                                                                                      	|
 | absolute value     	| abs(a)               	| returns the positive value of a                                                      	|
 | minimum            	| min(a,b,c,d...)      	| returns the smallest value of its arguments                                          	|
@@ -131,9 +83,9 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | standard deviation 	| stdev(a,b,c,d...)    	| returns the population standard deviation (square root of variance) of its arguments 	|
 
 ### Date Operations
-| Operation       	| Syntax                                        	|
-|-----------------	|-----------------------------------------------	|
-| date difference 	| datediff(date1, date2, units, signed)         	|
+| Operation       	| Syntax                                        	| Notes                                   |
+|-----------------	|-----------------------------------------------	|-----------------------------------------|
+| date difference 	| datediff(date1, date2, units, signed)         	| returns a decimal in the specified unit |
 
 | Argument     	| Syntax                                	| Notes                                                                                                                                     	|
 |--------------	|---------------------------------------	|-------------------------------------------------------------------------------------------------------------------------------------------	|

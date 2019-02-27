@@ -90,14 +90,14 @@ All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
         ...
         "meta" : {
             "createdBy": string,
-            "createdOn": string,
             "createdWith": string,
+            "dateCreatedOn": string,
+            "dateLastUpdateOn": string,
             "defaultLanguage": string,
             "derivedFrom": string,
             "importedFrom": string,
             "includeMetaDataFields": boolean,
             "instrumentVersion": string,
-            "lastUpdateOn": string,
             "longName": {
                 "languageTag1": string,
                 "languageTag2": string,
@@ -118,14 +118,17 @@ provenance data. The value of each key is defined as such:
 
 `meta.createdBy`: String. The developer or user responsible for creating the Z-JSON Instrument.
 
-`meta.createdOn`: String. The date of creation of the Z-JSON Instrument in the format 'YYYY-MM-DD'. Each new version of
-an instrument will have a new `createdOn` date.
-
-Small changes, such as bug fixes, that do not require the creation of a new version of an instrument should instead use
-`meta.lastUpdateOn` to track updates.
-                 
 `meta.createdWith`: String. The software or tool responsible for the creation of the ZJSON Instrument, i.e. the Instrument Builder module or some conversion script.
 
+`meta.dateCreatedOn`: String. The date of creation of the Z-JSON Instrument in the format 'YYYY-MM-DD'. Each new version of
+an instrument will have a new `dateCreatedOn` date.
+
+Small changes, such as bug fixes, that do not require the creation of a new version of an instrument should instead use
+`meta.dateLastUpdateOn` to track updates.
+                 
+`meta.dateLastUpdateOn`: String. The date at which small modifications that do not justify creating a new version, such as
+bug fixes, was last made. It follows the format 'YYYY-MM-DD'.
+                          
 `meta.defaultLanguage`: Required String. The default (human communication) language of the instrument, represented by an
 IETF BCP 47 (RFC 5646 Standard) language tag, e.g. "en-CA".
 
@@ -155,9 +158,6 @@ It follows some convention determined by the author of the instrument, starting 
 1 and incrementing itself alongside any changes made to the `schema` object. It is self-contained and interpreted
 independently of the instrument's `shortName` or `longName`.
 
-`meta.lastUpdateOn`: String. The date at which small modifications that do not justify creating a new version, such as
-bug fixes, was last made.
-                          
 `meta.longName`: Required object with IETF BCP 47 language tags as keys. The value of each key will be the long, human
 readable version of the instrument's name (its title) provided in every language that the instrument comes in.
 
