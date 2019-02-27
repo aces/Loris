@@ -111,6 +111,22 @@ class ExaminerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
+     * Tests that examiner page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testExaminerDoesLoadWithoutSuperuser()
+    {
+        $this->setupPermissions(array('superuser'));
+        $this->safeGet($this->url . "/examiner/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
+    /**
      * Tests that examiner selection filter, search a Examiner name
      * and click clear form, the input data should disappear.
      *
