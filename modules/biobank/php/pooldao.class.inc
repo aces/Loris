@@ -231,8 +231,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
                      'PoolID'   => $pool['id'],
                      'Label'    => $pool['label'],
                      'CenterID' => $pool['centerId'],
-                     'Date'     => new DateTime($pool['date'])->format('Y-m-d H:i'),
-                     'Time'     => new DateTime($pool['time'])->format('Y-m-d H:i'),
+                     'Date'     => (new \DateTime($pool['date']))->format('Y-m-d H:i'),
+                     'Time'     => (new \DateTime($pool['time']))->format('Y-m-d H:i'),
                     );
 
         $specimenIds = $pool->getSpecimenIds();

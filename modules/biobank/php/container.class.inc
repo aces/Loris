@@ -35,22 +35,33 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a container entity.
+     * These properties describe a container entity.
+     *
+     * @var int   $id 
+     * @var int   $barcode
+     * @var int   $typeId
+     * @var int   $dimensionId
+     * @var float $temperature
+     * @var int   $statusId
+     * @var int   $originId
+     * @var int   $centerId
+     * @var int   $parentContainerId
+     * @var array $childContainerIds
+     * @var int   $coordinate
      *
      * @access private
      */
-    private $id;                 //int
-    private $barcode;            //int
-    private $typeId;             //int
-    private $dimensionId;        //int
-    private $temperature;        //float
-    private $statusId;           //int
-    private $originId;           //int
-    private $centerId;           //int
-    private $parentContainerId;  //int
-    private $childContainerIds;  //array
-    private $coordinate;         //int
+    private $id;                
+    private $barcode;           
+    private $typeId;            
+    private $dimensionId;       
+    private $temperature;       
+    private $statusId;          
+    private $originId;          
+    private $centerId;          
+    private $parentContainerId; 
+    private $childContainerIds; 
+    private $coordinate;        
 
     /**
      * Initiliazes a new instance of the Container Class

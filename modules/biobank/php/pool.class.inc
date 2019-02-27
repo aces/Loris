@@ -34,19 +34,27 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a pool entity.
+     * These properties describe a pool entity.
+     *
+     * @var int       $id
+     * @var string    $label
+     * @var array     $specimenIds
+     * @var int       $candidateId
+     * @var int       $sessionId
+     * @var int       $centerId
+     * @var \DateTime $date
+     * @var \DateTime $time
      *
      * @access private
      */
-    private $id;          //int
-    private $label;       //string
-    private $specimenIds; //array
-    private $candidateId; //int
-    private $sessionId;   //int
-    private $centerId;    //int
-    private $date;        //string
-    private $time;        //string
+    private $id;          
+    private $label;       
+    private $specimenIds; 
+    private $candidateId; 
+    private $sessionId;   
+    private $centerId;    
+    private $date;        
+    private $time;        
 
     /**
      * Initiliazes a new instance of the Pool Class
@@ -248,7 +256,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
                 'sessionId'   => $this->sessionId,
                 'centerId'    => $this->centerId,
                 'date'        => $this->date->format('d-m-Y'),
-                'time'        => $this->time->format('H:i',
+                'time'        => $this->time->format('H:i'),
                );
     }
 

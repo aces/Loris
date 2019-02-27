@@ -34,8 +34,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a specimen entity.
+     * These properties describe a specimen entity.
      *
      * @var int         $id
      * @var int         $containerId
