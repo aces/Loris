@@ -14,14 +14,14 @@
  */
 
 require_once 'CLI_Helper.class.inc';
-$helper = new CLI_Helper($argv);
+$helper = new CLI_Helper($argv ?? array());
 $distro = $helper->getDistro();
 
 // Create boostrap object based on operating system
 switch ($distro) {
 case 'Ubuntu':
     include 'UbuntuBootstrapper.php';
-    $b = new UbuntuBootstrapper($argv);
+    $b = new UbuntuBootstrapper($argv ?? array());
     break;
 default:
     exit(
@@ -85,6 +85,7 @@ if (installMode()) {
  */
 function installMode(): bool
 {
-    return in_array('-i', $argv, true) || in_array('--install', $argv, true);
+    return isset($argv)
+        && (in_array('-i', $argv, true) || in_array('--install', $argv, true));
 }
 

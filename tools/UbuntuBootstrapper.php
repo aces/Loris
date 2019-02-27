@@ -131,7 +131,7 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
      */
     function installed(string $name) : bool
     {
-        return $this->doExec("dpkg -s $tool");
+        return $this->doExec("dpkg -s $name");
     }
 
     /**
