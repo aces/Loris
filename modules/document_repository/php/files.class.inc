@@ -145,11 +145,11 @@ class Files extends \NDB_Page
         $req  = array();
         $this->parseRawHttpRequest($req);
         $updateValues = [
-                         'instrument'    => $req['instrument'] ?? null,
-                         'comments'      => $req['comments'] ?? null,
-                         'version'       => $req['version'] ?? null,
-                         'visitLabel'    => $req['visitLabel'] ?? null,
-                         'pscid'         => $req['pscid'] ?? null,
+                         'instrument' => $req['instrument'] ?? null,
+                         'comments'   => $req['comments'] ?? null,
+                         'version'    => $req['version'] ?? null,
+                         'visitLabel' => $req['visitLabel'] ?? null,
+                         'pscid'      => $req['pscid'] ?? null,
                         ];
         try {
             $db->update(
@@ -167,9 +167,9 @@ class Files extends \NDB_Page
      * @param array $a_data an init array
      *
      * @throws \DatabaseException
-     *
+     * @return void
      */
-    function parseRawHttpRequest(array &$a_data)
+    function parseRawHttpRequest(array &$a_data): void
     {
         // read incoming data
         $input = file_get_contents('php://input');
