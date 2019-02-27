@@ -36,12 +36,14 @@ class UploadCategory extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return (
-            $user->hasPermission('document_repository_delete')
-            || $user->hasPermission('document_repository_view')
-
+        return $user->hasAnyPermission(
+            array(
+             'document_repository_view',
+             'document_repository_delete',
+            )
         );
     }
+
 
     /**
      * Handle a post form
@@ -70,12 +72,12 @@ class UploadCategory extends \NDB_Page
         }
     }
     /**
- * Handles the upload category process
- *
- * @param ServerRequestInterface $request The incoming PSR7 request
- *
- * @return void
- */
+     * Handles the upload category process
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return void
+     */
     function uploadDocCategory($request): void
     {
         $DB            = \Database::singleton();

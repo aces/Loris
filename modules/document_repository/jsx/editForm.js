@@ -140,15 +140,17 @@ class DocEditForm extends React.Component {
       }
     }
    fetch(this.props.action, {
-      method: 'POST',
+      method: 'PUT',
       cache: 'no-cache',
       credentials: 'same-origin',
+      headers: {
+            'Content-Type': 'multipart/form-data',
+      },
       body: formObject,
     })
     .then((resp) => resp.json())
     .then(()=>{
       swal('Updated Successful!', '', 'success');
-      this.props.refreshPage();
       this.fetchData();
     });
   }

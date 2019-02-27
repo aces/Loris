@@ -75,7 +75,7 @@ class DocIndex extends React.Component {
         closeOnConfirm: false,
       },
       function() {
-        let deleteurl = loris.BaseURL + '/document_repository/EditFile/' + id;
+        let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
           fetch(deleteurl, {
           method: 'DELETE',
           cache: 'no-cache',
@@ -164,7 +164,7 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadFile`}
+            action={`${loris.BaseURL}/document_repository/Files`}
             maxUploadSize={this.state.data.maxUploadSize}
             refreshPage={this.fetchData}
             category={this.state.newCategory}

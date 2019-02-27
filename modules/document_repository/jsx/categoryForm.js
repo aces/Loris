@@ -100,7 +100,7 @@ class DocCategoryForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-      this.uploadFile();
+    this.uploadFile();
   }
   /*
    * Uploads the file to the server

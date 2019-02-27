@@ -56,9 +56,7 @@ class DocUploadForm extends React.Component {
      }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <Loader/>
-      );
+      return (<Loader/>);
     }
     return (
       <div className="row">
@@ -190,9 +188,7 @@ class DocUploadForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({
-      formData: formData,
-    });
+    this.setState({formData: formData});
   }
 }
 

@@ -36,10 +36,13 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_view')
-            || $user->hasPermission('document_repository_delete');
+        return $user->hasAnyPermission(
+            array(
+             'document_repository_view',
+             'document_repository_delete',
+            )
+        );
     }
-
     /**
      * Function _setupVariables
      *
@@ -110,12 +113,12 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         return $true;
     }
     /**
- * Handler of parsing category
- *
- * @param string $value the value
- *
- * @return array
- */
+     * Handler of parsing category
+     *
+     * @param string $value the value
+     *
+     * @return array
+     */
     function parseCategory($value): array
     {
         $id    = $value['id'];
@@ -138,15 +141,15 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 );
     }
     /**
- * Utility function to convert data from database to a
- * (select) dropdown friendly format
- *
- * @param array  $options array of options
- * @param string $item    key
- * @param string $item2   value
- *
- * @return array
- */
+     * Utility function to convert data from database to a
+     * (select) dropdown friendly format
+     *
+     * @param array  $options array of options
+     * @param string $item    key
+     * @param string $item2   value
+     *
+     * @return array
+     */
     function toDocSelect($options, $item, $item2): array
     {
         $selectOptions = array();
