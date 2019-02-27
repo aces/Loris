@@ -223,7 +223,7 @@ class AjaxTimepoint extends \NDB_Page
                     );
                 }
                 $labelOptions[''] = null;
-                $items            = \Utility::associativeToNumericArray(
+                $items            = \Utility::toArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
