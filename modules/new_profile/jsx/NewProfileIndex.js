@@ -33,7 +33,6 @@ class NewProfileIndex extends React.Component {
   /**
    * Retrieve data from the provided URL and save it in state
    *
-   *
    * @return {object}
    */
   fetchData() {
