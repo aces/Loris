@@ -157,7 +157,7 @@ class Database_Test extends TestCase
         );
 
         $stub->_PDO->expects($this->once())->method("prepare")->will($this->returnValue($stmt));
-        $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), array());
+        $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), 2);
 
     }
 
