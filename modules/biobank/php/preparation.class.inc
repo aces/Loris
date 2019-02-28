@@ -34,12 +34,11 @@ class Preparation extends Process
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a specimen entity.
+     * These variables described a preparation instance.
      *
-     * @access private
+     * @var int $protocolId
      */
-    private $protocolId; //int
+    private $protocolId;
 
     /**
      * Sets the ID of the specimen's protocol

@@ -34,25 +34,13 @@ class ContainerController
     const MAXTEMP = 1000;
 
     /**
-     * Global variable $db
+     * Private instances of the Database, User and ContainerDAO classes.
      *
-     * @access private
+     * @var \Database    $db
+     * @var \User        $user
+     * @var ContainerDAO $dao
      */
-    private $db;
-
-    /**
-     * Global variable $user
-     *
-     * @access private
-     */
-    private $user;
-
-    /**
-     * Global variable $dao
-     *
-     * @access private
-     */
-    private $dao;
+    private $db, $user, $dao;
 
     /**
      * Class Constructor

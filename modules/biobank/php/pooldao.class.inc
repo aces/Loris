@@ -34,9 +34,9 @@ namespace LORIS\biobank;
 class PoolDAO extends \LORIS\Data\ProvisionerInstance
 {
     /**
-     * Global variable $db
+     * Private instance of the Database class.
      *
-     * @access private
+     * @var \Dabatase $dao
      */
     private $db;
 

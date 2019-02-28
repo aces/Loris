@@ -44,8 +44,6 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      * @var int       $centerId
      * @var \DateTime $date
      * @var \DateTime $time
-     *
-     * @access private
      */
     private $id;
     private $label;

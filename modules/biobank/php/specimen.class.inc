@@ -49,8 +49,6 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      * @var Collection  $collection
      * @var Preparation $preparation
      * @var Analysis    $analysis
-     *
-     * @access private
      */
     private $id;
     private $containerId;

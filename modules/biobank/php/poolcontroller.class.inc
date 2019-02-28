@@ -30,25 +30,13 @@ namespace LORIS\biobank;
 class PoolController
 {
     /**
-     * Global variable $db
+     * Private instances of the Database, User and PoolDAO classes.
      *
-     * @access private
+     * @var \Database $db
+     * @var \User     $user
+     * @var PoolDAO   $dao
      */
-    private $db;
-
-    /**
-     * Global variable $user
-     *
-     * @access private
-     */
-    private $user;
-
-    /**
-     * Global variable $dao
-     *
-     * @access private
-     */
-    private $dao;
+    private $db, $user, $dao;
 
     /**
      * Pool Controller Class constructor.

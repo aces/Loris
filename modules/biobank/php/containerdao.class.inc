@@ -32,9 +32,9 @@ namespace LORIS\biobank;
 class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 {
     /**
-     * Global variable $db
+     * Private instance of the Database class.
      *
-     * @access private
+     * @var \Database $dao
      */
     private $db;
 

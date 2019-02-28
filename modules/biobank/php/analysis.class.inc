@@ -36,12 +36,11 @@ class Analysis extends Process
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a specimen entity.
+     * These variables describe an analysis instance.
      *
-     * @access private
+     * @var int $methodId
      */
-    private $methodId; //int
+    private $methodId;
 
     /**
      * Sets the ID of the specimen's method

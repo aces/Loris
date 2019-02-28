@@ -34,17 +34,21 @@ abstract class Process implements \JsonSerializable
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a specimen entity.
+     * These variables describe a process instance.
      *
-     * @access private
+     * @var int       $id
+     * @var int       $centerId
+     * @var \DateTime $date
+     * @var \DateTime $time
+     * @var string    $comments
+     * @var array     $data
      */
-    private $id;       //int
-    private $centerId; //int
-    private $date;     //string
-    private $time;     //string
-    private $comments; //string
-    private $data;     //array
+    private $id;
+    private $centerId;
+    private $date;
+    private $time;
+    private $comments;
+    private $data;
 
     /**
      * Initiliazes a new instance of the Process Class

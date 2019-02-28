@@ -34,13 +34,12 @@ class Collection extends Process
     /**
      * Persistent Instance variables.
      *
-     * These variables are directly mapped to the fields of the database schema
-     * that describe a specimen entity.
+     * These variables describe a collection instance.
      *
-     * @access private
+     * @var float $quantity
+     * @var int   $unitId
      */
-    private $quantity; //float
-    private $unitId;   //int
+    private $quantity, $unitId;
 
     /**
      * Sets the current quantity of specimen available. This associated unit

@@ -30,25 +30,13 @@ namespace LORIS\biobank;
 class SpecimenController
 {
     /**
-     * Global variable $db.
+     * Private instances of the Database, User and ContainerDAO classes
      *
-     * @access private
+     * @var \Database   $db
+     * @var \User       $user
+     * @var SpecimenDAO $dao
      */
-    private $db;
-
-    /**
-     * Global variable $user
-     *
-     * @access private
-     */
-    private $user;
-
-    /**
-     * Global variable $dao.
-     *
-     * @access private
-     */
-    private $dao;
+    private $db, $user, $dao;
 
     /**
      * Specimen Controller Class constructor
