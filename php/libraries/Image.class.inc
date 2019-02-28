@@ -141,6 +141,56 @@ class Image
         );
     }
 
+    public function getQcStatus(): \LORIS\ImageQcStatus
+    {
+        $row = \NDB_Factory::singleton()->database()->pselectRow(
+            'SELECT
+               QCStatus as qcstatus,
+               Selected as selected
+             FROM
+               files_qcstatus
+             WHERE
+               FileID = :v_fileid
+            ',
+            array('v_fileid' => $this->_fileid)
+        );
+
+        $qcstatus = $row['qcstatus'] ?? null;
+        $selected = is_null($row['selected']) ? null : boolval($row['selected']);
+
+        return new \LORIS\ImageQcStatus($qcstatus, $selected);
+    }
+
+    /**
+     * Update this image qc status in the database
+     *
+     * This is not hadnling the QCFirstChangeTime. That column and  
+     * QCLastChangeTime shoudl be managed by `DEFAULT CURRENT_TIMESTAMP`
+     * and `ON UPDATE CURRENT_TIMESTAMP` respectively
+     *
+     * @param \LORIS\ImageQcStatus $qcstatus The new values
+     *
+     * @return void
+     */ 
+    public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
+    {
+        $newvalues = array(
+            'QCStatus'         => $qcstatus->getQcStatus(),
+            'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
+            'QCLastChangeTime' => time(),
+        );
+
+        $whereconditions = array(
+            'FileID' => $this->_fileid
+        );
+
+        \NDB_Factory::singleton()->database()->update(
+            'files_qcstatus',
+            $newvalues,
+            $whereconditions
+        );
+    }
+
     /**
      * Creates an immutable object representation of this Image
      *

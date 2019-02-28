@@ -941,33 +941,29 @@ class TimePoint
     /**
      * Gets the first Image of that session matching a given filename
      *
+     * @param \User  $user     The requesting user
      * @param string $filename The requested filename
      *
      * @throws \NotFound
-     * @return \LORIS\ImageDTO
+     * @return \LORIS\Image
      */
-    public function getImageByFilename(string $filename): \LORIS\ImageDTO
+    public function getImageByFilename(\User $user, string $filename): \LORIS\Image
     {
-        $db  = \NDB_Factory::singleton()->database();
-        $row = $db->pselectRow(
-            'SELECT
-               FileID
-             FROM
-               files
-             WHERE
-               SessionID = :v_sessionid AND
-               File LIKE :v_filename',
-            array(
-             'v_filename'  => '%' . $filename,
-             'v_sessionid' => $this->getSessionID(),
-            )
+        $filtered = array_filter(
+            $this->getImages($user),
+            function ($dto) use ($filename) {
+                return $dto->getFilename() == $filename;
+            }
         );
 
-        if (empty($row)) {
+        if (empty($filtered)) {
             throw new \NotFound($filename . ' not found.');
         }
 
-        return (new \LORIS\Image($row['FileID']))->asDTO();
+        // Take the first corresponding file.
+        $imagedto = array_pop($filtered);
+
+        return new \LORIS\Image($imagedto->getFileid());
     }
 
     /**
