@@ -6,8 +6,6 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
@@ -20,13 +18,30 @@
  *
  * @category Test
  * @package  Loris
- * @author   Justin Kat <justin.kat@mail.mcgill.ca>
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
+    //filter location on conflict_resolver page
+    static $ForSite        = ".col-xs-12:nth-child(1) .form-control, [select]";
+    static $Instrument     = ".col-xs-12:nth-child(2) .form-control, [select]";
+    static $VisitLabel     = ".col-xs-12:nth-child(3) .form-control, [select]";
+    static $CandID         = ".col-xs-12:nth-child(4) .form-control";
+    static $PSCID          = ".col-xs-12:nth-child(5) .form-control";
+    static $Question       = ".col-xs-12:nth-child(6) .form-control";
+    static $Project        = ".col-xs-12:nth-child(7) .form-control, [select]";
+
+    //filter location on resolved_conflicts page
+    static $Timestamp      = ".col-xs-12:nth-child(7) .form-control";
+    static $Project_RC     = ".col-xs-12:nth-child(8) .form-control, [select]";
+
+    //public location for both pages
+    static $clearFilter    = ".col-sm-9 > .btn";
+    static $display        = ".table-header .col-xs-12";
+    static $saveBtn        = ".btn-sm:nth-child(1)";
+    static $resetBtn       = ".btn-sm:nth-child(2)";
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -36,41 +51,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $window->maximize();
-        $this->DB->insert(
-            "conflicts_resolved",
-            array(
-             'ResolvedID'          => '999999',
-             'UserID'              => 'demo',
-             'ResolutionTimestamp' => '2015-11-03 16:21:49',
-             'User1'               => 'Null',
-             'User2'               => 'Null',
-             'TableName'           => 'Test',
-             'ExtraKey1'           => 'NULL',
-             'ExtraKey2'           => 'NULL',
-             'FieldName'           => 'TestTestTest',
-             'CommentId1'          => '589569DCC000012291366553230',
-             'CommentId2'          => 'DDE_589569DCC000012291366653254',
-             'OldValue1'           => 'Mother',
-             'OldValue2'           => 'Father',
-             'NewValue'            => 'NULL',
-            )
-        );
-         $this->DB->insert(
-             "conflicts_unresolved",
-             array(
-              'TableName'      => 'TestTestTest',
-              'ExtraKeyColumn' => 'Test',
-              'ExtraKey1'      => 'Null',
-              'ExtraKey2'      => 'Null',
-              'FieldName'      => 'TestTestTest',
-              'CommentId1'     => '963443000111271151398976899',
-              'Value1'         => 'no',
-              'CommentId2'     => 'DDE_963443000111271151398976899',
-              'Value2'         => 'no',
-             )
-         );
+        $this->setUpConfigSetting("useProjects", "true");
     }
      /**
      * Delete testing data from database
@@ -80,45 +61,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
-        $this->DB->delete(
-            "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
-        );
         parent::tearDown();
-    }
-
-     /**
-     * Tests that, when loading the conflict_resolver module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testConflictResolverDoespageLoad()
-    {
-        $this->safeGet($this->url . "/conflict_resolver/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::id("onLoad")
-        )->getText();
-        $this->assertContains("Unresolved Conflicts", $bodyText);
-    }
-
-     /**
-     * Tests that, when loading the resolved_conflicts submodule, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testConflictResolverResolvedCoflictsDoespageLoad()
-    {
-        $this->safeGet(
-            $this->url
-            . "/conflict_resolver/resolved_conflicts/"
-        );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Resolved Conflicts", $bodyText);
+        $this->restoreConfigSetting("useProjects");
     }
 
      /**
@@ -130,11 +74,18 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::id("onLoad")
-         )->getText();
-         $this->assertContains("Unresolved Conflicts", $bodyText);
-         $this->resetPermissions();
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertContains(
+            "Resolved Conflicts",
+            $bodyText
+        );
+        
+        $this->resetPermissions();
     }
 
      /**
@@ -171,94 +122,120 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
+    /**
+     * Tests clear button in the form
+     * The form should refreash and the data should be gone.
+     *
+     * @return void
+     */
+    function testFiltersForUnresolvedConflicts()
+    {
+        $this->setUpConfigSetting("useProjects", "true");
+        $this->safeGet($this->url . "/conflict_resolver/");
+       
+        //testing data 
+        $this-> _testFilter(self::$ForSite, "20 rows displayed of 319", '2');
+        $this-> _testFilter(self::$VisitLabel, "displayed of 581", '1');
+        $this-> _testFilter(self::$CandID, "8 rows displayed of 8", '300001');
+        $this-> _testFilter(self::$PSCID, "8 rows displayed of 8", 'MTL001');
+        $this-> _testFilter(self::$Question, "displayed of 182", 'height_inches');
+        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '2');
+    }
+    /**
+     * Testing filter funtion and clear button
+     *
+     * @param string $element The input element loaction
+     * @param string $records The records number in the table
+     * @param string $value   The test value
+     *
+     * @return void
+     */
+    function _testFilter($element,$records,$value)
+    {
+        // get element from the page
+        if (strpos($element, "select") === false) {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);
+                "
+            );
+        } else {
+            $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+            );
+        }
+            $row      = self::$display;
+            $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('$row').textContent"
+            );
+            // 4 means there are 4 records under this site.
+            $this->assertContains($records, $bodyText);
+            //test clear filter
+            $btn = self::$clearFilter;
+            $this->webDriver->executescript(
+                "document.querySelector('$btn').click();"
+            );
+            $inputText = $this->webDriver->executescript(
+                "return document.querySelector('$element').value"
+            );
+            $this->assertEquals("", $inputText);
+    }
      /**
-     * Tests research function in resolved conflicts
+     * Tests filter in resolved conflicts
      * author: Wang Shen
      *
      * @return void
      */
-    function testSearchConflictResolved()
+    function testFiltersForResolvedConflicts()
     {
-        $this->markTestSkipped(
-            'Rewrite this part later'
-        );
-         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
-         $keywordElement = $this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         );
-         $keywordElement->sendkeys('TestTestTest');
-         //click show data button
-         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
-         $this->safeGet(
-             $this->url .
-             "/conflict_resolver/?submenu=resolved_conflicts&format=json"
-         );
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("TestTestTest", $bodyText);
-    }
-     /**
-     * Tests research function in unresolved conflicts
-     * author: Wang Shen
-     *
-     * @return void
-     */
-    function testSearchUnresolvedConflicts()
-    {
-        $this->markTestSkipped(
-            'Rewrite this part later'
-        );
-         $this->safeGet($this->url . "/conflict_resolver/");
-         $keywordElement = $this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         );
-         $keywordElement->sendkeys('TestTestTest');
-         //click show data button
-         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
-         $this->safeGet($this->url . "/conflict_resolver/?format=json");
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("TestTestTest", $bodyText);
-    }
-     /**
-     * Tests Clear Form function in unresolved conflicts
-     * author: Wang Shen
-     *
-     * @return void
-     */
-    function testClearFormUnresolvedConflicts()
-    {
-         $this->safeGet($this->url . "/conflict_resolver/");
-         $keywordElement = $this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         );
-         $keywordElement->sendkeys('TestTestTest');
-         //click clear form button
-         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
-         $bodyText =$this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         )->getText();
-         $this->assertNotContains("TestTestTest", $bodyText);
-    }
-     /**
-     * Tests Clear Form function in resolved conflicts
-     * author: Wang Shen
-    *
-     * @return void
-     */
-    function testClearFormResolvedConflicts()
-    {
-         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
-         $keywordElement = $this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         );
-         $keywordElement->sendkeys('TestTestTest');
-         //click clear form button
-         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::Name("Question")
-         )->getText();
-         $this->assertNotContains("TestTestTest", $bodyText);
-    }
+        $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
 
+        $this-> _testFilter(self::$ForSite, "14 rows", '2');
+        $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1');
+        $this-> _testFilter(self::$CandID, "1 row", '400167');
+        $this-> _testFilter(self::$PSCID, "1 row", 'ROM167');
+        $this-> _testFilter(self::$Question, "9 rows", 'date_taken');
+        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 14:35:51');
+        $this-> _testFilter(self::$Project_RC, "1 row", '2');
 
+    }
+     /**
+     * Tests save a unresolved conflicts to resolved
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testSaveUnresolvedToResolved()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/");
+         //give a correct answer and save it for the first row
+         $element = "tr:nth-child(1) .form-control";
+         $value   = "2";
+         $btn     = self::$saveBtn;
+         $row     = self::$display; 
+         $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = '$value';
+                "
+            );        
+         $this->webDriver->executescript(
+                "document.querySelector('$btn').click()"
+         );sleep(1);
+         //todo find this
+         $bodyText = $this->webDriver->executescript(
+                "return document.querySelector('$row').textContent"
+            );
+            // 4 means there are 4 records under this site.
+         $this->assertContains("of 584", $bodyText); 
+         
+    }
 }
 
