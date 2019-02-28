@@ -585,8 +585,7 @@ class User extends UserPermissions
          * password has occurred in data breaches.
          * Here we iterate over all of the suffixes and check whether the prefix
          * and the whole suffix line together contain $hash as a substring at
-         * the beginning of the line (instead of preprocessing by removing
-         * the colon and count from the end of the $suffix line.
+         * the beginning of the line.
          * Check the API documentation linked above if you want more info.
          */
         foreach ($hashSuffixes as $suffix) {
