@@ -42,7 +42,8 @@
           "allowMultipleValues": false,
           "requireResponse": true,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": true
         },
         "rules": {
           "requireIf": "",
@@ -87,7 +88,8 @@
           "allowMultipleValues": false,
           "requireResponse": false,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": false
         },
         "rules": {
           "requireIf": "",
@@ -107,7 +109,6 @@
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": false
-
         },
         "rules": {
           "requireIf": "",
@@ -132,7 +133,8 @@
           "allowMultipleValues": false,
           "requireResponse": false,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": false
         },
         "rules": {
           "requireIf": "",
@@ -177,7 +179,8 @@
           "allowMultipleValues": false,
           "requireResponse": false,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": false
         },
         "rules": {
           "requireIf": "",
@@ -222,7 +225,8 @@
           "allowMultipleValues": false,
           "requireResponse": false,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": false
         },
         "rules": {
           "requireIf": "",
@@ -242,7 +246,6 @@
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": false
-
         },
         "rules": {
           "requireIf": "",
@@ -267,7 +270,8 @@
           "allowMultipleValues": false,
           "requireResponse": false,
           "readonly": false,
-          "hideInSurvey": false
+          "hideInSurvey": false,
+          "showDesc": false
         },
         "rules": {
           "requireIf": "",
@@ -281,7 +285,8 @@
             "en-CA": "Your BMI"
         },
         "options": {
-          "scoringFormula": "",
+          "scoringFormula": "if([unit_classification]='metric', round([weight_kgs]/([height_cms]/100)^2, 2), round(([weight_lbs]*703)/([height_feet]*12+[height_inches])^2, 2))",
+          "onError": "Unable to calculate",
           "readonly": true,
           "hideInSurvey": true
         },
@@ -297,7 +302,8 @@
             "en-CA": "Your BMI Classification"
         },
         "options": {
-          "scoringFormula": "",
+          "scoringFormula": "if([bmi] < 18.5, 'Underweight', if([bmi]>=18.5 and [bmi]<=22.9, 'Normal Range, if([bmi]>=23.0 and [bmi]<=24.9, 'Overweight - At Risk', if([bmi]>=25.0 and [bmi]<=29.9, 'Overweight - Moderately Obese', 'Overweight - Severely Obese')))))",
+          "onError": "Unable to calculate",
           "readonly": true,
           "hideInSurvey": true
         },
@@ -367,6 +373,9 @@
             "height_feet",
             "height_feet_status"
           ],
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
@@ -386,6 +395,9 @@
             "height_inches_status"
 
           ],
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
@@ -404,6 +416,9 @@
             "weight_lbs",
             "weight_lbs_status"
           ],
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
@@ -422,6 +437,9 @@
             "height_cms",
             "height_cms_status"
           ],
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
@@ -440,6 +458,9 @@
             "weight_kgs",
             "weight_kgs_status"
           ],
+          "requireResponse": true,
+          "readonly": false,
+          "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
