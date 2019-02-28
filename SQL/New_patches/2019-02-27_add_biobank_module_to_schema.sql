@@ -412,10 +412,12 @@ CREATE TABLE `biobank_container_parent` (
 /*INSERTS*/
 
 /*Loris Menu*/
+UPDATE LorisMenu SET `OrderNumber`=5 WHERE `Label`='Reports';
+UPDATE LorisMenu SET `OrderNumber`=6 WHERE `Label`='Tools';
 UPDATE LorisMenu SET `OrderNumber`=7 WHERE `Label`='Admin';
 
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES
-    ('Biobank', 6)
+    ('Biobank', 4)
 ;
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES                  
