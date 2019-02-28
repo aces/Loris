@@ -2,7 +2,7 @@
 /**
  * This file represents an SQL database abstraction layer for use in Loris
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -11,6 +11,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 define("DEBUG", false);
+define('ESCAPE_ALL', 0);
+define('ESCAPE_NOQUOTES', 1);
+define('ESCAPE_NONE', 2);
 
 /**
  * Database abstraction layer presents a unified interface to database
@@ -28,6 +31,16 @@ define("DEBUG", false);
  */
 class Database
 {
+    /**
+     * Constants determining whether HTML characters will be escaped before
+     * being inserted into the Database.
+     *
+     * @access private
+     */
+    const ESCAPE_ALL      = 0;
+    const ESCAPE_NOQUOTES = 1;
+    const ESCAPE_NONE     = 2;
+
     /**
      * The database handle, created by the connect() method
      *
@@ -260,7 +273,7 @@ class Database
      */
     public function insert(string $table, array $set): void
     {
-        $this->_realinsert($table, $set, true);
+        $this->_realinsert($table, $set, ESCAPE_ALL);
     }
 
     /**
@@ -270,14 +283,20 @@ class Database
      * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param int    $escapeMode Which HTML characters to escape. A value of 1
+     *                           will escape all characters but quotation marks
+     *                           and a value of 2 will not escape any characters.
      *
      * @return void
      */
-    public function unsafeinsert(string $table, array $set): void
-    {
-        $this->_realinsert($table, $set, false);
+    public function unsafeinsert(
+        string $table,
+        array $set,
+        int $escapeMode = ESCAPE_NONE
+    ): void {
+        $this->_realinsert($table, $set, $escapeMode);
     }
 
     /**
@@ -294,7 +313,7 @@ class Database
     public function insertIgnore(string $table, array $set): void
     {
         $ignore = true;
-        $this->_realinsert($table, $set, true, $ignore);
+        $this->_realinsert($table, $set, ESCAPE_ALL, $ignore);
     }
 
     /**
@@ -311,7 +330,7 @@ class Database
      */
     public function insertOnDuplicateUpdate($table, $set)
     {
-        return $this->_realinsert($table, $set, true, false, true);
+        return $this->_realinsert($table, $set, ESCAPE_ALL, false, true);
     }
 
     /**
@@ -322,14 +341,20 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated. HTML from any field in the row will *not* be automatically escaped.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the row
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the row
+     * @param int    $escapeMode Which HTML characters to escape. A value of 1
+     *                           will escape all characters but quotation marks
+     *                           and a value of 2 will not escape any characters.
      *
-     * @return void
+     * @return bool
      */
-    public function unsafeInsertOnDuplicateUpdate($table, $set)
-    {
-        return $this->_realinsert($table, $set, false, false, true);
+    public function unsafeInsertOnDuplicateUpdate(
+        string $table,
+        array $set,
+        int $escapeMode = ESCAPE_NONE
+    ): bool {
+        return $this->_realinsert($table, $set, $escapeMode, false, true);
     }
 
     /**
@@ -342,13 +367,18 @@ class Database
      *
      * This function alone does not guarantee safety.
      *
-     * @param array $set The array to be inserted as a new row
+     * @param array $set  The array to be inserted as a new row
+     * @param int   $mode Determines how HTML escaping is done.
      *
      * @return array A copy of $set with the HTML characters escaped
      */
-    private function _HTMLEscapeArray(array $set): array
+    private function _HTMLEscapeArray(array $set, int $mode = ESCAPE_ALL): array
     {
+        // Escape values
         $retVal = array();
+        if ($mode === ESCAPE_NONE) {
+            return $set;
+        }
         foreach ($set as $key => $val) {
             /* FIXME this check is only here because of a quirk of the
              * imaging browser. The module should be refactored and this check
@@ -358,8 +388,19 @@ class Database
                 $retVal[$key] = '';
                 continue;
             }
-            // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+            switch ($mode) {
+            case ESCAPE_ALL:
+                // Use htmlspecialchars to escape data HTML characters.
+                // Only call htmlspecialchars on strings, or else an error occurs.
+                $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+                break;
+            case ESCAPE_NOQUOTES:
+                // In no quotes mode, quotation marks will not be escaped.
+                $retVal[$key] = is_string($val) ?
+                    htmlentities($val, ENT_NOQUOTES)
+                    : $val;
+                break;
+            }
         }
         return $retVal;
     }
@@ -371,8 +412,8 @@ class Database
      *
      * @param string $table             the table into which to insert the row
      * @param array  $set               the values with which to fill the new row
-     * @param bool   $autoescape        determines whether the values to be set
-     *                                  should automatically have the html escaped
+     * @param int    $escapeMode        Determines which characters should be
+     *                                  HTML escaped.
      * @param bool   $ignore            determines whether the insert throws an
      *                                  error or is discarded when value exists in DB
      * @param bool   $onDuplicateUpdate determines whether the row should be updated
@@ -383,13 +424,13 @@ class Database
     private function _realinsert(
         string $table,
         array  $set,
-        bool   $autoescape = true,
+        int   $escapeMode = ESCAPE_ALL,
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
     ): bool {
-        if ($autoescape === true) {
-            $set = $this->_HTMLEscapeArray($set);
-        }
+        // Escape values
+        $set = $this->_HTMLEscapeArray($set, $escapeMode);
+
         if ($ignore) {
             $query = "INSERT IGNORE INTO $table SET ";
         } else {
@@ -494,7 +535,7 @@ class Database
      */
     public function update(string $table, array $set, array $i_where): void
     {
-        $this->_realupdate($table, $set, $i_where, true);
+        $this->_realupdate($table, $set, $i_where, ESCAPE_ALL);
     }
 
     /**
@@ -504,46 +545,47 @@ class Database
      * escape and should be used with caution, only when you know you need to
      * insert HTML and know that you can trust it.
      *
-     * @param string $table   the table into which to insert the row
-     * @param array  $set     the values with which to fill the new row
-     * @param array  $i_where the selection filter, joined as a boolean and
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param array  $i_where    the selection filter, joined as a boolean and
+     * @param int    $escapeMode Which HTML characters to escape. A value of 1
+     *                           will escape all characters but quotation marks
+     *                           and a value of 2 will not escape any characters.
      *
      * @return void
      */
     public function unsafeupdate(
         string $table,
         array $set,
-        array $i_where
+        array $i_where,
+        int $escapeMode = ESCAPE_NONE
     ): void {
 
-        $this->_realupdate($table, $set, $i_where, false);
+        $this->_realupdate($table, $set, $i_where, $escapeMode);
     }
 
     /**
-     * Updates a row
+     * Updates a single row in the specified table.
      *
-     * Updates a single row in the specified table
-     *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
-     * @param array  $i_where    the selection filter, joined as a boolean and
-     * @param bool   $autoescape determines whether the values to be set should
-     *                           automatically have the html escaped
+     * @param string $table      The table into which to insert the row
+     * @param array  $set        The values with which to fill the new row
+     * @param array  $i_where    The selection filter, joined as a boolean and
+     * @param int    $escapeMode Determines which characters should be HTML
+     *                                  HTML escaped.
      *
      * @return bool Always true. An exception should be thrown if something goes
      *              wrong.
-     * @access public
+     * @access private
      */
     private function _realupdate(
         string $table,
         array $set,
         array $i_where,
-        bool $autoescape = true
+        int $escapeMode = ESCAPE_ALL
     ): bool {
 
-        if ($autoescape === true) {
-            $set = $this->_HTMLEscapeArray($set);
-        }
+        // Escape values
+        $set = $this->_HTMLEscapeArray($set, $escapeMode);
         /* This is still here to print the easily readable version on
          * the top of the page when showDatabaseQueries is on. It isn't
          * actually executed. */
