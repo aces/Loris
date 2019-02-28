@@ -1,36 +1,61 @@
 <?php declare(strict_types=1);
+/**
+ * This file contains a class used to generate SiteIDs i.e. both PSCIDs and
+ * ExternalIDs.
+ *
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
-namespace LORIS\StudyEntities\Candidate;
-
+/**
+ * This class is responsible for extracting configuration settings relating to
+ * generation of SiteIDs and validates these values.
+ *
+ * @category Main
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class SiteIDGenerator extends IdentifierGenerator
 {
     /* Either 'PSCID' or 'ExternalID' */
-    private const LENGTH     = 4;
+    private const LENGTH = 4;
     protected $kind;
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
+     *
+     * @param ?string $prefix To be appended to the ID value. Usually an
+     *                       abbreviation for the name of a site.
+     *
+     * @return void
      */
     public function __construct(?string $prefix = null)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
         // to create new IDs.
-        $this->generationMethod = $this->getIDSetting('generation');
-        $this->length = $this->getIDSetting('length') ?? self::LENGTH;
-        $this->alphabet = $this->getIDSetting('alphabet');
+        $this->generationMethod = $this->_getIDSetting('generation');
+        $this->length           = $this->_getIDSetting('length') ?? self::LENGTH;
+        $this->alphabet         = $this->_getIDSetting('alphabet');
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue         = $this->getIDSetting('min') ??
+        $this->minValue = $this->_getIDSetting('min') ??
             str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue         = $this->getIDSetting('max') ??
+        $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
-                strval($this->alphabet[count($this->alphabet) - 1]), 
+                strval($this->alphabet[count($this->alphabet) - 1]),
                 $this->length
             );
-        $this->prefix = $prefix ?? $this->getIDSetting('prefix');
+        $this->prefix   = $prefix ?? $this->_getIDSetting('prefix');
         $this->validate();
     }
 
@@ -42,7 +67,8 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return void
      */
-    protected function validate(): void {
+    protected function validate(): void
+    {
         if (empty($this->generationMethod)
             || empty($this->length)
             || empty($this->alphabet)
@@ -71,7 +97,8 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return string
      */
-    public function generate() {
+    public function generate()
+    {
         return $this->createNewID();
     }
 
@@ -82,6 +109,13 @@ class SiteIDGenerator extends IdentifierGenerator
      * the IDs as the calling code will be interested in and aware of the Site
      * corresponding to the prefix. Returning the bare IDs allows for easier
      * processing.
+     *
+     * When using the 'numeric' generation method, IDs of a different alphabet,
+     * such as 'alphanumeric', should be filtered out to prevent string
+     * comparison confusion. For example if the database contains an
+     * alphabetical ID, these will be considered greater than the upper bound
+     * of a numerical ID (PHP says 'AAA' > '999').
+     * This will result in a RANGE_FULL error if the values are not filtered.
      *
      * The parameters $kind and $prefix should never be user-controllable as
      * this creates a SQL injection risk.
@@ -97,8 +131,14 @@ class SiteIDGenerator extends IdentifierGenerator
             WHERE {$this->kind} LIKE '{$this->prefix}%'",
             array()
         );
-
-        return !empty($ids) ? $ids : array();
+        if (empty($ids)) {
+            return array();
+        }
+        // Filter out non-numeric ids if using a numeric alphabet.
+        if ($this->alphabet === range('0', '9')) {
+            return array_filter($ids, 'is_numeric');
+        }
+        return $ids;
     }
     /**
      * Helper function used for extracting the values from the config
@@ -109,7 +149,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return array|int|string|null
      */
-    private function getIDSetting(
+    private function _getIDSetting(
         string $setting
     ) {
         // The generation setting can be easily extracted and returned.
@@ -204,7 +244,7 @@ class SiteIDGenerator extends IdentifierGenerator
         switch($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
-                self::extractSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'alpha'
                         || $x === 'alphanumeric'
@@ -214,7 +254,7 @@ class SiteIDGenerator extends IdentifierGenerator
             break;
         case 'prefix':
             $seqAttributes = array_filter(
-                self::extractSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, 'type'),
                 function ($x) {
                     return $x === 'static' || $x === 'siteAbbrev';
                 }
@@ -224,7 +264,7 @@ class SiteIDGenerator extends IdentifierGenerator
             /* Other settings (i.e. 'length', 'min', 'max') can be extracted
              * directly as they are stored within distinct attributes.
              */
-            $seqAttributes = self::extractSeqAttribute(
+            $seqAttributes = self::_getSeqAttribute(
                 $idStructure,
                 $setting
             );
@@ -251,7 +291,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return array The value(s) corresponding to $setting.
      */
-    private static function extractSeqAttribute(
+    private static function _getSeqAttribute(
         array $idStructure,
         string $setting
     ): array {

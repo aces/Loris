@@ -11,9 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-use LORIS\StudyEntities\Candidate\CandIDGenerator;
-use LORIS\StudyEntities\Candidate\PSCIDGenerator;
-use LORIS\StudyEntities\Candidate\ExternalIDGenerator;
 
 /* Define constants used by the file */
 // error codes
@@ -246,7 +243,7 @@ class Candidate
             }
 
         } else {
-            $PSCID = (new PSCIDGenerator($site->getSiteAlias()))->generate();
+            $PSCID = (new \PSCIDGenerator($site->getSiteAlias()))->generate();
         }
 
         // Insert the new candidate into the database if everything is fine.
@@ -265,12 +262,12 @@ class Candidate
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new ExternalIDGenerator())->generate();
+            $externalID = (new \ExternalIDGenerator())->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
         // Generate a new CandID and insert it into the database.
-        $generator = new CandIDGenerator();
+        $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
         $invalidID = false;
         do {

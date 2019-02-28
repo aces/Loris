@@ -7,37 +7,33 @@
  *
  * PHP Version 7
  *
- * @category StudyEntities
+ * @category Main
  * @package  LORIS
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
-namespace LORIS\StudyEntities\Candidate;
 /**
  * This class serves as a generic parent for identifier generators.
  *
  * PHP Version 7
  *
- * @category StudyEntities
+ * @category Main
  * @package  LORIS
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
 abstract class IdentifierGenerator
 {
-    private const RANGE_FULL = 
-                'Cannot create new identifier because all valid identifiers ' .
-                'are in use!';
+    private const RANGE_FULL = 'Cannot create new identifier because all ' .
+        ' valid identifiers are in use!';
     protected $generationMethod;
     protected $alphabet = array();
     protected $length;
     protected $minValue;
     protected $maxValue;
-    protected $prefix    = '';
+    protected $prefix = '';
 
     /**
     * Generates a new unused identifier to represent a Candidate in LORIS.
@@ -56,7 +52,7 @@ abstract class IdentifierGenerator
             break;
         case 'random':
             $id = $this->padID($this->generateRandomID());
-            // If the Random ID is already in use or is outside of the range 
+            // If the Random ID is already in use or is outside of the range
             // defined by minValue and maxValue, increment it by using the
             // generateSequentialID function with the previous ID as a starting
             // point.
@@ -75,7 +71,7 @@ abstract class IdentifierGenerator
 
     /**
      * Creates a new ID representing the next ID in a given sequence as defined
-     * by configuration settings. By default this function will increment the 
+     * by configuration settings. By default this function will increment the
      * value of the largest existing ID in the database. If $id is passed,
      * the new ID will be an incremented value of that parameter.
      *
@@ -155,9 +151,9 @@ abstract class IdentifierGenerator
      * Ensure that an ID is the correct length by prepending the first character
      * of the alphabet to the ID if the ID's length is shorter than it should be.
      *
-     * string $id The ID to pad.
+     * @param string $id The ID to pad.
      *
-     * return array The ID padded to the correct length.
+     * @return string The ID padded to the correct length.
      */
     protected function padID(string $id): string
     {
@@ -175,8 +171,11 @@ abstract class IdentifierGenerator
      * number of characters in the ID).
      *
      * @throws \LorisException
+     *
+     * @return void
      */
-    protected function checkIDRangeFull(): void {
+    protected function checkIDRangeFull(): void
+    {
         // Check that the number of existing IDs does not exceed the range of
         // possible values (given by the size of the alphabet to the power of
         // number of characters in the ID).

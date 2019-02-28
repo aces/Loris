@@ -1,9 +1,28 @@
 <?php declare(strict_types=1);
-
-namespace LORIS\StudyEntities\Candidate;
-
-use LORIS\StudyEntities\Candidate\CandID;
-
+/**
+ * This file contains a class used to generate CandIDs for use in LORIS.
+ *
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+use \LORIS\StudyEntities\Candidate\CandID;
+/**
+ * This class defines functions used to generate valid Candidate identifiers in
+ * LORIS. It leverages the CandID study entity for validation.
+ *
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  LORIS
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class CandIDGenerator extends IdentifierGenerator
 {
     /**
@@ -32,7 +51,8 @@ class CandIDGenerator extends IdentifierGenerator
      *
      * @return CandID The new identifier.
      */
-    public function generate(): CandID {
+    public function generate(): CandID
+    {
         $validID = false;
         while (! $validID) {
             $this->checkIDRangeFull();
@@ -54,6 +74,8 @@ class CandIDGenerator extends IdentifierGenerator
 
     /**
      * {@inheritDoc}
+     *
+     * @return string[] The IDs retrieved from the database.
      */
     protected function getExistingIDs(): array
     {
