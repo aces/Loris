@@ -18,6 +18,9 @@ class ResolvedConflictsPane extends React.Component {
     this.state = {
       Data: this.props.data,
     };
+    /**
+     * Bind component instance to custom methods
+     */
     this.formatColumn = this.formatColumn.bind(this);
   }
 
@@ -107,8 +110,16 @@ class ConflictsResolvedApp extends Component {
       filter: {},
       form: {},
     };
-
-    // Bind component instance to custom methods
+    /**
+     * Set filter to the element's ref for filtering
+     */
+    this.filter = null;
+    this.setFilterRef = (element) => {
+      this.filter = element;
+    };
+    /**
+     * Bind component instance to custom methods
+     */
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
@@ -157,7 +168,7 @@ class ConflictsResolvedApp extends Component {
   }
 
   resetFilters() {
-    this.refs.conflict_resolver_Filter.clearFilter();
+    this.filter.clearFilter();
   }
 
   handleSubmit(e) {
@@ -215,6 +226,7 @@ class ConflictsResolvedApp extends Component {
             id='conflict_resolver_filter'
             name='conflict_resolver_filter'
             columns={2}
+            ref={this.setFilterRef}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
