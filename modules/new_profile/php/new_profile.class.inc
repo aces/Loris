@@ -74,7 +74,7 @@ class New_Profile extends \NDB_Form
             $values['edc1'] ?? null,
             $values['sex'],
             $values['PSCID'] ?? null,
-            intval($values['ProjectID']) ?? null
+            isset($values['ProjectID']) ? intval($values['ProjectID']) : null
         );
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
@@ -239,10 +239,6 @@ class New_Profile extends \NDB_Form
         if ($config->getSetting('useEDC') == "true") {
             if (empty($values['edc1'])) {
                 $errors['edc1'] = 'Expected Date of Confinement field is required';
-            } else if (strlen(implode($values['edc1'])) > 2
-                && !\Utility::_checkDate($values['edc1'])
-            ) {
-                $errors['edc1'] = 'EDC is not a valid date';
             }
 
             if (empty($values['edc2'])) {
@@ -250,7 +246,7 @@ class New_Profile extends \NDB_Form
             }
 
             if ($values['edc1'] != $values['edc2']) {
-                $errors['edc1'] = 'Estimated Due date fields must match.';
+                $errors['edc1'] = 'Estimated due date fields must match.';
             }
         }
 

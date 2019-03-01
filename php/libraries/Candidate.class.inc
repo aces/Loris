@@ -574,31 +574,6 @@ class Candidate
     }
 
     /**
-     * Return the next visit number for the time point you are
-     * trying to register
-     *
-     * @return     integer Next visit number for candidate
-     * @deprecated
-     */
-    function getNextVisitNo(): int
-    {
-        $candID = $this->getCandID();
-
-        // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
-            FROM session
-            WHERE CandID=:CaID AND (Active='Y' OR Active is null)
-            GROUP BY CandID";
-        $result = $db->pselectRow($query, array('CaID' => $candID));
-
-        //return the next visit No
-        return $result["nextVisitNo"];
-    }
-
-    /**
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
