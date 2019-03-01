@@ -105,7 +105,8 @@ All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
             },
             "previousVersion": string,
             "schemaVersion": string,
-            "shortName": string
+            "shortName": string,
+            "versionHash": string
         },
         ...
     },
@@ -166,8 +167,8 @@ readable version of the instrument's name (its title) provided in every language
 `meta.previousVersion`: String. The previous version of the Z-JSON Instrument, if significant changes were made to
 justify creating a new version of the instrument.
 
-This may be redundant metadata, but it may also be helpful in showing the lineage of existing instruments. If changes to
-an instrument were so significant that there is no longer a shared lineage, `meta.derivedFrom` would be used to track
+This is helpful in showing the lineage of existing instruments. If changes to
+an instrument are so significant that there is no longer a shared lineage, `meta.derivedFrom` would instead be used to track
 changes. 
 
 `meta.schemaVersion`: Required string. The version of this Z-JSON Instrument Specification document that the instrument
@@ -177,7 +178,7 @@ It follows the format of v*SpecVersion*-dev, i.e. `v0.0.1-dev` if following this
 
 `meta.shortName`: Required string. The unique name and identifier of the instrument, as well as the test name in the database.
 
-The name of the Z-JSON Instrument JSON file will follow the format *shortName_instrumentVersion*.
+The name of the Z-JSON Instrument JSON file will follow the format *shortName_instrumentVersion.json*.
 
 ## 2.2: Page Setup
 
@@ -462,14 +463,14 @@ submittable on save. This key is different to `rules.disableIf` in that it is no
 `options.hideInSurvey`: Required boolean. True or false that this field will be hidden and not displayed when the
 instrument is in survey mode.
 
-### 3.2.4: Date and Time
+### 3.2.4: Date, Time and Datetime
 
-A date field takes a data type of form "YYYY-MM-DD". A time field takes a data type of form "HH:MM". The general format is as follows:
+A date field takes a data type of form "YYYY-MM-DD". A time field takes a data type of form "HH:MM:SS". A datetime field takes a data type of form "YYYY-MM-DD HH:MM:SS". The general format is as follows:
 
 ```js
 {
     "nameOfField" : {
-        "type": "date" OR "time",
+        "type": "date" OR "time" OR "datetime",
         "description" : {
             ...
         },
@@ -488,11 +489,11 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 }
 ```
 
-`options.minValue`: Date or time, depending on `nameOfField.type`.
-                    The earliest date or time the data can be.
+`options.minValue`: Date, time or datetime, depending on `nameOfField.type`.
+                    The earliest date, time or datetime the data can be.
 
-`options.maxValue`: Date or time, depending on `nameOfField.type`.
-                    The latest date or time the data can be.
+`options.maxValue`: Date, time or datetime, depending on `nameOfField.type`.
+                    The latest date, time or datetime the data can be.
 
 `options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
 
@@ -646,9 +647,7 @@ Static helpers do not have an `options` key.
 ### 4.1.2: Group
 
 A helper of type "group" denotes a horizontal collection of elements which should be displayed
-together and is separated by a delimiter.
-
-They often have rules which work together and may be interdependent. Groups have the following form:
+together and is separated by a delimiter. Groups have the following form:
 
 ```js
 {
@@ -663,6 +662,9 @@ They often have rules which work together and may be interdependent. Groups have
                 string,
                 ...
             ],
+            "requireResponse": boolean,
+            "readonly": boolean,
+            "hideInSurvey": boolean,
             "showDesc" : boolean
         },
         "rules": {

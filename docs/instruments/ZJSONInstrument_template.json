@@ -2,14 +2,14 @@
   "schema": {
     "meta": {
       "createdBy": "",
-      "dateCreatedOn": "",
       "createdWith": "",
+      "dateCreatedOn": "",
+      "dateLastUpdateOn": "",
       "defaultLanguage": "en-CA",
       "derivedFrom": "",
       "importedFrom": "",
       "includeMetaDataFields": true,
       "instrumentVersion": "",
-      "dateLastUpdateOn": "",
       "longName": {
           "en-CA": "",
           "fr-CA": ""
@@ -17,7 +17,8 @@
       "multilingual": true,
       "previousVersion": "",
       "schemaVersion": "",
-      "shortName": ""
+      "shortName": "",
+      "versionHash": ""
     },
     "fields": {
       "nameOfField" : {

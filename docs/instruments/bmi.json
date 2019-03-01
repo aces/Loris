@@ -2,21 +2,22 @@
   "schema": {
     "meta": {
       "createdBy": "Zaliqa Rosli",
-      "createdOn": "2019-02-19",
       "createdWith": "",
+      "dateCreatedOn": "2019-02-19",
+      "dateLastUpdateOn": "",
       "defaultLanguage": "en-CA",
       "derivedFrom": "",
       "importedFrom": "bmi.linst",
       "includeMetaDataFields": true,
       "instrumentVersion": "",
-      "lastUpdateOn": "",
       "longName": {
           "en-CA": "BMI Calculator"
       },
       "multilingual": false,
       "previousVersion": "",
       "schemaVersion": "v0.0.1-dev",
-      "shortName": "bmi"
+      "shortName": "bmi",
+      "versionHash": ""
     },
     "fields": {
       "unit_classification" : {
