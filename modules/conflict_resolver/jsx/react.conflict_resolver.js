@@ -18,7 +18,6 @@ class UnresolvedConflictsPane extends Component {
     this.state = {
       Data: this.props.data,
     };
-    console.log(this.props.data);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
@@ -49,16 +48,6 @@ class UnresolvedConflictsPane extends Component {
         </select>
       </td>;
     }
-
-    // console.log('Headers:');
-    // console.log(this.state.Data.Headers);
-    //
-    // console.log('Data:');
-    // console.log(this.state.Data.Data[0]);
-    //
-    // console.log('Filter:');
-    // console.log(this.state.filter);
-
     return <td>{cell}</td>;
   }
   // Render the HTML
@@ -141,18 +130,27 @@ class ConflictResolverApp extends Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.url.data.unresolved, {
-      method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      },
+    const url = this.props.url.data.unresolved;
+    fetch(
+      url, {
+        method: 'GET',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          this.setState({
+            Data: data,
+            isLoaded: true,
+          });
+        }).catch((error) => {
+          // console.log('error: ' + error);
     });
   }
 
@@ -220,7 +218,6 @@ class ConflictResolverApp extends Component {
           <FilterForm
             Module='conflict_resolver'
             id='conflict_resolver_filter'
-            ref='conflict_resolver_Filter'
             name='conflict_resolver_filter'
             columns={2}
             formElements={this.state.Data.form}
@@ -245,11 +242,9 @@ class ConflictResolverApp extends Component {
   }
 }
 ConflictResolverApp.propTypes = {
-  module: PropTypes.string.isRequired,
   url: PropTypes.object.isRequired,
 };
 ConflictResolverApp.defaultProps = {
-  module: '',
   url: {
     base: '',
     data: {
@@ -262,12 +257,9 @@ ConflictResolverApp.defaultProps = {
 /**
  * Render conflictResolver on page load
  */
-window.onload = function() {
-  console.log('check:');
-  console.log(loris);
-  const conflictResolver = (
+window.addEventListener('load', () => {
+  ReactDOM.render(
     <ConflictResolverApp
-      module={'conflictResolver'}
       url={{
         base: loris.BaseURL,
         data: {
@@ -275,20 +267,9 @@ window.onload = function() {
           resolved: loris.BaseURL + '/conflict_resolver/resolved_conflicts/?format=json',
         },
       }}
-    />
+    />,
+    document.getElementById('lorisworkspace')
   );
-
-  // Create a wrapper div in which react component will be loaded
-  const ConflictResolverDOM = document.createElement('div');
-  ConflictResolverDOM.id = 'conflictResolver';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById('lorisworkspace');
-  rootDOM.appendChild(ConflictResolverDOM);
-
-  // Render the React Component.
-  ReactDOM.render(conflictResolver, document.getElementById('conflictResolver'));
-
   // Prevent tab switching
   const refresh = setInterval(function() {
     if (document.getElementById('tab-ResolvedConflicts')) {
@@ -300,4 +281,4 @@ window.onload = function() {
       clearInterval(refresh);
     }
   }, 100);
-};
+});

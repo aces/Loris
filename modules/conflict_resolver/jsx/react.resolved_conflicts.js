@@ -124,18 +124,27 @@ class ConflictsResolvedApp extends Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.url.data.resolved, {
-      method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      },
+    const url = this.props.url.data.resolved;
+    fetch(
+      url, {
+        method: 'GET',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          this.setState({
+            Data: data,
+            isLoaded: true,
+          });
+        }).catch((error) => {
+      // console.log('error: ' + error);
     });
   }
 
@@ -203,7 +212,6 @@ class ConflictsResolvedApp extends Component {
           <FilterForm
             Module='conflictResolver'
             id='conflict_resolver_filter'
-            ref='conflict_resolver_Filter'
             name='conflict_resolver_filter'
             columns={2}
             formElements={this.state.Data.form}
@@ -245,8 +253,8 @@ ConflictsResolvedApp.defaultProps = {
 /**
  * Render conflictResolver on page load
  */
-window.onload = function() {
-  const conflictResolver = (
+window.addEventListener('load', () => {
+  ReactDOM.render(
     <ConflictsResolvedApp
       module={'conflictResolver'}
       url={{
@@ -256,20 +264,9 @@ window.onload = function() {
           resolved: loris.BaseURL + '/conflict_resolver/resolved_conflicts/?format=json',
         },
       }}
-    />
+    />,
+    document.getElementById('lorisworkspace')
   );
-
-  // Create a wrapper div in which react component will be loaded
-  const ConflictResolverDOM = document.createElement('div');
-  ConflictResolverDOM.id = 'conflictResolver';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById('lorisworkspace');
-  rootDOM.appendChild(ConflictResolverDOM);
-
-  // Render the React Component.
-  ReactDOM.render(conflictResolver, document.getElementById('conflictResolver'));
-
   // Prevent tab switching
   const refresh = setInterval(function() {
     if (document.getElementById('tab-ResolvedConflicts')) {
@@ -281,4 +278,4 @@ window.onload = function() {
       clearInterval(refresh);
     }
   }, 100);
-};
+});
