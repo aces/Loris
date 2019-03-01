@@ -39,7 +39,8 @@ class Collection extends Process
      * @var float $quantity
      * @var int   $unitId
      */
-    private $quantity, $unitId;
+    private $quantity;
+    private $unitId;
 
     /**
      * Sets the current quantity of specimen available. This associated unit

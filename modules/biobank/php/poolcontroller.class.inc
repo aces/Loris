@@ -58,8 +58,8 @@ class PoolController
      */
     public function getInstances() : array
     {
-        $this->validatePermission('GET');
-        $pools  = [];
+        $this->validatePermission('view');
+        $pools  = array();
         $poolIt = $this->dao->execute($this->user);
         foreach ($poolIt as $id => $pool) {
             $pools[$id] = $pool;
@@ -80,7 +80,7 @@ class PoolController
      */
     public function createInstance(array $poolArray)
     {
-        $this->validatePermission('POST');
+        $this->validatePermission('create');
         $pool = $this->dao->getInstanceFromArray($poolArray);
         $this->validateInstance($pool);
         $this->dao->saveInstance($pool);
@@ -111,11 +111,11 @@ class PoolController
     private function validatePermission(string $method) : void
     {
         switch ($method) {
-        case 'GET':
+        case 'view':
             if (!$this->user->hasPermission('biobank_pool_view')) {
                 throw new \Forbidden('Pool: View Permission Denied');
             }
-        case 'POST':
+        case 'create':
             if (!$this->user->hasPermission('biobank_pool_create')) {
                 throw new \Forbidden('Pool: Create Permission Denied');
             }
@@ -166,21 +166,20 @@ class PoolController
         $specimenIds = $pool->getSpecimenIds();
         if (count($specimenIds) < 2) {
             throw new \BadRequest(
-                'At least 2 specimens must be provided to create 
-                                a Pool'
+                'At least 2 specimens must be provided to create a Pool'
             );
         }
 
         $specimenDAO   = new SpecimenDAO($this->db);
         $containerDAO  = new ContainerDAO($this->db);
         $baseSpecimen  = $specimenDAO->getInstanceFromId($specimenIds[0]);
-        $baseContainer = $containerDAO->getInstanceFromSpecimen($baseSpecimen);
+        $baseContainer = $containerDAO->getInstanceFromId($baseSpecimen->getContainerId());
 
         foreach ($specimenIds as $specimenId) {
             //TODO: Make sure to check that containers are available.
             //TODO: Make sure to check there are atleast two items in the list
             $specimen  = $specimenDAO->getInstanceFromId($specimenId);
-            $container = $containerDAO->getInstanceFromSpecimen($specimen);
+            $container = $containerDAO->getInstanceFromId($specimen->getContainerId());
             $barcode   = $container->getBarcode();
 
             if ($baseSpecimen->getCandidateId() !== $specimen->getCandidateId()) {

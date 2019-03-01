@@ -38,7 +38,9 @@ class Biobank extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('biobank_access');
+        return $user->hasPermission('biobank_specimen_view')
+                || $user->hasPermission('biobank_container_view')
+                || $user->hasPermission('biobank_pool_view');
     }
 
     /**

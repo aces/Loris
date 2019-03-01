@@ -31,7 +31,7 @@ use \Psr\Http\Message\ResponseInterface;
 class SpecimenEndpoint implements RequestHandlerInterface
 {
     /**
-     * Returns true if user has acces to this Controller.
+     * Returns true if user has acces to this Endpoint.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -75,7 +75,7 @@ class SpecimenEndpoint implements RequestHandlerInterface
     }
 
     /**
-     * Handles Controller requests
+     * Handles Endpoint requests
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -83,7 +83,6 @@ class SpecimenEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $response;
         $db       = \Database::singleton();
         $user     = $request->getAttribute('user');
         $specCont = new SpecimenController($db, $user);

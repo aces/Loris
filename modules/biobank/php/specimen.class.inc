@@ -398,20 +398,20 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
 
     // FIXME: THIS IS A MASSIVE HACK. Specimens should not be provisioned if
     // their Container is not provisioned. Therefore, a check must be made that
-    // the Container's CenterID is accesibile by the current User. This function
+    // the Container's Center ID is accesibile by the current User. This function
     // allows this check to happen upon provisioner filtering.
     /**
      * Return Center ID of affiliated specimen container.
      *
      * @return int
      */
-    public function getCenterID()
+    public function getCenterId()
     {
         $db           = \Database::singleton();
         $containerDAO = new ContainerDAO($db);
         $containerId  = $this->getContainerId();
         $container    = $containerDAO->getInstanceFromId($containerId);
-        return $container->getCenterID();
+        return $container->getCenterId();
     }
 
     /**
@@ -440,9 +440,6 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
         // may be necessary??? not sure until I try saving data.
     }
 
-    // XXX: This function must be implemented because this class implements
-    // LORIS/Data/DataInstance. However, it is not currently being used anywhere
-    // and I don't believe it necessary.
     /**
      * Returns a JSON encoded string of the state of the Specimen
      *

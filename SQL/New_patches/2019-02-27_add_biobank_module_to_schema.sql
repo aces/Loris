@@ -431,16 +431,12 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_specimen_view', 'Biobank: View Specimen Data', 2),
     ('biobank_specimen_create', 'Biobank: Create Specimen Data', 2),
     ('biobank_specimen_update', 'Biobank: Update Specimen Data', 2),
-    ('biobank_specimen_alter', 'Biobank: Alter Specimen Data', 2),
     ('biobank_container_view', 'Biobank: View Container Data', 2),
     ('biobank_container_create', 'Biobank: Create Container Data', 2),
     ('biobank_container_update', 'Biobank: Update Container Data', 2),
-    ('biobank_container_delete', 'Biobank: Delete Container Data', 2),
     ('biobank_pool_view', 'Biobank: View Pool Data', 2),
     ('biobank_pool_create', 'Biobank: Create Pool Data', 2),
     ('biobank_pool_update', 'Biobank: Update Pool Data', 2),
-    ('biobank_pool_delete', 'Biobank: Delete Pool Data', 2),
-    ('biobank_access', 'Biobank: Access the Biobank Module', 2)
 ;
 
 /*Config*/

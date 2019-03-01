@@ -40,7 +40,9 @@ class ContainerController
      * @var \User        $user
      * @var ContainerDAO $dao
      */
-    private $db, $user, $dao;
+    private $db;
+    private $user;
+    private $dao;
 
     /**
      * Class Constructor
@@ -62,7 +64,7 @@ class ContainerController
      */
     public function getInstances() : array
     {
-        $this->validatePermission('GET');
+        $this->validatePermission('view');
         $containers  = array();
         $containerIt = $this->dao->execute($this->user);
         foreach ($containerIt as $id => $container) {
@@ -84,7 +86,7 @@ class ContainerController
      */
     public function createInstances(array $list) : array
     {
-        $this->validatePermission('POST');
+        $this->validatePermission('create');
         $containerList = array();
         foreach ($list as $i => $item) {
             $container = $this->dao->getInstanceFromArray($item);
@@ -101,8 +103,6 @@ class ContainerController
         return $containerIds;
     }
 
-    // TODO: Decide if this function should take a list of containers, rather
-    // than a singular container.
     /**
      * This method takes in a container array from the front-end,
      * validates them, instantiates them and then sends them to the DAO to be
@@ -114,7 +114,7 @@ class ContainerController
      */
     public function updateInstance(array $containerArray) : void
     {
-        $this->validatePermission('PUT');
+        $this->validatePermission('update');
         $container = $this->dao->getInstanceFromArray($containerArray);
         $this->validateInstance($container);
         $this->dao->saveInstance($container);
@@ -128,7 +128,7 @@ class ContainerController
      */
     public function getOptions() : array
     {
-        $this->validatePermission('GET');
+        $this->validatePermission('view');
         return array(
                 'types'           => $this->dao->getTypes(),
                 'typesPrimary'    => $this->dao->getTypes(['Primary' => 1]),
@@ -170,15 +170,15 @@ class ContainerController
     private function validatePermission(string $method) : void
     {
         switch($method) {
-        case 'GET':
+        case 'view':
             if (!$this->user->hasPermission('biobank_container_view')) {
                 throw new \Forbidden('Container: View Permission Denied');
             }
-        case 'PUT':
+        case 'update':
             if (!$this->user->hasPermission('biobank_container_update')) {
                 throw new \Forbidden('Container: Update Permission Denied');
             }
-        case 'POST':
+        case 'create':
             if (!$this->user->hasPermission('biobank_container_create')) {
                 throw new \Forbidden('Container: Create Permission Denied');
             }
@@ -276,7 +276,7 @@ class ContainerController
         if (!(is_numeric($temperature) && is_float(floatval($temperature)))) {
             throw new \BadRequest('Temperature must be a number.');
         }
-        if ($temperature < MINTEMP || $temperature > MAXTEMP) {
+        if ($temperature <= MINTEMP || $temperature > MAXTEMP) {
             throw new \BadRequest('Temperature must be between '.MINTEMP.'°C and '.MAXTEMP.'°C.');
         }
     }

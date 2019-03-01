@@ -105,19 +105,19 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       bsc.UnitID as CollectionUnitID, 
                       bsc.CenterID as CollectionCenterID,
                       bsc.Date as CollectionDate, 
-                      DATE_FORMAT(bsc.Time, '%H:%i') as CollectionTime,
+                      bsc.Time as CollectionTime,
                       bsc.Comments as CollectionComments, 
                       bsc.Data as CollectionData,
                       bsp.SpecimenProtocolID, 
                       bsp.CenterID as PreparationCenterID,
                       bsp.Date as PreparationDate,
-                      DATE_FORMAT(bsp.Time, '%H:%i') as PreparationTime,
+                      bsp.Time as PreparationTime,
                       bsp.Comments as PreparationComments,
                       bsp.Data as PreparationData,
                       bsa.SpecimenMethodID,
                       bsa.CenterID as AnalysisCenterID,
                       bsa.Date as AnalysisDate, 
-                      DATE_FORMAT(bsa.Time, '%H:%i') as AnalysisTime,
+                      bsa.Time as AnalysisTime,
                       bsa.Comments as AnalysisComments,
                       bsa.Data as AnalysisData
                FROM biobank_specimen bs
@@ -490,7 +490,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $specimenId = $specimen->getId();
         if (isset($specimenId)) {
             // If update:
-            // XXX: Logic will likely eventually go here.
+            // Do nothing.
         } else {
             // If insert:
             $specimenId = $this->db->getLastInsertId();
@@ -558,7 +558,9 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
 
     /**
      * This function takes a Specimen array and prepares the data to be
-     * inserted into the database by converting it to a data array.
+     * inserted into the database by converting it to a data array. This one to
+     * one mapping is done to enable the update or insertion of data into the 
+     * database directly from the resulting arrays.
      *
      * @param array $specimen Specimen array to be converted
      *

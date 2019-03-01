@@ -337,8 +337,8 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         );
 
         $containerId = $container->getId();
-        // If update:
         if (isset($containerId)) {
+            // If update:
             $oldContainer         = $this->getInstanceFromId($containerId);
             $oldParentContainerId = $oldContainer->getParentContainerId();
             // If there is no longer an associated Parent Container ID, delete
@@ -477,6 +477,8 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getArrayFromSQL(array $data, array $childContainerIds) : array
     {
+        // TODO: fix hack on line 491 that accounts for when parentContainerId
+        // is null.
         return array(
                 'id'                => intval($data['ContainerID']),
                 'barcode'           => $data['Barcode'],
@@ -486,7 +488,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                 'statusId'          => intval($data['ContainerStatusID']),
                 'originId'          => intval($data['OriginCenterID']),
                 'currentId'         => intval($data['CurrentCenterID']),
-                'parentContainerId' => intval($data['ParentContainerID']),
+                'parentContainerId' => $data['ParentContainerID'] ? intval($data['ParentContainerID']) : null,
                 'childContainerIds' => $childContainerIds,
                 'coordinate'        => intval($data['Coordinate']),
                );

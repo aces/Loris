@@ -127,14 +127,22 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
         return $this->specimenIds;
     }
 
+
+    // XXX: Candidate ID and Session ID were made nullable because no candidate
+    // ID or session ID is sent from the client side. These values are only set
+    // when pools are being instantiated from the database. There is likely a
+    // better way to resolve this issue, such as using logic to determine what
+    // candidate and session should be associated with this pool and setting it.
+    // But is that really worth it since the data will never be submitted into
+    // the database? Opinions welcome.
     /**
      * Sets the Candidate ID of the pool
      *
-     * @param int $candidateId Candidate ID of the pool
+     * @param ?int $candidateId Candidate ID of the pool
      *
      * @return void
      */
-    public function setCandidateId(int $candidateId) : void
+    public function setCandidateId(?int $candidateId) : void
     {
         $this->candidateId = $candidateId;
     }
@@ -142,9 +150,9 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the Candidate ID of the pool
      *
-     * @return int
+     * @return ?int
      */
-    public function getCandidateId() : int
+    public function getCandidateId() : ?int
     {
         return $this->candidateId;
     }
@@ -152,11 +160,11 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the Session ID of the pool
      *
-     * @param int $sessionId Session ID of the pool
+     * @param ?int $sessionId Session ID of the pool
      *
      * @return void
      */
-    public function setSessionId(int $sessionId) : void
+    public function setSessionId(?int $sessionId) : void
     {
         $this->sessionId = $sessionId;
     }
@@ -164,9 +172,9 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the Session ID of the pool
      *
-     * @return int
+     * @return ?int
      */
-    public function getSessionId() : int
+    public function getSessionId() : ?int
     {
         return $this->sessionId;
     }
@@ -258,9 +266,6 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
                );
     }
 
-    // XXX: This function must be implemented because this class implements
-    // LORIS/Data/DataInstance. However, it is not currently being used anywhere
-    // and I don't believe it necessary.
     /**
      * Returns a JSON encoded string of the state of the Pool
      *

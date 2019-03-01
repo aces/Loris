@@ -241,7 +241,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return int
      */
-    public function getCenterID() : int
+    public function getCenterId() : int
     {
         return $this->centerId;
     }
@@ -334,9 +334,6 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
                );
     }
 
-    // XXX: This function must be implemented because this clas implements
-    // LORIS/Data/DataInstance. However, it is not currently being used anywhere
-    // and I don't believe it necessary.
     /**
      * Returns a JSON encoded string of the state of the Container
      *

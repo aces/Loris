@@ -36,7 +36,9 @@ class SpecimenController
      * @var \User       $user
      * @var SpecimenDAO $dao
      */
-    private $db, $user, $dao;
+    private $db;
+    private $user;
+    private $dao;
 
     /**
      * Specimen Controller Class constructor
@@ -58,8 +60,8 @@ class SpecimenController
      */
     public function getInstances() : array
     {
-        $this->validatePermission('GET');
-        $specimens  = [];
+        $this->validatePermission('view');
+        $specimens  = array();
         $specimenIt = $this->dao->execute($this->user);
         foreach ($specimenIt as $id => $specimen) {
             $specimens[$id] = $specimen;
@@ -81,7 +83,7 @@ class SpecimenController
      */
     public function createInstances(array $list) : void
     {
-        $this->validatePermission('POST');
+        $this->validatePermission('create');
 
         foreach ($list as $i => $item) {
             $containerList[$i] = $item['container'];
@@ -97,8 +99,6 @@ class SpecimenController
         }
     }
 
-    // TODO: Decide if this function should take a list of specimens, rather
-    // than a singular specimen.
     /**
      * This method takes in a specimen array from the front-end, validates it,
      * instantiates it and then sends it to the DAO to be saved to the
@@ -110,7 +110,7 @@ class SpecimenController
      */
     public function updateInstance(array $specimenArray) : void
     {
-        $this->validatePermission('PUT');
+        $this->validatePermission('update');
         $specimen = $this->prepare($specimenArray);
         $this->dao->saveInstance($specimen);
     }
@@ -138,7 +138,7 @@ class SpecimenController
      */
     public function getOptions() : array
     {
-        $this->validatePermission('GET');
+        $this->validatePermission('view');
         return array(
                 'types'              => $this->dao->getTypes(),
                 'typeUnits'          => $this->dao->getTypeUnits(),
@@ -179,15 +179,15 @@ class SpecimenController
     private function validatePermission(string $method) : void
     {
         switch($method) {
-        case 'GET':
+        case 'view':
             if (!$this->user->hasPermission('biobank_specimen_view')) {
                 throw new \Forbidden('Specimen: View Permission Denied');
             }
-        case 'PUT':
+        case 'update':
             if (!$this->user->hasPermission('biobank_specimen_update')) {
                 throw new \Forbidden('Specimen: Update Permission Denied');
             }
-        case 'POST':
+        case 'create':
             if (!$this->user->hasPermission('biobank_specimen_create')) {
                 throw new \Forbidden('Specimen: Create Permission Denied');
             }
@@ -301,7 +301,9 @@ class SpecimenController
      */
     private function validateParentSpecimenIds(Specimen $specimen) : void
     {
-        // TODO: check that parents are of the proper specimen type?
+        // TODO: check that parents are of the proper and same specimen type?
+        // TODO: check that the parents are of the same candidate.
+        // TODO: check that the parents are of the same session.
     }
 
     /**

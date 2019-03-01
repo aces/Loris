@@ -193,7 +193,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $poolId = $pool->getId();
         if (isset($poolId)) {
             // If update:
-            // XXX: Logic will likely eventually go here.
+            // Do nothing.
         } else {
             // If insert:
             $poolId = $this->db->getLastInsertId();

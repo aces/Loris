@@ -19,6 +19,7 @@ const config = [{
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/openProfileForm.js': './modules/candidate_list/jsx/openProfileForm.js',
+    './modules/biobank/js/biobankIndex.js': './modules/biobank/jsx/biobankIndex.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',
     './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',

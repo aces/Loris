@@ -75,7 +75,7 @@ class ContainerEndpoint implements RequestHandlerInterface
     }
 
     /**
-     * Handles Controller requests.
+     * Handles Endpoint requests.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
