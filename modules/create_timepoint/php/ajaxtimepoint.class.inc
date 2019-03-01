@@ -63,15 +63,16 @@ class AjaxTimepoint extends \NDB_Page
         /**
          * Parse POST request body.
          */
-        $postResponse = $request->getParsedBody();
+        $requestBody = $request->getParsedBody();
 
         /**
          * User permission verification.
          */
-        $user       =& \User::singleton();
-        $identifier = isset($postResponse['identifier'])
-            ? $postResponse['identifier'] : '';
+        $user       = $request->getAttribute('user');
+        $identifier = isset($requestBody['identifier'])
+            ? $requestBody['identifier'] : '';
         $candidate  =& \Candidate::singleton($identifier);
+
         if (!$user->hasPermission('data_entry')
             && !(in_array(
                 $candidate->getData('RegistrationCenterID'),
@@ -92,12 +93,12 @@ class AjaxTimepoint extends \NDB_Page
         /**
          * Sanitize $postResponse data.
          */
-        $postResponse = $this->sanitizer($postResponse);
+        $requestBody = $this->sanitizer($requestBody);
 
         /**
          * Response to reply.
          */
-        $response = $this->processRequest($postResponse);
+        $response = $this->processRequest($requestBody);
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
@@ -222,13 +223,13 @@ class AjaxTimepoint extends \NDB_Page
                         'longer supported in Loris.'
                     );
                 }
-                $visitLabel = \Utility::toArray($visitLabel);
+                $visitLabel = \Utility::toArray($visitLabel)[0];
                 $labelOptions[''] = null;
                 $items            = \Utility::toArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
-                    $item = \Utility::toArray($item);
+                    $item = \Utility::toArray($item)[0];
                     $labelOptions[$item['@']['value']] = $item['#'];
                 }
                 $visit_options[$visitLabel['@']['subprojectID']]
