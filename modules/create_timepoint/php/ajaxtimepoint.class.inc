@@ -260,6 +260,9 @@ class AjaxTimepoint extends \NDB_Page
         if (!empty($errors)) {
             $values['errors'] = $errors;
         }
+        if (empty($values['psc'])) {
+            unset($values['psc']);
+        }
 
         return $values;
     }
