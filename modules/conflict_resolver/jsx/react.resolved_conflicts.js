@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
+import DynamicDataTable from 'jsx/DynamicDataTable';
 /**
  * This file contains the React classes for conflicts resolved
  * module.
