@@ -559,7 +559,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * This function takes a Specimen array and prepares the data to be
      * inserted into the database by converting it to a data array. This one to
-     * one mapping is done to enable the update or insertion of data into the 
+     * one mapping is done to enable the update or insertion of data into the
      * database directly from the resulting arrays.
      *
      * @param array $specimen Specimen array to be converted
