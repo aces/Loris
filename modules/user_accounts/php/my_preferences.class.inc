@@ -333,13 +333,15 @@ class My_Preferences extends \NDB_Form
 
                 // Check for permissions
                 $display =true;
-                foreach ($services['perm'] as $k=>$permission) {
-                    if (!$user->hasPermission($permission)) {
-                        $display =false;
-                        break;
+                if (isset($services['perm'])) {
+                    foreach ($services['perm'] as $k => $permission) {
+                        if (!$user->hasPermission($permission)) {
+                            $display = false;
+                            break;
+                        }
                     }
+                    unset($services['perm']);
                 }
-                unset($services['perm']);
 
                 foreach ($services as $service=>$avail) {
                     if ($avail==='Y' && $display) {
