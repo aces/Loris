@@ -170,24 +170,22 @@ class Image
      *
      * @param \LORIS\ImageQcStatus $qcstatus The new values
      *
+     * @throws \DatabaseException
+     *
      * @return void
      */ 
     public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
     {
-        $newvalues = array(
+        $values = array(
             'QCStatus'         => $qcstatus->getQcStatus(),
             'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
             'QCLastChangeTime' => time(),
+            'FileID' => $this->_fileid,
         );
 
-        $whereconditions = array(
-            'FileID' => $this->_fileid
-        );
-
-        \NDB_Factory::singleton()->database()->update(
+        \NDB_Factory::singleton()->database()->replace(
             'files_qcstatus',
-            $newvalues,
-            $whereconditions
+            $values
         );
     }
 
