@@ -27,6 +27,9 @@ namespace LORIS\imaging_browser;
 
 class MRINavigation
 {
+
+    public $urlParams = array();
+
     /**
     *  Gets the session
     *
