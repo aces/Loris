@@ -65,35 +65,33 @@ class LoadPane extends Component {
   }
   // Render the HTML
   render() {
-    let alert = '';
+    let alert = {
+      message: '',
+      details: '',
+      display: 'none',
+    };
     // Set up declared alerts, if there is any.
     switch (this.state.alert) {
       case 'success':
-        alert = (
-          <div className='alert alert-success alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
-            <strong>Success!</strong> Instrument Loaded
-          </div>
-        );
+        alert = {
+          message: 'Success!',
+          details: 'Instrument Loaded',
+          display: 'block',
+        };
         break;
       case 'typeError':
-        alert = (
-          <div className='alert alert-danger alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
-            <strong>Error!</strong> Wrong file format
-          </div>
-        );
+        alert = {
+          message: 'Error!',
+          details: 'Wrong file format',
+          display: 'block',
+        };
         break;
       case 'duplicateEntry':
-        alert = (
-          <div className='alert alert-danger alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}>
-              <span aria-hidden='true'>&times;</span>
-            </button>
-            <strong>Error!</strong><br/>
-              {this.state.alertMessage}
-          </div>
-        );
+        alert = {
+          message: 'Error!',
+          details: this.state.alertMessage,
+          display: 'block',
+        };
         break;
       default:
         break;
@@ -101,7 +99,13 @@ class LoadPane extends Component {
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
-          {alert}
+          <div id='load_alert' style={{display: alert.display}} className='alert alert-danger alert-dismissible' role='alert'>
+            <button type='button' className='close' onClick={this.resetAlert}>
+              <span aria-hidden='true'>&times;</span>
+            </button>
+            <strong>{alert.message}</strong><br/>
+            {alert.details}
+          </div>
           <input
             className='fileUpload'
             type='file' id='instfile'
@@ -325,7 +329,7 @@ class DisplayElements extends Component {
         );
       }
       return row;
-    });
+    }.bind(this));
 
     // Set fixed layout to force column widths to be based on first row
     let tableStyles = {
