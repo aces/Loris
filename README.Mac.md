@@ -130,7 +130,7 @@ sudo apachectl -k restart
 
 ## 1.6 Install PHP and pkg-config
 
-Paste these commands into your terminal while hitting enter:
+Paste these commands into your terminal and hit enter:
 ```
 brew install php72
 brew link php72
@@ -286,4 +286,4 @@ localhost:8000/installdb.php
 
 and depending if using php -S or Apache.
 
-Once finished hooray, LORIS should be accessible at http://localhost:8080 and you can start developing!
+Once finished hooray, LORIS should be accessible and you can start developing!
