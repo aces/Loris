@@ -147,12 +147,16 @@ class AjaxTimepoint extends \NDB_Page
         } else if (isset($values['command']) && $values['command'] == 'create') {
             $errors = $this->validate($values);
             if (!$errors) {
-                \TimePoint::createNew(
-                    $values['identifier'],
-                    $values['subproject'],
-                    $values['visit'],
-                    $values['psc']
-                );
+                try {
+                    \TimePoint::createNew(
+                        $values['identifier'],
+                        $values['subproject'],
+                        $values['visit'],
+                        isset($values['psc']) ?? null
+                    );
+                } catch (\Exception $exception) {
+                    $exception = '';
+                }
                 $response['status'] = 'success';
             } else {
                 $response['status'] = 'error';
