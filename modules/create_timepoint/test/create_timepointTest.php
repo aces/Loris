@@ -26,6 +26,15 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
+    //elements location on create timepoint page
+    static $DCCID      = ".form-control-static";
+    static $Subproject = "#subproject, [select]";
+    static $VisitLabel = "#visit, [select]";
+    static $createBtn  = ".col-sm-9 > .btn";
+    // after successfully create a timepoint, it will show a message and link.
+    static $successMsg  = "h3";
+    static $successLink = "#lorisworkspace a";
+
     /**
      * It does the setUp before running the tests
      *
@@ -51,39 +60,83 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->deleteSubproject("subprojet 1");
         $this->deleteSubproject("subprojet 2");
     }
-
     /**
-     * Tests that, when loading the create_timepoint module, some
-     * text appears in the body.
+     * Tests that, when loading the create_timepoint module and creating a timepoint
+     * as a superuser.
      *
      * @return void
      */
     function testCreateTimepointDoespageLoad()
     {
+        $this->setupPermissions(array("superuser"));
         $this->safeGet(
             $this->url . "/create_timepoint/".
             "?candID=900000&identifier=900000&subprojectID=1"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Create Time Point", $bodyText);
+        $btn = self::$createBtn;
+         $this->webDriver->executescript(
+             "document.querySelector('$btn').click()"
+         );
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("New time point successfully", $bodyText);
+         $this->resetPermissions();
     }
 
     /**
-     * Tests that, when loading the create_timepoint module, some
-     * text appears in the body.
+     * Tests that, creating a timepoint twice with same visit label
      *
      * @return void
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'subprojet 1', 'V02');
+        $this->_createTimepoint('900000', '1', '1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
+        // insert the same visit label again
+        $this->_createTimepoint('900000', '1', '1');
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("This visit label is not unique", $bodyText);
 
+    }
+    /**
+     * Create a timepoint with three parameters.
+     *
+     * @param string $canID      ID of candidate
+     * @param string $subproject index of subproject
+     * @param string $visitlabel index of visit label
+     *
+     * @return void
+     */
+    private function _createTimepoint($canID, $subproject, $visitlabel)
+    {
+        $this->safeGet(
+            $this->url . "/create_timepoint/?candID=" . $canID .
+            "&identifier=" .$canID ."subprojectID=".$subproject
+        );
+         $project = self::$Subproject;
+         $visit   = self::$VisitLabel;
+         $btn     = self::$createBtn;
+         $value   = $subproject;
+         $this->webDriver->executescript(
+             "input = document.querySelector('$project');
+                 input.selectedIndex = '$value';
+                "
+         );
+         $value = $visitlabel;
+         $this->webDriver->executescript(
+             "input = document.querySelector('$visit');
+                 input.selectedIndex = '$value';
+                "
+         );
+         $this->webDriver->executescript(
+             "document.querySelector('$btn').click()"
+         );sleep(1);
     }
 
     /**
@@ -93,71 +146,18 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointSuccessLink()
     {
-        $this->markTestSkipped(
-            'Skipping tests until create timepoint works well'
+        $this->_createTimepoint('900000', '1', '1');
+        $btn = self::$successLink;
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click()"
         );
-
-        $this->_createTimepoint('900000', 'subprojet 1', 'V01');
-        $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains(
-            "List of Visits (Time Points)",
-            $bodyText
-        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("List of Visits (Time Points)", $bodyText);
 
     }
 
-    /**
-     * Create a timepoint with three parameters.
-     *
-     * @param string $canID      ID of candidate
-     * @param string $subproject text of subproject
-     * @param string $visitlabel text of visit label
-     *
-     * @return void
-     */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
-    {
-        $this->safeGet(
-            $this->url . "/create_timepoint/?candID=" . $canID .
-            "&identifier=" .$canID
-        );
-
-        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $elementSid = new WebDriverSelect($selectSid);
-        $elementSid->selectByVisibleText($subproject);
-
-        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visitLabel"));
-        $elementVl = new WebDriverSelect($selectVl);
-        $elementVl->selectByVisibleText($visitlabel);
-
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        sleep(1);
-
-    }
-
-
-    /**
-     * Tests that, create a timepoint and input a empty subproject
-     * get Error message
-     *
-     * @return void
-     */
-    function testCreateTimepointErrorEmptySubproject()
-    {
-        $this->safeGet(
-            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
-        );
-        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertNotContains(
-            "New time point successfully registered.",
-            $bodyText
-        );
-
-    }
     /**
      * Tests that timepoint loads with the permission
      *
