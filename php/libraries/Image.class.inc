@@ -164,7 +164,7 @@ class Image
     /**
      * Update this image qc status in the database
      *
-     * This is not hadnling the QCFirstChangeTime. That column and  
+     * This is not hadnling the QCFirstChangeTime. That column and
      * QCLastChangeTime shoudl be managed by `DEFAULT CURRENT_TIMESTAMP`
      * and `ON UPDATE CURRENT_TIMESTAMP` respectively
      *
@@ -173,19 +173,52 @@ class Image
      * @throws \DatabaseException
      *
      * @return void
-     */ 
+     */
     public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
     {
         $values = array(
-            'QCStatus'         => $qcstatus->getQcStatus(),
-            'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
-            'QCLastChangeTime' => time(),
-            'FileID' => $this->_fileid,
-        );
+                   'QCStatus'         => $qcstatus->getQcStatus(),
+                   'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
+                   'QCLastChangeTime' => time(),
+                   'FileID'           => $this->_fileid,
+                  );
 
         \NDB_Factory::singleton()->database()->replace(
             'files_qcstatus',
             $values
+        );
+    }
+
+    /**
+     * Gets the caveats for that image
+     *
+     * @return \LORIS\ImageCaveats[]
+     */
+    public function getCaveats(): array
+    {
+        $rows = \NDB_Factory::singleton()->database()->pselect(
+            'SELECT
+               mvl.Severity as serverity,
+               mvl.Header as header,
+               mvl.Value as value,
+               mvl.ValidRange as validrange,
+               mvl.ValidRegex as validregex
+             FROM
+               files f
+             LEFT JOIN mri_violations_log mvl
+               ON (f.SeriesUID=mvl.SeriesUID)
+             WHERE
+               f.FileID = :v_fileid
+            ',
+            array('v_fileid' => $this->_fileid)
+        );
+
+        return array_map(
+            function ($row) {
+                $values = array_values($row);
+                return new \LORIS\ImageCaveats(...$values);
+            },
+            $rows
         );
     }
 
