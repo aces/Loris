@@ -227,7 +227,7 @@ class AjaxTimepoint extends \NDB_Page
                         'longer supported in Loris.'
                     );
                 }
-                $visitLabel = \Utility::toArray($visitLabel)[0];
+                $visitLabel       = \Utility::toArray($visitLabel)[0];
                 $labelOptions[''] = null;
                 $items            = \Utility::toArray(
                     $visitLabel['labelSet']['item']
