@@ -38,8 +38,7 @@ return [
            which redeclare classes from php/libraries, in order
 		   to bootstrap the installer before the config/database
 		   is set up */
-		"php/libraries",
-		"php/exceptions",
+		"php",
 		"htdocs",
 		"modules",
         "src",
