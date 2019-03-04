@@ -69,8 +69,7 @@ class AjaxTimepoint extends \NDB_Page
          * User permission verification.
          */
         $user       = $request->getAttribute('user');
-        $identifier = isset($requestBody['identifier'])
-            ? $requestBody['identifier'] : '';
+        $identifier = $requestBody['identifier'] ?? '';
         $candidate  =& \Candidate::singleton($identifier);
 
         if (!$user->hasPermission('data_entry')
