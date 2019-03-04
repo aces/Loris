@@ -332,7 +332,7 @@ class ViewSession extends \NDB_Form
      *
      * @return string The parameter of the rejected
      */
-    function _getRejected(\MRIFile $file, string $type): string
+    function _getRejected(\MRIFile $file, string $type): ?string
     {
         $array     = array();
         $parameter = 'processing:' . $type . '_rejected';

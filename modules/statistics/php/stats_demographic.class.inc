@@ -66,7 +66,7 @@ class Stats_Demographic extends \NDB_Form
      * @param string  $sectionHeader    the value of sectionHeader
      * @param string  $tableHeader      the value of tableHeader
      * @param array   $subcats          the value of subcats
-     * @param array   $visits           the value of visits
+     * @param ?array  $visits           the value of visits
      * @param string  $dropdownName     the value of dropdownName
      * @param string  $dropdownOpt      the value of dropdownOpt
      * @param string  $dropdownSelected the value of dropdownSelected
@@ -78,10 +78,11 @@ class Stats_Demographic extends \NDB_Form
      *
      * @return string
      */
-    function renderStatsTable($sectionHeader,
+    function renderStatsTable(
+        $sectionHeader,
         $tableHeader,
         array $subcats,
-        array $visits,
+        ?array $visits,
         $dropdownName,
         $dropdownOpt,
         $dropdownSelected,
