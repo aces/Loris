@@ -385,7 +385,7 @@ class UploadForm extends Component {
               value={this.state.formData.visitLabel}
             />
             <FileElement
-              name='mri_file'
+              name='mriFile'
               label='File to Upload'
               onUserInput={this.onFormChange}
               required={true}
