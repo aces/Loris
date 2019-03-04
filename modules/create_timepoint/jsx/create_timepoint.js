@@ -117,7 +117,6 @@ class CreateTimepoint extends React.Component {
     ).then((response) => response.json())
       .then(
         (data) => {
-          console.log(data);
           // Populate the form errors.
           if (data.errors && data.errors.length > 0) {
             this.setState({errors: data.errors});
@@ -132,7 +131,6 @@ class CreateTimepoint extends React.Component {
           }
           // Populate the select options for psc.
           if (data.psc) {
-            console.log('yes');
             const state = Object.assign({}, this.state);
             state.form.options.psc = data.psc;
             state.form.value.psc = Object.keys(data.psc)[0];
