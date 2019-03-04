@@ -273,8 +273,17 @@ cd /tools
 
 ## 2.2.1 Launch the Loris installer in your browser
 Open a browser (we officially support Firefox & Chrome) and navigate to:
+
 ```
 localhost:8080/installdb.php
 ```
+
+or
+
+```
+localhost:8000/installdb.php
+```
+
+and depending if using php -S or Apache.
 
 Once finished hooray, LORIS should be accessible at http://localhost:8080 and you can start developing!
