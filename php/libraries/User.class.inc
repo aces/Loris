@@ -550,7 +550,6 @@ class User extends UserPermissions
             'usePwnedPasswordsAPI'
         )
         ) {
-            error_log('Setting disabled!');
             return false;
         }
 
