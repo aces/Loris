@@ -61,7 +61,7 @@ xcode-select --install
 Visit the official website of Homebrew and install by running their installer script in your terminal.
 
 ## 1.5 Install Apache (a.k.a httpd)
-The following commands will install apache and launch it as a service on startup:
+The following commands will install Apache and launch it as a service on startup:
 ```
 brew update
 brew upgrade
@@ -71,7 +71,7 @@ sudo brew services start httpd
 ```
 
 #### (useful) terminal commands for Apache
-How to start, stop, and restart apache.
+How to start, stop, and restart Apache.
 ```
 sudo apachectl start
 sudo apachectl stop
@@ -87,7 +87,7 @@ Logs will be sent to stderr.
 
 ### 1.5.1 Modify Apache Configuration
 
-Modify the apache configuration file for our development environment.
+Modify the Apache configuration file for our development environment.
 ```
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
@@ -97,7 +97,7 @@ sudo open -e /usr/local/etc/httpd/httpd.conf
 ServerName localhost
 ```
 
-**b.** Find the lines for `DocumentRoot` and Directory in apache and change them to:
+**b.** Find the lines for `DocumentRoot` and Directory in Apache and change them to:
 ```
 DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 <Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
@@ -123,17 +123,12 @@ User your_user
 Group staff
 ```
 
-**f.** Modify the ServerName to:
-```
-ServerName localhost
-```
-
-#### Restart apache and it will reload the updated settings
+#### Restart Apache to load the updated settings
 ```
 sudo apachectl -k restart
 ```
 
-## 1.6 Install PHP and pk-config
+## 1.6 Install PHP and pkg-config
 
 Paste these commands into your terminal while hitting enter:
 ```
@@ -145,7 +140,7 @@ brew install pkg-config
 
 ### 1.6.1 Modify Apache Configuration (again) but for PHP
 
-Modify the apache configuration file to enable php.
+Modify the Apache configuration file to enable php.
 ```
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
@@ -162,14 +157,14 @@ LoadModule php7_module /usr/local/opt/php@<version>/lib/httpd/modules/libphp7.so
 </IfModule>
 ```
 
-**c.** Add the below lines under </IfModule>:
+**c.** Add the lines below under `</IfModule>`:
 ```
 <FilesMatch \.php$>
     SetHandler application/x-httpd-php
 </FilesMatch>
 ```
 
-#### Restart apache and it will reload the updated settings
+#### Restart Apache will load the updated settings
 ```
 sudo apachectl -k restart
 ```
@@ -208,7 +203,7 @@ xdebug.remote_connect_back=0
 xdebug.idekey=phpstorm
 ```
 
-#### Restart apache with Xdebug configured.
+#### Restart Apache with Xdebug configured.
 ```
 sudo apachectl -k restart
 ```
