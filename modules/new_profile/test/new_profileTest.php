@@ -195,7 +195,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testNewProfileCreateCandidate()
+    function testNewProfileCreateCandidate(): void
     {
         $this->webDriver->get($this->url . "/new_profile/");
         $this->webDriver->executescript(
@@ -214,16 +214,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New candidate created", $bodyText);
-
-        //        $this->deleteCandidate("BBQ0000");
     }
 
     /**
-     * Tests that candidate is created
+     * Creates two candidates and ensures that their PSCIDs are sequential.
      *
      * @return void
      */
-    function testNewProfilePSCIDSequential()
+    function testNewProfilePSCIDSequential(): void
     {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
