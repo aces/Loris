@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-define("DEBUG", false);
+define('DEBUG', false);
 define('ESCAPE_ALL', 0);
 define('ESCAPE_NOQUOTES', 1);
 define('ESCAPE_NONE', 2);
@@ -31,16 +31,6 @@ define('ESCAPE_NONE', 2);
  */
 class Database
 {
-    /**
-     * Constants determining whether HTML characters will be escaped before
-     * being inserted into the Database.
-     *
-     * @access private
-     */
-    const ESCAPE_ALL      = 0;
-    const ESCAPE_NOQUOTES = 1;
-    const ESCAPE_NONE     = 2;
-
     /**
      * The database handle, created by the connect() method
      *
@@ -283,8 +273,8 @@ class Database
      * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
+     * @param string $table      The table into which to insert the row.
+     * @param array  $set        The values with which to fill the new row.
      * @param int    $escapeMode Which HTML characters to escape. A value of 1
      *                           will escape all characters but quotation marks
      *                           and a value of 2 will not escape any characters.
@@ -341,8 +331,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated. HTML from any field in the row will *not* be automatically escaped.
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the row
+     * @param string $table      The table into which to insert the row.
+     * @param array  $set        The values with which to fill the row.
      * @param int    $escapeMode Which HTML characters to escape. A value of 1
      *                           will escape all characters but quotation marks
      *                           and a value of 2 will not escape any characters.
@@ -410,14 +400,15 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string $table             the table into which to insert the row
-     * @param array  $set               the values with which to fill the new row
+     * @param string $table             The table into which to insert the row.
+     * @param array  $set               The values with which to fill the new row.
      * @param int    $escapeMode        Determines which characters should be
      *                                  HTML escaped.
-     * @param bool   $ignore            determines whether the insert throws an
-     *                                  error or is discarded when value exists in DB
-     * @param bool   $onDuplicateUpdate determines whether the row should be updated
-     *                                  upon unique key duplication
+     * @param bool   $ignore            Determines whether the insert throws an
+     *                                  error or is discarded when value exists
+     *                                  in DB.
+     * @param bool   $onDuplicateUpdate Determines whether the row should be updated
+     *                                  upon unique key duplication.
      *
      * @return bool
      */
@@ -567,9 +558,9 @@ class Database
     /**
      * Updates a single row in the specified table.
      *
-     * @param string $table      The table into which to insert the row
-     * @param array  $set        The values with which to fill the new row
-     * @param array  $i_where    The selection filter, joined as a boolean and
+     * @param string $table      The table into which to insert the row.
+     * @param array  $set        The values with which to fill the new row.
+     * @param array  $i_where    The selection filter, joined as a boolean AND.
      * @param int    $escapeMode Determines which characters should be HTML
      *                                  HTML escaped.
      *
