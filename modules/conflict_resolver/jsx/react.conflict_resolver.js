@@ -157,6 +157,7 @@ class ConflictResolverApp extends Component {
             Data: data,
             isLoaded: true,
           });
+          console.log(data);
         }).catch((error) => {
           // console.log('error: ' + error);
     });

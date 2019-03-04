@@ -336,11 +336,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         // Project list, if applicable
         if ($config->getSetting('useProjects')==='true') {
-            $list_of_projects = array('project' => 'All');
             $projectList      = \Utility::getProjectList();
+            $list_of_projects = array('' => 'All') + $projectList;
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$value] = $value;
             }
+
             $this->addSelect('project', 'Project: ', $list_of_projects);
         }
     }
