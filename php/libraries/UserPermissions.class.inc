@@ -169,7 +169,7 @@ class UserPermissions
             );
         }
         foreach ($permissions as $p) {
-            if ($this->_permissionTrueAndValid($p)) {
+            if ($this->hasPermission($p)) {
                 return true;
             }
         }
