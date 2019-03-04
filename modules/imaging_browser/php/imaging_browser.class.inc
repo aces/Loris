@@ -323,6 +323,7 @@ END";
         );
         $modalities_subquery_as = array();
         $as = array();
+        $list_of_projects = array();
 
         foreach ($scan_id_types as $key => $value) {
             $modalities_subquery[$key] = $value;
