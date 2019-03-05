@@ -78,7 +78,7 @@ class LoadPane extends Component {
           message: 'Success!',
           details: 'Instrument Loaded',
           display: 'block',
-          class: 'alert alert-danger alert-dismissible',
+          class: 'alert alert-success alert-dismissible',
         };
         break;
       case 'typeError':
@@ -94,7 +94,7 @@ class LoadPane extends Component {
           message: 'Error!',
           details: this.state.alertMessage,
           display: 'block',
-          class: 'alert alert-success alert-dismissible',
+          class: 'alert alert-danger alert-dismissible',
         };
         break;
       default:
@@ -370,6 +370,7 @@ class DisplayElements extends Component {
 }
 DisplayElements.propTypes = {
   draggable: PropTypes.bool,
+  updateElement: PropTypes.func,
   editElement: PropTypes.func,
   deleteElement: PropTypes.func,
 };
