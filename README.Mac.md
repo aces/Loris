@@ -36,14 +36,14 @@ You should now have your own LORIS repository on Github.
 
 ## 1.2 Clone your fork of LORIS to your local machine.
 
-**a.** Create the directory for development and where the fork will reside.
+**a.** Create a directory for development where you will clone your fork of LORIS.
 
 Paste the following in your terminal and hit enter:
 ```
 mkdir -p ~/Development/GitHub
 ```
 
-**b.** Clone your fork to ~/Development/GitHub
+**b.** Clone your fork to `~/Development/GitHub`
 
 Paste the following lines in your terminal, and replace <your_username> with your github username before pressing enter.
 ```
@@ -58,7 +58,7 @@ xcode-select --install
 ```
 
 ## 1.4 Install [Homebrew](https://brew.sh)
-Visit the official website of Homebrew and install by running their installer script in your terminal.
+Visit the Homebrew official website and run their installer script in your terminal to install it.
 
 ## 1.5 Install Apache (a.k.a httpd)
 The following commands will install Apache and launch it as a service on startup:
@@ -92,7 +92,7 @@ Modify the Apache configuration file for our development environment.
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
 
-**a.** Find & modify the ServerName to:
+**a.** Find & modify the `ServerName` to:
 ```
 ServerName localhost
 ```
@@ -103,7 +103,7 @@ DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 <Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
 ```
 
-**c.** In the same <Directory> block, modify AllowOverride to allow all:
+**c.** In the same `<Directory>` block, modify `AllowOverride` to allow all:
 ```
 # AllowOverride controls what directives may be placed in .htaccess files.
 # It can be "All", "None", or any combination of the keywords:
@@ -112,12 +112,12 @@ DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 AllowOverride All
 ```
 
-**d.** Enable mod_rewrite which is commented out by default:
+**d.** Enable `mod_rewrite` which is commented out by default:
 ```
 LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so
 ```
 
-**e.** Modify the User & Group (replace your_user again with your macOS user) to:
+**e.** Modify the `User` & `Group` (replace your_user again with your macOS user) to:
 ```
 User your_user
 Group staff
@@ -145,12 +145,12 @@ Modify the Apache configuration file to enable php.
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
 
-**a.** Add the below line to LoadModules (Change php@<version> to the correct version):
+**a.** Add the below line to `LoadModules` (Change `php@<version>` to the correct version):
 ```
 LoadModule php7_module /usr/local/opt/php@<version>/lib/httpd/modules/libphp7.so
 ```
 
-**b.** Modify <IfModule dir_module> to this:
+**b.** Modify `<IfModule dir_module>` to this:
 ```
 <IfModule dir_module>
     DirectoryIndex index.php index.html
@@ -180,17 +180,17 @@ pecl install xdebug
 
 ### 1.7.1 Configure Xdebug for local development
 
-**a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your php.ini (Note: replace your_php_version with the correct php version installed):
+**a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your `php.ini` (Note: replace `your_php_version` with the correct php version installed):
 ```
 sudo open -e /usr/local/etc/php/<your_php_version>/php.ini
 ```
 
-b. Create the file ext-xdebug.ini with this command:
+b. Create the file `ext-xdebug.ini` with this command:
 ```
 sudo touch /usr/local/etc/php/<your_php_version>/conf.d/ext-xdebug.ini
 ```
 
-c. Paste the following into the ext-xdebug.ini file you just created (Note: replace the zend_extension path with the correct one on your machine):
+c. Paste the following into the `ext-xdebug.ini` file you just created (Note: replace the `zend_extension` path with the correct one on your machine):
 ```
 [xdebug]
 zend_extension="/usr/local/Cellar/php@7.2/7.2.14/pecl/20170718/xdebug.so"
