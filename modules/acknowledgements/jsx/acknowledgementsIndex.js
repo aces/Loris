@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import swal from 'sweetalert2';
+import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -28,36 +30,33 @@ class AcknowledgementsIndex extends Component {
       error: false,
       isLoaded: false,
       affiliationsOptions: {
-        douglas: "Douglas",
-        mcgill: "McGill"
+        douglas: 'Douglas',
+        mcgill: 'McGill',
       },
       degreesOptions: {
-        bachelors: "Bachelors",
-        masters: "Masters",
-        phd: "PhD",
-        postdoc: "Postdoctoral",
-        md: "MD",
-        registeredNurse: "Registered Nurse"
+        bachelors: 'Bachelors',
+        masters: 'Masters',
+        phd: 'PhD',
+        postdoc: 'Postdoctoral',
+        md: 'MD',
+        registeredNurse: 'Registered Nurse',
       },
       rolesOptions: {
-        investigators: "Investigators",
-        projectAdministration: "Project Administration",
-        databaseManagement: "Database Management",
-        interviewDataCollection: "Interview Data Collection",
-        dataAnalyses: "Data Analyses",
-        mriAcquisition: "MRI Acquisition",
-        dataEntry: "Data Entry",
-        databaseProgramming: "Database Programming",
-        imagingProcessingAndEvaluation: "Imaging Processing and Evaluation",
-        geneticAnalysisAndBiochemicalAssays: "Genetic Analysis and Biochemical Assays",
-        randomizationAndPharmacyAllocation: "Randomization and Pharmacy Allocation",
-        consultants: "Consultants",
-        lpCsfCollection: "LP/CSF Collection"
+        investigators: 'Investigators',
+        projectAdministration: 'Project Administration',
+        databaseManagement: 'Database Management',
+        interviewDataCollection: 'Interview Data Collection',
+        dataAnalyses: 'Data Analyses',
+        mriAcquisition: 'MRI Acquisition',
+        dataEntry: 'Data Entry',
+        databaseProgramming: 'Database Programming',
+        imagingProcessingAndEvaluation: 'Imaging Processing and Evaluation',
+        geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis and Biochemical Assays',
+        randomizationAndPharmacyAllocation: 'Randomization and Pharmacy Allocation',
+        consultants: 'Consultants',
+        lpCsfCollection: 'LP/CSF Collection',
       },
-      presentOptions: {
-        yes: "Yes",
-        no: "No"
-      },
+      showModal: false,
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -65,6 +64,10 @@ class AcknowledgementsIndex extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.openModalForm = this.openModalForm.bind(this);
+    this.closeModalForm = this.closeModalForm.bind(this);
+    this.renderCitationPolicy = this.renderCitationPolicy.bind(this);
+    this.renderAddForm = this.renderAddForm.bind(this);
   }
 
   componentDidMount() {
@@ -109,7 +112,7 @@ class AcknowledgementsIndex extends Component {
     const formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -134,15 +137,15 @@ class AcknowledgementsIndex extends Component {
       cache: false,
       contentType: false,
       processData: false,
-      success: data => {
+      success: (data) => {
         swal('Success!', 'Acknowledgement added.', 'success');
         this.fetchData();
       },
-      error: error => {
+      error: (error) => {
         console.error(error);
         let message = error.responseText;
         swal('Error!', message, 'error');
-      }
+      },
     });
   }
 
@@ -159,16 +162,130 @@ class AcknowledgementsIndex extends Component {
     return <td>{cell}</td>;
   }
 
+  openModalForm() {
+    this.setState({showModal: true});
+  }
+
+  closeModalForm() {
+    this.setState({showModal: false});
+  }
+
   renderCitationPolicy() {
     return (
       <Panel
-        id="citationPolicy"
-        title="Citation Policy"
+        id='citationPolicy'
+        title='Citation Policy'
       >
-        <div className="col-sm-12 col-md-12">
+        <div className='col-sm-12 col-md-12'>
           <span>{this.state.data.citation_policy}</span>
         </div>
       </Panel>
+    );
+  }
+
+  renderAddForm() {
+    return (
+      <Modal
+        title='Add Acknowledgement'
+        onClose={this.closeModalForm}
+        show={this.state.showModal}
+      >
+        <FormElement
+          Module='acknowledgements'
+          name='addAcknowledgement'
+          id='addAcknowledgementForm'
+          onSubmit={this.handleSubmit}
+          method='POST'
+        >
+          <TextboxElement
+            name='addOrdering'
+            label='Ordering'
+            value={this.state.formData.addOrdering}
+            required={true}
+            onUserInput={this.setFormData}
+          />
+          <TextboxElement
+            name='addFullName'
+            label='Full Name'
+            value={this.state.formData.addFullName}
+            required={true}
+            onUserInput={this.setFormData}
+          />
+          <TextboxElement
+            name='addCitationName'
+            label='Citation Name'
+            value={this.state.formData.addCitationName}
+            required={true}
+            onUserInput={this.setFormData}
+          />
+          <SelectElement
+            name='addAffiliations'
+            options={this.state.affilitationsOptions}
+            label='Affiliations'
+            value={this.state.formData.addAffiliations}
+            multiple={true}
+            emptyOption={true}
+            onUserInput={this.setFormData}
+          />
+          <SelectElement
+            name='addDegrees'
+            options={this.state.degreesOptions}
+            label='Degrees'
+            value={this.state.formData.addDegrees}
+            multiple={true}
+            emptyOption={true}
+            onUserInput={this.setFormData}
+          />
+          <SelectElement
+            name='addRoles'
+            options={this.state.rolesOptions}
+            label='Roles'
+            value={this.state.formData.addRoles}
+            multiple={true}
+            emptyOption={true}
+            onUserInput={this.setFormData}
+          />
+          <DateElement
+            name='addStartDate'
+            label='Start date'
+            value={this.state.formData.addStartDate}
+            maxYear={this.state.data.maxYear}
+            minYear={this.state.data.minYear}
+            onUserInput={this.setFormData}
+          />
+          <DateElement
+            name='addEndDate'
+            label='End date'
+            value={this.state.formData.addEndDate}
+            maxYear={this.state.data.maxYear}
+            minYear={this.state.data.minYear}
+            onUserInput={this.setFormData}
+          />
+          <SelectElement
+            name='addPresent'
+            options={this.state.data.fieldOptions.present}
+            label='Present'
+            value={this.state.formData.addPresent}
+            emptyOption={true}
+            required={true}
+            onUserInput={this.setFormData}
+          />
+          <div>
+            <ButtonElement
+              name='fire_away'
+              label='Save'
+              type='submit'
+              buttonClass='btn btn-sm btn-primary'
+            />
+            <ButtonElement
+              name='reset'
+              label='Reset'
+              type='reset'
+              buttonClass='btn btn-sm btn-primary'
+            />
+          </div>
+        </FormElement>
+      </Modal>
     );
   }
 
@@ -209,38 +326,29 @@ class AcknowledgementsIndex extends Component {
       {label: 'End Date', show: true, filter: {
         name: 'startDate',
         type: 'date',
-        }},
+      }},
       {label: 'Present', show: true, filter: {
         name: 'present',
         type: 'select',
-        options: this.state.presentOptions,
+        options: options.presents,
       }},
     ];
-
-    const addButton = (
-      <ButtonElement
-        name="addAcknowledgement"
-        label="Add Acknowledgement"
-        type="button"
-        buttonClass="btn btn-sm btn-primary col-xs-12 addCTA"
-        columnSize="col-sm-3 col-md-2 col-xs-12 pull-right"
-        onUserInput={this.openModalForm}
-      />
-    );
+    const actions = [
+      {name: 'addAcknowledgement', label: 'Add Acknowledgement', action: this.openModalForm},
+    ];
 
     return (
-      <div id="acknowledgementsIndex">
-          <div id="addAcknowledgements">
-            {addButton}
-          </div>
-        <div id="acknowledgementsFilter">
-          <FilterableDataTable
-            name="acknowledgements"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
-        </div>
+      <div>
+        {this.renderCitationPolicy()}
+        {this.renderAddForm()}
+        <FilterableDataTable
+          name='acknowledgements'
+          title='Acknowledgements'
+          data={this.state.data.Data}
+          fields={fields}
+          getFormattedCell={this.formatColumn}
+          actions={actions}
+        />
       </div>
     );
   }

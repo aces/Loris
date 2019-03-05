@@ -93,8 +93,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             $DB->insert('acknowledgements', $values);
             unset($values);
         }
-
-        $this->tpl_data['success'] = true;
     }
 
     /**
@@ -157,11 +155,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
-        $config      = \NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-
-        // enums should match with acknowledgements table
         $present = array(
                     'Yes' => 'Yes',
                     'No'  => 'No',
@@ -170,20 +163,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $this->fieldOptions = array(
                                 'presents' => $present,
                               );
-        // add form elements
-        $this->addBasicText('addordering', 'Ordering:');
-        $this->addBasicText('addfull_name', 'Full Name:');
-        $this->addBasicText('addcitation_name', 'Citation Name:');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
-        $this->addSelect('addpresent', 'Present?', $present);
     }
 
     /**
@@ -194,8 +173,15 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result = $this->toArray();
-        $result['citation_policy'] = \NDB_Config::singleton()->getSetting('citation_policy');
+        $config     = \NDB_Config::singleton();
+
+        // enums should match with acknowledgements table
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        $result['citation_policy'] = $config->getSetting('citation_policy');
+        $result['minYear']         = $config->getSetting('startYear');
+        $result['maxYear']         = $config->getSetting('endYear');
 
         return json_encode($result);
     }
