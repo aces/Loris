@@ -138,7 +138,7 @@ brew services start php72
 brew install pkg-config
 ```
 
-### 1.6.1 Modify Apache Configuration (again) but for PHP
+### 1.6.1 Modify Apache Configuration for PHP
 
 Modify the Apache configuration file to enable php.
 ```
@@ -180,7 +180,7 @@ pecl install xdebug
 
 ### 1.7.1 Configure Xdebug for local development
 
-**a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your `php.ini` (Note: replace `your_php_version` with the correct php version installed):
+**a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your `php.ini` file (Note: replace `your_php_version` with the correct php version installed):
 ```
 sudo open -e /usr/local/etc/php/<your_php_version>/php.ini
 ```
