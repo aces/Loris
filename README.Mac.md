@@ -27,14 +27,14 @@ The following list provides foresight into the proceeding sections and recommend
 
 You should have a GitHub account and git installed on your local development machine.
  
-## 1.1 On Github, create your own fork of Loris.
+## 1.1 On Github, create your own fork of LORIS.
 
 1) Navigate to [github.com/aces/Loris](https://github.com/aces/Loris)
 2) Click on the Fork button.
 
-You should now have your own Loris repository on Github.
+You should now have your own LORIS repository on Github.
 
-## 1.2 Clone your fork of Loris to your local machine.
+## 1.2 Clone your fork of LORIS to your local machine.
 
 **a.** Create the directory for development and where the fork will reside.
 
@@ -135,7 +135,7 @@ sudo apachectl -k restart
 
 ## 1.6 Install PHP and pk-config
 
-Paste these commands into your terminal while hitting enter:
+Paste these commands into your terminal and hit enter:
 ```
 brew install php72
 brew link php72
@@ -267,7 +267,7 @@ pecl install ast-0.1.5;
 Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and run the installer.
 
 
-## 2.2 Install Loris
+## 2.2 Install LORIS
 Paste into your terminal and hit enter:
 ```
 cd ~/Development/GitHub/Loris
@@ -276,7 +276,7 @@ cd /tools
 ./install.sh
 ```
 
-## 2.2.1 Launch the Loris installer in your browser
+## 2.2.1 Launch the LORIS installer in your browser
 Open a browser (we officially support Firefox & Chrome) and navigate to:
 ```
 localhost:8080/installdb.php
