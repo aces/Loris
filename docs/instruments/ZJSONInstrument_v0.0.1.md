@@ -1003,7 +1003,7 @@ displayed with some level of prominence.
 }
 ```
 
-`options.level`: Int. The number indicating the level of the html heading element to be rendered, i.e. h1, the highest
+`options.level`: Int. The number indicating the level of the front-end heading element to be rendered, i.e. h1, the highest
 and most prominent, and h6, the lowest and reserved for subheadings.
 
 ### 5.1.10 Link Element
