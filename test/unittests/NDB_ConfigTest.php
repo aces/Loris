@@ -20,6 +20,10 @@ use PHPUnit\Framework\TestCase;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+class FakeConfig extends NDB_Config
+{
+    public function __construct () {}
+}
 class NDB_ConfigTest extends TestCase
 {
     /**
@@ -61,14 +65,11 @@ class NDB_ConfigTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
-
+         
+        $this->_config     = FakeConfig::singleton();
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_config     = NDB_Config::singleton();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
-
-        $this->_factory   = NDB_Factory::singleton();
-
+        $this->_factory   = \NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
     }
@@ -82,9 +83,6 @@ class NDB_ConfigTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        $this->_factory->reset();
-        unset($this->_config);
-         $this->_config     = NDB_Config::singleton();
     }
 
     /**
@@ -105,10 +103,10 @@ class NDB_ConfigTest extends TestCase
      * @return void
      */
     public function testXmltoArray()
-    {
-        $xml = new SimpleXMLElement("<test><unit>1</unit></test>");
+    { 
+        $xml = new SimpleXMLElement("<test><unit>test</unit></test>");
         $text = $this->_config::convertToArray($xml);
-        $this->assertEquals(array('unit'=>'1'), $text);
+        $this->assertEquals(array('unit'=>'test'), $text);
     }
     /**
      * Test select() method retrieves all _candidate and related info
@@ -127,13 +125,12 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test select() method retrieves all _candidate and related info
      *
-     * @return void
      */
     public function testGetSettingFromDB()
-    {
-        $this->assertNull($this->_config::getSettingFromDB("database"));
-        $this->assertNull($this->_config::getSettingFromDB("sandbox"));
-        $this->assertNull($this->_config::getSettingFromDB("showDatabaseQueries"));
+    {   
+        $this->assertNull($this->_config->getSettingFromDB("database"));
+        $this->assertNull($this->_config->getSettingFromDB("sandbox"));
+        $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
     }
     /**
      * Test select() method retrieves all _candidate and related info
@@ -146,5 +143,16 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals("test",$this->_config->getSettingFromXML("bbb"));
     }
 //todo change comments. add more test cases.
+    /**
+     * Test select() method retrieves all _candidate and related info
+     *
+     * @return void
+     */
+    public function testGetSetting()
+    {
+        $this->_config->_settings = array('aaa' => array("bbb"=>"unittest"));
+        $this->assertEquals("unittest",$this->_config->getSetting("bbb"));
+
+    }
 
 }
