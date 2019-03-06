@@ -198,7 +198,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileCreateCandidate()
     {
         $this->markTestSkipped(
-           'It will be overwritten by new React test');
+            'It will be overwritten by new React test'
+        );
         $this->webDriver->get($this->url . "/new_profile/");
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
@@ -228,7 +229,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfilePSCIDSequential()
     {
         $this->markTestSkipped(
-           'It will be overwritten by new React test');
+            'It will be overwritten by new React test'
+        );
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
