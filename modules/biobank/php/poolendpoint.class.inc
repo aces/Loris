@@ -49,10 +49,11 @@ class PoolEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return [
+        return array(
                 'GET',
                 'POST',
-               ];
+                'OPTIONS',
+               );
     }
 
     /**

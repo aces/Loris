@@ -74,17 +74,15 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      */
     public function getInstanceFromId(int $id) : Pool
     {
-        $poolData    = $this->getInstanceDataFromId($id);
-        $specimenIds = $this->getSpecimenIdsFromId($id);
-        $poolArray   = $this->getArrayfromSQL($poolData, $specimenIds);
-
         $specimenDAO = new SpecimenDAO($this->db);
+        $specimenIds = $this->getSpecimenIdsFromId($id);
         $specimen    = $specimenDAO->getInstanceFromId(intval($specimenIds[0]));
 
+        $poolArray                = $this->getInstanceDataFromId($id);
         $poolArray['candidateId'] = $specimen->getCandidateId();
         $poolArray['sessionId']   = $specimen->getSessionId();
 
-        $pool = $this->getInstanceFromArray($poolArray);
+        $pool = $this->getInstanceFromSQL($poolArray, $specimenIds);
 
         return $pool;
     }
@@ -180,8 +178,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     public function saveInstance(Pool $pool) : void
     {
         //Convert Pool to SQL format.
-        $poolArray = getArrayFromInstance();
-        $data      = $this->getSQLFromArray($poolArray);
+        $data = getSQLFromInstance($pool);
 
         // TODO: Introduce a SQL Transaction here with a try catch.
         // Insert or Update the biobank_pool table with respective data.
@@ -219,26 +216,28 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
 
     /**
      * This function takes a Pool array and prepares the data to be inserted
-     * into the database by converting it to a data array.
+     * into the database by converting it to a data array. This mapping is done
+     * to enable the update or insertion of data into the database directly from
+     * the resuling array.
      *
-     * @param array $pool Pool array to be converted
+     * @param Pool $pool Pool array to be converted
      *
      * @return array $data Array containing the data to be inserted
      */
-    private function getSQLFromArray(array $pool) : array
+    private function getSQLFromInstance(Pool $pool) : array
     {
         $poolData = array(
-                     'PoolID'   => $pool['id'],
-                     'Label'    => $pool['label'],
-                     'CenterID' => $pool['centerId'],
-                     'Date'     => \Utility::toMysqlDateFormat($pool['date']),
-                     'Time'     => \Utility::toMysqlDateFormat($pool['time']),
+                     'PoolID'   => $pool->getId(),
+                     'Label'    => $pool->getLabel(),
+                     'CenterID' => $pool->getCenterId(),
+                     'Date'     => \Utility::toMysqlDateFormat($pool->getDate()),
+                     'Time'     => \Utility::toMysqlDateFormat($pool->getTime()),
                     );
 
         $specimenIds = $pool->getSpecimenIds();
         foreach ($specimenIds as $id) {
             $specimenPoolData[$id] = array(
-                                      'PoolID'     => $pool['id'],
+                                      'PoolID'     => $pool->getId(),
                                       'SpecimenID' => $id,
                                      );
         }
@@ -251,60 +250,26 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
 
     /**
      * This function takes an array that resulted from an SQL query and
-     * indexes it in a format that can be used by the rest of the code.
+     * instantiates it as a Pool Object
      *
      * @param array $data        Values to be reassigned.
      * @param array $specimenIds List of specimen IDs associated with the given
      *                           Pool.
      *
-     * @return array
+     * @return Pool
      */
-    private function getArrayFromSQL(array $data, array $specimenIds) : array
+    private function getInstanceFromSQL(array $data, array $specimenIds) : Pool
     {
-        return array(
-                'id'          => intval($data['PoolID']),
-                'label'       => $data['Label'],
-                'specimenIds' => $specimenIds,
-                'centerId'    => intval($data['CenterID']),
-                'date'        => $data['Date'],
-                'time'        => $data['Time'],
-               );
-    }
-
-    // TODO: decide if this should be moved to the entity class.
-    /**
-     * Instatiates a Pool Object from an array.
-     *
-     * @param array $data Data to be used to create the Pool Object
-     *
-     * @return Pool $pool Instantiated Pool Object
-     */
-    public function getInstanceFromArray(array $data) : Pool
-    {
-        // Set persistence variables
-        $pool = $this->getInstance();
-        $pool->setId($data['id']);
-        $pool->setLabel($data['label']);
-        $pool->setSpecimenIds($data['specimenIds']);
+        $pool = new Pool();
+        $pool->setId(intval($data['PoolID']));
+        $pool->setLabel($data['Label']);
+        $pool->setSpecimenIds($specimenIds);
         $pool->setCandidateId($data['candidateId']);
         $pool->setSessionId($data['sessionId']);
-        $pool->setCenterId($data['centerId']);
-        $pool->setDate(new \DateTime($data['date']));
-        $pool->setTime(new \DateTime($data['time']));
+        $pool->setCenterId(intval($data['CenterID']));
+        $pool->setDate(new \DateTime($data['Date']));
+        $pool->setTime(new \DateTime($data['Time']));
 
         return $pool;
-    }
-
-    /**
-     * A wrapper function for the jsonSerialize method of the Specimen Instance
-     * Class. This converts the Specimen Instance into an array.
-     *
-     * @param Pool $pool Pool instance.
-     *
-     * @return array Pool Array.
-     */
-    public function getArrayFromInstance(Pool $pool) : array
-    {
-        return $pool->jsonSerialize();
     }
 }

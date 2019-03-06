@@ -36,14 +36,12 @@ abstract class Process implements \JsonSerializable
      *
      * These variables describe a process instance.
      *
-     * @var int       $id
      * @var int       $centerId
      * @var \DateTime $date
      * @var \DateTime $time
      * @var string    $comments
      * @var array     $data
      */
-    private $id;
     private $centerId;
     private $date;
     private $time;
@@ -55,31 +53,6 @@ abstract class Process implements \JsonSerializable
      */
     function __construct()
     {
-    }
-
-    // XXX: I'm not sure if ID is necessary in the context of process objects
-    // since they are always incorporated into a specimen object. @Rida, any
-    // thoughts?
-    /**
-     * Sets the specimen's ID
-     *
-     * @param ?int $id the specimen's ID
-     *
-     * @return void
-     */
-    public function setId(?int $id = null) : void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * Gets the specimen's ID
-     *
-     * @return ?int
-     */
-    public function getId() : ?int
-    {
-        return $this->id;
     }
 
     /**
@@ -193,6 +166,24 @@ abstract class Process implements \JsonSerializable
     }
 
     /**
+     * Instatiates a Process Object using the values sent from the client-side.
+     *
+     * @param array $data Data to be used to instantiate the Process Object.
+     *
+     * @return Process
+     */
+    public function fromArray(array $data) : Process
+    {
+        $this->setCenterId(intval($data['centerId']));
+        $this->setDate(new \DateTime($data['date']));
+        $this->setTime(new \DateTime($data['time']));
+        $this->setData(($data['data']));
+
+        return $this;
+    }
+
+
+    /**
      * Returns an array representing the state of the Process.
      *
      * @return array
@@ -202,7 +193,6 @@ abstract class Process implements \JsonSerializable
         // TODO: Date and Time formats should be gotten from some sort of config
         // setting.
         return array(
-                'id'       => $this->id,
                 'centerId' => $this->centerId,
                 'date'     => $this->date->format('d-m-Y'),
                 'time'     => $this->time->format('H:i'),

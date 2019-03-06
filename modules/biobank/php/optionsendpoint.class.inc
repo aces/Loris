@@ -49,7 +49,10 @@ class OptionsEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return ['GET'];
+        return array(
+                'GET',
+                'OPTIONS',
+               );
     }
 
     /**

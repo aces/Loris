@@ -65,6 +65,32 @@ class Analysis extends Process
     }
 
     /**
+     * Instatiates a Analysis Object using the values sent from the client-side.
+     *
+     * @param array $data Data to be used to instantiate the Analysis Object.
+     *
+     * @return Process
+     */
+    public function fromArray(array $data) : Process
+    {
+        parent::fromArray($data);
+        $this->setMethodId($data['methodId']);
+
+        return $this;
+    }
+
+    /**
+     * A wrapper function for the jsonSerialize method of the Analysis Instance
+     * Class. This converts this Specimen Analysis into an array
+     *
+     * @return array Specimen Array
+     */
+    public function toArray()
+    {
+        return $this->jsonSerialize();
+    }
+
+    /**
      * Returns an array representing the state of the Specimen.
      *
      * @return array

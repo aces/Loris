@@ -378,7 +378,7 @@ CREATE TABLE `biobank_specimen_parent` (
 CREATE TABLE `biobank_specimen_pool_rel` (
   `SpecimenID` integer unsigned NOT NULL,
   `PoolID` integer unsigned NOT NULL,
-  CONSTRAINT `PK_biobank_specimen_pool_rel` PRIMARY KEY (`SpecimenID`, `PoolID`),
+  CONSTRAINT `PK_biobank_specimen_pool_rel` PRIMARY KEY (`SpecimenID`),
   CONSTRAINT `FK_biobank_specimen_pool_rel_SpecimenID`
     FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen`(`SpecimenID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
@@ -442,7 +442,6 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_container_update', 'Biobank: Update Container Data', 2),
     ('biobank_pool_view', 'Biobank: View Pool Data', 2),
     ('biobank_pool_create', 'Biobank: Create Pool Data', 2),
-    ('biobank_pool_update', 'Biobank: Update Pool Data', 2)
 ;
 
 /*Config*/

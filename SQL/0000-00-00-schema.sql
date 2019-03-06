@@ -1787,7 +1787,7 @@ CREATE TABLE `biobank_specimen_type` (
   `Label` varchar(50) NOT NULL,                                                 
   `FreezeThaw` BIT(1) NOT NULL,                                                 
   `ParentSpecimenTypeID` integer unsigned,                                      
-  `Regex` varchar(100),                                                         
+  `Regex` varchar(100), /*Used to validate container barcode for specimen of a given type*/
   CONSTRAINT `PK_biobank_specimen_type` PRIMARY KEY (`SpecimenTypeID`),         
   CONSTRAINT `FK_biobank_specimen_type_ParentSpecimenTypeID`                    
     FOREIGN KEY (`ParentSpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
@@ -2019,7 +2019,7 @@ CREATE TABLE `biobank_specimen_parent` (
 CREATE TABLE `biobank_specimen_pool_rel` (                                      
   `SpecimenID` integer unsigned NOT NULL,                                       
   `PoolID` integer unsigned NOT NULL,                                           
-  CONSTRAINT `PK_biobank_specimen_pool_rel` PRIMARY KEY (`SpecimenID`, `PoolID`),
+  CONSTRAINT `PK_biobank_specimen_pool_rel` PRIMARY KEY (`SpecimenID`),
   CONSTRAINT `FK_biobank_specimen_pool_rel_SpecimenID`                          
     FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen`(`SpecimenID`)      
     ON UPDATE RESTRICT ON DELETE RESTRICT,                                      

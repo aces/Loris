@@ -30,8 +30,11 @@ namespace LORIS\biobank;
 class ContainerController
 {
 
+    // TODO: These values were decided based on the realm of possibl values.
+    // These value should instead be queried from the back end so that they
+    // are Project configurable.
     const MINTEMP = -273.15;
-    const MAXTEMP = 1000;
+    const MAXTEMP = 100;
 
     /**
      * Private instances of the Database, User and ContainerDAO classes.
@@ -89,7 +92,7 @@ class ContainerController
         $this->validatePermission('create');
         $containerList = array();
         foreach ($list as $i => $item) {
-            $container = $this->dao->getInstanceFromArray($item);
+            $container = (new Container)->fromArray($item);
             $this->validateInstance($container);
             $containerList[$i] = $container;
         }
@@ -115,7 +118,7 @@ class ContainerController
     public function updateInstance(array $containerArray) : void
     {
         $this->validatePermission('update');
-        $container = $this->dao->getInstanceFromArray($containerArray);
+        $container = (new Container)->fromArray($containerArray);
         $this->validateInstance($container);
         $this->dao->saveInstance($container);
     }
@@ -317,8 +320,7 @@ class ContainerController
             $parentContainer = $this->dao->getInstanceFromId($parentContainerId);
             if ($container->getCenterID() !== $parentContainer->getCenterID()) {
                 throw new \BadRequest(
-                    'A container must be checked out before
-                     moving location.'
+                    'A container must be checked out before moving location.'
                 );
             }
         }

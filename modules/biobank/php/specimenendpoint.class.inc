@@ -49,11 +49,12 @@ class SpecimenEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return [
+        return array(
                 'GET',
                 'PUT',
                 'POST',
-               ];
+                'OPTIONS',
+               );
     }
 
     /**

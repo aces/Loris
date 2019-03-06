@@ -311,6 +311,41 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         return $this->coordinate;
     }
+                                                                               
+    /**                                                                         
+     * Instatiates a Container Object using the information from the client-side
+     *                                                                          
+     * @param array $data Data to be used to instantiate the Container Object            
+     *                                                                          
+     * @return Container $container Instantiated Container Object               
+     */                                                                         
+    public function fromArray(array $data) : Container               
+    {                                                                           
+        $this->setId(intval($data['id']));                                         
+        $this->setBarcode($data['barcode']);                               
+        $this->setTypeId(intval($data['typeId']));
+        $this->setDimensionId(intval($data['dimensionId']));                       
+        $this->setTemperature(floatval($data['temperature']));                       
+        $this->setStatusId(intval($data['statusId']));                             
+        $this->setCenterId(intval($data['currentId']));                            
+        $this->setOriginId(intval($data['originId']));                             
+        $this->setParentContainerId(intval($data['parentContainerId']));           
+        $this->setChildContainerIds($data['childContainerIds']);           
+        $this->setCoordinate(intval($data['coordinate']));                         
+                                                                                
+        return $this;
+    }                                                                           
+                                                                                
+    /**                                                                         
+     * A wrapper function for the jsonSerialize method of the Container Instance 
+     * Class. This converts the Container Instance into an array.               
+     *                                                                          
+     * @return array
+     */                                                                         
+    public function toArray() : array
+    {                                                                           
+        return $this->jsonSerialize();                                     
+    } 
 
     /**
      * Gets an array representing the state of the Container

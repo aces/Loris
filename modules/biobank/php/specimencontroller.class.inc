@@ -124,7 +124,7 @@ class SpecimenController
      */
     private function prepare(array $specimenArray) : Specimen
     {
-        $specimen = $this->dao->getInstanceFromArray($specimenArray);
+        $specimen = (new Specimen)->fromArray($specimenArray);
         $this->validateInstance($specimen);
 
         return $specimen;

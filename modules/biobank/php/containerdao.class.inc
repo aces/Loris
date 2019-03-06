@@ -74,8 +74,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     {
         $containerData     = $this->getInstanceDataFromId($id);
         $childContainerIds = $this->getChildContainerIds($id);
-        $containerArray    = $this->getArrayFromSQL($containerData, $childContainerIds);
-        $container         = $this->getInstanceFromArray($containerArray);
+        $container         = $this->getInstanceFromSQL($containerData, $childContainerIds);
 
         return $container;
     }
@@ -327,8 +326,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     public function saveInstance(Container $container) : int
     {
         // Converts Container Object into SQL format.
-        $containerArray = $this->getArrayFromInstance($container);
-        $data           = $this->getSQLFromArray($containerArray);
+        $data = $this->getSQLFromInstance($container);
 
         // Inserts or Updates the biobank_container table with given data.
         $this->db->insertOnDuplicateUpdate(
@@ -400,7 +398,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
         if (!empty($childContainers)) {
             foreach ($childContainers as $id=>$childContainer) {
-                $data = $this->getSQLFromArray($childContainer);
+                $data = $this->getSQLFromInstance($childContainer);
                 $data['containerData'][$field] = $value;
                 $this->db->insertOnDuplicateUpdate(
                     'biobank_container',
@@ -413,13 +411,13 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
-     * This function takes a Container Object and retrieves an array of all the
-     * children of the $container.
+     * This function takes a Container Object and retrieves an array of objects
+     * representing the childre of the $container.
      *
      * @param object $container Container Object from which to retrieve
      *                          children
      *
-     * @return array  $childContainers Array of child containers
+     * @return array  $childContainers Array of child container instances
      */
     public function getChildContainers(Container $container) : array
     {
@@ -435,103 +433,64 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
     /**
      * This function takes a Container Object and prepares the data to be
-     * inserted into the database by converting it to a data array.
+     * inserted into the database by converting it to a data array. This mapping
+     * is done to enable the update or insertion of data into the database
+     * directly from the resulting arrays.
      *
-     * @param array $container Container Object to be converted
+     * @param Container $container Container Object to be converted
      *
-     * @return array  $data      Array containing the data to be inserted
+     * @return array $data Array containing the data to be inserted
      */
-    private function getSQLFromArray(array $container) : array
+    private function getSQLFromInstance(Container $container) : array
     {
          $containerData = array(
-                           'ContainerID'       => $container['id'],
-                           'Barcode'           => $container['barcode'],
-                           'ContainerTypeID'   => $container['typeId'],
-                           'Temperature'       => $container['temperature'],
-                           'ContainerStatusID' => $container['statusId'],
-                           'OriginCenterID'    => $container['originId'],
-                           'CurrentCenterID'   => $container['centerId'],
+                           'ContainerID'       => $container->getId(),
+                           'Barcode'           => $container->getBarcode(),
+                           'ContainerTypeID'   => $container->getTypeId(),
+                           'Temperature'       => $container->getTemperature(),
+                           'ContainerStatusID' => $container->getStatusId(),
+                           'OriginCenterID'    => $container->getOriginId(),
+                           'CurrentCenterID'   => $container->getCenterId(),
                           );
 
          $parentData = array(
-                        'ContainerID'       => $container['id'],
-                        'ParentContainerID' => $container['parentContainerId'],
-                        'Coordinate'        => $container['coordinate'],
+                        'ContainerID'       => $container->getId(),
+                        'ParentContainerID' => $container->getParentContainerId(),
+                        'Coordinate'        => $container->getCoordinate(),
                        );
 
-         return array(
-                 'biobank_container'        => $containerData,
-                 'biobank_container_parent' => $parentData,
-                );
+         return $data = array(
+                         'biobank_container'        => $containerData,
+                         'biobank_container_parent' => $parentData,
+                        );
     }
 
     /**
      * This function takes an array that resulted from an SQL query and
-     * indexes it in a format that is expected from the from the rest of the
-     * code.
+     * instantiates it as a Container Object
      *
      * @param array $data              Values to be instantiated.
      * @param array $childContainerIds List of child container ids.
      *
-     * @return array
+     * @return Container
      */
-    private function getArrayFromSQL(array $data, array $childContainerIds) : array
+    private function getInstanceFromSQL(array $data, array $childContainerIds) : Container
     {
-        // TODO: fix hack on line 491 that accounts for when parentContainerId
+        // TODO: fix hack on line 490 that accounts for when parentContainerId
         // is null.
-        return array(
-                'id'                => intval($data['ContainerID']),
-                'barcode'           => $data['Barcode'],
-                'typeId'            => intval($data['ContainerTypeID']),
-                'dimensionId'       => intval($data['ContainerDimensionID']),
-                'temperature'       => floatval($data['Temperature']),
-                'statusId'          => intval($data['ContainerStatusID']),
-                'originId'          => intval($data['OriginCenterID']),
-                'currentId'         => intval($data['CurrentCenterID']),
-                'parentContainerId' => $data['ParentContainerID'] ? intval($data['ParentContainerID']) : null,
-                'childContainerIds' => $childContainerIds,
-                'coordinate'        => intval($data['Coordinate']),
-               );
-    }
-
-    // TODO: decide if these function should be moved to the entity class.
-    /**
-     * Instatiates a Container Object using the information from the client-side
-     *
-     * @param array $data Data to be used to create Container Object
-     *
-     * @return Container $container Instantiated Container Object
-     */
-    public function getInstanceFromArray(array $data) : Container
-    {
-        //Set persistence variables.
         $container = $this->getInstance();
-        $container->setId($data['id']);
-        $container->setBarcode($data['barcode']);
-        $container->setTypeId($data['typeId']);
-        $container->setDimensionId($data['dimensionId']);
-        $container->setTemperature($data['temperature']);
-        $container->setStatusId($data['statusId']);
-        $container->setCenterId($data['currentId']);
-        $container->setOriginId($data['originId']);
-        $container->setParentContainerId($data['parentContainerId']);
-        $container->setChildContainerIds($data['childContainerIds']);
-        $container->setCoordinate($data['coordinate']);
+        $container->setId(intval($data['ContainerID']));
+        $container->setBarcode($data['Barcode']);
+        $container->setTypeId(intval($data['ContainerTypeID']));
+        $container->setDimensionId(intval($data['ContainerDimensionID']));
+        $container->setTemperature(floatval($data['Temperature']));
+        $container->setStatusId(intval($data['ContainerStatusID']));
+        $container->setOriginId(intval($data['OriginCenterID']));
+        $container->setCenterId(intval($data['CurrentCenterID']));
+        $container->setParentContainerId($data['ParentContainerID'] ? intval($data['ParentContainerID']) : null);
+        $container->setChildContainerIds($childContainerIds);
+        $container->setCoordinate(intval($data['Coordinate']));
 
         return $container;
     }
-
-    /**
-     * A wrapper function for the jsonSerialize method of the Specimen Instance
-     * Class. This converts the Container Instance into an array.
-     *
-     * @param Container $container Container Instance.
-     *
-     * @return array Container arrray.
-     */
-    public function getArrayFromInstance(Container $container)
-    {
-        return $container->jsonSerialize();
-    }
-
 }

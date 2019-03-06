@@ -63,6 +63,32 @@ class Preparation extends Process
     }
 
     /**
+     * Instatiates a Preparation Object using the values sent from the client-side.
+     *
+     * @param array $data Data to be used to instantiate the Preparation Object.
+     *
+     * @return Process
+     */
+    public function fromArray(array $data) : Process
+    {
+        parent::fromArray($data);
+        $this->setProtocolId($data['protocolId']);
+
+        return $this;
+    }
+
+    /**
+     * A wrapper function for the jsonSerialize method of the Preparation Instance
+     * Class. This converts this Specimen Preparation into an array
+     *
+     * @return array Specimen Array
+     */
+    public function toArray()
+    {
+        return $this->jsonSerialize();
+    }
+
+    /**
      * Returns an array representing the state of the Specimen.
      *
      * @return array

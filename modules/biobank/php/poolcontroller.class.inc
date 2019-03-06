@@ -81,7 +81,7 @@ class PoolController
     public function createInstance(array $poolArray)
     {
         $this->validatePermission('create');
-        $pool = $this->dao->getInstanceFromArray($poolArray);
+        $pool = (new Pool())->fromArray($poolArray);
         $this->validateInstance($pool);
         $this->dao->saveInstance($pool);
     }

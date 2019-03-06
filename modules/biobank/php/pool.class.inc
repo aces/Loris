@@ -244,6 +244,38 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         return $this->time;
     }
+                                                                                
+    /**                                                                         
+     * Loads a Pool Object from an array.
+     *                                                                          
+     * @param array $data Data to be used to load the Pool Object.             
+     *                                                                          
+     * @return Pool                             
+     */                                                                         
+    public function fromArray(array $data) : Pool                    
+    {                                                                           
+        $this->setId(intval($data['id']));                                              
+        $this->setLabel($data['label']);                                        
+        $this->setSpecimenIds($data['specimenIds']);                            
+        $this->setCandidateId(intval($data['candidateId']));                            
+        $this->setSessionId(intval($data['sessionId']));                                
+        $this->setCenterId(intval($data['centerId']));                                  
+        $this->setDate(new \DateTime($data['date']));                           
+        $this->setTime(new \DateTime($data['time']));                           
+                                                                                
+        return $this;                                                           
+    }                                                                           
+                                                                                
+    /**                                                                         
+     * A wrapper function for the jsonSerialize method of the Pool Instance 
+     * Class. This converts the Pool Instance into an array.                
+     *                                                                          
+     * @return array Pool Array.                                                
+     */                                                                         
+    public function toArray() : array                    
+    {                                                                           
+        return $this->jsonSerialize();                                          
+    }  
 
     /**
      * Returns an array representing the state of the Pool.

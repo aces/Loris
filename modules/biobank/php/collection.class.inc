@@ -36,8 +36,8 @@ class Collection extends Process
      *
      * These variables describe a collection instance.
      *
-     * @var float $quantity
-     * @var int   $unitId
+     * @var string $quantity
+     * @var int    $unitId
      */
     private $quantity;
     private $unitId;
@@ -46,11 +46,11 @@ class Collection extends Process
      * Sets the current quantity of specimen available. This associated unit
      * can be found in the `biobank_unit` using the unit ID.
      *
-     * @param float $quantity the current amount of specimen available
+     * @param string $quantity the current amount of specimen available
      *
      * @return void
      */
-    public function setQuantity(float $quantity) : void
+    public function setQuantity(string $quantity) : void
     {
         $this->quantity = $quantity;
     }
@@ -58,9 +58,9 @@ class Collection extends Process
     /**
      * Gets the current amount of specimen available
      *
-     * @return float
+     * @return string
      */
-    public function getQuantity() : float
+    public function getQuantity() : string
     {
         return $this->quantity;
     }
@@ -88,7 +88,34 @@ class Collection extends Process
     }
 
     /**
-     * Returns an array representing the state of the Specimen.
+     * Instatiates a Collection Object using the values sent from the client-side.
+     *
+     * @param array $data Data to be used to instantiate the Collection Object.
+     *
+     * @return Process
+     */
+    public function fromArray(array $data) : Process
+    {
+        parent::fromArray($data);
+        $this->setQuantity($data['quantity']);
+        $this->setUnitId(intval($data['unitId']));
+
+        return $this;
+    }
+
+    /**
+     * A wrapper function for the jsonSerialize method of the Collection Instance
+     * Class. This converts this Specimen Collection into an array
+     *
+     * @return array Collection Array
+     */
+    public function toArray()
+    {
+        return $this->jsonSerialize();
+    }
+
+    /**
+     * Returns an array representing the state of the Collection.
      *
      * @return array
      */
