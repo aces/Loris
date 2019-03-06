@@ -353,13 +353,15 @@ class DataTable extends Component {
   renderActions() {
     if (this.props.actions) {
       return this.props.actions.map((action, key) => {
-        return (
-          <CTA
-            key={key}
-            label={action.label}
-            onUserInput={action.action}
-          />
-        );
+        if (action.show !== false) {
+          return (
+            < CTA
+              key = {key}
+              label = {action.label}
+              onUserInput = {action.action}
+            />
+          );
+        }
       });
     }
   }

@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import Panel from 'Panel';
 
-class AccessProfilePanel extends Component {
+/**
+ * Open Profile Form
+ *
+ * Module component rendering the Open Profile Form
+ *
+ */
+class OpenProfileForm extends Component {
   constructor(props) {
     super(props);
 
@@ -44,8 +49,8 @@ class AccessProfilePanel extends Component {
       return;
     }
 
-      // Always include a validating message.. the callback for the ajax request will
-      // update it after the ajax call returns.
+    // Always include a validating message.. the callback for the ajax request will
+    // update it after the ajax call returns.
     state.error = {
       message: 'Validating...',
       className: 'alert alert-info text-center',
@@ -78,9 +83,6 @@ class AccessProfilePanel extends Component {
 
   render() {
     let warning;
-    if (loris.userHasPermission('access_all_profiles')) {
-      return <div />;
-    }
 
     if (this.state.error.message !== '') {
       warning = (
@@ -89,34 +91,31 @@ class AccessProfilePanel extends Component {
               </div>
       );
     }
-    return (<div className='col-sm-3'>
-            <Panel title='Open Profile'>
-            <FormElement
-            name='openprofile'
-                onSubmit={this.validateAndSubmit}
-                onUserInput={this.validateAndSubmit}>
-                <TextboxElement
-                    name='CandID'
-                    label='CandID'
-                    value={this.state.CandID}
-                    onUserInput={this.updateFormElement}
-                 />
-                <TextboxElement
-                    name='PSCID'
-                    label='PSCID'
-                    value={this.state.PSCID}
-                    onUserInput={this.updateFormElement}
-                 />
-                {warning}
-                 <ButtonElement
-                    name='Open Profile'
-                    label='Open Profile'
-                    onUserInput={this.validateAndSubmit}
-                 />
-             </FormElement>
-        </Panel>
-        </div>
-       );
+    return (
+      <FormElement
+        name='openprofile'
+        onSubmit={this.validateAndSubmit}>
+        <TextboxElement
+          name='CandID'
+          label='DCCID'
+          value={this.state.CandID}
+          onUserInput={this.updateFormElement}
+        />
+        <TextboxElement
+          name='PSCID'
+          label='PSCID'
+          value={this.state.PSCID}
+          onUserInput={this.updateFormElement}
+        />
+        {warning}
+        <ButtonElement
+          name='Open Profile'
+          label='Open Profile'
+          onUserInput={this.validateAndSubmit}
+        />
+        </FormElement>
+    );
   }
 }
-export default AccessProfilePanel;
+
+export default OpenProfileForm;
