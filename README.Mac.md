@@ -70,7 +70,7 @@ brew link httpd
 sudo brew services start httpd
 ```
 
-#### (useful) terminal commands for Apache
+#### A few useful terminal commands for Apache
 How to start, stop, and restart Apache.
 ```
 sudo apachectl start
