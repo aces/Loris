@@ -97,7 +97,7 @@ sudo open -e /usr/local/etc/httpd/httpd.conf
 ServerName localhost
 ```
 
-**b.** Find the lines for `DocumentRoot` and Directory in Apache and change them to:
+**b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
 ```
 DocumentRoot "/Users/<your_user>/Development/GitHub/Loris/htdocs/"
 <Directory "/Users/<your_user>/Development/GitHub/Loris/htdocs/">
