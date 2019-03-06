@@ -861,7 +861,7 @@ For fields:
 
 For helpers:
 
-- [header](#519-header-element) (from h1 to h6)
+- [header](#519-header-element)
 - [link](#5110-link-element)
 - [static](#5111-static-element)
 
@@ -1003,8 +1003,8 @@ displayed with some level of prominence.
 }
 ```
 
-`options.level`: Int. The number indicating the level of the front-end heading element to be rendered, i.e. h1, the highest
-and most prominent, and h6, the lowest and reserved for subheadings.
+`options.level`: Int. The number indicating the level of the front-end heading element to be rendered, i.e. 1, the highest
+and most prominent, and 6, the lowest and reserved for subheadings, for easy mapping to HTML.
 
 ### 5.1.10 Link Element
 
