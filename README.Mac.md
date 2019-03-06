@@ -43,7 +43,7 @@ Paste the following in your terminal and hit enter:
 mkdir -p ~/Development/GitHub
 ```
 
-**b.** Clone your fork to ~/Development/GitHub
+**b.** Clone your fork to `~/Development/GitHub`
 
 Paste the following lines in your terminal, and replace <your_username> with your github username before pressing enter.
 ```
