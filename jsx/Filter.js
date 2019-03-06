@@ -97,7 +97,7 @@ class Filter extends Component {
           legend={this.props.title}
         >
           {this.renderFilterFields()}
-          <br/>
+          <div/>
           <ButtonElement
             label="Clear Filters"
             type="reset"

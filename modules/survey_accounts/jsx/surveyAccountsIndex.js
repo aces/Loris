@@ -53,7 +53,7 @@ class SurveyAccountsIndex extends Component {
     let result = <td>{cell}</td>;
     switch (column) {
     case 'URL':
-      const url = loris.BaseURL + '/survey.php?=key=' + row.URL;
+      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
       result = <td><a href={url}>{cell}</a></td>;
       break;
     }
