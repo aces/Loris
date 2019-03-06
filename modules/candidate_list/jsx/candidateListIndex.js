@@ -12,7 +12,7 @@ import OpenProfileForm from './openProfileForm';
  *
  * Main module component rendering the candidate list and open profile form
  *
- * @author Dave McFarlane
+ * @author Dave MacFarlane
  * @author Cécile Madjar *
  */
 class CandidateListIndex extends Component {
