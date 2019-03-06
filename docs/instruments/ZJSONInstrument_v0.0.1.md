@@ -279,7 +279,7 @@ described in section [3.2: Field Types](#32-field-types).
 
 ## 3.1: Rules
 
-The `rules` object contains three rules for validation and display: requireIf, displayIf, and disableIf.
+The `rules` object contains three rules for validation and display: requireIf, displayIf, and disableIf. These rules make up the branching logic of the instrument and can be used to enforce dependencies between fields.
 
 ```js
 {
@@ -297,12 +297,16 @@ The `rules` object contains three rules for validation and display: requireIf, d
 }
 ```
 
-The value of these keys are string expressions of logical formulas. These formulas, when calculated, evaluate to true
-or false. The formulas are parsed and calculated using the Evaluator function of the LORIS Logic
-Parser, [LParse](https://gitlab.com/zainvirani/LParse). The currently supported logic operations are available in the accompanying [LORISLogicParser.md](https://github.com/aces/Loris/blob/minor/docs/instruments/LORISLogicParser.md), as well as
-instructions on how to customize functions. 
+The value of these keys are string expressions of logical formulas defined by the [LORIS Logic Parser Syntax](https://github.com/aces/Loris/blob/minor/docs/instruments/LogicParserSyntax.md).
+When calculated by the Evaluator function of the LORIS Logic Parser, these formulas evaluate to true or false. They will often
+be dependent on data collected by neighbouring fields which are passed into the formula as argument variables.
 
 `rules.requireIf`: String. True or false that the field requires data input, given the condition in the string expression.
+
+If the field's `options.requireResponse` value is true, the field will be accompanied by a "Not Answered" option field. This
+allows explicit non-answering while still requiring some input values in order to distinguish empty data from data that was
+intentionally omitted. In this case, the field's `rules.requireIf` formula will be dependent on the "Not Answered" option
+field, and vice versa.
 
 `rules.displayIf`: String. True or false that the field is displayed in the instrument, given the condition in the string
 expression.
@@ -361,11 +365,12 @@ be rendered on the front-end as a select element, radio buttons, or a multiselec
 `options.allowMultipleValues`: Required boolean. True if multiple values may be selected at once. False if only
 one value may be selected.
 
-`options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to
-`rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+`options.requireResponse`: Required Boolean. True or false that an input is required. 
 
-If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while
-still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered. This choice is added here instead of in `options.values` to allow for consistency with other field types.
+If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
+e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
+distinguish empty data from data that was intentionally omitted. This choice is added here instead of in `options.values`
+to allow for consistency with other field types. 
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -406,9 +411,9 @@ The format is as follows:
 
 `options.requireResponse`: Required boolean. True or false that an input is required.
 
-This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
-If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while
-still requiring some input value. This is done to distinguish data that has not been entered from data that was intentionally not answered.
+If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
+e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
+distinguish empty data from data that was intentionally omitted.
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -450,11 +455,11 @@ A numeric field takes an int or a decimal as data input. It has the form:
                     A number greater than or equal to `options.minValue` representing the maximum
                     value that the data can be.
 
-`options.requireResponse`: Required boolean.
-                           True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
-                           If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow
-                           explicit non-answering while still requiring some input value.
+`options.requireResponse`: Required boolean. True or false that an input is required.
+
+If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
+e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
+distinguish empty data from data that was intentionally omitted.
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -495,9 +500,11 @@ A date field takes a data type of form "YYYY-MM-DD". A time field takes a data t
 `options.maxValue`: Date, time or datetime, depending on `nameOfField.type`.
                     The latest date, time or datetime the data can be.
 
-`options.requireResponse`: Required Boolean. True or false that an input is required. This key is different to `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
+`options.requireResponse`: Required Boolean. True or false that an input is required.
 
-If true, an implementation should automatically add a 'not_answered' value, e.g. rendered as a checkbox, to allow explicit non-answering while still requiring some input value.
+If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
+e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
+distinguish empty data from data that was intentionally omitted.
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -530,10 +537,11 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
 }
 ```
 
-`options.requireResponse`: Required boolean.
-                           True or false that an input is required. This key is different to
-                           `rules.requireIf` in that it is a true boolean and not dependent on a condition - it is always either true or false.
-                           If true, a data input of "false" cannot be submitted, and a 'not_answered' value cannot be given.
+`options.requireResponse`: Required boolean. True or false that an input is required.
+
+If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
+e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
+distinguish empty data from data that was intentionally omitted.
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -577,9 +585,13 @@ instrument is in survey mode.
 
 # 4.0: Helper Elements
 
-A helper object represents a non-input, layout-related front-end element. Each type of helper may
-contain type specific options. The different types and their options are described in the section
-[4.0: Helper Types](#4.0:-helper-types) below. 
+A helper object represents a non-input, layout-related front-end element. While instrument `fields` have corresponding `data`
+associated with it upon form submission, a `helper` is rendered on the front-end as an integral element that does not collect
+data. There are five types of helpers: the static text element, and four other layout-specific formatting elements (group,
+row, table, and section).
+
+The four layout-specific types have references to its children (a collection of `fields` or static text elements) and contain
+type specific options. The different types and their options are described in the section [4.0: Helper Types](#4.0:-helper-types) below. 
 
 In general, a helper object has the same format as a field:
 
@@ -618,8 +630,8 @@ content of the statictext helper itself, the header of the section helper, or co
            [4.0: Helper Types](#4.0:-helper-types).
 
 `rules`: Required object with keys whose value may be an empty string as described for `fields`.
-While instrument `fields` have corresponding `data` associated with it upon form submission, a `helper` is rendered on the front-end as an integral element that however does not collect data. There are
-5 types of helpers: the static text element, and 4 other layout-specific formatting elements, group, row, table, and section.
+
+The `rules` for groups, rows, tables, and sections propagate down to the `rules` of its children.
 
 ## 4.1: Helper Types
 
@@ -662,7 +674,6 @@ together and is separated by a delimiter. Groups have the following form:
                 string,
                 ...
             ],
-            "requireResponse": boolean,
             "readonly": boolean,
             "hideInSurvey": boolean,
             "showDesc" : boolean
@@ -776,7 +787,7 @@ an empty column header. This is true for only static text elements.
 
 ### 4.1.5: Section
 
-A helper of type "section" is a vertical grouping of elements whose `rules` can affect its children's rules.
+A helper of type "section" is a vertical grouping of elements whose `rules` are propogated to the rules of its children.
 
 ```js
 {
