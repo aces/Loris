@@ -470,7 +470,8 @@ instrument is in survey mode.
 
 ### 3.2.4: Date, Time and Datetime
 
-A date field takes a data type of form "YYYY-MM-DD". A time field takes a data type of form "HH:MM:SS". A datetime field takes a data type of form "YYYY-MM-DD HH:MM:SS". The general format is as follows:
+A date field takes a data type of form "YYYY-MM-DD". A time field takes a data type of form "HH:MM:SS". A datetime field takes
+a data type of form "YYYY-MM-DD HH:MM:SS". The general format is as follows:
 
 ```js
 {
@@ -823,7 +824,7 @@ An implementation could choose to set this key to false, and display an independ
 
 The UI component of the Z-JSON Instrument contains information on how we render our `fields` and `helpers` objects
 on the front-end. It is composed of JSON objects whose keys match those of the field or helper object it is describing.
-This component should only make decisions on which HTML or HTML Form element those objects get rendered as and
+This component should only make decisions on which front-end element those objects get rendered as and
 nothing else. It may also provide additional UI properties that assist in the rendering.
 
 The UI component object has the following general format:
@@ -866,6 +867,8 @@ For helpers:
 
 ### 5.1.1 Checkbox Element
 
+A square box that is ticked or unticked on user input. The box is checked (ticked) when activated by selection.
+
 ```js
 {
     "nameOfField" : {
@@ -875,6 +878,9 @@ For helpers:
 ```
 
 ### 5.1.2 Date Element
+
+An input element for entering a date via a text box or a date picker interface. It collects a value in the format 'YYYY-MM-DD'
+which includes the year, month, and day. 
 
 ```js
 {
@@ -886,6 +892,8 @@ For helpers:
 
 ### 5.1.3 Numeric Element
 
+An input element for entering a number with built-in validation that rejects non-numerical values.
+
 ```js
 {
     "nameOfField" : {
@@ -895,6 +903,9 @@ For helpers:
 ```
 
 ### 5.1.4 Radio Button Element
+
+A collection of radio buttons rendered as small circles and used as a "radio group". They describe a set of options of which
+only one can be selected as input value. The radio button is activated, or highlighted, on selection.
 
 ```js
 {
@@ -912,6 +923,8 @@ rendered horizontally.
 
 ### 5.1.5 Select Element
 
+A drop-down list of options of which one or more can be selected as input value.
+
 ```js
 {
     "nameOfField" : {
@@ -923,7 +936,12 @@ rendered horizontally.
 }
 ```
 
+`options.showEmptyOption`: Boolean. True or false that an empty option is available for selection.
+
 ### 5.1.6 Text Element
+
+A single-line input element for entering text, with a restricted default width.
+
 
 ```js
 {
@@ -940,6 +958,8 @@ rendered horizontally.
 
 ### 5.1.7 Textarea Element
 
+A multi-line input element for entering text that can hold an unlimited number of characters.
+
 ```js
 {
     "nameOfField" : {
@@ -955,6 +975,10 @@ rendered horizontally.
 
 ### 5.1.8 Time Element 
 
+An input element for entering a time via a text box or a time picker interface. It collects a value in the format
+'HH:MM:SS' which includes the hour, minute, and second. 
+
+
 ```js
 {
     "nameOfField" : {
@@ -965,7 +989,8 @@ rendered horizontally.
 
 ### 5.1.9 Header Element
 
-A header element renders a "statictext" `helper` that should be displayed with some level of prominence.
+A section heading whose importance is defined by its `level`. A header element renders a "statictext" `helper` that should be
+displayed with some level of prominence.
 
 ```js
 {
@@ -983,6 +1008,8 @@ and most prominent, and h6, the lowest and reserved for subheadings.
 
 ### 5.1.10 Link Element
 
+An rendered element that creates a hyperlink to a specified URL destination.
+
 ```js
 {
     "nameOfHelper" : {
@@ -997,6 +1024,8 @@ and most prominent, and h6, the lowest and reserved for subheadings.
 `options.url`: Required string. The url to which the link element navigates on click.
 
 ### 5.1.11 Static Element
+
+A static rendering of text such as a label or paragraph.
 
 ```js
 {
