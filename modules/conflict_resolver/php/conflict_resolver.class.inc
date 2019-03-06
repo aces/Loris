@@ -451,7 +451,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . '/conflict_resolver/js/react.conflict_resolver.js',
+             $baseURL . '/conflict_resolver/js/conflictResolverIndex.js',
             )
         );
     }

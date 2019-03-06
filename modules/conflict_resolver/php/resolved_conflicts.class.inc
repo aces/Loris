@@ -297,7 +297,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . '/conflict_resolver/js/react.resolved_conflicts.js',
+             $baseURL . '/conflict_resolver/js/resolvedConflictsIndex.js',
             )
         );
     }
