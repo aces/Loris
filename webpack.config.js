@@ -16,7 +16,7 @@ const config = [{
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
     './modules/candidate_parameters/js/CandidateParameters.js': './modules/candidate_parameters/jsx/CandidateParameters.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
-    './modules/create_timepoint/js/create_timepoint.js': './modules/create_timepoint/jsx/create_timepoint.js',
+    './modules/create_timepoint/js/createTimepointIndex.js': './modules/create_timepoint/jsx/createTimepointIndex.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/AccessProfilePanel.js': './modules/candidate_list/jsx/AccessProfilePanel.js',

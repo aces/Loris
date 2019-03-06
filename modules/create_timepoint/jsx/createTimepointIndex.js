@@ -1,4 +1,5 @@
 import React from 'react';
+import Panel from 'Panel';
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
 
@@ -264,7 +265,7 @@ class CreateTimepoint extends React.Component {
         disabled={false}
         required={true}
       />
-    ) : '';
+    ) : null;
     // Include psc select.
     const psc = this.state.form.display.psc ? (
       <SelectElement
@@ -278,7 +279,7 @@ class CreateTimepoint extends React.Component {
         disabled={false}
         required={true}
       />
-    ) : '';
+    ) : null;
     // Include visit select.
     const visit = this.state.form.display.visit ? (
       <SelectElement
@@ -292,32 +293,33 @@ class CreateTimepoint extends React.Component {
         disabled={false}
         required={true}
       />
-    ) : '';
+    ) : null;
 
     if (!this.state.success) {
       return (
         <div>
           <div>
-            <h3>Create Time Point</h3> <br/>
-            {errors}
-            <FormElement
-              name={'timepointInfo'}
-              fileUpload={false}
-              class={'form-group col-sm-12'}
-              onSubmit={this.handleSubmit}
-            >
-              <StaticElement
-                label={'DCCID'}
-                text={this.state.data.dccid}
-              />
-              {subproject}
-              {psc}
-              {visit}
-              <ButtonElement
-                label={'Create Time Point'}
-                type={'submit'}
-              />
-            </FormElement>
+            <Panel title='Create Time Point'>
+              {errors}
+              <FormElement
+                name={'timepointInfo'}
+                fileUpload={false}
+                class={'form-group col-sm-12'}
+                onSubmit={this.handleSubmit}
+              >
+                <StaticElement
+                  label={'DCCID'}
+                  text={this.state.data.dccid}
+                />
+                {subproject}
+                {psc}
+                {visit}
+                <ButtonElement
+                  label={'Create Time Point'}
+                  type={'submit'}
+                />
+              </FormElement>
+            </Panel>
           </div>
         </div>
       );
