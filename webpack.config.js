@@ -14,6 +14,7 @@ const config = [{
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
+    './modules/login/js/loginIndex.js': './modules/login/jsx/loginIndex.js',
     './modules/candidate_parameters/js/CandidateParameters.js': './modules/candidate_parameters/jsx/CandidateParameters.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
