@@ -101,8 +101,7 @@ class Files extends \NDB_Page
                 );
           break;
         case "DELETE":
-            $path = $request->getQueryParams();
-            $id   = basename($path['lorispath']);
+            $id   = basename($request->getUri()->getPath());
             $this->deleteFile($id);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
