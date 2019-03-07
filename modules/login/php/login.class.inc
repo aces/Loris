@@ -27,6 +27,9 @@ namespace LORIS\login;
  */
 class Login extends \NDB_Page
 {
+
+    public $skipTemplate = true;
+
     /**
      * The constructor for login creates some basic tpl variables that are
      * used in the login template.
@@ -50,9 +53,8 @@ class Login extends \NDB_Page
                                                'windowName' => $WindowName,
                                               );
         }
-
         $this->tpl_data['study_description'] = html_entity_decode(
-            $config->getSetting("StudyDescription")
+            $config->getSetting('StudyDescription')
         );
 
         $this->tpl_data['study_title'] = $config->getSetting('title');
@@ -62,7 +64,25 @@ class Login extends \NDB_Page
         } catch(\ConfigurationException $e) {
             $this->tpl_data['study_logo'] = '';
         }
-
     }
+
+    /**
+     * Include additional JS files
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . '/login/js/loginIndex.js',
+            )
+        );
+    }
+
 }
 
