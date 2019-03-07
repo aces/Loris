@@ -53,15 +53,15 @@ class NewProfileIndex extends React.Component {
    */
   validateMatchDate() {
     const data = this.state.formData;
-    let dateMatch = true;
-    if (data.dateTaken !== data.dateTakenConfirm) {
-      dateMatch = false;
+    let dateMatch = false;
+    if (data.dateTaken == data.dateTakenConfirm) {
+      dateMatch = true;
     }
-    let edcMatch = true;
+    let edcMatch = false;
     if (this.state.configData['edc'] === 'true' &&
-      data.edcDateTaken !== data.edcDateTakenConfirm
+      data.edcDateTaken == data.edcDateTakenConfirm
     ) {
-      edcMatch = false;
+      edcMatch = true;
     }
     return dateMatch && edcMatch;
   }
@@ -126,7 +126,6 @@ class NewProfileIndex extends React.Component {
     }
     let profile = null;
     let edc = null;
-    let edcConfirm = null;
     let project = null;
     let pscid = null;
     if (this.state.configData['useProject'] === 'true') {
@@ -142,25 +141,26 @@ class NewProfileIndex extends React.Component {
     }
     if (this.state.configData['edc'] === 'true') {
       edc =
-        <DateElement
-          name = "edcDateTaken"
-          label = "Expected Date of Confinement"
-          minYear = "2000"
-          maxYear = "2017"
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.edcDateTaken}
-          required = {true}
-        />;
-      edcConfirm =
-        <DateElement
-          name = "edcDateTakenConfirm"
-          label = "Confirm EDC"
-          minYear = "2000"
-          maxYear = "2017"
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.edcDateTakenConfirm}
-          required = {true}
-        />;
+        <div>
+          <DateElement
+            name = "edcDateTaken"
+            label = "Expected Date of Confinement"
+            minYear = "2000"
+            maxYear = "2017"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.edcDateTaken}
+            required = {true}
+          />
+          <DateElement
+            name = "edcDateTakenConfirm"
+            label = "Confirm EDC"
+            minYear = "2000"
+            maxYear = "2017"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.edcDateTakenConfirm}
+            required = {true}
+          />
+        </div>;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       pscid =
@@ -199,7 +199,6 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />
         {edc}
-        {edcConfirm}
         <SelectElement
           name = "sex"
           label = "Sex"
