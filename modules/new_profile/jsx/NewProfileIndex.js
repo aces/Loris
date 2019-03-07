@@ -175,8 +175,8 @@ class NewProfileIndex extends React.Component {
     if (!this.state.isCreated) {
       profile =
         <FormElement
-            name = "newProfileForm"
-            onSubmit = {this.handleSubmit} >
+          name = "newProfileForm"
+          onSubmit = {this.handleSubmit} >
           <label className = "error">
             {this.state.errMessage}
           </label>
