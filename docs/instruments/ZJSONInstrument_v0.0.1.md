@@ -5,7 +5,7 @@ of which can be found in the same directory.
 
 The Z-JSON Instrument is the JSON representation of a scientific instrument. Describing an instrument as a JSON object
 will allow the instrument to be language-independent, human readable, and shareable across different platforms. This
-schema was built with the intention to be easily mappable with both the [ReproNim JSON-LD Form Schema](https://github.com/ReproNim/schema-standardization) and [NDAR's Data Dictionary Structure](https://ndar.nih.gov/data_dictionary.html) via converters.
+schema was built with the intention to be easily mappable to both the [ReproNim JSON-LD Form Schema](https://github.com/ReproNim/schema-standardization) and [NDAR's Data Dictionary Structure](https://ndar.nih.gov/data_dictionary.html) via converters.
 
 # 0.0: Contents
 
@@ -17,8 +17,8 @@ schema was built with the intention to be easily mappable with both the [ReproNi
 
 # 1.0: Introduction
 
-The Z-JSON Instrument is comprised of 3 components: the core schema, an accompanying UI configuration, and the
-instrument data.
+The Z-JSON Instrument is comprised of four components: the core schema, an accompanying UI configuration, the
+instrument data, and a list of metadata fields.
 
 ```js
 {
@@ -43,7 +43,7 @@ for the `data` and the `metaDataFields` components which can be added to the sam
 
 The `data` component is a JSON object of clinical data collected by the instrument. Once the instrument is
 administered, the data collected will be stored in this data component. The instrument data is, however, handled
-separately. The `metaDataFields` component is a JSON object of meta data fields to be prepended to the objects defined in
+separately. The `metaDataFields` component is a JSON object of metadata fields to be prepended to the objects defined in
 `schema` if the `schema.meta.includeMetaDataFields` key is set to true.
 
 # 2.0: Schema Overview
@@ -76,11 +76,11 @@ The core schema is a JSON object consisting of 4 keys: meta, fields, helpers, an
 }
 ```
 The `meta` key contains metadata for the instrument, while the `fields` and `helpers` keys contain JSON objects of data
-fields and layout elements that make up the instrument. Since JSON objects' key ordering cannot be relied upon, the
+fields and layout elements that make up the instrument. Since JSON objects' key ordering cannot be relied upon, the 
 `setup` key points to an array of ordered page objects. This key defines the page structure of the instrument as well as
 the order in which the field or helper elements are rendered. The value of these keys are described in more detail below.
 
-All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
+Note: All keys in the Z-JSON Instrument follow the lowerCamelCase naming convention.
 
 ## 2.1: Instrument Metadata
 
@@ -124,7 +124,7 @@ provenance data. The value of each key is defined as such:
 `meta.dateCreatedOn`: String. The date of creation of the Z-JSON Instrument in the format 'YYYY-MM-DD'. Each new version of
 an instrument will have a new `dateCreatedOn` date.
 
-Small changes, such as bug fixes, that do not require the creation of a new version of an instrument should instead use
+Small changes, such as bug fixes, that do not require the creation of a new version of an instrument should instead use 
 `meta.dateLastUpdateOn` to track updates.
                  
 `meta.dateLastUpdateOn`: String. The date at which small modifications that do not justify creating a new version, such as
@@ -146,7 +146,7 @@ also been modified. The `meta.importedFrom` key should be used in the case of co
 `meta.importedFrom`: String. The resource instrument that this Z-JSON Instrument was converted from, if it was imported
 from another format and is otherwise unmodified.
 
-If any modifications to the content of the instrument are made after conversion, this value should be empty and
+If any modifications to the content of the instrument are made after conversion, this value should be empty and 
 `meta.derivedFrom` used instead. If the Z-JSON instrument is an original instrument, the value of this key is empty.
 
 `meta.includeMetaDataFields`: Required boolean. True or false that the Z-JSON Instrument will include metadata fields,
@@ -218,20 +218,20 @@ Each page object has the following keys:
 human readable label or title of the page, provided in every available language. It will be rendered on the front-end as a
 link to the page and is encoded in UTF-8.
 
-`setup.order`: Required array. An ordered list of strings that are the keys to objects previously defined in `fields` or
+`setup.order`: Required array. An ordered list of strings that are the keys to objects previously defined in `fields` or 
 `helpers`. The order in which they are listed will be the order in which they will appear on the rendered instrument.
 
 # 3.0: Field Elements
 
 An instrument "field" represents a variable to which the instrument will insert some clinical data via a front-end input
 element. The `fields` component here describes the data structure of these instrument fields and provides a way to
-validate the data that is collected. It is here that the data's type, choice of values, and rules are defined.
+validate the data that is collected. It is here that the field's type, choice of values, and rules are defined.
 
 While it is natural to think of these instrument fields as front-end input elements, they are not. The front-end
 representation of these fields are only defined later within the `ui` component. 
 
 Each type of field may contain type specific options. These options will be broken down and described in the section
-[3.2: Field Types](#32-field-types) section below. In general, a field object has the following format:
+[3.2: Field Types](#32-field-types) below. In general, a field object has the following format:
 
 ```js
 {
@@ -257,7 +257,7 @@ Each type of field may contain type specific options. These options will be brok
 A field object has a unique key that is its identifier (ID) and name. The ID will also be used as an identifier for a
 database column or a front-end element. Within the field object, there are four required keys: type, description, options, and rules.
 
-`type`: Required string. It represents the field's data type, i.e. integer, string, boolean, etc.
+`type`: Required string. It represents the field's data type, i.e. int, string, boolean, etc.
 
 This will be the data type of the field's value within the `data` component upon collection:
 
@@ -317,7 +317,7 @@ the string expression.
 
 ## 3.2: Field types
 
-There are eight different field types: enum, string, int, decimal, date, time, boolean, and score. Each type
+There are nine different field types: enum, string, int, decimal, date, time, datetime, boolean, and score. Each type 
 of `fields` object has specific `options` defined.
 
 
@@ -370,7 +370,7 @@ one value may be selected.
 
 If true, an implementation automatically adds this field to a `group` helper type accompanied by a "Not Answered" option,
 e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
-distinguish empty data from data that was intentionally omitted. This choice is added here instead of in `options.values`
+distinguish empty data from data that was intentionally omitted. This choice is added here instead of in `options.values` 
 to allow for consistency with other field types. 
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
@@ -554,8 +554,9 @@ instrument is in survey mode.
 
 ### 3.2.6: Score
 
-A score field is a placeholder whose values are based on the other fields' data. A score field is not
-represented on the front-end by an input element. Its value is instead calculated from a string expression containing a logical formula that is evaluated by the LORIS Logic Parser, [LParse](https://gitlab.com/zainvirani/LParse).
+A score field is a placeholder whose values are based on the other fields' data. A score field is not represented on the 
+front-end by an input element. Its value is instead calculated from a string expression containing a logical formula that is 
+evaluated by the LORIS Logic Parser.
 
 ```js
 {
@@ -576,7 +577,7 @@ represented on the front-end by an input element. Its value is instead calculate
     } 
 }
 ```
-`options.scoringFormula`: Required string. An expression of a logical formula to be calculated by LParse. The formula is evaluated to true or false if a boolean score, or a numeric if a number score. The result is dependent and defined by the value of this key.
+`options.scoringFormula`: Required string. An expression of a logical formula to be calculated by the Logic Parser. The formula is evaluated to true or false if a boolean score, or a numeric if a number score. The result is dependent and defined by the value of this key.
 
 `options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
@@ -1009,7 +1010,7 @@ and most prominent, and 6, the lowest and reserved for subheadings, for easy map
 
 ### 5.1.10 Link Element
 
-An rendered element that creates a hyperlink to a specified URL destination.
+A rendered element that creates a hyperlink to a specified URL destination.
 
 ```js
 {
