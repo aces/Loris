@@ -114,10 +114,10 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $record  = basename($request->getUri()->getPath());
+            $record = basename($request->getUri()->getPath());
             if (!is_numeric($record)) {
-               $this->getFile($record);
-               return (new \LORIS\Http\Response())
+                $this->getFile($record);
+                return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200);
             }
@@ -128,7 +128,7 @@ class Files extends \NDB_Page
                     new \LORIS\Http\StringStream(
                         json_encode($this->getUploadDocFields($record))
                     )
-                );               
+                );
             break;
         default:
             return (new \LORIS\Http\Response())
@@ -277,20 +277,20 @@ class Files extends \NDB_Page
      */
     function getFile($fileName): void
     {
-    $path = __DIR__ . "/../user_uploads/$fileName";
+        $path = __DIR__ . "/../user_uploads/$fileName";
 
-    if (!file_exists($path)) {
-        error_log("ERROR: File $path does not exist");
-        header("HTTP/1.1 404 Not Found");
-        exit(5);
-    }
+        if (!file_exists($path)) {
+            error_log("ERROR: File $path does not exist");
+            header("HTTP/1.1 404 Not Found");
+            exit(5);
+        }
 
-   // Output file in downloadable format
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/force-download');
-    header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" . basename($path) . "\"");
-    readfile($path);        
+        // Output file in downloadable format
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/force-download');
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-disposition: attachment; filename=\"".basename($path)."\"");
+        readfile($path);
     }
     /**
      * Returns a list of categories fields from database
