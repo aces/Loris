@@ -104,8 +104,8 @@
             "en-CA": ""
         },
         "options": {
-                "minValue": "",
-                "maxValue": "",
+          "minValue": "",
+          "maxValue": "",
           "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
@@ -303,7 +303,7 @@
             "en-CA": "Your BMI Classification"
         },
         "options": {
-          "scoringFormula": "if([bmi] < 18.5, 'Underweight', if([bmi]>=18.5 and [bmi]<=22.9, 'Normal Rangei', if([bmi]>=23.0 and [bmi]<=24.9, 'Overweight - At Risk', if([bmi]>=25.0 and [bmi]<=29.9, 'Overweight - Moderately Obese', 'Overweight - Severely Obese'))))",
+          "scoringFormula": "if([bmi] < 18.5, 'Underweight', if([bmi]>=18.5 and [bmi]<=22.9, 'Normal Range', if([bmi]>=23.0 and [bmi]<=24.9, 'Overweight - At Risk', if([bmi]>=25.0 and [bmi]<=29.9, 'Overweight - Moderately Obese', 'Overweight - Severely Obese'))))",
           "onError": "Unable to calculate",
           "readonly": true,
           "hideInSurvey": true
