@@ -4,6 +4,8 @@
  * Post method handles updating a file.
  * Delete method handles deleting a file.
  * Get method handles getting a file.
+ *            (Files/id) will return file's infomation
+ *            (Files/name) will download this file
  * Put method handles editing a file.
  *
  * PHP Version 7
@@ -112,17 +114,22 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $path = $request->getQueryParams();
-            $id   = basename($path['lorispath']);
+            $record  = basename($request->getUri()->getPath());
+            if (!is_numeric($record)) {
+               $this->getFile($record);
+               return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200);
+            }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($this->getUploadDocFields($id))
+                        json_encode($this->getUploadDocFields($record))
                     )
-                );
-          break;
+                );               
+            break;
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -258,6 +265,32 @@ class Files extends \NDB_Page
             unlink($path);
         }
 
+    }
+    /**
+     * Handles the document getting process
+     *
+     * @param string $fileName the file name
+     *
+     * @throws \DatabaseException
+     *
+     * @return void
+     */
+    function getFile($fileName): void
+    {
+    $path = __DIR__ . "/../user_uploads/$fileName";
+
+    if (!file_exists($path)) {
+        error_log("ERROR: File $path does not exist");
+        header("HTTP/1.1 404 Not Found");
+        exit(5);
+    }
+
+   // Output file in downloadable format
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/force-download');
+    header("Content-Transfer-Encoding: Binary");
+    header("Content-disposition: attachment; filename=\"" . basename($path) . "\"");
+    readfile($path);        
     }
     /**
      * Returns a list of categories fields from database

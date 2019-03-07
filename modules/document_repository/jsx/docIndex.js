@@ -49,7 +49,7 @@ class DocIndex extends React.Component {
  let result = <td>{cell}</td>;
    switch (column) {
    case 'File Name':
-   let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
+   let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
    result = (
      <td>
        <a href={downloadURL} target="_blank" download={row['File Name']}>
