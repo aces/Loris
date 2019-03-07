@@ -31,7 +31,7 @@
               "description": {
                 "en-CA": "Metric"
               },
-              "value": "metriC"
+              "value": "metric"
             },
             {
               "description": {
@@ -67,9 +67,9 @@
 
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_feet_status]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_feet_status]<>''" 
         }
       },
       "height_feet_status" : {
@@ -93,9 +93,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_feet]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_feet]<>''" 
         }
       },
       "height_inches" : {
@@ -104,17 +104,17 @@
             "en-CA": ""
         },
         "options": {
-          "minValue": "",
-          "maxValue": "",
+                "minValue": "",
+                "maxValue": "",
           "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_inches_status]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_inches_status]<>''" 
         }
       },
       "height_inches_status" : {
@@ -138,9 +138,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_inches]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_inches]<>''" 
         }
       },
       "weight_lbs" : {
@@ -158,9 +158,9 @@
 
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[weight_lbs_status]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[weight_lbs_status]<>''" 
         }
       },
       "weight_lbs_status" : {
@@ -184,9 +184,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[weight_lbs]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[weight_lbs]<>''" 
         }
       },
       "height_cms" : {
@@ -204,9 +204,9 @@
 
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_cms_status]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_cms_status]<>''" 
         }
       },
       "height_cms_status" : {
@@ -230,9 +230,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[height_cms]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[height_cms]<>''" 
         }
       },
       "weight_kgs" : {
@@ -249,9 +249,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[weight_kgs_status]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[weight_kgs_status]<>''" 
         }
       },
       "weight_kgs_status" : {
@@ -275,9 +275,9 @@
           "showDesc": false
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[weight_kgs]=''",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[weight_kgs]<>''" 
         }
       },
       "bmi" : {
@@ -303,7 +303,7 @@
             "en-CA": "Your BMI Classification"
         },
         "options": {
-          "scoringFormula": "if([bmi] < 18.5, 'Underweight', if([bmi]>=18.5 and [bmi]<=22.9, 'Normal Range, if([bmi]>=23.0 and [bmi]<=24.9, 'Overweight - At Risk', if([bmi]>=25.0 and [bmi]<=29.9, 'Overweight - Moderately Obese', 'Overweight - Severely Obese')))))",
+          "scoringFormula": "if([bmi] < 18.5, 'Underweight', if([bmi]>=18.5 and [bmi]<=22.9, 'Normal Rangei', if([bmi]>=23.0 and [bmi]<=24.9, 'Overweight - At Risk', if([bmi]>=25.0 and [bmi]<=29.9, 'Overweight - Moderately Obese', 'Overweight - Severely Obese'))))",
           "onError": "Unable to calculate",
           "readonly": true,
           "hideInSurvey": true
@@ -353,7 +353,7 @@
         },
         "options": {
           "order": [
-            "groupHeighCms",
+            "groupHeightCms",
             "groupWeightKgs"
           ],
           "showDesc": true
@@ -374,15 +374,14 @@
             "height_feet",
             "height_feet_status"
           ],
-          "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[unit_classification]='imperial'",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[unit_classification]='metric'"
         }
       },
       "groupHeightInches": {
@@ -396,15 +395,14 @@
             "height_inches_status"
 
           ],
-          "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[unit_classification]='imperial'",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[unit_classification]='metric'"
         }
       },
       "groupWeightLbs": {
@@ -417,15 +415,14 @@
             "weight_lbs",
             "weight_lbs_status"
           ],
-          "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[unit_classification]='imperial'",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[unit_classification]='metric'"
         }
       },
       "groupHeightCms": {
@@ -438,15 +435,14 @@
             "height_cms",
             "height_cms_status"
           ],
-          "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[unit_classification]='metric'",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[unit_classification]='imperial'" 
         }
       },
       "groupWeightKgs": {
@@ -459,15 +455,14 @@
             "weight_kgs",
             "weight_kgs_status"
           ],
-          "requireResponse": true,
           "readonly": false,
           "hideInSurvey": false,
           "showDesc": true
         },
         "rules": {
-          "requireIf": "",
+          "requireIf": "[unit_classification]='metric'",
           "displayIf": "",
-          "disableIf": "" 
+          "disableIf": "[unit_classification]='imperial'" 
         }
       }
     },
