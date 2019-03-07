@@ -175,49 +175,49 @@ class NewProfileIndex extends React.Component {
     if (!this.state.isCreated) {
       profile =
         <FormElement
-          name = "newProfileForm"
-          onSubmit = {this.handleSubmit} >
-        <label className = "error" >
-        {this.state.errMessage}
-        < /label>
-        <DateElement
-          name = "dateTaken"
-          label = "Date of Birth"
-          minYear = "2000"
-          maxYear = "2017"
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.dateTaken}
-          required = {true}
-        />
-        <DateElement
-          name = "dateTakenConfirm"
-          label = "Date of Birth Confirm"
-          minYear = "2000"
-          maxYear = "2017"
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.dateTakenConfirm}
-          required = {true}
-        />
-        {edc}
-        <SelectElement
-          name = "sex"
-          label = "Sex"
-          options = {this.state.configData.sex}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.sex}
-          required = {true}
-        />
-        <SelectElement
-          name = "site"
-          label = "Site"
-          options = {this.state.configData.site}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.site}
-          required = {true}
-        />
-        {pscid}
-        {project}
-        <ButtonElement label = "Create" id = "button" />
+            name = "newProfileForm"
+            onSubmit = {this.handleSubmit} >
+          <label className = "error">
+            {this.state.errMessage}
+          </label>
+          <DateElement
+            name = "dateTaken"
+            label = "Date of Birth"
+            minYear = "2000"
+            maxYear = "2017"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.dateTaken}
+            required = {true}
+          />
+          <DateElement
+            name = "dateTakenConfirm"
+            label = "Date of Birth Confirm"
+            minYear = "2000"
+            maxYear = "2017"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.dateTakenConfirm}
+            required = {true}
+          />
+          {edc}
+          <SelectElement
+            name = "sex"
+            label = "Sex"
+            options = {this.state.configData.sex}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.sex}
+            required = {true}
+          />
+          <SelectElement
+            name = "site"
+            label = "Site"
+            options = {this.state.configData.site}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.site}
+            required = {true}
+          />
+          {pscid}
+          {project}
+          <ButtonElement label = "Create" id = "button"/>
         </FormElement>;
     } else {
       profile =
@@ -239,5 +239,5 @@ window.addEventListener(
         hasPermission = {loris.userHasPermission}
       />,
       document.getElementById('lorisworkspace'));
-        }
+  }
 );
