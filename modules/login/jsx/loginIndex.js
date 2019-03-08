@@ -26,8 +26,10 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
+    console.log('test');
     this.fetchInitializerData();
   }
+
   /**
    * Used with sending POST data to the server.
    * @param {object} json - json object converted for POST.
@@ -50,22 +52,17 @@ class Login extends Component {
     fetch(
       url, {
         method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: send,
       }
-    ).then((response) => {
-      console.log(JSON.stringify(response));
-      response.json();
-    })
+    ).then((response) => response.text())
       .then(
         (data) => {
           console.log('success');
+          console.log(data);
           this.setState({isLoaded: true});
         }).catch((error) => {
           console.log('error: ');

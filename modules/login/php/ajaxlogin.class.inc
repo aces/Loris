@@ -14,6 +14,7 @@
  */
 namespace LORIS\login;
 
+use LORIS\Http\StringStream;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -29,6 +30,7 @@ use \Psr\Http\Message\ResponseInterface;
 class AjaxLogin extends \NDB_Page
 {
     public $skipTemplate = true;
+    public $AjaxModule = true;
     /**
      * This function will return a json object for login.
      *
@@ -62,15 +64,17 @@ class AjaxLogin extends \NDB_Page
          */
         $response = $this->processRequest($requestBody);
 
-        return (new \LORIS\Http\Response())
+        $test = new StringStream(json_encode($response));
+
+        $response = (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200)
             ->withHeader('Allow', 'POST')
             ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($response)
-                )
+                $test
             );
+
+        return $response;
     }
 
     /**
