@@ -29,6 +29,7 @@ class Login extends \NDB_Page
 {
 
     public $skipTemplate = true;
+    public $AjaxModule   = true;
 
     /**
      * Include additional JS files
