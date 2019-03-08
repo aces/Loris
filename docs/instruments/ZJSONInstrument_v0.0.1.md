@@ -247,7 +247,7 @@ Each type of field may contain type specific options. These options will be brok
         },
         "rules": {
             "requireIf": string, /* LORIS Logic Parser formula */
-            "displayIf": string, /* LORIS Logic Parser formula */
+            "hideIf": string, /* LORIS Logic Parser formula */
             "disableIf": string, /* LORIS Logic Parser formula */
         }
       }
@@ -280,7 +280,8 @@ described in section [3.2: Field Types](#32-field-types).
 
 ## 3.1: Rules
 
-The `rules` object contains three rules for validation and display: requireIf, displayIf, and disableIf. These rules make up the branching logic of the instrument and can be used to enforce dependencies between fields.
+The `rules` object contains three rules for validation and display: requireIf, hideIf, and disableIf. These rules make up 
+the branching logic of the instrument and can be used to enforce dependencies between fields.
 
 ```js
 {
@@ -291,7 +292,7 @@ The `rules` object contains three rules for validation and display: requireIf, d
                 ...
                 "rules": {
                     "requireIf": string, /* LORIS Logic Parser formula */
-                    "displayIf": string, /* LORIS Logic Parser formula */
+                    "hideIf": string, /* LORIS Logic Parser formula */
                     "disableIf": string, /* LORIS Logic Parser formula */
                 }
         ...
@@ -302,18 +303,43 @@ The value of these keys are string expressions of logical formulas defined by th
 When calculated by the Evaluator function of the LORIS Logic Parser, these formulas evaluate to true or false. They will often
 be dependent on data collected by neighbouring fields which are passed into the formula as argument variables.
 
-`rules.requireIf`: String. True or false that the field requires data input, given the condition in the string expression.
+`rules.requireIf`: String. True or false that the field requires data input, given the condition in the string expression. If 
+empty, the default is true.
 
 If the field's `options.requireResponse` value is true, the field will be accompanied by a "Not Answered" option field. This
 allows explicit non-answering while still requiring some input values in order to distinguish empty data from data that was
 intentionally omitted. In this case, the field's `rules.requireIf` formula will be dependent on the "Not Answered" option
 field, and vice versa.
 
-`rules.displayIf`: String. True or false that the field is displayed in the instrument, given the condition in the string
-expression.
+`rules.hideIf`: String. True or false that the field is not displayed in the instrument, given the condition in the string
+expression. If empty, the default is false.
 
 `rules.disableIf`: String. True or false that the field is disabled, i.e. not editable nor submittable, given the condition in
-the string expression.
+the string expression. If empty, the default is false.
+
+### 3.1.1. Intersection
+
+The boolean results of `hideIf` and `disableIf` do not conflict with one another. Any combination of true or false for these
+two rules can exist. However, only certain combinations are allowed when the `requireIf` rule intersects with `hideIf` and 
+`disableIf`. The possible combination of results are as follows:
+
+#### requireIf vs. hideIf
+
+|           |       |    hideIf    |
+|-----------|-------|--------------|
+|           |       | True | False |
+|-----------|-------|---- -|-------|
+| requireIf | True  |  ✗   |   ✓   |
+|           | False |  ✓   |   ✓   |
+
+#### requireIf vs. disableIf
+
+|           |       |  disableIf   |
+|-----------|-------|--------------|
+|           |       | True | False |
+|-----------|-------|---- -|-------|
+| requireIf | True  |  ✗   |   ✓   |
+|           | False |  ✓   |   ✓   |
 
 ## 3.2: Field types
 
@@ -323,8 +349,8 @@ of `fields` object has specific `options` defined.
 
 ### 3.2.1: Enum
 
-An enum type is a field whose data can be chosen from a list of values. This type of field can
-be rendered on the front-end as a select element, radio buttons, or a multiselect element if `options.allowMultipleValues` is set to true.
+An enum type is a field whose data can be chosen from a list of values. This type of field can be rendered on the front-
+end as a select element, radio buttons, or a multiselect element if `options.allowMultipleValues` is set to true.
 
 ```js
 {
@@ -611,7 +637,7 @@ In general, a helper object has the same format as a field:
         },
         "rules": {
             "requireIf": string, /* LORIS Logic Parser formula */
-            "displayIf": string, /* LORIS Logic Parser formula */
+            "hideIf": string, /* LORIS Logic Parser formula */
             "disableIf": string, /* LORIS Logic Parser formula */
         }
     } 
@@ -628,22 +654,60 @@ and is encoded in UTF-8.
 It may be rendered on the front-end as a header, depending on the helper type, i.e. this will be the
 content of the statictext helper itself, the header of the section helper, or column header for the table.
 
-`options`: Required object of type-specific keys.
-           It contains the type-dependent options for this helper, further described in section
-           [4.0: Helper Types](#4.0:-helper-types).
+`options`: Required object of type-specific keys. It contains the type-dependent options for this helper, further described 
+in section [4.2: Helper Types](#4.2:-helper-types).
 
-`rules`: Required object with keys whose value may be an empty string as described for `fields`.
+`rules`: Required object with keys whose value may be an empty string as described for fields.
 
 The `rules` for groups, rows, tables, and sections propagate down to the `rules` of its children.
 
-## 4.1: Helper Types
+## 4.1: Rules
 
-### 4.1.1: Static Text
+The `rules` of helper elements interact with the rules of its children. When evaluated, they will be appended together with a 
+logical operator. Depending on the rule, either an AND or an OR logic is followed to evaluate the final rule for the child.
+
+## 4.1.1 RequireIf
+
+Default: True. Interaction: AND. An AND operation allows the parent's false case to take precedence.
+
+|             |       |       Child (requireIf)       |
+|-------------|-------|-------------------------------|
+|             |       |     True      |     False     |
+|-------------|-------|---------------|---------------|
+|   Helper    | True  |    Require    | Don't require |
+| (requireIf) | False | Don't require | Don't require |
+
+## 4.1.2 HideIf
+
+Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
+
+|           |        |  Child (hideIf)   |
+|-----------|--------|-------------------|
+|           |        | True |   False    |
+|-----------|--------|------|------------|
+|   Helper  |  True  | Hide |    Hide    |
+|  (hideIf) |  False | Hide | Don't hide |
+
+## 4.1.3 DisableIf
+
+Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
+
+|              |        |    Child (disableIf)    |
+|--------------|--------|-------------------------|
+|              |        |  True   |     False     |
+|--------------|--------|---------|---------------|
+|    Helper    |  True  | Disable |    Disable    |
+|  (disableIf) |  False | Disable | Don't disable |
+
+## 4.2: Helper Types
+
+### 4.2.1: Static Text
 
 A `helper` of type "statictext" represents headings, sub-headings, labels, or informational text that is required in
 an instrument. These can be rendered on the front-end as a header, static, or link element.
 Static helpers are some text displayed to provide information and without an accompanying data input.
-Static helpers do not have an `options` key.
+
+Static helpers do not have an `options` key and only have the `hideIf` rule.
 
 ```js
 {
@@ -653,13 +717,13 @@ Static helpers do not have an `options` key.
             ...
         },
         "rules": {
-            ...
+          "hideIf": string, /* LORIS Logic Parser formula */
         }
     } 
 }
 ```
 
-### 4.1.2: Group
+### 4.2.2: Group
 
 A helper of type "group" denotes a horizontal collection of elements which should be displayed
 together and is separated by a delimiter. Groups have the following form:
@@ -692,7 +756,7 @@ together and is separated by a delimiter. Groups have the following form:
                  An array of the names of `fields` or `helpers`, in order, that are to be formatted
                  within this group. It may contain any field, but only helpers of the type "statictext".
  
-### 4.1.3: Row
+### 4.2.3: Row
 
 A helper of type "row" denotes a row in a table. If rows are not in a table, they should be rendered
 as a "group" helper.
@@ -725,7 +789,7 @@ as a "group" helper.
 
 The size of this array must equal the `options.colSize` value of the table to which the row belongs.
 
-### 4.1.4: Table
+### 4.2.4: Table
 
 A helper of type "table" denotes a list of "row" helpers that are displayed together in a tabular
 form.
@@ -788,7 +852,7 @@ an empty column header. This is true for only static text elements.
                         True or false that the description is displayed as a footer, instead of a
                         header.
 
-### 4.1.5: Section
+### 4.2.5: Section
 
 A helper of type "section" is a vertical grouping of elements whose `rules` are propogated to the rules of its children.
 
