@@ -325,19 +325,19 @@ two rules can exist. However, only certain combinations are allowed when the `re
 
 #### requireIf vs. hideIf
 
-|               |       | hideIf |       |
-|---------------|-------|--------|-------|
-|               |       |  True  | False |
-| **requireIf** | True  |  ✗     |   ✓   |
-|               | False |  ✓     |   ✓   |
+|               |           |  hideIf  |           |
+|---------------|-----------|----------|-----------|
+|               |           | **True** | **False** |
+| **requireIf** | **True**  |    ✗     |     ✓     |
+|               | **False** |    ✓     |     ✓     |
 
 #### requireIf vs. disableIf
 
-|               |       | disableIf |       |
-|---------------|-------|-----------|-------|
-|               |       |   True    | False |
-| **requireIf** | True  |     ✗     |   ✓   |
-|               | False |     ✓     |   ✓   |
+|               |           | disableIf |           |
+|---------------|-----------|-----------|-----------|
+|               |           | **True**  | **False** |
+| **requireIf** | **True**  |     ✗     |     ✓     |
+|               | **False** |     ✓     |     ✓     |
 
 ## 3.2: Field types
 
