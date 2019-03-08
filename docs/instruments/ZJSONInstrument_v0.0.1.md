@@ -657,7 +657,7 @@ content of the statictext helper itself, the header of the section helper, or co
 `options`: Required object of type-specific keys. It contains the type-dependent options for this helper, further described 
 in section [4.2: Helper Types](#4.2:-helper-types).
 
-`rules`: Required object with keys whose value may be an empty string as described for fields.
+`rules`: Required object with keys whose value may be an empty string as described for `fields`.
 
 The `rules` for groups, rows, tables, and sections propagate down to the `rules` of its children.
 
@@ -666,7 +666,7 @@ The `rules` for groups, rows, tables, and sections propagate down to the `rules`
 The `rules` of helper elements interact with the rules of its children. When evaluated, they will be appended together with a 
 logical operator. Depending on the rule, either an AND or an OR logic is followed to evaluate the final rule for the child.
 
-## 4.1.1 RequireIf
+### 4.1.1 RequireIf
 
 Default: True. Interaction: AND. An AND operation allows the parent's false case to take precedence.
 
@@ -677,7 +677,7 @@ Default: True. Interaction: AND. An AND operation allows the parent's false case
 |   Helper    | True  |    Require    | Don't require |
 | (requireIf) | False | Don't require | Don't require |
 
-## 4.1.2 HideIf
+### 4.1.2 HideIf
 
 Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
 
@@ -688,7 +688,7 @@ Default: False. Interaction: OR. An OR operation allows the parent's true case t
 |   Helper  |  True  | Hide |    Hide    |
 |  (hideIf) |  False | Hide | Don't hide |
 
-## 4.1.3 DisableIf
+### 4.1.3 DisableIf
 
 Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
 
