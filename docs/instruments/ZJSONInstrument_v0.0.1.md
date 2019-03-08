@@ -325,21 +325,19 @@ two rules can exist. However, only certain combinations are allowed when the `re
 
 #### requireIf vs. hideIf
 
-|           |       |    hideIf    |
-|-----------|-------|--------------|
-|           |       | True | False |
-|-----------|-------|---- -|-------|
-| requireIf | True  |  ✗   |   ✓   |
-|           | False |  ✓   |   ✓   |
+|               |       | hideIf |       |
+|---------------|-------|--------|-------|
+|               |       |  True  | False |
+| **requireIf** | True  |  ✗     |   ✓   |
+|               | False |  ✓     |   ✓   |
 
 #### requireIf vs. disableIf
 
-|           |       |  disableIf   |
-|-----------|-------|--------------|
-|           |       | True | False |
-|-----------|-------|---- -|-------|
-| requireIf | True  |  ✗   |   ✓   |
-|           | False |  ✓   |   ✓   |
+|               |       | disableIf |       |
+|---------------|-------|-----------|-------|
+|               |       |   True    | False |
+| **requireIf** | True  |     ✗     |   ✓   |
+|               | False |     ✓     |   ✓   |
 
 ## 3.2: Field types
 
@@ -670,34 +668,31 @@ logical operator. Depending on the rule, either an AND or an OR logic is followe
 
 Default: True. Interaction: AND. An AND operation allows the parent's false case to take precedence.
 
-|             |       |       Child (requireIf)       |
-|-------------|-------|-------------------------------|
-|             |       |     True      |     False     |
-|-------------|-------|---------------|---------------|
-|   Helper    | True  |    Require    | Don't require |
-| (requireIf) | False | Don't require | Don't require |
+|                        |           | Child (requireIf) |               |
+|------------------------|-----------|-------------------|---------------|
+|                        |           |     **True**      |   **False**   |
+| **Helper (requireIf)** | **True**  |      Require      | Don't require |
+|                        | **False** |   Don't require   | Don't require |
 
 ### 4.1.2 HideIf
 
 Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
 
-|           |        |  Child (hideIf)   |
-|-----------|--------|-------------------|
-|           |        | True |   False    |
-|-----------|--------|------|------------|
-|   Helper  |  True  | Hide |    Hide    |
-|  (hideIf) |  False | Hide | Don't hide |
+|                     |           | Child (hideIf) |            |
+|---------------------|-----------|----------------|------------|
+|                     |           |    **True**    | **False**  |
+| **Helper (hideIf)** | **True**  |      Hide      |    Hide    |
+|                     | **False** |      Hide      | Don't hide |
 
 ### 4.1.3 DisableIf
 
 Default: False. Interaction: OR. An OR operation allows the parent's true case to take precedence.
 
-|              |        |    Child (disableIf)    |
-|--------------|--------|-------------------------|
-|              |        |  True   |     False     |
-|--------------|--------|---------|---------------|
-|    Helper    |  True  | Disable |    Disable    |
-|  (disableIf) |  False | Disable | Don't disable |
+|                        |           | Child (disableIf) |               |
+|------------------------|-----------|-------------------|---------------|
+|                        |           |     **True**      |   **False**   |
+| **Helper (disableIf)** | **True**  |      Disable      |    Disable    |
+|                        | **False** |      Disable      | Don't disable |
 
 ## 4.2: Helper Types
 
