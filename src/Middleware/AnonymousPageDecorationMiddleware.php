@@ -52,7 +52,18 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
             );
         }
 
+        // Handle needs to be called before formaction, because handle potentially
+        // calls setup which modifies the $page->FormAction value (ie in the imaging
+        // browser)
         $undecorated = $handler->handle($request);
+        $contenttype = $undecorated->getHeaderLine("Content-Type");
+        if ($contenttype != "" && strpos($contenttype, "text/html") === false) {
+            // FIXME: This should explicitly check for text/html instead of implicitly treating
+            // no content type as text/html, but most of our code doesn't add an appropriate
+            // content type right now, so we default to assuming HTML.
+            return $undecorated;
+        }
+
         // Finally, the actual content and render it..
         $tpl_data += array(
             'jsfiles'   => $this->JSFiles,
