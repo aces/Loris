@@ -2,7 +2,8 @@
 CREATE TABLE `publication_status` (
   `PublicationStatusID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(255) NOT NULL,
-  CONSTRAINT `PK_publication_status` PRIMARY KEY(`PublicationStatusID`)
+  CONSTRAINT `PK_publication_status` PRIMARY KEY(`PublicationStatusID`),
+  CONSTRAINT `UK_publication_status_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 INSERT INTO publication_status (`Label`) VALUES ('Pending');
 INSERT INTO publication_status (`Label`) VALUES ('Approved');
