@@ -269,7 +269,7 @@ class AcknowledgementsIndex extends Component {
           />
           <SelectElement
             name='addPresent'
-            options={this.state.data.fieldOptions.present}
+            options={this.state.data.fieldOptions.presents}
             label='Present'
             value={this.state.formData.addPresent}
             emptyOption={true}
