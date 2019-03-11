@@ -116,22 +116,12 @@ class Files extends \NDB_Page
             $record = basename($request->getUri()->getPath());
             if (!is_numeric($record)) {
             $file = __DIR__ . "/../user_uploads/$record";
-
-        // Output file in downloadable format
-       // header('Content-Description: File Transfer');
-       // header('Content-Type: application/force-download');
-       // header("Content-Transfer-Encoding: Binary");
-       // header("Content-disposition: attachment; filename=\"".basename($path)."\"");
-       // readfile($path);
-
-//              $file = new Stream($path);
-                
-         //       $this->getFile($record);
-                return (new \LORIS\Http\Response())
+            // download a file
+            return (new \LORIS\Http\Response())
                 ->withHeader('Content-Type', 'application/force-download')
-                ->withHeader('Content-Disposition', 'attachment; filename=' . basename($file))
+                ->withHeader('Content-Disposition',
+                             'attachment; filename=' . basename($file))
                 ->withHeader('Content-Transfer-Encoding', 'Binary')
-                ->withHeader('Content-Description', 'File Transfer')
                 ->withBody(readfile($file));
                 
             }
@@ -279,26 +269,6 @@ class Files extends \NDB_Page
             unlink($path);
         }
 
-    }
-    /**
-     * Handles the document getting process
-     *
-     * @param string $fileName the file name
-     *
-     * @throws \DatabaseException
-     *
-     * @return void
-     */
-    function getFile($fileName): void
-    {
-        $path = __DIR__ . "/../user_uploads/$fileName";
-
-        // Output file in downloadable format
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/force-download');
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"".basename($path)."\"");
-        readfile($path);
     }
     /**
      * Returns a list of categories fields from database
