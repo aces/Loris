@@ -51,10 +51,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $stdin     = file_get_contents('php://input');
-        $req       = json_decode($stdin, true);
-        $idDocFile = $req['idDocFile'];
-        $user      =& \User::singleton();
+        $user      = \User::singleton();
         $db        = \Database::singleton();
         $query     = $db->pselect(
             "SELECT * FROM document_repository_categories",
@@ -108,7 +105,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                                'sites'          => $siteList,
                                'instruments'    => $instrumentsList,
                                'fileTypes'      => $fileTypeList,
-                               'fdsa'           => $idDocFile,
                               );
         return $true;
     }

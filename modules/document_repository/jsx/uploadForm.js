@@ -170,7 +170,6 @@ class DocUploadForm extends React.Component {
       console.log(data);
       if (data == 'uploaded successfully') {
       swal('Upload Successful!', '', 'success');
-      this.props.refreshPage();
       this.fetchData();
       } else {
       swal('Duplicate File Name!', '', 'error');

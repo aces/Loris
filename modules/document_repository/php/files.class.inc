@@ -81,7 +81,7 @@ class Files extends \NDB_Page
             } else {
                 return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
+                ->withStatus(409)
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("duplicate file name")
@@ -115,10 +115,25 @@ class Files extends \NDB_Page
         case "GET":
             $record = basename($request->getUri()->getPath());
             if (!is_numeric($record)) {
-                $this->getFile($record);
+            $file = __DIR__ . "/../user_uploads/$record";
+
+        // Output file in downloadable format
+       // header('Content-Description: File Transfer');
+       // header('Content-Type: application/force-download');
+       // header("Content-Transfer-Encoding: Binary");
+       // header("Content-disposition: attachment; filename=\"".basename($path)."\"");
+       // readfile($path);
+
+//              $file = new Stream($path);
+                
+         //       $this->getFile($record);
                 return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200);
+                ->withHeader('Content-Type', 'application/force-download')
+                ->withHeader('Content-Disposition', 'attachment; filename=' . basename($file))
+                ->withHeader('Content-Transfer-Encoding', 'Binary')
+                ->withHeader('Content-Description', 'File Transfer')
+                ->withBody(readfile($file));
+                
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -133,7 +148,7 @@ class Files extends \NDB_Page
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
-                ->withHeader("Allow", "GET,POST,PUT and DELETE");
+                ->withHeader("Allow", "GET,POST,PUT,DELETE");
         }
     }
     /**
@@ -277,12 +292,6 @@ class Files extends \NDB_Page
     function getFile($fileName): void
     {
         $path = __DIR__ . "/../user_uploads/$fileName";
-
-        if (!file_exists($path)) {
-            error_log("ERROR: File $path does not exist");
-            header("HTTP/1.1 404 Not Found");
-            exit(5);
-        }
 
         // Output file in downloadable format
         header('Content-Description: File Transfer');
