@@ -80,7 +80,7 @@ class Login extends Component {
     return (
       <div className={'container'}>
         <div className={'row'}>
-          <section className={'col-md-8 col-md-pull-4'}>
+          <section className={'col-md-4 col-md-push-8'}>
             <Panel
               title={'Login to LORIS'}
               class={'panel-login login-panel'}
@@ -89,7 +89,7 @@ class Login extends Component {
               <div>test</div>
             </Panel>
           </section>
-          <section className={'col-md-4 col-md-push-8'}>
+          <section className={'col-md-8 col-md-pull-4'}>
             <Panel
               title={'Example Study'}
               class={'panel-login login-panel'}
