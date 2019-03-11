@@ -141,6 +141,7 @@ class AcknowledgementsIndex extends Component {
       if (resp.ok && resp.status === 200) {
         swal('Success!', 'Acknowledgement added.', 'success').then((result) => {
           if (result.value) {
+            this.closeModalForm();
             this.fetchData();
           }
         });
@@ -173,6 +174,7 @@ class AcknowledgementsIndex extends Component {
   }
 
   closeModalForm() {
+    this.setState({formData: {}});
     this.setState({showModal: false});
   }
 
@@ -190,11 +192,14 @@ class AcknowledgementsIndex extends Component {
   }
 
   renderAddForm() {
+    const requireEndDate = (this.state.formData.addPresent === 'No') || false;
+    const disableEndDate = (this.state.formData.addPresent === 'Yes') || false;
     return (
       <Modal
         title='Add Acknowledgement'
         onClose={this.closeModalForm}
         show={this.state.showModal}
+        throwWarning={true}
       >
         <FormElement
           Module='acknowledgements'
@@ -226,7 +231,7 @@ class AcknowledgementsIndex extends Component {
           />
           <SelectElement
             name='addAffiliations'
-            options={this.state.affilitationsOptions}
+            options={this.state.affiliationsOptions}
             label='Affiliations'
             value={this.state.formData.addAffiliations}
             multiple={true}
@@ -257,6 +262,7 @@ class AcknowledgementsIndex extends Component {
             value={this.state.formData.addStartDate}
             maxYear={this.state.data.maxYear}
             minYear={this.state.data.minYear}
+            required={true}
             onUserInput={this.setFormData}
           />
           <DateElement
@@ -265,6 +271,8 @@ class AcknowledgementsIndex extends Component {
             value={this.state.formData.addEndDate}
             maxYear={this.state.data.maxYear}
             minYear={this.state.data.minYear}
+            disabled={disableEndDate}
+            required={requireEndDate}
             onUserInput={this.setFormData}
           />
           <SelectElement
@@ -281,12 +289,6 @@ class AcknowledgementsIndex extends Component {
               name='fire_away'
               label='Save'
               type='submit'
-              buttonClass='btn btn-sm btn-primary'
-            />
-            <ButtonElement
-              name='reset'
-              label='Reset'
-              type='reset'
               buttonClass='btn btn-sm btn-primary'
             />
           </div>
