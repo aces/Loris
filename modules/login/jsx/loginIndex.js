@@ -105,38 +105,13 @@ class Login extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    const state = Object.assign({}, this.state);
-    const send = this.urlSearchParams({
-      command: 'login',
-      username: state.form.username,
-      password: state.form.password,
-    });
-    const url = window.location.origin + '/login/AjaxLogin';
-    fetch(
-      url, {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.status === 'error') {
-            // Populate the form errors.
-            if (data.errors) {
-              console.log('errors');
-            }
-          } else {
-            console.log('success');
-            // this.setState({success: true});
-          }
-        });
+    let form = document.getElementById('form');
+    let inputLogin = document.createElement('input');
+    inputLogin.setAttribute('name', 'login');
+    inputLogin.setAttribute('value', 'true');
+    inputLogin.setAttribute('type', 'hidden');
+    form.append(inputLogin);
+    form.submit();
   }
   /**
    * @return {DOMRect}
@@ -156,6 +131,8 @@ class Login extends Component {
         </section>
         <FormElement
           name={'login'}
+          action={''}
+          id={'form'}
           fileUpload={'false'}
           onSubmit={this.handleSubmit}
         >
@@ -174,6 +151,7 @@ class Login extends Component {
             placeholder={'Password'}
             class={'col-sm-12'}
             required={true}
+            type={'password'}
           />
           <ButtonElement
             label={'Login'}

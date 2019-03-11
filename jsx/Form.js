@@ -924,7 +924,7 @@ class TextboxElement extends Component {
         {label}
         <div className={this.props.class}>
           <input
-            type="text"
+            type={this.props.type}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
@@ -947,6 +947,7 @@ TextboxElement.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   class: PropTypes.string,
+  type: PropTypes.string,
   placeholder: PropTypes.string,
   id: PropTypes.string,
   disabled: PropTypes.bool,
@@ -960,6 +961,7 @@ TextboxElement.defaultProps = {
   name: '',
   label: '',
   value: '',
+  type: 'text',
   class: 'col-sm-9',
   placeholder: '',
   id: null,

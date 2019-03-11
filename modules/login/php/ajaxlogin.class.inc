@@ -17,6 +17,7 @@ namespace LORIS\login;
 use LORIS\Http\StringStream;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use SinglePointLogin;
 
 /**
  * The NDB_Page for the POST requests.
@@ -86,16 +87,14 @@ class AjaxLogin extends \NDB_Page
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'login') {
-            $response           = $this->
-            $response['status'] = 'success';
+            $response           = $this->login($values);
         } else {
             $response['status'] = 'error';
         }
         return $response;
     }
     /**
-     * Initialize setup, the extra values for the
-     * create timepoint form. (psc & errors)
+     * Initialize setup.
      *
      * @param array $values the user data received.
      *
@@ -125,6 +124,51 @@ class AjaxLogin extends \NDB_Page
         $values['study_title'] = $config->getSetting('title');
         $values['study_logo']  = $config->getSetting('studylogo');
 
+        return $values;
+    }
+    /**
+     * Execute login.
+     *
+     * @param array $values the user data received.
+     *
+     * @return array
+     */
+    function login(array $values) : array
+    {
+        $login = new SinglePointLogin();
+        $_POST['login'] = 'true';
+        $_POST['username'] = $values['username'];
+        $_POST['password'] = $values['password'];
+        if (!$login->isLoggedIn()) {
+            $auth = $login->authenticate();
+            if ($auth === true) {
+                if ($login->passwordExpired()) {
+                    header("HTTP/1.1 302 Found");
+                    header("Location: /login/password-expiry");
+
+                }
+                $login->setState();
+            } elseif ($auth === false) {
+                // only send a 403 error if they were attempting to log in,
+                // otherwise the login page returns a 403 when first accessing
+                // it.
+                if (!empty($_REQUEST['login'])) {
+                    header("HTTP/1.1 403 Forbidden");
+                } else {
+                    // authenticate set an "Incorrect username or password"
+                    // error. We don't want it to be displayed on the login page
+                    // if they didn't just try and log in, so as a hack clear
+                    // it if $_REQUEST['login'] isn't set.
+                    $login->_lastError = '';
+                }
+                $login->clearState();
+            }
+        }
+        if (!$login->isLoggedIn()) {
+            $values['error'] = 'failed to login';
+        } else {
+            $values['status'] = 'success';
+        }
         return $values;
     }
 }
