@@ -16,28 +16,39 @@
 namespace LORIS\Http;
 
 use \Http\Adapter\Guzzle6\Client as GuzzleClient;
+use \Psr\Http\Client\ClientInterface;
+use \Psr\Http\Message\RequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
- * A LORIS Http Response is an implementation of the PSR18 ResponseInterface to use
+ * A LORIS Http Client is an implementation of the PSR18 ClientInterface to use
  * in LORIS.
  *
  * It is intended to reduce our coupling to any particular PSR18 implementation.
  */
-class Client 
+class Client implements ClientInterface
 {
-
-    /**
-     * Private to prevent from creating this object on its own since it's just
-     * a wrapper for Guzzle at this time.
-     */
-    private function __construct() {
-    }
-
+    private $client;
     /**
      * Guzzle's Client class is final and so cannot be extended directly. This
      * function acts as a wrapper for this function and serves as a workaround.
+     *
+     * @param string $uri The base uri targeted for requests.
+     *
+     * @return void
      */
-    public static function createWithConfig(array $config): GuzzleClient {
-        return \Http\Adapter\Guzzle6\Client::createWithConfig($config);
+    public function __construct(string $uri) {
+        $this->client = GuzzleClient::createWithConfig(
+            array(
+                'base_uri' => $uri
+            )
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sendRequest(RequestInterface $request): ResponseInterface {
+        return $this->client->sendRequest($request);
     }
 }

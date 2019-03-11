@@ -566,11 +566,10 @@ class User extends UserPermissions
         $hashPrefix = substr(sha1($password), 0, 5);
         // $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
 
-        $client   = Client::createWithConfig(
-            array('base_uri' => 'https://api.pwnedpasswords.com')
+        $client   = new Client('https://api.pwnedpasswords.com');
+        $response = $client->sendRequest(
+            new Request('GET', "/range/$hashPrefix")
         );
-        $request  = new Request('GET', "/range/$hashPrefix");
-        $response = $client->sendRequest($request);
 
         /* We don't want password changes to fail in case there is a
          * networking issue while making the request. If the API can't be
