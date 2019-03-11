@@ -40,13 +40,13 @@ class MediaTest extends LorisIntegrationTest
                               " > div:nth-child(6) > div > div > select";
     static $Site        = "#media_filter > div > div > fieldset".
                               " > div:nth-child(7) > div > div > select";
-    static $clearFilter = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(11) > div > div > button";
+    static $clearFilter = ".col-sm-2 .btn";
+                          
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
-    static $display = "#browse > div > div > div > div:nth-child(2) >".
-                      " div:nth-child(1) > div > div > div:nth-child(1)";
+    static $display = ".panel-body > div > div:nth-child(1) > div:nth-child(1)";
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions

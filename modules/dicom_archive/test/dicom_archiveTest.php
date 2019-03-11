@@ -41,8 +41,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
-    static $display = "#default-panel".
-                       ">div>div>div.table-header > div > div > div:nth-child(1)";
+    static $display = ".panel-body > div > div:nth-child(1) > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
