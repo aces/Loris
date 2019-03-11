@@ -52,9 +52,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     s.Visit_label as visitLabel,
                     i.dateCreated,
                     i.lastUpdate,
-                    s.ID as sessionID,
-                    c.CandID as candidateID,
-                    w.userID
+                    s.ID as sessionId,
+                    c.CandID as candidateId,
+                    w.userID as userId
             FROM issues as i
             LEFT JOIN candidate c 
               ON (i.candID=c.CandID)
