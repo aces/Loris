@@ -87,8 +87,8 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
-        $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
+        $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
         $this->_testFilter(self::$Language, self::$table, "26", "2");
         $this->_testFilter(self::$Instrument, self::$table, "3 rows", "2");

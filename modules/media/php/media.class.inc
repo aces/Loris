@@ -158,11 +158,10 @@ class Media extends \NDB_Menu_Filter
             },
             json_decode($table->toJSON(\User::singleton()), true)
         );
-        $options = $this->getOptions();
         return json_encode(
             array(
              'data'         => $arr,
-             'fieldOptions' => $options,
+             'fieldOptions' => $this->getOptions(),
             )
         );
     }
