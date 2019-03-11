@@ -19,13 +19,14 @@ namespace LORIS\bvl_feedback;
 use \LORIS\StudyEntities\Candidate\CandID;
 
 $username = \User::singleton()->getUsername();
-$candID   = new CandID($_POST['candID']);
 
 if (isset($_POST['candID']) && (empty($_POST['sessionID']))) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread = \NDB_BVL_Feedback::Singleton($username, $candID);
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && (empty($_POST['commentID']))
 ) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread =& \NDB_BVL_Feedback::Singleton(
         $username,
         $candID,
@@ -34,6 +35,7 @@ if (isset($_POST['candID']) && (empty($_POST['sessionID']))) {
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && isset($_POST['commentID'])
 ) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread =& \NDB_BVL_Feedback::Singleton(
         $username,
         $candID,
