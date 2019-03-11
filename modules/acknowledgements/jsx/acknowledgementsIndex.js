@@ -166,7 +166,21 @@ class AcknowledgementsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    return <td>{cell}</td>;
+    let result = <td>{cell}</td>;
+
+    switch (column) {
+      case 'Affiliations':
+        result = <td>{this.state.affiliationsOptions[cell]}</td>;
+        break;
+      case 'Degrees':
+        result = <td>{this.state.degreesOptions[cell]}</td>;
+        break;
+
+      case 'Roles':
+        result = <td>{this.state.rolesOptions[cell]}</td>;
+        break;
+    }
+    return result;
   }
 
   openModalForm() {
