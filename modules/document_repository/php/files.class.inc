@@ -115,8 +115,8 @@ class Files extends \NDB_Page
         case "GET":
             $record = basename($request->getUri()->getPath());
             if (!is_numeric($record)) {
-            $file = __DIR__ . "/../user_uploads/$record";
-            return (new \LORIS\Http\Response())
+                $file = __DIR__ . "/../user_uploads/$record";
+                return (new \LORIS\Http\Response())
                 ->withHeader(
                     'Content-Disposition',
                     'attachment; filename=' . basename($file)
