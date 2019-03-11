@@ -128,19 +128,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
         // Ensure the server is properly configured.
-        if (! $this->canWriteFiles()) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
-                        )
-                    )
-                );
-        }
-
-        // Do pre-processing before uploading files.
         if (!$this->canWriteFiles()) {
             return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')

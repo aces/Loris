@@ -38,28 +38,28 @@ class FilesUploadHandler implements RequestHandlerInterface
      *
      * @var \SplFileInfo
      */
-    private $_uploadDirectory;
+    protected $uploadDirectory;
 
     /**
      * A whitelist of all MIME types to accept.
      *
      * @var string[]
      */
-    private $_permittedMIMETypes = array();
+    protected $permittedMIMETypes = array();
 
     /**
      * A UNIX permissions octet.
      *
      * @var int
      */
-    private $_permissions = 0644;
+    protected $permissions = 0644;
 
     /**
      * Whether existing files should be overwritten.
      *
      * @var bool
      */
-    private $_overwrite = false;
+    protected $overwrite = false;
 
     /**
      * Create new instance of a File Uploader.
@@ -68,15 +68,15 @@ class FilesUploadHandler implements RequestHandlerInterface
      */
     public function __construct(\SplFileInfo $uploadDirectory)
     {
-        $this->_uploadDirectory = $uploadDirectory;
+        $this->uploadDirectory = $uploadDirectory;
 
-        if (! $this->_uploadDirectory->isDir()) {
+        if (! $this->uploadDirectory->isDir()) {
             throw new \LorisException(
                 'Upload directory is not a directory'
             );
         }
 
-        if (! $this->_uploadDirectory->isWritable()) {
+        if (! $this->uploadDirectory->isWritable()) {
             throw new \LorisException(
                 'Upload directory is not writable'
             );
@@ -93,7 +93,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     public function withPermissions(int $permissions): FilesUploadHandler
     {
         $new = clone($this);
-        $new->_permissions = $permissions;
+        $new->permissions = $permissions;
         return $new;
     }
 
@@ -107,7 +107,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     public function withPermittedMIMETypes(string ...$mimetypes): FilesUploadHandler
     {
         $new = clone($this);
-        $new->_permittedMIMETypes = $mimetypes;
+        $new->permittedMIMETypes = $mimetypes;
         return $new;
     }
 
@@ -120,8 +120,8 @@ class FilesUploadHandler implements RequestHandlerInterface
      */
     public function withOverwrite(bool $overwrite): FilesUploadHandler
     {
-        $new = clone($this);
-        $new->_overwrite = $overwrite;
+        $new            = clone($this);
+        $new->overwrite = $overwrite;
         return $new;
     }
 
@@ -165,14 +165,14 @@ class FilesUploadHandler implements RequestHandlerInterface
             /* basename() is used here to prevent path traversal characters
              * from being used.
              */
-            $targetPath = $this->_uploadDirectory->getPathname() . '/' . basename(
+            $targetPath = $this->uploadDirectory->getPathname() . '/' . basename(
                 $file->getClientFilename()
             );
 
             /* If file exists, set response code to 'Conflict' unless the
              * calling code wants to overwrite the file.
              */
-            if (file_exists($targetPath) && $this->_overwrite === false) {
+            if (file_exists($targetPath) && $this->overwrite === false) {
                 (new \LORIS\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
@@ -185,14 +185,14 @@ class FilesUploadHandler implements RequestHandlerInterface
             }
 
             // Validate that the MIME type of the file is allowed
-            if (!empty($this->_permittedMIMETypes)) {
+            if (!empty($this->permittedMIMETypes)) {
                 if (!in_array(
                     $file->getClientMediaType(),
-                    $this->_permittedMIMETypes,
+                    $this->permittedMIMETypes,
                     true
                 )) {
                     return (new \LORIS\Http\Response())
-                        ->withStatus(400)
+                        ->withStatus(403)
                         ->withBody(
                             new \LORIS\Http\StringStream(
                                 json_encode(
@@ -220,11 +220,11 @@ class FilesUploadHandler implements RequestHandlerInterface
                         )
                     );
             }
-            chmod($targetPath, $this->_permissions);
+            chmod($targetPath, $this->permissions);
         }
 
         return (new \LORIS\Http\Response())
-                    ->withStatus(200);
+                    ->withStatus(201);
     }
 }
 
