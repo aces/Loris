@@ -109,7 +109,7 @@ class AcknowledgementsIndex extends Component {
    * @param {string} value - value of the form element
    */
   setFormData(formElement, value) {
-    const formData = this.state.formData;
+    const formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -122,7 +122,7 @@ class AcknowledgementsIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
-    let formData = this.state.formData;
+    const formData = Object.assign({}, this.state.formData);
     let formObject = new FormData();
     for (let key in formData) {
       if (formData[key] !== '') {
@@ -130,22 +130,28 @@ class AcknowledgementsIndex extends Component {
       }
     }
     formObject.append('fire_away', 'Add');
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/acknowledgements/',
-      data: formObject,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
-        swal('Success!', 'Acknowledgement added.', 'success');
-        this.fetchData();
-      },
-      error: (error) => {
-        console.error(error);
-        let message = error.responseText;
-        swal('Error!', message, 'error');
-      },
+
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => {
+      if (resp.ok && resp.status === 200) {
+        swal('Success!', 'Acknowledgement added.', 'success').then((result) => {
+          if(result.value) {
+            this.fetchData();
+          }
+        });
+      } else {
+        resp.text().then((message) => {
+          swal('Error!', message, 'error');
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
     });
   }
 
@@ -356,6 +362,7 @@ class AcknowledgementsIndex extends Component {
 
 AcknowledgementsIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  submitURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 
@@ -363,6 +370,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
+      submitURL={`${loris.BaseURL}/acknowledgements/`}
       hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
