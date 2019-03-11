@@ -52,7 +52,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
             );
         }
 
-        // Handle needs to be called before formaction, because handle potentially
+        // Handle needs to be called before form action, because handle potentially
         // calls setup which modifies the $page->FormAction value (ie in the imaging
         // browser)
         $undecorated = $handler->handle($request);

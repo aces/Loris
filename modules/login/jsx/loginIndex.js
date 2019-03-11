@@ -78,13 +78,30 @@ class Login extends Component {
       return <Loader/>;
     }
     return (
-      <Panel
-        title={'Login to LORIS'}
-        class={'panel-login login-panel'}
-        collapsing={false}
-      >
-        <div>test</div>
-      </Panel>
+      <div className={'container'}>
+        <div className={'row'}>
+          <section className={'col-md-8 col-md-pull-4'}>
+            <Panel
+              title={'Login to LORIS'}
+              class={'panel-login login-panel'}
+              collapsing={false}
+            >
+              <div>test</div>
+            </Panel>
+          </section>
+          <section className={'col-md-4 col-md-push-8'}>
+            <Panel
+              title={'Example Study'}
+              class={'panel-login login-panel'}
+              collapsing={false}
+            >
+              <div>
+                Example Study Description
+              </div>
+            </Panel>
+          </section>
+        </div>
+      </div>
     );
   }
 }
