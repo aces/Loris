@@ -390,25 +390,40 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function fromArray(array $data) : Specimen
     {
-        $this->setId(intval($data['id']));
-        $this->setContainerId(intval($data['containerId']));
+        // XXX: All these if statements make this feel messy...
+        // Should we just have the conditional sets accept null as a value?
+        // In that case there is still the issue of intval(null) return 0
+        // Ask Rida about this.
+        if (isset($data['id'])) {
+            $this->setId(intval($data['id']));
+        }
+        if (isset($data['containerId'])) $this->setContainerId(intval($data['containerId']));
         $this->setTypeId(intval($data['typeId']));
         $this->setQuantity($data['quantity']);
         $this->setUnitId(intval($data['unitId']));
-        $this->setFTCycle(intval($data['fTCycle']));
-        $this->setParentSpecimenIds($data['parentSpecimenIds']);
+        if (isset($data['fTCycle'])) {
+            $this->setFTCycle(intval($data['fTCycle']));
+        }
+        if (isset($data['parentSpecimenIds'])) {
+            $this->setParentSpecimenIds($data['parentSpecimenIds']);
+        }
         $this->setCandidateId(intval($data['candidateId']));
         $this->setSessionId(intval($data['sessionId']));
-        $this->setPoolId(intval($data['poolId']));
+        if (isset($data['poolId'])) {
+            $this->setPoolId(intval($data['poolId']));
+        }
 
         $collection = (new Collection())->fromArray($data['collection']);
         $this->setCollection($collection);
 
-        $preparation = (new Preparation())->fromArray($data['preparation']);
-        $this->setPreparation($preparation);
-
-        $analysis = (new Analysis())->fromArray($data['analysis']);
-        $this->setAnalysis($analysis);
+        if (isset($data['preparation'])) {
+            $preparation = (new Preparation())->fromArray($data['preparation']);
+            $this->setPreparation($preparation);
+        }
+        if (isset($data['analysis'])) {
+            $analysis = (new Analysis())->fromArray($data['analysis']);
+            $this->setAnalysis($analysis);
+        }
 
         return $this;
     }

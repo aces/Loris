@@ -74,7 +74,7 @@ class Analysis extends Process
     public function fromArray(array $data) : Process
     {
         parent::fromArray($data);
-        $this->setMethodId($data['methodId']);
+        $this->setMethodId(intval($data['methodId']));
 
         return $this;
     }

@@ -321,17 +321,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */                                                                         
     public function fromArray(array $data) : Container               
     {                                                                           
-        $this->setId(intval($data['id']));                                         
+        if (isset($data['id'])) $this->setId(intval($data['id']));                                         
         $this->setBarcode($data['barcode']);                               
         $this->setTypeId(intval($data['typeId']));
-        $this->setDimensionId(intval($data['dimensionId']));                       
+        if (isset($data['dimensionId'])) $this->setDimensionId(intval($data['dimensionId']));                       
         $this->setTemperature(floatval($data['temperature']));                       
         $this->setStatusId(intval($data['statusId']));                             
-        $this->setCenterId(intval($data['currentId']));                            
+        $this->setCenterId(intval($data['centerId']));                            
         $this->setOriginId(intval($data['originId']));                             
-        $this->setParentContainerId(intval($data['parentContainerId']));           
-        $this->setChildContainerIds($data['childContainerIds']);           
-        $this->setCoordinate(intval($data['coordinate']));                         
+        if (isset($data['parentContainerId'])) $this->setParentContainerId(intval($data['parentContainerId']));           
+        if (isset($data['childContainerIds'])) $this->setChildContainerIds($data['childContainerIds']);           
+        if (isset($data['coordinate'])) $this->setCoordinate(intval($data['coordinate']));                         
                                                                                 
         return $this;
     }                                                                           

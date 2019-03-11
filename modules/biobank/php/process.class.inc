@@ -94,7 +94,7 @@ abstract class Process implements \JsonSerializable
      *
      * @return \DateTime
      */
-    public function getDate() : DateTime
+    public function getDate() : \DateTime
     {
         return $this->date;
     }
@@ -116,7 +116,7 @@ abstract class Process implements \JsonSerializable
      *
      * @return DateTime
      */
-    public function getTime() : DateTime
+    public function getTime() : \DateTime
     {
         return $this->time;
     }

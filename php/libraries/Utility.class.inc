@@ -869,16 +869,16 @@ class Utility
     }
 
     /**
-     * Takes a date string of any format and returns a date string in a format
+     * Takes a DateTime object returns a date string in a format
      * compatible with mySQL.
      *
-     * @param string $date to be converted
+     * @param \DateTime $date to be converted
      *
      * @return string
      */
-    static function toMysqlDateFormat(string $date) : string
+    static function toMysqlDateFormat(\DateTime $date) : string
     {
-        return (new \DateTime($date))->format('Y-m-d H:i');
+        return $date->format('Y-m-d H:i');
     }
 
     /**

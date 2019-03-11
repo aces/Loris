@@ -92,13 +92,13 @@ class ContainerController
         $this->validatePermission('create');
         $containerList = array();
         foreach ($list as $i => $item) {
-            $container = (new Container)->fromArray($item);
+            $container = (new Container)->fromArray($item['container']);
             $this->validateInstance($container);
             $containerList[$i] = $container;
         }
 
         // Save Containers
-        $containerIds = [];
+        $containerIds = array();
         foreach ($containerList as $i => $container) {
             $containerIds[$i] = $this->dao->saveInstance($container);
         }
@@ -279,8 +279,8 @@ class ContainerController
         if (!(is_numeric($temperature) && is_float(floatval($temperature)))) {
             throw new \BadRequest('Temperature must be a number.');
         }
-        if ($temperature <= MINTEMP || $temperature > MAXTEMP) {
-            throw new \BadRequest('Temperature must be between '.MINTEMP.'°C and '.MAXTEMP.'°C.');
+        if ($temperature <= self::MINTEMP || $temperature > self::MAXTEMP) {
+            throw new \BadRequest('Temperature must be between '.self::MINTEMP.'°C and '.self::MAXTEMP.'°C.');
         }
     }
 
@@ -379,7 +379,7 @@ class ContainerController
     private function validateCoordinate(Container $container)
     {
         $coordinate = $container->getCoordinate();
-        if (isset($coordinate)) {
+        if (!is_null($coordinate)) {
             if (!((is_int($coordinate) || ctype_digit($coordinate)) && (int)$coordinate > 0)) {
                 throw new \BadRequest('Coordinate must be a positive integer.');
             }

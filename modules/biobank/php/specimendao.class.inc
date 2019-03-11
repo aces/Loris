@@ -154,9 +154,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         return $this->db->pselectcol($query, array('i' => $id));
     }
 
-    // XXX: Currently this function is never used with any conditions passed as
-    // parameters. Decide if this is a necessary feature. It is likely useful
-    // but I need to figure out how to integrate it with the dataprovisioner.
     /**
      * This will select all specimens from the database that match the
      * attribute values passed by $conditions and will return an array
@@ -251,9 +248,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         return $methods;
     }
 
-    // TODO: Change the name of this function to getSpecimenAttributeDatatypes
-    // TODO: Change name of table 'biobank_datatype' to
-    // 'biobank_specimen_attribute_datatype'
     /**
      * Queries all rows of the biobank_datatype table and returns a nested array
      * with the ID field as the index
@@ -264,16 +258,12 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     {
         $query = 'SELECT DatatypeID as id,
                          Datatype as datatype 
-                  FROM biobank_datatype';
+                  FROM biobank_specimen_attribute_datatype';
         $attributeDatatypes = $this->db->pselectWithIndexKey($query, array(), 'id');
 
         return $attributeDatatypes;
     }
 
-    // TODO: Change the name of this function to
-    // getSpecimenAttributeReferenceTableOptions
-    // TODO: Change name of table 'biobank_reference_table' to
-    // 'biobank_specimen_attribute_referencetable'
     /**
      * Queries all rows the biobank_reference_table table. This data is used to
      * query the referenced tables and columns and build a nested array of
@@ -283,12 +273,12 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      *                                 table options indexed by Reference Table
      *                                 ID
      */
-    public function getAttributeOptions() : array
+    public function getAttributeReferenceTableOptions() : array
     {
         $query = 'SELECT ReferenceTableID as id,
                          TableName as tableName,
                          ColumnName as columnName
-                  FROM biobank_reference_table';
+                  FROM biobank_specimen_attribute_referencetable';
         $attributeOptionsReferences = $this->db->pselect($query, array());
 
         $attributeOptions = array();
@@ -464,8 +454,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      * This function receives a Specimen Object, converts it into a SQL format
      * and inserts it into all relevant tables in the database.
      *
-     * @param object $specimen The Specimen Object to be saved the
-     *                         database.
+     * @param Specimen $specimen The Specimen Object to be saved the
+     *                           database.
      *
      * @return void
      */
@@ -494,7 +484,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             $specimenId = $this->db->getLastInsertId();
             // set the respective data array index to the value of the new
             // specimen ID
-            $parentSpecimenIds = $newSpecimen->getParentSpecimenIds();
+            $parentSpecimenIds = $specimen->getParentSpecimenIds();
             foreach ($parentSpecimenIds as $id) {
                 $data['biobank_specimen_parent'][$id]
                 = array(
@@ -583,11 +573,11 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $collection     = $specimen->getCollection();
         $collectionData = array(
                            'SpecimenID' => $specimen->getId(),
-                           'Quantity'   => $collection->getQantity(),
-                           'UnitID'     => $collection->getUnitId,
+                           'Quantity'   => $collection->getQuantity(),
+                           'UnitID'     => $collection->getUnitId(),
                            'CenterID'   => $collection->getCenterId(),
-                           'Date'       => \Utility::toMysqlDateFormat($collection->getDate()),
-                           'Time'       => \Utility::toMysqlDateFormat($collection->getTime()),
+                           'Date'       => $collection->getDate()->format('Y-m-d H:i'),
+                           'Time'       => $collection->getTime()->format('Y-m-d H:i'),
                            'Comments'   => $collection->getComments(),
                           );
         if ($collection->getData()) {
@@ -600,13 +590,13 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                                 'SpecimenID'         => $specimen->getId(),
                                 'SpecimenProtocolID' => $preparation->getProtocolId(),
                                 'CenterID'           => $preparation->getCenterId(),
-                                'Date'               => \Utility::toMysqlDateFormat($preparation->getDate()),
-                                'Time'               => \Utility::toMysqlDateFormat($preparation->getTime()),
+                                'Date'               => $preparation->getDate()->format('Y-m-d H:i'),
+                                'Time'               => $preparation->getTime()->format('Y-m-d H:i'),
                                 'Comments'           => $preparation->getComments(),
                                );
 
             if ($preparation->getData()) {
-                $preparationData['Data'] = json_encode($preparation['data']);
+                $preparationData['Data'] = json_encode($preparation->getData());
             }
         }
 
@@ -616,23 +606,23 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                              'SpecimenID'       => $specimen->getId(),
                              'SpecimenMethodID' => $analysis->getMethodId(),
                              'CenterID'         => $analysis->getCenterId(),
-                             'Date'             => \Utility::toMysqlDateFormat($analysis->getDate()),
-                             'Time'             => \Utility::toMysqlDateFormat($analysis->getTime()),
+                             'Date'             => $analysis->getDate()->format('Y-m-d H:i'),
+                             'Time'             => $analysis->getTime()->format('Y-m-d H:i'),
                              'Comments'         => $analysis->getComments(),
                             );
 
             if ($analysis->getData()) {
-                $analysisData['Data'] = json_encode($analysis['data']);
+                $analysisData['Data'] = json_encode($analysis->getData());
             }
-
-            return $data = array(
-                            'biobank_specimen'             => $specimenData,
-                            'biobank_specimen_freezethaw'  => $freezeThawData,
-                            'biobank_specimen_collection'  => $collectionData,
-                            'biobank_specimen_preparation' => $preparationData,
-                            'biobank_specimen_analysis'    => $analysisData,
-                           );
         }
+
+        return $data = array(
+                        'biobank_specimen'             => $specimenData,
+                        'biobank_specimen_freezethaw'  => $freezeThawData,
+                        'biobank_specimen_collection'  => $collectionData,
+                        'biobank_specimen_preparation' => $preparationData,
+                        'biobank_specimen_analysis'    => $analysisData,
+                       );
     }
 
     /**
@@ -652,11 +642,11 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $specimen->setTypeId(intval($data['SpecimenTypeID']));
         $specimen->setQuantity($data['Quantity']);
         $specimen->setUnitId(intval($data['UnitID']));
-        $specimen->setFTCycle(intval($data['FreezeThawCycle']));
-        $specimen->setParentSpecimenIds($parentSpecimenIds);
+        $specimen->setFTCycle($data['FreezeThawCycle'] ? intval($data['FreezeThawCycle']) : null);
+        $specimen->setParentSpecimenIds(!empty($parentSpecimenIds) ? $parentSpecimenIds : null);
         $specimen->setCandidateId(intval($data['CandidateID']));
         $specimen->setSessionId(intval($data['SessionID']));
-        $specimen->setPoolId(intval($data['PoolID']));
+        $specimen->setPoolId($data['PoolID'] ? intval($data['PoolID']) : null);
 
         $collection = new Collection();
         $collection->setQuantity($data['CollectionQuantity']);

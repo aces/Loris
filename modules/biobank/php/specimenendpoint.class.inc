@@ -102,8 +102,8 @@ class SpecimenEndpoint implements RequestHandlerInterface
                 }
                 return new \LORIS\Http\Response\OK();
             case 'PUT':
-                $specimens = json_decode($request->getBody()->getContents(), true);
-                $specCont->updateInstances($specimens, $files);
+                $specimen = json_decode($request->getBody()->getContents(), true);
+                $specCont->updateInstance($specimen);
                 $fileResponse = $specCont->uploadFiles($request);
                 if ($fileResponse->getStatusCode() !== 200) {
                     return $fileResponse;
@@ -115,9 +115,11 @@ class SpecimenEndpoint implements RequestHandlerInterface
             }
 
         } catch (\BadRequest $e) {
-            return \LORIS\Http\Response\BadRequest($e->getMessage());
+            return new \LORIS\Http\Response\BadRequest($e->getMessage());
         } catch (\Forbidden $e) {
-            return \LORIS\Http\Response\Forbidden($e->getMessage());
+            return new \LORIS\Http\Response\Forbidden($e->getMessage());
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\NotFound($e->getMessage());
         }
     }
 }

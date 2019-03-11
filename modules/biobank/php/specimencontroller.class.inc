@@ -13,6 +13,8 @@
  * @link       http://www.github.com/aces/Lors/
  */
 namespace LORIS\biobank;
+use \Psr\Http\Message\ServerRequestInterface;                                   
+use \Psr\Http\Message\ResponseInterface;       
 
 /**
  * This class features the code that enables access to the Specimens of the LORIS
@@ -93,7 +95,7 @@ class SpecimenController
         $contController = new ContainerController($this->db, $this->user);
         $containerIds   = $contController->createInstances($containerList);
 
-        foreach ($specimenlist as $i => $specimen) {
+        foreach ($specimenList as $i => $specimen) {
             $specimen->setContainerId($containerIds[$i]);
             $this->dao->saveInstance($specimen);
         }
@@ -149,7 +151,7 @@ class SpecimenController
                 'units'              => $this->dao->getUnits(),
                 'typeAttributes'     => $this->dao->getTypeAttributes(),
                 'attributeDatatypes' => $this->dao->getAttributeDatatypes(),
-                'attributeOptions'   => $this->dao->getAttributeOptions(),
+                'attributeOptions'   => $this->dao->getAttributeReferenceTableOptions(),
                );
     }
 
@@ -317,7 +319,7 @@ class SpecimenController
      */
     private function validateCandidateId(Specimen $specimen) : void
     {
-        if (is_null($data['candidateId'])) {
+        if (is_null($specimen->getCandidateId())) {
             throw new \BadRequest("PSCID value must be set");
         }
     }
@@ -449,6 +451,10 @@ class SpecimenController
         }
     }
 
+    // XXX: Now that the DateTime object is used to store date and time,
+    // I don't know if this check is as important because the DateTime
+    // doesn't have a native format. As long as it can be converted to 
+    // datetime properly, then there isn't really need for validation here.
     /**
      * Validates Specimen Process Date.
      *
@@ -461,11 +467,11 @@ class SpecimenController
     private function validateDate(Process $process) : void
     {
         // TODO: query date format from backend configuration.
-        $format = 'd-m-Y';
-        $date   = DateTime::createFromFormat($format, $pool->getDate());
-        if ($date && $date->format($format) !== $pool->getDate()) {
-            throw new \BadRequest("Processing date must be of the format: $format");
-        }
+        //  $format = 'd-m-Y';
+        //  $date   = \DateTime::createFromFormat($format, $pool->getDate());
+        //  if ($date && $date->format($format) !== $pool->getDate()) {
+        //      throw new \BadRequest("Processing date must be of the format: $format");
+        //  }
     }
 
     /**
@@ -480,11 +486,11 @@ class SpecimenController
     private function validateTime(Process $process) : void
     {
         // TODO: query time format from backend configuration.
-        $format = 'H:i';
-        $time   = DateTime::createFromFormat($format, $pool->getTime());
-        if ($time && $time->format($format) !== $pool->getTime()) {
-            throw new \BadRequest("Processing time must be of the format: $format");
-        }
+        // $format = 'H:i';
+        // $time   = \DateTime::createFromFormat($format, $pool->getTime());
+        // if ($time && $time->format($format) !== $pool->getTime()) {
+        //     throw new \BadRequest("Processing time must be of the format: $format");
+        // }
     }
 
     /**
@@ -511,15 +517,22 @@ class SpecimenController
      * Validates Uploaded Files
      *
      * @param ServerRequestInterface $request The invoming PSR7 request
-     *                                        containing the files to be
-     *                                        uploaded.
+     *                                         containing the files to be
+     *                                         uploaded.
      *
      * @return ResponseInterface
      */
-    private function uploadFiles(ServerRequestInterface $request) : ResponseInterface
+    public function uploadFiles(ServerRequestInterface $request) : ResponseInterface
     {
         $config    = \NDB_Config::singleton();
         $path      = $config->getSetting('biobankPath');
+
+        // XXX: If this error gets thrown, the form has already been saved. We
+        // will need a roll back to prevent errors.
+        if (!isset($path)) {
+            throw new \NotFound('Biobank File Upload Path is not configured.');
+        }
+
         $targetdir = new \SplFileInfo($path);
 
         // TODO: query MIME Types from sql table.

@@ -72,7 +72,7 @@ class Preparation extends Process
     public function fromArray(array $data) : Process
     {
         parent::fromArray($data);
-        $this->setProtocolId($data['protocolId']);
+        $this->setProtocolId(intval($data['protocolId']));
 
         return $this;
     }

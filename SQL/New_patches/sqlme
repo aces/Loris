@@ -265,7 +265,7 @@ CREATE TABLE `biobank_specimen_attribute_referencetable` (
   `TableName` varchar(50) NOT NULL,
   `ColumnName` varchar(50) NOT NULL,
   CONSTRAINT `PK_biobank_specimen_attribute_referencetable` PRIMARY KEY (`ReferenceTableID`),
-  CONSTRAINT `UK_bio_spec_attribute_referencetable_TableName_ColumnName` UNIQUE(`TableName`, `ColumnName`)
+  CONSTRAINT `UK_biobank_specimen_attribute_referencetable_TableName_ColumnName` UNIQUE(`TableName`, `ColumnName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -412,23 +412,10 @@ CREATE TABLE `biobank_container_parent` (
 /*INSERTS*/
 
 /*XXX: The following 4 lines are for testing. Delete before merging.*/
+DELETE FROM LorisMenu WHERE `Label`='Biobank';
 DELETE FROM LorisMenu WHERE `Label`='Specimens';
 DELETE FROM LorisMenu WHERE `Label`='Containers';
 DELETE FROM LorisMenu WHERE `Label`='Pools';
-DELETE FROM LorisMenu WHERE `Label`='Biobank';
-
-DELETE FROM permissions WHERE 
-    `code`='biobank_specimen_view' OR 
-    `code`='biobank_specimen_create' OR
-    `code`='biobank_specimen_update' OR
-    `code`='biobank_container_view' OR
-    `code`='biobank_container_create' OR
-    `code`='biobank_container_update' OR
-    `code`='biobank_pool_view' OR
-    `code`='biobank_pool_create';
-
-DELETE FROM ConfigSettings WHERE
-    `Name`='biobankPath';
 
 /*Loris Menu*/
 UPDATE LorisMenu SET `OrderNumber`=5 WHERE `Label`='Reports';
@@ -454,7 +441,7 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_container_create', 'Biobank: Create Container Data', 2),
     ('biobank_container_update', 'Biobank: Update Container Data', 2),
     ('biobank_pool_view', 'Biobank: View Pool Data', 2),
-    ('biobank_pool_create', 'Biobank: Create Pool Data', 2)
+    ('biobank_pool_create', 'Biobank: Create Pool Data', 2),
 ;
 
 /*Config*/

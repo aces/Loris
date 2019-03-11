@@ -334,25 +334,24 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
             $data['biobank_container']
         );
 
-        $containerId = $container->getId();
-        if (isset($containerId)) {
+        if ($container->getId() !== null) {
             // If update:
-            $oldContainer         = $this->getInstanceFromId($containerId);
+            $oldContainer         = $this->getInstanceFromId($container->getId());
             $oldParentContainerId = $oldContainer->getParentContainerId();
             // If there is no longer an associated Parent Container ID, delete
             // it from the entry from the biobank_container_parent table.
             if (isset($oldParentContainerId) && !isset($parentContainerId)) {
                 $this->db->delete(
                     'biobank_container_parent',
-                    array('ContainerID' => $containerId)
+                    array('ContainerID' => $container->getId())
                 );
             }
         } else {
             // If insert:
-            $containerId = $this->db->getLastInsertId();
+            $container->setId(intval($this->db->getLastInsertId()));
             // set the respective data array index to the value of the new
             // container ID.
-            $data['biobank_container_parent']['ContainerID'] = $containerId;
+            $data['biobank_container_parent']['ContainerID'] = $container->getId();
         }
 
         $parentContainerId = $container->getParentContainerId();
@@ -376,7 +375,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         //TODO: not sure if this is good practice, but the specimen controller
         //needs this information to be able to associate itself with the proper
         //container.
-        return $containerId;
+        return $container->getId();
     }
 
     /**
@@ -385,24 +384,26 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      *
      * @param object $container Container Object from which to retrieve children
      * @param string $field     The field at which to associate the $value
-     * @param string $value     The value to assigned to the $field in question
+     * @param mixed  $value     The value to assigned to the $field in question.
+     *                          It is mixed since it may receive multiple types
+     *                          of data.
      *
      * @return void
      */
     private function cascadeToChildren(
         Container $container,
         string $field,
-        string $value
+        $value
     ) : void {
         $childContainers = $this->getChildContainers($container);
 
         if (!empty($childContainers)) {
             foreach ($childContainers as $id=>$childContainer) {
                 $data = $this->getSQLFromInstance($childContainer);
-                $data['containerData'][$field] = $value;
+                $data['biobank_container'][$field] = $value;
                 $this->db->insertOnDuplicateUpdate(
                     'biobank_container',
-                    $data['containerData']
+                    $data['biobank_container']
                 );
 
                 $this->cascadeToChildren($childContainer, $field, $value);
@@ -422,10 +423,10 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     public function getChildContainers(Container $container) : array
     {
         $childContainers   = array();
-        $childContainerIds = $this->getChildContainerIds($container);
+        $childContainerIds = $this->getChildContainerIds($container->getId());
         if (!empty($childContainerIds)) {
             foreach ($childContainerIds as $id) {
-                $childContainers[$id] = $this->getInstanceFromId($id);
+                $childContainers[$id] = $this->getInstanceFromId(intval($id));
             }
         }
         return $childContainers;
@@ -470,14 +471,15 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * instantiates it as a Container Object
      *
      * @param array $data              Values to be instantiated.
-     * @param array $childContainerIds List of child container ids.
+     * @param ?array $childContainerIds List of child container ids.
      *
      * @return Container
      */
-    private function getInstanceFromSQL(array $data, array $childContainerIds) : Container
+    private function getInstanceFromSQL(array $data, ?array $childContainerIds) : Container
     {
         // TODO: fix hack on line 490 that accounts for when parentContainerId
-        // is null.
+        // and Coordinate are null. perhaps an if statement would be better,
+        // although messier solution.
         $container = $this->getInstance();
         $container->setId(intval($data['ContainerID']));
         $container->setBarcode($data['Barcode']);
@@ -489,7 +491,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $container->setCenterId(intval($data['CurrentCenterID']));
         $container->setParentContainerId($data['ParentContainerID'] ? intval($data['ParentContainerID']) : null);
         $container->setChildContainerIds($childContainerIds);
-        $container->setCoordinate(intval($data['Coordinate']));
+        $container->setCoordinate($data['Coordinate'] ? intval($data['Coordinate']) : null);
 
         return $container;
     }

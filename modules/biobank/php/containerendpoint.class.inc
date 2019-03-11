@@ -94,7 +94,7 @@ class ContainerEndpoint implements RequestHandlerInterface
                 $containers = $contCont->getInstances();
                 return new \LORIS\Http\Response\OK($containers);
             case 'POST':
-                $containers = $request->getBody()->getContents();
+                $containers = json_decode($request->getBody()->getContents(), true);
                 $contCont->createInstances($containers);
                 return new \LORIS\Http\Response\OK();
             case 'PUT':

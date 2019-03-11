@@ -237,7 +237,7 @@ class PoolController
     {
         // TODO: query date format from backend configuration.
         $format = 'd-m-Y';
-        $date   = DateTime::createFromFormat($format, $pool->getDate());
+        $date   = \DateTime::createFromFormat($format, $pool->getDate());
         if ($date && $date->format($format) !== $pool->getDate()) {
             throw new \BadRequest("Pooling date must be of the format: $format");
         }
@@ -256,7 +256,7 @@ class PoolController
     {
         // TODO: query time format from backend configuration.
         $format = 'H:i';
-        $time   = DateTime::createFromFormat($format, $pool->getTime());
+        $time   = \DateTime::createFromFormat($format, $pool->getTime());
         if ($time && $time->format($format) !== $pool->getTime()) {
             throw new \BadRequest("Pooling time must be of the format: $format");
         }
