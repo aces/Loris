@@ -29,19 +29,19 @@ class MediaTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
     static $FileName    = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(1) > div > div > input";
-    static $PSCID       = "#media_filter > div > div > fieldset".
                               " > div:nth-child(2) > div > div > input";
+    static $PSCID       = "#media_filter > div > div > fieldset".
+                              " > div:nth-child(3) > div > div > input";
     static $VisitLabel  = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(3) > div > div > select";
-    static $Language    = "#media_filter > div > div > fieldset".
                               " > div:nth-child(4) > div > div > select";
-    static $Instrument  = "#media_filter > div > div > fieldset".
+    static $Language    = "#media_filter > div > div > fieldset".
                               " > div:nth-child(5) > div > div > select";
-    static $Site        = "#media_filter > div > div > fieldset".
+    static $Instrument  = "#media_filter > div > div > fieldset".
                               " > div:nth-child(6) > div > div > select";
+    static $Site        = "#media_filter > div > div > fieldset".
+                              " > div:nth-child(7) > div > div > select";
     static $clearFilter = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(10) > div > div > button";
+                              " > div:nth-child(11) > div > div > button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
