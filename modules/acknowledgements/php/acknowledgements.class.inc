@@ -71,6 +71,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                 $values['addEndDate'] = null;
             }
             $results = array(
+                        'ordering'      => $values['addOrdering'],
                         'full_name'     => $values['addFullName'],
                         'citation_name' => $values['addCitationName'],
                         'affiliations'  => implode(",", $values['addAffiliations']),
@@ -82,7 +83,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                        );
 
             $DB->insert('acknowledgements', $results);
-            unset($results);
+            unset($values);
 
             header("Location: {$baseurl}/acknowledgements/", true, 303);
             return true;
