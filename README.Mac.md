@@ -284,6 +284,8 @@ or
 localhost:8000/installdb.php
 ```
 
-and depending if using Apache or php -S.
+depending if using Apache or php -S.
+
+Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
 
 Once finished hooray, LORIS should be accessible and you can start developing!
