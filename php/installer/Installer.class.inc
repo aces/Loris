@@ -123,8 +123,8 @@ class Installer
     {
         // Check PHP version is supported.
         if (PHP_MAJOR_VERSION < 7) {
-            $this->_lastErr = "PHP version 7 or higher is required to run "
-            . "LORIS. $PHP_RELEASE_VERSION is not supported.";
+            $this->_lastErr = 'PHP version 7 or higher is required to run '
+            . 'LORIS. ' . PHP_RELEASE_VERSION . ' is not supported.';
             return false;
         }
 
