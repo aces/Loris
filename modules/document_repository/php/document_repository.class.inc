@@ -51,9 +51,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $user      = \User::singleton();
-        $db        = \Database::singleton();
-        $query     = $db->pselect(
+        $user  = \User::singleton();
+        $db    = \Database::singleton();
+        $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             array()
         );
