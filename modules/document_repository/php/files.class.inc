@@ -116,25 +116,23 @@ class Files extends \NDB_Page
             $record = basename($request->getUri()->getPath());
             if (!is_numeric($record)) {
                 $file = __DIR__ . "/../user_uploads/$record";
-                // download a file
                 return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/force-download')
                 ->withHeader(
                     'Content-Disposition',
                     'attachment; filename=' . basename($file)
                 )
                 ->withHeader('Content-Transfer-Encoding', 'Binary')
-                ->withBody(readfile($file));
+                ->withBody(new \LORIS\Http\StringStream(readfile($file)));
 
             }
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode($this->getUploadDocFields($record))
-                    )
-                );
+              ->withHeader("Content-Type", "text/plain")
+              ->withStatus(200)
+              ->withBody(
+                  new \LORIS\Http\StringStream(
+                      json_encode($this->getUploadDocFields($record))
+                  )
+              );
             break;
         default:
             return (new \LORIS\Http\Response())
