@@ -143,9 +143,9 @@ abstract class APIBase
     /**
      * Calculate the ETag for this resource
      *
-     * @return ?string an ETag for this resource
+     * @return string an ETag for this resource
      */
-    abstract function calculateETag(): ?string;
+    abstract function calculateETag();
 
     /**
      * Handle a GET request
@@ -248,7 +248,7 @@ abstract class APIBase
      *
      * @param integer $code The program exit code
      *
-     * @return void but exits the running program
+     * @return none but exits the running program
      */
     function safeExit($code)
     {

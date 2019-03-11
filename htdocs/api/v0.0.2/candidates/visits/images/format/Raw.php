@@ -76,9 +76,9 @@ class Raw extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Calculate the entity tag for this URL
      *
-     * @return ?string
+     * @return string
      */
-    public function calculateETag(): ?string
+    public function calculateETag()
     {
         return null;
     }

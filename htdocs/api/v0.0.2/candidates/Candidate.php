@@ -98,9 +98,9 @@ class Candidate extends \Loris\API\APIBase
      * most recent change to the candidate, visit tables or number of
      * visits
      *
-     * @return ?string An ETag for this object
+     * @return string An ETag for this object
      */
-    function calculateETag(): ?string
+    function calculateETag()
     {
         $row = $this->DB->pselectRow(
             "SELECT MAX(c.Testdate) as CandChange,

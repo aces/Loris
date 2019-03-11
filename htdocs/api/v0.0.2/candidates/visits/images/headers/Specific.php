@@ -75,9 +75,9 @@ class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Calculate the ETag for this header
      *
-     * @return ?string
+     * @return string
      */
-    public function calculateETag(): ?string
+    public function calculateETag()
     {
         return null;
     }

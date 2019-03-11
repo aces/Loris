@@ -60,7 +60,7 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
      *
      * @return void but populates $this->JSON
      */
-    public function handleGET(): void
+    public function handleGET()
     {
         $this->JSON          = [
                                 'Meta' => [
@@ -75,9 +75,9 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Gets a list of images for this visit. Filename only.
      *
-     * @return array of strings of filenames
+     * @return an array of strings of filenames
      */
-    function getVisitImages(): array
+    function getVisitImages()
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
