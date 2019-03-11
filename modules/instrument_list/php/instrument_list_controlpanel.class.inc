@@ -218,7 +218,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             return;
         }
-        $submitted = $_REQUEST['setSubmitted'] ?? '';
+        $submitted  = $_REQUEST['setSubmitted'] ?? '';
         $condition1 = $submitted == 'N';
         $condition2 = $this->_hasAccessSendToDCC();
         $condition3 = !in_array(
@@ -234,9 +234,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         if ($condition1 && $condition2 && $condition3) {
 
             $this->setData(
-                array(
-                 'Submitted' => $submitted
-                )
+                array('Submitted' => $submitted)
             );
 
                 // revert from approval (or the bin)
