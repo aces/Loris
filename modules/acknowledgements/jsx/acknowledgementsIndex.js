@@ -140,7 +140,7 @@ class AcknowledgementsIndex extends Component {
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
         swal('Success!', 'Acknowledgement added.', 'success').then((result) => {
-          if(result.value) {
+          if (result.value) {
             this.fetchData();
           }
         });
