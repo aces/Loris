@@ -357,10 +357,10 @@ class Database
      *
      * This function alone does not guarantee safety.
      *
-     * @param array $set  The array to be inserted as a new row
+     * @param array $set  The array to be inserted as a new row.
      * @param int   $mode Determines how HTML escaping is done.
      *
-     * @return array A copy of $set with the HTML characters escaped
+     * @return array A copy of $set with the HTML characters escaped.
      */
     private function _HTMLEscapeArray(array $set, int $mode = ESCAPE_ALL): array
     {
@@ -533,12 +533,12 @@ class Database
      * Updates a row
      *
      * Updates a single row in the specified table. This will *not* automatically
-     * escape and should be used with caution, only when you know you need to
+     * escape and should be used only when you know you need to
      * insert HTML and know that you can trust it.
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
-     * @param array  $i_where    the selection filter, joined as a boolean and
+     * @param string $table      The table into which to insert the row.
+     * @param array  $set        The values with which to fill the new row.
+     * @param array  $i_where    The selection filter, joined as a boolean AND.
      * @param int    $escapeMode Which HTML characters to escape. A value of 1
      *                           will escape all characters but quotation marks
      *                           and a value of 2 will not escape any characters.
