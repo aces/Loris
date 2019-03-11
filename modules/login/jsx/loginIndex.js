@@ -17,6 +17,12 @@ class Login extends Component {
     super(props);
     this.state = {
       url: '',
+      study: {
+        logo: '',
+        title: '',
+        links: [],
+        description: '',
+      },
       isLoaded: false,
     };
     // Bind component instance to custom methods
@@ -26,7 +32,6 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    console.log('test');
     this.fetchInitializerData();
   }
 
@@ -58,16 +63,57 @@ class Login extends Component {
         },
         body: send,
       }
-    ).then((response) => response.text())
+    ).then((response) => response.json())
       .then(
         (data) => {
           console.log('success');
           console.log(data);
-          this.setState({isLoaded: true});
+          const state = Object.assign({}, this.state);
+          state.study.description = data.study_description;
+          state.study.title = data.study_title;
+          this.state.study.logo = data.study_logo;
+          state.isLoaded = true;
+          this.setState(state);
         }).catch((error) => {
           console.log('error: ');
           console.log(error);
     });
+  }
+  /**
+   * Handle form submission
+   * @param {object} e - Form submission event
+   */
+  handleSubmit(e) {
+    // const state = Object.assign({}, this.state);
+    const send = this.urlSearchParams({
+      command: 'login',
+    });
+    const url = window.location.origin + '/login/AjaxLogin';
+    fetch(
+      url, {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          if (data.status === 'error') {
+            // Populate the form errors.
+            if (data.errors) {
+              console.log('errors');
+            }
+          } else {
+            console.log('success');
+            // this.setState({success: true});
+          }
+        });
   }
   /**
    * @return {DOMRect}
@@ -77,6 +123,48 @@ class Login extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+    const study = (
+      <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
+    );
+    const login = (
+      <div>
+        <section className={'study-logo'}>
+          <img src={this.state.study.logo} alt={this.state.study.title}/>
+        </section>
+        <FormElement
+          name={'login'}
+          fileUpload={'false'}
+          onSubmit={this.handleSubmit}
+        >
+          <TextboxElement
+            name={'username'}
+            onUserInput={''}
+            placeholder={'Username'}
+            class={'col-sm-12'}
+          />
+          <TextboxElement
+            name={'password'}
+            onUserInput={''}
+            placeholder={'Password'}
+            class={'col-sm-12'}
+          />
+          <ButtonElement
+            label={'Login'}
+            type={'submit'}
+            columnSize={'col-sm-12'}
+            buttonClass={'btn btn-primary btn-block'}
+          />
+        </FormElement>
+        <div className={'help-links'}>
+          <a href={'/login/password-reset/'}>Forgot your password?</a>
+          <br/>
+          <a href={'/login/request-account/'}>Request Account</a>
+        </div>
+        <div className={'help-text'}>
+          A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)
+        </div>
+      </div>
+    );
     return (
       <div className={'container'}>
         <div className={'row'}>
@@ -86,18 +174,16 @@ class Login extends Component {
               class={'panel-login login-panel'}
               collapsing={false}
             >
-              <div>test</div>
+              {login}
             </Panel>
           </section>
           <section className={'col-md-8 col-md-pull-4'}>
             <Panel
-              title={'Example Study'}
+              title={this.state.study.title}
               class={'panel-login login-panel'}
               collapsing={false}
             >
-              <div>
-                Example Study Description
-              </div>
+              {study}
             </Panel>
           </section>
         </div>

@@ -909,13 +909,20 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
           <input
             type="text"
             className="form-control"
@@ -926,6 +933,7 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            placeholder={this.props.placeholder}
           />
           {errorMessage}
         </div>
@@ -938,6 +946,8 @@ TextboxElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
+  class: PropTypes.string,
+  placeholder: PropTypes.string,
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -950,6 +960,8 @@ TextboxElement.defaultProps = {
   name: '',
   label: '',
   value: '',
+  class: 'col-sm-9',
+  placeholder: '',
   id: null,
   disabled: false,
   required: false,
@@ -1509,6 +1521,8 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  columnSize: PropTypes.string,
+  buttonClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 

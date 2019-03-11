@@ -112,10 +112,10 @@ class AjaxLogin extends \NDB_Page
         foreach ($study_links as $label => $url) {
             $WindowName = md5($url);
             $values['studylinks'][] = array(
-                    'url'           => $url,
-                    'label'         => $label,
-                    'windowName'    => $WindowName,
-            );
+                                       'url'        => $url,
+                                       'label'      => $label,
+                                       'windowName' => $WindowName,
+                                      );
         }
         $values['study_description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
