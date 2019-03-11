@@ -19,7 +19,6 @@ return [
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
-		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
         "PhanTypeArraySuspiciousNullable",
@@ -54,4 +53,14 @@ return [
         // because Phan disables xdebug by default.
         'xdebug'     => 'vendor/phan/phan/.phan/internal_stubs/xdebug.phan_php',
     ],
+
+    // The line below is required to prevent PhanUndeclaredVariable problems in
+    // the bvl_feedback ajax scripts. They all require() a file in this directory
+    // that declares the $feedbackThread variable. Phan doesn't know about this.
+    //
+    // Toggling the below rule to true is the suggested fix by the phan devs.
+    // see https://github.com/phan/phan/issues/1650.
+    //
+    // When the module is refactored, this line should be deleted.
+    'ignore_undeclared_variables_in_global_scope' => true
 ];
