@@ -86,6 +86,7 @@ class AjaxLogin extends \NDB_Page
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'login') {
+            $response           = $this->
             $response['status'] = 'success';
         } else {
             $response['status'] = 'error';

@@ -23,10 +23,19 @@ class Login extends Component {
         links: [],
         description: '',
       },
+      form: {
+        value: {
+          username: '',
+          password: '',
+        },
+        error: '',
+      },
       isLoaded: false,
     };
     // Bind component instance to custom methods
     this.fetchInitializerData = this.fetchInitializerData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.setForm = this.setForm.bind(this);
   }
   /**
    * Executes after component mounts.
@@ -80,13 +89,27 @@ class Login extends Component {
     });
   }
   /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
+  setForm(formElement, value) {
+    const state = Object.assign({}, this.state);
+    state.form.value[formElement] = value;
+    this.setState(state);
+  }
+  /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    // const state = Object.assign({}, this.state);
+    const state = Object.assign({}, this.state);
     const send = this.urlSearchParams({
       command: 'login',
+      username: state.form.username,
+      password: state.form.password,
     });
     const url = window.location.origin + '/login/AjaxLogin';
     fetch(
@@ -138,15 +161,19 @@ class Login extends Component {
         >
           <TextboxElement
             name={'username'}
-            onUserInput={''}
+            value={this.state.form.value.username}
+            onUserInput={this.setForm}
             placeholder={'Username'}
             class={'col-sm-12'}
+            required={true}
           />
           <TextboxElement
             name={'password'}
-            onUserInput={''}
+            value={this.state.form.value.password}
+            onUserInput={this.setForm}
             placeholder={'Password'}
             class={'col-sm-12'}
+            required={true}
           />
           <ButtonElement
             label={'Login'}
