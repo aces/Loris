@@ -145,7 +145,7 @@ Modify the Apache configuration file to enable php.
 sudo open -e /usr/local/etc/httpd/httpd.conf
 ```
 
-**a.** Add the below line to `LoadModules` (Change `php@<version>` to the correct version):
+**a.** Add the line below to `LoadModules` (Change `php@<version>` to the correct version):
 ```
 LoadModule php7_module /usr/local/opt/php@<version>/lib/httpd/modules/libphp7.so
 ```
