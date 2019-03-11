@@ -47,51 +47,45 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      *
      * @param array $values Array of submitted values
      *
-     * @return boolean
+     * @return boolean true if successful
      */
     function _process($values)
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseurl = $factory->settings()->getBaseURL();
+        
         // create user object and check appropriate permission
         $user =& \User::singleton();
         if (!$user->hasPermission('acknowledgements_edit')) {
-            return;
+            return false;
         }
-
         if (!is_array($values) || count($values) == 0) {
+            return false;
+        }
+        if (!isset($_POST['fire_away'])){
+          return false;
+        } else {
+
+            if ($values['addPresent'] === 'Yes') {
+                $values['addEndDate'] = null;
+            }
+            $results = array(
+                        'full_name'     => $values['addFullName'],
+                        'citation_name' => $values['addCitationName'],
+                        'affiliations'  => implode(",", $values['addAffiliations']),
+                        'degrees'       => implode(",", $values['addDegrees']),
+                        'roles'         => implode(",", $values['addRoles']),
+                        'start_date'    => $values['addStartDate'] ?: null,
+                        'end_date'      => $values['addEndDate'] ?: null,
+                        'present'       => $values['addPresent'] ?: null,
+                       );
+
+            $DB->insert('acknowledgements', $results);
+            unset($results);
+
+            header("Location: {$baseurl}/acknowledgements/", true, 303);
             return true;
-        }
-
-        $results = array();
-        foreach ($values as $key => $value) {
-            $results[substr($key, 3)] = $value;
-        }
-        $values = $results;
-
-        $values['affiliations'] = implode(",", $values['affiliations']);
-        $values['degrees']      = implode(",", $values['degrees']);
-        $values['roles']        = implode(",", $values['roles']);
-
-        $DB =& \Database::singleton();
-        if (isset($_POST['fire_away'])) {
-
-            if (empty($values['present'])) {
-                $values['present'] = null;
-            }
-
-            if (empty($values['end_date'])) {
-                $values['end_date'] = null;
-            }
-
-            if (empty($values['start_date'])) {
-                $values['start_date'] = null;
-            }
-
-            if ($values['present'] == 'Yes') {
-                $values['end_date'] = null;
-            }
-
-            $DB->insert('acknowledgements', $values);
-            unset($values);
         }
     }
 
