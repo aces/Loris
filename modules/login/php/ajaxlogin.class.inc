@@ -30,7 +30,7 @@ use \Psr\Http\Message\ResponseInterface;
 class AjaxLogin extends \NDB_Page
 {
     public $skipTemplate = true;
-    public $AjaxModule = true;
+    public $AjaxModule   = true;
     /**
      * This function will return a json object for login.
      *
@@ -43,17 +43,17 @@ class AjaxLogin extends \NDB_Page
         /**
          * Ensure it's a POST request.
          */
-//        if ($request->getMethod() != 'POST') {
-//            return (new \LORIS\Http\Response())
-//                ->withHeader('Content-Type', 'application/json')
-//                ->withStatus(405)
-//                ->withHeader('Allow', 'POST')
-//                ->withBody(
-//                    new \LORIS\Http\StringStream(
-//                        'Only POST requests are allowed'
-//                    )
-//                );
-//        }
+        if ($request->getMethod() != 'POST') {
+            return (new \LORIS\Http\Response())
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(405)
+                ->withHeader('Allow', 'POST')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        'Only POST requests are allowed'
+                    )
+                );
+        }
         /**
          * Parse POST request body.
          */
@@ -64,21 +64,17 @@ class AjaxLogin extends \NDB_Page
          */
         $response = $this->processRequest($requestBody);
 
-        $test = new StringStream(json_encode($response));
-
-        $response = (new \LORIS\Http\Response())
+        return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200)
             ->withHeader('Allow', 'POST')
             ->withBody(
-                $test
+                new StringStream(json_encode($response))
             );
-
-        return $response;
     }
 
     /**
-     * Processes the values and saves to database
+     * Processes the request values.
      *
      * @param array $values the user data received.
      *
@@ -87,7 +83,7 @@ class AjaxLogin extends \NDB_Page
     function processRequest(array $values) : array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
-            $response = $this->initializeSetup($values);
+            $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'login') {
             $response['status'] = 'success';
@@ -106,32 +102,28 @@ class AjaxLogin extends \NDB_Page
      */
     function initializeSetup(array $values) : array
     {
-//        $login = $_SESSION['State']->getProperty('login');
-//        if (!empty($login->_lastError)) {
-//            $this->tpl_data['error_message'] = $login->_lastError;
-//        }
-//        $config =& \NDB_Config::singleton();
-//
-//        $study_links = $config->getExternalLinks('Studylinks');
-//        foreach ($study_links as $label => $url) {
-//            $WindowName = md5($url);
-//            $this->tpl_data['studylinks'][] = array(
-//                'url'        => $url,
-//                'label'      => $label,
-//                'windowName' => $WindowName,
-//            );
-//        }
-//        $this->tpl_data['study_description'] = html_entity_decode(
-//            $config->getSetting('StudyDescription')
-//        );
-//
-//        $this->tpl_data['study_title'] = $config->getSetting('title');
-//
-//        try {
-//            $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
-//        } catch(\ConfigurationException $e) {
-//            $this->tpl_data['study_logo'] = '';
-//        }
+        $login = $_SESSION['State']->getProperty('login');
+        if (!empty($login->_lastError)) {
+            $values['error'] = $login->_lastError;
+        }
+        $config =& \NDB_Config::singleton();
+
+        $study_links = $config->getExternalLinks('Studylinks');
+        foreach ($study_links as $label => $url) {
+            $WindowName = md5($url);
+            $values['studylinks'][] = array(
+                    'url'           => $url,
+                    'label'         => $label,
+                    'windowName'    => $WindowName,
+            );
+        }
+        $values['study_description'] = html_entity_decode(
+            $config->getSetting('StudyDescription')
+        );
+
+        $values['study_title'] = $config->getSetting('title');
+        $values['study_logo']  = $config->getSetting('studylogo');
+
         return $values;
     }
 }
