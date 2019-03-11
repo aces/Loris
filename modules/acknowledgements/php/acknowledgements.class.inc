@@ -160,9 +160,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                     'No'  => 'No',
                    );
 
-        $this->fieldOptions = array(
-                                'presents' => $present,
-                              );
+        $this->fieldOptions = array('presents' => $present);
     }
 
     /**
@@ -173,7 +171,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $config     = \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         // enums should match with acknowledgements table
         $result         = $this->toArray();
