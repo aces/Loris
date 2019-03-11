@@ -70,16 +70,19 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             if ($values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
+            $affiliations = implode(", ", $values['addAffiliations']);
+            $degrees      = implode(", ", $values['addDegrees']);
+            $roles        = implode(", ", $values['addRoles']);
             $results = array(
                         'ordering'      => $values['addOrdering'],
                         'full_name'     => $values['addFullName'],
                         'citation_name' => $values['addCitationName'],
-                        'affiliations'  => implode(",", $values['addAffiliations']),
-                        'degrees'       => implode(",", $values['addDegrees']),
-                        'roles'         => implode(",", $values['addRoles']),
-                        'start_date'    => $values['addStartDate'] ?: null,
-                        'end_date'      => $values['addEndDate'] ?: null,
-                        'present'       => $values['addPresent'] ?: null,
+                        'affiliations'  => $affiliations,
+                        'degrees'       => $degrees,
+                        'roles'         => $roles,
+                        'start_date'    => $values['addStartDate'],
+                        'end_date'      => $values['addEndDate'],
+                        'present'       => $values['addPresent'],
                        );
 
             $DB->insert('acknowledgements', $results);
