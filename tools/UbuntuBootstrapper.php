@@ -51,15 +51,17 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
             . '.'
             . self::PHP_MINOR_VERSION_REQUIRED;
 
-        // Dependencies last updated for version: 20.0.1
+        // Dependencies last updated for version: 20.2.0
         // This list should consist only of packages that can be installed
         // via apt on Ubuntu environments and must not include libraries that
         // should be installed via tools such as npm and composer.
         $this->requirements = array(
+                               "curl",
                                "wget",
                                "zip",
                                "unzip",
                                "php-json",
+                               "make",
                                "npm",
                                "software-properties-common",
                                "php-ast",
