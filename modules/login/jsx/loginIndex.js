@@ -1,9 +1,9 @@
+import RequestAccount from './requestAccount';
+import ResetPassword from './resetPassword';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
-import ResetPassword from './resetPassword';
-import RequestAccount from './requestAccount';
 
 /**
  * Login form.
@@ -33,6 +33,9 @@ class Login extends Component {
         error: '',
       },
       mode: 'login',
+      component: {
+        requestAccount: null,
+      },
       isLoaded: false,
     };
     // Bind component instance to custom methods
@@ -47,7 +50,6 @@ class Login extends Component {
   componentDidMount() {
     this.fetchInitializerData();
   }
-
   /**
    * Used with sending POST data to the server.
    * @param {object} json - json object converted for POST.
@@ -58,7 +60,6 @@ class Login extends Component {
       return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
     }).join('&');
   }
-
   /**
    * Retrieve data from the provided URL and save it in state.
    */
@@ -82,10 +83,13 @@ class Login extends Component {
           console.log('success');
           console.log(data);
           const state = Object.assign({}, this.state);
-          state.study.description = data.study_description;
-          state.study.title = data.study_title;
-          this.state.study.logo = window.location.origin
-            + '/' + data.study_logo;
+          // login setup.
+          state.study.description = data.login.description;
+          state.study.title = data.login.title;
+          state.study.logo = window.location.origin
+            + '/' + data.login.logo;
+          // request account setup.
+          state.component.requestAccount = data.requestAccount;
           state.isLoaded = true;
           this.setState(state);
         }).catch((error) => {
@@ -124,7 +128,6 @@ class Login extends Component {
    * @param {string} mode - set as mode.
    */
   setMode(mode) {
-    console.log(mode);
     const state = Object.assign({}, this.state);
     state.mode = mode;
     this.setState(state);
@@ -186,7 +189,8 @@ class Login extends Component {
                style={{cursor: 'pointer'}}>Request Account</a>
           </div>
           <div className={'help-text'}>
-            A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)
+            A WebGL-compatible browser is required for full functionality
+            (Mozilla Firefox, Google Chrome)
           </div>
         </div>
       );
@@ -228,6 +232,7 @@ class Login extends Component {
         <RequestAccount
           module={'reset'}
           setMode={this.setMode}
+          data={this.state.component.requestAccount}
         />
       );
     }

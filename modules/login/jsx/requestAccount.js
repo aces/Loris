@@ -20,13 +20,15 @@ class RequestAccount extends Component {
           firstname: '',
           lastname: '',
           email: '',
+          site: this.props.data.site
+            ? Object.keys(this.props.data.site)[0]
+            : '',
         },
         error: '',
       },
     };
     this.setForm = this.setForm.bind(this);
   }
-
   /**
    * Set the form data based on state values of child elements/components
    *
@@ -36,6 +38,7 @@ class RequestAccount extends Component {
   setForm(formElement, value) {
     const state = Object.assign({}, this.state);
     state.form.value[formElement] = value;
+    console.log(state);
     this.setState(state);
   }
   /**
@@ -47,6 +50,9 @@ class RequestAccount extends Component {
     let form = document.getElementById('form');
     form.submit();
   }
+  /**
+   * @return {DOMRect}
+   */
   render() {
     const request = (
       <div>
@@ -82,7 +88,7 @@ class RequestAccount extends Component {
             placeholder={'Last name'}
           />
           <TextboxElement
-            name={'firstname'}
+            name={'email'}
             value={this.state.form.value.email}
             onUserInput={this.setForm}
             class={'col-sm-12'}
@@ -92,13 +98,12 @@ class RequestAccount extends Component {
           />
           <SelectElement
             name={'site'}
-            options={{
-              1: 'Data Coordinating Center',
-              2: 'Montreal',
-              3: 'Ottawa',
-              4: 'Rome',
-            }}
+            options={this.props.data.site}
+            value={this.state.form.value.site}
+            onUserInput={this.setForm}
             class={'col-sm-12'}
+            emptyOption={false}
+            required={true}
           />
           <CheckboxElement
             name={'examiner'}
@@ -137,6 +142,7 @@ class RequestAccount extends Component {
 RequestAccount.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
+  data: PropTypes.object,
 };
 
 export default RequestAccount;

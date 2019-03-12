@@ -42,7 +42,7 @@ class AjaxLogin extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         /**
-         * Ensure it's a POST request.
+         * Ensure POST request.
          */
         if ($request->getMethod() != 'POST') {
             return (new \LORIS\Http\Response())
@@ -87,7 +87,6 @@ class AjaxLogin extends \NDB_Page
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'reset') {
-            // $response           = $this->login($values);
             $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
@@ -103,27 +102,39 @@ class AjaxLogin extends \NDB_Page
      */
     function initializeSetup(array $values) : array
     {
-        $login = $_SESSION['State']->getProperty('login');
+        // Login Setup.
+        $loginData = array();
+        $login     = $_SESSION['State']->getProperty('login');
         if (!empty($login->_lastError)) {
-            $values['error'] = $login->_lastError;
+            $loginData['error'] = $login->_lastError;
         }
-        $config =& \NDB_Config::singleton();
-
+        $config      =& \NDB_Config::singleton();
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
             $WindowName = md5($url);
-            $values['studylinks'][] = array(
+            $loginData['links'][] = array(
                                        'url'        => $url,
                                        'label'      => $label,
                                        'windowName' => $WindowName,
                                       );
         }
-        $values['study_description'] = html_entity_decode(
+        $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
+        $loginData['title'] = $config->getSetting('title');
+        $loginData['logo']  = $config->getSetting('studylogo');
+        $values['login']    = $loginData;
 
-        $values['study_title'] = $config->getSetting('title');
-        $values['study_logo']  = $config->getSetting('studylogo');
+        // Request Account Setup.
+        $requestAccountData = array();
+        $reCAPTCHAPrivate   = $config->getSetting('reCAPTCHAPrivate');
+        $reCAPTCHAPublic    = $config->getSetting('reCAPTCHAPublic');
+        // reCAPTCHA if both private and public keys are set
+        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
+            $requestAccountData['captcha'] = $reCAPTCHAPublic; // captcha key.
+        }
+        $requestAccountData['site'] = \Utility::getSiteList();
+        $values['requestAccount']   = $requestAccountData;
 
         return $values;
     }
@@ -161,10 +172,6 @@ class AjaxLogin extends \NDB_Page
                 // reset the password in the database
                 // expire password so user must change it upon login
                 $user->updatePassword($password, '1999-01-01');
-                if ($success === false) {
-                    error_log("Could not update password for $username");
-                    return $values;
-                }
                 // send the user an email
                 $msg_data['study']    = $config->getSetting('title');
                 $msg_data['url']      = $config->getSetting('url');

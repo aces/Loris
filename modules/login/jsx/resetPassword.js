@@ -45,6 +45,9 @@ class ResetPassword extends Component {
     let form = document.getElementById('form');
     form.submit();
   }
+  /**
+   * @return {DOMRect}
+   */
   render() {
     const reset = (
       <div>
@@ -56,7 +59,8 @@ class ResetPassword extends Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            text={'Please enter your username below, and a new password will be sent to you.'}
+            text={'Please enter your username below, '
+            + 'and a new password will be sent to you.'}
             class={'col-sm-12'}
             textClass={'text-center'}
           />
