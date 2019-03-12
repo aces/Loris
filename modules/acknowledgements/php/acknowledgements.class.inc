@@ -54,7 +54,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $baseurl = $factory->settings()->getBaseURL();
-        
+
         // create user object and check appropriate permission
         $user =& \User::singleton();
         if (!$user->hasPermission('acknowledgements_edit')) {
@@ -63,8 +63,8 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) == 0) {
             return false;
         }
-        if (!isset($_POST['fire_away'])){
-          return false;
+        if (!isset($_POST['fire_away'])) {
+            return false;
         } else {
 
             if ($values['addPresent'] === 'Yes') {
