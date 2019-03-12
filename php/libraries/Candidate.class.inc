@@ -286,9 +286,7 @@ class Candidate
         } while ($invalidID);
 
         // Return the new CandID
-        // FIXME This class should be refactored to use the new CandID class
-        // instead of returning an integer.
-        return intval((string) $candID);
+        return $candID;
     }
 
     /**
