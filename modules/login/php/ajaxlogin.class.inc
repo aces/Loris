@@ -86,8 +86,9 @@ class AjaxLogin extends \NDB_Page
         if (isset($values['command']) && $values['command'] == 'initialize') {
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'login') {
-            $response           = $this->login($values);
+        } else if (isset($values['command']) && $values['command'] == 'reset') {
+            // $response           = $this->login($values);
+            $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
         }
@@ -126,49 +127,62 @@ class AjaxLogin extends \NDB_Page
 
         return $values;
     }
+
     /**
-     * Execute login.
+     * reset password.
      *
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \LorisException
      */
-    function login(array $values) : array
+    function resetPassword(array $values) : array
     {
-        $login = new SinglePointLogin();
-        $_POST['login'] = 'true';
-        $_POST['username'] = $values['username'];
-        $_POST['password'] = $values['password'];
-        if (!$login->isLoggedIn()) {
-            $auth = $login->authenticate();
-            if ($auth === true) {
-                if ($login->passwordExpired()) {
-                    header("HTTP/1.1 302 Found");
-                    header("Location: /login/password-expiry");
+        // Always claim success to phishers.
+        $values['success'] = 'Password reset. '
+            . 'You should receive an email within a few minutes.';
 
+        // create the user object
+        $username = $values['username'];
+        $user     =& \User::singleton($username);
+
+        $email = $user->getData('Email');
+        // check that it is a valid user
+        if (empty($email) || empty($user)) {
+            return $values;
+        }
+
+        try {
+            // check that the email is valid
+            if ($user->isEmailValid()) {
+                $config = \NDB_Config::singleton();
+                // generate a new password
+                $password = \User::newPassword();
+                // reset the password in the database
+                // expire password so user must change it upon login
+                $user->updatePassword($password, '1999-01-01');
+                if ($success === false) {
+                    error_log("Could not update password for $username");
+                    return $values;
                 }
-                $login->setState();
-            } elseif ($auth === false) {
-                // only send a 403 error if they were attempting to log in,
-                // otherwise the login page returns a 403 when first accessing
-                // it.
-                if (!empty($_REQUEST['login'])) {
-                    header("HTTP/1.1 403 Forbidden");
-                } else {
-                    // authenticate set an "Incorrect username or password"
-                    // error. We don't want it to be displayed on the login page
-                    // if they didn't just try and log in, so as a hack clear
-                    // it if $_REQUEST['login'] isn't set.
-                    $login->_lastError = '';
-                }
-                $login->clearState();
+                // send the user an email
+                $msg_data['study']    = $config->getSetting('title');
+                $msg_data['url']      = $config->getSetting('url');
+                $msg_data['realname'] = $user->getData('Real_name');
+                $msg_data['password'] = $password;
+                \Email::send($email, 'lost_password.tpl', $msg_data);
+
+            } else {
+                error_log(
+                    $_SERVER['REMOTE_ADDR']
+                    . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
+                    . " attempted to reset password for $username"
+                );
             }
+        } catch(\Exception $e) {
+            error_log('Unhandled exception in reset_password.');
         }
-        if (!$login->isLoggedIn()) {
-            $values['error'] = 'failed to login';
-        } else {
-            $values['status'] = 'success';
-        }
+
         return $values;
     }
 }

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
+import ResetPassword from './resetPassword';
+import RequestAccount from './requestAccount';
 
 /**
  * Login form.
@@ -30,12 +32,14 @@ class Login extends Component {
         },
         error: '',
       },
+      mode: 'login',
       isLoaded: false,
     };
     // Bind component instance to custom methods
     this.fetchInitializerData = this.fetchInitializerData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setForm = this.setForm.bind(this);
+    this.setMode = this.setMode.bind(this);
   }
   /**
    * Executes after component mounts.
@@ -80,7 +84,8 @@ class Login extends Component {
           const state = Object.assign({}, this.state);
           state.study.description = data.study_description;
           state.study.title = data.study_title;
-          this.state.study.logo = data.study_logo;
+          this.state.study.logo = window.location.origin
+            + '/' + data.study_logo;
           state.isLoaded = true;
           this.setState(state);
         }).catch((error) => {
@@ -114,6 +119,17 @@ class Login extends Component {
     form.submit();
   }
   /**
+   * Set mode.
+   *
+   * @param {string} mode - set as mode.
+   */
+  setMode(mode) {
+    console.log(mode);
+    const state = Object.assign({}, this.state);
+    state.mode = mode;
+    this.setState(state);
+  }
+  /**
    * @return {DOMRect}
    */
   render() {
@@ -121,79 +137,100 @@ class Login extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    const study = (
-      <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
-    );
-    const login = (
-      <div>
-        <section className={'study-logo'}>
-          <img src={this.state.study.logo} alt={this.state.study.title}/>
-        </section>
-        <FormElement
-          name={'login'}
-          action={''}
-          id={'form'}
-          fileUpload={'false'}
-          onSubmit={this.handleSubmit}
-        >
-          <TextboxElement
-            name={'username'}
-            value={this.state.form.value.username}
-            onUserInput={this.setForm}
-            placeholder={'Username'}
-            class={'col-sm-12'}
-            required={true}
-          />
-          <TextboxElement
-            name={'password'}
-            value={this.state.form.value.password}
-            onUserInput={this.setForm}
-            placeholder={'Password'}
-            class={'col-sm-12'}
-            required={true}
-            type={'password'}
-          />
-          <ButtonElement
-            label={'Login'}
-            type={'submit'}
-            columnSize={'col-sm-12'}
-            buttonClass={'btn btn-primary btn-block'}
-          />
-        </FormElement>
-        <div className={'help-links'}>
-          <a href={'/login/password-reset/'}>Forgot your password?</a>
-          <br/>
-          <a href={'/login/request-account/'}>Request Account</a>
-        </div>
-        <div className={'help-text'}>
-          A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)
-        </div>
-      </div>
-    );
-    return (
-      <div className={'container'}>
-        <div className={'row'}>
-          <section className={'col-md-4 col-md-push-8'}>
-            <Panel
-              title={'Login to LORIS'}
-              class={'panel-login login-panel'}
-              collapsing={false}
-            >
-              {login}
-            </Panel>
+    if (this.state.mode === 'login') {
+      const study = (
+        <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
+      );
+      const login = (
+        <div>
+          <section className={'study-logo'}>
+            <img src={this.state.study.logo}
+                 alt={this.state.study.title}/>
           </section>
-          <section className={'col-md-8 col-md-pull-4'}>
-            <Panel
-              title={this.state.study.title}
-              class={'panel-login login-panel'}
-              collapsing={false}
-            >
-              {study}
-            </Panel>
-          </section>
+          <FormElement
+            name={'login'}
+            action={'col-sm-12'}
+            id={'form'}
+            fileUpload={'false'}
+            onSubmit={this.handleSubmit}
+          >
+            <TextboxElement
+              name={'username'}
+              value={this.state.form.value.username}
+              onUserInput={this.setForm}
+              placeholder={'Username'}
+              class={'col-sm-12'}
+              required={true}
+            />
+            <TextboxElement
+              name={'password'}
+              value={this.state.form.value.password}
+              onUserInput={this.setForm}
+              placeholder={'Password'}
+              class={'col-sm-12'}
+              required={true}
+              type={'password'}
+            />
+            <ButtonElement
+              label={'Login'}
+              type={'submit'}
+              columnSize={'col-sm-12'}
+              buttonClass={'btn btn-primary btn-block'}
+            />
+          </FormElement>
+          <div className={'help-links'}>
+            <a onClick={() => this.setMode('reset')}
+               style={{cursor: 'pointer'}}>Forgot your password?</a>
+            <br/>
+            <a onClick={() => this.setMode('request')}
+               style={{cursor: 'pointer'}}>Request Account</a>
+          </div>
+          <div className={'help-text'}>
+            A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)
+          </div>
         </div>
-      </div>
-    );
+      );
+      return (
+        <div className={'container'}>
+          <div className={'row'}>
+            <section className={'col-md-4 col-md-push-8'}>
+              <Panel
+                title={'Login to LORIS'}
+                class={'panel-default login-panel'}
+                collapsing={false}
+              >
+                {login}
+              </Panel>
+            </section>
+            <section className={'col-md-8 col-md-pull-4'}>
+              <Panel
+                title={this.state.study.title}
+                class={'panel-default login-panel'}
+                collapsing={false}
+              >
+                {study}
+              </Panel>
+            </section>
+          </div>
+        </div>
+      );
+    }
+    if (this.state.mode === 'reset') {
+      return (
+        <ResetPassword
+          module={'reset'}
+          setMode={this.setMode}
+        />
+      );
+    }
+    if (this.state.mode === 'request') {
+      return (
+        <RequestAccount
+          module={'reset'}
+          setMode={this.setMode}
+        />
+      );
+    }
   }
 }
 Login.propTypes = {

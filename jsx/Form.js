@@ -467,13 +467,19 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+    }
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -519,7 +525,7 @@ SelectElement.defaultProps = {
   label: '',
   value: undefined,
   id: null,
-  class: '',
+  class: 'col-sm-9',
   multiple: false,
   disabled: false,
   required: false,
@@ -1348,13 +1354,20 @@ class StaticElement extends Component {
     super(props);
   }
   render() {
-    return (
-      <div className="row form-group">
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
+      );
+    }
+
+    return (
+      <div className="row form-group">
+        {label}
+        <div className={this.props.class}>
+          <p className={this.props.textClass}>{this.props.text}</p>
         </div>
       </div>
     );
@@ -1363,6 +1376,8 @@ class StaticElement extends Component {
 
 StaticElement.propTypes = {
   label: PropTypes.string,
+  class: PropTypes.string,
+  textClass: PropTypes.string,
   text: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
@@ -1371,6 +1386,8 @@ StaticElement.propTypes = {
 
 StaticElement.defaultProps = {
   label: '',
+  class: 'col-sm-9',
+  textClass: 'form-control-static',
   text: null,
 };
 
@@ -1431,7 +1448,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline col-sm-offset-3';
+    let elementClass = this.props.class;
     let label = null;
 
     // Add required asterix
@@ -1471,6 +1488,7 @@ CheckboxElement.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
+  class: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1482,6 +1500,7 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  class: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
