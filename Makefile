@@ -14,7 +14,7 @@ javascript:
 	npm install
 	npm run compile
 
-dev: VERSION phpdev javascript bootstrap
+dev: VERSION phpdev bootstrap javascript 
 
 bootstrap:
 	php tools/bootstrap.php
