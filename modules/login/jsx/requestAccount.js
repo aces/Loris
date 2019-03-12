@@ -51,7 +51,7 @@ class RequestAccount extends Component {
     const request = (
       <div>
         <FormElement
-          name={'login'}
+          name={'form1'}
           action={''}
           id={'form'}
           fileUpload={'false'}
@@ -92,16 +92,23 @@ class RequestAccount extends Component {
           />
           <SelectElement
             name={'site'}
-            options={{1: 1, 2: 2, 3: 3}}
+            options={{
+              1: 'Data Coordinating Center',
+              2: 'Montreal',
+              3: 'Ottawa',
+              4: 'Rome',
+            }}
             class={'col-sm-12'}
           />
           <CheckboxElement
             name={'examiner'}
             label={'Examiner role'}
+            class={'row form-group'}
           />
           <CheckboxElement
             name={'radiologist'}
             label={'Radiologist'}
+            class={'row form-group'}
           />
           <ButtonElement
             label={'Request Account'}
