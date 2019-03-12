@@ -24,29 +24,31 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $username = \User::singleton()->getUsername();
 
-$candID = new CandID($_POST['candID']);
 
 if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread =& \NDB_BVL_Feedback::Singleton($username, $candID);
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && !(isset($_POST['commentID']))
 ) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread =&
-         \NDB_BVL_Feedback::Singleton(
-             $username,
-             $candID,
-             $_POST['sessionID']
-         );
+        \NDB_BVL_Feedback::Singleton(
+            $username,
+            $candID,
+            $_POST['sessionID']
+        );
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && isset($_POST['commentID'])
 ) {
+    $candID         = new CandID($_POST['candID']);
     $feedbackThread =&
-            \NDB_BVL_Feedback::Singleton(
-                $username,
-                $candID,
-                $_POST['sessionID'],
-                $_POST['commentID']
-            );
+        \NDB_BVL_Feedback::Singleton(
+            $username,
+            $candID,
+            $_POST['sessionID'],
+            $_POST['commentID']
+        );
 }
 
 $feedbackThreadList = $feedbackThread->getThreadList();
