@@ -1,6 +1,7 @@
 node_modules/*
 modules/*/js/*.js
 htdocs/js/components/*
+project/*
 
 # Ignore until ESLint is run
 modules/dataquery/

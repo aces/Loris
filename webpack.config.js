@@ -126,7 +126,7 @@ const config = [{
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
-  config.push(projConfig);
+  config[0].entry = Object.assign(config[0].entry, projConfig);
 }
 
 module.exports = config;
