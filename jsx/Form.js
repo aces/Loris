@@ -1459,25 +1459,31 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
+      elementClass = this.props.class === 'checkbox-inline col-sm-offset-3'
+        ? 'checkbox-inline col-sm-offset-3 has-error'
+        : 'checkbox-inline col-sm-offset-2 has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label htmlFor={this.props.id}>
-          <input
-            type="checkbox"
-            name={this.props.name}
-            id={this.props.id}
-            checked={this.props.value}
-            required={required}
-            disabled={disabled}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-          {this.props.label}
-          {requiredHTML}
-        </label>
+        <div className={'col-sm-12'}>
+          <label htmlFor={this.props.id} className={'form-control'} style={{padding: '5px'}}>
+            <div style={{paddingRight: '5px', display: 'inline-block'}}>
+              <input
+                type="checkbox"
+                name={this.props.name}
+                id={this.props.id}
+                checked={this.props.value}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+              {errorMessage}
+              {this.props.label}
+              {requiredHTML}
+          </label>
+        </div>
       </div>
     );
   }

@@ -49,7 +49,7 @@ class ResetPassword extends Component {
     const reset = (
       <div>
         <FormElement
-          name={'login'}
+          name={'reset'}
           action={''}
           id={'form'}
           fileUpload={'false'}
