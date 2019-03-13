@@ -1,3 +1,4 @@
+import PasswordExpired from './passwordExpiry';
 import RequestAccount from './requestAccount';
 import ResetPassword from './resetPassword';
 import React, {Component} from 'react';
@@ -38,6 +39,7 @@ class Login extends Component {
       mode: 'login',
       component: {
         requestAccount: null,
+        expiredPassword: null,
       },
       isLoaded: false,
     };
@@ -134,6 +136,16 @@ class Login extends Component {
     ).then((response) => response.json())
       .then(
         (data) => {
+          if (data.expired) {
+            // expired - password expired.
+            const state = Object.assign({}, this.state);
+            state.component.expiredPassword = {
+              message: data.error,
+              username: state.form.value.username,
+            };
+            state.mode = 'expired';
+            this.setState(state);
+          }
           if (data.error) {
             // error - incorrect password.
             const state = Object.assign({}, this.state);
@@ -266,6 +278,15 @@ class Login extends Component {
           module={'reset'}
           setMode={this.setMode}
           data={this.state.component.requestAccount}
+        />
+      );
+    }
+    if (this.state.mode === 'expired') {
+      return (
+        <PasswordExpired
+          module={'expired'}
+          setMode={this.setMode}
+          data={this.state.component.expiredPassword}
         />
       );
     }

@@ -62,9 +62,6 @@ class SinglePointLogin
         // PHP session superglobal so that the password expiry page can
         // trust it.
         $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
-        header("HTTP/1.1 303 See Other");
-        header("Location: /login/password-expiry/");
-        exit(0);
     }
 
 

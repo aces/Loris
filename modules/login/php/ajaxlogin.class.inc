@@ -100,6 +100,9 @@ class AjaxLogin extends \NDB_Page
         } else if (isset($values['command']) && $values['command'] == 'login') {
             // login - user attempting to login.
             $response = $this->login($values);
+        } else if (isset($values['command']) && $values['command'] == 'expired') {
+            // login - expired password update
+            $response = $this->expired($values);
         } else {
             $response['status'] = 'error';
         }
@@ -335,6 +338,61 @@ class AjaxLogin extends \NDB_Page
         // wipe the old data.
         $values['username'] = $values['password'] = '';
 
+        if (isset($_SESSION['PasswordExpiredForUser'])) {
+            $values['expired'] = true;
+        }
+
+        return $values;
+    }
+
+    /**
+     * Expired password update.
+     *
+     * @param array $values the user data received.
+     *
+     * @return array
+     */
+    function expired(array $values) : array
+    {
+        // Check if password is not empty.
+        if (empty($values['password']) || empty($values['confirm'])) {
+            $values['error'] = 'Can not use an empty password';
+        }
+        // Update the user password.
+        if (isset($_SESSION['PasswordExpiredForUser'])) {
+            $user = \User::factory($_SESSION['PasswordExpiredForUser']);
+            $data = $user->getData();
+            // Check if new password is same as old password.
+            if (password_verify($_POST['password'], $data['Password_hash'])) {
+                $values['error'] = 'You cannot keep the same password';
+                return $values;
+            }
+            // Check if password meets strength requirement.
+            if (!\User::isPasswordStrong(
+                $values['password'],
+                array(
+                    $values['confirm'],
+                    $data['UserID'],
+                    $data['Email'],
+                ),
+                array(
+                    '==',
+                    '!=',
+                    '!=',
+                )
+            )
+            ) {
+                $values['error'] = 'The password is weak, or'
+                    . ' the passwords do not match';
+                return $values;
+            }
+            // Update password
+            $user->updatePassword($values['password']);
+            unset($_SESSION['PasswordExpiredForUser']);
+            $values['status'] = 'success';
+        } else {
+            $values['error'] = 'invalid';
+        }
         return $values;
     }
 }
