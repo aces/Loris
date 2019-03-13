@@ -131,7 +131,7 @@ class User extends UserPermissions
     public static function &singleton(?string $username = null): \User
     {
         static $instance;
-        if (is_null($instance) || is_null($instance->userID)) {
+        if (is_null($instance)) {
             $instance = User::factory($username);
         }
         return $instance;
