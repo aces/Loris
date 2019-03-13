@@ -35,7 +35,7 @@ class RequestAccount extends Component {
     };
     this.setForm = this.setForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // If LORIS captcha service is configured.
+    // Use LORIS captcha service if configured.
     if (this.props.data.captcha) {
       this.loadGoogleCaptcha();
     }
