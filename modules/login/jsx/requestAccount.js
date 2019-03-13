@@ -26,12 +26,19 @@ class RequestAccount extends Component {
           examiner: false,
           radiologist: false,
         },
+        captcha: this.props.data.captcha
+          ? this.props.data.captcha
+          : '',
         error: '',
       },
       request: false,
     };
     this.setForm = this.setForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    // If LORIS captcha service is configured.
+    if (this.props.data.captcha) {
+      this.loadGoogleCaptcha();
+    }
   }
   /**
    * Set the form data based on state values of child elements/components
@@ -89,9 +96,38 @@ class RequestAccount extends Component {
     });
   }
   /**
+   * Used for including Google ReCaptcha.
+   */
+  loadGoogleCaptcha() {
+    /**
+     * Dynamically load a script if necessary.
+     * @param {string} url - script to load.
+     */
+    function loadScript(url) {
+      // Adding the script tag to the head as suggested before
+      let head = document.getElementsByTagName('head')[0];
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+
+      // Start the loading...
+      head.appendChild(script);
+    }
+    // Include Google ReCaptcha.
+    loadScript('https://www.google.com/recaptcha/api.js');
+  }
+  /**
    * @return {DOMRect}
    */
   render() {
+    const captcha = this.state.form.captcha !== null ? (
+      <div className='form-group'>
+        <div className='g-recaptcha' data-sitekey={this.form.data.captcha}/>
+        <span id='helpBlock' className='help-block'>
+          <b className='text-danger'>Please complete the reCaptcha!</b>
+        </span>
+      </div>
+    ) : null;
     const request = !this.state.request ? (
       <div>
         <FormElement
@@ -157,6 +193,7 @@ class RequestAccount extends Component {
             value={this.state.form.value.radiologist}
             onUserInput={this.setForm}
           />
+          {captcha}
           <ButtonElement
             label={'Request Account'}
             type={'submit'}

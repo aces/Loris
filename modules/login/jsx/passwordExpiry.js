@@ -21,7 +21,10 @@ class PasswordExpired extends Component {
           password: '',
           confirm: '',
         },
-        error: '',
+        error: {
+          toggle: false,
+          message: '',
+        },
       },
       success: false,
     };
@@ -78,6 +81,16 @@ class PasswordExpired extends Component {
         (data) => {
           console.log('success: ');
           console.log(data);
+          if (data.error) {
+            // error - message.
+            const state = Object.assign({}, this.state);
+            state.form.error.toggle = true;
+            state.form.error.message = data.error;
+            this.setState(state);
+          } else {
+            // success - refresh page and user is logged in.
+            window.location.href = window.location.origin;
+          }
         }).catch((error) => {
           console.log('error: ');
           console.log(error);
@@ -87,6 +100,12 @@ class PasswordExpired extends Component {
    * @return {DOMRect}
    */
   render() {
+    const error = this.state.form.error.toggle ? (
+      <StaticElement
+        text={this.state.form.error.message}
+        class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
+      />
+    ) : null;
     const success = !this.state.request ? (
       <div>
         <div>
@@ -123,6 +142,7 @@ class PasswordExpired extends Component {
             type={'password'}
             placeholder={'Confirm Password'}
           />
+          {error}
           <ButtonElement
             label={'Save'}
             type={'submit'}

@@ -102,7 +102,7 @@ class AjaxLogin extends \NDB_Page
             $response = $this->login($values);
         } else if (isset($values['command']) && $values['command'] == 'expired') {
             // login - expired password update
-            $response = $this->expired($values);
+            $response = $this->expiredPassword($values);
         } else {
             $response['status'] = 'error';
         }
@@ -352,7 +352,7 @@ class AjaxLogin extends \NDB_Page
      *
      * @return array
      */
-    function expired(array $values) : array
+    function expiredPassword(array $values) : array
     {
         // Check if password is not empty.
         if (empty($values['password']) || empty($values['confirm'])) {
