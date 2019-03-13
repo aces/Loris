@@ -54,7 +54,7 @@ class CandID extends ValidatableIdentifier
     protected function validate(string $value): bool
     {
         return preg_match('/[0-9]{6}/', $value) === 1 &&
-            intval($value) >= MIN_CANDID_VALUE;
+            intval($value) >= self::MIN_CANDID_VALUE;
     }
 
     /**

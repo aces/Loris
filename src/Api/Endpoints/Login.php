@@ -198,7 +198,7 @@ class Login extends Endpoint
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;
-        if (strlen($key) < MIN_JWT_KEY_LENGTH) {
+        if (strlen($key) < self::MIN_JWT_KEY_LENGTH) {
             return false;
         }
         // nothing but letters
@@ -213,7 +213,7 @@ class Login extends Endpoint
         $CharTypes += preg_match('/[0-9]+/', $key);
         $CharTypes += preg_match('/[A-Za-z]+/', $key);
         $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $key);
-        if ($CharTypes < MIN_NUM_CHARSETS) {
+        if ($CharTypes < self::MIN_NUM_CHARSETS) {
             return false;
         }
 
