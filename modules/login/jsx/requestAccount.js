@@ -120,9 +120,9 @@ class RequestAccount extends Component {
    * @return {DOMRect}
    */
   render() {
-    const captcha = this.state.form.captcha !== null ? (
+    const captcha = this.state.form.captcha ? (
       <div className='form-group'>
-        <div className='g-recaptcha' data-sitekey={this.form.data.captcha}/>
+        <div className='g-recaptcha' data-sitekey={this.state.form.data.captcha}/>
         <span id='helpBlock' className='help-block'>
           <b className='text-danger'>Please complete the reCaptcha!</b>
         </span>
