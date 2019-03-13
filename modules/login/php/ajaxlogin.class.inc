@@ -32,12 +32,14 @@ class AjaxLogin extends \NDB_Page
 {
     public $skipTemplate = true;
     public $AjaxModule   = true;
+
     /**
      * This function will return a json object for login.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
+     * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -80,6 +82,7 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \LorisException
      */
     function processRequest(array $values) : array
     {
@@ -87,6 +90,7 @@ class AjaxLogin extends \NDB_Page
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'reset') {
+            $response           = $this->resetPassword($values);
             $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
@@ -111,19 +115,19 @@ class AjaxLogin extends \NDB_Page
         $config      =& \NDB_Config::singleton();
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
-            $WindowName = md5($url);
+            $windowName           = md5($url);
             $loginData['links'][] = array(
-                                       'url'        => $url,
-                                       'label'      => $label,
-                                       'windowName' => $WindowName,
-                                      );
+                                     'url'        => $url,
+                                     'label'      => $label,
+                                     'windowName' => $windowName,
+                                    );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
-        $loginData['title'] = $config->getSetting('title');
-        $loginData['logo']  = $config->getSetting('studylogo');
-        $values['login']    = $loginData;
+        $loginData['title']       = $config->getSetting('title');
+        $loginData['logo']        = $config->getSetting('studylogo');
+        $values['login']          = $loginData;
 
         // Request Account Setup.
         $requestAccountData = array();
@@ -140,7 +144,7 @@ class AjaxLogin extends \NDB_Page
     }
 
     /**
-     * reset password.
+     * Reset password.
      *
      * @param array $values the user data received.
      *
@@ -153,33 +157,34 @@ class AjaxLogin extends \NDB_Page
         $values['success'] = 'Password reset. '
             . 'You should receive an email within a few minutes.';
 
-        // create the user object
+        // Create the user object.
         $username = $values['username'];
         $user     =& \User::singleton($username);
 
+        // Check if valid user.
         $email = $user->getData('Email');
-        // check that it is a valid user
         if (empty($email) || empty($user)) {
+            $values['error'] = 'invalid';
             return $values;
         }
 
         try {
-            // check that the email is valid
+            // Check if valid email.
             if ($user->isEmailValid()) {
                 $config = \NDB_Config::singleton();
-                // generate a new password
+                // Generate a new password.
                 $password = \User::newPassword();
-                // reset the password in the database
-                // expire password so user must change it upon login
-                $user->updatePassword($password, '1999-01-01');
-                // send the user an email
+                // Reset the password in the database and
+                // expire password so user must change it upon login.
+                $user->updatePassword($password, '1990-09-18');
+                // Send the user an email.
                 $msg_data['study']    = $config->getSetting('title');
                 $msg_data['url']      = $config->getSetting('url');
                 $msg_data['realname'] = $user->getData('Real_name');
                 $msg_data['password'] = $password;
                 \Email::send($email, 'lost_password.tpl', $msg_data);
-
             } else {
+                $values['error'] = 'invalid';
                 error_log(
                     $_SERVER['REMOTE_ADDR']
                     . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
@@ -188,8 +193,8 @@ class AjaxLogin extends \NDB_Page
             }
         } catch(\Exception $e) {
             error_log('Unhandled exception in reset_password.');
+            $values['error'] = 'invalid';
         }
-
         return $values;
     }
 }
