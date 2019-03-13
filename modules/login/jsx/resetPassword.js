@@ -21,8 +21,10 @@ class ResetPassword extends Component {
         },
         error: '',
       },
+      reset: false,
     };
     this.setForm = this.setForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -37,19 +39,54 @@ class ResetPassword extends Component {
     this.setState(state);
   }
   /**
+   * Used with sending POST data to the server.
+   * @param {object} json - json object converted for POST.
+   * @return {string} send in POST to server.
+   */
+  urlSearchParams(json) {
+    return Object.keys(json).map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+    }).join('&');
+  }
+  /**
    * Handle form submission
    *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    let form = document.getElementById('form');
-    form.submit();
+    const state = Object.assign({}, this.state);
+    console.log(state);
+    const url = window.location.origin + '/login/AjaxLogin';
+    const send = this.urlSearchParams({
+      command: 'reset',
+      username: state.form.value.username,
+    });
+    fetch(
+      url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.text())
+      .then(
+        (data) => {
+          console.log('success');
+          console.log(data);
+          this.setState({reset: true});
+        }).catch((error) => {
+          console.log('error: ');
+          console.log(error);
+          this.setState({reset: true});
+    });
   }
   /**
    * @return {DOMRect}
    */
   render() {
-    const reset = (
+    const reset = !this.state.reset ? (
       <div>
         <FormElement
           name={'reset'}
@@ -81,6 +118,13 @@ class ResetPassword extends Component {
         </FormElement>
         <a onClick={()=>this.props.setMode('login')}
            style={{cursor: 'pointer'}}>Back to login page</a>
+      </div>
+    ) : (
+      <div className={'success-message'}>
+        <h1>Thank you!</h1>
+        <p>Password reset. You should receive an email within a few minutes.</p>
+        <a onClick={()=>window.location.href = window.location.origin}
+           style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (

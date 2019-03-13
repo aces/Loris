@@ -39,7 +39,6 @@ class AjaxLogin extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
-     * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -82,7 +81,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \LorisException
      */
     function processRequest(array $values) : array
     {
@@ -149,7 +147,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \LorisException
      */
     function resetPassword(array $values) : array
     {
@@ -162,10 +159,14 @@ class AjaxLogin extends \NDB_Page
         $user     =& \User::singleton($username);
 
         // Check if valid user.
-        $email = $user->getData('Email');
-        if (empty($email) || empty($user)) {
+        try {
+            $email = $user->getData('Email');
+            if (empty($email) || empty($user)) {
+                $values['error'] = 'invalid';
+                return $values;
+            }
+        } catch (\Exception $exception) {
             $values['error'] = 'invalid';
-            return $values;
         }
 
         try {
