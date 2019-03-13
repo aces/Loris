@@ -7,7 +7,7 @@
  * @category API
  * @package  Loris
  * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\Api\Endpoints;
@@ -22,11 +22,21 @@ use \LORIS\Api\Endpoint;
  * @category API
  * @package  Loris
  * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class Login extends Endpoint
 {
+    /* @var int A supplied JWT key must have at least this length or it will
+     * be rejected for being too weak.
+     */
+    protected const MIN_JWT_KEY_LENGTH = 20;
+    /* @var int The number of "character sets" that must be used in a password. 
+     * For example the characters 0-9, a-z, and miscellaneous symbols are all 
+     * different character sets. Used as a heuristic to determine password 
+     * complexity.
+     */
+    protected const MIN_NUM_CHARSETS = 3;
     /**
      * All users have access to the login endpoint to try and login.
      *
@@ -188,8 +198,7 @@ class Login extends Endpoint
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;
-        // less than 20 characters
-        if (strlen($key) < 20) {
+        if (strlen($key) < MIN_JWT_KEY_LENGTH) {
             return false;
         }
         // nothing but letters
@@ -204,7 +213,7 @@ class Login extends Endpoint
         $CharTypes += preg_match('/[0-9]+/', $key);
         $CharTypes += preg_match('/[A-Za-z]+/', $key);
         $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $key);
-        if ($CharTypes < 3) {
+        if ($CharTypes < MIN_NUM_CHARSETS) {
             return false;
         }
 

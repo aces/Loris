@@ -8,11 +8,12 @@
  *
  * PHP version 5
  *
- * @category Utility_Script
- * @package  Loris_Script 
+ * @category Main
+ * @package  Loris 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @license  Loris License
- * @link     https://github.com/aces/IBIS
+ * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
@@ -24,9 +25,14 @@ require_once "Utility.class.inc";
 require_once "NDB_Client.class.inc";
 require_once "TimePoint.class.inc";
 
+/* @var int The minimum number of arguments required to run this script. */
+const MIN_NUMBER_OF_ARGS = 2;
+/* @var int The maximum number of arguments to run this script. */
+const MAX_NUMBER_OF_ARGS = 6;
+
 /// User prompt
  
-if ((count($argv)<2) || (count($argv)>6)) {
+if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) {
 
     echo "Usage: php detect_conflicts.php -i [instrument] -t [timepoint]\n";
     echo "Example: php detect_conflicts.php -i bdi -t 3month \n\n";
