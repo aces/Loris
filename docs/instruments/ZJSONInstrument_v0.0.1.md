@@ -370,7 +370,7 @@ end as a select element, radio buttons, or a multiselect element if `options.all
             ],
             "allowMultipleValues": boolean,
             "requireResponse": boolean,
-            "readonly": boolean,
+            "readOnly": boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -397,7 +397,7 @@ e.g. rendered as a checkbox. This allows explicit non-answering while still requ
 distinguish empty data from data that was intentionally omitted. This choice is added here instead of in `options.values` 
 to allow for consistency with other field types. 
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -419,7 +419,7 @@ The format is as follows:
         "options": {
             "regex" : string,
             "requireResponse": boolean,
-            "readonly": boolean,
+            "readOnly": boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -440,7 +440,7 @@ If true, an implementation automatically adds this field to a `group` helper typ
 e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
 distinguish empty data from data that was intentionally omitted.
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -462,7 +462,7 @@ A numeric field takes an int or a decimal as data input. It has the form:
             "minValue" : `nameOfField.type`,
             "maxValue" : `nameOfField.type`, 
             "requireResponse" : boolean,
-            "readonly": boolean,
+            "readOnly": boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -486,7 +486,7 @@ If true, an implementation automatically adds this field to a `group` helper typ
 e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
 distinguish empty data from data that was intentionally omitted.
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -509,7 +509,7 @@ a data type of form "YYYY-MM-DD HH:MM:SS". The general format is as follows:
             "minValue" : `nameOfField.type`,
             "maxValue" : `nameOfField.type`, 
             "requireResponse" : boolean,
-            "readonly" : boolean,
+            "readOnly" : boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -532,7 +532,7 @@ If true, an implementation automatically adds this field to a `group` helper typ
 e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
 distinguish empty data from data that was intentionally omitted.
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -541,7 +541,7 @@ instrument is in survey mode.
 
 ### 3.2.5: Boolean
 
-A boolean field can have data as true or false, if rendered by a checkbox element.
+A boolean field can have data as true or false.
 
 ```js
 {
@@ -552,7 +552,7 @@ A boolean field can have data as true or false, if rendered by a checkbox elemen
         },
         "options": {
             "requireResponse" : boolean,
-            "readonly" : boolean,
+            "readOnly" : boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -569,7 +569,7 @@ If true, an implementation automatically adds this field to a `group` helper typ
 e.g. rendered as a checkbox. This allows explicit non-answering while still requiring some input value in order to
 distinguish empty data from data that was intentionally omitted.
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -590,8 +590,8 @@ evaluated by the LORIS Logic Parser.
             ...
         },
         "options": {
-            "scoringFormula" : string,  /* LORIS Logic Parser formula */
-            "readonly" : boolean,
+            "formula" : string,  /* LORIS Logic Parser formula */
+            "readOnly" : boolean,
             "hideInSurvey" : boolean,
             "showDesc" : boolean
         },
@@ -603,7 +603,7 @@ evaluated by the LORIS Logic Parser.
 ```
 `options.scoringFormula`: Required string. An expression of a logical formula to be calculated by the Logic Parser. The formula is evaluated to true or false if a boolean score, or a numeric if a number score. The result is dependent and defined by the value of this key.
 
-`options.readonly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
+`options.readOnly`: Required boolean. True or false that the field is read-only, i.e. not editable on the front-end but
 submittable on save. This key is different to `rules.disableIf` in that it is not dependent on a condition, and a
 'disabled' field is not submittable.
 
@@ -736,7 +736,7 @@ together and is separated by a delimiter. Groups have the following form:
                 string,
                 ...
             ],
-            "readonly": boolean,
+            "readOnly": boolean,
             "hideInSurvey": boolean,
             "showDesc" : boolean
         },
