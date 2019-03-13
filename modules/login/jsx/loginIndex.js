@@ -178,7 +178,7 @@ class Login extends Component {
           </section>
           <FormElement
             name={'login'}
-            action={'col-sm-12'}
+            action={''}
             id={'form'}
             fileUpload={'false'}
             onSubmit={this.handleSubmit}
