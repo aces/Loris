@@ -131,7 +131,7 @@ class DocIndex extends React.Component {
         options: options.sites,
       }},
       {label: 'Comments', show: true, filter: {
-        name: 'fileName',
+        name: 'Comments',
         type: 'text',
       }},
       {label: 'Date Upload', show: false},
