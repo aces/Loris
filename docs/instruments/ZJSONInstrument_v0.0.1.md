@@ -135,7 +135,7 @@ IETF BCP 47 (RFC 5646 Standard) language tag, e.g. "en-CA".
 
 It is important to set the default language as it is used as a key in other locations of the `schema` object.
 
-`meta.derivedFrom`: String. The resource instrument that the Z-JSON Instrument derived from as a result of significant
+`meta.derivedFrom`: String. The resource instrument that the Z-JSON Instrument is derived from as a result of significant
 content modification such that the instrument is no longer the same instrument and the creation of a new version does
 not suffice.
 
@@ -613,12 +613,12 @@ instrument is in survey mode.
 # 4.0: Helper Elements
 
 A helper object represents a non-input, layout-related front-end element. While instrument `fields` have corresponding `data`
-associated with it upon form submission, a `helper` is rendered on the front-end as an integral element that does not collect
+associated with them upon form submission, a `helper` is rendered on the front-end as an integral element that does not collect
 data. There are five types of helpers: the static text element, and four other layout-specific formatting elements (group,
 row, table, and section).
 
 The four layout-specific types have references to its children (a collection of `fields` or static text elements) and contain
-type specific options. The different types and their options are described in the section [4.0: Helper Types](#4.0:-helper-types) below. 
+type-specific options. The different types and their options are described in the section [4.0: Helper Types](#4.0:-helper-types) below. 
 
 In general, a helper object has the same format as a field:
 
