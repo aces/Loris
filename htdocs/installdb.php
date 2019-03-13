@@ -124,7 +124,8 @@ case 'validaterootaccount':
         $_POST['dbname'],
         $_POST['dbadminuser'],
         $_POST['dbadminpassword']
-    )) {
+    )
+    ) {
         $tpl_data['error'] = 'The specified user does not exist or '.
             'is using an incorrect password or the database does not exist';
         $tpl_data['Page']  = '';
@@ -140,7 +141,8 @@ case 'createmysqlaccount':
             $_POST["dbname"],
             $_POST["lorismysqluser"],
             $_POST["lorismysqlpassword"]
-        )) {
+        )
+        ) {
             $tpl_data["error"] = "The specified user does not exist or ".
                 "is using an incorrect password or the database does not exist";
             $tpl_data["Page"]  = "MySQLUserPrompt";
