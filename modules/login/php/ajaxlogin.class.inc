@@ -85,11 +85,21 @@ class AjaxLogin extends \NDB_Page
     function processRequest(array $values) : array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
+            // initialize - setup form data to return.
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'reset') {
-            $response           = $this->resetPassword($values);
+            // reset - password reset request by user.
+            $response = $this->resetPassword($values);
             $response['status'] = 'success';
+        }
+        else if (isset($values['command']) && $values['command'] == 'request') {
+            // request - account request by user.
+            $response = $this->requestAccount($values);
+            $response['status'] = 'success';
+        } else if (isset($values['command']) && $values['command'] == 'login') {
+            // login - user attempting to login.
+            $response = $this->login($values);
         } else {
             $response['status'] = 'error';
         }
@@ -107,6 +117,7 @@ class AjaxLogin extends \NDB_Page
         // Login Setup.
         $loginData = array();
         $login     = $_SESSION['State']->getProperty('login');
+        // Previous login failed.
         if (!empty($login->_lastError)) {
             $loginData['error'] = $login->_lastError;
         }
@@ -206,15 +217,29 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \DatabaseException
      */
     function requestAccount(array $values) : array
     {
+        // Verify reCAPTCHA
+        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
+            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
+            $resp      = $recaptcha->verify(
+                $values['g-recaptcha-response'],
+                $_SERVER['REMOTE_ADDR']
+            );
+            if (!$resp->isSuccess()) {
+                $errors            = $resp->getErrorCodes();
+                $values['captcha'] = 'Please complete the reCaptcha!';
+            }
+        }
+
         $DB       = \Database::singleton();
-        $name     = htmlspecialchars($values["firstname"], ENT_QUOTES);
-        $lastname = htmlspecialchars($values["lastname"], ENT_QUOTES);
-        $from     = htmlspecialchars($values["from"], ENT_QUOTES);
-        $site     = $values["site"];
-        $fullname = $name." ".$lastname;
+        $name     = htmlspecialchars($values['firstname'], ENT_QUOTES);
+        $lastname = htmlspecialchars($values['lastname'], ENT_QUOTES);
+        $from     = htmlspecialchars($values['email'], ENT_QUOTES);
+        $site     = $values['site'];
+        $fullname = $name.' '.$lastname;
 
         $vals = array(
                  'UserID'           => $from,
@@ -247,16 +272,16 @@ class AjaxLogin extends \NDB_Page
                 )
             );
 
-            if ($values['examiner'] == 'on') {
+            if ($values['examiner'] == 'true') {
                 $rad = 0;
-                if ($values['radiologist'] == 'on') {
+                if ($values['radiologist'] == 'true') {
                     $rad = 1;
                 }
                 //insert in DB as inactive until account approved
                 $examinerID = $DB->pselect(
                     "SELECT e.examinerID
-                 FROM examiners e
-                 WHERE e.full_name=:fn",
+                     FROM examiners e
+                     WHERE e.full_name=:fn",
                     array("fn" => $fullname)
                 );
 
@@ -283,21 +308,33 @@ class AjaxLogin extends \NDB_Page
                 }
             }
         }
-
-        // Verify reCAPTCHA
-        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-            $resp      = $recaptcha->verify(
-                $values['g-recaptcha-response'],
-                $_SERVER['REMOTE_ADDR']
-            );
-            if (!$resp->isSuccess()) {
-                $errors            = $resp->getErrorCodes();
-                $values['captcha'] = 'Please complete the reCaptcha!';
-            }
-        }
         // Show success message even if email already exists for security reasons
         $values['success'] = true;
+        return $values;
+    }
+
+    /**
+     * Login account.
+     *
+     * @param array $values the user data received.
+     *
+     * @return array
+     */
+    function login(array $values) : array
+    {
+
+        $login   = new SinglePointLogin();
+        $success = $login->passwordAuthenticate($values['username'], $values['password'], false);
+        if ($success) {
+            // login success.
+            $values['status'] = 'success';
+        } else {
+            // login failed.
+            $values['error'] = $login->_lastError;
+        }
+        // wipe the old data.
+        $values['username'] = $values['password'] = '';
+
         return $values;
     }
 }

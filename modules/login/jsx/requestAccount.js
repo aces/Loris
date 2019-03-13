@@ -23,11 +23,15 @@ class RequestAccount extends Component {
           site: this.props.data.site
             ? Object.keys(this.props.data.site)[0]
             : '',
+          examiner: false,
+          radiologist: false,
         },
         error: '',
       },
+      request: false,
     };
     this.setForm = this.setForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   /**
    * Set the form data based on state values of child elements/components
@@ -38,8 +42,17 @@ class RequestAccount extends Component {
   setForm(formElement, value) {
     const state = Object.assign({}, this.state);
     state.form.value[formElement] = value;
-    console.log(state);
     this.setState(state);
+  }
+  /**
+   * Used with sending POST data to the server.
+   * @param {object} json - json object converted for POST.
+   * @return {string} send in POST to server.
+   */
+  urlSearchParams(json) {
+    return Object.keys(json).map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+    }).join('&');
   }
   /**
    * Handle form submission
@@ -47,14 +60,39 @@ class RequestAccount extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    let form = document.getElementById('form');
-    form.submit();
+    const state = Object.assign({}, this.state);
+    const url = window.location.origin + '/login/AjaxLogin';
+    const send = this.urlSearchParams({
+      command: 'request',
+      firstname: state.form.value.firstname,
+      lastname: state.form.value.lastname,
+      email: state.form.value.email,
+      site: state.form.value.site,
+      examiner: state.form.value.examiner,
+      radiologist: state.form.value.radiologist,
+    });
+    fetch(
+      url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          this.setState({request: true});
+        }).catch((error) => {
+          this.setState({request: true});
+    });
   }
   /**
    * @return {DOMRect}
    */
   render() {
-    const request = (
+    const request = !this.state.request ? (
       <div>
         <FormElement
           name={'form1'}
@@ -109,11 +147,15 @@ class RequestAccount extends Component {
             name={'examiner'}
             label={'Examiner role'}
             class={'row form-group'}
+            value={this.state.form.value.examiner}
+            onUserInput={this.setForm}
           />
           <CheckboxElement
             name={'radiologist'}
             label={'Radiologist'}
             class={'row form-group'}
+            value={this.state.form.value.radiologist}
+            onUserInput={this.setForm}
           />
           <ButtonElement
             label={'Request Account'}
@@ -124,6 +166,13 @@ class RequestAccount extends Component {
         </FormElement>
         <a onClick={()=>this.props.setMode('login')}
            style={{cursor: 'pointer'}}>Back to login page</a>
+      </div>
+    ) : (
+      <div className={'success-message'}>
+        <h1>Thank you!</h1>
+        <p>Your request for an account has been received successfully.</p>
+        <a onClick={()=>window.location.href = window.location.origin}
+           style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (

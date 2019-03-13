@@ -55,7 +55,6 @@ class ResetPassword extends Component {
    */
   handleSubmit(e) {
     const state = Object.assign({}, this.state);
-    console.log(state);
     const url = window.location.origin + '/login/AjaxLogin';
     const send = this.urlSearchParams({
       command: 'reset',
@@ -70,15 +69,11 @@ class ResetPassword extends Component {
         },
         body: send,
       }
-    ).then((response) => response.text())
+    ).then((response) => response.json())
       .then(
         (data) => {
-          console.log('success');
-          console.log(data);
           this.setState({reset: true});
         }).catch((error) => {
-          console.log('error: ');
-          console.log(error);
           this.setState({reset: true});
     });
   }

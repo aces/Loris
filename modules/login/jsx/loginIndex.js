@@ -30,7 +30,10 @@ class Login extends Component {
           username: '',
           password: '',
         },
-        error: '',
+        error: {
+          toggle: false,
+          message: '',
+        },
       },
       mode: 'login',
       component: {
@@ -80,8 +83,6 @@ class Login extends Component {
     ).then((response) => response.json())
       .then(
         (data) => {
-          console.log('success');
-          console.log(data);
           const state = Object.assign({}, this.state);
           // login setup.
           state.study.description = data.login.description;
@@ -93,8 +94,7 @@ class Login extends Component {
           state.isLoaded = true;
           this.setState(state);
         }).catch((error) => {
-          console.log('error: ');
-          console.log(error);
+          // error shouldn't happen.
     });
   }
   /**
@@ -114,13 +114,39 @@ class Login extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    let form = document.getElementById('form');
-    let inputLogin = document.createElement('input');
-    inputLogin.setAttribute('name', 'login');
-    inputLogin.setAttribute('value', 'true');
-    inputLogin.setAttribute('type', 'hidden');
-    form.append(inputLogin);
-    form.submit();
+    const state = Object.assign({}, this.state);
+    const url = window.location.origin + '/login/AjaxLogin';
+    const send = this.urlSearchParams({
+      login: true,
+      command: 'login',
+      username: state.form.value.username,
+      password: state.form.value.password,
+    });
+    fetch(
+      url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          if (data.error) {
+            // error - incorrect password.
+            const state = Object.assign({}, this.state);
+            state.form.error.toggle = true;
+            state.form.error.message = data.error;
+            this.setState(state);
+          } else {
+            // success - refresh page and user is logged in.
+            window.location.href = window.location.origin;
+          }
+        }).catch((error) => {
+          // error shouldn't happen.
+    });
   }
   /**
    * Set mode.
@@ -144,6 +170,12 @@ class Login extends Component {
       const study = (
         <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
       );
+      const error = this.state.form.error.toggle ? (
+        <StaticElement
+          text={this.state.form.error.message}
+          class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
+        />
+      ) : null;
       const login = (
         <div>
           <section className={'study-logo'}>
@@ -174,6 +206,7 @@ class Login extends Component {
               required={true}
               type={'password'}
             />
+            {error}
             <ButtonElement
               label={'Login'}
               type={'submit'}
