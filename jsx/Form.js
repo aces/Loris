@@ -1441,13 +1441,13 @@ class CheckboxElement extends React.Component {
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.checked);
   }
-
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = this.props.class;
+
     let label = null;
 
     // Add required asterix
@@ -1466,7 +1466,10 @@ class CheckboxElement extends React.Component {
     return (
       <div className={elementClass}>
         <div className={'col-sm-12'}>
-          <label htmlFor={this.props.id} className={'form-control'} style={{padding: '5px'}}>
+          <label htmlFor={this.props.id}
+                 className={'form-control'}
+                 style={{padding: '5px'}}
+          >
             <div style={{paddingRight: '5px', display: 'inline-block'}}>
               <input
                 type="checkbox"
