@@ -123,7 +123,7 @@ class RequestAccount extends Component {
     const captcha = this.state.form.captcha ? (
       <div className='form-group'>
         <div className='g-recaptcha'
-             data-sitekey={this.state.form.data.captcha}/>
+             data-sitekey={this.state.form.captcha}/>
         <span id='helpBlock' className='help-block'>
           <b className='text-danger'>Please complete the reCaptcha!</b>
         </span>
