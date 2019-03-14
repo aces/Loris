@@ -36,6 +36,10 @@ class UnresolvedConflictsPane extends Component {
       row[header] = rowData[index];
     });
 
+    if (column === 'Instrument') {
+      return <td>{this.state.Data.form.instrument.options[row.Instrument]}</td>;
+    }
+
     if (column === 'Correct Answer') {
       const value1 = row.Value1;
       const value2 = row.Value2;

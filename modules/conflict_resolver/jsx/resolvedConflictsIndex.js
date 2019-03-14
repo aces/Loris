@@ -39,6 +39,10 @@ class ResolvedConflictsPane extends React.Component {
       row[header] = rowData[index];
     }, this);
 
+    if (column === 'Instrument') {
+      return <td>{this.state.Data.form.instrument.options[row.Instrument]}</td>;
+    }
+
     if (column === 'Correct Answer') {
       let correctAnswer = '';
       const newValue = row['New Value'];
