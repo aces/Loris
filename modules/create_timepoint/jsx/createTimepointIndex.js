@@ -126,7 +126,7 @@ class CreateTimepoint extends React.Component {
           if (data.subproject) {
             const state = Object.assign({}, this.state);
             state.form.options.subproject = data.subproject;
-            state.form.value.subproject = Object.keys(data.subproject)[0];
+            state.form.value.subproject = '';
             state.form.display.subproject = true;
             this.setState(state);
           }
@@ -134,7 +134,7 @@ class CreateTimepoint extends React.Component {
           if (data.psc) {
             const state = Object.assign({}, this.state);
             state.form.options.psc = data.psc;
-            state.form.value.psc = Object.keys(data.psc)[0];
+            state.form.value.psc = '';
             state.form.display.psc = true;
             this.setState(state);
           }
@@ -162,9 +162,11 @@ class CreateTimepoint extends React.Component {
     state.form.options.visit = state.storage.visit[
       state.form.value.subproject
     ];
-    state.form.value.visit = Object.keys(state.storage.visit[
-      state.form.value.subproject
-    ])[0];
+    if (state.form.value.subproject) {
+      state.form.value.visit = Object.keys(state.storage.visit[
+        state.form.value.subproject
+        ])[0];
+    }
     state.form.display.visit = true;
     this.setState(state);
   }
@@ -261,7 +263,7 @@ class CreateTimepoint extends React.Component {
         value={this.state.form.value.subproject}
         options={this.state.form.options.subproject}
         onUserInput={this.setForm}
-        emptyOption={false}
+        emptyOption={true}
         disabled={false}
         required={true}
       />
@@ -275,7 +277,7 @@ class CreateTimepoint extends React.Component {
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
         onUserInput={this.setForm}
-        emptyOption={false}
+        emptyOption={true}
         disabled={false}
         required={true}
       />
@@ -289,7 +291,7 @@ class CreateTimepoint extends React.Component {
         value={this.state.form.value.visit}
         options={this.state.form.options.visit}
         onUserInput={this.setForm}
-        emptyOption={false}
+        emptyOption={true}
         disabled={false}
         required={true}
       />
