@@ -167,7 +167,7 @@ class AjaxLogin extends \NDB_Page
      */
     function resetPassword(array $values) : array
     {
-        // Always claim success to phishers.
+        // Always claim success to avoid providing user info to attackers.
         $values['success'] = 'Password reset. '
             . 'You should receive an email within a few minutes.';
 
@@ -179,12 +179,12 @@ class AjaxLogin extends \NDB_Page
         $email = '';
         try {
             $email = $user->getData('Email');
-            if (empty($email) || empty($user)) {
-                $values['error'] = 'invalid';
+            if (empty($email)) {
+                $values['error'] = 'Not a valid user';
                 return $values;
             }
-        } catch (\Exception $exception) {
-            $values['error'] = 'invalid';
+        } catch (\LorisException $exception) {
+            $values['error'] = 'Not a valid user';
         }
 
         try {
@@ -207,12 +207,12 @@ class AjaxLogin extends \NDB_Page
                 error_log(
                     $_SERVER['REMOTE_ADDR']
                     . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
-                    . " attempted to reset password for $username"
+                    . ' attempted to reset password for ' . $username
                 );
             }
         } catch(\Exception $e) {
-            error_log('Unhandled exception in reset_password.');
-            $values['error'] = 'invalid';
+            error_log($e->getMessage());
+            $values['error'] = 'Sending reset email failed.';
         }
         return $values;
     }
@@ -227,6 +227,9 @@ class AjaxLogin extends \NDB_Page
      */
     function requestAccount(array $values) : array
     {
+        $config           =& \NDB_Config::singleton();
+        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
+
         // Verify reCAPTCHA
         if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
             $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
@@ -319,7 +322,7 @@ class AjaxLogin extends \NDB_Page
     }
 
     /**
-     * Login account.
+     * Processes login data submitted via login form.
      *
      * @param array $values the user data received.
      *
