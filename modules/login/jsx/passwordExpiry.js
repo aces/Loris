@@ -79,8 +79,6 @@ class PasswordExpired extends Component {
     ).then((response) => response.json())
       .then(
         (data) => {
-          console.log('success: ');
-          console.log(data);
           if (data.error) {
             // error - message.
             const state = Object.assign({}, this.state);
@@ -92,8 +90,7 @@ class PasswordExpired extends Component {
             window.location.href = window.location.origin;
           }
         }).catch((error) => {
-          console.log('error: ');
-          console.log(error);
+          // no error should happen.
     });
   }
   /**

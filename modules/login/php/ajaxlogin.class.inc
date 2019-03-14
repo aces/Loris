@@ -39,6 +39,8 @@ class AjaxLogin extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
+     * @throws \DatabaseException
+     * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -81,6 +83,8 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \DatabaseException
+     * @throws \LorisException
      */
     function processRequest(array $values) : array
     {
@@ -90,12 +94,11 @@ class AjaxLogin extends \NDB_Page
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'reset') {
             // reset - password reset request by user.
-            $response = $this->resetPassword($values);
+            $response           = $this->resetPassword($values);
             $response['status'] = 'success';
-        }
-        else if (isset($values['command']) && $values['command'] == 'request') {
+        } else if (isset($values['command']) && $values['command'] == 'request') {
             // request - account request by user.
-            $response = $this->requestAccount($values);
+            $response           = $this->requestAccount($values);
             $response['status'] = 'success';
         } else if (isset($values['command']) && $values['command'] == 'login') {
             // login - user attempting to login.
@@ -232,7 +235,6 @@ class AjaxLogin extends \NDB_Page
                 $_SERVER['REMOTE_ADDR']
             );
             if (!$resp->isSuccess()) {
-                $errors            = $resp->getErrorCodes();
                 $values['captcha'] = 'Please complete the reCaptcha!';
             }
         }
@@ -253,7 +255,7 @@ class AjaxLogin extends \NDB_Page
                  'Email'            => $from,
                 );
 
-        // check email address' uniqueness
+        // Check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
             array('VEmail' => $from)
@@ -263,7 +265,7 @@ class AjaxLogin extends \NDB_Page
 
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
-            $success = $DB->insert('users', $vals);
+            $DB->insert('users', $vals);
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
@@ -327,7 +329,11 @@ class AjaxLogin extends \NDB_Page
     {
 
         $login   = new SinglePointLogin();
-        $success = $login->passwordAuthenticate($values['username'], $values['password'], false);
+        $success = $login->passwordAuthenticate(
+            $values['username'],
+            $values['password'],
+            false
+        );
         if ($success) {
             // login success.
             $values['status'] = 'success';
@@ -351,6 +357,7 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \LorisException
      */
     function expiredPassword(array $values) : array
     {
@@ -371,14 +378,14 @@ class AjaxLogin extends \NDB_Page
             if (!\User::isPasswordStrong(
                 $values['password'],
                 array(
-                    $values['confirm'],
-                    $data['UserID'],
-                    $data['Email'],
+                 $values['confirm'],
+                 $data['UserID'],
+                 $data['Email'],
                 ),
                 array(
-                    '==',
-                    '!=',
-                    '!=',
+                 '==',
+                 '!=',
+                 '!=',
                 )
             )
             ) {
