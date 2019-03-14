@@ -1,9 +1,10 @@
+import PasswordExpired from './passwordExpiry';
+import RequestAccount from './requestAccount';
+import ResetPassword from './resetPassword';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
-import ResetPassword from './resetPassword';
-import RequestAccount from './requestAccount';
 
 /**
  * Login form.
@@ -19,8 +20,6 @@ class Login extends Component {
     super(props);
     this.state = {
       url: '',
-<<<<<<< HEAD
-=======
       study: {
         logo: '',
         title: '',
@@ -32,27 +31,32 @@ class Login extends Component {
           username: '',
           password: '',
         },
-        error: '',
+        error: {
+          toggle: false,
+          message: '',
+        },
       },
       mode: 'login',
->>>>>>> update
+      component: {
+        requestAccount: null,
+        expiredPassword: null,
+      },
       isLoaded: false,
     };
     // Bind component instance to custom methods
     this.fetchInitializerData = this.fetchInitializerData.bind(this);
-<<<<<<< HEAD
-=======
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setForm = this.setForm.bind(this);
     this.setMode = this.setMode.bind(this);
->>>>>>> update
   }
+
   /**
    * Executes after component mounts.
    */
   componentDidMount() {
     this.fetchInitializerData();
   }
+
   /**
    * Used with sending POST data to the server.
    * @param {object} json - json object converted for POST.
@@ -75,42 +79,31 @@ class Login extends Component {
     fetch(
       url, {
         method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: send,
       }
-    ).then((response) => {
-      console.log(JSON.stringify(response));
-      response.json();
-    })
+    ).then((response) => response.json())
       .then(
         (data) => {
-          console.log('success');
-<<<<<<< HEAD
-          this.setState({isLoaded: true});
-=======
-          console.log(data);
           const state = Object.assign({}, this.state);
-          state.study.description = data.study_description;
-          state.study.title = data.study_title;
-          this.state.study.logo = window.location.origin
-            + '/' + data.study_logo;
+          // login setup.
+          state.study.description = data.login.description;
+          state.study.title = data.login.title;
+          state.study.logo = window.location.origin
+            + '/' + data.login.logo;
+          // request account setup.
+          state.component.requestAccount = data.requestAccount;
           state.isLoaded = true;
           this.setState(state);
->>>>>>> update
         }).catch((error) => {
-          console.log('error: ');
-          console.log(error);
+      // error shouldn't happen.
     });
   }
+
   /**
-<<<<<<< HEAD
-=======
    * Set the form data based on state values of child elements/components
    *
    * @param {string} formElement - name of the selected element
@@ -121,33 +114,70 @@ class Login extends Component {
     state.form.value[formElement] = value;
     this.setState(state);
   }
+
   /**
    * Handle form submission
    *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    let form = document.getElementById('form');
-    let inputLogin = document.createElement('input');
-    inputLogin.setAttribute('name', 'login');
-    inputLogin.setAttribute('value', 'true');
-    inputLogin.setAttribute('type', 'hidden');
-    form.append(inputLogin);
-    form.submit();
+    const state = Object.assign({}, this.state);
+    const url = window.location.origin + '/login/AjaxLogin';
+    const send = this.urlSearchParams({
+      login: true,
+      command: 'login',
+      username: state.form.value.username,
+      password: state.form.value.password,
+    });
+    fetch(
+      url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          if (data.expired) {
+            // expired - password expired.
+            const state = Object.assign({}, this.state);
+            state.component.expiredPassword = {
+              message: data.error,
+              username: state.form.value.username,
+            };
+            state.mode = 'expired';
+            this.setState(state);
+          }
+          if (data.error) {
+            // error - incorrect password.
+            const state = Object.assign({}, this.state);
+            state.form.error.toggle = true;
+            state.form.error.message = data.error;
+            this.setState(state);
+          } else {
+            // success - refresh page and user is logged in.
+            window.location.href = window.location.origin;
+          }
+        }).catch((error) => {
+      // error shouldn't happen.
+    });
   }
+
   /**
    * Set mode.
    *
    * @param {string} mode - set as mode.
    */
   setMode(mode) {
-    console.log(mode);
     const state = Object.assign({}, this.state);
     state.mode = mode;
     this.setState(state);
   }
+
   /**
->>>>>>> update
    * @return {DOMRect}
    */
   render() {
@@ -155,21 +185,16 @@ class Login extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-<<<<<<< HEAD
-    return (
-      <Panel
-        title={'Login to LORIS'}
-        class={'panel-login login-panel'}
-        collapsing={false}
-      >
-        <div>test</div>
-      </Panel>
-    );
-=======
     if (this.state.mode === 'login') {
       const study = (
         <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
       );
+      const error = this.state.form.error.toggle ? (
+        <StaticElement
+          text={this.state.form.error.message}
+          class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
+        />
+      ) : null;
       const login = (
         <div>
           <section className={'study-logo'}>
@@ -200,6 +225,7 @@ class Login extends Component {
               required={true}
               type={'password'}
             />
+            {error}
             <ButtonElement
               label={'Login'}
               type={'submit'}
@@ -215,7 +241,8 @@ class Login extends Component {
                style={{cursor: 'pointer'}}>Request Account</a>
           </div>
           <div className={'help-text'}>
-            A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)
+            A WebGL-compatible browser is required for full functionality
+            (Mozilla Firefox, Google Chrome)
           </div>
         </div>
       );
@@ -257,12 +284,22 @@ class Login extends Component {
         <RequestAccount
           module={'reset'}
           setMode={this.setMode}
+          data={this.state.component.requestAccount}
         />
       );
     }
->>>>>>> update
+    if (this.state.mode === 'expired') {
+      return (
+        <PasswordExpired
+          module={'expired'}
+          setMode={this.setMode}
+          data={this.state.component.expiredPassword}
+        />
+      );
+    }
   }
 }
+
 Login.propTypes = {
   module: PropTypes.string,
 };

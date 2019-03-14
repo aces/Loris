@@ -129,6 +129,7 @@ class NDB_Client
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
             . "img-src 'self' data:; "
+            . "frame-src 'self' $CaptchaDomains; "
             . $config_additions
         );
         // start php session
