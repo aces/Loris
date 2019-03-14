@@ -103,6 +103,7 @@ class CouchDBInstrumentImporter
                         LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) ";
         $where = "WHERE 
                         f.CommentID NOT LIKE 'DDE%' 
+                        AND f.Test_name=:inst
                         AND s.Active='Y' AND c.Active='Y'";
 
         if ($tablename === "") {
@@ -141,8 +142,8 @@ class CouchDBInstrumentImporter
             }
 
             $this->CouchDB->beginBulkTransaction();
-            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($tableName), array('inst' => $instrument));
-            $preparedStatement->execute();
+            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($tableName));
+            $preparedStatement->execute(array('inst' => $instrument));
             while ($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID = $row['CommentID'];
 
@@ -163,7 +164,7 @@ class CouchDBInstrumentImporter
                 unset($docdata['city_of_birth_status']);
 
                 if (isset($docdata['Examiner']) && is_numeric($docdata['Examiner'])) {
-                    $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $row['Examiner']));
+                    $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $docdata['Examiner']));
                 }
                 $doc     = array(
                             'Meta' => array(
