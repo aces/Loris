@@ -15,7 +15,6 @@
 $tpl_data = array();
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
-    header('Access-Control-Allow-Headers: content-Type, Accept');
     header("Access-Control-Allow-Credentials: true");
 }
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
