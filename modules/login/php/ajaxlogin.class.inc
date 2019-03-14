@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\login;
 
 use LORIS\Http\StringStream;
@@ -31,7 +32,7 @@ use SinglePointLogin;
 class AjaxLogin extends \NDB_Page
 {
     public $skipTemplate = true;
-    public $AjaxModule   = true;
+    public $AjaxModule = true;
 
     /**
      * This function will return a json object for login.
@@ -42,7 +43,7 @@ class AjaxLogin extends \NDB_Page
      * @throws \DatabaseException
      * @throws \LorisException
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         /**
          * Ensure POST request.
@@ -86,7 +87,7 @@ class AjaxLogin extends \NDB_Page
      * @throws \DatabaseException
      * @throws \LorisException
      */
-    function processRequest(array $values) : array
+    function processRequest(array $values): array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
             // initialize - setup form data to return.
@@ -111,6 +112,7 @@ class AjaxLogin extends \NDB_Page
         }
         return $response;
     }
+
     /**
      * Initialize setup.
      *
@@ -118,7 +120,7 @@ class AjaxLogin extends \NDB_Page
      *
      * @return array
      */
-    function initializeSetup(array $values) : array
+    function initializeSetup(array $values): array
     {
         // Login Setup.
         $loginData = array();
@@ -130,19 +132,19 @@ class AjaxLogin extends \NDB_Page
         $config      =& \NDB_Config::singleton();
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
-            $windowName           = md5($url);
+            $windowName = md5($url);
             $loginData['links'][] = array(
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $windowName,
-            );
+                                     'url' => $url,
+                                     'label' => $label,
+                                     'windowName' => $windowName,
+                                    );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
-        $loginData['title']       = $config->getSetting('title');
-        $loginData['logo']        = $config->getSetting('studylogo');
-        $values['login']          = $loginData;
+        $loginData['title'] = $config->getSetting('title');
+        $loginData['logo']  = $config->getSetting('studylogo');
+        $values['login']    = $loginData;
 
         // Request Account Setup.
         $requestAccountData = array();
@@ -165,7 +167,7 @@ class AjaxLogin extends \NDB_Page
      *
      * @return array
      */
-    function resetPassword(array $values) : array
+    function resetPassword(array $values): array
     {
         // Always claim success to avoid providing user info to attackers.
         $values['success'] = 'Password reset. '
@@ -210,7 +212,7 @@ class AjaxLogin extends \NDB_Page
                     . ' attempted to reset password for ' . $username
                 );
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             $values['error'] = 'Sending reset email failed.';
         }
@@ -225,7 +227,7 @@ class AjaxLogin extends \NDB_Page
      * @return array
      * @throws \DatabaseException
      */
-    function requestAccount(array $values) : array
+    function requestAccount(array $values): array
     {
         $config           =& \NDB_Config::singleton();
         $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
@@ -247,16 +249,16 @@ class AjaxLogin extends \NDB_Page
         $lastname = htmlspecialchars($values['lastname'], ENT_QUOTES);
         $from     = htmlspecialchars($values['email'], ENT_QUOTES);
         $site     = $values['site'];
-        $fullname = $name.' '.$lastname;
+        $fullname = $name . ' ' . $lastname;
 
         $vals = array(
-            'UserID'           => $from,
-            'Real_name'        => $fullname,
-            'First_name'       => $name,
-            'Last_name'        => $lastname,
-            'Pending_approval' => 'Y',
-            'Email'            => $from,
-        );
+                 'UserID' => $from,
+                 'Real_name' => $fullname,
+                 'First_name' => $name,
+                 'Last_name' => $lastname,
+                 'Pending_approval' => 'Y',
+                 'Email' => $from,
+                );
 
         // Check email address' uniqueness
         $result = $DB->pselectOne(
@@ -275,8 +277,8 @@ class AjaxLogin extends \NDB_Page
             $DB->insert(
                 'user_psc_rel',
                 array(
-                    'UserID'   => $user_id,
-                    'CenterID' => $site,
+                 'UserID' => $user_id,
+                 'CenterID' => $site,
                 )
             );
 
@@ -298,19 +300,19 @@ class AjaxLogin extends \NDB_Page
                     $DB->insert(
                         'examiners',
                         array(
-                            'full_name'   => $fullname,
-                            'radiologist' => $rad,
-                            'userID'      => $user_id,
+                         'full_name' => $fullname,
+                         'radiologist' => $rad,
+                         'userID' => $user_id,
                         )
                     );
                     $examinerID = $DB->getLastInsertID();
                     $DB->insert(
                         'examiners_psc_rel',
                         array(
-                            'examinerID'       => $examinerID,
-                            'centerID'         => $site,
-                            'active'           => 'Y',
-                            'pending_approval' => 'Y',
+                         'examinerID' => $examinerID,
+                         'centerID' => $site,
+                         'active' => 'Y',
+                         'pending_approval' => 'Y',
                         )
                     );
                 }
@@ -328,7 +330,7 @@ class AjaxLogin extends \NDB_Page
      *
      * @return array
      */
-    function login(array $values) : array
+    function login(array $values): array
     {
 
         $login   = new SinglePointLogin();
@@ -362,7 +364,7 @@ class AjaxLogin extends \NDB_Page
      * @return array
      * @throws \LorisException
      */
-    function expiredPassword(array $values) : array
+    function expiredPassword(array $values): array
     {
         // Check if password is not empty.
         if (empty($values['password']) || empty($values['confirm'])) {
@@ -381,14 +383,14 @@ class AjaxLogin extends \NDB_Page
             if (!\User::isPasswordStrong(
                 $values['password'],
                 array(
-                    $values['confirm'],
-                    $data['UserID'],
-                    $data['Email'],
+                 $values['confirm'],
+                 $data['UserID'],
+                 $data['Email'],
                 ),
                 array(
-                    '==',
-                    '!=',
-                    '!=',
+                 '==',
+                 '!=',
+                 '!=',
                 )
             )
             ) {
@@ -403,107 +405,6 @@ class AjaxLogin extends \NDB_Page
         } else {
             $values['error'] = 'invalid';
         }
-        return $values;
-    }
-
-    /**
-     * Request account.
-     *
-     * @param array $values the user data received.
-     *
-     * @return array
-     */
-    function requestAccount(array $values) : array
-    {
-        $DB       = \Database::singleton();
-        $name     = htmlspecialchars($values["firstname"], ENT_QUOTES);
-        $lastname = htmlspecialchars($values["lastname"], ENT_QUOTES);
-        $from     = htmlspecialchars($values["from"], ENT_QUOTES);
-        $site     = $values["site"];
-        $fullname = $name." ".$lastname;
-
-        $vals = array(
-                 'UserID'           => $from,
-                 'Real_name'        => $fullname,
-                 'First_name'       => $name,
-                 'Last_name'        => $lastname,
-                 'Pending_approval' => 'Y',
-                 'Email'            => $from,
-                );
-
-        // check email address' uniqueness
-        $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
-            array('VEmail' => $from)
-        );
-
-        $user_id = null;
-
-        if ($result == 0) {
-            // insert into DB only if email address doesn't exist
-            $success = $DB->insert('users', $vals);
-            // Get the ID of the new user and insert into user_psc_rel
-            $user_id = $DB->getLastInsertId();
-
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                 'UserID'   => $user_id,
-                 'CenterID' => $site,
-                )
-            );
-
-            if ($values['examiner'] == 'on') {
-                $rad = 0;
-                if ($values['radiologist'] == 'on') {
-                    $rad = 1;
-                }
-                //insert in DB as inactive until account approved
-                $examinerID = $DB->pselect(
-                    "SELECT e.examinerID
-                 FROM examiners e
-                 WHERE e.full_name=:fn",
-                    array("fn" => $fullname)
-                );
-
-                // If examiner not in table add him
-                if (empty($examinerID)) {
-                    $DB->insert(
-                        'examiners',
-                        array(
-                         'full_name'   => $fullname,
-                         'radiologist' => $rad,
-                         'userID'      => $user_id,
-                        )
-                    );
-                    $examinerID = $DB->getLastInsertID();
-                    $DB->insert(
-                        'examiners_psc_rel',
-                        array(
-                         'examinerID'       => $examinerID,
-                         'centerID'         => $site,
-                         'active'           => 'Y',
-                         'pending_approval' => 'Y',
-                        )
-                    );
-                }
-            }
-        }
-
-        // Verify reCAPTCHA
-        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-            $resp      = $recaptcha->verify(
-                $values['g-recaptcha-response'],
-                $_SERVER['REMOTE_ADDR']
-            );
-            if (!$resp->isSuccess()) {
-                $errors            = $resp->getErrorCodes();
-                $values['captcha'] = 'Please complete the reCaptcha!';
-            }
-        }
-        // Show success message even if email already exists for security reasons
-        $values['success'] = true;
         return $values;
     }
 }

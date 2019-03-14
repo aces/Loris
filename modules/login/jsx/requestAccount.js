@@ -20,11 +20,25 @@ class RequestAccount extends Component {
           firstname: '',
           lastname: '',
           email: '',
+          site: this.props.data.site
+            ? Object.keys(this.props.data.site)[0]
+            : '',
+          examiner: false,
+          radiologist: false,
         },
+        captcha: this.props.data.captcha
+          ? this.props.data.captcha
+          : '',
         error: '',
       },
+      request: false,
     };
     this.setForm = this.setForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    // Use LORIS captcha service if configured.
+    if (this.props.data.captcha) {
+      this.loadGoogleCaptcha();
+    }
   }
 
   /**
@@ -38,17 +52,90 @@ class RequestAccount extends Component {
     state.form.value[formElement] = value;
     this.setState(state);
   }
+
+  /**
+   * Used with sending POST data to the server.
+   * @param {object} json - json object converted for POST.
+   * @return {string} send in POST to server.
+   */
+  urlSearchParams(json) {
+    return Object.keys(json).map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+    }).join('&');
+  }
+
   /**
    * Handle form submission
    *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    let form = document.getElementById('form');
-    form.submit();
+    const state = Object.assign({}, this.state);
+    const url = window.location.origin + '/login/AjaxLogin';
+    const send = this.urlSearchParams({
+      command: 'request',
+      firstname: state.form.value.firstname,
+      lastname: state.form.value.lastname,
+      email: state.form.value.email,
+      site: state.form.value.site,
+      examiner: state.form.value.examiner,
+      radiologist: state.form.value.radiologist,
+    });
+    fetch(
+      url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          this.setState({request: true});
+        }).catch((error) => {
+      this.setState({request: true});
+    });
   }
+
+  /**
+   * Used for including Google ReCaptcha.
+   */
+  loadGoogleCaptcha() {
+    /**
+     * Dynamically load a script if necessary.
+     * @param {string} url - script to load.
+     */
+    function loadScript(url) {
+      // Adding the script tag to the head as suggested before
+      let head = document.getElementsByTagName('head')[0];
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+
+      // Start the loading...
+      head.appendChild(script);
+    }
+
+    // Include Google ReCaptcha.
+    loadScript('https://www.google.com/recaptcha/api.js');
+  }
+
+  /**
+   * @return {DOMRect}
+   */
   render() {
-    const request = (
+    const captcha = this.state.form.captcha ? (
+      <div className='form-group'>
+        <div className='g-recaptcha'
+             data-sitekey={this.state.form.captcha}/>
+        <span id='helpBlock' className='help-block'>
+          <b className='text-danger'>Please complete the reCaptcha!</b>
+        </span>
+      </div>
+    ) : null;
+    const request = !this.state.request ? (
       <div>
         <FormElement
           name={'form1'}
@@ -82,7 +169,7 @@ class RequestAccount extends Component {
             placeholder={'Last name'}
           />
           <TextboxElement
-            name={'firstname'}
+            name={'email'}
             value={this.state.form.value.email}
             onUserInput={this.setForm}
             class={'col-sm-12'}
@@ -92,24 +179,28 @@ class RequestAccount extends Component {
           />
           <SelectElement
             name={'site'}
-            options={{
-              1: 'Data Coordinating Center',
-              2: 'Montreal',
-              3: 'Ottawa',
-              4: 'Rome',
-            }}
+            options={this.props.data.site}
+            value={this.state.form.value.site}
+            onUserInput={this.setForm}
             class={'col-sm-12'}
+            emptyOption={false}
+            required={true}
           />
           <CheckboxElement
             name={'examiner'}
             label={'Examiner role'}
             class={'row form-group'}
+            value={this.state.form.value.examiner}
+            onUserInput={this.setForm}
           />
           <CheckboxElement
             name={'radiologist'}
             label={'Radiologist'}
             class={'row form-group'}
+            value={this.state.form.value.radiologist}
+            onUserInput={this.setForm}
           />
+          {captcha}
           <ButtonElement
             label={'Request Account'}
             type={'submit'}
@@ -117,8 +208,15 @@ class RequestAccount extends Component {
             buttonClass={'btn btn-primary btn-block'}
           />
         </FormElement>
-        <a onClick={()=>this.props.setMode('login')}
+        <a onClick={() => this.props.setMode('login')}
            style={{cursor: 'pointer'}}>Back to login page</a>
+      </div>
+    ) : (
+      <div className={'success-message'}>
+        <h1>Thank you!</h1>
+        <p>Your request for an account has been received successfully.</p>
+        <a onClick={() => window.location.href = window.location.origin}
+           style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (
@@ -134,9 +232,11 @@ class RequestAccount extends Component {
     );
   }
 }
+
 RequestAccount.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
+  data: PropTypes.object,
 };
 
 export default RequestAccount;
