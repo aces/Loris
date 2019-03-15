@@ -166,6 +166,7 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
+     * @throws \LorisException
      */
     function resetPassword(array $values) : array
     {
@@ -178,15 +179,10 @@ class AjaxLogin extends \NDB_Page
         $user     =& \User::singleton($username);
 
         // Check if valid user.
-        $email = '';
-        try {
-            $email = $user->getData('Email');
-            if (empty($email)) {
-                $values['error'] = 'Not a valid user';
-                return $values;
-            }
-        } catch (\LorisException $exception) {
+        $email = $user->getData('Email');
+        if (empty($email)) {
             $values['error'] = 'Not a valid user';
+            return $values;
         }
 
         try {
@@ -205,7 +201,7 @@ class AjaxLogin extends \NDB_Page
                 $msg_data['password'] = $password;
                 \Email::send($email, 'lost_password.tpl', $msg_data);
             } else {
-                $values['error'] = 'invalid';
+                $values['error'] = 'Sending reset email failed.';
                 error_log(
                     $_SERVER['REMOTE_ADDR']
                     . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
@@ -220,7 +216,7 @@ class AjaxLogin extends \NDB_Page
     }
 
     /**
-     * Request account.
+     * Process request account form.
      *
      * @param array $values the user data received.
      *
@@ -240,7 +236,8 @@ class AjaxLogin extends \NDB_Page
                 $_SERVER['REMOTE_ADDR']
             );
             if (!$resp->isSuccess()) {
-                $values['captcha'] = 'Please complete the reCaptcha!';
+                $values['error'] = 'Please complete the reCaptcha!';
+                return $values;
             }
         }
 
@@ -351,6 +348,7 @@ class AjaxLogin extends \NDB_Page
 
         if (isset($_SESSION['PasswordExpiredForUser'])) {
             $values['expired'] = true;
+            $values['error'] = 'Password expired for user.';
         }
 
         return $values;
@@ -395,7 +393,7 @@ class AjaxLogin extends \NDB_Page
             )
             ) {
                 $values['error'] = 'The password is weak, or'
-                    . ' the passwords do not match';
+                    . ' the passwords do not match.';
                 return $values;
             }
             // Update password
@@ -403,7 +401,7 @@ class AjaxLogin extends \NDB_Page
             unset($_SESSION['PasswordExpiredForUser']);
             $values['status'] = 'success';
         } else {
-            $values['error'] = 'invalid';
+            $values['error'] = 'Server encountered an error.';
         }
         return $values;
     }
