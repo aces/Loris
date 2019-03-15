@@ -39,7 +39,7 @@ class Create_Timepoint extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $candidate =& \Candidate::singleton($this->identifier);
+        $candidate = \Candidate::singleton($this->identifier);
 
         // check user permissions
         return (
@@ -59,7 +59,7 @@ class Create_Timepoint extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candidate =& \Candidate::singleton($this->identifier);
+        $candidate = \Candidate::singleton($this->identifier);
         $candid    = $candidate->getCandID();
         $pscid     = $candidate->getPSCID();
 
