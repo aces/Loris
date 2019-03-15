@@ -1249,8 +1249,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * **** DONT TOUCH THIS, EVER. ****
      *
      * @param string $elname   The name of the element being validated
-     * @param array   $elements Array of values submitted on current page.
-     * @param array   $rules    Array of rules that have been registered.
+     * @param array  $elements Array of values submitted on current page.
+     * @param array  $rules    Array of rules that have been registered.
      *
      * @return array of errors (fieldname => error message)
      */
@@ -1333,8 +1333,8 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param ?string $controller The element which affects the validity of this
      *                           element
-     * @param array  $values     Array of values which will invalidate the rule.
-     * @param string $operator   The operator which is used to compare the rule.
+     * @param array   $values     Array of values which will invalidate the rule.
+     * @param string  $operator   The operator which is used to compare the rule.
      *
      * @return boolean true if element should be required, false otherwise.
      */
