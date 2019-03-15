@@ -247,7 +247,7 @@ class AjaxTimepoint extends \NDB_Page
 
     /**
      * Validate the post data,
-     * from user user form selection.
+     * from the create timepoint form.
      *
      * @param array $values the form values.
      *
