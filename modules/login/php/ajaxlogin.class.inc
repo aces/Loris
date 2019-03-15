@@ -346,7 +346,7 @@ class AjaxLogin extends \NDB_Page
 
         if (isset($_SESSION['PasswordExpiredForUser'])) {
             $values['expired'] = true;
-            $values['error'] = 'Password expired for user.';
+            $values['error']   = 'Password expired for user.';
         }
 
         return $values;
