@@ -194,8 +194,6 @@ class TimePoint
      *                                    being created
      * @param string|null $psc            The centre of the timepoint
      *
-     * @throws DatabaseException
-     *
      * @return void
      */
     static function createNew(

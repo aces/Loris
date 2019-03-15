@@ -39,8 +39,6 @@ class AjaxTimepoint extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
-     * @throws \DatabaseException
-     * @throws \DeprecatedException
      * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -59,7 +57,6 @@ class AjaxTimepoint extends \NDB_Page
                     )
                 );
         }
-
         /**
          * Parse POST request body.
          */
@@ -71,7 +68,6 @@ class AjaxTimepoint extends \NDB_Page
         $user       = $request->getAttribute('user');
         $identifier = $requestBody['identifier'] ?? '';
         $candidate  =& \Candidate::singleton($identifier);
-
         if (!$user->hasPermission('data_entry')
             && !(in_array(
                 $candidate->getData('RegistrationCenterID'),
@@ -88,7 +84,6 @@ class AjaxTimepoint extends \NDB_Page
                     )
                 );
         }
-
         /**
          * Sanitize $postResponse data.
          */
@@ -98,7 +93,6 @@ class AjaxTimepoint extends \NDB_Page
          * Response to reply.
          */
         $response = $this->processRequest($requestBody);
-
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200)
@@ -135,8 +129,6 @@ class AjaxTimepoint extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \DatabaseException
-     * @throws \DeprecatedException
      * @throws \LorisException
      */
     function processRequest(array $values) : array
@@ -146,16 +138,12 @@ class AjaxTimepoint extends \NDB_Page
         } else if (isset($values['command']) && $values['command'] == 'create') {
             $errors = $this->validate($values);
             if (!$errors) {
-                try {
-                    \TimePoint::createNew(
-                        $values['identifier'],
-                        $values['subproject'],
-                        $values['visit'],
-                        isset($values['psc']) ?? null
-                    );
-                } catch (\Exception $exception) {
-                    $exception = '';
-                }
+                \TimePoint::createNew(
+                    $values['identifier'],
+                    $values['subproject'],
+                    $values['visit'],
+                    isset($values['psc']) ?? null
+                );
                 $response['status'] = 'success';
             } else {
                 $response['status'] = 'error';
@@ -174,8 +162,6 @@ class AjaxTimepoint extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \DatabaseException
-     * @throws \DeprecatedException
      * @throws \LorisException
      */
     function initializeSetup(array $values) : array
@@ -195,14 +181,11 @@ class AjaxTimepoint extends \NDB_Page
             for this study. If you are an administrator, please use the 
             Configuration module to add new subprojects.';
         }
+
         // List of valid subprojects for a given project
         if ($config->getSetting('useProjects') === 'true') {
             // If projects enabled, loop through and add valid subprojects only
-            $subprojList = '';
-            try {
-                $subprojList = $candidate->getValidSubprojects();
-            } catch (\DatabaseException $e) {
-            }
+            $subprojList = $candidate->getValidSubprojects();
             if (empty($subprojList)) {
                 $errors['subprojectID'] = 'No subprojects have been 
                 defined for the project this candidate is affiliated with. 
@@ -218,14 +201,6 @@ class AjaxTimepoint extends \NDB_Page
             \Utility::toArray($visitLabelSettings) as $visitLabel
         ) {
             if (!empty($values['subproject'])) {
-                if (isset($visitLabel['generation'])
-                    && $visitLabel['generation'] !== 'sequence'
-                ) {
-                    throw new \DeprecatedException(
-                        'User generated Visit Labels are no '.
-                        'longer supported in Loris.'
-                    );
-                }
                 $visitLabel       = \Utility::toArray($visitLabel)[0];
                 $labelOptions[''] = null;
                 $items            = \Utility::toArray(
@@ -302,7 +277,6 @@ class AjaxTimepoint extends \NDB_Page
         } catch ( \LorisException $e) {
             $errors['visitLabel'] = $e->getMessage();
         }
-
         return $errors;
     }
 

@@ -604,7 +604,6 @@ class Candidate
      *
      * @return array Array of the form SubprojectID => SubprojectID
      *               or NULL if none exist
-     * @throws DatabaseException
      */
     public function getValidSubprojects(): array
     {
