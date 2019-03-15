@@ -202,9 +202,7 @@ class Login extends Component {
                  alt={this.state.study.title}/>
           </section>
           <FormElement
-            name={'login'}
             action={''}
-            id={'form'}
             fileUpload={'false'}
             onSubmit={this.handleSubmit}
           >
