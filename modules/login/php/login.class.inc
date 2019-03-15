@@ -44,7 +44,7 @@ class Login extends \NDB_Page
         return array_merge(
             $deps,
             array(
-                $baseURL . '/login/js/loginIndex.js',
+             $baseURL . '/login/js/loginIndex.js',
             )
         );
     }
