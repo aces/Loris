@@ -229,6 +229,7 @@ class Login extends Component {
             <ButtonElement
               label={'Login'}
               type={'submit'}
+              name={'login'}
               columnSize={'col-sm-12'}
               buttonClass={'btn btn-primary btn-block'}
             />
