@@ -15,7 +15,6 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
        $this->assertEquals('submit', $login->getAttribute("type"));
-       $this->assertEquals('Login', $login->getAttribute("value"));
 
        $username->sendKeys("UnitTester");
        $password->sendKeys("IJUSTMADETHISUP");
@@ -38,7 +37,6 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
        $this->assertEquals('submit', $login->getAttribute("type"));
-       $this->assertEquals('Login', $login->getAttribute("value"));
 
        $username->sendKeys("UnitTester");
        $password->sendKeys("4test4");
