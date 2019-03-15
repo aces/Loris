@@ -1339,7 +1339,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return boolean true if element should be required, false otherwise.
      */
     function XINRunRuleFunction(
-        string $controller,
+        ?string $controller,
         array $values,
         string $operator
     ): bool {
