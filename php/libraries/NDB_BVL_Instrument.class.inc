@@ -1248,7 +1248,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * **** DONT TOUCH THIS, EVER. ****
      *
-     * @param ?string $elname   The name of the element being validated
+     * @param string $elname   The name of the element being validated
      * @param array   $elements Array of values submitted on current page.
      * @param array   $rules    Array of rules that have been registered.
      *
@@ -1331,7 +1331,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Run a XIN rule on an individual element
      *
-     * @param string $controller The element which affects the validity of this
+     * @param ?string $controller The element which affects the validity of this
      *                           element
      * @param array  $values     Array of values which will invalidate the rule.
      * @param string $operator   The operator which is used to compare the rule.
