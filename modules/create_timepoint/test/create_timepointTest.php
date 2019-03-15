@@ -107,17 +107,17 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * Create a timepoint with three parameters.
      *
-     * @param string $canID      ID of candidate
+     * @param string $candID      ID of candidate
      * @param string $subproject index of subproject
      * @param string $visitlabel index of visit label
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
+    private function _createTimepoint($candID, $subproject, $visitlabel)
     {
         $this->safeGet(
-            $this->url . "/create_timepoint/?candID=" . $canID .
-            "&identifier=" .$canID ."subprojectID=".$subproject
+            $this->url . "/create_timepoint/?candID=" . $candID .
+            "&identifier=" .$candID ."subprojectID=".$subproject
         );
          $project = self::$Subproject;
          $visit   = self::$VisitLabel;
