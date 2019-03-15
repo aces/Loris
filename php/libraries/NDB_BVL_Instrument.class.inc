@@ -1248,9 +1248,9 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * **** DONT TOUCH THIS, EVER. ****
      *
-     * @param string $elname   The name of the element being validated
-     * @param array  $elements Array of values submitted on current page.
-     * @param array  $rules    Array of rules that have been registered.
+     * @param ?string $elname   The name of the element being validated
+     * @param array   $elements Array of values submitted on current page.
+     * @param array   $rules    Array of rules that have been registered.
      *
      * @return array of errors (fieldname => error message)
      */
