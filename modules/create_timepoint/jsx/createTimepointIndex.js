@@ -42,7 +42,7 @@ class CreateTimepoint extends React.Component {
       storage: {
         visit: {},
       },
-      errors: false,
+      errors: null,
       url: {
         params: {
           candID: '',
