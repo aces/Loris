@@ -985,15 +985,10 @@ A drop-down list of options of which one or more can be selected as input value.
 ```js
 {
     "nameOfField" : {
-        "type" : "select",
-        "options" : {
-            "showEmptyOption" : boolean
-        }
+        "type" : "select"
     }
 }
 ```
-
-`options.showEmptyOption`: Boolean. True or false that an empty option is available for selection.
 
 ### 5.1.6 Text Element
 
