@@ -100,8 +100,8 @@ class AddProfile extends \NDB_Page
         $result['pscid']  = $candidate->getPSCID();
 
         return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
+                ->withHeader("Content-Type", "application/json")
+                ->withStatus(201)
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(

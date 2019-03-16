@@ -57,12 +57,12 @@ class NewProfileIndex extends React.Component {
     if (data.dateTaken == data.dateTakenConfirm) {
       dateMatch = true;
     }
-    let edcMatch = false;
+    let edcMatch = true;
     if (this.state.configData['edc'] === 'true' &&
-      data.edcDateTaken == data.edcDateTakenConfirm
-    ) {
-      edcMatch = true;
-    }
+         data.edcDateTaken !== data.edcDateTakenConfirm
+       ) {
+ edcMatch = false;
+}
     return dateMatch && edcMatch;
   }
 
@@ -176,7 +176,8 @@ class NewProfileIndex extends React.Component {
       profile =
         <FormElement
           name = "newProfileForm"
-          onSubmit = {this.handleSubmit} >
+          onSubmit = {this.handleSubmit}
+        >
           <label className = "error">
             {this.state.errMessage}
           </label>
