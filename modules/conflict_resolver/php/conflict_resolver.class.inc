@@ -285,7 +285,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
-        $instruments = array_merge(array('' => 'All Instruments'), $instruments);
+//        $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
         // Get visits
         $visits = \Utility::getVisitList();
@@ -312,9 +312,14 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             $sites = array('' => 'All User Sites') + $sites;
         }
 
+        $labelOptions = array(
+            'addEmptyOption'   => true,
+            'emptyOptionValue' => '',
+        );
+
         // Add form elements
         $this->addSelect('site', 'For Site:', $sites);
-        $this->addSelect('instrument', 'Instrument:', $instruments);
+        $this->addSelect('instrument', 'Instrument:', $instruments, $labelOptions);
         $this->addSelect('visitLabel', 'Visit label:', $visits);
         $this->addBasicText(
             'candID',

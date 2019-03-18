@@ -217,7 +217,7 @@ class ConflictResolverApp extends Component {
         this.state.Data.form.site.emptyOption = false;
       }
       if (this.state.Data.form.instrument) {
-        this.state.Data.form.instrument.emptyOption = false;
+        this.state.Data.form.instrument.emptyOption = true;
       }
       if (this.state.Data.form.visitLabel) {
         this.state.Data.form.visitLabel.emptyOption = false;

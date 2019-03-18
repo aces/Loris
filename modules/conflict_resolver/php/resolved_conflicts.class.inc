@@ -166,9 +166,14 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             $sites = array('' => 'All User Sites') + $sites;
         }
 
+        $labelOptions = array(
+            'addEmptyOption'   => true,
+            'emptyOptionValue' => '',
+        );
+
         // Add form elements
         $this->addSelect('site', 'For Site:', $sites);
-        $this->addSelect('instrument', 'Instrument:', $instruments);
+        $this->addSelect('instrument', 'Instrument:', $instruments, $labelOptions);
         $this->addSelect('visitLabel', 'Visit label:', $visits);
         $this->addBasicText(
             'candID',
