@@ -2051,7 +2051,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 "SELECT Data FROM flag WHERE CommentID=:CID",
                 array('CID' => $instrumentInstance->getCommentID())
             );
-            return json_decode($jsondata, true);
+            return json_decode($jsondata, true) ?? array();
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
