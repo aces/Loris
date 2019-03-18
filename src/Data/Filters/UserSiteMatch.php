@@ -53,7 +53,9 @@ class UserSiteMatch implements \LORIS\Data\Filter
             return false;
         } else if (method_exists($resource, 'getCenterID')) {
             $resourceSite = $resource->getCenterID();
-            return $user->hasCenter($resourceSite);
+            if (!is_null($resourceSite) {
+                return $user->hasCenter($resourceSite);
+            }
         }
         throw new \LorisException(
             "Can not implement SiteMatchFilter on a resource type that has no sites."
