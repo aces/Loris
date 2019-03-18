@@ -27,16 +27,22 @@ use \LORIS\Api\Endpoint;
  */
 class Login extends Endpoint
 {
-    /* @var int A supplied JWT key must have at least this length or it will
+    /*
+     * A supplied JWT key must have at least this length or it will
      * be rejected for being too weak.
+     * 
+     * @var int 
      */
     protected const MIN_JWT_KEY_LENGTH = 20;
-    /* @var int The number of "character sets" that must be used in a password. 
+    /* 
+     * The number of "character sets" that must be used in a password. 
      * For example the characters 0-9, a-z, and miscellaneous symbols are all 
      * different character sets. Used as a heuristic to determine password 
      * complexity.
+     *
+     * @var int
      */
-    protected const MIN_NUM_CHARSETS = 3;
+    protected const MIN_COMPLEXITY_CHARSETS = 3;
     /**
      * All users have access to the login endpoint to try and login.
      *
@@ -213,7 +219,7 @@ class Login extends Endpoint
         $CharTypes += preg_match('/[0-9]+/', $key);
         $CharTypes += preg_match('/[A-Za-z]+/', $key);
         $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $key);
-        if ($CharTypes < self::MIN_NUM_CHARSETS) {
+        if ($CharTypes < self::MIN_COMPLEXITY_CHARSETS) {
             return false;
         }
 

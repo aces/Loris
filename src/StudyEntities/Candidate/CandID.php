@@ -24,11 +24,21 @@ namespace LORIS\StudyEntities\Candidate;
  */
 class CandID extends ValidatableIdentifier
 {
-    /* @var int The minimum allowed value for valid CandIDs. Origin unclear but
+    /* 
+     * The minimum allowed value for valid CandIDs. Origin unclear but
      * assists in avoiding issues with leading 0s in string repreentations of
      * integers.
+     *
+     * @var int
      */
-    protected const MIN_CANDID_VALUE = 100000;
+    protected const MIN_VALUE = 100000;
+
+    /*
+     * A valid CandID must have exactly this number of characters.
+     *
+     * @var int
+     */
+    protected const LENGTH = 6;
     /**
      * Returns this identifier type
      *
@@ -53,8 +63,10 @@ class CandID extends ValidatableIdentifier
      */
     protected function validate(string $value): bool
     {
-        return preg_match('/[0-9]{6}/', $value) === 1 &&
-            intval($value) >= self::MIN_CANDID_VALUE;
+        $pattern = sprintf("/[0-9]{%s}", self::LENGTH);
+
+        return preg_match($pattern, $value) === 1 &&
+            intval($value) >= self::MIN_VALUE;
     }
 
     /**
