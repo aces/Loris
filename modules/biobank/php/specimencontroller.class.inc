@@ -13,8 +13,6 @@
  * @link       http://www.github.com/aces/Lors/
  */
 namespace LORIS\biobank;
-use \Psr\Http\Message\ServerRequestInterface;                                   
-use \Psr\Http\Message\ResponseInterface;       
 
 /**
  * This class features the code that enables access to the Specimens of the LORIS
@@ -58,7 +56,7 @@ class SpecimenController
     /**
      * Get all Specimen Objects permitted by the Specimen Data Provisioner (DAO).
      *
-     * @return array $specimens All permissable Specimen Objects.
+     * @return array
      */
     public function getInstances() : array
     {
@@ -80,8 +78,6 @@ class SpecimenController
      * sent to the DAO to be saved.
      *
      * @param array $list a list of specimen and container arrays to be created.
-     *
-     * @return void
      */
     public function createInstances(array $list) : void
     {
@@ -511,36 +507,5 @@ class SpecimenController
         //   - making sure all the keys are integers
         //   - finding the datatype that corresponds to that attribute
         //   - validating for that datatype
-    }
-
-    /**
-     * Validates Uploaded Files
-     *
-     * @param ServerRequestInterface $request The invoming PSR7 request
-     *                                         containing the files to be
-     *                                         uploaded.
-     *
-     * @return ResponseInterface
-     */
-    public function uploadFiles(ServerRequestInterface $request) : ResponseInterface
-    {
-        $config    = \NDB_Config::singleton();
-        $path      = $config->getSetting('biobankPath');
-
-        // XXX: If this error gets thrown, the form has already been saved. We
-        // will need a roll back to prevent errors.
-        if (!isset($path)) {
-            throw new \NotFound('Biobank File Upload Path is not configured.');
-        }
-
-        $targetdir = new \SplFileInfo($path);
-
-        // TODO: query MIME Types from sql table.
-        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-            ->withPermittedMIMETypes(
-                'text/plain'
-            );
-
-        return $uploader->handle($request);
     }
 }

@@ -236,11 +236,11 @@ class PoolController
     private function validateDate(Pool $pool) : void
     {
         // TODO: query date format from backend configuration.
-        $format = 'd-m-Y';
-        $date   = \DateTime::createFromFormat($format, $pool->getDate());
-        if ($date && $date->format($format) !== $pool->getDate()) {
-            throw new \BadRequest("Pooling date must be of the format: $format");
-        }
+        // $format = 'd-m-Y';
+        // $date   = \DateTime::createFromFormat($format, $pool->getDate());
+        // if ($date && $date->format($format) !== $pool->getDate()) {
+        //     throw new \BadRequest("Pooling date must be of the format: $format");
+        // }
     }
 
     /**
@@ -255,10 +255,10 @@ class PoolController
     private function validateTime(Pool $pool) : void
     {
         // TODO: query time format from backend configuration.
-        $format = 'H:i';
-        $time   = \DateTime::createFromFormat($format, $pool->getTime());
-        if ($time && $time->format($format) !== $pool->getTime()) {
-            throw new \BadRequest("Pooling time must be of the format: $format");
-        }
+        // $format = 'H:i';
+        // $time   = \DateTime::createFromFormat($format, $pool->getTime());
+        // if ($time && $time->format($format) !== $pool->getTime()) {
+        //     throw new \BadRequest("Pooling time must be of the format: $format");
+        // }
     }
 }

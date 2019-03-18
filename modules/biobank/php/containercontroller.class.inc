@@ -92,7 +92,7 @@ class ContainerController
         $this->validatePermission('create');
         $containerList = array();
         foreach ($list as $i => $item) {
-            $container = (new Container)->fromArray($item['container']);
+            $container = (new Container)->fromArray($item);
             $this->validateInstance($container);
             $containerList[$i] = $container;
         }

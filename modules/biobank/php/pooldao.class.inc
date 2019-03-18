@@ -99,12 +99,12 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         // TODO: query date and time format from backend to know how to query
         // them from the database.
         $query = "SELECT bp.PoolID,
-                          bp.Label,
-                          bp.CenterID,
-                          bp.Date,
-                          DATE_FORMAT(bp.Time, '%H:%i') as Time
-                  FROM    biobank_pool bp
-                  WHERE   bp.PoolID=:i";
+                         bp.Label,
+                         bp.CenterID,
+                         bp.Date,
+                         DATE_FORMAT(bp.Time, '%H:%i') as Time
+                  FROM   biobank_pool bp
+                  WHERE  bp.PoolID=:i";
         return $this->db->pselectRow($query, array('i' => $id));
     }
 
@@ -178,7 +178,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     public function saveInstance(Pool $pool) : void
     {
         //Convert Pool to SQL format.
-        $data = getSQLFromInstance($pool);
+        $data = $this->getSQLFromInstance($pool);
 
         // TODO: Introduce a SQL Transaction here with a try catch.
         // Insert or Update the biobank_pool table with respective data.
@@ -224,7 +224,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      *
      * @return array $data Array containing the data to be inserted
      */
-    private function getSQLFromInstance(Pool $pool) : array
+    private function getSQLFromIntance(Pool $pool) : array
     {
         $poolData = array(
                      'PoolID'   => $pool->getId(),

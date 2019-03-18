@@ -254,7 +254,11 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */                                                                         
     public function fromArray(array $data) : Pool                    
     {                                                                           
-        $this->setId(intval($data['id']));                                              
+        // XXX: fix this by passing strings to the setters which are then
+        // validated.
+        if ($data['id']) {
+          $this->setId(intval($data['id']));                                              
+        }
         $this->setLabel($data['label']);                                        
         $this->setSpecimenIds($data['specimenIds']);                            
         $this->setCandidateId(intval($data['candidateId']));                            
