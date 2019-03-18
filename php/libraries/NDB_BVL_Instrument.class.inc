@@ -1338,15 +1338,15 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Run a XIN rule on an individual element
      *
-     * @param string $controller The element which affects the validity of this
+     * @param ?string $controller The element which affects the validity of this
      *                           element
-     * @param array  $values     Array of values which will invalidate the rule.
-     * @param string $operator   The operator which is used to compare the rule.
+     * @param array   $values     Array of values which will invalidate the rule.
+     * @param string  $operator   The operator which is used to compare the rule.
      *
      * @return boolean true if element should be required, false otherwise.
      */
     function XINRunRuleFunction(
-        string $controller,
+        ?string $controller,
         array $values,
         string $operator
     ): bool {
