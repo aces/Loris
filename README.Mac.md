@@ -1,3 +1,6 @@
+### Mac is no longer supported as of 15.10.
+Nothing in this document is an official recommendation for LORIS but is only intended to be helpful!
+
 ## Important Notes: 
 - We recommend installing LORIS on Ubuntu or CentOS as macOS is no longer supported for "production" as of v15.10
 - These instructions were last tested on LORIS version v20.*
