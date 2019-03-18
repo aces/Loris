@@ -53,9 +53,9 @@ class Media extends \NDB_Menu_Filter
     /**
      * Create a form to filter media by various criteria
      *
-     * @return void
+     * @return array
      */
-    function getOptions()
+    function getOptions() : array
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -148,7 +148,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON() : string
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
@@ -172,7 +172,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -188,7 +188,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

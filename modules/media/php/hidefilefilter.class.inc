@@ -12,7 +12,6 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\media;
-define('SHOW', 0);
 
 /**
  * HideFilesFilter filters out data for any resource that has a value of 1
@@ -27,6 +26,8 @@ define('SHOW', 0);
  */
 class HideFileFilter implements \LORIS\Data\Filter
 {
+    const HIDE = 1;
+
     /**
      * Implements the HideFileFilter interface
      *
@@ -38,6 +39,6 @@ class HideFileFilter implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        return $resource->getHideFile() === SHOW;
+        return $resource->getHideFile() !== self::HIDE;
     }
 }
