@@ -93,7 +93,9 @@ class Edit_Help_Content extends \NDB_Form
                 $defaults['title'] = str_replace("_", " ", $safeSection);
             }
             // if not module and not instrument, should be a subtest
-            if ($_REQUEST['subsection'] != 'undefined') {
+            if (!empty($_REQUEST['subsection'])
+                && $_REQUEST['subsection'] != 'undefined'
+            ) {
                 $defaults['title'] = str_replace("_", " ", $safeSubsection);
             }
             $this->tpl_data['module_name'] = $defaults['title'];

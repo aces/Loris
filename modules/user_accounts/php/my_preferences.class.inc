@@ -382,7 +382,7 @@ class My_Preferences extends \NDB_Form
      *
      * @return bool  true if the password changed, false otherwise.
      */
-    function _passwordChanged(\Database $db, $newPassword)
+    function _passwordChanged(\Database $db, $newPassword): bool
     {
         //--- Get current password stored in database
         $passwordQuery
@@ -394,6 +394,11 @@ class My_Preferences extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
+        if (is_null($passwords)) {
+            throw new \LorisException(
+                'No existing password found for user!'
+            );
+        }
 
         if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
