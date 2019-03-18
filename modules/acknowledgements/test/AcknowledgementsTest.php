@@ -114,10 +114,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testFilterWithData()
     {
-        $this->_testFilter("full_name", self::$testData['full_name']);
-        $this->_testFilter("citation_name", self::$testData['citation_name']);
-        $this->_testFilter("start_date", self::$testData['start_date']);
-        $this->_testFilter("end_date", self::$testData['end_date']);
+        $this->_testFilter("fullName", self::$testData['full_name']);
+        $this->_testFilter("citatioName", self::$testData['citation_name']);
+        $this->_testFilter("startDate", self::$testData['start_date']);
+        $this->_testFilter("endDate", self::$testData['end_date']);
         $this->_testFilter("present", self::$testData['present']);
 
     }
@@ -132,7 +132,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     private function _testFilter($element,$value)
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        if ($element == "start_date" || $element == "end_date") {
+        if ($element == "startDate" || $element == "endDate") {
             $this->webDriver->executescript(
                 "document.getElementsByName('$element')[0].value='$value'"
             );
@@ -163,22 +163,22 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/");
         //insert ordering
         $this->webDriver->findElement(
-            WebDriverBy::Name("addordering")
+            WebDriverBy::Name("addOrdering")
         )->sendKeys(self::$newData['ordering']);
         //insert Full name
         $this->webDriver->findElement(
-            WebDriverBy::Name("addfull_name")
+            WebDriverBy::Name("addFullName")
         )->sendKeys(self::$newData['full_name']);
         //insert Citation name
         $this->webDriver->findElement(
-            WebDriverBy::Name("addcitation_name")
+            WebDriverBy::Name("addCitationName")
         )->sendKeys(self::$newData['citation_name']);
         //expecting to find the value,after clicking save button
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
         //test filter
-        $this->_testFilter("full_name", self::$newData['full_name']);
+        $this->_testFilter("fullName", self::$newData['full_name']);
     }
 }
 
