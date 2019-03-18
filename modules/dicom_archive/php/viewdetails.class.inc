@@ -279,7 +279,7 @@ class ViewDetails extends \NDB_Form
     function _inRange($seriesRange, $protocolMin, $protocolMax)
     {
         if (!isset($seriesRange)) {
-            return false;
+            return true;
         }
         if (!isset($protocolMin) && !isset($protocolMax)) {
             return true;
@@ -362,4 +362,4 @@ class ViewDetails extends \NDB_Form
         );
     }
 }
-?>
+
