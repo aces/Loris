@@ -285,7 +285,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
-//        $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
         // Get visits
         $visits = \Utility::getVisitList();
@@ -342,7 +341,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         // Project list, if applicable
         if ($config->getSetting('useProjects')==='true') {
             $projectList      = \Utility::getProjectList();
-            $list_of_projects = array('' => 'All') + $projectList;
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$value] = $value;
             }
