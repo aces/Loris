@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 define('DEBUG', false);
-define('ESCAPE_ALL', 0);
-define('ESCAPE_NOQUOTES', 1);
-define('ESCAPE_NONE', 2);
 
 /**
  * Database abstraction layer presents a unified interface to database
@@ -31,6 +28,20 @@ define('ESCAPE_NONE', 2);
  */
 class Database
 {
+    /**
+     * These constants define HTML escaping options for database interactions:
+     * ESCAPE_ALL will call htmlspecialchars() on all value.
+     * ESCAPE_NOQUOTES will do the same but will not escape single or double
+     * quotation marks.
+     * ESCAPE_NONE will not HTML escape data going into the DB and should
+     * only be used when the data is absolutely trusted.
+     *
+     * @link https://secure.php.net/manual/en/function.htmlspecialchars.php
+     */
+    protected const ESCAPE_ALL      = 0;
+    protected const ESCAPE_NOQUOTES = 1;
+    protected const ESCAPE_NONE     = 2;
+
     /**
      * The database handle, created by the connect() method
      *
@@ -263,7 +274,7 @@ class Database
      */
     public function insert(string $table, array $set): void
     {
-        $this->_realinsert($table, $set, ESCAPE_ALL);
+        $this->_realinsert($table, $set, self::ESCAPE_ALL);
     }
 
     /**
@@ -284,7 +295,7 @@ class Database
     public function unsafeinsert(
         string $table,
         array $set,
-        int $escapeMode = ESCAPE_NONE
+        int $escapeMode = self::ESCAPE_NONE
     ): void {
         $this->_realinsert($table, $set, $escapeMode);
     }
@@ -303,7 +314,7 @@ class Database
     public function insertIgnore(string $table, array $set): void
     {
         $ignore = true;
-        $this->_realinsert($table, $set, ESCAPE_ALL, $ignore);
+        $this->_realinsert($table, $set, self::ESCAPE_ALL, $ignore);
     }
 
     /**
@@ -320,7 +331,7 @@ class Database
      */
     public function insertOnDuplicateUpdate($table, $set)
     {
-        return $this->_realinsert($table, $set, ESCAPE_ALL, false, true);
+        return $this->_realinsert($table, $set, self::ESCAPE_ALL, false, true);
     }
 
     /**
@@ -342,7 +353,7 @@ class Database
     public function unsafeInsertOnDuplicateUpdate(
         string $table,
         array $set,
-        int $escapeMode = ESCAPE_NONE
+        int $escapeMode = self::ESCAPE_NONE
     ): bool {
         return $this->_realinsert($table, $set, $escapeMode, false, true);
     }
@@ -362,11 +373,14 @@ class Database
      *
      * @return array A copy of $set with the HTML characters escaped.
      */
-    private function _HTMLEscapeArray(array $set, int $mode = ESCAPE_ALL): array
-    {
+    private function _HTMLEscapeArray(
+        array $set,
+        int $mode = self::ESCAPE_ALL
+    ): array {
+
         // Escape values
         $retVal = array();
-        if ($mode === ESCAPE_NONE) {
+        if ($mode === self::ESCAPE_NONE) {
             return $set;
         }
         foreach ($set as $key => $val) {
@@ -379,12 +393,12 @@ class Database
                 continue;
             }
             switch ($mode) {
-            case ESCAPE_ALL:
+            case self::ESCAPE_ALL:
                 // Use htmlspecialchars to escape data HTML characters.
                 // Only call htmlspecialchars on strings, or else an error occurs.
                 $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
                 break;
-            case ESCAPE_NOQUOTES:
+            case self::ESCAPE_NOQUOTES:
                 // In no quotes mode, quotation marks will not be escaped.
                 $retVal[$key] = is_string($val) ?
                     htmlentities($val, ENT_NOQUOTES)
@@ -415,7 +429,7 @@ class Database
     private function _realinsert(
         string $table,
         array  $set,
-        int   $escapeMode = ESCAPE_ALL,
+        int   $escapeMode = self::ESCAPE_ALL,
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
     ): bool {
@@ -526,7 +540,7 @@ class Database
      */
     public function update(string $table, array $set, array $i_where): void
     {
-        $this->_realupdate($table, $set, $i_where, ESCAPE_ALL);
+        $this->_realupdate($table, $set, $i_where, self::ESCAPE_ALL);
     }
 
     /**
@@ -549,7 +563,7 @@ class Database
         string $table,
         array $set,
         array $i_where,
-        int $escapeMode = ESCAPE_NONE
+        int $escapeMode = self::ESCAPE_NONE
     ): void {
 
         $this->_realupdate($table, $set, $i_where, $escapeMode);
@@ -572,7 +586,7 @@ class Database
         string $table,
         array $set,
         array $i_where,
-        int $escapeMode = ESCAPE_ALL
+        int $escapeMode = self::ESCAPE_ALL
     ): bool {
 
         // Escape values
