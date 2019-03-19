@@ -553,7 +553,7 @@ class LorisForm
      * @param string $name The form element name to retrieve the value
      *                     for.
      *
-     * @return string The value to use for the form element.
+     * @return array|string|null The value to use for the form element.
      */
     function getValue($name)
     {
@@ -1290,7 +1290,7 @@ class LorisForm
                 }
 
                 if (isset($el['maxlength'])
-                    && strlen($value) > $el['maxlength']['maxlength']
+                    && strlen(strval($value)) > $el['maxlength']['maxlength']
                 ) {
                     $this->setElementError(
                         $el['name'],

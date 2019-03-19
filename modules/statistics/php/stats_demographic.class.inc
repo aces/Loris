@@ -117,11 +117,13 @@ class Stats_Demographic extends \NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits)
+            if (in_array($vl, $visits ?? array())
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
+                // Ensure $tpl_data['data'] is not null before continuing
+                $tpl_data['data'] = $tpl_data['data'] ?? array();
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];

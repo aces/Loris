@@ -571,7 +571,7 @@ class Installer
      * @param array $values An associative array with keys for dbhost,
      *                      lorismysqluser, lorismysqlpassword, and dbname
      *
-     * @return true on success, false if there were any problems.
+     * @return string|array The output of str_replace
      */
     function getConfigContent($values)
     {
