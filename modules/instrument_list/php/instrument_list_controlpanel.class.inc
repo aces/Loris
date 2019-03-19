@@ -163,7 +163,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     }
                 }
                 unset($flagList);
-                unset($constantsArray);
                 unset($flagTypeIDs);
                 unset($flagName);
                 unset($flagStatus);
@@ -218,12 +217,10 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             return;
         }
-        $condition1 = isset($_REQUEST['setSubmitted']);
-        $condition2 = $condition1 ?
-            $_REQUEST['setSubmitted'] == 'N' :
-            false;
-        $condition3 = $this->_hasAccessSendToDCC();
-        $condition4 = !in_array(
+        $submitted  = $_REQUEST['setSubmitted'] ?? '';
+        $condition1 = $submitted == 'N';
+        $condition2 = $this->_hasAccessSendToDCC();
+        $condition3 = !in_array(
             $currentStage,
             array(
              null,
@@ -233,12 +230,10 @@ class Instrument_List_ControlPanel extends \TimePoint
             )
         );
         // un-submit to dcc
-        if ($condition1 && $condition2 && $condition3 && $condition4) {
+        if ($condition1 && $condition2 && $condition3) {
 
             $this->setData(
-                array(
-                 'Submitted' => $_REQUEST['setSubmitted'],
-                )
+                array('Submitted' => $submitted)
             );
 
                 // revert from approval (or the bin)
@@ -268,24 +263,24 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 // detect conflicts for all the instruments
 
-                foreach ($batteryList as $instrument) {
-                    // If the instrument requires double data entry,
-                    // detect conflicts
-                    if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                        // ConflictDetector::
-                        //clearConflictsForInstance($instrument['CommentID']);
-                        \ConflictDetector::clearConflictsForInstance(
-                            $instrument['CommentID']
-                        );
-                        $diff =\ConflictDetector::detectConflictsForCommentIds(
-                            $instrument['Test_name'],
-                            $instrument['CommentID'],
-                            $instrument['DDECommentID']
-                        );
-                        \ConflictDetector::recordUnresolvedConflicts($diff);
+            foreach ($batteryList as $instrument) {
+                // If the instrument requires double data entry,
+                // detect conflicts
+                if (in_array($instrument['Test_name'], $ddeInstruments)) {
+                    // ConflictDetector::
+                    //clearConflictsForInstance($instrument['CommentID']);
+                    \ConflictDetector::clearConflictsForInstance(
+                        $instrument['CommentID']
+                    );
+                    $diff =\ConflictDetector::detectConflictsForCommentIds(
+                        $instrument['Test_name'],
+                        $instrument['CommentID'],
+                        $instrument['DDECommentID']
+                    );
+                    \ConflictDetector::recordUnresolvedConflicts($diff);
 
-                    }
                 }
+            }
 
                 return;
         }

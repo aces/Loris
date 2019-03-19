@@ -123,8 +123,8 @@ class Installer
     {
         // Check PHP version is supported.
         if (PHP_MAJOR_VERSION < 7) {
-            $this->_lastErr = "PHP version 7 or higher is required to run "
-            . "LORIS. $PHP_RELEASE_VERSION is not supported.";
+            $this->_lastErr = 'PHP version 7 or higher is required to run '
+            . 'LORIS. ' . PHP_RELEASE_VERSION . ' is not supported.';
             return false;
         }
 
@@ -323,7 +323,6 @@ class Installer
 
         $this->_updateConfig($DB, "imagePath", $datadir);
         $this->_updateConfig($DB, "data", $datadir);
-        $this->_updateConfig($DB, "mincPath", $datadir);
         $this->_updateConfig($DB, "MRICodePath", $datadir);
 
         // Update the host based and URL based on the location that
@@ -459,7 +458,8 @@ class Installer
                 $values["dbname"],
                 $values["lorismysqluser"],
                 $values["lorismysqlpassword"]
-            )) {
+            )
+            ) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;

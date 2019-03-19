@@ -52,7 +52,8 @@ class Utility
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
             $dob,
             $matches
-        )) {
+        )
+        ) {
             throw new \LorisException(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
@@ -67,7 +68,8 @@ class Utility
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
             $testdate,
             $matches
-        )) {
+        )
+        ) {
             throw new \LorisException(
                 "Argument 2 does not match expected date format (YYYY-MM-DD)"
             );
@@ -588,54 +590,6 @@ class Utility
     }
 
     /**
-     * Get a list of all instruments which have scoring implemented.
-     * Used in statistics module.
-     *
-     * @return array non-associative array of test_names
-     */
-    static function getScoredInstruments(): array
-    {
-        $All     = \Utility::getAllInstruments();
-        $Scored  = array();
-        $Nothing = array();
-        foreach (array_keys($All) as $Instrument) {
-            if (\Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
-                $Scored[] = $Instrument;
-            }
-        }
-        return $Scored;
-    }
-
-    /**
-     * Return the score columns which exist for a given instrument.
-     *
-     * @param string $inst The test_name of the instrument for which you would
-     *                     like to know the score columns
-     *
-     * @return array (non-associative) of scored columns for the instrument given
-     */
-    static function getScoreColsForInstrument(string $inst): array
-    {
-        include_once "NDB_BVL_Instrument.class.inc";
-        $i = NDB_BVL_Instrument::factory($inst, '', '', true);
-        if (isset($i->scoreLabels)) {
-            $score = $i->scoreLabels;
-        } elseif (isset($i->scoreCols)) {
-            $score = $i->scoreCols;
-        } elseif (isset($i->scores)) {
-            $score = $i->scores;
-        }
-        if (isset($score[0])) {
-            return $score;
-        } else {
-            if ($score != null) {
-                return array_keys($score);
-            }
-        }
-        return array();
-    }
-
-    /**
      * Checks to see if a table contains a specified column
      *
      * @param string $table_name The table to check for a column.
@@ -750,6 +704,7 @@ class Utility
 
         $DB =& \Database::singleton();
         //get sourcefield using instrument
+        $sourcefields = array();
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type

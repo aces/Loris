@@ -208,7 +208,8 @@ class ViewDetails extends \NDB_Form
         if (preg_match(
             "/$pIDRegex/",
             $this->tpl_data['archive']['PatientID']
-        )) {
+        )
+        ) {
             $this->tpl_data['archive']['patientIDValid'] = 1;
         } else {
             $this->tpl_data['archive']['patientIDValid'] = 0;
