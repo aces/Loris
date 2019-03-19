@@ -855,7 +855,6 @@ class Utility
     }
 
     /**
->>>>>>> b479d3bbc... Add PhanTypeMismatchDimFetch
      * Effectively resolve '..' characters in a file path
      *
      * @param string $path A potentially-relative filepath to be resolved
