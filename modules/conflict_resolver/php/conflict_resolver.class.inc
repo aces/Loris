@@ -339,6 +339,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $this->addBasicText('question', 'Question:');
 
         // Project list, if applicable
+        $list_of_projects = array();
         if ($config->getSetting('useProjects')==='true') {
             $projectList      = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
