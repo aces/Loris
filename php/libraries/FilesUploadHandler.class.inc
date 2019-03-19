@@ -190,7 +190,8 @@ class FilesUploadHandler implements RequestHandlerInterface
                     $file->getClientMediaType(),
                     $this->permittedMIMETypes,
                     true
-                )) {
+                )
+                ) {
                     return (new \LORIS\Http\Response())
                         ->withStatus(403)
                         ->withBody(
