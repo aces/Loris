@@ -106,7 +106,7 @@ class Profile extends \NDB_Page
         return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
-                ->withHeader("Allow", "POST")
+                ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode($this->getDefaultFields())
