@@ -1446,7 +1446,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.class;
+    let elementClass = this.props.class + ' ' + this.props.offset;
 
     let label = null;
 
@@ -1458,7 +1458,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.class === 'checkbox-inline col-sm-offset-3'
+      elementClass = this.props.class === 'checkbox-inline' + ' ' + this.props.offset
         ? 'checkbox-inline col-sm-offset-3 has-error'
         : 'checkbox-inline col-sm-offset-2 has-error';
     }
@@ -1497,6 +1497,7 @@ CheckboxElement.propTypes = {
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
   class: PropTypes.string,
+  offset: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1508,7 +1509,8 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
-  class: 'checkbox-inline col-sm-offset-3',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
