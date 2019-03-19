@@ -166,9 +166,9 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         }
 
         $labelOptions = array(
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => '',
-        );
+                         'addEmptyOption'   => true,
+                         'emptyOptionValue' => '',
+                        );
 
         // Add form elements
         $this->addSelect('site', 'For Site:', $sites);
@@ -196,7 +196,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         // Project list, if applicable
         $list_of_projects = array();
         if ($config->getSetting('useProjects')==='true') {
-            $projectList      = \Utility::getProjectList();
+            $projectList = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$value] = $value;
             }
