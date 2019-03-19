@@ -34,6 +34,7 @@ class Login extends Endpoint
      * @var int 
      */
     protected const MIN_JWT_KEY_LENGTH = 20;
+
     /* 
      * The number of "character sets" that must be used in a password. 
      * For example the characters 0-9, a-z, and miscellaneous symbols are all 
@@ -43,6 +44,7 @@ class Login extends Endpoint
      * @var int
      */
     protected const MIN_COMPLEXITY_CHARSETS = 3;
+
     /**
      * All users have access to the login endpoint to try and login.
      *

@@ -21,7 +21,12 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
-/* @var int The minimum number of arguments required to run this script. */
+/* 
+ * The minimum number of arguments required to run this script.
+ *
+ * @var int 
+ */
+
 const MIN_NUMBER_OF_ARGS = 4;
 // Possible script actions
 $actions = array('delete_timepoint');

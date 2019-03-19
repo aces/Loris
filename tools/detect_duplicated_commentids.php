@@ -26,8 +26,10 @@ require_once "NDB_Client.class.inc";
 
 /* @var int The minimum number of arguments required to run this script. */
 const MIN_NUMBER_OF_ARGS = 2;
+
 /* @var int The maximum number of arguments to run this script. */
 const MAX_NUMBER_OF_ARGS = 6;
+
 /* @var int The getCommentIDs function must return an array of at least this
  * size to be included in the csv output.
  */

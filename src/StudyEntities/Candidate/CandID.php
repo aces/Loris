@@ -39,6 +39,7 @@ class CandID extends ValidatableIdentifier
      * @var int
      */
     protected const LENGTH = 6;
+
     /**
      * Returns this identifier type
      *

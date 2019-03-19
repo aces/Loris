@@ -25,9 +25,18 @@ require_once "Utility.class.inc";
 require_once "NDB_Client.class.inc";
 require_once "TimePoint.class.inc";
 
-/* @var int The minimum number of arguments required to run this script. */
+/* 
+ * The minimum number of arguments required to run this script. 
+ *
+ * @var int 
+ */
 const MIN_NUMBER_OF_ARGS = 2;
-/* @var int The maximum number of arguments to run this script. */
+
+/*
+ * The maximum number of arguments to run this script. 
+ *
+ * @var int 
+ */
 const MAX_NUMBER_OF_ARGS = 6;
 
 /// User prompt
