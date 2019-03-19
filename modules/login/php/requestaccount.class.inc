@@ -72,14 +72,6 @@ class RequestAccount extends \NDB_Form
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
 
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $tpl_data['captcha_key'] = $reCAPTCHAPublic;
-        }
-
         $this->form->addFormRule(array(&$this, '_validate'));
     }
 

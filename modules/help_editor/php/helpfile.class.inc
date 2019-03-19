@@ -84,7 +84,7 @@ class HelpFile
     static public function insert($set)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
 
         // insert a help file
         $DB->insert('help', $set);
@@ -98,15 +98,15 @@ class HelpFile
      *
      * @param array $set Associative array of values
      *
-     * @return void
+     * @return true
      */
     function update($set)
     {
-        // create DB object
-        $DB = \Database::singleton();
-
         // update the help file
-        $DB->update('help', $set, array('helpID' => $this->helpID));
+        \Database::singleton()
+            ->update('help', $set, array('helpID' => $this->helpID));
+
+        return true;
     }
 
     /**

@@ -221,12 +221,9 @@ class Next_Stage extends \NDB_Form
      */
     function _validate($values)
     {
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
-        $timePoint =& \TimePoint::singleton($this->identifier);
-        $candID    = $timePoint->getCandID();
-
-        $candidate =& \Candidate::singleton($candID);
+        $timePoint = \TimePoint::singleton($this->identifier);
 
         $errors = array();
         /* Check that dates are present. Return early as there is no point

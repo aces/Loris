@@ -16,4 +16,9 @@
 			about them not being used -->
 		<exclude name="UnusedFormalParameter" />
 	</rule>
+
+    <rule ref="rulesets/design.xml">
+        <exclude name="CouplingBetweenObjects" />
+        <exclude name="ExitExpression" />
+    </rule>
 </ruleset>

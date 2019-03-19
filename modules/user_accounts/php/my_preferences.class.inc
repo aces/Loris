@@ -117,10 +117,6 @@ class My_Preferences extends \NDB_Form
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
 
-        //The arrays that contain the edited permissions
-        $permissionsRemoved = array();
-        $permissionsAdded   = array();
-
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
@@ -206,6 +202,9 @@ class My_Preferences extends \NDB_Form
                 )
             );
         }
+
+        // create an instance of the config object
+        $config = \NDB_Config::singleton();
 
         // send the user an email
         if (!empty($send)) {
@@ -318,7 +317,7 @@ class My_Preferences extends \NDB_Form
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
 
-        foreach ($notifier_services as $id=>$serv) {
+        foreach (array_values($notifier_services) as $serv) {
             $nGroup[] = $this->createLabel($serv);
         }
         $this->addGroup(
@@ -342,7 +341,7 @@ class My_Preferences extends \NDB_Form
 
                 // Check for permissions
                 $display =true;
-                foreach ($services['perm'] as $k=>$permission) {
+                foreach (array_values($services['perm']) as $permission) {
                     if (!$user->hasPermission($permission)) {
                         $display =false;
                         break;

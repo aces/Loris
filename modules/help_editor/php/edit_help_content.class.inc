@@ -45,7 +45,6 @@ class Edit_Help_Content extends \NDB_Form
       */
     function _getDefaults()
     {
-        $DB = \Database::singleton();
         //Get the default values
         $defaults = array();
 

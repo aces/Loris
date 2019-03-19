@@ -174,8 +174,6 @@ class AddSurvey extends \NDB_Form
             )
         );
 
-        $timepoint =& \TimePoint::singleton($SessionID);
-
         $InstrumentExists = $db->pselectOne(
             "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",

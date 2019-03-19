@@ -135,7 +135,6 @@ class CNV_Browser extends \NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -327,7 +326,7 @@ class CNV_Browser extends \NDB_Menu_Filter
         );
 
         $platform_options = array('' => 'Any');
-        foreach ($platform_results as $row => $result) {
+        foreach (array_values($platform_results) as $result) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
         }

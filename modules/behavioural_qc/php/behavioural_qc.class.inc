@@ -763,9 +763,7 @@ class Behavioural_QC extends \NDB_Form
      */
     function getTestNameusingMappedName($full_name, $subprojectID = null): string
     {
-        $DB     =& \Database::singleton();
-        $values = array();
-
+        $DB        = \Database::singleton();
         $test_name = '';
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {

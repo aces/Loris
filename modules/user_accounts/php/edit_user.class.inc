@@ -386,7 +386,7 @@ class Edit_User extends \NDB_Form
                 );
 
                 //get sites where user is already an examiner at for compare
-                foreach ($prev_sites as $row => $center) {
+                foreach (array_values($prev_sites) as $center) {
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
@@ -1200,8 +1200,8 @@ class Edit_User extends \NDB_Form
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
             $matched = false;
-            foreach ($values as $k => $v) {
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
+            foreach ($values as $v) {
+                if (preg_match("/^ex_[0-9]+$/", $v)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
                         $errors['examiner_group'] = "Please specify if examiner " .
@@ -1286,19 +1286,17 @@ class Edit_User extends \NDB_Form
      *
      * @return string the description.
      */
-    function getDescriptionUsingPermID($permID)
+    function getDescriptionUsingPermID($permID): string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $permission = $db->pselectOne(
+        $description = $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             array('pID' => $permID)
         );
-        if (is_array($permission) && count($permission)) {
-            list(,$description) = each($permission[0]);
-        }
-        return $permission;
+
+        return $description;
     }
 
     /**
