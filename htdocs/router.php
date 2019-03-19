@@ -27,7 +27,8 @@ if ($request != '/'
 if (preg_match(
     '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#',
     $url
-)) {
+)
+) {
     // RewriteRule
     //      ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$
     //      /AjaxHelper.php?Module=$1&script=$2 [QSA]
@@ -42,7 +43,8 @@ if (preg_match(
 } else if (preg_match(
     '#^(/*)instruments/(.+)/#',
     $url
-)) {
+)
+) {
     // Redirect /CandID/Visit/Instrument/ to the instrument
     // RewriteRule
     //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$
@@ -57,7 +59,8 @@ if (preg_match(
 } else if (preg_match(
     '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$#',
     $url
-)) {
+)
+) {
     // Redirect /CandID/Visit/Instrument/subtest/ to the instrument
     // RewriteRule
     //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$

@@ -639,6 +639,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
                     }
+                    // FIXME: This variable is never populated.
+                    $options = array();
                     $this->LinstQuestions[$pieces[1]]
                         = array(
                            'type'    => 'numeric',

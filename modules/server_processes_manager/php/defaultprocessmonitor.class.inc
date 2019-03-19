@@ -39,7 +39,7 @@ class DefaultProcessMonitor implements IProcessMonitor
     public function getRunningProcesses(array $pids)
     {
         // Run ps command
-        exec('ps ' . implode(' ', $pids), $psOoutput, $psReturnCode);
+        exec('ps ' . implode(' ', $pids), $psOutput, $psReturnCode);
 
         // This should not happen
         if ($psReturnCode != 0) {
@@ -50,7 +50,7 @@ class DefaultProcessMonitor implements IProcessMonitor
 
         // Get the list of running processes
         $runningProcesses = array();
-        foreach ($psCommandOutput as $psInfo) {
+        foreach ($psOutput as $psInfo) {
             if (preg_match('^(0-9]+)', $psInfo, $pid)) {
                 $runningProcesses[] = $pid[1];
             }
@@ -59,5 +59,4 @@ class DefaultProcessMonitor implements IProcessMonitor
         return $runningProcesses;
     }
 }
-
 

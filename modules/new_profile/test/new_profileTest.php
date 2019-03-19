@@ -130,7 +130,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testNewProfileCreateCandidate()
+    function testNewProfileCreateCandidate(): void
     {
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'

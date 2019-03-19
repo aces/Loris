@@ -20,12 +20,6 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 
-// id ranges...
-define('CANDIDATE_MIN_CANDID', 100000);
-define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDIDATE_MIN_PSCID', 1000);
-define('CANDIDATE_MAX_PSCID', 9999);
-
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
  * from the candidate table, but this class is abstract enough that
@@ -214,14 +208,10 @@ class Candidate
         ?int $projectID = null
     ): int {
         $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
 
-        $site =& Site::singleton($centerID);
+        $site = \Site::singleton($centerID);
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
-
-        // generate candid
-        $candID = Candidate::_generateCandID();
+        $user = \User::singleton($_SESSION['State']->getUsername());
 
         // figure out how to generate PSCID
         $config        = $factory->config();
@@ -252,21 +242,12 @@ class Candidate
                 );
             }
 
-            // check pscid uniqueness
-            if ($db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $PSCID)
-            ) > 0
-            ) {
-                throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
-            }
         } else {
-            $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
+            $PSCID = (new \PSCIDGenerator($site->getSiteAlias()))->generate();
         }
 
-        // insert the new candidate into the database
+        // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'CandID'               => $candID,
                      'RegistrationCenterID' => $centerID,
                      'PSCID'                => $PSCID,
                      'DoB'                  => $dateOfBirth,
@@ -281,14 +262,34 @@ class Candidate
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = Candidate::_generateExternalID();
+            $externalID = (new \ExternalIDGenerator())->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
-        $db->insert('candidate', $setArray);
+        // Generate a new CandID and insert it into the database.
+        $generator = new \CandIDGenerator();
+        // declare the variable to avoid static analysis warnings
+        $invalidID = false;
+        do {
+            // Reset on each iteration
+            $invalidID = false;
+            // Generate candid and insert into setArray
+            $candID = $generator->generate();
+            $setArray['CandID'] = (string) $candID;
+            try {
+                \Database::singleton()->insert('candidate', $setArray);
+            } catch (\DatabaseException | \DomainException $e) {
+                // Occurs in the case of a race condition where another CandID
+                // with the same value has been inserted into the DB before this
+                // one.
+                $invalidID = true;
+            }
+        } while ($invalidID);
 
-        // return the new candid
-        return $candID;
+        // Return the new CandID
+        // FIXME This class should be refactored to use the new CandID class
+        // instead of returning an integer.
+        return intval((string) $candID);
     }
 
     /**
@@ -365,10 +366,7 @@ class Candidate
         if (is_null($var)) {
             return $this->candidateInfo;
         } else {
-            if (isset($this->candidateInfo[$var])) {
-                return $this->candidateInfo[$var];
-            }
-            return null;
+            return $this->candidateInfo[$var] ?? null;
         }
     }
 
@@ -574,31 +572,6 @@ class Candidate
     }
 
     /**
-     * Return the next visit number for the time point you are
-     * trying to register
-     *
-     * @return     integer Next visit number for candidate
-     * @deprecated
-     */
-    function getNextVisitNo(): int
-    {
-        $candID = $this->getCandID();
-
-        // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
-            FROM session
-            WHERE CandID=:CaID AND (Active='Y' OR Active is null)
-            GROUP BY CandID";
-        $result = $db->pselectRow($query, array('CaID' => $candID));
-
-        //return the next visit No
-        return $result["nextVisitNo"];
-    }
-
-    /**
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
@@ -672,124 +645,6 @@ class Candidate
     }
 
     /**
-    * Generates a new random CandID
-    *
-    * @return integer An unused random 6 digit candidate id
-    */
-    static function _generateCandID(): int
-    {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        // generate a candidate id
-        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-
-        // make sure the cand id is not used
-        while ($db->pselectOne(
-            "SELECT count(CandID) FROM candidate WHERE CandID=:CaID",
-            array('CaID' => $candID)
-        ) > 0) {
-            // pick a new candidate id
-            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        }
-
-        return $candID;
-    }
-
-    /**
-    * Generates a new PSCID in the format defined by the config file
-    *
-    * @param string $prefix The prefix to use for the PSCID
-    *
-    * @return string Project candidate id in format defined by config.xml
-    */
-    static function _generatePSCID(string $prefix): string
-    {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $config = $factory->config();
-
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
-
-        // run one first time, then loop until the pscid is not used
-        do {
-            // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') {
-                if (!empty($pscid)) {
-                    $pscid++;
-                } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
-                }
-            } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
-            }
-
-            if ($pscid == '') {
-                throw new LorisException(
-                    "Well this is embarrassing, our automated PSCID generator "
-                    . "is about to enter an infinite loop."
-                );
-            }
-
-            // check if the pscid is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $pscid)
-            ) > 0
-        );
-
-        return $pscid;
-    }
-
-    /**
-     * Generates a new ExternalID in the format defined by the config file.
-     * This is based on _generatePSCID.
-     *
-     * @return string Anonymized ExternalID for distributing data
-     */
-    static function _generateExternalID(): string
-    {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
-
-        $db = $factory->database();
-
-        do {
-            // generate a new external ID
-            if ($ExternalIDSettings['generation'] == 'sequential') {
-                if (!empty($externalID)) {
-                    $externalID++;
-                } else {
-                    $externalID = Candidate::generateFirstStringFromArrays(
-                        $ExternalIDArrays
-                    );
-                }
-            } else {
-                $externalID = Candidate::generateRandomStringFromArrays(
-                    $ExternalIDArrays
-                );
-            }
-
-            // check if the external ID is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
-                array('EID' => $externalID)
-            )  > 0
-        );
-
-        return $externalID;
-    }
-
-    /**
      * Validate's that a PSCID matches the format defined by project
      * config
      *
@@ -815,123 +670,6 @@ class Candidate
         );
         //preg_match returns 1 on success.
         return preg_match($regex, $PSCID) === 1;
-    }
-
-
-    /**
-     * Helper function used to generate PSCID. This generates a random
-     * number if generation is not "sequential"
-     *
-     * @param array $arrays Array specifying format of random
-     *                      string to be generated
-     *
-     * @return string A random string matching format from arrays
-     */
-    static function generateRandomStringFromArrays(array $arrays): string
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            if (is_array($array)) {
-                $string .= $array[array_rand($array)];
-            } else {
-                $string .= $array;
-            }
-        }
-        return $string;
-    }
-
-    /**
-     * Helper function used to generate PSCID. Generate the string for the first
-     * numeric part of the PSCID if generation type is "sequential" and pads with
-     * an appropriate numbers.
-     *
-     * @param array $arrays An array config file specifying format of number
-     *
-     * @return string The first string to be used for the PSCID
-     */
-    static function generateFirstStringFromArrays(array $arrays): string
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            $string .= array_shift($array);
-        }
-        return $string;
-    }
-
-    /**
-     * Helper function used for generating PSCID.
-     * This parses the PSCID format in the config file into a format that
-     * can be converted into a regex for validation.
-     *
-     * @param array       $idStructure The structure defined in the config file
-     *                          in the array format returned by NDB_Config.
-     *                            array format returned by NDB_Config.
-     * @param string|null $siteAbbrev  The candidate being validate's site
-     *                            abbreviation, so that it can be inserted into
-     *                            relevant "site" parts of the regex generated.
-     *
-     * @return array An array of regular expressions defining each section of
-     *               the PSCID as defined in config.xml
-     */
-    static function generateArrays(
-        array $idStructure,
-        ?string $siteAbbrev = null
-    ): array {
-
-        $idStructure = $idStructure['structure']['seq'];
-
-        if (!$idStructure[0]) {
-            // There's only one seq tag so the param format
-            // needs to be fixed
-            $temp        = array();
-            $temp[]      = $idStructure;
-            $idStructure = $temp;
-        }
-
-        $arrays = array();
-        foreach ($idStructure AS $seq) {
-            if (isset($seq['@']['length'])) {
-                $length = $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length = $seq['@']['minLength'];
-            } else {
-                $length = 1;
-            }
-
-            for ($i=0; $i<$length; $i++) {
-                switch($seq['@']['type']) {
-                case 'alpha':
-                    $arrays[] = range('a', 'z');
-                    break;
-
-                case 'alphanumeric':
-                    $arrays[] = array_merge(range(0, 9), range('a', 'z'));
-                    break;
-
-                case 'numeric':
-                    $arrays[] = range(0, 9);
-                    break;
-
-                case 'static':
-                    $arrays[] = array($seq['#']);
-                    break;
-
-                case 'set':
-                    if (strpos($seq['#'], '|') !== false) {
-                        $arrays[] = explode('|', $seq['#']);
-                    } else {
-                        $arrays[] = str_split($seq['#']);
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
-                    break;
-                }
-            }
-        }
-
-        return $arrays;
     }
 
     /**
