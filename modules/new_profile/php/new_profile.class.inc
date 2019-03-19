@@ -24,8 +24,6 @@ namespace LORIS\new_profile;
  */
 class New_Profile extends \NDB_Page
 {
-    public $result;
-    public $AjaxModule   = true;
     public $skipTemplate = true;
 
     /**
@@ -44,77 +42,6 @@ class New_Profile extends \NDB_Page
         }
 
         return false;
-    }
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        $DB     = \Database::singleton();
-        $config = \NDB_Config::singleton();
-        $user   = \User::singleton();
-        $this->result['startYear']  = $config->getSetting('startYear');
-        $this->result['endYear']    = $config->getSetting('endYear');
-        $this->result['ageMax']     = $config->getSetting('ageMax');
-        $this->result['ageMin']     = $config->getSetting('ageMin');
-        $this->result['dobFormat']  = $config->getSetting('dobFormat');
-        $this->result['edc']        = $config->getSetting('useEDC');
-        $this->result['useProject'] = $config->getSetting('useProjects');
-        $this->result['sex']        = array(
-                                       'male'   => 'Male',
-                                       'female' => 'Female',
-                                      );
-        $this->result['pscidSet']   = "false";
-        //get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        if ($num_sites >=1) {
-            foreach ($user_list_of_sites as $key => $siteID) {
-                $center = $DB->pselectRow(
-                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => $siteID)
-                );
-                $psc_labelOptions[$siteID] = $center['Name'];
-            }
-        } else {
-            $psc_labelOptions = array(null => '');
-        }
-         $this->result['site'] = $psc_labelOptions;
-         //get projects for the select dropdown
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $key=>$value) {
-             $list_of_projects[$key] = $value;
-        }
-        $this->result['project'] = $list_of_projects;
-         //get setting through pscid
-        $PSCIDsettings = $config->getSetting('PSCID');
-        if ($PSCIDsettings['generation'] == 'user') {
-            $result['pscidSet'] = "true";
-        }
-        return true;
-    }
-    /**
-    * Call toJSON to display a json file on the page.
-    *
-    * @return string a json
-    */
-    function display()
-    {
-        return $this->toJSON();
-    }
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON()
-    {
-        return json_encode($this->result);
     }
     /**
      * Include additional JS files:

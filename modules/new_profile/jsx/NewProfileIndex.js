@@ -61,8 +61,8 @@ class NewProfileIndex extends React.Component {
     if (this.state.configData['edc'] === 'true' &&
          data.edcDateTaken !== data.edcDateTakenConfirm
        ) {
- edcMatch = false;
-}
+      edcMatch = false;
+    }
     return dateMatch && edcMatch;
   }
 
@@ -223,7 +223,7 @@ class NewProfileIndex extends React.Component {
     } else {
       profile =
         <div>
-          <p>New candidate created.DCCID:{this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
+          <p>New candidate created. DCCID:{this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
           <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
           <p><a href = "/new_profile/" > Recruit another candidate </a></p>
         </div>;
@@ -235,8 +235,8 @@ window.addEventListener(
   'load',
   () => {
     ReactDOM.render(
-      <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-        submitURL = {`${loris.BaseURL}/new_profile/AddProfile`}
+      <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/profile`}
+        submitURL = {`${loris.BaseURL}/new_profile/Profile`}
         hasPermission = {loris.userHasPermission}
       />,
       document.getElementById('lorisworkspace'));
