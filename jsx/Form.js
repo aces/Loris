@@ -1458,9 +1458,8 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.class === 'checkbox-inline' + ' ' + this.props.offset
-        ? 'checkbox-inline col-sm-offset-3 has-error'
-        : 'checkbox-inline col-sm-offset-2 has-error';
+      elementClass = this.props.class = 'checkbox-inline'
+        + ' ' + this.props.offset + ' has-error';
     }
 
     return (

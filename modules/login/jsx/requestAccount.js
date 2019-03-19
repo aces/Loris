@@ -199,6 +199,7 @@ class RequestAccount extends Component {
             class={'row form-group'}
             value={this.state.form.value.radiologist}
             onUserInput={this.setForm}
+            offset={'col-sm-offset-2'}
           />
           {captcha}
           <ButtonElement
