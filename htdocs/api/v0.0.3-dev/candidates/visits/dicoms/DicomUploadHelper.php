@@ -156,7 +156,7 @@ class DicomUploadHelper extends \LORIS\imaging_uploader\Imaging_Uploader
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {
-        if (!empty($destinationDir) && !empty($destinationFileNam)) {
+        if (!empty($destinationDir) && !empty($destinationFileName)) {
             $dest = $destinationDir . $destinationFileName;
             if (rename($this->tmp_name, $dest)) {
                 rmdir($this->tmp_name);
