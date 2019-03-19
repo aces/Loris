@@ -123,6 +123,7 @@ class AjaxLogin extends \NDB_Page
         // Login Setup.
         $loginData = array();
         $login     = $_SESSION['State']->getProperty('login');
+
         // Previous login failed.
         if (!empty($login->_lastError)) {
             $loginData['error'] = $login->_lastError;
