@@ -1448,8 +1448,6 @@ class CheckboxElement extends React.Component {
     let requiredHTML = null;
     let elementClass = this.props.class + ' ' + this.props.offset;
 
-    let label = null;
-
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
@@ -1458,8 +1456,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.class = 'checkbox-inline'
-        + ' ' + this.props.offset + ' has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     return (
