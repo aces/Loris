@@ -364,7 +364,9 @@ class DirectDataEntryMainPage
             }
             $this->tpl_data['lastpage']  = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
-        } else if (isset($_REQUEST['pageNum']) && $_REQUEST['pageNum'] === 'complete') {
+        } else if (isset($_REQUEST['pageNum'])
+            && $_REQUEST['pageNum'] === 'complete'
+        ) {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete']  = true;
 
