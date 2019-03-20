@@ -55,7 +55,6 @@ class CreateTimepoint extends React.Component {
     // Bind component instance to custom methods
     this.fetchInitializerData = this.fetchInitializerData.bind(this);
     this.handleVisitLabel = this.handleVisitLabel.bind(this);
-    this.populateErrors = this.populateErrors.bind(this);
     this.collectParams = this.collectParams.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setForm = this.setForm.bind(this);
@@ -186,25 +185,6 @@ class CreateTimepoint extends React.Component {
   }
 
   /**
-   * Populate the elements of errors to display.
-   *
-   * @param {object} values - for individual form element.
-   */
-  populateErrors(values) {
-    let errors = [];
-    Object.keys(values).forEach(function(key) {
-      errors.push(
-        <div className='col-xs-12 col-sm-12 col-md-12'>
-          <label className='error form-group'>
-            {values[key]}
-          </label>
-        </div>
-      );
-    });
-    this.setState({errors: errors});
-  }
-
-  /**
    * Handle form submission
    * @param {object} e - Form submission event
    */
@@ -235,9 +215,9 @@ class CreateTimepoint extends React.Component {
       .then(
         (data) => {
           if (data.status === 'error') {
-            // Populate the form errors.
             if (data.errors) {
-              this.populateErrors(data.errors);
+              // data for the form errors.
+              this.setState({errors: data.errors});
             }
           } else {
             this.setState({success: true});
@@ -252,8 +232,28 @@ class CreateTimepoint extends React.Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+    /**
+     * Populate the elements of errors to display.
+     * @param {array} values (errors) data from server.
+     * @return {array} individual errors.
+     */
+    function renderErrors(values) {
+      let errors = [];
+      Object.keys(values).forEach(function(key) {
+        errors.push(
+          <div className='col-xs-12 col-sm-12 col-md-12'>
+            <label className='error form-group'>
+              {values[key]}
+            </label>
+          </div>
+        );
+      });
+      return errors;
+    }
     // Include form errors.
-    const errors = this.state.errors;
+    const errors = this.state.errors
+      ? renderErrors(this.state.errors)
+      : null;
     // Include subproject select.
     const subproject = this.state.form.display.subproject ? (
       <SelectElement
