@@ -224,7 +224,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      *
      * @return array $data Array containing the data to be inserted
      */
-    private function getSQLFromIntance(Pool $pool) : array
+    private function getSQLFromInstance(Pool $pool) : array
     {
         $poolData = array(
                      'PoolID'   => $pool->getId(),

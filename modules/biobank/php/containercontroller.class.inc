@@ -295,6 +295,9 @@ class ContainerController
      */
     private function validateStatusId(Container $container) : void
     {
+        // TODO: Check if previous container was dispensed. If it was, then make
+        // sure no changes are being made to the object that shouldn't be
+
         if (is_null($container->getStatusId())) {
             throw new \BadRequest("Status value must be set.");
         }

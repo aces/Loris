@@ -192,8 +192,8 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     public function getTypes(array $conditions = null) : array
     {
         $query  = 'SELECT ContainerTypeID as id,
-                          Type as type,
-                          Descriptor as descriptor,
+                          Brand as brand,
+                          ProductNumber as productNumber,
                           Label as label,
                           `Primary` as `primary`,
                           ContainerCapacityID as capacityId,

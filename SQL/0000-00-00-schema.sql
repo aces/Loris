@@ -39,8 +39,8 @@ DROP TABLE IF EXISTS `biobank_container_psc_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_pool_rel`;                               
 DROP TABLE IF EXISTS `biobank_specimen_parent`;                                 
 DROP TABLE IF EXISTS `biobank_specimen_type_unit_rel`;                          
+DROP TABLE IF EXISTS `biobank_specimen_protocol_container_type_rel`;            
 DROP TABLE IF EXISTS `biobank_specimen_type_container_type_rel`;                
-DROP TABLE IF EXISTS `biobank_specimen_method_attribute_rel`;                   
 DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;                 
 DROP TABLE IF EXISTS `biobank_specimen_type_attribute_rel`;                     
 DROP TABLE IF EXISTS `biobank_pool`;                                            
@@ -52,15 +52,15 @@ DROP TABLE IF EXISTS `biobank_specimen_preparation`;
 DROP TABLE IF EXISTS `biobank_specimen_collection`;                             
 DROP TABLE IF EXISTS `biobank_specimen_freezethaw`;                             
 DROP TABLE IF EXISTS `biobank_specimen`;                                        
-DROP TABLE IF EXISTS `biobank_specimen_method`;                                 
 DROP TABLE IF EXISTS `biobank_specimen_protocol`;                               
+DROP TABLE IF EXISTS `biobank_specimen_process`;                                
 DROP TABLE IF EXISTS `biobank_specimen_type`;                                   
 DROP TABLE IF EXISTS `biobank_container`;                                       
 DROP TABLE IF EXISTS `biobank_container_status`;                                
 DROP TABLE IF EXISTS `biobank_container_type`;                                  
 DROP TABLE IF EXISTS `biobank_container_dimension`;                             
 DROP TABLE IF EXISTS `biobank_container_capacity`;                              
-DROP TABLE IF EXISTS `biobank_unit`;   
+DROP TABLE IF EXISTS `biobank_unit`; 
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
@@ -1684,8 +1684,8 @@ CREATE TABLE `parameter_type_override` (
 -- ********************************
 -- biobank tables
 -- ********************************
-                                                                                
--- CREATES --
+
+-- Creates --
 
 /*Global*/
 
@@ -1712,16 +1712,19 @@ CREATE TABLE `biobank_container_capacity` (
 CREATE TABLE `biobank_container_dimension` (
   `ContainerDimensionID` integer unsigned NOT NULL AUTO_INCREMENT,
   `X` integer unsigned NOT NULL,
+  `XNumerical` BIT(1) NOT NULL,
   `Y` integer unsigned NOT NULL,
+  `YNumerical` BIT(1) NOT NULL,
   `Z` integer unsigned NOT NULL,
+  `ZNumerical` BIT(1) NOT NULL,
   CONSTRAINT `PK_biobank_container_dimension` PRIMARY KEY (`ContainerDimensionID`),
   CONSTRAINT `UK_biobank_container_dimension_X_Y_Z` UNIQUE(`X`, `Y`, `Z`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `biobank_container_type` (
   `ContainerTypeID` integer unsigned NOT NULL AUTO_INCREMENT,
-  `Type` varchar(20) NOT NULL,
-  `Descriptor` varchar(20) NOT NULL,
+  `Brand` varchar(50) NOT NULL,
+  `ProductNumber` varchar(50) NOT NULL,
   `Label` varchar(40) NOT NULL,
   `Primary` BIT(1) NOT NULL,
   `ContainerCapacityID` integer unsigned,
@@ -1733,10 +1736,11 @@ CREATE TABLE `biobank_container_type` (
   CONSTRAINT `FK_biobank_container_type_DimensionID`
     FOREIGN KEY (`ContainerDimensionID`) REFERENCES `biobank_container_dimension`(`ContainerDimensionID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `UK_biobank_container_type_Type_Descriptor` UNIQUE(`Type`, `Descriptor`),
+  CONSTRAINT `UK_biobank_container_type_Brand_ProductNumber` UNIQUE(`Brand`, `ProductNumber`),
   CONSTRAINT `UK_biobank_container_type_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+/* Should this be simply biobank_status since it applies to both containers and specimen? */
 CREATE TABLE `biobank_container_status` (
   `ContainerStatusID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(40) NOT NULL,
@@ -1785,26 +1789,26 @@ CREATE TABLE `biobank_specimen_type` (
   CONSTRAINT `UK_biobank_specimen_type_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `biobank_specimen_process` (
+  `SpecimenProcessID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Label` varchar(50) NOT NULL,
+  CONSTRAINT `PK_biobank_specimen_process` PRIMARY KEY (`SpecimenProcessID`),
+  CONSTRAINT `UK_biobank_specimen_process_Label` UNIQUE (`Label`)
+);
+
 CREATE TABLE `biobank_specimen_protocol` (
   `SpecimenProtocolID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(50) NOT NULL,
+  `SpecimenProcessID` integer unsigned NOT NULL,
   `SpecimenTypeID` integer unsigned NOT NULL,
   CONSTRAINT `PK_biobank_specimen_protocol` PRIMARY KEY (`SpecimenProtocolID`),
+  CONSTRAINT `FK_biobank_specimen_protocol_SpecimenProcessID`
+    FOREIGN KEY (`SpecimenProcessID`) REFERENCES `biobank_specimen_process`(`SpecimenProcessID`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_protocol_SpecimenTypeID`
     FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `UK_biobank_specimen_protocol_Label` UNIQUE (`Label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
-
-CREATE TABLE `biobank_specimen_method` (
-  `SpecimenMethodID` integer unsigned NOT NULL AUTO_INCREMENT,
-  `Label` varchar(50) NOT NULL,
-  `SpecimenTypeID` integer unsigned NOT NULL,
-  CONSTRAINT `PK_biobank_specimen_method` PRIMARY KEY (`SpecimenMethodID`),
-  CONSTRAINT `FK_biobank_specimen_method_SpecimenTypeID`
-    FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `UK_biobank_specimen_method_Label` UNIQUE (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
 
 CREATE TABLE `biobank_specimen` (
@@ -1841,6 +1845,7 @@ CREATE TABLE `biobank_specimen_freezethaw` (
 
 CREATE TABLE `biobank_specimen_collection` (
   `SpecimenID` integer unsigned NOT NULL,
+  `SpecimenProtocolID` integer unsigned NOT NULL,
   `Quantity` DECIMAL(10, 3) NOT NULL,
   `UnitID` integer unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
@@ -1851,6 +1856,9 @@ CREATE TABLE `biobank_specimen_collection` (
   CONSTRAINT `PK_biobank_specimen_collection` PRIMARY KEY (`SpecimenID`),
   CONSTRAINT `FK_biobank_specimen_collection_SpecimenID`
     FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen`(`SpecimenID`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT `FK_biobank_specimen_collection_SpecimenProtocolID`
+    FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol`(`SpecimenProtocolID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_collection_UnitID`
     FOREIGN KEY (`UnitID`) REFERENCES `biobank_unit`(`UnitID`)
@@ -1882,18 +1890,18 @@ CREATE TABLE `biobank_specimen_preparation` (
 
 CREATE TABLE `biobank_specimen_analysis` (
   `SpecimenID` integer unsigned NOT NULL,
-  `SpecimenMethodID` integer unsigned NOT NULL,
+  `SpecimenProtocolID` integer unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
   `Date` DATE NOT NULL,
   `Time` TIME NOT NULL,
   `Comments` varchar(255),
   `Data` json DEFAULT NULL,
   CONSTRAINT `PK_biobank_specimen` PRIMARY KEY (`SpecimenID`),
-  CONSTRAINT `FK_biobank_specimen_SpecimenID`
+  CONSTRAINT `FK_biobank_specimen_analysis_SpecimenID`
     FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen`(`SpecimenID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_specimen_SpecimenMethodID`
-    FOREIGN KEY (`SpecimenMethodID`) REFERENCES `biobank_specimen_method`(`SpecimenMethodID`)
+  CONSTRAINT `FK_biobank_specimen_analysis_SpecimenProtocolID`
+    FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol`(`SpecimenProtocolID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_analysis_CenterID`
     FOREIGN KEY (`CenterID`) REFERENCES `psc`(`CenterID`)
@@ -1971,16 +1979,15 @@ CREATE TABLE `biobank_specimen_protocol_attribute_rel` (
     ON UPDATE RESTRICT ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `biobank_specimen_method_attribute_rel` (
-  `SpecimenMethodID` integer unsigned NOT NULL,
-  `SpecimenAttributeID` integer unsigned NOT NULL,
-  `Required` BIT(1) NOT NULL, 
-  CONSTRAINT `PK_biobank_specimen_method_attribute_rel` PRIMARY KEY (`SpecimenMethodID`, `SpecimenAttributeID`),
-  CONSTRAINT `FK_biobank_specimen_method_attribute_rel_SpecimenMethodID` 
-    FOREIGN KEY (`SpecimenMethodID`) REFERENCES `biobank_specimen_method`(`SpecimenMethodID`)
+CREATE TABLE `biobank_specimen_protocol_container_type_rel` (
+  `SpecimenProtocolID` integer unsigned NOT NULL,
+  `ContainerTypeID` integer unsigned NOT NULL,
+  CONSTRAINT `PK_biobank_specimen_protocol_container_type_rel` PRIMARY KEY (SpecimenProtocolID, ContainerTypeID),
+  CONSTRAINT `FK_bio_spec_protocol_container_type_rel_SpecimenProtocolID` 
+    FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol`(`SpecimenProtocolID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_specimen_method_attribute_rel_SpecimenAttributeID` 
-    FOREIGN KEY (`SpecimenAttributeID`) REFERENCES `biobank_specimen_attribute`(`SpecimenAttributeID`)
+  CONSTRAINT `FK_biobank_specimen_protocol_container_type_rel_ContainerTypeID` 
+    FOREIGN KEY (`ContainerTypeID`) REFERENCES `biobank_container_type`(`ContainerTypeID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -1988,8 +1995,8 @@ CREATE TABLE `biobank_specimen_type_container_type_rel` (
   `SpecimenTypeID` integer unsigned NOT NULL,
   `ContainerTypeID` integer unsigned NOT NULL,
   `Regex` varchar(255) NOT NULL,
-  CONSTRAINT `PK_biobank_validate_identifer` PRIMARY KEY (SpecimenTypeID, ContainerTypeID),
-  CONSTRAINT `FK_biobank_validate_identifier_SpecimenTypeID` 
+  CONSTRAINT `PK_biobank_specimen_type_container_type_rel` PRIMARY KEY (SpecimenTypeID, ContainerTypeID),
+  CONSTRAINT `FK_biobank_specimen_type_container_type_rel_SpecimenTypeID` 
     FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_validate_identifier_ContainerTypeID` 
@@ -2049,23 +2056,78 @@ CREATE TABLE `biobank_container_parent` (
     UNIQUE (`ParentContainerID`, `Coordinate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-/*Global*/                                                                      
-INSERT INTO biobank_specimen_attribute_datatype (Datatype)                      
-VALUES  ('boolean'),                                                            
-        ('number'),                                                             
-        ('text'),                                                               
-        ('datetime'),                                                           
-        ('file')                                                                
-;                                                                               
-                                                                                
-/*Container*/                                                                   
-INSERT INTO biobank_container_status (Label)                                    
-VALUES  ('Available'),                                                          
-        ('Reserved'),                                                           
-        ('Dispensed'),                                                          
-        ('Discarded')                                                           
-; 
 
+/*INSERTS*/
+
+/*XXX: The following 4 lines are for testing. Delete before merging.*/
+DELETE FROM LorisMenu WHERE `Label`='Specimens';
+DELETE FROM LorisMenu WHERE `Label`='Containers';
+DELETE FROM LorisMenu WHERE `Label`='Pools';
+DELETE FROM LorisMenu WHERE `Label`='Biobank';
+
+DELETE FROM permissions WHERE 
+    `code`='biobank_specimen_view' OR 
+    `code`='biobank_specimen_create' OR
+    `code`='biobank_specimen_update' OR
+    `code`='biobank_container_view' OR
+    `code`='biobank_container_create' OR
+    `code`='biobank_container_update' OR
+    `code`='biobank_pool_view' OR
+    `code`='biobank_pool_create';
+
+DELETE FROM ConfigSettings WHERE
+    `Name`='biobankPath';
+
+/*Loris Menu*/
+UPDATE LorisMenu SET `OrderNumber`=5 WHERE `Label`='Reports';
+UPDATE LorisMenu SET `OrderNumber`=6 WHERE `Label`='Tools';
+UPDATE LorisMenu SET `OrderNumber`=7 WHERE `Label`='Admin';
+
+INSERT INTO LorisMenu (Label, OrderNumber) VALUES
+    ('Biobank', 4)
+;
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES                  
+    ('Specimens', 'biobank#specimens/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1),
+    ('Containers', 'biobank#containers/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 2),
+    ('Pools', 'biobank#pools/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 3)
+;
+
+/*Permissions*/
+INSERT INTO permissions (code, description, categoryID) VALUES
+    ('biobank_specimen_view', 'Biobank: View Specimen Data', 2),
+    ('biobank_specimen_create', 'Biobank: Create Specimen Data', 2),
+    ('biobank_specimen_update', 'Biobank: Update Specimen Data', 2),
+    ('biobank_container_view', 'Biobank: View Container Data', 2),
+    ('biobank_container_create', 'Biobank: Create Container Data', 2),
+    ('biobank_container_update', 'Biobank: Update Container Data', 2),
+    ('biobank_pool_view', 'Biobank: View Pool Data', 2),
+    ('biobank_pool_create', 'Biobank: Create Pool Data', 2)
+;
+
+/*Config*/
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+    SELECT 'biobankPath', 'Path to Biobank data files', 1, 0, 'text', ID, 'Biobank', 10
+    FROM ConfigSettings
+    WHERE Name="paths";
+
+/*Global*/
+INSERT INTO biobank_specimen_attribute_datatype (Datatype)
+VALUES  ('boolean'),
+        ('number'),
+        ('text'),
+        ('datetime'),
+        ('file')
+;
+
+/*Container*/
+INSERT INTO biobank_container_status (Label)
+VALUES  ('Available'),
+        ('Reserved'),
+        ('Dispensed'),
+        ('Discarded')
+;
+                                                                                
 -- ********************************
 -- genomic_browser tables
 -- ********************************

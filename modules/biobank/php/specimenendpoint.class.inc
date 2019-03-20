@@ -95,14 +95,14 @@ class SpecimenEndpoint implements RequestHandlerInterface
                 $specimens = $specCont->getInstances();
                 return new \LORIS\Http\Response\OK($specimens); 
             case 'POST':
-                $specimens = json_decode($request->getBody()->getContents(), true);
-                $specCont->createInstances($specimens);
-                return new \LORIS\Http\Response\OK(); 
-            case 'PUT':
-                $test = $request->getBody()->getContents();
-                print_r($request->getParsedBody());
-                $specimens = json_decode($request->getBody()->getContents(), true);
-                $specCont->updateInstance($specimens);
+                $requestBody = $request->getParsedBody();
+                $specimens = json_decode($requestBody['data'], true);
+                if ($requestBody['update']) {
+                    $specCont->updateInstance($specimens);
+                }
+                if (!$requestBody['update']) {
+                    $specCont->createInstances($specimens);
+                }
                 return new \LORIS\Http\Response\OK(); 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
