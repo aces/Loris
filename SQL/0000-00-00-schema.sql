@@ -225,16 +225,32 @@ CREATE TABLE `test_subgroups` (
 
 INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments'),('Imaging');
 
+CREATE TABLE `instrument_schema` (
+  `InstrumentSchemaID` int(10) unsigned NOT NULL auto_increment,
+  `PreviousVersion` int(10) unsigned default NULL,
+  `UsersID` int(10) unsigned NOT NULL,
+  `SchemaHash` char(64) NOT NULL,
+  `DateUpdated` datetime NOT NULL DEFAULT NOW(),
+  `SchemaURI` TEXT NOT NULL,
+  `SchemaJSON` TEXT NOT NULL,
+  CONSTRAINT `PK_instrument_schema` PRIMARY KEY (`InstrumentSchemaID`),
+  CONSTRAINT `UK_instrument_schema_SchemaHash` UNIQUE KEY (`SchemaHash`),
+  CONSTRAINT `FK_instrument_Schema_PreviousVersion` FOREIGN KEY (`PreviousVersion`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_instrument_schema_UsersID` FOREIGN KEY (`UsersID`) REFERENCES `users` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
   `Sub_group` int(11) unsigned default NULL,
+  `InstrumentSchemaID` int(10) unsigned default NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
   KEY `FK_test_names_1` (`Sub_group`),
-  CONSTRAINT `FK_test_names_1` FOREIGN KEY (`Sub_group`) REFERENCES `test_subgroups` (`ID`)
+  CONSTRAINT `FK_test_names_1` FOREIGN KEY (`Sub_group`) REFERENCES `test_subgroups` (`ID`),
+  CONSTRAINT `FK_test_names_InstrumentSchemaID` FOREIGN KEY (`InstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `instrument_subtests` (
@@ -262,6 +278,7 @@ CREATE TABLE `flag` (
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
+  `InstrumentSchemaID` int(10) unsigned default NULL,
   PRIMARY KEY  (`CommentID`),
   KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
@@ -273,7 +290,8 @@ CREATE TABLE `flag` (
   KEY `flag_Administration` (`Administration`),
   KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
+  CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
+  CONSTRAINT `FK_flag_InstrumentSchemaID` FOREIGN KEY (`InstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
