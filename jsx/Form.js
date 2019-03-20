@@ -1447,6 +1447,9 @@ class CheckboxElement extends React.Component {
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = this.props.class + ' ' + this.props.offset;
+    const divStyle = this.props.class === 'checkbox-inline'
+    ? {paddingRight: '5px'}
+    : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (required) {
@@ -1463,10 +1466,10 @@ class CheckboxElement extends React.Component {
       <div className={elementClass}>
         <div className={'col-sm-12'}>
           <label htmlFor={this.props.id}
-                 className={'form-control'}
+                 className={''}
                  style={{padding: '5px'}}
           >
-            <div style={{paddingRight: '5px', display: 'inline-block'}}>
+            <div style={divStyle}>
               <input
                 type="checkbox"
                 name={this.props.name}
