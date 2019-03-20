@@ -340,7 +340,7 @@ class DirectDataEntryMainPage
 
         $workspace = $this->caller->load(
             $this->TestName,
-            $this->Subtest,
+            $this->Subtest ?? '',
             $this->CommentID,
             $nextpage
         );
@@ -348,7 +348,7 @@ class DirectDataEntryMainPage
         // Caller calls instrument's save function and might have errors,
         // so we still need to call it. But if nextpage is 'complete',
         // then after that override with a "Thank you" message
-        if ($_REQUEST['pageNum'] === 'finalpage') {
+        if (isset($_REQUEST['pageNum']) && $_REQUEST['pageNum'] === 'finalpage') {
             if (isset($_POST['FinalPageSubmission'])
                 && $_POST['FinalPageSubmission'] == "Yes"
             ) {
@@ -364,7 +364,7 @@ class DirectDataEntryMainPage
             }
             $this->tpl_data['lastpage']  = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
-        } else if ($_REQUEST['pageNum'] === 'complete') {
+        } else if (isset($_REQUEST['pageNum']) && $_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete']  = true;
 
