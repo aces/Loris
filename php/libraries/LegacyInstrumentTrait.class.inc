@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file contains the a trait to provide legacy behaviour
+ * This file contains a trait to provide legacy behaviour
  * (database lookup) for abstract functions getFullNames and
  * getSubtestList.
  *
