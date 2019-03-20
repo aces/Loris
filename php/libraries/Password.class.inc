@@ -26,14 +26,15 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Password {
+class Password
+{
     /**
      * The minimum score needed to be considered a sufficiently complex password
      * as given by the Zxcvbn password strength estimator. Passwords are
      * evaluated by this package and scored on a scale of 0-5, with higher
      * scores representing stronger passwords.
      *
-     * @var int
+     * @var  int
      * @link https://github.com/bjeavons/zxcvbn-php
      */
     private const MIN_COMPLEXITY_SCORE = 3;
@@ -52,17 +53,18 @@ class Password {
      *
      * @var string
      */
-    private $value;
+    private $_value;
 
     /**
      * Ensures that the value submitted as a potential new password is
      * long enough.
      *
-     * @param string The proposed password value.
+     * @param string $value The proposed password value.
      *
      * @return bool Whether the submitted value is valid.
      */
-    protected function hasSufficientLength(string $value): bool {
+    protected function hasSufficientLength(string $value): bool
+    {
         // Check length
         return strlen($value) >= self::MIN_PASSWORD_LENGTH;
     }
@@ -71,18 +73,28 @@ class Password {
      * Ensures that the value submitted as a potential new password is
      * well-formed.
      *
-     * @param string The proposed password value.
+     * @param string $value The proposed password value.
      *
      * @return bool Whether the submitted value is valid.
      */
-    protected function hasSufficientComplexity(string $value): bool {
+    protected function hasSufficientComplexity(string $value): bool
+    {
         // Return true if the password's complexity score exceeds
         // MIN_COMPLEXITY_SCORE and false otherwise.
         return (new Zxcvbn())
             ->passwordStrength($value) >= self::MIN_COMPLEXITY_SCORE;
     }
 
-    public function __construct(string $value) {
+    /**
+     * Creates a new Password object when the $value param is well-formed.
+     * well-formed.
+     *
+     * @param string $value The proposed password value.
+     *
+     * @throws \DomainException When passsword is too short or too simple.
+     */
+    public function __construct(string $value)
+    {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
         if (!$this->hasSufficientLength($value)) {
@@ -91,13 +103,17 @@ class Password {
         if (!$this->hasSufficientComplexity($value)) {
             throw new \DomainException('The password is not complex enough.');
         }
+        $this->_value = $value;
     }
 
     /**
      * Returns the $value variable as a string. This value has already been
      * hashed upon construction so the plaintext will not be revealed.
+     *
+     * @return string The password hash.
      */
-    public function __toString(): string {
-        return password_hash($this->value, PASSWORD_DEFAULT);
+    public function __toString(): string
+    {
+        return password_hash($this->_value, PASSWORD_DEFAULT);
     }
 }
