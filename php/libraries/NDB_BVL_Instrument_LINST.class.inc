@@ -28,7 +28,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * and the subtest names from the linst file, not select
      * them from the database.
      */
-    use \LORIS\LegacyInstrumentTrait;
+    use \LegacyInstrumentTrait;
 
     var $InstrumentType = 'LINST';
 
