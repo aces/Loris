@@ -22,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Instrument extends NDB_Page
+abstract class NDB_BVL_Instrument extends NDB_Page
 {
 
     /**
@@ -966,21 +966,12 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * Looks up the full name for the current instrument
+     * Return the full, human readable name for the
+     * current instrument.
      *
      * @return string the full name of the instrument
      */
-    function getFullName(): string
-    {
-        $db = \Database::singleton();
-
-        $success = $db->pselectOne(
-            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
-            array('TN' => $this->testName)
-        );
-        return $success;
-    }
-
+    abstract public function getFullName(): string;
 
     /**
      * Gets the current object instance CommentID
@@ -1030,25 +1021,14 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * Gets a list of subtests of the current instrument
+     * Returns a list of subtests of the current instrument.
+     * The returned array should be a list of rows where each
+     * row has a key for "Name" (the subpage name) and "Description"
+     * (the human readable name)
      *
      * @return array
      */
-    function getSubtestList(): array
-    {
-        // get a database connection
-        $db = \Database::singleton();
-
-        $query = "SELECT Subtest_name AS Name, Description
-            FROM instrument_subtests
-            WHERE Test_name=:TN
-                ORDER BY Order_number";
-
-        $results = $db->pselect($query, array('TN' => $this->testName));
-
-        return $results;
-    }
-
+    abstract function getSubtestList(): array;
 
     /**
      * Marks an element in the quickform object as being required (for
