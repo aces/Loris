@@ -264,6 +264,7 @@ class Login extends Component {
               label={'Login'}
               type={'submit'}
               name={'login'}
+              id={'login'}
               columnSize={'col-sm-12'}
               buttonClass={'btn btn-primary btn-block'}
             />
