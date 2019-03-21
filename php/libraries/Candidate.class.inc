@@ -621,6 +621,29 @@ class Candidate
     }
 
     /**
+     * Returns the next visit number that should be created for this
+     * candidate.
+     *
+     * @return int The next visit number
+     */
+    public function getNextVisitNo() : int
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $query  = "SELECT MAX(s.VisitNo)+1
+                    FROM candidate AS c
+                        LEFT JOIN session AS s USING (CandID)
+                    WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
+        $result = $db->pselectOne($query, array('CaID' => $this->getCandID()));
+
+        if ($result === null) {
+            return 1;
+        }
+        return intval($result);
+    }
+
+    /**
      * Returns list of consents and their respective statuses for this candidate
      *
      * @return array List of consents and their associated values for this candidate
