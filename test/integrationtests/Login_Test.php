@@ -41,7 +41,7 @@ class LorisLoginTest extends LorisIntegrationTest
        $username->sendKeys("UnitTester");
        $password->sendKeys("4test4");
 
-       $this->webDriver->executeScript("arguments[0].click();", $login);
+       $this->webDriver->click('login');
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Welcome", $bodyText);
