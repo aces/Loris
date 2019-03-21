@@ -85,7 +85,7 @@ class Create_Timepoint extends \NDB_Form
             \Candidate::singleton($this->identifier),
             $values['subprojectID'],
             $values['visitLabel'] ?? null,
-            $site,
+            $site
         );
 
         $this->tpl_data['success'] = true;
