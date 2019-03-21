@@ -181,7 +181,6 @@ class NDB_Factory
      */
     function database(): \Database
     {
-        $db_ref = null;
         if ($this->Testing) {
             $db_ref = &self::$testdb;
             if ($db_ref !== null) {
@@ -194,17 +193,19 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-                self::$db = Database::singleton();
+            self::$db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
-        $db_ref->connect(
-            $dbc['database'],
-            $dbc['username'],
-            $dbc['password'],
-            $dbc['host'],
-            true
-        );
+        if (!is_null($db_ref)) {
+            $db_ref->connect(
+                $dbc['database'],
+                $dbc['username'],
+                $dbc['password'],
+                $dbc['host'],
+                true
+            );
+        }
         return $db_ref;
     }
 
