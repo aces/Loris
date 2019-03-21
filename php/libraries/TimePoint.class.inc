@@ -193,7 +193,7 @@ class TimePoint
      * @param string|null $nextVisitLabel The visit label of the timepoint
      *                                    being created. If null, consecutive V1, V2,
      *                                    etc will be created.
-     * @param \Site       $psc            The centre of the timepoint
+     * @param \Site       $psc            The center of the timepoint
      *
      * @throws DatabaseException
      *
