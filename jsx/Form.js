@@ -1534,6 +1534,7 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            {...(this.props.id ? {id: this.props.id} : {})}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
@@ -1548,6 +1549,7 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
