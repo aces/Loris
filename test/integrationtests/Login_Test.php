@@ -42,7 +42,7 @@ class LorisLoginTest extends LorisIntegrationTest
        $password->sendKeys("4test4");
 
        $this->webDriver->findElement(
-           WebDriverBy::Name("login")
+           WebDriverBy::id("login")
        )->click();
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
