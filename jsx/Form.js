@@ -1533,15 +1533,14 @@ class ButtonElement extends Component {
     return (
       <div className="row form-group">
         <div className={this.props.columnSize}>
-          <button
+          <input
             {...(this.props.id ? {id: this.props.id} : {})}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
-          >
-            {this.props.label}
-          </button>
+            value={this.props.label}
+          />
         </div>
       </div>
     );
