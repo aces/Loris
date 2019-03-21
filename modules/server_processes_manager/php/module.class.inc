@@ -39,7 +39,7 @@ class Module extends \Module
         try {
             $this->validateConfig();
         } catch (\ConfigurationException $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
             ))->process(
