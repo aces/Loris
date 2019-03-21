@@ -196,7 +196,12 @@ class Visit extends \Loris\API\Candidates\Candidate
                 $this->safeExit(0);
             }
             // need to extract subprojectID
-            $this->createNew($this->CandID, $subprojectID, $this->VisitLabel, $centerID);
+            $this->createNew(
+                $this->CandID,
+                $subprojectID,
+                $this->VisitLabel,
+                $centerID
+            );
             $this->header("HTTP/1.1 201 Created");
         }
     }
@@ -211,6 +216,7 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param integer $subprojectID The subproject for the new visit
      * @param string  $VL           The visit label of the visit to
      *                              be created
+     * @param integer $CID          The CenterID for this timepoint
      *
      * @return void
      */
