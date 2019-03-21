@@ -85,8 +85,8 @@ require_once "generic_includes.php";
 
 $usage = <<<USAGE
 Usage: php {$argv[0]} <mapping.csv> <data.csv>
-<mapping.csv>   A CSV file containg columns with NEWPSCID, 
-                OLDPSCID, and NEWCANDID
+<mapping.csv>   A CSV file containg columns with OLDPSCID, NEWPSCID, and
+                NEWCANDID
 <data.csv>      A CSV file containing columns with OLDPSCID,DATA
 USAGE;
 
