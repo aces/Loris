@@ -67,7 +67,7 @@ class AjaxTimepoint extends \NDB_Page
         $user = $request->getAttribute('user');
         if (!isset($requestBody['identifier'])) {
             throw new LorisException(
-                "Failed to retrieve data for create timepoint."
+                'Failed to retrieve data for create timepoint.'
             );
         }
         $identifier = intval($requestBody['identifier']);
