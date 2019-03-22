@@ -125,7 +125,7 @@ class Profile extends \NDB_Page
      * This function will return an array
      * This array will help to initializing react form
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array An associative array of react setting format
      */
     function getDefaultFields(): array
     {
