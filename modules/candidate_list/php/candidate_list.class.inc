@@ -135,6 +135,7 @@ class Candidate_List extends \NDB_Menu_Filter
 
         // get the list of projects
         $list_of_projects = \Utility::getProjectList();
+        $project_options  = array();
         foreach ($list_of_projects as $id => $name) {
             $project_options[$name] = $name;
         }
