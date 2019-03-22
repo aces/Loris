@@ -55,6 +55,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithoutPermissionRead()
     {
+        $this->setupConfigSetting('mriCodePath', '/etc/');
         $this->setupPermissions(array(""));
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
