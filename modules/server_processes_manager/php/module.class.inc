@@ -26,6 +26,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
+    const ERR_MSG_CONFIG_MISSING = 'Required configuration settings for Server '
+        . 'Processes Manager are missing. Cannot continue.';
     /**
      * Handle a PSR7 Request for the serverprocessesmanager endpoint. Also calls a
      * validation function to ensure necessary configuration settings exist.
@@ -48,8 +50,7 @@ class Module extends \Module
                     new \LORIS\Http\Error(
                         $request,
                         500,
-                        'Required configuration settings for Server Processes ' .
-                        'Manager are missing. Cannot continue.'
+                        self::ERR_MSG_CONFIG_MISSING
                     )
                 )
             );
