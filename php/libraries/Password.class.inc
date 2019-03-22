@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+use ZxcvbnPhp\Zxcvbn;
 
 /**
  * Represents a well-formed password for use in the LORIS software.
@@ -81,8 +82,8 @@ class Password
     {
         // Return true if the password's complexity score exceeds
         // MIN_COMPLEXITY_SCORE and false otherwise.
-        return (new Zxcvbn())
-            ->passwordStrength($value) >= self::MIN_COMPLEXITY_SCORE;
+        $result = (new Zxcvbn())->passwordStrength($value);
+        return $result['score'] >= self::MIN_COMPLEXITY_SCORE;
     }
 
     /**
