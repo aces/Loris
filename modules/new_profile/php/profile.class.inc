@@ -55,44 +55,44 @@ class Profile extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // Ensure it's a POST request.
-      switch ($request->getMethod()) {
-      case "POST":
-        $values    = $request->getParsedBody();
-        $DB        = \Database::singleton();
-        $user      = \User::singleton();
-        $config    = \NDB_Config::singleton();
-        $site_arr  = $user->getData('CenterIDs');
-        $num_sites = count($site_arr);
-        if ($num_sites >=1) {
-            $candID = \Candidate::createNew(
-                $values['site'],
-                $values['dateTaken'],
-                $values['edcDateTaken'] ?? null,
-                $values['sex'],
-                $values['pscid'] ?? null
-            );
-        } else {
-            $centerIDs = $user->getData('CenterIDs');
-            $centerID  = $centerIDs[0];
-            $candID    = \Candidate::createNew(
-                $centerID,
-                $values['dateTaken'],
-                $values['edcDateTaken'] ?? null,
-                $values['sex'],
-                $values['pscid'] ?? null
-            );
-        }
-        // get the candidate
-        $candidate = \Candidate::singleton($candID);
-        // setup the project for candidate
-        if (isset($values['project'])) {
-            $candidate->setData(array('ProjectID' => $values['project']));
-        }
-        $result           = array();
-        $result['candID'] = $candID;
-        $result['pscid']  = $candidate->getPSCID();
+        switch ($request->getMethod()) {
+        case "POST":
+            $values    = $request->getParsedBody();
+            $DB        = \Database::singleton();
+            $user      = \User::singleton();
+            $config    = \NDB_Config::singleton();
+            $site_arr  = $user->getData('CenterIDs');
+            $num_sites = count($site_arr);
+            if ($num_sites >=1) {
+                $candID = \Candidate::createNew(
+                    $values['site'],
+                    $values['dateTaken'],
+                    $values['edcDateTaken'] ?? null,
+                    $values['sex'],
+                    $values['pscid'] ?? null
+                );
+            } else {
+                $centerIDs = $user->getData('CenterIDs');
+                $centerID  = $centerIDs[0];
+                $candID    = \Candidate::createNew(
+                    $centerID,
+                    $values['dateTaken'],
+                    $values['edcDateTaken'] ?? null,
+                    $values['sex'],
+                    $values['pscid'] ?? null
+                );
+            }
+            // get the candidate
+            $candidate = \Candidate::singleton($candID);
+            // setup the project for candidate
+            if (isset($values['project'])) {
+                $candidate->setData(array('ProjectID' => $values['project']));
+            }
+            $result           = array();
+            $result['candID'] = $candID;
+            $result['pscid']  = $candidate->getPSCID();
 
-        return (new \LORIS\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
                 ->withHeader("Allow", "POST")
@@ -102,8 +102,8 @@ class Profile extends \NDB_Page
                     )
                 );
         break;
-      case "GET":
-        return (new \LORIS\Http\Response())
+        case "GET":
+            return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
                 ->withHeader("Allow", "GET")
@@ -118,13 +118,12 @@ class Profile extends \NDB_Page
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
                 ->withHeader("Allow", "GET,POST");
-        }        
-        
+        }
+
     }
     /**
-     * This function will return an array 
+     * This function will return an array
      * This array will help to initializing react form
-     *
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
@@ -141,9 +140,9 @@ class Profile extends \NDB_Page
         $result['edc']        = $config->getSetting('useEDC');
         $result['useProject'] = $config->getSetting('useProjects');
         $result['sex']        = array(
-                                       'male'   => 'Male',
-                                       'female' => 'Female',
-                                      );
+                                 'male'   => 'Male',
+                                 'female' => 'Female',
+                                );
         $result['pscidSet']   = "false";
         //get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
@@ -171,7 +170,7 @@ class Profile extends \NDB_Page
         if ($PSCIDsettings['generation'] == 'user') {
             $result['pscidSet'] = "true";
         }
-       return $result;
+        return $result;
     }
 }
 
