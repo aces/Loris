@@ -952,5 +952,28 @@ class Utility
         }
         return implode('', $pieces);
     }
+
+     /**
+     * Takes an argument and determine whether it is a positive integer
+     * i.e. > 0.
+     *
+     * @param mixed $value The value to check. Intentionally not type hinted as
+     * this function is meant to assist in cases where the type is unknown, e.g.
+     * when a parameter is sent via a form.
+     */
+    public static function isPositiveInteger($value): bool {
+        // First clause checks that only digits are present
+        // Second clause ensures a positive value
+        // We can't use intval() alone because it has odd behaviour when given
+        // arrays and objects.
+        // @link https://secure.php.net/manual/en/function.intval.php
+        
+        // Reject arrays and objects
+        if (!is_scalar($value)) {
+            return false;
+        }
+
+        return ctype_digit(strval($value)) && intval($value) > 0;
+    }
 }
 

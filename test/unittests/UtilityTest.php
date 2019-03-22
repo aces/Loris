@@ -828,3 +828,53 @@ class UtilityTest extends TestCase
     }
 }
 
+=======
+
+    /*
+     * dataProvider for function testIsPositiveIntegerReturnsFalse
+     */
+    public function notPositiveIntegerValues(): array
+    {
+        return array(
+                [-1],
+                [0],
+                [3.14],
+                ['abcdefg'],
+                ['-1'],
+                ['-98.6'],
+                ['0'],
+                [array()],
+                [array(1)],
+                [new stdClass()]
+               );
+    }
+
+    /*
+     * dataProvider for function testIsPositiveIntegerReturnsTrue
+     */
+    public function positiveIntegerValues(): array
+    {
+        return array(
+                [1],
+                [100],
+                ['1000'],
+               );
+    }
+
+    /**
+     * @dataProvider notPositiveIntegerValues
+     */
+    public function testIsPositiveIntegerReturnsFalse($notInt): void
+    {
+        $this->assertFalse(\Utility::isPositiveInteger($notInt));
+    }
+
+    /**
+     * @dataProvider positiveIntegerValues
+     */
+    public function testIsPositiveIntegerReturnsTrue($int): void
+    {
+        $this->assertTrue(\Utility::isPositiveInteger($int));
+    }
+
+}
