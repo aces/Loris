@@ -49,16 +49,38 @@ $result = $DB->pselect(
 
 // Format of output filename: <table_column_dataExtract_output.csv>
 $filename = sprintf("%s_%s_dataExtract_output.csv", $table, $column);
+// Write PSCID and queried column data to CSV output.
+writeToCsv($filename, $result);
+unset($result);
+unset($filename);
 
-$fp = fopen($filename, 'w');
+// Get visit label
+// TODO add more fields 
+$query = "select c.PSCID,s.Visit_label,s.CenterID " .
+    "FROM session s " .
+    "INNER JOIN candidate c " .
+    "ON c.CandID = s.CandID;";
 
-if (!$fp) {
-    die ("Could not open $filename for writing." . PHP_EOL);
+$result = $DB->pselect($query, array());
+print_r($result);
+
+
+function writeToCsv(string $filename, array $data): void {
+    $fp = fopen($filename, 'w');
+    if (!$fp) {
+        throw new InvalidArgumentException(
+            "Could not open $filename for writing." . PHP_EOL
+        );
+    }
+    // Write CSV headers
+    // NOTE Right now data must be linked to PSCID.
+    fputcsv($fp, array('PSCID',$column));
+
+    foreach($result as $fields) {
+        fputcsv($fp, $fields);
+    }
 }
-// Write CSV headers
-// NOTE Right now data must be linked to PSCID.
-fputcsv($fp, array('PSCID',$column));
 
-foreach($result as $fields) {
-    fputcsv($fp, $fields);
-}
+
+
+// Visit labels query:
