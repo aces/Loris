@@ -46,7 +46,7 @@ class Password
      *
      * @var int
      */
-    private const MIN_PASSWORD_LENGTH = 8;
+    public const MIN_PASSWORD_LENGTH = 8;
 
     /**
      * The value of the password. This value must always remain private as it

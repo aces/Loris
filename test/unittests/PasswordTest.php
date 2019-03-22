@@ -29,12 +29,25 @@ class PasswordTest extends TestCase
     public function invalidValues(): array
     {
         return array(
-                ['12345678'],
-                ['hunter2'],
-                ['johnnyloris'],
-                ['password'],
-                ['Spring2016!'],
-               );
+            // Should fail for not meeting length requirements
+            [implode('', range(1, Password::MIN_PASSWORD_LENGTH - 1))],
+            // Should fail for being an alphabet subset
+            ['abcdefghi'],
+            // Should fail based on dictionary attack ('hunter2' is meme)
+            ['hunter22'],
+            // Should fail for simplicty
+            ['8chars!!'],
+            // Should fail based on using a common name
+            ['johnnyloris'],
+            // Should fail for obvious reasons
+            ['password'],
+            // Should fail for using a recent year
+            ['Spring2016!'],
+            // Should fail for using just a few simple English words
+            ['i am cool'],
+            // Should fail for common L33T substituions
+            ['p@55w0rd1!']
+        );
     }
 
     /**
