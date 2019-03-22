@@ -64,7 +64,7 @@ class AjaxTimepoint extends \NDB_Page
         /**
          * User permission verification.
          */
-        $user       = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
         if (!isset($requestBody['identifier'])) {
             throw new LorisException(
                 "Failed to retrieve data for create timepoint."
@@ -120,12 +120,8 @@ class AjaxTimepoint extends \NDB_Page
     {
         // Verify cand ID.
         $values['identifier'] = isset($values['identifier']) ?
-            intval(htmlentities(
-                $values['identifier'],
-                ENT_QUOTES,
-                'UTF-8'
-            )) : null;
-        $values['psc'] = empty($values['psc']) ? null : $values['psc'];
+            intval($values['identifier']) : null;
+        $values['psc']        = empty($values['psc']) ? null : $values['psc'];
         return $values;
     }
 
