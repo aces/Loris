@@ -44,8 +44,9 @@ class Create_Timepoint extends \NDB_Form
         return (
             $user->hasPermission('data_entry') &&
             (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
+                intval($candidate->getData('RegistrationCenterID')),
+                $user->getData('CenterIDs'),
+                true
             )
             )
         );

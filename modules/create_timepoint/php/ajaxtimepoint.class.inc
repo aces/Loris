@@ -74,8 +74,9 @@ class AjaxTimepoint extends \NDB_Page
         $candidate  = \Candidate::singleton($identifier);
         if (!$user->hasPermission('data_entry')
             && !(in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
+                intval($candidate->getData('RegistrationCenterID')),
+                $user->getData('CenterIDs'),
+                true
             ))
         ) {
             return (new \Loris\Http\Response())
