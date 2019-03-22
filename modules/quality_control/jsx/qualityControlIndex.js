@@ -74,139 +74,199 @@ class QualityControlIndex extends Component {
     if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg) {
       return <Loader/>;
     }
-    let tabList = [
-      {id: 'behavioral', label: 'Behavioral'},
-      {id: 'imaging', label: 'Imaging'},
-    ];
+    if (this.state.ImgData === {}) {
+      let tabList = [
+        {id: 'behavioral', label: 'Behavioral'},
+        {id: 'imaging', label: 'Imaging'},
+      ];
 
-    const ImgOptions = this.state.ImgData.fieldOptions;
-    const BehavioralOptions = this.state.BehavioralData.fieldOptions;
+      let ImgOptions = this.state.ImgData.fieldOptions;
+      if (ImgOptions === undefined) {
+        ImgOptions = {
+          site: '',
+          project: '',
+          subproject: '',
+          visitLabel: '',
+          scanType: '',
+          mRIParameterForm: '',
+          scanDoneInMRIPF: '',
+          tarchive: '',
+          scanLocation: '',
+          qCStatus: '',
+          uploadedBy: '',
+          selected: '',
+        };
+      }
+      const BehavioralOptions = this.state.BehavioralData.fieldOptions;
 
-    const ImgFields = [
-      {label: 'PSCID', show: true, filter: {
-        name: 'pSCID',
-        type: 'text',
-      }},
-      {label: 'Session ID', show: true},
-      {label: 'DCCID', show: true, filter: {
-        name: 'candId',
-        type: 'text',
-      }},
-      {label: 'Site', show: true, filter: {
-         name: 'site',
-         type: 'select',
-         options: ImgOptions.site,
-      }},
-      {label: 'Project', show: true, filter: {
-        name: 'project',
-        type: 'select',
-        options: ImgOptions.project,
-      }},
-      {label: 'Subproject', show: true, filter: {
-        name: 'subproject',
-        type: 'select',
-        options: ImgOptions.subproject,
-      }},
-      {label: 'Visit Label', show: true, filter: {
-        name: 'visitLabel',
-        type: 'select',
-        options: ImgOptions.visitLabel,
-      }},
-      {label: 'Scan Type', show: true, filter: {
-        name: 'scanType',
-        type: 'select',
-        options: ImgOptions.scanType,
-      }},
-      {label: 'MRI Parameter Form', show: true, filter: {
-        name: 'mRIParameterForm',
-        type: 'select',
-        options: ImgOptions.mRIParameterForm,
-      }},
-      {label: 'Scan Done in MRI PF', show: true, filter: {
-        name: 'scanDoneInMRIPF',
-        type: 'select',
-        options: ImgOptions.scanDoneInMRIPF,
-      }},
-      {label: 'Tarchive', show: true, filter: {
-        name: 'tarchive',
-        type: 'select',
-        options: ImgOptions.tarchive,
-      }},
-      {label: 'Scan Location', show: true, filter: {
-        name: 'scanLocation',
-        type: 'select',
-        options: ImgOptions.scanLocation,
-      }},
-      {label: 'QC Status', show: true, filter: {
-        name: 'qCStatus',
-        type: 'select',
-        options: ImgOptions.qCStatus,
-      }},
-      {label: 'Uploaded By', show: true, filter: {
-        name: 'uploadedBy',
-        type: 'select',
-        options: ImgOptions.uploadedBy,
-      }},
-      {label: 'Selected', show: true, filter: {
-        name: 'selected',
-        type: 'select',
-        options: ImgOptions.selected,
-      }},
-      {label: 'CommentID', show: false},
-      {label: 'TarchiveID', show: false},
-    ];
+      const ImgFields = [
+        {
+          label: 'PSCID', show: true, filter: {
+            name: 'pSCID',
+            type: 'text',
+          },
+        },
+        {label: 'Session ID', show: true},
+        {
+          label: 'DCCID', show: true, filter: {
+            name: 'candId',
+            type: 'text',
+          },
+        },
+        {
+          label: 'Site', show: true, filter: {
+            name: 'site',
+            type: 'select',
+            options: ImgOptions.site,
+          },
+        },
+        {
+          label: 'Project', show: true, filter: {
+            name: 'project',
+            type: 'select',
+            options: ImgOptions.project,
+          },
+        },
+        {
+          label: 'Subproject', show: true, filter: {
+            name: 'subproject',
+            type: 'select',
+            options: ImgOptions.subproject,
+          },
+        },
+        {
+          label: 'Visit Label', show: true, filter: {
+            name: 'visitLabel',
+            type: 'select',
+            options: ImgOptions.visitLabel,
+          },
+        },
+        {
+          label: 'Scan Type', show: true, filter: {
+            name: 'scanType',
+            type: 'select',
+            options: ImgOptions.scanType,
+          },
+        },
+        {
+          label: 'MRI Parameter Form', show: true, filter: {
+            name: 'mRIParameterForm',
+            type: 'select',
+            options: ImgOptions.mRIParameterForm,
+          },
+        },
+        {
+          label: 'Scan Done in MRI PF', show: true, filter: {
+            name: 'scanDoneInMRIPF',
+            type: 'select',
+            options: ImgOptions.scanDoneInMRIPF,
+          },
+        },
+        {
+          label: 'Tarchive', show: true, filter: {
+            name: 'tarchive',
+            type: 'select',
+            options: ImgOptions.tarchive,
+          },
+        },
+        {
+          label: 'Scan Location', show: true, filter: {
+            name: 'scanLocation',
+            type: 'select',
+            options: ImgOptions.scanLocation,
+          },
+        },
+        {
+          label: 'QC Status', show: true, filter: {
+            name: 'qCStatus',
+            type: 'select',
+            options: ImgOptions.qCStatus,
+          },
+        },
+        {
+          label: 'Uploaded By', show: true, filter: {
+            name: 'uploadedBy',
+            type: 'select',
+            options: ImgOptions.uploadedBy,
+          },
+        },
+        {
+          label: 'Selected', show: true, filter: {
+            name: 'selected',
+            type: 'select',
+            options: ImgOptions.selected,
+          },
+        },
+        {label: 'CommentID', show: false},
+        {label: 'TarchiveID', show: false},
+      ];
 
-    const BehavioralFields = [
-      {label: 'Visit Label', show: true, filter: {
-        name: 'visitLabel',
-        type: 'select',
-        options: BehavioralOptions.visits,
-      }},
-      {label: 'DCCID', show: true, filter: {
-        name: 'candId',
-        type: 'text',
-      }},
-      {label: 'PSCID', show: true, filter: {
-        name: 'pSCID',
-        type: 'text',
-      }},
-      {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'select',
-        options: BehavioralOptions.instrument,
-      }},
-    ];
+      const BehavioralFields = [
+        {
+          label: 'Visit Label', show: true, filter: {
+            name: 'visitLabel',
+            type: 'select',
+            options: BehavioralOptions.visits,
+          },
+        },
+        {
+          label: 'DCCID', show: true, filter: {
+            name: 'candId',
+            type: 'text',
+          },
+        },
+        {
+          label: 'PSCID', show: true, filter: {
+            name: 'pSCID',
+            type: 'text',
+          },
+        },
+        {
+          label: 'Instrument', show: true, filter: {
+            name: 'instrument',
+            type: 'select',
+            options: BehavioralOptions.instrument,
+          },
+        },
+      ];
 
-    const tab0 = (
-      <TabPane TabId={tabList[0].id}>
-        <FilterableDataTable
-          name="quality_control_behavioural"
-          data={this.state.BehavioralData.Data}
-          fields={BehavioralFields}
-          getFormattedCell={this.formatColumn}
-        />
-      </TabPane>
-    );
+      const tab0 = (
+        <TabPane TabId={tabList[0].id}>
+          <FilterableDataTable
+            name="quality_control_behavioural"
+            data={this.state.BehavioralData.Data}
+            fields={BehavioralFields}
+            getFormattedCell={this.formatColumn}
+          />
+        </TabPane>
+      );
 
-    const tab1 = (
-      <TabPane TabId={tabList[1].id}>
-        <FilterableDataTable
-          name="quality_control"
-          data={this.state.ImgData.Data}
-          fields={ImgFields}
-          getFormattedCell={this.formatColumn}
-        />
-      </TabPane>
-    );
-    return (
-      <div>
-        <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id}
-        updateURL={true}>
-          {tab0}
-          {tab1}
-        </Tabs>
-      </div>
-    );
+      const tab1 = (
+        <TabPane TabId={tabList[1].id}>
+          <FilterableDataTable
+            name="quality_control"
+            data={this.state.ImgData.Data}
+            fields={ImgFields}
+            getFormattedCell={this.formatColumn}
+          />
+        </TabPane>
+      );
+      return (
+        <div>
+          <Tabs id="TabPanes" tabs={tabList} defaultTab={tabList[0].id}
+                updateURL={true}>
+            {tab0}
+            {tab1}
+          </Tabs>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h3>An error occurred while loading the page.</h3>
+        </div>
+      );
+    }
   }
 }
 
