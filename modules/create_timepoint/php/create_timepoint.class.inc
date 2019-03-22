@@ -35,7 +35,6 @@ class Create_Timepoint extends \NDB_Form
      * @param \User $user The user whose access is being checked
      *
      * @return bool
-     * @throws \LorisException
      */
     function _hasAccess(\User $user) : bool
     {
