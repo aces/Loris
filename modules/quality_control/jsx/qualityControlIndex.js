@@ -80,7 +80,7 @@ class QualityControlIndex extends Component {
         {id: 'imaging', label: 'Imaging'},
       ];
 
-      let ImgOptions = this.state.ImgData.fieldOptions;
+      const ImgOptions = this.state.ImgData.fieldOptions;
       const BehavioralOptions = this.state.BehavioralData.fieldOptions;
 
       const ImgFields = [
