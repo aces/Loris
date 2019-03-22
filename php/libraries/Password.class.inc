@@ -49,12 +49,11 @@ class Password
     public const MIN_PASSWORD_LENGTH = 8;
 
     /**
-     * The value of the password. This value must always remain private as it
-     * represents the plaintext password.
+     * The result of running the $value through the password_hash algorithm.
      *
      * @var string
      */
-    private $_value;
+    private $_hash;
 
     /**
      * Ensures that the value submitted as a potential new password is
@@ -87,14 +86,15 @@ class Password
     }
 
     /**
-     * Creates a new Password object when the $value param is well-formed.
-     * well-formed.
+     * Validates the $value param by examining its length and complexity.
      *
-     * @param string $value The proposed password value.
+     * @param string $value The proposed password plaintext.
      *
-     * @throws \DomainException When passsword is too short or too simple.
+     * @return void
+     *
+     * @throws \DomainException When password is too short or weak.
      */
-    public function __construct(string $value)
+    public function validate($value): void
     {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
@@ -104,17 +104,32 @@ class Password
         if (!$this->hasSufficientComplexity($value)) {
             throw new \DomainException('The password is not complex enough.');
         }
-        $this->_value = $value;
     }
 
     /**
-     * Returns the $value variable as a string. This value has already been
-     * hashed upon construction so the plaintext will not be revealed.
+     * Creates a new Password object when the $value param is well-formed.
+     * well-formed.
+     *
+     * @param string $value The proposed password value.
+     *
+     * @throws \DomainException When passsword is too short or too simple.
+     */
+    public final function __construct(string $value)
+    {
+        // Ensure proposed value is well-formed.
+        $this->validate($value);
+        // Don't store the value in the object; instead use the hashed version
+        // This mitigates the risk of accidentally revealing the plaintext.
+        $this->_hash = password_hash($value, PASSWORD_DEFAULT);
+    }
+
+    /**
+     * The hashed value fo the original input.
      *
      * @return string The password hash.
      */
     public function __toString(): string
     {
-        return password_hash($this->_value, PASSWORD_DEFAULT);
+        return $this->_hash;
     }
 }
