@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * POST request methods.
  *
@@ -65,8 +65,13 @@ class AjaxTimepoint extends \NDB_Page
          * User permission verification.
          */
         $user       = $request->getAttribute('user');
-        $identifier = $requestBody['identifier'] ?? '';
-        $candidate  =& \Candidate::singleton($identifier);
+        if (!isset($requestBody['identifier'])) {
+            throw new LorisException(
+                "Failed to retrieve data for create timepoint."
+            );
+        }
+        $identifier = intval($requestBody['identifier']);
+        $candidate  = \Candidate::singleton($identifier);
         if (!$user->hasPermission('data_entry')
             && !(in_array(
                 $candidate->getData('RegistrationCenterID'),
@@ -114,11 +119,12 @@ class AjaxTimepoint extends \NDB_Page
     {
         // Verify cand ID.
         $values['identifier'] = isset($values['identifier']) ?
-            htmlentities(
+            intval(htmlentities(
                 $values['identifier'],
                 ENT_QUOTES,
                 'UTF-8'
-            ) : '';
+            )) : null;
+        $values['psc'] = empty($values['psc']) ? null : $values['psc'];
         return $values;
     }
 
@@ -135,6 +141,7 @@ class AjaxTimepoint extends \NDB_Page
             $response = $this->initializeSetup($values);
         } else if (isset($values['command']) && $values['command'] == 'create') {
             $errors = $this->validate($values);
+
             if (!$errors) {
 
                 // convert site entered to a \Site object
@@ -162,11 +169,12 @@ class AjaxTimepoint extends \NDB_Page
                 assert(isset($site) && $site !== null);
 
                 \TimePoint::createNew(
-                    $values['identifier'],
-                    $values['subproject'],
+                    \Candidate::singleton($values['identifier']),
+                    intval($values['subproject']),
                     $values['visit'],
                     $site,
-                    $project
+                    $project,
+                    $site,
                 );
                 $response['status'] = 'success';
             } else {
@@ -191,8 +199,8 @@ class AjaxTimepoint extends \NDB_Page
     {
         // Setup variables
         $errors         = array(); // form errors.
-        $config         =& \NDB_Config::singleton();
-        $candidate      =& \Candidate::singleton($values['identifier']);
+        $config         = \NDB_Config::singleton();
+        $candidate      = \Candidate::singleton($values['identifier']);
         $allSubprojects = \Utility::getSubprojectList();
 
         // Frontend needs for select element.
@@ -272,7 +280,6 @@ class AjaxTimepoint extends \NDB_Page
      * @param array $values the form values.
      *
      * @return array
-     * @throws \LorisException
      */
     function validate(array $values) : array
     {
@@ -281,7 +288,7 @@ class AjaxTimepoint extends \NDB_Page
         $errors = array();
 
         // validate site entered
-        $site = $values['psc'] ?? '';
+        $site = $values['psc'];
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
@@ -294,9 +301,10 @@ class AjaxTimepoint extends \NDB_Page
 
         try {
             \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
-        } catch ( \LorisException $e) {
-            $errors['visitLabel'] = $e->getMessage();
+        } catch (\LorisException $exception) {
+            $errors['visitLabel'] = $exception->getMessage();
         }
+
         return $errors;
     }
 
