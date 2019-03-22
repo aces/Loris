@@ -74,7 +74,7 @@ class QualityControlIndex extends Component {
     if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg) {
       return <Loader/>;
     }
-    if (this.state.ImgData === {}) {
+    if (Object.keys(this.state.ImgData).length > 0) {
       let tabList = [
         {id: 'behavioral', label: 'Behavioral'},
         {id: 'imaging', label: 'Imaging'},
