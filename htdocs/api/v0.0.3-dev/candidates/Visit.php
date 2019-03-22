@@ -258,7 +258,10 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
         }
 
-        \TimePoint::createNew($CandID, $subprojectID, $VL, $CID);
+        $cand        = \Candidate::singleton($candID);
+        $sessionSite = \Site::singleton($CID);
+
+        \TimePoint::createNew($cand, $subprojectID, $VL, $sessionSite);
     }
 }
 
