@@ -94,7 +94,7 @@ class Create_Timepoint extends \NDB_Form
 
         assert(isset($site) && $site !== null);
         \TimePoint::createNew(
-            \Candidate::singleton($this->identifier),
+            \Candidate::singleton(new CandID($this->identifier)),
             $values['subprojectID'],
             $values['visitLabel'] ?? null,
             $site,
