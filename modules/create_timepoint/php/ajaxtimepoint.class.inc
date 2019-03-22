@@ -34,7 +34,7 @@ class AjaxTimepoint extends \NDB_Page
     public $skipTemplate = true;
 
     /**
-     * This function will return a json file with DCCID and PSCID
+     * This function will return a json response.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
