@@ -81,22 +81,6 @@ class QualityControlIndex extends Component {
       ];
 
       let ImgOptions = this.state.ImgData.fieldOptions;
-      if (ImgOptions === undefined) {
-        ImgOptions = {
-          site: '',
-          project: '',
-          subproject: '',
-          visitLabel: '',
-          scanType: '',
-          mRIParameterForm: '',
-          scanDoneInMRIPF: '',
-          tarchive: '',
-          scanLocation: '',
-          qCStatus: '',
-          uploadedBy: '',
-          selected: '',
-        };
-      }
       const BehavioralOptions = this.state.BehavioralData.fieldOptions;
 
       const ImgFields = [
