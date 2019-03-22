@@ -14,7 +14,7 @@
  */
 
 require_once 'CLI_Helper.class.inc';
-$helper = new CLI_Helper($argv ?? array());
+$helper = new CLI_Helper($argv);
 $distro = $helper->getDistro();
 
 // Create boostrap object based on operating system
@@ -61,31 +61,31 @@ if (count($missingPackages) > 0) {
     foreach ($missingPackages as $name) {
         $report[] = "\t- $name";
     }
-    if (!installMode()) {
+    if (!installMode($helper)) {
         $report[] = "These may be installed by running this script with the " .
             "--install flag.";
+    } else {
+        echo '[*] Installing requirements...' . PHP_EOL;
+        $b->installPackages($missingPackages);
     }
 }
 
 // Print results
 echo implode(PHP_EOL, $report) . PHP_EOL;
 
-// Install packages if requested to by user.
-if (installMode()) {
-    echo '[*] Installing requirements...' . PHP_EOL;
-    $b->installPackages($missingPackages);
-}
-
 /* END SCRIPT */
 
 /**
  * Whether this script is in "install mode" as determined by a command-line flag.
  *
+ * @param CLI_Helper $helper An object containing a copy of the arguments passed
+ * to this script.
+ *
  * @return bool True if '-i' or '--install' is present in CLI arguments.
  */
-function installMode(): bool
+function installMode(CLI_Helper $helper): bool
 {
-    return isset($argv)
-        && (in_array('-i', $argv, true) || in_array('--install', $argv, true));
+    return in_array('-i', $helper->args, true)
+        || in_array('--install', $helper->args, true);
 }
 

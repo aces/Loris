@@ -25,8 +25,18 @@
  */
 class CLI_Helper
 {
-    /* Whether to print debug statements.*/
+    /*
+     * Whether to print debug statements.
+     * @var bool
+     */
     var $verbose = false;
+
+    /*
+     * A copy of $argv passed to this script.
+     *
+     * @var array
+     */
+    var $args = array();
 
     /**
      * Constructor for CLI helper. Optionally takes a copy of the calling code's
@@ -41,6 +51,7 @@ class CLI_Helper
         ) {
             $this->verbose = true;
         }
+        $this->args = $args;
     }
 
     /**
