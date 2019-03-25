@@ -49,23 +49,62 @@ $result = $DB->pselect(
 
 // Format of output filename: <table_column_dataExtract_output.csv>
 $filename = sprintf("%s_%s_dataExtract_output.csv", $table, $column);
+
 // Write PSCID and queried column data to CSV output.
-writeToCsv($filename, $result);
+// NOTE Data must be linked to PSCID for now
+writeToCsv($filename, array('PSCID', $column), $result);
 unset($result);
 unset($filename);
 
-// Get visit label
-// TODO add more fields 
-$query = "select c.PSCID,s.Visit_label,s.CenterID " .
+// Get visit label information from the `session` table.
+// All date/dateime fields are excluded from the query as they are potentially 
+// identifying. Visit statuses reflecting a Failure, Withdrawal, or 
+// Recycling Bin are also excluded.
+$sessionColumns = array(
+    'CenterID',
+    'VisitNo',
+    'Visit_label',
+    'SubprojectID',
+    'Submitted',
+    'Current_stage',
+    'Screening',
+    'Visit',
+    'Approval',
+    'Active',
+    'Hardcopy_request',
+    'BVLQCStatus',
+    'BVLQCType',
+    'BVLQCExclusion',
+    'QCd',
+    'Scan_done',
+    'MRIQCStatus',
+    'MRIQCPending',
+    'MRICaveat'
+    );
+// Add abbreviations to columns
+$columnQuery = implode(',', array_map(
+    'prependSessionAbbreviation', 
+    $sessionColumns));
+
+$query = "SELECT " .
+    "c.PSCID,$columnQuery " .
     "FROM session s " .
     "INNER JOIN candidate c " .
-    "ON c.CandID = s.CandID;";
+    "ON c.CandID = s.CandID " .
+    "WHERE Visit NOT IN ('Failure', 'Withdrawal') " .
+    "AND Current_stage != 'Recycling Bin';";
 
 $result = $DB->pselect($query, array());
 print_r($result);
 
+$filename = 'visits_dataExtract_output.csv';
+// Prepend PSCID to the array column headers so that it will be properly
+// marked in the CSV output.
+array_unshift($sessionColumns, 'PSCID');
+writeToCsv($filename, $sessionColumns, $result);
 
-function writeToCsv(string $filename, array $data): void {
+
+function writeToCsv(string $filename, array $headers, array $data): void {
     $fp = fopen($filename, 'w');
     if (!$fp) {
         throw new InvalidArgumentException(
@@ -73,14 +112,17 @@ function writeToCsv(string $filename, array $data): void {
         );
     }
     // Write CSV headers
-    // NOTE Right now data must be linked to PSCID.
-    fputcsv($fp, array('PSCID',$column));
+    fputcsv($fp, $headers);
 
-    foreach($result as $fields) {
-        fputcsv($fp, $fields);
+    foreach($data as $row) {
+        fputcsv($fp, $row);
     }
 }
 
-
-
-// Visit labels query:
+/**
+ * Callback used to append the string 's.' to all column names to be used in
+ * querying the `session` table.
+ */
+function prependSessionAbbreviation(string $column) {
+    return "s.$column";
+}
