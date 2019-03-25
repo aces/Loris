@@ -61,7 +61,8 @@ class Password
      *
      * @param string $value The proposed password value.
      *
-     * @return bool Whether the submitted value is valid.
+     * @return bool Whether the submitted value has length of at least
+     *              MIN_PASSWORD_LENGTH;
      */
     protected function hasSufficientLength(string $value): bool
     {
@@ -75,7 +76,8 @@ class Password
      *
      * @param string $value The proposed password value.
      *
-     * @return bool Whether the submitted value is valid.
+     * @return bool Whether the submitted value meets the minimum score required
+     *              by Zxcvbn as defined by MIN_COMPLEXITY_SCORE.
      */
     protected function hasSufficientComplexity(string $value): bool
     {
