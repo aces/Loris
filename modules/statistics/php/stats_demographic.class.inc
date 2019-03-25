@@ -200,7 +200,6 @@ class Stats_Demographic extends \NDB_Form
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($demographicProject);
             $subprojList = implode(',', array_keys($subprojects));
-            $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
             }
