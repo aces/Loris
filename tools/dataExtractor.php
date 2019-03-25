@@ -113,7 +113,6 @@ case VISIT_EXPORT:
         "AND Current_stage != 'Recycling Bin';";
 
     $result = $DB->pselect($query, array());
-    print_r($result);
 
     $filename = 'visits_dataExtract_output.csv';
     // Prepend PSCID to the array column headers so that it will be properly

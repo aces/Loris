@@ -39,6 +39,7 @@ const NUM_ARGS_REQUIRED = 4;
  */
 const MAPPING_ARG_INDEX = 2;
 const DATA_ARG_INDEX = 3;
+const EXCLUDED_ARG_INDEX = 4; // Used only for visit label imports
 
 /**
  * These constants represent the indices of columns within the mapping file.
@@ -174,17 +175,23 @@ foreach($mappingRows as $row) {
     $PSCIDMapping[$oldPSCID] = $newPSCID;
 }
 
+if ($mode === VISIT_IMPORT) {
 // The session table uses CandIDs so a mapping from PSCIDs to CandIDs must be
 // generated in order to update this table.
 // Create a mapping of PSCIDs to CandIDs to allow for direct lookup of a CandID
 // given a PSCID. It is more efficient to use this dictionary than searching the
 // CSV rows for a CandID each time we need one.
-if ($mode === VISIT_IMPORT) {
     $candIDMapping = array();
     foreach ($mappingRows as $row) {
         $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
         $newCandID = $row[$mappingHeaders[NEW_CANDID]];
         $candIDMapping[$newPSCID] = $newCandID;
+    }
+    
+    // Get visit labels to exclude, if any
+    $excludedFile = $argv[EXCLUDED_ARG_INDEX] ?? ''; 
+    if (!empty($excludedFile)) {
+        $excludedVisitLabels = explode("\n", file_get_contents($excludedFile));
     }
 }
 
@@ -206,6 +213,9 @@ case VISIT_IMPORT:
 // Create a queue of commands to execute or print depending on the operation
 // mode of the script
 $commandQueue = array();
+
+// A count of visit labels excluded from importation.
+$excludedCount = 0;
 
 // Iterate over every shared candidate. Then generate the necessary UPDATE 
 // command needed to add the COLUMN data from the data file into the new DB.
@@ -237,6 +247,12 @@ foreach ($dataRows as $row) {
         break;
     case VISIT_IMPORT:
         $data = $row;
+        if (isset($excludedVisitLabels)) {
+            if (in_array($data['Visit_label'], $excludedVisitLabels, true)) {
+                $excludedCount++;
+                continue 2;
+            }
+        }
         // We don't want PSCID information from the CSV file included in the
         // SET statement. It's only used for linking.
         unset($data['PSCID']);
@@ -271,6 +287,9 @@ SQL;
     $report[] = sprintf($formattedCommand, implode(', ', $setString));
 }
 
+if (isset($excludedVisitLabels)) {
+    print "$excludedCount visit label(s) excluded." . PHP_EOL;
+}
 // Print report.
 print implode(PHP_EOL, $report);
 
