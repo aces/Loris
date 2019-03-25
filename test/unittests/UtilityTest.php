@@ -1,26 +1,18 @@
 <?php declare(strict_types=1);
 /**
- * Utility class tests
+ * Unit tests for Utility class.
  *
  * PHP Version 7
  *
  * @category Tests
  * @package  Test
  * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ *           John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
-/**
- * Unit test for Utility class
- *
- * @category Tests
- * @package  Main
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 class UtilityTest extends TestCase
 {
     /**
@@ -830,6 +822,8 @@ class UtilityTest extends TestCase
 
 =======
 
+=======
+>>>>>>> 81d586a44... Fix file and class doc
     /*
      * dataProvider for function testIsPositiveIntegerReturnsFalse
      */
@@ -876,5 +870,4 @@ class UtilityTest extends TestCase
     {
         $this->assertTrue(\Utility::isPositiveInteger($int));
     }
-
 }
