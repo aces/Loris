@@ -963,8 +963,9 @@ class Utility
      *
      * @return bool Whether $value is a positive int.
      */
-    public static function isPositiveInteger($value): bool {
-        
+    public static function isPositiveInteger($value): bool
+    {
+
         // Reject arrays and objects
         if (!is_scalar($value)) {
             return false;
