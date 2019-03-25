@@ -159,6 +159,13 @@ if (count($sharedCandidates) < 1) {
     );
 }
 
+echo sprintf(
+    "Found %s PSCID(s) in common between mapping file %s and data file %s\n",
+    count($sharedCandidates),
+    $argv[MAPPING_ARG_INDEX],
+    $argv[DATA_ARG_INDEX]
+);
+
 // Build a one-to-one mapping of old to new PSCIDs with the old IDs as the key.
 $PSCIDMapping = array();
 foreach($mappingRows as $row) {
@@ -167,13 +174,31 @@ foreach($mappingRows as $row) {
     $PSCIDMapping[$oldPSCID] = $newPSCID;
 }
 
-// Prepate the column names to be updated.
+// The session table uses CandIDs so a mapping from PSCIDs to CandIDs must be
+// generated in order to update this table.
+// Create a mapping of PSCIDs to CandIDs to allow for direct lookup of a CandID
+// given a PSCID. It is more efficient to use this dictionary than searching the
+// CSV rows for a CandID each time we need one.
+if ($mode === VISIT_IMPORT) {
+    $candIDMapping = array();
+    foreach ($mappingRows as $row) {
+        $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
+        $newCandID = $row[$mappingHeaders[NEW_CANDID]];
+        $candIDMapping[$newPSCID] = $newCandID;
+    }
+}
+
+// Prepare the table name and column names to be updated.
 switch ($mode) {
 case COLUMN_IMPORT:
     // The name of the column to update.
+    // NOTE For now only the candidate table is supported.
+    $table = 'candidate';
     $dataColumn = $dataHeaders[COLUMN_NAME];
     break;
 case VISIT_IMPORT:
+    // Visit label information is found in the session table.
+    $table = 'session';
     // A string of all the column names to update.
     $setColumns = implode(',', $dataHeaders);
 }
@@ -185,7 +210,7 @@ $commandQueue = array();
 // Iterate over every shared candidate. Then generate the necessary UPDATE 
 // command needed to add the COLUMN data from the data file into the new DB.
 //
-// NOTE Iterating over every row in the CSV file instead of the list of PSCIDs
+// Iterating over every row in the CSV file instead of the list of PSCIDs
 // enables this loop to operate with O(n) time. Iterating over PSCIDs does not
 // allow for direct lookup of data cells as the CSV file must be searched each
 // time for the PSCID. This results in O(n^2) execution time. To avoid this
@@ -205,21 +230,19 @@ foreach ($dataRows as $row) {
     // including table name, SET, and WHERE data.
     switch ($mode) {
     case COLUMN_IMPORT:
-        // NOTE For now only the candidate table is supported.
-        $table = 'candidate';
 
         // Retrive the cell containing the new data for this candidate.
         $data = $row[$dataColumn];
+        $where = array('PSCID', $newPSCID);
         break;
     case VISIT_IMPORT:
-        // TODO Link with CandID!!
-        $table = 'session';
         $data = $row;
+        // We don't want PSCID information from the CSV file included in the
+        // SET statement. It's only used for linking.
         unset($data['PSCID']);
+        $where = array('CandID', $candIDMapping[$newPSCID]);
         break;
     }
-
-    $where = array('PSCID', $newPSCID);
 
     $commandQueue[] = array(
         'table' => $table,
