@@ -232,7 +232,7 @@ foreach ($dataRows as $row) {
     case COLUMN_IMPORT:
 
         // Retrive the cell containing the new data for this candidate.
-        $data = $row[$dataColumn];
+        $data = array($dataColumn => $row[$dataColumn]);
         $where = array('PSCID', $newPSCID);
         break;
     case VISIT_IMPORT:
@@ -331,7 +331,7 @@ function csvToArray(string $filename='', string $delimiter=','): array
 	{
 		while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
 		{
-			if(!$header)
+			if (!$header)
 				$header = $row;
 			else
 				$data[] = array_combine($header, $row);
