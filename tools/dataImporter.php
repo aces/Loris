@@ -212,10 +212,40 @@ case VISIT_IMPORT:
     
 // Create a queue of commands to execute or print depending on the operation
 // mode of the script
-$commandQueue = array();
+$INSERTQueue = array();
+$UPDATEQueue = array();
 
 // A count of visit labels excluded from importation.
 $excludedCount = 0;
+
+// Get a list of existing sessions so we know when to UPDATE vs. INSERT data.
+// Again create a lookup mapping so avoid searching the entire array each time.
+// Since a candidate will often have multiple Visit_labels, this array will be
+// multi-dimensional containing a mapping of a (new) CandID to the Visit_labels
+// that exists for them in the DB, e.g.
+//
+// Array (
+//     'CandID' => Array (
+//          'V1',
+//          'V2'
+//     )
+// )
+$existingSessions = array();
+$result = $DB->pselect(
+    'SELECT CandID,Visit_label FROM session',
+    array()
+);
+foreach ($result as $row) {
+    // Add the visit label in this row to the array of visit labels in
+    // $existingSessions. Indexed by a CandID.
+    $visitLabelsForCandidate = $existingSessions[$row['CandID']] ?? array();
+    array_push(
+        $visitLabelsForCandidate,
+        $row['Visit_label']
+    );
+    $existingSessions[$row['CandID']]  = $visitLabelsForCandidate;
+}
+unset($result);
 
 // Iterate over every shared candidate. Then generate the necessary UPDATE 
 // command needed to add the COLUMN data from the data file into the new DB.
@@ -235,63 +265,131 @@ foreach ($dataRows as $row) {
     }
 
     $newPSCID = $PSCIDMapping[$oldPSCID];
+    $newCandID = $candIDMapping[$newPSCID];
 
     // Populate the data for the MySQL command to be output/run by this script,
     // including table name, SET, and WHERE data.
     switch ($mode) {
     case COLUMN_IMPORT:
-
         // Retrive the cell containing the new data for this candidate.
         $data = array($dataColumn => $row[$dataColumn]);
         $where = array('PSCID', $newPSCID);
+        $UPDATEQueue[] = array(
+            'table' => $table,
+            'data' => $data,
+            'where' => $where
+        );
         break;
     case VISIT_IMPORT:
-        $data = $row;
+        // Skip this visit label if it is in the list of excluded labels.
         if (isset($excludedVisitLabels)) {
-            if (in_array($data['Visit_label'], $excludedVisitLabels, true)) {
+            if (in_array($row['Visit_label'], $excludedVisitLabels, true)) {
                 $excludedCount++;
                 continue 2;
             }
         }
+        $data = $row;
         // We don't want PSCID information from the CSV file included in the
         // SET statement. It's only used for linking.
         unset($data['PSCID']);
+        
+        // Prepare command information.
         $where = array('CandID', $candIDMapping[$newPSCID]);
+        $command = array(
+            'table' => $table,
+            'data' => $data,
+            'where' => $where
+        );
+
+        if (!isset($existingSessions[$newCandID])
+            || !in_array(
+                $row['Visit_label'],
+                $existingSessions[$newCandID],
+                true
+            )
+        ) {
+            // INSERT if the candidate doesn't have any visit labels or if the
+            // current visit label is not present in their list of visit labels.
+            $INSERTQueue[] = $command;
+        } else {
+            // UPDATE if Visit label already present for this candidate
+            $UPDATEQueue[] = $command;
+        }
         break;
     }
-
-    $commandQueue[] = array(
-        'table' => $table,
-        'data' => $data,
-        'where' => $where
-    );
 }
 
-// Format commands for printing.
-$report = array();
-foreach ($commandQueue as $command) {
-    $formattedCommand = <<<SQL
-UPDATE {$command["table"]}
-SET %s
-WHERE {$command['where'][WHERE_COLUMN]} = '{$command['where'][WHERE_OLDVALUE]}';
-
-SQL;
-    $setString = array();
-    // Iterate over all columns and create a formatted string. Will only be one
-    // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
-    foreach ($command['data'] as $column => $value) {
-        $setString[] = "$column = '$value'";
-    }
-    // Interpolate the $setString into the SQL heredoc above and add it to the
-    // final $report output.
-    $report[] = sprintf($formattedCommand, implode(', ', $setString));
-}
+$report = array_merge(
+    formatUPDATEStatements($UPDATEQueue), 
+    formatINSERTStatements($INSERTQueue, $dataHeaders)
+);
 
 if (isset($excludedVisitLabels)) {
     print "$excludedCount visit label(s) excluded." . PHP_EOL;
 }
 // Print report.
 print implode(PHP_EOL, $report);
+
+// Format commands for printing.
+function formatUPDATEStatements(array $commandQueue)
+{
+    if (count($commandQueue) < 1) {
+        return array();
+    }
+    $table = $commandQueue[0]['table'];
+    $formattedCommand = <<<SQL
+UPDATE $table
+SET %s
+WHERE %s = '%s';
+
+SQL;
+    $report = array();
+    foreach ($commandQueue as $command) {
+        $setString = array();
+        // Iterate over all columns and create a formatted string. Will only be one
+        // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
+        foreach ($command['data'] as $column => $value) {
+            $setString[] = "$column = '$value'";
+        }
+        // Interpolate the $setString into the SQL heredoc above and add it to the
+        // final $report output.
+        $report[] = sprintf(
+            $formattedCommand, 
+            implode(', ', $setString),
+            $command['where'][0], // TODO fix magic numbers
+            $command['where'][1]
+
+        );
+    }
+    return $report;
+}
+
+/**
+ *
+ * @return string[]
+ */
+function formatINSERTStatements(array $commandQueue, array $columnNames): array {
+    if (count($commandQueue) < 1) {
+        return array();
+    }
+    // Format commands for printing.
+    $report = array();
+    $table = $commandQueue[0]['table'];
+    $formattedCommand = <<<SQL
+INSERT INTO $table
+(%s)
+VALUES(%s);
+
+SQL;
+    foreach ($commandQueue as $command) {
+        $report[] = sprintf(
+            $formattedCommand,
+            implode(',', array_keys($command['data'])),
+            implode(',', array_map('quoteWrap', array_values($command['data'])))
+        );
+    }
+    return $report;
+}
 
 
 // Converts a csv file into a two-dimensional PHP array where each element
@@ -358,4 +456,13 @@ function csvToArray(string $filename='', string $delimiter=','): array
 		fclose($handle);
 	}
 	return $data;
+}
+
+/**
+ * Wraps a string in single quotes.
+ *
+ */
+function quoteWrap(string $string): string
+{
+    return sprintf("'%s'", $string);
 }
