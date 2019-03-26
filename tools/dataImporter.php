@@ -175,25 +175,16 @@ foreach($mappingRows as $row) {
     $PSCIDMapping[$oldPSCID] = $newPSCID;
 }
 
-if ($mode === VISIT_IMPORT) {
-// The session table uses CandIDs so a mapping from PSCIDs to CandIDs must be
-// generated in order to update this table.
 // Create a mapping of PSCIDs to CandIDs to allow for direct lookup of a CandID
 // given a PSCID. It is more efficient to use this dictionary than searching the
 // CSV rows for a CandID each time we need one.
-    $candIDMapping = array();
-    foreach ($mappingRows as $row) {
-        $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
-        $newCandID = $row[$mappingHeaders[NEW_CANDID]];
-        $candIDMapping[$newPSCID] = $newCandID;
-    }
-    
-    // Get visit labels to exclude, if any
-    $excludedFile = $argv[EXCLUDED_ARG_INDEX] ?? ''; 
-    if (!empty($excludedFile)) {
-        $excludedVisitLabels = explode("\n", file_get_contents($excludedFile));
-    }
+$candIDMapping = array();
+foreach ($mappingRows as $row) {
+    $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
+    $newCandID = $row[$mappingHeaders[NEW_CANDID]];
+    $candIDMapping[$newPSCID] = $newCandID;
 }
+    
 
 // Prepare the table name and column names to be updated.
 switch ($mode) {
@@ -208,6 +199,12 @@ case VISIT_IMPORT:
     $table = 'session';
     // A string of all the column names to update.
     $setColumns = implode(',', $dataHeaders);
+    
+    // Get visit labels to exclude, if any
+    $excludedFile = $argv[EXCLUDED_ARG_INDEX] ?? ''; 
+    if (!empty($excludedFile)) {
+        $excludedVisitLabels = explode("\n", file_get_contents($excludedFile));
+    }
 }
     
 // Create a queue of commands to execute or print depending on the operation
@@ -247,6 +244,16 @@ foreach ($result as $row) {
 }
 unset($result);
 
+$existingPSCIDs = $DB->pselectCol(
+    'SELECT PSCID from candidate',
+    array()
+);
+
+// If some PSCIDs exist in the mapping file but not in the database, they will
+// be added to this array and printed to the user as it may be important to
+// know.
+$skippedPSCIDs = array();
+
 // Iterate over every shared candidate. Then generate the necessary UPDATE 
 // command needed to add the COLUMN data from the data file into the new DB.
 //
@@ -265,6 +272,30 @@ foreach ($dataRows as $row) {
     }
 
     $newPSCID = $PSCIDMapping[$oldPSCID];
+
+    // Check that the new PSCID from the mapping file is actually present in
+    // the Database. It's possible that the candidate has been deleted since
+    // the mapping file was created.
+    $newPSCIDExists = in_array(
+        $newPSCID,
+        $existingPSCIDs,
+        true
+    );
+    if (!$newPSCIDExists) {
+        // Don't add a skipped candidate to the skipped array if we've already
+        // encountered it. This can occur for example when multiple visit labels
+        // are listed for a single candidate.
+        $skippedAlready = in_array(
+            $newPSCID,
+            $skippedPSCIDs,
+            true
+        );
+        if (!$skippedAlready) {
+            $skippedPSCIDs[] = $newPSCID;
+        }
+        continue;
+    }
+
     $newCandID = $candIDMapping[$newPSCID];
 
     // Populate the data for the MySQL command to be output/run by this script,
@@ -327,8 +358,18 @@ $report = array_merge(
 if (isset($excludedVisitLabels)) {
     print "$excludedCount visit label(s) excluded." . PHP_EOL;
 }
+$skippedPSCIDCount = count($skippedPSCIDs);
+if ($skippedPSCIDCount > 0) {
+    print "Skipped processing information for $skippedPSCIDCount candidate(s) " .
+        "as they do not exist in the candidate table: " .
+        PHP_EOL .
+        implode("\n", array_map('formatBulletPoint', $skippedPSCIDs)) .
+        PHP_EOL;
+}
 // Print report.
 print implode(PHP_EOL, $report);
+
+/* END SCRIPT */
 
 // Format commands for printing.
 function formatUPDATEStatements(array $commandQueue)
@@ -465,4 +506,9 @@ function csvToArray(string $filename='', string $delimiter=','): array
 function quoteWrap(string $string): string
 {
     return sprintf("'%s'", $string);
+}
+
+function formatBulletPoint(string $string): string
+{
+    return sprintf("\t* $string");
 }
