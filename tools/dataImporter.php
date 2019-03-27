@@ -304,7 +304,7 @@ foreach ($dataRows as $row) {
     case COLUMN_IMPORT:
         // Retrive the cell containing the new data for this candidate.
         $data = array($dataColumn => $row[$dataColumn]);
-        $where = array('PSCID', $newPSCID);
+        $where = array('PSCID' => $newPSCID);
         $UPDATEQueue[] = array(
             'table' => $table,
             'data' => $data,
@@ -325,7 +325,7 @@ foreach ($dataRows as $row) {
         unset($data['PSCID']);
         
         // Prepare command information.
-        $where = array('CandID', $candIDMapping[$newPSCID]);
+        $where = array('CandID' => $candIDMapping[$newPSCID]);
         $command = array(
             'table' => $table,
             'data' => $data,
@@ -344,6 +344,7 @@ foreach ($dataRows as $row) {
             $INSERTQueue[] = $command;
         } else {
             // UPDATE if Visit label already present for this candidate
+            $command['where']['Visit_label'] = $row['Visit_label'];
             $UPDATEQueue[] = $command;
         }
         break;
@@ -396,7 +397,7 @@ function formatUPDATEStatements(array $commandQueue)
     $formattedCommand = <<<SQL
 UPDATE $table
 SET %s
-WHERE %s = '%s';
+WHERE %s;
 
 SQL;
     $report = array();
@@ -409,12 +410,13 @@ SQL;
         }
         // Interpolate the $setString into the SQL heredoc above and add it to the
         // final $report output.
+        foreach ($command['where'] as $column => $value) {
+            $whereString[] = "$column = '$value'";
+        }
         $report[] = sprintf(
             $formattedCommand, 
             implode(', ', $setString),
-            $command['where'][0], // TODO fix magic numbers
-            $command['where'][1]
-
+            implode(' AND ', $whereString)
         );
     }
     return $report;
