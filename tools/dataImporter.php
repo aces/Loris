@@ -346,6 +346,7 @@ foreach ($dataRows as $row) {
         ) {
             // INSERT if the candidate doesn't have any visit labels or if the
             // current visit label is not present in their list of visit labels.
+            $command['data']['CandID'] = $newCandID;
             $INSERTQueue[] = $command;
         } else {
             // UPDATE if Visit label already present for this candidate
@@ -412,7 +413,8 @@ SQL;
         // Iterate over all columns and create a formatted string. Will only be one
         // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
         foreach ($command['data'] as $column => $value) {
-            $setString[] = "$column = '$value'";
+            $value = quoteWrapUnlessNULL($value);
+            $setString[] = "$column = $value";
         }
         // Interpolate the $setString into the SQL heredoc above and add it to the
         // final $report output.
