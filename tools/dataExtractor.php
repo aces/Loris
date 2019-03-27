@@ -99,7 +99,7 @@ case COLUMN_EXPORT:
     );
 
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[4] ?: $filepath;
+    $filepath = $argv[4] ?? $filepath;
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
@@ -161,7 +161,7 @@ case VISIT_EXPORT:
     $result = $DB->pselect($query, array());
     
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[2] ?: $filepath;
+    $filepath = $argv[2] ?? $filepath;
 
     $filename = 'visits_dataExtract_output.csv';
     // Prepend PSCID to the array column headers so that it will be properly

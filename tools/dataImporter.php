@@ -350,11 +350,6 @@ foreach ($dataRows as $row) {
     }
 }
 
-$report = array_merge(
-    formatUPDATEStatements($UPDATEQueue), 
-    formatINSERTStatements($INSERTQueue, $dataHeaders)
-);
-
 if (isset($excludedVisitLabels)) {
     print "$excludedCount visit label(s) excluded." . PHP_EOL;
 }
@@ -366,8 +361,28 @@ if ($skippedPSCIDCount > 0) {
         implode("\n", array_map('formatBulletPoint', $skippedPSCIDs)) .
         PHP_EOL;
 }
-// Print report.
-print implode(PHP_EOL, $report);
+
+$report = array_merge(
+    formatUPDATEStatements($UPDATEQueue), 
+    formatINSERTStatements($INSERTQueue, $dataHeaders)
+);
+
+if (count($report) < 1) {
+    die('No SQL commands generated.' . PHP_EOL);
+}
+
+// Write the report to file.
+$path = $config->getSetting('base') . 'project/data_import/'; 
+if (!is_dir($path)) {
+    mkdir($path);
+}
+$target = $path . date("Ymd-His") . '_dataImporterOutput.sql';
+file_put_contents($target, implode("\n", $report));
+
+echo "SQL commands to import data from {$argv[DATA_ARG_INDEX]} written to " .
+    "$target." .
+    PHP_EOL;
+
 
 /* END SCRIPT */
 
