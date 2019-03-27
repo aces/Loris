@@ -46,12 +46,12 @@ php {$argv[0]} %s <table> <column[,column2,...]> [outfile]\n
        <column>     The name of a column in the database from which to extract
                     data. Can also specify multiple columns using a 
                     comma-separated list.
-       [outfile]    Optional. The full path to the target file where CSV data
+       [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
 To export candidate session information:
 php {$argv[0]} %s [outfile]\n
-       [outfile]    Optional. The full path to the target file where CSV data
+       [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
 USAGE;
@@ -67,6 +67,10 @@ if ($mode !== COLUMN_EXPORT && $mode !== VISIT_EXPORT) {
     die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
 }
 
+// Create default output path. This value will be overwritten below if a user
+// specifies a custom path.
+// e.g. /var/www/loris/project/data_export/
+$filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 
 switch ($mode) {
 case COLUMN_EXPORT:
@@ -93,6 +97,9 @@ case COLUMN_EXPORT:
         "SELECT PSCID,$column from $table",
         array()
     );
+
+    // Overwrite default path if a custom path was specified by user.
+    $filepath = $argv[4] ?: $filepath;
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
@@ -152,6 +159,9 @@ case VISIT_EXPORT:
         "AND Current_stage != 'Recycling Bin';";
 
     $result = $DB->pselect($query, array());
+    
+    // Overwrite default path if a custom path was specified by user.
+    $filepath = $argv[2] ?: $filepath;
 
     $filename = 'visits_dataExtract_output.csv';
     // Prepend PSCID to the array column headers so that it will be properly
@@ -161,9 +171,6 @@ case VISIT_EXPORT:
     break;
 }
 // Write data to CSV
-
-// e.g. /var/www/loris/project/data_export/
-$filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 writeToCsv(
     new SplFileInfo($filepath . $filename), 
     $headers,
@@ -196,7 +203,16 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
     $fileObj->fputcsv($headers);
 
     foreach ($data as $row) {
-        $fileObj->fputcsv($row);
+        $output = $row;
+        // Make sure that we write null values as NULL to the CSV file. The
+        // default behaviour is writing an empty string.
+        foreach($row as $key => $value) {
+            if (is_null($value)) {
+                $output[$key] = 'NULL';
+            }
+        }
+
+        $fileObj->fputcsv($output);
     }
     echo 'Content written to CSV file at ' . $file->getRealPath() . PHP_EOL;
 }
