@@ -161,7 +161,7 @@ if (count($sharedCandidates) < 1) {
 }
 
 echo sprintf(
-    "Found %s PSCID(s) in common between mapping file %s and data file %s\n",
+    "Found %s PSCID(s) in common between mapping file %s and data file %s\n\n",
     count($sharedCandidates),
     $argv[MAPPING_ARG_INDEX],
     $argv[DATA_ARG_INDEX]
@@ -303,7 +303,12 @@ foreach ($dataRows as $row) {
     switch ($mode) {
     case COLUMN_IMPORT:
         // Retrive the cell containing the new data for this candidate.
-        $data = array($dataColumn => $row[$dataColumn]);
+        //$data = array($dataColumn => $row[$dataColumn]);
+        $data = $row;
+        // Discard the PSCID value in this CSV row. It is equal to the old
+        // PSCID and only used for linking. It should not be included in the
+        // UPDATE statement.
+        unset($data['PSCID']);
         $where = array('PSCID' => $newPSCID);
         $UPDATEQueue[] = array(
             'table' => $table,
@@ -352,7 +357,7 @@ foreach ($dataRows as $row) {
 }
 
 if (isset($excludedVisitLabels)) {
-    print "$excludedCount visit label(s) excluded." . PHP_EOL;
+    print "$excludedCount visit label(s) excluded." . PHP_EOL . PHP_EOL;
 }
 $skippedPSCIDCount = count($skippedPSCIDs);
 if ($skippedPSCIDCount > 0) {
@@ -360,7 +365,7 @@ if ($skippedPSCIDCount > 0) {
         "as they do not exist in the candidate table: " .
         PHP_EOL .
         implode("\n", array_map('formatBulletPoint', $skippedPSCIDs)) .
-        PHP_EOL;
+        PHP_EOL . PHP_EOL;
 }
 
 $report = array_merge(
@@ -403,6 +408,7 @@ SQL;
     $report = array();
     foreach ($commandQueue as $command) {
         $setString = array();
+        $whereString = array();
         // Iterate over all columns and create a formatted string. Will only be one
         // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
         foreach ($command['data'] as $column => $value) {
@@ -443,7 +449,7 @@ SQL;
         $report[] = sprintf(
             $formattedCommand,
             implode(',', array_keys($command['data'])),
-            implode(',', array_map('quoteWrap', array_values($command['data'])))
+            implode(',', array_map('quoteWrapUnlessNULL', array_values($command['data'])))
         );
     }
     return $report;
@@ -517,11 +523,15 @@ function csvToArray(string $filename='', string $delimiter=','): array
 }
 
 /**
- * Wraps a string in single quotes.
+ * Wraps a string in single quotes. Useful for an array_map callback when
+ * preparing values to be used in a SET statement.
  *
  */
-function quoteWrap(string $string): string
+function quoteWrapUnlessNULL(string $string): string
 {
+    if ($string === 'NULL') {
+        return $string;
+    }
     return sprintf("'%s'", $string);
 }
 
