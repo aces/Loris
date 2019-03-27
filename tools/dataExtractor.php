@@ -28,9 +28,32 @@ const NUM_ARGS_REQUIRED = 2;
 const COLUMN_EXPORT = 'column';
 const VISIT_EXPORT = 'visits';
 
+/**
+ * The LORIS subfolder where output file will be written.
+ *
+ * @var string
+ */
+const OUTPUT_FOLDER = 'project/data_export/';
+
+
+// TODO Make Usage message more informative.
 $usage = <<<USAGE
-Usage: php {$argv[0]} %s <table> <column>\n
-Usage: php {$argv[0]} %s\n
+Usage: 
+To export a columns from a specified table:
+php {$argv[0]} %s <table> <column[,column2,...]> [outfile]\n
+       <table>      The name of a table in the database from which to extract
+                    data.
+       <column>     The name of a column in the database from which to extract
+                    data. Can also specify multiple columns using a 
+                    comma-separated list.
+       [outfile]    Optional. The full path to the target file where CSV data
+                    will be written. Default is LORIS_BASE/project/data_export/.
+
+To export candidate session information:
+php {$argv[0]} %s [outfile]\n
+       [outfile]    Optional. The full path to the target file where CSV data
+                    will be written. Default is LORIS_BASE/project/data_export/.
+
 USAGE;
 
 // Ensure minimum number of arguments are present
@@ -44,10 +67,19 @@ if ($mode !== COLUMN_EXPORT && $mode !== VISIT_EXPORT) {
     die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
 }
 
+
 switch ($mode) {
 case COLUMN_EXPORT:
-    // Extract a single column from a table.
+    // The Database table
     $table = $argv[2];
+    if (!isset($argv[3])) {
+        // Ensure minimum number of arguments are present.
+        // Done separately here since COLUMN_EXPORT requires more args than
+        // VISIT_EXPORT. 
+        // This should likely be refactored at some point.
+        die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
+    }
+    // A single column or list of columns joined by commas, e.g. "DoB,Sex"
     $column = $argv[3];
     // NOTE Prototype only allows `candidate` for $col
     if ($table !== 'candidate') {
@@ -63,11 +95,18 @@ case COLUMN_EXPORT:
     );
 
     // Format of output filename: <table_column_dataExtract_output.csv>
-    $filename = sprintf("%s_%s_dataExtract_output.csv", $table, $column);
+    $filename = sprintf(
+        "%s_%s_dataExtract_output.csv", 
+        $table, 
+        // Convert comma in column list to underscore, if present.
+        str_replace(',', '_', $column)
+    );
 
-    // Write PSCID and queried column data to CSV output.
-    // NOTE Data must be linked to PSCID for now
-    writeToCsv($filename, array('PSCID', $column), $result);
+    // Create an array containing 'PSCID' and the column names from the
+    // command line input. Then join them as a comma-separated string (to be
+    // written as the headers to the CSV file).
+    $headers = array_merge(array('PSCID'), explode(',', $column));
+
     break;
 case VISIT_EXPORT:
     // Get visit label information from the `session` table.
@@ -118,33 +157,48 @@ case VISIT_EXPORT:
     // Prepend PSCID to the array column headers so that it will be properly
     // marked in the CSV output.
     array_unshift($sessionColumns, 'PSCID');
-    writeToCsv($filename, $sessionColumns, $result);
+    $headers = $sessionColumns;
     break;
 }
+// Write data to CSV
+
+// e.g. /var/www/loris/project/data_export/
+$filepath = $config->getSetting('base') . OUTPUT_FOLDER;
+writeToCsv(
+    new SplFileInfo($filepath . $filename), 
+    $headers,
+    $result
+);
 
 /**
  * Write array to CSV file.
  *
- * @param string $filename Target output file.
+ * @param SplFileInfo $filename The absolute path to the output file.
  * @param array $headers The headers/column names of the CSV output file
  * @param array $data The rows to write to the CSV file.
  *
  * @return void
- * @throws InvalidArgumentException
  */
-function writeToCsv(string $filename, array $headers, array $data): void {
-    $fp = fopen($filename, 'w');
-    if (!$fp) {
+function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
+    // Create $filepath if it doesn't exist.
+    if (!is_dir($file->getPath())) {
+        mkdir($file->getPath());
+    }
+    try {
+        $fileObj = $file->openFile('w');
+    } catch (RuntimeException $e) {
         throw new InvalidArgumentException(
-            "Could not open $filename for writing." . PHP_EOL
+            'Could not open ' . $file->getRealPath() . ' for writing.' .
+            $e-getMessage()
         );
     }
     // Write CSV headers
-    fputcsv($fp, $headers);
+    $fileObj->fputcsv($headers);
 
-    foreach($data as $row) {
-        fputcsv($fp, $row);
+    foreach ($data as $row) {
+        $fileObj->fputcsv($row);
     }
+    echo 'Content written to CSV file at ' . $file->getRealPath() . PHP_EOL;
 }
 
 /**
