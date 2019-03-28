@@ -165,7 +165,7 @@ class Profile extends \NDB_Page
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
         }
-        $result['project'] = $list_of_projects;
+        $result['project'] = $list_of_projects ?? null;
          //get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
