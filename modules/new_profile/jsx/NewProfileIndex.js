@@ -108,7 +108,7 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = JSON.parse(JSON.stringify(this.state.formData));
+    let formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
 
     this.setState({formData: formData});
@@ -128,6 +128,8 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let project = null;
     let pscid = null;
+    let minYear = this.state.configData.startYear-this.state.configData.ageMax;
+    let maxYear = this.state.configData.endYear-this.state.configData.ageMin;
     if (this.state.configData['useProject'] === 'true') {
       project =
         <SelectElement
@@ -145,8 +147,8 @@ class NewProfileIndex extends React.Component {
           <DateElement
             name = "edcDateTaken"
             label = "Expected Date of Confinement"
-            minYear = "2000"
-            maxYear = "2017"
+            minYear = {minYear}
+            maxYear = {maxYear}
             onUserInput = {this.setFormData}
             value = {this.state.formData.edcDateTaken}
             required = {true}
@@ -154,8 +156,8 @@ class NewProfileIndex extends React.Component {
           <DateElement
             name = "edcDateTakenConfirm"
             label = "Confirm EDC"
-            minYear = "2000"
-            maxYear = "2017"
+            minYear = {minYear}
+            maxYear = {maxYear}
             onUserInput = {this.setFormData}
             value = {this.state.formData.edcDateTakenConfirm}
             required = {true}

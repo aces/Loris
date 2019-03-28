@@ -1,4 +1,5 @@
-<?php
+<?php 
+declare(strict_types=1);
 /**
  * Handle profile file
  * Post method handles creating both PSCID and DCCID for a candidate
@@ -65,7 +66,7 @@ class Profile extends \NDB_Page
             $num_sites = count($site_arr);
             if ($num_sites >=1) {
                 $candID = \Candidate::createNew(
-                    $values['site'],
+                    (int)$values['site'],
                     $values['dateTaken'],
                     $values['edcDateTaken'] ?? null,
                     $values['sex'],
@@ -75,7 +76,7 @@ class Profile extends \NDB_Page
                 $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
                 $candID    = \Candidate::createNew(
-                    $centerID,
+                    (int)$centerID,
                     $values['dateTaken'],
                     $values['edcDateTaken'] ?? null,
                     $values['sex'],
