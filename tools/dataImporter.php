@@ -138,7 +138,7 @@ if (strpos($dataFile, 'visits') === false && $mode === 'visits') {
 
 // Get data from CSV files.
 $mappingRows = populateArrayFromCSV($argv[MAPPING_ARG_INDEX]);
-$dataRows = populateArrayFromCSV();
+$dataRows = populateArrayFromCSV($argv[DATA_ARG_INDEX]);
 
 // Creating this array allows referencing the columns by index. This allows the
 // use of name constants to access the data from within the CSV files instead
