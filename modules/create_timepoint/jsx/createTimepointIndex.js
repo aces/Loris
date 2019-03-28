@@ -32,6 +32,11 @@ class CreateTimepoint extends React.Component {
           subproject: {},
           visit: {},
           psc: {},
+          required: {
+            subproject: false,
+            psc: false,
+            visit: false,
+          },
         },
         value: {
           subproject: '',
@@ -190,6 +195,12 @@ class CreateTimepoint extends React.Component {
    */
   handleSubmit(e) {
     const state = Object.assign({}, this.state);
+    state.form.options.required = {
+      subproject: true,
+      psc: true,
+      visit: true,
+    };
+    this.setState(state);
     const send = this.urlSearchParams({
       command: 'create',
       candID: state.url.params.candID,
@@ -265,7 +276,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
-        required={true}
+        required={this.state.form.options.required.subproject}
       />
     ) : null;
     // Include psc select.
@@ -279,7 +290,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
-        required={true}
+        required={this.state.form.options.required.psc}
       />
     ) : null;
     // Include visit select.
@@ -293,7 +304,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
-        required={true}
+        required={this.state.form.options.required.visit}
       />
     ) : null;
 
@@ -305,7 +316,6 @@ class CreateTimepoint extends React.Component {
               {errors}
               <FormElement
                 name={'timepointInfo'}
-                fileUpload={false}
                 class={'form-group col-sm-12'}
                 onSubmit={this.handleSubmit}
               >
