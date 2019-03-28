@@ -139,8 +139,6 @@ function process($values)
         // the identifier, training passes it as a value
         if (!empty($values['examiner'])) {
             $examinerID = $values['examiner'];
-        } else {
-            $examinerID = $this->identifier;
         }
 
         // Get the certificationID if it exists

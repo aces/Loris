@@ -13,7 +13,7 @@
         "zendframework/zend-diactoros": "^1.6"
     },
     "require-dev" : {
-        "squizlabs/php_codesniffer" : "2.5.*",
+        "squizlabs/php_codesniffer" : "2.9.2",
         "phpunit/phpunit" : "6.5.*",
         "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
@@ -27,6 +27,6 @@
         "psr-4": {
             "LORIS\\": "src/"
         },
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
+        "classmap": ["project/libraries", "php"]
     }
 }

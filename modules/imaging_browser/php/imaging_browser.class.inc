@@ -323,6 +323,7 @@ END";
         );
         $modalities_subquery_as = array();
         $as = array();
+        $list_of_projects = array();
 
         foreach ($scan_id_types as $key => $value) {
             $modalities_subquery[$key] = $value;
@@ -357,9 +358,9 @@ END";
                 array()
             );
             $scan_types = $allAr;
-            foreach ($types_q as $key=>$sequenceType) {
-                $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
-            }
+        foreach ($types_q as $key=>$sequenceType) {
+            $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
+        }
 
             $outputTypes = $DB->pselect(
                 "SELECT DISTINCT OutputType AS outputType 

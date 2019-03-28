@@ -233,7 +233,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "test_names table), or "
                 . "LORIS could not connect to the database using the "
                 . "credentials supplied in the config file."
-                . print_r($object)
             );
             return (new \Loris\Http\Response())
                 ->withStatus(500, 'Internal Server Error')

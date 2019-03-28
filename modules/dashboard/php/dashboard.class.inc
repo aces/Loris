@@ -88,6 +88,12 @@ class Dashboard extends \NDB_Form
             $projects = \Utility::getProjectList();
             foreach ($projects as $projectID => $project) {
                 $projectInfo = $config->getProjectSettings($projectID);
+                if (is_null($projectInfo)) {
+                    throw new \LorisException(
+                        'No project settings exist in the Database for ' .
+                        'project ID ' . intval($projectID)
+                    );
+                }
                 $this->createProjectProgressBar(
                     $projectID,
                     $projectInfo['Name'],

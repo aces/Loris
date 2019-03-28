@@ -26,6 +26,13 @@ class NDB_BVL_Instrument extends NDB_Page
 {
 
     /**
+     * Determines whether this instrument should load data in
+     * JSON format from the "Data" column of the flag table, or
+     * from the traditional SQL tables.
+     */
+    protected $jsonData = false;
+
+    /**
      * HTML_Quickform object
      *
      * @access private
@@ -406,16 +413,11 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
-        // get saved data to pre-populate form
-        $db = Database::singleton();
+        $defaults = $this->loadInstanceData($this);
 
-        $defaults = $db->pselect(
-            "SELECT * FROM $this->table WHERE CommentID=:CID",
-            array('CID' => $this->getCommentID())
-        );
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
-        $defaults = $this->_setDefaultsArray($defaults[0] ?? array());
+        $defaults = $this->_setDefaultsArray($defaults ?? array());
 
         // merge in the localDefaults property so that simple
         // additions to the defaults array no longer requires
@@ -737,6 +739,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _save(array $values): void
     {
+        $db = Database::singleton();
+
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
             if (strpos($key, '__') === 0) {
@@ -744,12 +748,15 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db = \Database::singleton();
-        $db->update(
-            $this->table,
-            $values,
-            array('CommentID' => $this->getCommentID())
-        );
+        if ($this->jsonData !== true) {
+            // If the instrument is saving as JSON into the Data column, the
+            // table may not exist, so don't try and update it.
+            $db->update(
+                $this->table,
+                $values,
+                array('CommentID' => $this->getCommentID())
+            );
+        }
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
@@ -1331,15 +1338,15 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Run a XIN rule on an individual element
      *
-     * @param string $controller The element which affects the validity of this
+     * @param ?string $controller The element which affects the validity of this
      *                           element
-     * @param array  $values     Array of values which will invalidate the rule.
-     * @param string $operator   The operator which is used to compare the rule.
+     * @param array   $values     Array of values which will invalidate the rule.
+     * @param string  $operator   The operator which is used to compare the rule.
      *
      * @return boolean true if element should be required, false otherwise.
      */
     function XINRunRuleFunction(
-        string $controller,
+        ?string $controller,
         array $values,
         string $operator
     ): bool {
@@ -1390,13 +1397,10 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
-        $DB = \Database::singleton();
+        $allValues = self::loadInstanceData($this);
 
-        $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
-        $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
-
-        if (!empty($fieldValue)) {
-            return $fieldValue;
+        if (!empty($allValues[$field])) {
+            return $allValues[$field];
         }
         return false;
     }
@@ -1469,22 +1473,15 @@ class NDB_BVL_Instrument extends NDB_Page
             return 'Complete';
         }
 
-        $db = \Database::singleton();
-
-        $query = "SELECT " . join(',', $this->_requiredElements)
-            . " FROM $this->table WHERE CommentID=:CID";
-
-        $dataFields = $db->pselectRow(
-            $query,
-            array('CID' => $this->getCommentID())
-        );
-        foreach ($dataFields as $field) {
+        $allData = $this->loadInstanceData($this);
+        foreach ($this->_requiredElements as $field) {
             // this shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
-            if (is_null($field) || $field === "") {
+            if (is_null($allData[$field]) || $allData[$field] === "") {
                 return 'Incomplete';
             }
         }
+
         return 'Complete';
     }
 
@@ -1496,11 +1493,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus(): string
     {
-        $db = \Database::singleton();
-
-        $query = "SELECT Data_entry_completion_status
-            FROM $this->table WHERE CommentID=:CID";
-        return $db->pselectOne($query, array('CID' => $this->getCommentID()));
+        $data = NDB_BVL_Instrument::loadInstanceData($this);
+        return $data["Data_entry_completion_status"];
     }
 
 
@@ -1522,13 +1516,7 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $db = \Database::singleton();
-
-        $db->update(
-            $this->table,
-            array('Data_entry_completion_status' => $status),
-            array('CommentID' => $this->getCommentID())
-        );
+        $this->_save(array("Data_entry_completion_status" => $status));
     }
 
     /**
@@ -1981,7 +1969,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $db = \Database::singleton();
+        $data = $this->loadInstanceData($this);
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -1990,20 +1978,14 @@ class NDB_BVL_Instrument extends NDB_Page
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
             if (is_numeric($key)) {
-                $scores[$val] = null; //null array
+                $data[$val] = null; //null array
             } else {
-                $scores[$key] = null;
+                $data[$key] = null;
             }
 
         }
 
-        // update the scores
-        $db->update(
-            $this->table,
-            $scores,
-            array('CommentID' => $this->getCommentID())
-        );
-
+        $this->_save($data);
         return;
     }
 
@@ -2058,16 +2040,25 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
      *                                               to be retrieved.
      *
-     * @return Array containing the data for each field in this instrument
+     * @return array containing the data for each field in this instrument
      */
-    static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): Array
+    static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
-        $db       = \Database::singleton();
-        $defaults = $db->pselect(
-            "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
-            array('CID' => $instrumentInstance->getCommentID())
-        );
-        return $defaults[0];
+        $db = \Database::singleton();
+
+        if ($instrumentInstance->jsonData) {
+            $jsondata = $db->pselectOne(
+                "SELECT Data FROM flag WHERE CommentID=:CID",
+                array('CID' => $instrumentInstance->getCommentID())
+            );
+            return json_decode($jsondata, true) ?? array();
+        } else {
+            $defaults = $db->pselectRow(
+                "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
+                array('CID' => $instrumentInstance->getCommentID())
+            );
+            return $defaults ?? array();
+        }
     }
 
     /**
@@ -2079,33 +2070,47 @@ class NDB_BVL_Instrument extends NDB_Page
      * the date will be calculated based on the value of the Date_taken
      * field in the database.
      *
-     * @param string $date The date that the age is to
-     *                    be calculated based on.
+     * @param string $date (optional) The date that the age is to
+     *                     be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
     function getCandidateAge(string $date): array
     {
+        $dates = array(
+                  'Date_taken' => $this->getFieldValue('Date_taken'),
+                  'DoB'        => $this->getDoB(),
+                 );
+
+        $age = array();
+        if (empty($date)) {
+            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
+        } else {
+            $age = Utility::calculateAge($dates['DoB'], $date);
+        }
+        //Format: array with keys 'year', 'mon', 'day'
+        return $age;
+    }
+
+    /**
+     * Get the candidates DOB.
+     *
+     * @return string The candidate's DOB.
+     */
+    function getDoB()
+    {
+        $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
 
-        $result = \Database::singleton()->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i
-            JOIN flag f USING (CommentID)
+        $dob = $db->pselectOne(
+            "SELECT c.DoB FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
             WHERE f.CommentID=:CID",
             array('CID' => $CommentID)
         );
-
-        $age = array();
-        if (empty($date)) {
-            $age = Utility::calculateAge($result['DoB'], $result['Date_taken']);
-        } else {
-            $age = Utility::calculateAge($result['DoB'], $date);
-        }
-        //Format: array with keys 'year', 'mon', 'day'
-        return $age;
+        return $dob;
     }
 
     /**
@@ -2119,8 +2124,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
-            "SELECT c.PSCID FROM $this->table i
-            JOIN flag f USING (CommentID)
+            "SELECT c.PSCID FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c USING (CandID)
             WHERE f.CommentID=:CID",
@@ -2609,6 +2613,17 @@ class NDB_BVL_Instrument extends NDB_Page
                 ''
             )
         );
+    }
+
+    /**
+     * Returns true if this instrument saves its data in JSON format to
+     * the flag column, rather than directly in MySQL tables.
+     *
+     * @return bool true if data is saved in the flag table
+     */
+    public function usesJSONData() : bool
+    {
+        return $this->jsonData;
     }
 }
 

@@ -313,6 +313,16 @@ class Document_Repository extends \NDB_Menu_Filter
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
         $dbresult = $DB->pselect($query, array());
+
+        // FIXME: the for-loop below is needlessly confusing. It appears
+        // to be trying to group the categories from the database into a
+        // tree by abusing undeclared properities on anonymous objects.
+        // (Most likely because references are required for the tree
+        // structure, so an associative array would work poorly.)
+        //
+        // This would probably be easier to understand and more
+        // robust with named classes and unit tests..
+        $refs = new \stdClass();
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;

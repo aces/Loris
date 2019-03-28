@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
@@ -65,35 +66,36 @@ class LoadPane extends Component {
   }
   // Render the HTML
   render() {
-    let alert = '';
+    let alert = {
+      message: '',
+      details: '',
+      display: 'none',
+    };
     // Set up declared alerts, if there is any.
     switch (this.state.alert) {
       case 'success':
-        alert = (
-          <div className='alert alert-success alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
-            <strong>Success!</strong> Instrument Loaded
-          </div>
-        );
+        alert = {
+          message: 'Success!',
+          details: 'Instrument Loaded',
+          display: 'block',
+          class: 'alert alert-success alert-dismissible',
+        };
         break;
       case 'typeError':
-        alert = (
-          <div className='alert alert-danger alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}><span aria-hidden='true'>&times;</span></button>
-            <strong>Error!</strong> Wrong file format
-          </div>
-        );
+        alert = {
+          message: 'Error!',
+          details: 'Wrong file format',
+          display: 'block',
+          class: 'alert alert-danger alert-dismissible',
+        };
         break;
       case 'duplicateEntry':
-        alert = (
-          <div className='alert alert-danger alert-dismissible' role='alert'>
-            <button type='button' className='close' onClick={this.resetAlert}>
-              <span aria-hidden='true'>&times;</span>
-            </button>
-            <strong>Error!</strong><br/>
-              {this.state.alertMessage}
-          </div>
-        );
+        alert = {
+          message: 'Error!',
+          details: this.state.alertMessage,
+          display: 'block',
+          class: 'alert alert-danger alert-dismissible',
+        };
         break;
       default:
         break;
@@ -101,7 +103,13 @@ class LoadPane extends Component {
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
-          {alert}
+          <div id='load_alert' style={{display: alert.display}} className={alert.class} role='alert'>
+            <button type='button' className='close' onClick={this.resetAlert}>
+              <span aria-hidden='true'>&times;</span>
+            </button>
+            <strong>{alert.message}</strong><br/>
+            {alert.details}
+          </div>
           <input
             className='fileUpload'
             type='file' id='instfile'
@@ -119,6 +127,9 @@ class LoadPane extends Component {
     );
   }
 }
+LoadPane.propTypes = {
+  loadCallback: PropTypes.func,
+};
 
 /**
  * This is the React class for saving the instrument
@@ -196,6 +207,9 @@ class SavePane extends Component {
     );
   }
 }
+SavePane.propTypes = {
+  save: PropTypes.func,
+};
 
 /**
  * This is the React class displaying the questions
@@ -209,8 +223,9 @@ class DisplayElements extends Component {
     this.getPlaceholder = this.getPlaceholder.bind(this);
     this.getTableRow = this.getTableRow.bind(this);
     this.dragStart = this.dragStart.bind(this);
-    this.dragEnd = this.dragEnd.bind(this);
+    this.tableRows = this.tableRows.bind(this);
     this.dragOver = this.dragOver.bind(this);
+    this.dragEnd = this.dragEnd.bind(this);
   }
   // Used for the drag and drop rows
   getPlaceholder() {
@@ -277,9 +292,9 @@ class DisplayElements extends Component {
       parent.insertBefore(this.getPlaceholder(), targetRow);
     }
   }
-  // Render the HTML
-  render() {
-    let tableRows = this.props.elements.map(function(element, i) {
+  // Create table rows
+  tableRows() {
+    return this.props.elements.map(function(element, i) {
       let row;
       let colStyles = {wordWrap: 'break-word'};
       if (element.editing) {
@@ -325,12 +340,17 @@ class DisplayElements extends Component {
         );
       }
       return row;
-    });
+    }.bind(this));
+  }
 
+  // Render the HTML
+  render() {
     // Set fixed layout to force column widths to be based on first row
-    let tableStyles = {
+    const tableStyles = {
       tableLayout: 'fixed',
     };
+
+    const tableRows = this.tableRows();
 
     return (
       <table id='sortable' className='table table-hover' style={tableStyles}>
@@ -348,6 +368,12 @@ class DisplayElements extends Component {
     );
   }
 }
+DisplayElements.propTypes = {
+  draggable: PropTypes.bool,
+  updateElement: PropTypes.func,
+  editElement: PropTypes.func,
+  deleteElement: PropTypes.func,
+};
 
 /**
  * This is the React class for building the instrument
@@ -552,6 +578,8 @@ class BuildPane extends Component {
     );
   }
 }
+BuildPane.propTypes = {
+};
 
 /**
  * This is the React class for the instrument builder
@@ -632,6 +660,8 @@ class InstrumentBuilderApp extends Component {
     );
   }
 }
+InstrumentBuilderApp.propTypes = {
+};
 
 let RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
 
