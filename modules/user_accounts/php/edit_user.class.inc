@@ -1151,7 +1151,7 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        if (!is_null($passwords['Password_hash'] ?? null)) {
+        if (!is_null($passwords)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 
