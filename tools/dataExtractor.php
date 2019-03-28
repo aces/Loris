@@ -76,6 +76,12 @@ switch ($mode) {
 case COLUMN_EXPORT:
     // The Database table
     $table = $argv[2];
+    if ($table === 'session') {
+        die (
+            'Please use the `visits` extraction mode to retrive information ' .
+            'from the session table.' . PHP_EOL
+        );
+    }
     if (!isset($argv[3])) {
         // Ensure minimum number of arguments are present.
         // Done separately here since COLUMN_EXPORT requires more args than
