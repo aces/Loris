@@ -14,8 +14,7 @@
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.9.2",
-        "phpunit/phpunit" : "6.5.*",
-        "phpunit/dbunit": "3.0.*",
+        "phpunit/phpunit" : "^8",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
         "phan/phan": ">1.2.2"
