@@ -20,7 +20,7 @@
 
 require_once "generic_includes.php";
 
-const NUM_ARGS_REQUIRED = 2;
+const NUM_ARGS_REQUIRED = 3;
 
 /**
  * Command line argument for the mode of data importation.
@@ -40,17 +40,21 @@ const OUTPUT_FOLDER = 'project/data_export/';
 $usage = <<<USAGE
 Usage: 
 To export a columns from a specified table:
-php {$argv[0]} %s <table> <column[,column2,...]> [outfile]\n
+php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <table>      The name of a table in the database from which to extract
                     data.
        <column>     The name of a column in the database from which to extract
                     data. Can also specify multiple columns using a 
                     comma-separated list.
+       <date>       Values in the databse that occur before this date will be
+                    excluded. This is required for ethics. Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
 To export candidate session information:
-php {$argv[0]} %s [outfile]\n
+php {$argv[0]} %s <date> [outfile]\n
+       <date>       Values in the databse that occur before this date will be
+                    excluded. This is required for ethics. Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
@@ -74,20 +78,21 @@ $filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 
 switch ($mode) {
 case COLUMN_EXPORT:
-    // The Database table
+    if (!isset($argv[4])) {
+        // Ensure minimum number of arguments are present.
+        // Done separately here since COLUMN_EXPORT requires more args than
+        // VISIT_EXPORT. 
+        // This should likely be refactored at some point.
+        die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
+    }
+
+    // The Database table from which to extract data.
     $table = $argv[2];
     if ($table === 'session') {
         die (
             'Please use the `visits` extraction mode to retrive information ' .
             'from the session table.' . PHP_EOL
         );
-    }
-    if (!isset($argv[3])) {
-        // Ensure minimum number of arguments are present.
-        // Done separately here since COLUMN_EXPORT requires more args than
-        // VISIT_EXPORT. 
-        // This should likely be refactored at some point.
-        die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
     }
     // A single column or list of columns joined by commas, e.g. "DoB,Sex"
     $column = $argv[3];
@@ -105,7 +110,7 @@ case COLUMN_EXPORT:
     );
 
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[4] ?? $filepath;
+    $filepath = $argv[5] ?? $filepath;
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
@@ -122,6 +127,7 @@ case COLUMN_EXPORT:
 
     break;
 case VISIT_EXPORT:
+    $cutoffDate = $argv[2];
     // Get visit label information from the `session` table.
     // All date/dateime fields are excluded from the query as they are potentially 
     // identifying. Visit statuses reflecting a Failure, Withdrawal, or 
@@ -162,12 +168,13 @@ case VISIT_EXPORT:
         "INNER JOIN candidate c " .
         "ON c.CandID = s.CandID " .
         "WHERE Visit NOT IN ('Failure', 'Withdrawal') " .
-        "AND Current_stage != 'Recycling Bin';";
+        "AND Current_stage != 'Recycling Bin' " .
+        "AND DATE(Date_visit) < :cutoffDate";
 
-    $result = $DB->pselect($query, array());
+    $result = $DB->pselect($query, array('cutoffDate' => $cutoffDate));
     
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[2] ?? $filepath;
+    $filepath = $argv[3] ?? $filepath;
 
     $filename = 'visits_dataExtract_output.csv';
     // Prepend PSCID to the array column headers so that it will be properly
@@ -177,6 +184,10 @@ case VISIT_EXPORT:
     break;
 }
 // Write data to CSV
+if (count($result) < 1) {
+    die ('No results found for the given criteria.' . PHP_EOL);
+}
+
 writeToCsv(
     new SplFileInfo($filepath . $filename), 
     $headers,
