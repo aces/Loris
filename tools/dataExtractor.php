@@ -46,8 +46,6 @@ php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <column>     The name of a column in the database from which to extract
                     data. Can also specify multiple columns using a 
                     comma-separated list.
-       <date>       Values in the databse that occur before this date will be
-                    excluded. This is required for ethics. Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
@@ -78,7 +76,7 @@ $filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 
 switch ($mode) {
 case COLUMN_EXPORT:
-    if (!isset($argv[4])) {
+    if (!isset($argv[3])) {
         // Ensure minimum number of arguments are present.
         // Done separately here since COLUMN_EXPORT requires more args than
         // VISIT_EXPORT. 
@@ -110,7 +108,7 @@ case COLUMN_EXPORT:
     );
 
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[5] ?? $filepath;
+    $filepath = $argv[4] ?? $filepath;
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
