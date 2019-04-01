@@ -88,7 +88,7 @@ class Media extends \NDB_Menu_Filter
             }
         }
 
-        $instrumentList   = [];
+        $instrumentList   = array();
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
