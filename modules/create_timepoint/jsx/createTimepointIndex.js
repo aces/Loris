@@ -201,6 +201,12 @@ class CreateTimepoint extends React.Component {
       visit: true,
     };
     this.setState(state);
+    // Cancel post if required field is empty.
+    if ((state.form.value.subproject === '' && state.form.display.subproject) ||
+      (state.form.value.psc === '' && state.form.display.psc) ||
+      (state.form.value.visit === '' && state.form.display.visit)) {
+      return;
+    }
     const send = this.urlSearchParams({
       command: 'create',
       candID: state.url.params.candID,
