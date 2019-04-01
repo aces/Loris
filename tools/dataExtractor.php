@@ -46,13 +46,16 @@ php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <column>     The name of a column in the database from which to extract
                     data. Can also specify multiple columns using a 
                     comma-separated list.
+       <date>       Values in the table that occur before this date will
+                    be excluded. Used in instrument extraction. 
+                    Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
 To export candidate session information:
 php {$argv[0]} %s <date> [outfile]\n
-       <date>       Values in the databse that occur before this date will be
-                    excluded. This is required for ethics. Format YYYY-MM-DD.
+       <date>       Values in the session table that occur before this date will
+                    be excluded. This is required for ethics. Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
@@ -74,9 +77,12 @@ if ($mode !== COLUMN_EXPORT && $mode !== VISIT_EXPORT) {
 // e.g. /var/www/loris/project/data_export/
 $filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 
+$query = '';
+$params = array();
+
 switch ($mode) {
 case COLUMN_EXPORT:
-    if (!isset($argv[3])) {
+    if (!isset($argv[4])) {
         // Ensure minimum number of arguments are present.
         // Done separately here since COLUMN_EXPORT requires more args than
         // VISIT_EXPORT. 
@@ -92,23 +98,14 @@ case COLUMN_EXPORT:
             'from the session table.' . PHP_EOL
         );
     }
+
     // A single column or list of columns joined by commas, e.g. "DoB,Sex"
     $column = $argv[3];
-    // NOTE Prototype only allows `candidate` for $col
-    if ($table !== 'candidate') {
-        die(
-            'Only columns from the `candidate` table are currently supported.' 
-            . PHP_EOL
-        );
-    }
-    // Grab info from $DB
-    $result = $DB->pselect(
-        "SELECT PSCID,$column from $table",
-        array()
-    );
 
+    $cutoffDate = $argv[4];
+    //
     // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[4] ?? $filepath;
+    $filepath = $argv[5] ?? $filepath;
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
@@ -122,10 +119,30 @@ case COLUMN_EXPORT:
     // command line input. Then join them as a comma-separated string (to be
     // written as the headers to the CSV file).
     $headers = array_merge(array('PSCID'), explode(',', $column));
+    
+    // Build basic SQL query info.
+    $query = "SELECT PSCID,$column from $table";
+    $params = array();
 
+    // Separately query whether a tabel has the `Date taken` column. If so we
+    // will add $cutoffDate to the WHERE clause of the query that will grab
+    // the data from $table.
+    $result = $DB->pselect(
+        "SHOW COLUMNS FROM $table LIKE 'Date_taken'",
+        array()
+    );
+    if (!empty($result)) {
+        unset($result);
+        $query .= " WHERE DATE(Date_taken) < :cutoffDate";
+        $params['cutoffDate'] = $cutoffDate;
+    }
     break;
 case VISIT_EXPORT:
     $cutoffDate = $argv[2];
+    // Overwrite default path if a custom path was specified by user.
+    $filepath = $argv[3] ?? $filepath;
+
+    $filename = 'visits_dataExtract_output.csv';
     // Get visit label information from the `session` table.
     // All date/dateime fields are excluded from the query as they are potentially 
     // identifying. Visit statuses reflecting a Failure, Withdrawal, or 
@@ -151,6 +168,14 @@ case VISIT_EXPORT:
         'MRIQCPending',
         'MRICaveat'
     );
+    // Prepend PSCID to the array column headers so that it will be properly
+    // marked in the CSV output.
+    array_unshift($sessionColumns, 'PSCID');
+    $headers = $sessionColumns;
+
+    // Build query information
+    
+    
     // Add abbreviations to columns. 
     // E.g. QCd --> s.QCd (for `session s` in SQL statement).
     $columnQuery = implode(',', 
@@ -169,19 +194,17 @@ case VISIT_EXPORT:
         "AND Current_stage != 'Recycling Bin' " .
         "AND DATE(Date_visit) < :cutoffDate";
 
-    $result = $DB->pselect($query, array('cutoffDate' => $cutoffDate));
-    
-    // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[3] ?? $filepath;
-
-    $filename = 'visits_dataExtract_output.csv';
-    // Prepend PSCID to the array column headers so that it will be properly
-    // marked in the CSV output.
-    array_unshift($sessionColumns, 'PSCID');
-    $headers = $sessionColumns;
+    $params = array('cutoffDate' => $cutoffDate);
     break;
 }
-// Write data to CSV
+
+// Grab info from the database.
+$result = $DB->pselect(
+    $query,
+    $params
+);
+
+// Write data to CSV.
 if (count($result) < 1) {
     die ('No results found for the given criteria.' . PHP_EOL);
 }
