@@ -27,6 +27,7 @@ class Project
 
     /**
      * The id of the project in database.
+     *
      * @var int
      */
     private $_projectId;
