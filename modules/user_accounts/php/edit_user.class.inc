@@ -1150,13 +1150,8 @@ class Edit_User extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
-        if (is_null($passwords)) {
-            throw new \LorisException(
-                'No existing password found for user!'
-            );
-        }
 
-        if (!is_null($passwords['Password_hash'] ?? null)) {
+        if (!is_null($passwords)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 
