@@ -270,7 +270,7 @@ class AjaxTimepoint extends \NDB_Page
         $errors = array();
 
         // validate site entered
-        $site = $values['psc'];
+        $site = (int) $values['psc'];
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
