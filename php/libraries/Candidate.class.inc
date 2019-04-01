@@ -630,15 +630,41 @@ class Candidate
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+
         $query  = "SELECT MAX(s.VisitNo)+1
                     FROM candidate AS c
                         LEFT JOIN session AS s USING (CandID)
                     WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
         $result = $db->pselectOne($query, array('CaID' => $this->getCandID()));
+
         if ($result === null) {
             return 1;
         }
         return intval($result);
+    }
+
+    /**
+     * Returns list of consents and their respective statuses for this candidate
+     *
+     * @return array List of consents and their associated values for this candidate
+     *               The keys of the arrays are the IDs of the consents
+     */
+    public function getConsents(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
+            WHERE CandidateID=:cid";
+        $where = array('cid' => $candID);
+        $key   = "ConsentID";
+
+        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+
+        return $consentList;
     }
 
     /**
