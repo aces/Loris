@@ -140,6 +140,7 @@ class AcknowledgementsIndex extends Component {
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
         swal('Success!', 'Acknowledgement added.', 'success').then((result) => {
+          this.setState({formData: {}});
           if (result.value) {
             this.closeModalForm();
             this.fetchData();
@@ -188,7 +189,6 @@ class AcknowledgementsIndex extends Component {
   }
 
   closeModalForm() {
-    this.setState({formData: {}});
     this.setState({showModal: false});
   }
 
