@@ -8,10 +8,13 @@
  * @category Main
  * @package  Loris
  * @author   Rida Abou-Haidar <rida.loris@gmail.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once __DIR__ . "/../generic_includes.php";
+
+/* @var int The exact number of arguments required to run this script. */
+const NUM_ARGS_REQUIRED = 3;
 
 $dbConfig = $config->getSetting("database");
 $adminDB  = Database::singleton(
@@ -36,7 +39,7 @@ This script includes foreign keycheck disabling and re-enabling.
 
 // define the command line parameters
 // expected commands all have 2 parameters
-if (count($argv) != 3 || $argv[1] == "help") {
+if (count($argv) != NUM_ARGS_REQUIRED || $argv[1] == "help") {
     showHelp();
 }
 
