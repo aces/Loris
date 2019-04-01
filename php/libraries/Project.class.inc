@@ -25,6 +25,10 @@ class Project
 {
     private static $_instances = array();
 
+    /**
+     * The id of the project in database.
+     * @var int
+     */
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
