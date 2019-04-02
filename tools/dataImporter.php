@@ -87,6 +87,7 @@ const WHERE_OLDVALUE = 1;
  * Command line argument for the mode of data importation.
  */
 const COLUMN_IMPORT = 'column';
+const INSTRUMENT_IMPORT = 'instrument';
 const VISIT_IMPORT = 'visits';
 
 require_once 'generic_includes.php';
@@ -94,13 +95,24 @@ require_once 'generic_includes.php';
 $usage = <<<USAGE
 Usage: 
 
-To import a single field from a table:
+To import columns from a table: 
+
 php {$argv[0]} %s <mapping.csv> <data.csv>
     <mapping.csv>   A CSV file containg columns with OLDPSCID, NEWPSCID, and
                     NEWCANDID
     <data.csv>      A CSV file containing columns with OLDPSCID,DATA
 
-To import visit labels:
+
+To import instrument information specifically:
+
+php {$argv[0]} %s <mapping.csv> <data.csv>
+    <mapping.csv>   A CSV file containg columns with OLDPSCID, NEWPSCID, and
+                    NEWCANDID
+    <data.csv>      A CSV file containing columns with OLDPSCID,DATA
+
+
+To import session information specifically:
+
 php {$argv[0]} %s <mapping.csv> <visits.csv> [excluded.csv]
     <mapping.csv>   A CSV file containg columns with OLDPSCID, NEWPSCID, and
                     NEWCANDID
@@ -117,7 +129,7 @@ USAGE;
 
 // Die if not enough arguments.
 if (count($argv) < NUM_ARGS_REQUIRED) {
-    die (sprintf($usage, COLUMN_IMPORT, VISIT_IMPORT));
+    die (sprintf($usage, COLUMN_IMPORT, INSTRUMENT_IMPORT, VISIT_IMPORT));
 }
 
 // Die if invalid execution mode supplied.
@@ -198,13 +210,22 @@ foreach ($mappingRows as $row) {
     
 
 // Prepare the table name and column names to be updated.
+// Also query for existing data in the database depending on the mode, e.g.
+// building an array of existing sessions when in VISIT_IMPORT mode.
 switch ($mode) {
 case COLUMN_IMPORT:
     // The name of the column to update.
-    // NOTE For now only the candidate table is supported.
-    $table = 'candidate';
-    $dataColumn = $dataHeaders[COLUMN_NAME];
+    // NOTE Only the candidate table has been tested. The data import relies
+    // on PSCID being present.
     break;
+case INSTRUMENT_IMPORT:
+    // The name of the table must be the first value in the filename preceding
+    // an underscore. e.g, "$instrumentName_dataExtract.csv".
+    $table = substr($dataFile, 0, strpos($dataFile, '_'));
+
+    // Get existing CommentIDs from the flag table. These will be compared with
+    // CommentIDs in the new data and used to insert instrument information
+    // from the CSV file with the correct, updated CommentIDs.
 case VISIT_IMPORT:
     // Visit label information is found in the session table.
     $table = 'session';
@@ -216,6 +237,25 @@ case VISIT_IMPORT:
     if (!empty($excludedFile)) {
         $excludedVisitLabels = explode("\n", file_get_contents($excludedFile));
     }
+
+    // Get existing sessions so that there is a way to distinguish between
+    // when to build UPDATE vs. INSERT statements.
+    $existingSessions = array();
+    $result = $DB->pselect(
+        'SELECT CandID,Visit_label FROM session',
+        array()
+    );
+    foreach ($result as $row) {
+        // Add the visit label in this row to the array of visit labels in
+        // $existingSessions. Indexed by a CandID.
+        $visitLabelsForCandidate = $existingSessions[$row['CandID']] ?? array();
+        array_push(
+            $visitLabelsForCandidate,
+            $row['Visit_label']
+        );
+        $existingSessions[$row['CandID']]  = $visitLabelsForCandidate;
+    }
+    unset($result);
 }
     
 // Create a queue of commands to execute or print depending on the operation
@@ -238,22 +278,6 @@ $excludedCount = 0;
 //          'V2'
 //     )
 // )
-$existingSessions = array();
-$result = $DB->pselect(
-    'SELECT CandID,Visit_label FROM session',
-    array()
-);
-foreach ($result as $row) {
-    // Add the visit label in this row to the array of visit labels in
-    // $existingSessions. Indexed by a CandID.
-    $visitLabelsForCandidate = $existingSessions[$row['CandID']] ?? array();
-    array_push(
-        $visitLabelsForCandidate,
-        $row['Visit_label']
-    );
-    $existingSessions[$row['CandID']]  = $visitLabelsForCandidate;
-}
-unset($result);
 
 $existingPSCIDs = $DB->pselectCol(
     'SELECT PSCID from candidate',
@@ -313,13 +337,14 @@ foreach ($dataRows as $row) {
     // including table name, SET, and WHERE data.
     switch ($mode) {
     case COLUMN_IMPORT:
-        // Retrive the cell containing the new data for this candidate.
-        //$data = array($dataColumn => $row[$dataColumn]);
         $data = $row;
         // Discard the PSCID value in this CSV row. It is equal to the old
         // PSCID and only used for linking. It should not be included in the
         // UPDATE statement.
         unset($data['PSCID']);
+        
+        // NOTE For now COLUMN_IMPORT only work for tables that have a PSCID
+        // column.
         $where = array('PSCID' => $newPSCID);
         $UPDATEQueue[] = array(
             'table' => $table,
@@ -327,6 +352,37 @@ foreach ($dataRows as $row) {
             'where' => $where
         );
         break;
+    case INSTRUMENT_IMPORT:
+        $data = $row;
+        // CommentIDs are used below to link the instrument data in the CSV file
+        // parameter with the `flag` and `session` table in the new database.
+        //
+        // A CommentID consists of the following fields concatenated together
+        // in this order:
+        //  * CandID
+        //  * PSCID
+        //  * SessionID
+        //  * SubprojectID
+        //  * TestNameID
+        //  * time()
+        //
+        // A "CommentID" prefix can be constructed by using the new CandID and
+        // the new PSCID. The `flag` table can be searched for CommentIDs with
+        // this prefix and all corresponding SessionIDs.
+        //
+        // The SessionID can be extracted from the old CommentID present in the
+        // data CSV file.
+        //
+        // When a CommentID in the flag table has a SessionID that matches the
+        // SessionID in the data file, we can use this CommentID as the value
+        // for the CommentID column in the instrument table.
+
+        // Access list of existing CommentIDs
+        $existingCommentIDs = pselectCol(
+            'SELECT CommentID from flag',
+            array()
+        );
+        print_r($existingCommentIDs);
     case VISIT_IMPORT:
         // Skip this visit label if it is in the list of excluded labels.
         if (isset($excludedVisitLabels)) {

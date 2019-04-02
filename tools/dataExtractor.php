@@ -26,6 +26,7 @@ const NUM_ARGS_REQUIRED = 3;
  * Command line argument for the mode of data importation.
  */
 const COLUMN_EXPORT = 'column';
+const INSTRUMENT_EXPORT = 'instrument';
 const VISIT_EXPORT = 'visits';
 
 /**
@@ -52,6 +53,19 @@ php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
 
+To export columns from an instrument table specifically:
+php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
+       <table>      The name of a table in the database from which to extract
+                    data. Should correspond to an instrument.
+       <column>     The name of a column in the database from which to extract
+                    data. Can also specify multiple columns using a 
+                    comma-separated list.
+       <date>       Values in the table that occur before this date will
+                    be excluded. Used in instrument extraction. 
+                    Format YYYY-MM-DD.
+       [outfile]    Optional. The target path (parent folder) where CSV data
+                    will be written. Default is LORIS_BASE/project/data_export/.
+
 To export candidate session information:
 php {$argv[0]} %s <date> [outfile]\n
        <date>       Values in the session table that occur before this date will
@@ -61,6 +75,8 @@ php {$argv[0]} %s <date> [outfile]\n
 
 USAGE;
 
+$usageError = sprintf($usage, COLUMN_EXPORT, INSTRUMENT_EXPORT, VISIT_EXPORT);
+
 // Ensure minimum number of arguments are present
 if (count($argv) < NUM_ARGS_REQUIRED) {
     die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
@@ -68,8 +84,11 @@ if (count($argv) < NUM_ARGS_REQUIRED) {
 
 // Ensure that the execution mode passed to the script is supported.
 $mode = $argv[1];
-if ($mode !== COLUMN_EXPORT && $mode !== VISIT_EXPORT) {
-    die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
+if ($mode !== COLUMN_EXPORT 
+    && $mode !== VISIT_EXPORT 
+    && $mode !== INSTRUMENT_EXPORT
+) {
+    die ($usageError);
 }
 
 // Create default output path. This value will be overwritten below if a user
@@ -80,64 +99,8 @@ $filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 $query = '';
 $params = array();
 
-switch ($mode) {
-case COLUMN_EXPORT:
-    if (!isset($argv[4])) {
-        // Ensure minimum number of arguments are present.
-        // Done separately here since COLUMN_EXPORT requires more args than
-        // VISIT_EXPORT. 
-        // This should likely be refactored at some point.
-        die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
-    }
-
-    // The Database table from which to extract data.
-    $table = $argv[2];
-    if ($table === 'session') {
-        die (
-            'Please use the `visits` extraction mode to retrive information ' .
-            'from the session table.' . PHP_EOL
-        );
-    }
-
-    // A single column or list of columns joined by commas, e.g. "DoB,Sex"
-    $column = $argv[3];
-
-    $cutoffDate = $argv[4];
-    //
-    // Overwrite default path if a custom path was specified by user.
-    $filepath = $argv[5] ?? $filepath;
-
-    // Format of output filename: <table_column_dataExtract_output.csv>
-    $filename = sprintf(
-        "%s_%s_dataExtract_output.csv", 
-        $table, 
-        // Convert comma in column list to underscore, if present.
-        str_replace(',', '_', $column)
-    );
-
-    // Create an array containing 'PSCID' and the column names from the
-    // command line input. Then join them as a comma-separated string (to be
-    // written as the headers to the CSV file).
-    $headers = array_merge(array('PSCID'), explode(',', $column));
-    
-    // Build basic SQL query info.
-    $query = "SELECT PSCID,$column from $table";
-    $params = array();
-
-    // Separately query whether a tabel has the `Date taken` column. If so we
-    // will add $cutoffDate to the WHERE clause of the query that will grab
-    // the data from $table.
-    $result = $DB->pselect(
-        "SHOW COLUMNS FROM $table LIKE 'Date_taken'",
-        array()
-    );
-    if (!empty($result)) {
-        unset($result);
-        $query .= " WHERE DATE(Date_taken) < :cutoffDate";
-        $params['cutoffDate'] = $cutoffDate;
-    }
-    break;
-case VISIT_EXPORT:
+if ($mode === VISIT_EXPORT)
+{
     $cutoffDate = $argv[2];
     // Overwrite default path if a custom path was specified by user.
     $filepath = $argv[3] ?? $filepath;
@@ -178,7 +141,8 @@ case VISIT_EXPORT:
     
     // Add abbreviations to columns. 
     // E.g. QCd --> s.QCd (for `session s` in SQL statement).
-    $columnQuery = implode(',', 
+    $columnQuery = implode(
+        ',', 
         array_map(
             'prependSessionAbbreviation', 
             $sessionColumns
@@ -195,7 +159,71 @@ case VISIT_EXPORT:
         "AND DATE(Date_visit) < :cutoffDate";
 
     $params = array('cutoffDate' => $cutoffDate);
-    break;
+} else {
+    // COLUMN and INSTRUMENT export are similar in many ways so they have shared
+    // preprocessing below.
+    if (!isset($argv[4])) {
+        // Ensure minimum number of arguments are present.
+        // Done separately here since COLUMN_EXPORT and INSTRUMENT_EXPORT 
+        // require more args than
+        // VISIT_EXPORT. 
+        // TODO This should likely be refactored at some point.
+        die ($usageError);
+    }
+
+    // The Database table from which to extract data.
+    $table = $argv[2];
+    if ($table === 'session') {
+        die (
+            'Please use the `visits` extraction mode to retrive information ' .
+            'from the session table.' . PHP_EOL
+        );
+    }
+
+    // A single column or list of columns joined by commas, e.g. "DoB,Sex"
+    $column = $argv[3];
+
+    $cutoffDate = $argv[4];
+    //
+    // Overwrite default path if a custom path was specified by user.
+    $filepath = $argv[5] ?? $filepath;
+
+    // Format of output filename: <table_column_dataExtract_output.csv>
+    $filename = sprintf(
+        "%s_dataExtract_output.csv", 
+        $table, 
+    );
+
+    if ($mode === COLUMN_EXPORT) {
+        // Create an array containing 'PSCID' and the column names from the
+        // command line input. Then join them as a comma-separated string (to be
+        // written as the headers to the CSV file).
+        $headers = array_merge(array('PSCID'), explode(',', $column));
+
+        // Build basic SQL query info.
+        $query = "SELECT PSCID,$column from $table";
+        $params = array();
+    } else if ($mode === INSTRUMENT_EXPORT) {
+        // Query whether a tabel has the `Date taken` column. 
+        // If so we
+        // will add $cutoffDate to the WHERE clause of the query that will grab
+        // the data from $table.
+        // If not, then the table is not an instrument table so the script exits.
+        $result = $DB->pselect(
+            "SHOW COLUMNS FROM $table LIKE 'Date_taken'",
+            array()
+        );
+        if (empty($result)) {
+            die ("Table $table is does not contain instrument information.\n");
+        }
+        unset($result);
+
+        $headers = explode(',', $column);
+        $query = "SELECT $column 
+            FROM $table 
+            WHERE DATE(Date_taken) < :cutoffDate";
+        $params['cutoffDate'] = $cutoffDate;
+    }
 }
 
 // Grab info from the database.
@@ -204,11 +232,11 @@ $result = $DB->pselect(
     $params
 );
 
-// Write data to CSV.
 if (count($result) < 1) {
     die ('No results found for the given criteria.' . PHP_EOL);
 }
 
+// Write data to CSV.
 writeToCsv(
     new SplFileInfo($filepath . $filename), 
     $headers,
