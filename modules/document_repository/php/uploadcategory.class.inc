@@ -83,8 +83,8 @@ class UploadCategory extends \NDB_Page
         $DB            = \Database::singleton();
         $req           = $request->getParsedBody();
         $category_name = $req['categoryName']; // required
-        $parent_id     = $req['parentId']  !== '' ? $req['parentId'] : '0';
-        $comment       = $req['comments']    !== '' ? $req['comments'] : null;
+        $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
+        $comments      = isset($req['comments']) ? $req['comments'] : null;
         // todo check duplicate name category
         $DB->insert(
             "document_repository_categories",
