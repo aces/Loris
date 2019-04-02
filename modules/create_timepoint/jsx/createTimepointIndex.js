@@ -33,15 +33,15 @@ class CreateTimepoint extends React.Component {
           visit: {},
           psc: {},
           required: {
-            subproject: false,
-            psc: false,
-            visit: false,
+            subproject: true,
+            psc: true,
+            visit: true,
           },
         },
         value: {
-          subproject: '',
-          visit: '',
-          psc: '',
+          subproject: null,
+          visit: null,
+          psc: null,
         },
       },
       storage: {
@@ -130,7 +130,7 @@ class CreateTimepoint extends React.Component {
           if (data.subproject) {
             const state = Object.assign({}, this.state);
             state.form.options.subproject = data.subproject;
-            state.form.value.subproject = '';
+            state.form.value.subproject = null;
             state.form.display.subproject = true;
             this.setState(state);
           }
@@ -138,7 +138,7 @@ class CreateTimepoint extends React.Component {
           if (data.psc) {
             const state = Object.assign({}, this.state);
             state.form.options.psc = data.psc;
-            state.form.value.psc = '';
+            state.form.value.psc = null;
             state.form.display.psc = true;
             this.setState(state);
           }
@@ -194,19 +194,8 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    e.preventDefault();
     const state = Object.assign({}, this.state);
-    state.form.options.required = {
-      subproject: true,
-      psc: true,
-      visit: true,
-    };
-    this.setState(state);
-    // Cancel post if required field is empty.
-    if ((state.form.value.subproject === '' && state.form.display.subproject) ||
-      (state.form.value.psc === '' && state.form.display.psc) ||
-      (state.form.value.visit === '' && state.form.display.visit)) {
-      return;
-    }
     const send = this.urlSearchParams({
       command: 'create',
       candID: state.url.params.candID,
