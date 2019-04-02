@@ -178,7 +178,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this-> _testFilter(self::$PSCID, "8 rows displayed of 8", 'MTL001');
         $this-> _testFilter(self::$Question, "displayed of 182", 'height_inches');
          // project = Pumpernickel
-        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '2');
+        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1');
     }
     /**
      * Testing filter funtion and clear button
