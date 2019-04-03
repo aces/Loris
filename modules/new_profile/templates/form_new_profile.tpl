@@ -69,7 +69,7 @@
     {/if}
 
 	<div class="form-group col-sm-12">
-		<div class="col-sm-12"><input class="btn btn-primary col-sm-offset-2 col-sm-2" name="fire_away" value="Create" type="submit" /></div>
+		<div class="col-sm-12"><input class="btn btn-primary col-sm-offset-2 col-sm-2" name="fire_away" value="Create" type="submit" onClick="this.form.submit(); this.disabled=true;"/></div>
 	</div>
 </table>
 {$form.hidden}

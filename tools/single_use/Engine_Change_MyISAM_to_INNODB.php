@@ -61,7 +61,7 @@ $table_names = $DB->pselectCol(
 );
 
 // possible actions for script are schemaTables, all Tables or any table in the DB
-$actions    = array("allTables","schemaTables") + $table_names;
+$actions    = array_merge(array("allTables","schemaTables"),$table_names);
 // END INPUT
 
 

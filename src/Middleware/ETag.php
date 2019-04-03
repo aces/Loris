@@ -54,15 +54,16 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             return $handler->handle($request);
         }
 
-        $clientETag   = $request->getHeaderLine("If-None-Match") ?? false;
-        $endpointETag = $handler->ETag($request);
-        if ($clientETag  && $endpointETag === $clientETag) {
-            if ($endpointETag == $clientETag) {
+        $clientETag = $request->getHeaderLine("If-None-Match");
+        if ($clientETag !== '') {
+            // If-None-Match header provided
+            $endpointETag = $handler->ETag($request);
+            if ($clientETag == $endpointETag) {
                 // It matches, so just return a 304 Not modified instead of
                 // doing any work.
-                return (new \LORIS\Http\Response())
-                    ->withStatus(304)
-                    ->withHeader('ETag', $endpointETag);
+                return new \LORIS\Http\Response\NotModified(
+                    $endpointETag
+                );
             }
         }
 
@@ -70,12 +71,20 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
         // case, we calculate one and add it to the response header after calling
         // the handler.
         $response = $handler->handle($request);
+
+        if ($response->getStatusCode() >= 400) {
+            // In case of client or server error, do not calculate ETag
+            return $response;
+        }
+
         if (empty($response->getHeaderLine('Etag'))) {
+            // If a sub-endpoint already added a Etag, do not calculate ETag
             $response = $response->withHeader(
                 "ETag",
                 $handler->ETag($request)
             );
         }
+
         return $response;
     }
 }
