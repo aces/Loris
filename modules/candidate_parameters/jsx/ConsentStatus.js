@@ -1,25 +1,26 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import Loader from 'Loader';
+
 /**
  * Consent Status Component.
  *
  * Renders the contents of the Consent Status tab, consisting of the FormElement component
  */
-
-class ConsentStatus extends React.Component {
-
+class ConsentStatus extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             consentOptions: {
-                yes: "Yes",
-                no: "No"
+                yes: 'Yes',
+                no: 'No',
             },
             Data: [],
             formData: {},
             error: false,
             isLoaded: false,
-            loadedData: 0
+            loadedData: 0,
         };
 
         /**
@@ -41,15 +42,15 @@ class ConsentStatus extends React.Component {
         $.ajax(this.props.dataURL, {
             method: 'GET',
             dataType: 'json',
-            success: data => {
+            success: (data) => {
                 let formData = {};
                 let consents = data.consents;
                 for (let consentStatus in consents) {
                     if (consents.hasOwnProperty(consentStatus)) {
-                        let consentDate = consentStatus + "_date";
-                        let consentDate2 = consentStatus + "_date2";
-                        let consentWithdrawal = consentStatus + "_withdrawal";
-                        let consentWithdrawal2 = consentStatus + "_withdrawal2";
+                        let consentDate = consentStatus + '_date';
+                        let consentDate2 = consentStatus + '_date2';
+                        let consentWithdrawal = consentStatus + '_withdrawal';
+                        let consentWithdrawal2 = consentStatus + '_withdrawal2';
                         formData[consentStatus] = data.consentStatuses[consentStatus];
                         formData[consentDate] = data.consentDates[consentStatus];
                         formData[consentDate2] = data.consentDates[consentStatus];
@@ -60,15 +61,15 @@ class ConsentStatus extends React.Component {
                 this.setState({
                     Data: data,
                     formData: formData,
-                    isLoaded: true
+                    isLoaded: true,
                 });
             },
-            error: error => {
+            error: (error) => {
                 console.error(error);
                 this.setState({
-                    error: true
+                    error: true,
                 });
-            }
+            },
         });
     }
 
@@ -88,16 +89,16 @@ class ConsentStatus extends React.Component {
                 // Clear withdrawal date if consent status changes from no
                 // (or empty if uncleaned data) to yes
                 if (formElement === consent) {
-                    if ((newConsent === "yes" && oldConsent !== "yes") ||
-                        (newConsent === "no" && oldConsent === null)) {
-                        formData[consent + "_withdrawal"] = '';
-                        formData[consent + "_withdrawal2"] = '';
+                    if ((newConsent === 'yes' && oldConsent !== 'yes') ||
+                        (newConsent === 'no' && oldConsent === null)) {
+                        formData[consent + '_withdrawal'] = '';
+                        formData[consent + '_withdrawal2'] = '';
                     }
                 }
             }
         }
         this.setState({
-            formData: formData
+            formData: formData,
         });
     }
 
@@ -124,8 +125,8 @@ class ConsentStatus extends React.Component {
             if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
                 let label = this.state.Data.consents[consentStatus];
 
-                let consentDate = consentStatus + "_date";
-                let consentDate2 = consentStatus + "_date2";
+                let consentDate = consentStatus + '_date';
+                let consentDate2 = consentStatus + '_date2';
 
                 let date1 = myFormData[consentDate] ?
                     myFormData[consentDate] : null;
@@ -133,16 +134,16 @@ class ConsentStatus extends React.Component {
                     myFormData[consentDate2] : null;
 
                 if (date1 !== date2) {
-                    alert(label + " dates do not match!");
+                    alert(label + ' dates do not match!');
                     return;
                 }
                 if (date1 > today) {
-                    alert(label + " date cannot be later than today!");
+                    alert(label + ' date cannot be later than today!');
                     return;
                 }
 
-                let consentWithdrawal = consentStatus + "_withdrawal";
-                let consentWithdrawal2 = consentStatus + "_withdrawal2";
+                let consentWithdrawal = consentStatus + '_withdrawal';
+                let consentWithdrawal2 = consentStatus + '_withdrawal2';
 
                 date1 = myFormData[consentWithdrawal] ?
                     myFormData[consentWithdrawal] : null;
@@ -150,11 +151,11 @@ class ConsentStatus extends React.Component {
                     myFormData[consentWithdrawal2] : null;
 
                 if (date1 !== date2) {
-                    alert(label + " withdrawal dates do not match!");
+                    alert(label + ' withdrawal dates do not match!');
                     return;
                 }
                 if (date1 > today) {
-                    alert(label + " withdrawal date cannot be later than today!");
+                    alert(label + ' withdrawal date cannot be later than today!');
                     return;
                 }
             }
@@ -163,7 +164,7 @@ class ConsentStatus extends React.Component {
         let formData = new FormData();
         for (let key in myFormData) {
             // Does not submit data with empty string
-            if (myFormData[key] !== "") {
+            if (myFormData[key] !== '') {
                 formData.append(key, myFormData[key]);
             }
         }
@@ -176,15 +177,15 @@ class ConsentStatus extends React.Component {
             cache: false,
             contentType: false,
             processData: false,
-            success: data => {
+            success: (data) => {
                 swal('Success!', 'Update successful.', 'success');
                 this.fetchData();
             },
-            error: error => {
+            error: (error) => {
                 console.error(error);
                 let errorMessage = error.responseText || 'Update failed.';
                 swal('Error!', errorMessage, 'error');
-            }
+            },
         });
     }
 
@@ -203,7 +204,7 @@ class ConsentStatus extends React.Component {
         let updateButton = null;
         if (loris.userHasPermission('candidate_parameter_edit')) {
             disabled = false;
-            updateButton = <ButtonElement label ="Update" />;
+            updateButton = <ButtonElement label ='Update' />;
         }
         const emptyOption = [];
         const dateRequired = [];
@@ -221,22 +222,22 @@ class ConsentStatus extends React.Component {
                 withdrawalRequired[i] = false;
                 // Let date of withdrawal field be disabled until it is needed
                 withdrawalDisabled[i] = true;
-                // If answer to consent is "yes", require date of consent
-                if (newConsent === "yes") {
+                // If answer to consent is 'yes', require date of consent
+                if (newConsent === 'yes') {
                     dateRequired[i] = true;
                 }
-                // If answer to consent is "no", require date of consent
-                if (newConsent === "no") {
+                // If answer to consent is 'no', require date of consent
+                if (newConsent === 'no') {
                     dateRequired[i] = true;
-                    // If answer was previously "yes" and consent is now being withdrawn, enable and require withdrawal date
+                    // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
                     // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
-                    if (oldConsent === "yes" || (oldConsent === "no" && withdrawalDate)) {
+                    if (oldConsent === 'yes' || (oldConsent === 'no' && withdrawalDate)) {
                         withdrawalDisabled[i] = false;
                         withdrawalRequired[i] = true;
                     }
                 }
                 // Disallow clearing a valid consent status by removing empty option
-                if (oldConsent === "no" || oldConsent === "yes") {
+                if (oldConsent === 'no' || oldConsent === 'yes') {
                     emptyOption[i] = false;
                 }
                 i++;
@@ -248,15 +249,15 @@ class ConsentStatus extends React.Component {
         for (let consentStatus in this.state.Data.consents) {
             if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
                 let label = this.state.Data.consents[consentStatus];
-                let consentDate = consentStatus + "_date";
-                let consentDate2 = consentStatus + "_date2";
-                let consentDateLabel = "Date of " + label;
-                let consentDateConfirmationLabel = "Confirmation Date of " + label;
-                let consentWithdrawal = consentStatus + "_withdrawal";
-                let consentWithdrawal2 = consentStatus + "_withdrawal2";
-                let consentWithdrawalLabel = "Date of Withdrawal of " + label;
+                let consentDate = consentStatus + '_date';
+                let consentDate2 = consentStatus + '_date2';
+                let consentDateLabel = 'Date of ' + label;
+                let consentDateConfirmationLabel = 'Confirmation Date of ' + label;
+                let consentWithdrawal = consentStatus + '_withdrawal';
+                let consentWithdrawal2 = consentStatus + '_withdrawal2';
+                let consentWithdrawalLabel = 'Date of Withdrawal of ' + label;
                 let consentWithdrawalConfirmationLabel =
-                    "Confirmation Date of Withdrawal of " + label;
+                    'Confirmation Date of Withdrawal of ' + label;
 
                 const consent = (
                     <div key={i}>
@@ -322,7 +323,7 @@ class ConsentStatus extends React.Component {
                 let consentType = this.state.Data.history[consentKey].consentType;
                 for (let field in this.state.Data.history[consentKey]) {
                     if (this.state.Data.history[consentKey].hasOwnProperty(field)) {
-                        let line = "";
+                        let line = '';
                         let historyConsent = this.state.Data.history[consentKey][field];
                         for (let field2 in historyConsent) {
                             if (historyConsent.hasOwnProperty(field2)) {
@@ -330,28 +331,28 @@ class ConsentStatus extends React.Component {
                                 if (current !== null) {
                                     switch (field2) {
                                         case 'data_entry_date':
-                                            line += "[";
+                                            line += '[';
                                             line += current;
-                                            line += "] ";
+                                            line += '] ';
                                             break;
                                         case 'entry_staff':
                                             line += current;
-                                            line += " ";
+                                            line += ' ';
                                             break;
                                         case consentType:
-                                            line += consentLabel + " Status: ";
+                                            line += consentLabel + ' Status: ';
                                             line += current;
-                                            line += " ";
+                                            line += ' ';
                                             break;
                                         case consentType + '_date':
-                                            line += "Date of Consent: ";
+                                            line += 'Date of Consent: ';
                                             line += current;
-                                            line += " ";
+                                            line += ' ';
                                             break;
                                         case consentType + '_withdrawal':
-                                            line += "Date of Consent Withdrawal: ";
+                                            line += 'Date of Consent Withdrawal: ';
                                             line += current;
-                                            line += " ";
+                                            line += ' ';
                                             break;
                                         default:
                                     }
@@ -384,9 +385,9 @@ class ConsentStatus extends React.Component {
 }
 
 ConsentStatus.propTypes = {
-    dataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired,
-    tabName: React.PropTypes.string
+    dataURL: PropTypes.string.isRequired,
+    action: PropTypes.string.isRequired,
+    tabName: PropTypes.string,
 };
 
 export default ConsentStatus;

@@ -8,7 +8,7 @@ class PublicationIndex extends React.Component {
     loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest', 'Publication ID', 'Collaborators'];
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
@@ -23,17 +23,17 @@ class PublicationIndex extends React.Component {
 
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -58,15 +58,15 @@ class PublicationIndex extends React.Component {
     }
     let tabList = [
       {
-        id: "browse",
-        label: "Browse"
-      }
+        id: 'browse',
+        label: 'Browse',
+      },
     ];
     let proposalTab;
     if (loris.userHasPermission('publication_propose')) {
       tabList.push({
-        id: "propose",
-        label: "Propose a Project"
+        id: 'propose',
+        label: 'Propose a Project',
       });
 
       proposalTab = (
