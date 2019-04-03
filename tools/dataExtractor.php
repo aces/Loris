@@ -60,6 +60,8 @@ php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <column>     The name of a column in the database from which to extract
                     data. Can also specify multiple columns using a 
                     comma-separated list.
+                    The CommentID column will always be included so it is not
+                    necessary to provide it in this list.
        <date>       Values in the table that occur before this date will
                     be excluded. Used in instrument extraction. 
                     Format YYYY-MM-DD.
@@ -79,7 +81,7 @@ $usageError = sprintf($usage, COLUMN_EXPORT, INSTRUMENT_EXPORT, VISIT_EXPORT);
 
 // Ensure minimum number of arguments are present
 if (count($argv) < NUM_ARGS_REQUIRED) {
-    die (sprintf($usage, COLUMN_EXPORT, VISIT_EXPORT));
+    die ($usageError);
 }
 
 // Ensure that the execution mode passed to the script is supported.
@@ -217,6 +219,11 @@ if ($mode === VISIT_EXPORT)
             die ("Table $table is does not contain instrument information.\n");
         }
         unset($result);
+
+        // Always include the CommentID column for intruments.
+        if (strpos($column, 'CommentID')  === false) {
+            $column = 'CommentID,' . $column;
+        }
 
         $headers = explode(',', $column);
         $query = "SELECT $column 

@@ -108,7 +108,10 @@ To import instrument information specifically:
 php {$argv[0]} %s <mapping.csv> <data.csv>
     <mapping.csv>   A CSV file containg columns with OLDPSCID, NEWPSCID, and
                     NEWCANDID
-    <data.csv>      A CSV file containing columns with OLDPSCID,DATA
+    <data.csv>      A CSV file containing columns with instrument data. This
+                    file should be created using the dataExtractor tool. The
+                    filename must begin with the name of the instrument table
+                    followed by an underscore.
 
 
 To import session information specifically:
@@ -124,18 +127,22 @@ php {$argv[0]} %s <mapping.csv> <visits.csv> [excluded.csv]
  
 USAGE;
 
+$usageError = sprintf($usage, COLUMN_IMPORT, INSTRUMENT_IMPORT, VISIT_IMPORT);
 
 /* BEGIN SCRIPT */
 
 // Die if not enough arguments.
 if (count($argv) < NUM_ARGS_REQUIRED) {
-    die (sprintf($usage, COLUMN_IMPORT, INSTRUMENT_IMPORT, VISIT_IMPORT));
+    die ($usageError);
 }
 
 // Die if invalid execution mode supplied.
 $mode = $argv[1];
-if ($mode !== COLUMN_IMPORT && $mode !== VISIT_IMPORT) {
-    die (sprintf($usage, COLUMN_IMPORT, VISIT_IMPORT));
+if ($mode !== COLUMN_IMPORT 
+    && $mode !== VISIT_IMPORT 
+    && $mode !== INSTRUMENT_IMPORT
+) {
+    die ($usageError);
 }
 $dataFile = $argv[DATA_ARG_INDEX];
 
@@ -152,11 +159,12 @@ if (strpos($dataFile, 'visits') === false && $mode === 'visits') {
 $mappingRows = populateArrayFromCSV($argv[MAPPING_ARG_INDEX]);
 $dataRows = populateArrayFromCSV($argv[DATA_ARG_INDEX]);
 
-// Creating this array allows referencing the columns by index. This allows the
+// Creating these arrays allows referencing the columns by index. This allows the
 // use of name constants to access the data from within the CSV files instead
 // of hard-coding column names into this script.
 $mappingHeaders = array_keys($mappingRows[0]);
 $dataHeaders = array_keys($dataRows[0]);
+
 
 // Find all the candidates present in both the data file and the mapping file by
 // doing a set intersection on the list of old PSCIDs. 
@@ -168,13 +176,29 @@ $oldPSCIDsInDataFile = array();
 foreach($mappingRows as $row) {
     $oldPSCIDsInMappingFile[] = $row[$mappingHeaders[OLD_PSCID]];
 }
-foreach($dataRows as $row) {
-    $oldPSCIDsInDataFile[] = $row[$dataHeaders[OLD_PSCID]];
+if ($mode === COLUMN_IMPORT || $mode === VISIT_IMPORT) {
+    foreach($dataRows as $row) {
+        $oldPSCIDsInDataFile[] = $row[$dataHeaders[OLD_PSCID]];
+    }
+    // array_intersect preserves keys but we don't want them.
+    $sharedCandidates = array_values(
+        array_intersect($oldPSCIDsInMappingFile, $oldPSCIDsInDataFile)
+    );
+} else {
+    // When performing an INSTRUMENT_IMPORT, the CommentIDs will be analysed
+    // instead of a column containing the PSCIDs.
+    // Instrument tables store only CommentIDs and not CandIDs or PSCIDs
+    // directly.
+    if (!in_array('CommentID', $dataHeaders, true)) {
+        die (
+            "There is no CommentID column in $dataFile. Can't continue."
+            . PHP_EOL
+        );
+    }
+    foreach($dataRows as $row) {
+        $oldPSCIDsInDataFile[] = $row[$dataHeaders[OLD_PSCID]];
+    }
 }
-// array_intersect preserves keys but we don't want them.
-$sharedCandidates = array_values(
-    array_intersect($oldPSCIDsInMappingFile, $oldPSCIDsInDataFile)
-);
 
 if (count($sharedCandidates) < 1) {
     die(
@@ -226,6 +250,7 @@ case INSTRUMENT_IMPORT:
     // Get existing CommentIDs from the flag table. These will be compared with
     // CommentIDs in the new data and used to insert instrument information
     // from the CSV file with the correct, updated CommentIDs.
+    break;
 case VISIT_IMPORT:
     // Visit label information is found in the session table.
     $table = 'session';
