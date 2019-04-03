@@ -90,6 +90,11 @@ const COLUMN_IMPORT = 'column';
 const INSTRUMENT_IMPORT = 'instrument';
 const VISIT_IMPORT = 'visits';
 
+/**
+ * This value should be updated if the CandID class in LORIS is updated.
+ */
+const CANDID_LENGTH = 6;
+
 require_once 'generic_includes.php';
 
 $usage = <<<USAGE
@@ -166,20 +171,25 @@ $mappingHeaders = array_keys($mappingRows[0]);
 $dataHeaders = array_keys($dataRows[0]);
 
 
-// Find all the candidates present in both the data file and the mapping file by
-// doing a set intersection on the list of old PSCIDs. 
-// It's more efficient to do this once before iterating over every data row 
-// rather than checking if a PSCID exists in both arrays on each iteration of 
-// the data.csv file.
+// Filter out candidates that are present in the export but are absent from the
+// mapping file. These are candidates that should be excluded because they
+// are not consented to be in the new repository or are otherwise unsuitable.
 $oldPSCIDsInMappingFile = array();
 $oldPSCIDsInDataFile = array();
+$sharedCandidates = array();
 foreach($mappingRows as $row) {
     $oldPSCIDsInMappingFile[] = $row[$mappingHeaders[OLD_PSCID]];
 }
 if ($mode === COLUMN_IMPORT || $mode === VISIT_IMPORT) {
+    // Find all the candidates present in both the data file and the mapping file by
+    // doing a set intersection on the list of old PSCIDs. 
+    // It's more efficient to do this once before iterating over every data row 
+    // rather than checking if a PSCID exists in both arrays on each iteration of 
+    // the data.csv file.
     foreach($dataRows as $row) {
         $oldPSCIDsInDataFile[] = $row[$dataHeaders[OLD_PSCID]];
     }
+
     // array_intersect preserves keys but we don't want them.
     $sharedCandidates = array_values(
         array_intersect($oldPSCIDsInMappingFile, $oldPSCIDsInDataFile)
@@ -195,8 +205,20 @@ if ($mode === COLUMN_IMPORT || $mode === VISIT_IMPORT) {
             . PHP_EOL
         );
     }
+    // CommentIDs begin with a CandID followed by a PSCID. In order to find
+    // the old PSCID we ignore the CandID and check if the characters
+    // immediatelly following are equal to an old PSCID value in the mapping
+    // file. 
+    // This requires an O(n^2) loop.
     foreach($dataRows as $row) {
-        $oldPSCIDsInDataFile[] = $row[$dataHeaders[OLD_PSCID]];
+        foreach ($oldPSCIDsInMappingFile as $oldPSCID) {
+            // Check if the characeters immediately following CandID are equal
+            // to an old PSCID in the mapping file. If so, then add this to
+            // the lsit of shared candidates.
+            if (strpos($row['CommentID'], $oldPSCID, CANDID_LENGTH) === CANDID_LENGTH) {
+                $sharedCandidates[] = $oldPSCID;
+            }
+        }
     }
 }
 
@@ -215,23 +237,19 @@ echo sprintf(
 );
 
 // Build a one-to-one mapping of old to new PSCIDs with the old IDs as the key.
-$PSCIDMapping = array();
-foreach($mappingRows as $row) {
-    $oldPSCID = $row[$mappingHeaders[OLD_PSCID]];
-    $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
-    $PSCIDMapping[$oldPSCID] = $newPSCID;
-}
-
 // Create a mapping of PSCIDs to CandIDs to allow for direct lookup of a CandID
 // given a PSCID. It is more efficient to use this dictionary than searching the
 // CSV rows for a CandID each time we need one.
+$PSCIDMapping = array();
 $candIDMapping = array();
-foreach ($mappingRows as $row) {
+foreach($mappingRows as $row) {
+    $oldPSCID = $row[$mappingHeaders[OLD_PSCID]];
     $newPSCID = $row[$mappingHeaders[NEW_PSCID]];
     $newCandID = $row[$mappingHeaders[NEW_CANDID]];
+
+    $PSCIDMapping[$oldPSCID] = $newPSCID;
     $candIDMapping[$newPSCID] = $newCandID;
 }
-    
 
 // Prepare the table name and column names to be updated.
 // Also query for existing data in the database depending on the mode, e.g.
