@@ -16,6 +16,8 @@ class InstrumentImporter extends DataImporter {
 
     }
 
+    function buildSQLQuery(array $row) {
+    }
     function calculateSharedCandidates() {
         // CommentIDs begin with a CandID followed by a PSCID. In order to find
         // the old PSCID we ignore the CandID and check if the characters

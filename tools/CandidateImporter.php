@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 require_once 'DataImporter.class.inc';
 
 class CandidateImporter extends DataImporter {
@@ -9,6 +10,9 @@ class CandidateImporter extends DataImporter {
         parent::__construct($mappingFile, $dataFile);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     function calculateSharedCandidates() {
         // Filter out candidates present in data export but not included in the
         // mapping file. If the candidates are not present in the mapping file
@@ -21,7 +25,10 @@ class CandidateImporter extends DataImporter {
         }
     }
 
-    function buildSQLQuery($row) {
+    /**
+     * {@inheritDoc}
+     */
+    function buildSQLQuery(array $row) {
         $data = $row;
         // Discard the PSCID value in this CSV row. It is equal to the old
         // PSCID and only used for linking. It should not be included in the

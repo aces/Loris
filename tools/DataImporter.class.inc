@@ -111,17 +111,17 @@ abstract class DataImporter {
         }
     }
 
-    abstract function buildSQLQuery($row);
+    abstract function buildSQLQuery(array $row);
 
     function hasSharedCandidates() {
         return count($this->sharedCandidates);
     }
 
-    function newPSCID(string $oldPSCID) {
+    function newPSCID(string $oldPSCID): ?string {
         return $this->PSCIDMapping[$oldPSCID] ?? null;
     }
 
-    function newCandID(string $newPSCID) {
+    function newCandID(string $newPSCID): ?string {
         return $this->candIDMapping[$newPSCID] ?? null;
     }
 
