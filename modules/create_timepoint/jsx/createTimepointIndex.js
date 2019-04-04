@@ -23,6 +23,7 @@ class CreateTimepoint extends React.Component {
         visit: '',
       },
       form: {
+        disabled: false,
         display: {
           subproject: false,
           visit: false,
@@ -122,13 +123,12 @@ class CreateTimepoint extends React.Component {
     ).then((response) => response.json())
       .then(
         (data) => {
-          console.log(data);
           // Populate the form errors.
           if (data.errors) {
-            // data for the form errors.
-            this.setState({errors: data.errors});
-            this.setState({isLoaded: true});
-            return;
+            const state = Object.assign({}, this.state);
+            state.errors = data.errors;
+            state.form.disabled = true;
+            this.setState(state);
           }
           // Populate the select options for subproject.
           if (data.subproject) {
@@ -328,6 +328,7 @@ class CreateTimepoint extends React.Component {
                 <ButtonElement
                   label={'Create Time Point'}
                   type={'submit'}
+                  disable={this.state.form.disabled}
                 />
               </FormElement>
             </Panel>
