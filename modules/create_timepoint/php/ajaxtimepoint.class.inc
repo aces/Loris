@@ -199,11 +199,13 @@ class AjaxTimepoint extends \NDB_Page
                 If you are an administrator, please use the Configuration module to 
                 add new subprojects and associate them with projects.';
             }
+            $tmp = array();
             foreach ($allSubprojects as $subprojectID => $title) {
                 if (in_array($subprojectID, $subprojList)) {
-                    $values[$subprojectID] = $title;
+                    $tmp[$subprojectID] = $title;
                 }
             }
+            $values['subproject'] = $tmp;
         } else {
             // projects disabled, add all subprojects
             $values['subproject'] = $allSubprojects;
