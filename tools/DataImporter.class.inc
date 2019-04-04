@@ -18,6 +18,15 @@ abstract class DataImporter {
     const NEW_PSCID = 1;
     const NEW_CANDID = 2;
 
+    /* An associative array of CSV headers to rows of CSV data */
+    protected $dataRows = array();
+
+    /* An associative array of CSV headers to rows of CSV data. Contains a
+     * mapping of the original PSCIDs used in the source databse to the 
+     * new PSCIDs and the new CandIDs.
+     */
+    protected $mappingRows = array();
+
     /* The table in the DB to update */
     protected $table = '';
 
@@ -25,19 +34,104 @@ abstract class DataImporter {
     protected $sharedCandidates = array();
 
     /* A mapping of old PSCIDs to new PSCIDS. */
-    protected $PSCIDMapping = array();
+    private $PSCIDMapping = array();
 
     /* A mapping of new PSCIDs to new CandIDs */
-    protected $candIDMapping = array();
+    private $candIDMapping = array();
+
+    /* An array of PSCIDs present in the candidate table of the database. */
+    private $existingPSCIDs = array();
+
+    /* An array of PSCIDs that are present in the mapping file but skipped for
+     * processing. */
+    public $candidatesSkipped = array();
+
+    /* An array containing informaiton to be formatted into a MySQL UPDATE
+     * statement. */
+    protected $UPDATEQueue = array();
+
+    /* An array containing informaiton to be formatted into a MySQL INSERT
+     * statement. */
+    protected $INSERTQueue = array();
+
    
-    // This class should not be instantiated directly.
-    private function __construct() {
+    public function __construct(
+        SplFileInfo $mappingFile, 
+        SplFileInfo $dataFile
+    ) {
+        // Create a mapping between PSCIDs and new PSCIDs to new CandIDs.
+        $this->populateDataFromCSVs($mappingFile, $dataFile);
+        $this->buildIDMappings();
+        $this->calculateSharedCandidates();
+        $this->existingPSCIDs = \Database::singleton()->pselectCol(
+            'SELECT PSCID from candidate',
+            array()
+        );
     }
 
     abstract function calculateSharedCandidates();
 
+    function processData() {
+        foreach ($this->dataRows as $row) {
+            // Get the old PSCID. Should always be in the column at index 0.
+            $oldPSCID = $row[$this->dataHeaders[self::OLD_PSCID]];
+
+            // Skip candidates not present in mapping file.
+            if (!in_array($oldPSCID, $this->sharedCandidates, true)) {
+                continue;
+            }
+
+            $newPSCID = $this->newPSCID($oldPSCID);
+
+            // Check that the new PSCID from the mapping file is actually present in
+            // the Database. It's possible that the candidate has been deleted since
+            // the mapping file was created.
+            $newPSCIDExists = in_array(
+                $newPSCID,
+                $this->existingPSCIDs,
+                true
+            );
+            if (!$newPSCIDExists) {
+                // Don't add a skipped candidate to the skipped array if we've already
+                // encountered it. This can occur for example when multiple visit labels
+                // are listed for a single candidate.
+                $skippedAlready = in_array(
+                    $newPSCID,
+                    $this->candidatesSkipped,
+                    true
+                );
+                if (!$skippedAlready) {
+                    $this->skippedPSCIDs[] = $newPSCID;
+                }
+                continue;
+            }
+            // Child classes will determine what information should
+            // be included in a given query.
+            $this->buildSQLQuery($row);
+        }
+    }
+
+    abstract function buildSQLQuery($row);
+
     function hasSharedCandidates() {
         return count($this->sharedCandidates);
+    }
+
+    function newPSCID(string $oldPSCID) {
+        return $this->PSCIDMapping[$oldPSCID] ?? null;
+    }
+
+    function newCandID(string $newPSCID) {
+        return $this->candIDMapping[$newPSCID] ?? null;
+    }
+
+
+    function report() {
+        $report = array_merge(
+            $this->formatUPDATEStatements(),
+            $this->formatINSERTStatements()
+        );
+        return join("\n", $report);
     }
 
     // Build a one-to-one mapping of old to new PSCIDs with the old IDs as the key.
@@ -67,20 +161,20 @@ abstract class DataImporter {
         // Creating these arrays allows referencing the columns by index. This allows the
         // use of name constants to access the data from within the CSV files instead
         // of hard-coding column names into this script.
-        $this->mappingHeaders = array_keys($mappingRows[0]);
-        $this->dataHeaders = array_keys($dataRows[0]);
+        $this->mappingHeaders = array_keys($this->mappingRows[0]);
+        $this->dataHeaders = array_keys($this->dataRows[0]);
     }
 
 
     // Format commands for printing.
-    protected function formatUPDATEStatements(array $commandQueue)
+    protected function formatUPDATEStatements()
     {
+        $commandQueue = $this->UPDATEQueue;
         if (count($commandQueue) < 1) {
             return array();
         }
-        $table = $commandQueue[0]['table'];
         $formattedCommand = <<<SQL
-UPDATE $table
+UPDATE %s
 SET %s
 WHERE %s;
 
@@ -92,7 +186,7 @@ SQL;
             // Iterate over all columns and create a formatted string. Will only be one
             // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
             foreach ($command['data'] as $column => $value) {
-                $value = quoteWrapUnlessNULL($value);
+                $value = $this->quoteWrapUnlessNULL($value);
                 $setString[] = "$column = $value";
             }
             // Interpolate the $setString into the SQL heredoc above and add it to the
@@ -102,6 +196,7 @@ SQL;
             }
             $report[] = sprintf(
                 $formattedCommand, 
+                $this->table,
                 implode(', ', $setString),
                 implode(' AND ', $whereString)
             );
@@ -113,15 +208,15 @@ SQL;
      *
      * @return string[]
      */
-    protected function formatINSERTStatements(array $commandQueue, array $columnNames): array {
+    protected function formatINSERTStatements(): array {
+        $commandQueue = $this->INSERTQueue;
         if (count($commandQueue) < 1) {
             return array();
         }
         // Format commands for printing.
         $report = array();
-        $table = $commandQueue[0]['table'];
         $formattedCommand = <<<SQL
-INSERT INTO $table
+INSERT INTO %s
 (%s)
 VALUES(%s);
 
@@ -129,6 +224,7 @@ SQL;
         foreach ($commandQueue as $command) {
             $report[] = sprintf(
                 $formattedCommand,
+                $this->table,
                 implode(',', array_keys($command['data'])),
                 implode(',', array_map('quoteWrapUnlessNULL', array_values($command['data'])))
             );
@@ -158,8 +254,8 @@ SQL;
     //
     // @return array The contents of the CSV file loaded into an associative array.
     //
-    public static function populateArrayFromCSV(string $filename): array {
-        $data = csvToArray($filename);
+    public static function populateArrayFromCSV(SplFileInfo $filename): array {
+        $data = self::csvToArray($filename->getRealPath());
         if (count($data) < 1) {
             throw new InvalidArgumentException(
                 "No data found in $filename" . PHP_EOL
@@ -182,7 +278,7 @@ SQL;
      * @copyright Copyright (c) 2010, Jay Williams
      * @license http://www.opensource.org/licenses/mit-license.php MIT License
      */
-    function csvToArray(string $filename='', string $delimiter=','): array
+    static function csvToArray(string $filename='', string $delimiter=','): array
     {
         if(!file_exists($filename) || !is_readable($filename))
             return array();
@@ -206,7 +302,11 @@ SQL;
     /**
      * Wraps a string in single quotes. Useful for an array_map callback when
      * preparing values to be used in a SET statement.
+     * Values of NULL should not be quote-wrapped as MySQL will interpret this
+     * as a string containing the word NULL rather than a value equivalent to
+     * null.
      *
+     * @return string The param surrounded by single quotes.
      */
     function quoteWrapUnlessNULL(string $string): string
     {

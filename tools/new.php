@@ -102,16 +102,29 @@ case CANDIDATE_IMPORT:
 }
 
 
+$importer->processData();
 if (!$importer->hasSharedCandidates()) {
-
+    die ("The mapping file and data file have no candidates in common.\n");
 }
-if (count($importer->buildSQLStatements()) < 1) {
-    die ('No SQL commands generated');
-}
+echo "{$importer->hasSharedCandidates()} candidates found.\n";
 
 if (count($importer->candidatesSkipped) > 0) {
-    echo 'Candidates skipped';
+    echo "Candidates skipped: \n";
 }
 
-file_put_contents($outfile, $importer->buildSQLStatements());
+// Write the report to file.
+$path = $config->getSetting('base') . 'project/data_import/'; 
+if (!is_dir($path)) {
+    mkdir($path);
+}
+$target = $path . date("Ymd-His") . '_dataImporterOutput.sql';
 
+$report = $importer->report();
+
+if (strlen($report) < 1) {
+    die ("Report empty. No SQL commands generated.\n");
+}
+
+file_put_contents($target, $report);
+
+echo "SQL commands written to $target. Please review them before applying.\n";
