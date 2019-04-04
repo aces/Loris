@@ -122,9 +122,13 @@ class CreateTimepoint extends React.Component {
     ).then((response) => response.json())
       .then(
         (data) => {
+          console.log(data);
           // Populate the form errors.
-          if (data.errors && data.errors.length > 0) {
+          if (data.errors) {
+            // data for the form errors.
             this.setState({errors: data.errors});
+            this.setState({isLoaded: true});
+            return;
           }
           // Populate the select options for subproject.
           if (data.subproject) {
