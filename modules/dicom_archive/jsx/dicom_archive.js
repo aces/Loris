@@ -33,7 +33,7 @@ class DicomArchive extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -43,12 +43,12 @@ class DicomArchive extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -74,26 +74,26 @@ class DicomArchive extends Component {
             </a>
           </td>;
       }
-      break;
+        break;
       case 'Metadata': {
         const metadataURL = loris.BaseURL +
           '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
         result = <td><a href={metadataURL}>{cell}</a></td>;
       }
-      break;
+        break;
       case 'MRI Browser': {
         if (row.SessionID === null || row.SessionID === '') {
           result = <td>&nbsp;</td>;
         } else {
-          let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+          const mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
             row.SessionID;
           result = <td><a href={mrlURL}>{cell}</a></td>;
         }
-      break;
+        break;
       }
       case 'INVALID - HIDDEN':
         result = <td className="text-danger">{cell}</td>;
-      break;
+        break;
     }
 
     return result;
@@ -174,7 +174,7 @@ DicomArchive.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>,
-    document.getElementById('lorisworkspace')
+      <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>,
+      document.getElementById('lorisworkspace')
   );
 });

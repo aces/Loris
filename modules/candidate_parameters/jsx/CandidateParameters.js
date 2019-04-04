@@ -31,7 +31,7 @@ class CandidateParameters extends Component {
   }
 
   render() {
-    let tabList = [
+    const tabList = [
       {id: 'candidateInfo', label: 'Candidate Information', component: CandidateInfo},
       {id: 'participantStatus', label: 'Participant Status', component: ParticipantStatus},
     ];
@@ -51,8 +51,8 @@ class CandidateParameters extends Component {
     return (
       <div>
         <a className='btn btn-sm btn-primary'
-           href={loris.BaseURL + '/' + this.props.candID}
-           style={{marginBottom: '20px'}}
+          href={loris.BaseURL + '/' + this.props.candID}
+          style={{marginBottom: '20px'}}
         >
           Return to timepoint list
         </a>

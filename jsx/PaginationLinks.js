@@ -25,10 +25,10 @@ class PaginationLinks extends Component {
   }
 
   render() {
-    let rowsPerPage = this.props.RowsPerPage;
-    let pageLinks = [];
+    const rowsPerPage = this.props.RowsPerPage;
+    const pageLinks = [];
     let classList;
-    let lastPage = Math.ceil(this.props.Total / rowsPerPage);
+    const lastPage = Math.ceil(this.props.Total / rowsPerPage);
     let startPage = Math.max(1, this.props.Active - 3);
     let lastShownPage = Math.min(this.props.Active + 3, lastPage);
 
@@ -49,7 +49,7 @@ class PaginationLinks extends Component {
 
     if (startPage > 1) {
       pageLinks.push(
-        <li key={'table_page_beginning_' + startPage.toString()} onClick={this.changePage(1)}><a href='#'>&laquo;</a></li>
+          <li key={'table_page_beginning_' + startPage.toString()} onClick={this.changePage(1)}><a href='#'>&laquo;</a></li>
       );
     }
     if (startPage < 1) {
@@ -59,7 +59,7 @@ class PaginationLinks extends Component {
       lastShownPage = 1;
     }
 
-        // If there is only 1 page, don't display pagination links
+    // If there is only 1 page, don't display pagination links
     if (startPage === lastShownPage) {
       return <div />;
     }
@@ -70,22 +70,22 @@ class PaginationLinks extends Component {
         classList = 'active';
       }
       pageLinks.push(
-        <li key={'table_page_' + i.toString()} onClick={this.changePage(i)} className={classList}>
-          <a href="#">{i}</a>
-        </li>
+          <li key={'table_page_' + i.toString()} onClick={this.changePage(i)} className={classList}>
+            <a href="#">{i}</a>
+          </li>
       );
     }
     if (lastShownPage !== lastPage) {
       pageLinks.push(
-        <li key={'table_page_more_' + lastShownPage.toString()} onClick={this.changePage(lastPage)}>
-          <a href='#'>&raquo;</a>
-        </li>
+          <li key={'table_page_more_' + lastShownPage.toString()} onClick={this.changePage(lastPage)}>
+            <a href='#'>&raquo;</a>
+          </li>
       );
     }
 
     return (
       <ul className='pagination pagination-table'>
-          {pageLinks}
+        {pageLinks}
       </ul>
     );
   }
@@ -99,7 +99,7 @@ PaginationLinks.defaultProps = {
   Active: 1,
 };
 
-let RPaginationLinks = React.createFactory(PaginationLinks);
+const RPaginationLinks = React.createFactory(PaginationLinks);
 
 window.PaginationLinks = PaginationLinks;
 window.RPaginationLinks = RPaginationLinks;

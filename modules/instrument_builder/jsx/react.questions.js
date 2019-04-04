@@ -28,7 +28,7 @@ class LorisElement extends Component {
   }
 
   render() {
-    let element = this.props.element;
+    const element = this.props.element;
     let elementHtml = '';
     switch (element.Type) {
       case 'header':
@@ -51,11 +51,11 @@ class LorisElement extends Component {
       case 'select':
         if (element.Options.AllowMultiple) {
           elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}
-                                       multiple={true}/>;
+            options={element.Options.Values}
+            multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}/>;
+            options={element.Options.Values}/>;
         }
         break;
       case 'date':
@@ -92,11 +92,11 @@ class QuestionText extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-    // Keep track of the current input
+  // Keep track of the current input
   onChange(e) {
     this.props.updateState({Description: e.target.value});
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
@@ -142,7 +142,7 @@ class BasicOptions extends Component {
   // Keep track of the current input
   onChange(e) {
     // replace whitespaces with underscores
-    let questionName = (e.target.value).trim().split(' ').join('_');
+    const questionName = (e.target.value).trim().split(' ').join('_');
     this.props.updateState({Name: questionName});
   }
   // Render the HTML
@@ -196,11 +196,11 @@ class DropdownOptions extends Component {
   }
   // Add an option to the element
   addOption() {
-    let option = this.state.option.trim();
+    const option = this.state.option.trim();
 
     // Check for empty options
     if (option === '') {
-      let temp = (this.state.error) ? this.state.error : {};
+      const temp = (this.state.error) ? this.state.error : {};
       temp.newSelectOption = 'Dropdown options cannot be empty!';
       this.setState({
         error: temp,
@@ -210,7 +210,7 @@ class DropdownOptions extends Component {
 
     // Remove error if corrected
     if (this.state.error) {
-      let temp = this.state.error;
+      const temp = this.state.error;
       delete temp.newSelectOption;
       this.setState({
         error: temp,
@@ -218,8 +218,8 @@ class DropdownOptions extends Component {
     }
 
     // add to option list
-    let temp = Instrument.clone(this.props.element.Options);
-    let key = Instrument.enumize(this.state.option);
+    const temp = Instrument.clone(this.props.element.Options);
+    const key = Instrument.enumize(this.state.option);
     temp.Values[key] = this.state.option;
     this.props.updateState({Options: temp});
 
@@ -228,14 +228,14 @@ class DropdownOptions extends Component {
   }
   // Reset the dropdown options
   resetOptions() {
-    let temp = Instrument.clone(this.props.element.Options);
+    const temp = Instrument.clone(this.props.element.Options);
     temp.Values = {};
     this.props.updateState({Options: temp});
   }
   // Render the HTML
   render() {
     let multi = '';
-    let options = Instrument.clone(this.props.element.Options.Values);
+    const options = Instrument.clone(this.props.element.Options.Values);
     let errorMessage = '';
     let dropdownClass = 'form-group';
 
@@ -319,9 +319,9 @@ class DateOptions extends Component {
   componentDidMount() {
     this.props.element.Options.dateFormat = '';
   }
-    // Keep track of the inputed years
+  // Keep track of the inputed years
   onChange(e) {
-    let options = Instrument.clone(this.props.element.Options);
+    const options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin' && e.target.value.length > 0) {
       options.MinDate = e.target.value + '-01-01';
     } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
@@ -334,13 +334,13 @@ class DateOptions extends Component {
   // Render the HTML
   render() {
     // Truncate off the month and day from the date to only have the year.
-    let minYear = this.props.element.Options.MinDate.split('-')[0];
-    let maxYear = this.props.element.Options.MaxDate.split('-')[0];
+    const minYear = this.props.element.Options.MinDate.split('-')[0];
+    const maxYear = this.props.element.Options.MaxDate.split('-')[0];
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
 
-    let dateFormatOptions = this.state.dateFormat;
+    const dateFormatOptions = this.state.dateFormat;
 
     if (this.props.element.error && this.props.element.error.dateOption) {
       // If an error is present, display the error
@@ -420,7 +420,7 @@ class NumericOptions extends Component {
   // Keep track of the inputed numbers, casting them to
   // interger values.
   onChange(e) {
-    let options = Instrument.clone(this.props.element.Options);
+    const options = Instrument.clone(this.props.element.Options);
 
     if (e.target.id === 'numericmin') {
       options.MinValue = parseInt(e.target.value, 10);
@@ -434,7 +434,7 @@ class NumericOptions extends Component {
     let errorMessage = '';
     let optionsClass = 'options form-group';
 
-        // If an error is present, display the error
+    // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
       errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
       optionsClass += 'options form-group has-error';
@@ -488,9 +488,9 @@ class ListElements extends Component {
     };
     this.selectType = this.selectType.bind(this);
   }
-    // Set the desired question type
+  // Set the desired question type
   selectType(newId, newValue) {
-    let newState = {
+    const newState = {
       selected: {
         id: newId,
         value: newValue,
@@ -534,66 +534,66 @@ class ListElements extends Component {
     }
     this.props.updateState(newState);
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     return (
-        <div className="form-group">
-            <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
-            <div className="col-sm-4">
-                <div className="btn-group">
-                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span id="search_concept">{this.props.value} </span>
-                        <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu" role="menu">
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Information</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'header', 'Header')}>
-                            <a id="header" className="option" title="Centered, header information">Header</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'label', 'Label')}>
-                            <a id="label" className="option" title="Unemphasized display text">Label</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
-                            <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Data entry</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
-                            <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
-                            <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
-                            <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
-                            <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'date', 'Date')}>
-                            <a id="date" className="option" title="User data entry of a date">Date</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
-                            <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12"><h5 className="">Formatting</h5></div>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
-                            <a id="line" className="option" title="Empty line">Blank Line</a>
-                        </li>
-                        <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
-                            <a id="page-break" className="option" title="Start a new page">Page Break</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <div className="form-group">
+        <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+        <div className="col-sm-4">
+          <div className="btn-group">
+            <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span id="search_concept">{this.props.value} </span>
+              <span className="caret"></span>
+            </button>
+            <ul className="dropdown-menu" role="menu">
+              <li>
+                <div className="col-sm-12"><h5 className="">Information</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'header', 'Header')}>
+                <a id="header" className="option" title="Centered, header information">Header</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'label', 'Label')}>
+                <a id="label" className="option" title="Unemphasized display text">Label</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
+                <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
+                <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
+                <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
+                <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
+                <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'date', 'Date')}>
+                <a id="date" className="option" title="User data entry of a date">Date</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
+                <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
+                <a id="line" className="option" title="Empty line">Blank Line</a>
+              </li>
+              <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
+                <a id="page-break" className="option" title="Start a new page">Page Break</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     );
   }
 }
@@ -637,7 +637,7 @@ class AddElement extends Component {
   // Add a question to the buildPane
   addQuestion() {
     let selected = this.state.selected.id;
-    let questionText = this.state.Description;
+    const questionText = this.state.Description;
     let questionName = this.state.Name;
     let hasError = false;
 
@@ -653,14 +653,14 @@ class AddElement extends Component {
     }
 
     if (selected === 'date') {
-      let min = this.state.Options.MinDate;
-      let max = this.state.Options.MaxDate;
-      let minYear = parseInt(min, 10);
-      let maxYear = parseInt(max, 10);
-      let minDate = Date.parse(min);
-      let maxDate = Date.parse(max);
+      const min = this.state.Options.MinDate;
+      const max = this.state.Options.MaxDate;
+      const minYear = parseInt(min, 10);
+      const maxYear = parseInt(max, 10);
+      const minDate = Date.parse(min);
+      const maxDate = Date.parse(max);
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
-        let temp = (this.state.error) ? this.state.error : {};
+        const temp = (this.state.error) ? this.state.error : {};
 
         temp.dateOption = 'Invalid date provided';
         this.setState({
@@ -670,7 +670,7 @@ class AddElement extends Component {
       }
 
       if (minDate > maxDate && min !== '' && max !== '') {
-        let temp = (this.state.error) ? this.state.error : {};
+        const temp = (this.state.error) ? this.state.error : {};
 
         temp.dateOption = 'End year append before start year';
         this.setState({
@@ -679,7 +679,7 @@ class AddElement extends Component {
         hasError = true;
       }
       if (minYear > 9999 || minYear < 1000 || maxYear > 9999 || maxYear < 1000) {
-        let temp = (this.state.error) ? this.state.error : {};
+        const temp = (this.state.error) ? this.state.error : {};
 
         temp.dateOption = 'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.';
         this.setState({
@@ -689,7 +689,7 @@ class AddElement extends Component {
       }
 
       if (!hasError && this.state.error) {
-        let temp = this.state.error;
+        const temp = this.state.error;
         delete temp.dateOption;
         this.setState({
           error: temp,
@@ -697,13 +697,13 @@ class AddElement extends Component {
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
-      let min = this.state.Options.MinValue;
-      let max = this.state.Options.MaxValue;
+      const min = this.state.Options.MinValue;
+      const max = this.state.Options.MaxValue;
 
       if (min >= max) {
-        let temp = (this.state.error) ? this.state.error : {};
+        const temp = (this.state.error) ? this.state.error : {};
         temp.numeric = 'Max value must be larger than min value';
         this.setState({
           error: temp,
@@ -711,9 +711,9 @@ class AddElement extends Component {
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
-        let temp = this.state.error;
+        const temp = this.state.error;
         delete temp.numeric;
         this.setState({
           error: temp,
@@ -722,9 +722,9 @@ class AddElement extends Component {
     }
 
     if (questionText === '' && selected !== 'line') {
-        // Error, question text is required. Set the element error flag
-        // for the questionText with message. Set the hasError flag
-      let temp = (this.state.error) ? this.state.error : {};
+      // Error, question text is required. Set the element error flag
+      // for the questionText with message. Set the hasError flag
+      const temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
         temp.questionText = 'Must use question text as page header';
       } else {
@@ -737,9 +737,9 @@ class AddElement extends Component {
     }
 
     if (!hasError && this.state.error) {
-        // No error, remove the elememt's questionText error flag
-        // if set
-      let temp = this.state.error;
+      // No error, remove the elememt's questionText error flag
+      // if set
+      const temp = this.state.error;
       delete temp.questionText;
       this.setState({
         error: temp,
@@ -750,7 +750,7 @@ class AddElement extends Component {
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
-      let temp = (this.state.error) ? this.state.error : {};
+      const temp = (this.state.error) ? this.state.error : {};
       temp.questionName = 'Must specifiy name for database to save value into';
       this.setState({
         error: temp,
@@ -758,7 +758,7 @@ class AddElement extends Component {
       hasError = true;
     } else if (this.state.error) {
       // No error, remove the elememt's questionName error flag if set
-      let temp = this.state.error;
+      const temp = this.state.error;
       delete temp.questionName;
       this.setState({
         error: temp,
@@ -794,7 +794,7 @@ class AddElement extends Component {
 
     // Remove all error flags
     delete this.state.error;
-    let element = {
+    const element = {
       Type: selected,
       Description: questionText,
       Name: questionName,
@@ -816,7 +816,7 @@ class AddElement extends Component {
       // Error, element name already exists. Set the element error flag
       // for the questionName with message.
       this.setState(function(state) {
-        let temp = (state.error) ? state.error : {};
+        const temp = (state.error) ? state.error : {};
         temp.questionName = 'Duplicate question name';
         return {
           error: temp,
@@ -824,32 +824,32 @@ class AddElement extends Component {
       });
     }
   }
-    // Add an option to the options array
+  // Add an option to the options array
   addOption(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.options;
-      let option = multi ? $('#newmultiSelectOption').val() : $('#newSelectOption').val();
+      const temp = state.options;
+      const option = multi ? $('#newmultiSelectOption').val() : $('#newSelectOption').val();
       temp.push(option);
       return {
         options: temp,
       };
     });
   }
-    // Reset the options array
+  // Reset the options array
   resetOptions() {
     this.setState({
       options: [],
     });
   }
-    // Render the HTML
+  // Render the HTML
   render() {
     let questionInput;
     let header = '';
     let buttons;
-        // Set the inputs to display based on the desired element type
+    // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
       case 'header':
       case 'label':

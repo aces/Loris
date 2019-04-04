@@ -24,12 +24,12 @@ class DynamicDataTable extends Component {
 
   componentDidMount() {
     this.fetchData();
-      // Listen for update event to update data table on outside changes
+    // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   }
 
   componentWillUnmount() {
-      // Unsubscribe from the event before component is destroyed
+    // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
   }
 
@@ -44,7 +44,7 @@ class DynamicDataTable extends Component {
   }
 
   xhrFunction() {
-    let xhr = new window.XMLHttpRequest();
+    const xhr = new window.XMLHttpRequest();
     xhr.addEventListener('progress', this.xhrProgress);
     return xhr;
   }
@@ -109,7 +109,7 @@ DynamicDataTable.defaultProps = {
   DataURL: '',
 };
 
-let RDynamicDataTable = React.createFactory(DynamicDataTable);
+const RDynamicDataTable = React.createFactory(DynamicDataTable);
 
 window.DynamicDataTable = DynamicDataTable;
 window.RDynamicDataTable = RDynamicDataTable;

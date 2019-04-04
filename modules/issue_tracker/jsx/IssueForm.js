@@ -74,7 +74,7 @@ class IssueForm extends Component {
     let dateCreated;
     let submitButtonValue;
     let commentLabel;
-    let isWatching = this.state.issueData.watching;
+    const isWatching = this.state.issueData.watching;
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -195,8 +195,8 @@ class IssueForm extends Component {
             ref='status'
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-                                               // different if the user doesn't have
-                                               // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'
@@ -323,7 +323,7 @@ class IssueForm extends Component {
       return;
     }
 
-    for (let key in myFormData) {
+    for (const key in myFormData) {
       if (myFormData[key] !== '') {
         formData.append(key, myFormData[key]);
       }
@@ -338,8 +338,8 @@ class IssueForm extends Component {
       contentType: false,
       processData: false,
       success: function(data) {
-        let msgType = 'success';
-        let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
+        const msgType = 'success';
+        const message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
         this.showAlertMessage(msgType, message);
         this.setState({
           submissionResult: 'success',
@@ -349,8 +349,8 @@ class IssueForm extends Component {
       error: function(err) {
         console.error(err);
         this.setState({submissionResult: 'error'});
-        let msgType = 'error';
-        let message = 'Failed to submit issue :(';
+        const msgType = 'error';
+        const message = 'Failed to submit issue :(';
         this.showAlertMessage(msgType, message);
       }.bind(this),
     });
@@ -408,7 +408,7 @@ class IssueForm extends Component {
   showAlertMessage(msgType, message) {
     let type = 'success';
     let title = 'Issue updated!';
-    let text = message || '';
+    const text = message || '';
     let timer = null;
     let confirmation = true;
     let callback = function() {

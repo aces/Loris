@@ -23,7 +23,7 @@ class DataIntegrityFlagIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -33,12 +33,12 @@ class DataIntegrityFlagIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -53,17 +53,17 @@ class DataIntegrityFlagIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Instrument':
-      const url = loris.BaseURL + '/data_team_helper/?visit_label=' +
+      case 'Instrument':
+        const url = loris.BaseURL + '/data_team_helper/?visit_label=' +
         row['Visit Label'] + '&instrument=' + row.Instrument;
-      result = <td><a href={url}>{cell}</a></td>;
-      break;
-    case 'Flag Status':
-      const statusList = this.state.data.fieldOptions.flagStatusList;
-      if (Object.keys(statusList).length > 0 && statusList[cell]) {
-        result = <td>{statusList[cell]}</td>;
-      }
-      break;
+        result = <td><a href={url}>{cell}</a></td>;
+        break;
+      case 'Flag Status':
+        const statusList = this.state.data.fieldOptions.flagStatusList;
+        if (Object.keys(statusList).length > 0 && statusList[cell]) {
+          result = <td>{statusList[cell]}</td>;
+        }
+        break;
     }
 
     return result;
@@ -81,7 +81,7 @@ class DataIntegrityFlagIndex extends Component {
       return <Loader/>;
     }
 
-   /**
+    /**
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in data_integrity_flag.class.inc
     */
@@ -109,7 +109,7 @@ class DataIntegrityFlagIndex extends Component {
         name: 'user',
         type: 'select',
         options: options.users,
-        }},
+      }},
     ];
     const tabs = [
       {id: 'browse', label: 'Browse'},
@@ -144,10 +144,10 @@ DataIntegrityFlagIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <DataIntegrityFlagIndex
-      dataURL={`${loris.BaseURL}/data_integrity_flag/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <DataIntegrityFlagIndex
+        dataURL={`${loris.BaseURL}/data_integrity_flag/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

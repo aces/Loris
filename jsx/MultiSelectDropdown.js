@@ -19,7 +19,7 @@ class SelectField extends Component {
   }
 
   render() {
-    let checked = (this.props.checked) ? 'checked' : '';
+    const checked = (this.props.checked) ? 'checked' : '';
     let input;
     if (this.props.multi) {
       input = (
@@ -96,7 +96,7 @@ class SelectDropdown extends Component {
 
   toggleCheckbox(key) {
     if (this.props.multi) {
-      let action = (this.props.options[key]) ? 'uncheck' : 'check';
+      const action = (this.props.options[key]) ? 'uncheck' : 'check';
       this.props.onFieldClick(key, action);
     } else {
       this.props.onFieldClick(key);
@@ -105,7 +105,7 @@ class SelectDropdown extends Component {
   }
 
   selectAll() {
-    for (let option in this.props.options) {
+    for (const option in this.props.options) {
       if (!this.props.options[option]) {
         this.props.onFieldClick(option, 'check');
       }
@@ -113,7 +113,7 @@ class SelectDropdown extends Component {
   }
 
   deselectAll() {
-    for (let option in this.props.options) {
+    for (const option in this.props.options) {
       if (this.props.options[option]) {
         this.props.onFieldClick(option, 'uncheck');
       }
@@ -133,7 +133,7 @@ class SelectDropdown extends Component {
     let selectLabel = 'None Selected';
     let selectCount = 0;
     let sizeCount = 0;
-    let options = [];
+    const options = [];
     let key = '';
     let filter = '';
 
@@ -147,12 +147,12 @@ class SelectDropdown extends Component {
         if ({}.hasOwnProperty.call(this.props.options, key)) {
           sizeCount++;
           options.push(
-            <SelectField
-              label={key}
-              checked={this.props.options[key]}
-              toggleCheckbox={this.toggleCheckbox}
-              multi={this.props.multi}
-            />
+              <SelectField
+                label={key}
+                checked={this.props.options[key]}
+                toggleCheckbox={this.toggleCheckbox}
+                multi={this.props.multi}
+              />
           );
           if (this.props.options[key]) {
             selectCount++;
@@ -161,21 +161,21 @@ class SelectDropdown extends Component {
       }
       if (selectCount === sizeCount) {
         options.unshift(
-          <SelectField
-            label="Select All"
-            checked={true}
-            toggleCheckbox={this.deselectAll}
-            multi={this.props.multi}
-          />
+            <SelectField
+              label="Select All"
+              checked={true}
+              toggleCheckbox={this.deselectAll}
+              multi={this.props.multi}
+            />
         );
       } else {
         options.unshift(
-          <SelectField
-            label="Select All"
-            checked={false}
-            toggleCheckbox={this.selectAll}
-            multi={this.props.multi}
-          />
+            <SelectField
+              label="Select All"
+              checked={false}
+              toggleCheckbox={this.selectAll}
+              multi={this.props.multi}
+            />
         );
       }
       if (selectCount > 0) {
@@ -192,20 +192,20 @@ class SelectDropdown extends Component {
             continue;
           }
           options.push(
-            <SelectField
-              label={this.props.options[key]}
-              checked={this.props.options[key]}
-              toggleCheckbox={this.toggleCheckbox}
-              multi={this.props.multi}
-            />
+              <SelectField
+                label={this.props.options[key]}
+                checked={this.props.options[key]}
+                toggleCheckbox={this.toggleCheckbox}
+                multi={this.props.multi}
+              />
           );
         }
       }
       options.unshift(
-        <SearchField
-          updateFilter={this.updateFilter}
-          filter={this.state.filter}
-        />
+          <SearchField
+            updateFilter={this.updateFilter}
+            filter={this.state.filter}
+          />
       );
       if (this.props.selectedCategory === '') {
         selectLabel = 'Select One';
@@ -216,12 +216,12 @@ class SelectDropdown extends Component {
     return (
       <div className={parentDivClass}>
         <button type="button"
-                className="btn btn-default dropdown-toggle col-xs-12"
-                onClick={this.toggleDropdown}>
+          className="btn btn-default dropdown-toggle col-xs-12"
+          onClick={this.toggleDropdown}>
           <div className="col-xs-10">
-              <span className="pull-left">
-                {selectLabel}
-              </span>
+            <span className="pull-left">
+              {selectLabel}
+            </span>
           </div>
           <div className="pull-right">
             <span className="glyphicon glyphicon-menu-down"></span>

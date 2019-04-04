@@ -13,7 +13,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
 
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
@@ -21,9 +21,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Correct Answer') {
     let correctAnswer = '';
-    let newValue = row['New Value'];
-    let oldValue1 = row['Correct Answer'];
-    let oldValue2 = row.OldValue2;
+    const newValue = row['New Value'];
+    const oldValue1 = row['Correct Answer'];
+    const oldValue2 = row.OldValue2;
 
     if (newValue === '1' && oldValue1 !== null) {
       correctAnswer = oldValue1;

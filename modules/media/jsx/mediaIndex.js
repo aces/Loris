@@ -25,7 +25,7 @@ class MediaIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -37,12 +37,12 @@ class MediaIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -59,39 +59,39 @@ class MediaIndex extends Component {
     const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-    case 'File Name':
-      if (this.props.hasPermission('media_write')) {
-        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
+      case 'File Name':
+        if (this.props.hasPermission('media_write')) {
+          const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
           encodeURIComponent(row['File Name']);
-        result = (
-          <td className={style}>
-            <a href={downloadURL} target="_blank" download={row['File Name']}>
-              {cell}
-            </a>
-          </td>
-        );
-      }
-      break;
-    case 'Visit Label':
-      if (row['CandID'] !== null && row['SessionID']) {
-        const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
+          result = (
+            <td className={style}>
+              <a href={downloadURL} target="_blank" download={row['File Name']}>
+                {cell}
+              </a>
+            </td>
+          );
+        }
+        break;
+      case 'Visit Label':
+        if (row['CandID'] !== null && row['SessionID']) {
+          const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
           row['CandID'] + '&sessionID=' + row['SessionID'];
-        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
-      }
-      break;
-    case 'Edit Metadata':
-      const editButton = (
-        <TriggerableModal title="Edit Media File" label="Edit">
-          <MediaEditForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
-            fetchData={this.fetchData /* this should be passed to onSubmit function
+          result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
+        }
+        break;
+      case 'Edit Metadata':
+        const editButton = (
+          <TriggerableModal title="Edit Media File" label="Edit">
+            <MediaEditForm
+              DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+              action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+              fetchData={this.fetchData /* this should be passed to onSubmit function
                    upon refactoring editForm.js*/}
-          />
-        </TriggerableModal>
-      );
-      result = <td className={style}>{editButton}</td>;
-      break;
+            />
+          </TriggerableModal>
+        );
+        result = <td className={style}>{editButton}</td>;
+        break;
     }
 
     return result;
@@ -109,7 +109,7 @@ class MediaIndex extends Component {
       return <Loader/>;
     }
 
-   /**
+    /**
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
@@ -146,7 +146,7 @@ class MediaIndex extends Component {
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
-        }},
+      }},
       {label: 'Date Taken', show: true},
       {label: 'Comments', show: true},
       {label: 'Date Uploaded', show: true},
@@ -204,10 +204,10 @@ MediaIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <MediaIndex
-      dataURL={`${loris.BaseURL}/media/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <MediaIndex
+        dataURL={`${loris.BaseURL}/media/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

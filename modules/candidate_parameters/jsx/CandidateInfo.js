@@ -23,38 +23,38 @@ class CandidateInfo extends Component {
   }
 
   componentDidMount() {
-    let that = this;
+    const that = this;
     $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        success: function(data) {
-          let formData = {
-            flaggedCaveatemptor: data.flagged_caveatemptor,
-            flaggedOther: data.flagged_other,
-            flaggedReason: data.flagged_reason,
-          };
+        this.props.dataURL,
+        {
+          dataType: 'json',
+          success: function(data) {
+            const formData = {
+              flaggedCaveatemptor: data.flagged_caveatemptor,
+              flaggedOther: data.flagged_other,
+              flaggedReason: data.flagged_reason,
+            };
 
-          // Add parameter values to formData
-          Object.assign(formData, data.parameter_values);
+            // Add parameter values to formData
+            Object.assign(formData, data.parameter_values);
 
-          that.setState({
-            Data: data,
-            isLoaded: true,
-            formData: formData,
-          });
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: 'An error occurred when loading the form!',
-          });
-        },
-      }
+            that.setState({
+              Data: data,
+              isLoaded: true,
+              formData: formData,
+            });
+          },
+          error: function(data, errorCode, errorMsg) {
+            that.setState({
+              error: 'An error occurred when loading the form!',
+            });
+          },
+        }
     );
   }
 
   setFormData(formElement, value) {
-    let formData = JSON.parse(JSON.stringify(this.state.formData));
+    const formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
 
     // Reset 'reason' and 'other' fields
@@ -108,7 +108,7 @@ class CandidateInfo extends Component {
     let specifyOther = null;
     let otherDisabled = true;
     let otherRequired = false;
-    for (let key in this.state.Data.caveatReasonOptions) {
+    for (const key in this.state.Data.caveatReasonOptions) {
       if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
         if (this.state.Data.caveatReasonOptions[key] === 'Other') {
           reasonKey = key;
@@ -140,13 +140,13 @@ class CandidateInfo extends Component {
         required={otherRequired}
       />;
     }
-    let extraParameterFields = [];
-    let extraParameters = this.state.Data.extra_parameters;
-    for (let key2 in extraParameters) {
+    const extraParameterFields = [];
+    const extraParameters = this.state.Data.extra_parameters;
+    for (const key2 in extraParameters) {
       if (extraParameters.hasOwnProperty(key2)) {
-        let paramTypeID = extraParameters[key2].ParameterTypeID;
-        let name = paramTypeID;
-        let value = this.state.formData[paramTypeID];
+        const paramTypeID = extraParameters[key2].ParameterTypeID;
+        const name = paramTypeID;
+        const value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
           case 'enu':
@@ -154,50 +154,50 @@ class CandidateInfo extends Component {
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
             types = types.split(',');
-            let selectOptions = {};
-            for (let key3 in types) {
+            const selectOptions = {};
+            for (const key3 in types) {
               if (types.hasOwnProperty(key3)) {
                 selectOptions[types[key3]] = types[key3];
               }
             }
 
             extraParameterFields.push(
-              <SelectElement
-                label={extraParameters[key2].Description}
-                name={name}
-                options={selectOptions}
-                value={value}
-                onUserInput={this.setFormData}
-                ref={name}
-                disabled={disabled}
-                key={key2}
-              />
+                <SelectElement
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  options={selectOptions}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
+                />
             );
             break;
           case 'dat':
             extraParameterFields.push(
-              <DateElement
-                label={extraParameters[key2].Description}
-                name={name}
-                value={value}
-                onUserInput={this.setFormData}
-                ref={name}
-                disabled={disabled}
-                key={key2}
-              />
+                <DateElement
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
+                />
             );
             break;
           default:
             extraParameterFields.push(
-              <TextareaElement
-                label={extraParameters[key2].Description}
-                name={name}
-                value={value}
-                onUserInput={this.setFormData}
-                ref={name}
-                disabled={disabled}
-                key={key2}
-              />
+                <TextareaElement
+                  label={extraParameters[key2].Description}
+                  name={name}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  key={key2}
+                />
             );
         }
       }
@@ -210,7 +210,7 @@ class CandidateInfo extends Component {
         alertClass = 'alert alert-success text-center';
         alertMessage = 'Update Successful!';
       } else if (this.state.updateResult === 'error') {
-        let errorMessage = this.state.errorMessage;
+        const errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
         alertMessage = errorMessage ? errorMessage : 'Failed to update!';
       }
@@ -269,11 +269,11 @@ class CandidateInfo extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    let myFormData = this.state.formData;
+    const myFormData = this.state.formData;
     // Set form data and upload the media file
-    let self = this;
-    let formData = new FormData();
-    for (let key in myFormData) {
+    const self = this;
+    const formData = new FormData();
+    for (const key in myFormData) {
       if (myFormData.hasOwnProperty(key)) {
         if (myFormData[key] !== '') {
           formData.append(key, myFormData[key]);
@@ -284,35 +284,35 @@ class CandidateInfo extends Component {
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
     $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
-          self.setState(
-            {
-              updateResult: 'success',
-            }
-          );
-          self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
+        {
+          type: 'POST',
+          url: self.props.action,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(data) {
             self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
+                {
+                  updateResult: 'success',
+                }
             );
             self.showAlertMessage();
-          }
-        },
+          },
+          error: function(err) {
+            if (err.responseText !== '') {
+              const errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                  {
+                    updateResult: 'error',
+                    errorMessage: errorMessage,
+                  }
+              );
+              self.showAlertMessage();
+            }
+          },
 
-      }
+        }
     );
   }
 
@@ -320,21 +320,21 @@ class CandidateInfo extends Component {
    * Display a success/error alert message after form submission
    */
   showAlertMessage() {
-    let self = this;
+    const self = this;
     if (this.refs['alert-message'] === null) {
       return;
     }
 
-    let alertMsg = this.refs['alert-message'];
+    const alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      function() {
-        self.setState(
-          {
-            updateResult: null,
-          }
-        );
-      }
+        500,
+        function() {
+          self.setState(
+              {
+                updateResult: null,
+              }
+          );
+        }
     );
   }
 }

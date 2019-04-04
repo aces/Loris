@@ -1,3 +1,4 @@
+import React from 'react';
 /* exported formatColumn */
 
 /**
@@ -15,38 +16,36 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(
-    function(header, index) {
-      row[header] = rowData[index];
-    },
-    this
+      function(header, index) {
+        row[header] = rowData[index];
+      },
+      this
   );
 
   if (column === 'Title') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
-      row['Issue ID']}>
-        {row.Title}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a
+          href={
+            loris.BaseURL + '/issue_tracker/issue/?issueID=' + row['Issue ID']
+          }>
+          {row.Title}
+        </a>
       </td>
     );
   }
 
   if (column === 'Issue ID') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
-      row['Issue ID']}>
-        {cell}
-      </a>
-    );
-    return (<td>{cellLinks}</td>);
+    return [
+      <td>
+        <a href={
+          loris.BaseURL + '/issue_tracker/issue/?issueID=' + row['Issue ID']
+        }>
+          {cell}
+        </a>
+      </td>];
   }
 
   if (column === 'Priority') {
@@ -67,31 +66,23 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'PSCID' && row.PSCID !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + '/' +
-      row.CandID + '/'}>
-        {cell}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a href={loris.BaseURL + '/' +
+        row.CandID + '/'}>
+          {cell}
+        </a>
       </td>
     );
   }
 
   if (column === 'Visit Label' && row['Visit Label'] !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + '/instrument_list/?candID=' +
-              row.CandID + '&sessionID=' + row.SessionID }>
-        {cell}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a href={loris.BaseURL + '/instrument_list/?candID=' +
+        row.CandID + '&sessionID=' + row.SessionID }>
+          {cell}
+        </a>
       </td>
     );
   }

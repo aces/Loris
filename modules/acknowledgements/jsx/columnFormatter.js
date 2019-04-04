@@ -1,5 +1,7 @@
 /* exported formatAcknowledgementsColumn */
 
+import React from 'react';
+
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name

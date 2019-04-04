@@ -39,12 +39,12 @@ class FilterForm extends Component {
   }
 
   componentDidMount() {
-    let filter = {};
-    let queryString = this.queryString;
+    const filter = {};
+    const queryString = this.queryString;
 
     // Initiaze filter using querystring value
     Object.keys(queryString).forEach(function(key) {
-      let filterKey = (key === 'candidateID') ? 'candID' : key;
+      const filterKey = (key === 'candidateID') ? 'candID' : key;
       filter[filterKey] = {
         value: queryString[key],
         exactMatch: false,
@@ -70,7 +70,7 @@ class FilterForm extends Component {
    * @return {Array} formChildren - array of children with necessary props
    */
   getFormChildren() {
-    let formChildren = [];
+    const formChildren = [];
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) &&
@@ -78,10 +78,10 @@ class FilterForm extends Component {
         child.props.onUserInput
       ) {
         let callbackFunc = child.props.onUserInput;
-        let callbackName = callbackFunc.name;
-        let elementName = child.type.displayName;
-        let queryFieldName = (child.props.name === 'candID') ? 'candidateID' : child.props.name;
-        let filterValue = this.queryString[queryFieldName];
+        const callbackName = callbackFunc.name;
+        const elementName = child.type.displayName;
+        const queryFieldName = (child.props.name === 'candID') ? 'candidateID' : child.props.name;
+        const filterValue = this.queryString[queryFieldName];
         // If callback function was not set, set it to onElementUpdate() for form
         // elements and to clearFilter() for <ButtonElement type='reset'/>.
         if (callbackName === 'onUserInput') {
@@ -156,22 +156,22 @@ class FilterForm extends Component {
     }
 
     // Update query string
-    let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
+    const queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
     this.queryString = QueryString.set(this.queryString, queryFieldName, fieldValue);
 
     // Update filter and get new filter object
-    let filter = this.setFilter(type, fieldName, fieldValue);
+    const filter = this.setFilter(type, fieldName, fieldValue);
     this.props.onUpdate(filter);
   }
 
   render() {
     // Get formatted children
-    let formChildren = this.getFormChildren();
-    let formElements = this.props.formElements;
+    const formChildren = this.getFormChildren();
+    const formElements = this.props.formElements;
 
     if (formElements) {
       Object.keys(formElements).forEach(function(fieldName) {
-        let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
+        const queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
         formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, formElements[fieldName].type);
         formElements[fieldName].value = this.queryString[queryFieldName];
       }.bind(this));
