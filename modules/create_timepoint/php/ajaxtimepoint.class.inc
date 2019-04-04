@@ -200,9 +200,6 @@ class AjaxTimepoint extends \NDB_Page
         $candidate      = \Candidate::singleton($values['identifier']);
         $allSubprojects = \Utility::getSubprojectList();
 
-        // Frontend needs for select element.
-        $values['subproject'] = $allSubprojects;
-
         // All subprojects from config file (error).
         if (empty($allSubprojects)) {
             $errors['subprojectID'] = 'No subprojects have been defined 
