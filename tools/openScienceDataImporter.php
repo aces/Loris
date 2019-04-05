@@ -86,9 +86,10 @@ $dataFile = new SplFileInfo($argv[DATA_ARG_INDEX]);
 $excludedFile = $argv[EXCLUDED_ARG_INDEX] ?? null;
 
 switch ($mode) {
-case INSTRUMENT_IMPORT:
+case CANDIDATE_IMPORT:
     validateFilename($dataFile->getBasename(), 'candidate');
-    $importer = new InstrumentImporter($mappingFile, $dataFile);
+    $importer = new CandidateImporter($mappingFile, $dataFile);
+    break;
 case VISIT_IMPORT:
     validateFilename($dataFile->getBasename(), 'visits');
     if (is_null($excludedFile)) {
@@ -100,8 +101,10 @@ case VISIT_IMPORT:
             new SplFileInfo($excludedFile)
         );
     }
-case CANDIDATE_IMPORT:
-    $importer = new CandidateImporter($mappingFile, $dataFile);
+    break;
+case INSTRUMENT_IMPORT:
+    $importer = new InstrumentImporter($mappingFile, $dataFile);
+    break;
 }
 
 

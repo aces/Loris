@@ -34,7 +34,7 @@ abstract class DataImporter {
     protected $sharedCandidates = array();
 
     /* A mapping of old PSCIDs to new PSCIDS. */
-    private $PSCIDMapping = array();
+    protected $PSCIDMapping = array();
 
     /* A mapping of new PSCIDs to new CandIDs */
     private $candIDMapping = array();
@@ -74,10 +74,12 @@ abstract class DataImporter {
     function processData() {
         foreach ($this->dataRows as $row) {
             // Get the old PSCID. Should always be in the column at index 0.
-            $oldPSCID = $row[$this->dataHeaders[self::OLD_PSCID]];
+            $oldPSCID = $this->extractOldPSCIDFromRow($row);
+            echo "Old PSCID: $oldPSCID\n";
 
             // Skip candidates not present in mapping file.
             if (!in_array($oldPSCID, $this->sharedCandidates, true)) {
+                echo "skipping\n";
                 continue;
             }
 
@@ -132,6 +134,14 @@ abstract class DataImporter {
             $this->formatINSERTStatements()
         );
         return join("\n", $report);
+    }
+
+    /**
+     * Get the value of the PSCID in the source database from a given CSV
+     * row.
+     */
+    protected function extractOldPSCIDFromRow(array $row) {
+        return $row[$this->dataHeaders[self::OLD_PSCID]];
     }
 
     // Build a one-to-one mapping of old to new PSCIDs with the old IDs as the key.
@@ -226,7 +236,7 @@ SQL;
                 $formattedCommand,
                 $this->table,
                 implode(',', array_keys($command['data'])),
-                implode(',', array_map('quoteWrapUnlessNULL', array_values($command['data'])))
+                implode(',', array_map(array($this, 'quoteWrapUnlessNULL'), array_values($command['data'])))
             );
         }
         return $report;
