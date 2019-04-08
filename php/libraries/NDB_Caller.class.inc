@@ -81,6 +81,9 @@ class NDB_Caller
         $nextpage=null,
         $anonymous=true
     ) {
+        $config = \NDB_Factory::singleton()->config();
+        $base   = $config->getSetting('base');
+
         // Load is only used for survey instruments anymore, so we just
         // directly try to load either the linst or PHP class.
         $phpfile   = $base . "project/instruments/"
