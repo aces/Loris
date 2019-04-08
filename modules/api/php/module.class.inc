@@ -61,19 +61,9 @@ class Module extends \Module
             $pieces
         ) !== 1
         ) {
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "application/json")
-                ->withStatus(400)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            [
-                             'error' => "You must specify a version of the API "
-                                . "to use in the URL.",
-                            ]
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\BadRequest(
+                'You must specify a version of the API to use in the URL'
+            );
         };
 
         $version  = $pieces[1];
@@ -102,14 +92,7 @@ class Module extends \Module
             $handler = new \LORIS\Api\Endpoints\Projects();
             break;
         default:
-            return (new \LORIS\Http\Response())
-                    ->withStatus(404)
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode(["error" => "not found"])
-                        )
-                    );
+            return new \LORIS\Http\Response\NotFound();
         }
 
         // This disregards the parent handler from the base module class,

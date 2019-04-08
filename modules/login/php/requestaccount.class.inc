@@ -150,7 +150,7 @@ class RequestAccount extends \NDB_Form
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+            "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             array('VEmail' => $from)
         );
 
