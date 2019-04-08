@@ -1,13 +1,13 @@
 <?php
 /**
-* File contains the PSR15 ResponseInterface implementation that
+* File contains the PSR15 RequestInterface implementation that
 * can be constructed with the "new" keyword.
 *
 * PHP Version 7
 *
 * @category PSR15
 * @package  Http
-* @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+* @author   John Saigle <john.saigle@mcin.ca>
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
 *
@@ -17,13 +17,13 @@
 namespace LORIS\Http;
 
 /**
- * A LORIS Http Response is an implementation of the PSR15 ResponseInterface to
- * use in LORIS.
+ * A LORIS Http Request is an implementation of the PSR15 RequestInterface to use
+ * in LORIS.
  *
  * It is intended to reduce our coupling to any particular PSR15 implementation.
  */
-class Response 
-    extends \Zend\Diactoros\Response 
-    implements \Psr\Http\Message\ResponseInterface
+class Request 
+    extends \GuzzleHttp\Psr7\Request
+    implements \Psr\Http\Message\RequestInterface
 {
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * User: Stella
+ * @author Stella Lee
  * Date: 15-08-15
  *
  * Project Statistics - Updating Counts From Each LORIS
@@ -74,9 +74,13 @@ $queries = array(
 // Extracts data from each query and puts into $project_statistics array
 $project_statistics[$headers[0]] = $projectname;
 $i = 1;
+// @var int The number of remaining headers to check after the first header
+// has been manually added above. NOTE This comment not written by the author
+// of the script.
+$numHeaders = count($queries) - 1;
 
 foreach ($queries as $query) {
-    if ($i != 7) {
+    if ($i != $numHeaders) {
         foreach ($query as $j => $row) {
             foreach ($row as $k => $count) {
                 $project_statistics[$headers[$i]] = $count;
@@ -85,7 +89,7 @@ foreach ($queries as $query) {
             break;
         }
 
-    } elseif ($i == 7) {
+    } elseif ($i == $numHeaders) {
         $units_array = array('B' => 0.000000001, 'K' => 0.000001, 'M' => 0.001, 'G' => 1);
         $sum = 0.0;
 

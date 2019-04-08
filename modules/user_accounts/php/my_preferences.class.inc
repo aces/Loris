@@ -382,7 +382,7 @@ class My_Preferences extends \NDB_Form
      *
      * @return bool  true if the password changed, false otherwise.
      */
-    function _passwordChanged(\Database $db, $newPassword)
+    function _passwordChanged(\Database $db, $newPassword): bool
     {
         //--- Get current password stored in database
         $passwordQuery
@@ -394,6 +394,11 @@ class My_Preferences extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
+        if (is_null($passwords)) {
+            throw new \LorisException(
+                'No existing password found for user!'
+            );
+        }
 
         if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
@@ -416,6 +421,7 @@ class My_Preferences extends \NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
+
             // check password strength
             $isPasswordStrong = \User::isPasswordStrong(
                 $values['Password_hash'],
@@ -439,6 +445,10 @@ class My_Preferences extends \NDB_Form
                     $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
+            }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_hash'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
             }
         }
 

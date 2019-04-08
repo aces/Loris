@@ -302,9 +302,9 @@ CREATE TABLE `candidate` (
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `CenterID` integer unsigned DEFAULT NULL,
+  `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
-  `Visit_label` varchar(255) DEFAULT NULL,
+  `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(11) DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
