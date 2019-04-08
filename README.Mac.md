@@ -247,8 +247,6 @@ mysql_secure_installation
 
 [Sequel Pro](https://sequelpro.com/test-builds) (free)
 
-[TablePlus](https://tableplus.io) (free trial or pay for extra features)
-
 ## 1.9 Install Composer
 Type into your terminal and hit enter:
 ```
