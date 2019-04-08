@@ -123,11 +123,11 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             "&identifier=" .$canID
         );
 
-        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
+        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subproject"));
         $elementSid = new WebDriverSelect($selectSid);
         $elementSid->selectByVisibleText($subproject);
 
-        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visitLabel"));
+        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visit"));
         $elementVl = new WebDriverSelect($selectVl);
         $elementVl->selectByVisibleText($visitlabel);
 
