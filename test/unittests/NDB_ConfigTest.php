@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Unit test for NDB_Config class
  *
@@ -88,7 +88,8 @@ class NDB_ConfigTest extends TestCase
     }
 
     /**
-     * Test configFilePath() method. Passing a "config.xml" will return "config.xml"
+     * Test configFilePath() method. Giving a config file name (i.e.: "config.xml")
+     * it should return the absolute path to the file.
      *
      * @return void
      */
@@ -99,7 +100,8 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test convertToArray() method. Passing a xml file, it will return an array
+     * Test convertToArray() method. Giving an xml file,
+     * it should return the array representation.
      *
      * @return void
      */
@@ -110,21 +112,18 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals(array('unit' => 'test'), $text);
     }
     /**
-     * Test isNumericArray() method. Passing an array will return true.
-     * Passing an empty array will return false.
+     * Test isNumericArray() method. 
+     * Passing an array with key range [0-n] should return true.
      *
      * @return void
      */
     public function testIsNumericArray()
     {
-        $arrayTest1 = array();
-        $arrayTest2 = array(
+        $arrayTest = array(
                        '0' => 'zero',
                        '1' => 'one',
                       );
-        $text       = $this->_config::isNumericArray($arrayTest1);
-        $this->assertEquals(true, $text);
-        $text = $this->_config::isNumericArray($arrayTest2);
+        $text       = $this->_config::isNumericArray($arrayTest);
         $this->assertEquals(true, $text);
     }
     /**
@@ -138,8 +137,8 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
     }
     /**
-     * Test getSettingFromXML() method.Passing an array,
-     * it will parse the node value of the array as XML.
+     * Test getSettingFromXML() method.Giving an array,
+     * it should return the value associated to a key.
      *
      * @return void
      */
@@ -149,7 +148,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals("test", $this->_config->getSettingFromXML("bbb"));
     }
     /**
-     * Test getSetting() method. Passing an array, it will parse the value.
+     * Test getSetting() method. Giving an array, it should parse the value.
      *
      * @return void
      */
@@ -160,8 +159,8 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getProjectSettings() method. Passing a projecID will return
-     * an array of project infomation.
+     * Test getProjectSettings() method. Giving a projectID, it should 
+     * return an array containing the project information.
      *
      * @return void
      */
@@ -184,8 +183,8 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getSubprojectSettings() method. Passing a projecID will return
-     * an array of Subproject infomation.
+     * Test getSubprojectSettings() method. Giving a projectID, it should
+     * return an array containing the subproject information.
      *
      * @return void
      */
@@ -215,9 +214,8 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getSubprojectSettings() method. Passing a projecID will return
-     * an array of Subproject infomation.
-     * Giving an invalid id, will return an empty array.
+     * Test getExternalLinks() method.Giving a valid ExternalLink, it should
+     * return an array containing the URL associated with the link text.
      *
      * @return void
      */
@@ -229,7 +227,8 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals(array(), $this->_config->getSubprojectSettings(111));
     }
     /**
-     * Test getExternalLinks() method.Passing a valid ExternalLink, it will return an array.
+     * Test getExternalLinks() method.Giving a valid ExternalLink, it should
+     * return an array containing the URL associated with the link text.
      *
      * @return void
      */
