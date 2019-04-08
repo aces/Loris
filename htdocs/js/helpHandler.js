@@ -7,25 +7,25 @@ $(document).ready(function() {
     $('.wrapper').toggleClass('active');
   });
   $('.help-button').click(function(e) {
-    let helpContent = $('div.help-content');
+    const helpContent = $('div.help-content');
     if (helpContent.length) {
       helpContent.toggle();
       e.preventDefault();
       return;
     }
-    let getParams = {};
+    const getParams = {};
     getParams.testName = loris.TestName;
     if (loris.Subtest !== '') {
       getParams.subtest = loris.Subtest;
     }
     $.get(loris.BaseURL + '/help_editor/ajax/help.php', getParams, function(content) {
-      let div = document.createElement('div');
-      let btn = document.createElement('BUTTON');
-      let edit = document.createElement('BUTTON');
-      let text = document.createTextNode('Edit');
-      let button = document.createTextNode('Close');
-      let wrap = document.createElement('div');
-      let markdownContent = document.createElement('div');
+      const div = document.createElement('div');
+      const btn = document.createElement('BUTTON');
+      const edit = document.createElement('BUTTON');
+      const text = document.createTextNode('Edit');
+      const button = document.createTextNode('Close');
+      const wrap = document.createElement('div');
+      const markdownContent = document.createElement('div');
 
       // Render Markdown in wrap div.
       // If help content is from Markdown helpfile.
@@ -86,7 +86,7 @@ $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
       $('#login-modal').modal('show');
       $('#modal-login').click(function(e) {
         e.preventDefault();
-        let data = {
+        const data = {
           username: $('#modal-username').val(),
           password: $('#modal-password').val(),
           login: 'Login',

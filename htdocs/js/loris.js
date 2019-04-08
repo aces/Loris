@@ -2,20 +2,20 @@
 
 let LorisHelper = function(configParams, userPerms, studyParams) {
   'use strict';
-  let lorisObj = configParams;
+  const lorisObj = configParams;
 
-    // Filters will only get applied on a POST, so
-    // on click we need to fake a form which posts
-    // to the module in order to get filters applied
-    // when there's a link to a filtered menu
+  // Filters will only get applied on a POST, so
+  // on click we need to fake a form which posts
+  // to the module in order to get filters applied
+  // when there's a link to a filtered menu
   lorisObj.loadFilteredMenuClickHandler = function(module, filters) {
     return function(e) {
       e.preventDefault();
-      let form = $('<form />', {
+      const form = $('<form />', {
         action: configParams.BaseURL + '/' + module,
         method: 'post',
       });
-      let values = filters;
+      const values = filters;
       filters.reset = 'true';
       filters.filter = 'Show Data';
 
@@ -32,7 +32,7 @@ let LorisHelper = function(configParams, userPerms, studyParams) {
   };
   lorisObj.getCookie = function(cName) {
     'use strict';
-    let cookies = document.cookie.split('; ');
+    const cookies = document.cookie.split('; ');
     let i;
     let cookie;
 
@@ -57,8 +57,8 @@ let LorisHelper = function(configParams, userPerms, studyParams) {
   lorisObj.debounce = function(fn, delay) {
     let timer = null;
     return function() {
-      let context = this;
-      let args = arguments;
+      const context = this;
+      const args = arguments;
       clearTimeout(timer);
       timer = setTimeout(function() {
         fn.apply(context, args);
@@ -66,7 +66,7 @@ let LorisHelper = function(configParams, userPerms, studyParams) {
     };
   };
 
-    // Returns config settings from whitelist passed in main.php (study options)
+  // Returns config settings from whitelist passed in main.php (study options)
   lorisObj.config = function(param) {
     'use strict';
     return studyParams[param];

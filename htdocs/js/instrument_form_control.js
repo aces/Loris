@@ -1,7 +1,7 @@
 function notAnswered() {
   'use strict';
   let name = $(this).attr('name');
-  let index = this.selectedIndex;
+  const index = this.selectedIndex;
   name = name.replace('_status', '');
   if (name.indexOf('_date') > -1) {
     if (index === 0) {
@@ -31,8 +31,8 @@ function notAnswered() {
  * @param {JQuery} element <select> element
  */
 function addEmptyOption(form, element) {
-  let selectedOptions = element.find(':selected');
-  let name = element[0].name;
+  const selectedOptions = element.find(':selected');
+  const name = element[0].name;
 
   if (selectedOptions.length === 0) {
     form.append('<input type=\'hidden\' name=' + name + ' value=\'\' />');
@@ -45,7 +45,7 @@ $(document).ready(function() {
   'use strict';
   $('.element').children().addClass('form-control input-sm');
   $('.button').removeClass('form-control');
-  let naList = document.getElementsByClassName('not-answered');
+  const naList = document.getElementsByClassName('not-answered');
   let i;
   let name;
   let index;
@@ -63,7 +63,7 @@ $(document).ready(function() {
     naList[i].onchange = notAnswered;
   }
   let msg = '';
-  let isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
   if (isMac) {
     msg = 'Hold CMD ⌘ to select multiple options';
   } else {
@@ -72,8 +72,8 @@ $(document).ready(function() {
   $('select[multiple]').attr('title', msg);
   $('select[multiple]').tooltip();
 
-  let form = $('form');
-  let multiselect = $('form select[multiple]');
+  const form = $('form');
+  const multiselect = $('form select[multiple]');
 
   form.on('submit', function() {
     multiselect.each(function() {

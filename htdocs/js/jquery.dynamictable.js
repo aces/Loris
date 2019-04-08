@@ -29,11 +29,11 @@
 
 (function($) {
   'use strict';
-  let setupScrolling = function(wrapper, rightLink, leftLink) {
+  const setupScrolling = function(wrapper, rightLink, leftLink) {
     let scrolling = false;
-    let step = 100;
+    const step = 100;
     let scrollAmount = 0;
-    let scrollContent = function(direction, elem) {
+    const scrollContent = function(direction, elem) {
       $(elem).animate({
         scrollLeft: $(elem).scrollLeft() + scrollAmount,
       }, 1, function() {
@@ -82,17 +82,17 @@
       scrolling = false;
     });
   };
-  let checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
-    let staticCol = (headCol !== undefined);
-    let element = wrapper;
-    let headers = wrapper.children[3];
+  const checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
+    const staticCol = (headCol !== undefined);
+    const element = wrapper;
+    const headers = wrapper.children[3];
 
     if ((element.offsetHeight < element.scrollHeight) ||
         (element.offsetWidth < element.scrollWidth)) {
       // Your element has overflow
 
       $(wrapper).on('scroll', function() {
-        let leftScroll = $(wrapper).scrollLeft();
+        const leftScroll = $(wrapper).scrollLeft();
         $(headers).scrollLeft(leftScroll);
       });
       if (staticCol) {
@@ -120,9 +120,9 @@
       $(rightLink).hide();
     }
   };
-  let headerAlign = function(table, headers) {
-    let tableHeaders = $(table).find('thead').children().children();
-    let fixedHeaders = $(headers).find('thead').children().children();
+  const headerAlign = function(table, headers) {
+    const tableHeaders = $(table).find('thead').children().children();
+    const fixedHeaders = $(headers).find('thead').children().children();
 
     for (let i = 0; i < tableHeaders.length; i++) {
       if (!$(fixedHeaders[i]).hasClass('static-col')) {
@@ -135,7 +135,7 @@
 
     $(headers).width($(table).parent().width());
   };
-  let wrapTable = function(table) {
+  const wrapTable = function(table) {
     $(table).wrap('<div class="row"></div>');
     // Add wrapper code necessary for bootstrap carousel
     $(table).wrap('<div class="carousel slide col-xs-12"></div>');
@@ -144,7 +144,7 @@
     $(table).wrap('<div class="dynamicContentWrapper table-scroll" ' +
       'style="overflow-x: auto"></div>');
 
-    let headers = document.createElement('div');
+    const headers = document.createElement('div');
     $(headers).addClass('frozenHeader');
     $(headers).html('<table style="margin-bottom: 0px"><thead>' +
         $(table).find('thead').html() +
@@ -158,13 +158,13 @@
 
     // Add links for carousel
     $(table).after(
-      '<a class="left leftScrollBar carousel-control" href="#">' +
+        '<a class="left leftScrollBar carousel-control" href="#">' +
       '<span class="glyphicon glyphicon-chevron-left"></span>' +
       '</a><a class="right carousel-control" href="#" data-slide="next">' +
       '<span class="glyphicon glyphicon-chevron-right"></span></a>'
     );
   };
-  let unwrapTable = function(table) {
+  const unwrapTable = function(table) {
     // Delete links for carousel
     $(table).nextAll().remove();
     // Remove wrapper necessary for dynamictable code
@@ -174,28 +174,28 @@
     // Remove row wrapper
     $(table).unwrap();
   };
-  let addFrozenHeaderColm = function(frozenHeader) {
-    let frozenCell = document.createElement('div');
-    let headerCell = $(frozenHeader).find('.static-col');
+  const addFrozenHeaderColm = function(frozenHeader) {
+    const frozenCell = document.createElement('div');
+    const headerCell = $(frozenHeader).find('.static-col');
     $(frozenCell).addClass('static-col colm-static headerColm');
     $(frozenCell).html($(headerCell).html());
     // add 18px since height is beting set with padding included
     $(frozenCell).height($($(frozenHeader).find('th')[0]).height() + 18);
-    let temp = $(frozenCell).css('height');
+    const temp = $(frozenCell).css('height');
     $(headerCell).css({padding: '0px'});
-    let top = $(frozenHeader).css('top');
+    const top = $(frozenHeader).css('top');
     $(frozenCell).css({'min-height': temp, 'top': top});
     $(frozenCell).html($($('.dynamictableFrozenColumn')[0]).html());
     $(frozenHeader).after(frozenCell);
   };
-  let freezeColm = function(tableID, colmStatic) {
-    let statColPos = $('.' + tableID + 'FrozenColumn').offset().left;
-    let statColWid = $('.' + tableID + 'FrozenColumn').outerWidth();
-    let leftScrollPos = $('.leftScrollBar').offset().left;
-    let leftScrollWid = $('.leftScrollBar').outerWidth();
-    let nextColPos = $('.' + tableID + 'Next').offset().left;
-    let tablePos = $('#' + tableID).offset().left;
-    let header = $('#' + tableID).siblings('.frozenHeader')[0];
+  const freezeColm = function(tableID, colmStatic) {
+    const statColPos = $('.' + tableID + 'FrozenColumn').offset().left;
+    const statColWid = $('.' + tableID + 'FrozenColumn').outerWidth();
+    const leftScrollPos = $('.leftScrollBar').offset().left;
+    const leftScrollWid = $('.leftScrollBar').outerWidth();
+    const nextColPos = $('.' + tableID + 'Next').offset().left;
+    const tablePos = $('#' + tableID).offset().left;
+    const header = $('#' + tableID).siblings('.frozenHeader')[0];
 
     if (colmStatic === true) {
       if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
@@ -212,7 +212,7 @@
     } else if (statColPos <= leftScrollWid + leftScrollPos) {
       $('.' + tableID + 'FrozenColumn').each(function(key, value) {
         if (key >= 0) {
-          let height = $(value).next().outerHeight();
+          const height = $(value).next().outerHeight();
           $(value).outerHeight(height);
         }
       });
@@ -233,10 +233,8 @@
       return this;
     }
     this.filter('table').each(function() {
-      let leftLink;
-      let rightLink;
-      let table = this;
-      let id = $(table).attr('id');
+      const table = this;
+      const id = $(table).attr('id');
       let colmStatic = false;
       let column;
       let columnNumber;
@@ -249,23 +247,23 @@
       // set up table for scrollable side bars
       wrapTable(this);
       // Get references to links to pass to Setup and checkOverflow
-      leftLink = this.nextSibling;
-      rightLink = leftLink.nextSibling;
+      const leftLink = this.nextSibling;
+      const rightLink = leftLink.nextSibling;
 
       setupScrolling(this.parentElement, rightLink, leftLink);
       checkOverflow(this.parentElement, rightLink, leftLink);
 
       window.addEventListener('resize', function() {
-        let headers = $($(table).parent().find('table')[1]).parent();
+        const headers = $($(table).parent().find('table')[1]).parent();
         checkOverflow(table.parentElement, rightLink, leftLink);
         headerAlign(table, headers);
       });
 
       window.addEventListener('scroll', function() {
-        let thead = $(table).find('thead');
-        let eTop = $(thead).offset().top - $(window).scrollTop(); // gets the position from the top
-        let headers = $($(table).parent().find('table')[1]).parent();
-        let height = $(table).height() - $(headers).height();
+        const thead = $(table).find('thead');
+        const eTop = $(thead).offset().top - $(window).scrollTop(); // gets the position from the top
+        const headers = $($(table).parent().find('table')[1]).parent();
+        const height = $(table).height() - $(headers).height();
         if (eTop <= 50 && height + eTop >= 50) {
           // near LORIS header
           let top = 0;
@@ -295,7 +293,7 @@
         columnNumber = $(column).parent().children().index($(column));
         $(this).find('tr').each(function(key, value) {
           if (key === 0) {
-            let child2 = $(value).children().get(columnNumber + 1);
+            const child2 = $(value).children().get(columnNumber + 1);
             $(child2).addClass(id + 'Next');
           }
           child1 = $(value).children().get(columnNumber);

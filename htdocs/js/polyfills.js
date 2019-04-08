@@ -2,7 +2,7 @@ $(document).ready(function() {
   // If <input type="date" /> is not supported (i.e. Firefox), load
   // jquery date-picker
   if (!Modernizr.inputtypes.date) { // eslint-disable-line
-    let dateInputs = $('input[type=date]');
+    const dateInputs = $('input[type=date]');
     dateInputs.datepicker({
       dateFormat: 'yy-mm-dd',
       changeMonth: true,
@@ -16,7 +16,7 @@ $(document).ready(function() {
     });
   }
   if (!Modernizr.inputtypes.month) { // eslint-disable-line
-    let monthInputs = $('input[type=month]');
+    const monthInputs = $('input[type=month]');
     monthInputs.datepicker({
       dateFormat: 'yy-mm',
       changeMonth: true,

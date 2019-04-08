@@ -21,12 +21,12 @@ let QueryString = {
    * @return {{}} - object with querystring key/value pairs
    */
   get: function() {
-    let queryString = window.location.search.substring(1).split('&');
-    let queryStringObj = {};
+    const queryString = window.location.search.substring(1).split('&');
+    const queryStringObj = {};
 
     queryString.forEach(function(param) {
-      let key = param.split('=')[0];
-      let value = param.split('=')[1];
+      const key = param.split('=')[0];
+      const value = param.split('=')[1];
       if (key !== '' && value !== '') {
         queryStringObj[key] = decodeURIComponent(value);
       }
@@ -48,12 +48,12 @@ let QueryString = {
     let queryString = '?';
 
     // Deep copy of object representation of query
-    let queryStringObj = JSON.parse(JSON.stringify(currentQuery));
+    const queryStringObj = JSON.parse(JSON.stringify(currentQuery));
 
     // Make sure that key is of string type and value is of string or object type
     if (typeof fieldName !== 'string' || (typeof fieldValue !== 'string' && typeof fieldValue !== 'object')) {
       console.error(
-        'Error in QueryString.set(): \n' +
+          'Error in QueryString.set(): \n' +
         '\tfieldName must be of type string and' +
         'fieldValue must be of type string or object!'
       );
