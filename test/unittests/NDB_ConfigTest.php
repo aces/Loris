@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use \LORIS\Installer\Database as Database;
 /**
  * Unit test for NDB_Config class
  *
@@ -112,7 +113,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals(array('unit' => 'test'), $text);
     }
     /**
-     * Test isNumericArray() method. 
+     * Test isNumericArray() method.
      * Passing an array with key range [0-n] should return true.
      *
      * @return void
@@ -120,10 +121,10 @@ class NDB_ConfigTest extends TestCase
     public function testIsNumericArray()
     {
         $arrayTest = array(
-                       '0' => 'zero',
-                       '1' => 'one',
-                      );
-        $text       = $this->_config::isNumericArray($arrayTest);
+                      '0' => 'zero',
+                      '1' => 'one',
+                     );
+        $text      = $this->_config::isNumericArray($arrayTest);
         $this->assertEquals(true, $text);
     }
     /**
@@ -135,6 +136,17 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("database"));
         $this->assertNull($this->_config->getSettingFromDB("sandbox"));
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
+        $this->_dbMock->expects($this->any())
+            ->method('isConnected')
+            ->willReturn('ture');
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(array('AllowMultiple' => '0', 'ParentID' => 'test')));
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->willReturn('test');
+        $this->assertNotNull($this->_config->getSettingFromDB("test"));
+
     }
     /**
      * Test getSettingFromXML() method.Giving an array,
@@ -159,7 +171,7 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getProjectSettings() method. Giving a projectID, it should 
+     * Test getProjectSettings() method. Giving a projectID, it should
      * return an array containing the project information.
      *
      * @return void
