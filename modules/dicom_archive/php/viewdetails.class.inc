@@ -258,7 +258,8 @@ class ViewDetails extends \NDB_Form
                     $sliceThickness,
                     $protocol['slice_thickness_min'],
                     $protocol['slice_thickness_max']
-                ))) {
+                ))
+            ) {
                 return $this->_getProtocolNameFromID($protocol['Scan_type']);
             }
         }
