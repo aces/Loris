@@ -29,39 +29,39 @@ class InstrumentUploadForm extends Component {
       credentials: 'same-origin',
       body: data,
     })
-    .then((resp) => {
-      if (resp.status == 201) {
-        swal({
-          title: 'Installation Successful!',
-          type: 'success',
-        }, function() {
-          window.location.assign(loris.BaseURL + '/instrument_manager/');
+        .then((resp) => {
+          if (resp.status == 201) {
+            swal({
+              title: 'Installation Successful!',
+              type: 'success',
+            }, function() {
+              window.location.assign(loris.BaseURL + '/instrument_manager/');
+            });
+          }
+          return resp.json();
+        })
+        .then((data) => {
+          if (data.message) {
+            swal({
+              title: 'Upload Successful!',
+              type: 'success',
+              text: data.message,
+            }, function() {
+              window.location.assign(loris.BaseURL + '/instrument_manager/');
+            });
+          }
+          if (data.error) {
+            swal({
+              title: 'An error occured',
+              type: 'error',
+              text: data.error,
+            });
+          }
+        })
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
         });
-      }
-      return resp.json();
-    })
-    .then((data) => {
-      if (data.message) {
-         swal({
-          title: 'Upload Successful!',
-          type: 'success',
-          text: data.message,
-        }, function() {
-          window.location.assign(loris.BaseURL + '/instrument_manager/');
-        });
-      }
-      if (data.error) {
-         swal({
-          title: 'An error occured',
-          type: 'error',
-          text: data.error,
-        });
-      }
-    })
-    .catch((error) => {
-      this.setState({error: true});
-      console.error(error);
-    });
   }
 
   render() {

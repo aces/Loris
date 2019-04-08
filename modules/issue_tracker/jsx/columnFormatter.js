@@ -15,21 +15,21 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(
-    function(header, index) {
-      row[header] = rowData[index];
-    },
-    this
+      function(header, index) {
+        row[header] = rowData[index];
+      },
+      this
   );
 
   if (column === 'Title') {
-    let cellLinks = [];
+    const cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
+        <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
       row['Issue ID']}>
-        {row.Title}
-      </a>
+          {row.Title}
+        </a>
     );
     return (
       <td>
@@ -39,12 +39,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Issue ID') {
-    let cellLinks = [];
+    const cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
+        <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
       row['Issue ID']}>
-        {cell}
-      </a>
+          {cell}
+        </a>
     );
     return (<td>{cellLinks}</td>);
   }
@@ -67,12 +67,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'PSCID' && row.PSCID !== null) {
-    let cellLinks = [];
+    const cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + '/' +
+        <a href={loris.BaseURL + '/' +
       row.CandID + '/'}>
-        {cell}
-      </a>
+          {cell}
+        </a>
     );
     return (
       <td>
@@ -82,12 +82,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Visit Label' && row['Visit Label'] !== null) {
-    let cellLinks = [];
+    const cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + '/instrument_list/?candID=' +
+        <a href={loris.BaseURL + '/instrument_list/?candID=' +
               row.CandID + '&sessionID=' + row.SessionID }>
-        {cell}
-      </a>
+          {cell}
+        </a>
     );
     return (
       <td>

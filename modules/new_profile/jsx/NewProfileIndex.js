@@ -27,7 +27,7 @@ class NewProfileIndex extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -37,12 +37,12 @@ class NewProfileIndex extends React.Component {
    */
   fetchData() {
     return fetch(this.props.dataURL,
-      {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({configData: data}))
-      .catch((error) => {
-        this.setState({error: true});
-      });
+        {credentials: 'same-origin'})
+        .then((resp) => resp.json())
+        .then((data) => this.setState({configData: data}))
+        .catch((error) => {
+          this.setState({error: true});
+        });
   }
   /**
    * It checks the date of birth and Expected Date of Confinement,
@@ -60,7 +60,7 @@ class NewProfileIndex extends React.Component {
     let edcMatch = true;
     if (this.state.configData['edc'] === 'true' &&
          data.edcDateTaken !== data.edcDateTakenConfirm
-       ) {
+    ) {
       edcMatch = false;
     }
     return dateMatch && edcMatch;
@@ -80,9 +80,9 @@ class NewProfileIndex extends React.Component {
         isCreated: false,
       });
     } else {
-      let formData = this.state.formData;
-      let formObject = new FormData();
-      for (let key in formData) {
+      const formData = this.state.formData;
+      const formObject = new FormData();
+      for (const key in formData) {
         if (formData[key] !== '') {
           formObject.append(key, formData[key]);
         }
@@ -92,12 +92,12 @@ class NewProfileIndex extends React.Component {
         cache: 'no-cache',
         credentials: 'same-origin',
         body: formObject,
-        })
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({newData: data});
-        this.setState({isCreated: true});
-       });
+      })
+          .then((resp) => resp.json())
+          .then((data) => {
+            this.setState({newData: data});
+            this.setState({isCreated: true});
+          });
     }
   }
 
@@ -108,7 +108,7 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = Object.assign({}, this.state.formData);
+    const formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
 
     this.setState({formData: formData});
@@ -128,8 +128,8 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let project = null;
     let pscid = null;
-    let minYear = this.state.configData.startYear-this.state.configData.ageMax;
-    let maxYear = this.state.configData.endYear-this.state.configData.ageMin;
+    const minYear = this.state.configData.startYear-this.state.configData.ageMax;
+    const maxYear = this.state.configData.endYear-this.state.configData.ageMin;
     if (this.state.configData['useProject'] === 'true') {
       project =
         <SelectElement
@@ -234,13 +234,13 @@ class NewProfileIndex extends React.Component {
   }
 }
 window.addEventListener(
-  'load',
-  () => {
-    ReactDOM.render(
-      <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/profile`}
-        submitURL = {`${loris.BaseURL}/new_profile/Profile`}
-        hasPermission = {loris.userHasPermission}
-      />,
-      document.getElementById('lorisworkspace'));
-  }
+    'load',
+    () => {
+      ReactDOM.render(
+          <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/profile`}
+            submitURL = {`${loris.BaseURL}/new_profile/Profile`}
+            hasPermission = {loris.userHasPermission}
+          />,
+          document.getElementById('lorisworkspace'));
+    }
 );

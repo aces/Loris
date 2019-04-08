@@ -24,13 +24,13 @@ class OpenProfileForm extends Component {
   }
 
   updateFormElement(formElement, value) {
-    let state = this.state;
+    const state = this.state;
     state[formElement] = value;
     this.setState(state);
   }
 
   validateAndSubmit() {
-    let state = this.state;
+    const state = this.state;
     if (this.state.CandID === '') {
       state.error = {
         message: 'You must enter a DCCID!',
@@ -58,10 +58,10 @@ class OpenProfileForm extends Component {
     this.setState(state);
 
     $.get(loris.BaseURL + '/candidate_list/validateIDs',
-      {
-        CandID: state.CandID,
-        PSCID: state.PSCID,
-      },
+        {
+          CandID: state.CandID,
+          PSCID: state.PSCID,
+        },
         function(data) {
           // ids are valid, submit accessProfileForm form
           if (data === '1') {
@@ -86,9 +86,9 @@ class OpenProfileForm extends Component {
 
     if (this.state.error.message !== '') {
       warning = (
-              <div className={this.state.error.className}>
-                {this.state.error.message}
-              </div>
+        <div className={this.state.error.className}>
+          {this.state.error.message}
+        </div>
       );
     }
     return (
@@ -113,7 +113,7 @@ class OpenProfileForm extends Component {
           label='Open Profile'
           onUserInput={this.validateAndSubmit}
         />
-        </FormElement>
+      </FormElement>
     );
   }
 }

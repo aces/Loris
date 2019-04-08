@@ -37,7 +37,7 @@ class Panel extends Component {
 
   render() {
     // Change arrow direction based on collapse status
-    let glyphClass = (
+    const glyphClass = (
       this.state.collapsed ?
         'glyphicon pull-right glyphicon-chevron-down' :
         'glyphicon pull-right glyphicon-chevron-up'

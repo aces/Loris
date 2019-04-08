@@ -97,11 +97,11 @@ class DataDictIndex extends React.Component {
     }
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === 'Description' && hasEditPermission) {
-      let updateDict = (name) => {
+      const updateDict = (name) => {
         return (e) => {
           e.stopPropagation();
 
-          let value = e.target.valueOf().innerText;
+          const value = e.target.valueOf().innerText;
           $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
             fieldname: name, description: value,
           }, (data) => {});
@@ -112,7 +112,7 @@ class DataDictIndex extends React.Component {
           contentEditable="true"
           className="description"
           onBlur={updateDict(rowData[1])}>
-            {cell}
+          {cell}
         </td>
       );
     }
@@ -156,7 +156,7 @@ class DataDictIndex extends React.Component {
 $(function() {
   const dataDictIndex = (
     <div className="page-datadict">
-        <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
+      <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
     </div>
   );
   ReactDOM.render(dataDictIndex, document.getElementById('lorisworkspace'));

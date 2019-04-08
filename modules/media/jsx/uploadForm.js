@@ -36,7 +36,7 @@ class MediaUploadForm extends Component {
   }
 
   componentDidMount() {
-    let self = this;
+    const self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -73,7 +73,7 @@ class MediaUploadForm extends Component {
       );
     }
 
-    let helpText = (
+    const helpText = (
       <span>
         File name must begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
         For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
@@ -181,7 +181,7 @@ class MediaUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
+  /** *******************************************************************************
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
@@ -207,9 +207,9 @@ class MediaUploadForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    let formData = this.state.formData;
-    let formRefs = this.refs;
-    let mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
+    const formData = this.state.formData;
+    const formRefs = this.refs;
+    const mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
@@ -217,22 +217,22 @@ class MediaUploadForm extends Component {
     }
 
     // Validate uploaded file name
-    let instrument = formData.instrument ? formData.instrument : null;
-    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
-    let requiredFileName = this.getValidFileName(
-      formData.pscid, formData.visitLabel, instrument
+    const instrument = formData.instrument ? formData.instrument : null;
+    const fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
+    const requiredFileName = this.getValidFileName(
+        formData.pscid, formData.visitLabel, instrument
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal(
-        'Invalid file name!',
-        'File name should begin with: ' + requiredFileName,
-        'error'
+          'Invalid file name!',
+          'File name should begin with: ' + requiredFileName,
+          'error'
       );
       return;
     }
 
     // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(fileName);
+    const isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
       swal({
         title: 'Are you sure?',
@@ -258,9 +258,9 @@ class MediaUploadForm extends Component {
    */
   uploadFile() {
     // Set form data and upload the media file
-    let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
+    const formData = this.state.formData;
+    const formObj = new FormData();
+    for (const key in formData) {
       if (formData[key] !== '') {
         formObj.append(key, formData[key]);
       }
@@ -274,10 +274,10 @@ class MediaUploadForm extends Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        let xhr = new window.XMLHttpRequest();
+        const xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
+            const percentage = Math.round((evt.loaded / evt.total) * 100);
             this.setState({uploadProgress: percentage});
           }
         }.bind(this), false);
@@ -285,11 +285,11 @@ class MediaUploadForm extends Component {
       }.bind(this),
       success: function() {
         // Add git pfile to the list of exiting files
-        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
+        const mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
-        let event = new CustomEvent('update-datatable');
+        const event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
         this.setState({
@@ -301,7 +301,7 @@ class MediaUploadForm extends Component {
       }.bind(this),
       error: function(err) {
         console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
+        const msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
@@ -337,7 +337,7 @@ class MediaUploadForm extends Component {
   isValidForm(formRefs, formData) {
     let isValidForm = true;
 
-    let requiredFields = {
+    const requiredFields = {
       pscid: null,
       visitLabel: null,
       file: null,
@@ -364,8 +364,8 @@ class MediaUploadForm extends Component {
    */
   setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
-    let visitLabel = this.state.formData.visitLabel;
-    let pscid = this.state.formData.pscid;
+    const visitLabel = this.state.formData.visitLabel;
+    const pscid = this.state.formData.pscid;
 
     if (formElement === 'pscid' && value !== '') {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
@@ -384,7 +384,7 @@ class MediaUploadForm extends Component {
         this.state.Data.sessionData[pscid].instruments[value];
     }
 
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     formData[formElement] = value;
 
     this.setState({

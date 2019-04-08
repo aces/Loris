@@ -14,7 +14,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
@@ -27,12 +27,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     value2 = row.Value2;
     hash = row.Hash;
     return <td>
-                <select name={hash} className="form-control input-sm" >
-                     <option value="none" >Unresolved</option>
-                     <option value="1" >{value1}</option>
-                     <option value="2" >{value2}</option>
-                </select>
-             </td>;
+      <select name={hash} className="form-control input-sm" >
+        <option value="none" >Unresolved</option>
+        <option value="1" >{value1}</option>
+        <option value="2" >{value2}</option>
+      </select>
+    </td>;
   }
   return <td>{cell}</td>;
 }

@@ -5,7 +5,7 @@ $(function() {
     DataURL={`${loris.BaseURL}/candidate_list/?format=json`}
     getFormattedCell={formatColumn}
     freezeColumn="PSCID"
-    />,
-    document.getElementById('datatable')
+  />,
+  document.getElementById('datatable')
   );
 });

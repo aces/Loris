@@ -60,13 +60,13 @@ class FeedbackPanelContent extends Component {
   }
 
   render() {
-    let headers = ['Type', 'Author', 'Status'];
+    const headers = ['Type', 'Author', 'Status'];
 
     if (this.props.feedbackLevel === 'instrument') {
       headers[0] = 'Fieldname';
     }
 
-    let tableHeaders = (
+    const tableHeaders = (
       <tr className='info'>
         {headers.map(function(header, key) {
           return (<td key={key}>{header}</td>);
@@ -75,9 +75,9 @@ class FeedbackPanelContent extends Component {
     );
 
     if (this.props.threads.length) {
-      let currentEntryToggled = this.state.currentEntryToggled;
-      let feedbackRows = this.props.threads.map(function(row, index) {
-        let thisRowCommentToggled = (currentEntryToggled === index);
+      const currentEntryToggled = this.state.currentEntryToggled;
+      const feedbackRows = this.props.threads.map(function(row, index) {
+        const thisRowCommentToggled = (currentEntryToggled === index);
         return (
           <FeedbackPanelRow
             key={row.FeedbackID}
@@ -98,7 +98,7 @@ class FeedbackPanelContent extends Component {
         );
       }.bind(this));
 
-      let table = (
+      const table = (
         <table
           id="current_thread_table"
           className="table table-hover table-bordered dynamictable"
@@ -151,7 +151,7 @@ class FeedbackPanelRow extends Component {
   }
 
   loadServerState() {
-    let that = this;
+    const that = this;
     $.ajax({
       type: 'GET',
       url: loris.BaseURL + '/bvl_feedback/ajax/get_thread_entry_data.php',
@@ -178,8 +178,8 @@ class FeedbackPanelRow extends Component {
   }
 
   newThreadEntry(comment) {
-    let feedbackID = this.props.feedbackID;
-    let candID = this.props.candID;
+    const feedbackID = this.props.feedbackID;
+    const candID = this.props.candID;
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
@@ -229,43 +229,43 @@ class FeedbackPanelRow extends Component {
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
         <span className='glyphicon glyphicon-pencil'
-              onClick={this.props.commentToggle}/>
+          onClick={this.props.commentToggle}/>
       );
     }
 
     return (
       <tbody>
-      <tr>
-        {this.props.fieldname ?
+        <tr>
+          {this.props.fieldname ?
           <td>{this.props.fieldname}<br/>{this.props.type}</td> :
           <td>{this.props.type}</td>}
-        <td>{this.props.author} on:<br/>{this.props.date}</td>
-        <td>
-          <div className='btn-group'>
-            <button name='thread_button' type='button' className={buttonClass}
-                    data-toggle='dropdown' aria-haspopup='true'
-                    aria-expanded='false'>
-              {buttonText}
-              <span className='caret'></span>
-            </button>
-            <ul className='dropdown-menu'>
-              {dropdown}
-            </ul>
-          </div>
-          <span className={arrow}
-                onClick={this.toggleEntries.bind(this, false)}></span>
-          {commentButton}
-        </td>
-      </tr>
-      {this.props.commentToggled ?
+          <td>{this.props.author} on:<br/>{this.props.date}</td>
+          <td>
+            <div className='btn-group'>
+              <button name='thread_button' type='button' className={buttonClass}
+                data-toggle='dropdown' aria-haspopup='true'
+                aria-expanded='false'>
+                {buttonText}
+                <span className='caret'></span>
+              </button>
+              <ul className='dropdown-menu'>
+                {dropdown}
+              </ul>
+            </div>
+            <span className={arrow}
+              onClick={this.toggleEntries.bind(this, false)}></span>
+            {commentButton}
+          </td>
+        </tr>
+        {this.props.commentToggled ?
         (<CommentEntryForm
           user={this.props.user}
           onCommentSend={this.newThreadEntry}
           toggleThisThread={this.toggleEntries.bind(this, true)}
         />) :
         null
-      }
-      {threadEntries}
+        }
+        {threadEntries}
       </tbody>
     );
   }
@@ -435,11 +435,11 @@ class NewThreadPanel extends Component {
 
   render() {
     let fieldnameSelect;
-    let options = [];
-    for (let key in this.props.selectOptions) {
+    const options = [];
+    for (const key in this.props.selectOptions) {
       if (this.props.selectOptions.hasOwnProperty(key)) {
         options.push(
-          <option key={key} value={key}>{this.props.selectOptions[key]}</option>
+            <option key={key} value={key}>{this.props.selectOptions[key]}</option>
         );
       }
     }
@@ -464,14 +464,14 @@ class NewThreadPanel extends Component {
       );
     }
 
-    let feedbackTypes = this.props.feedbackTypes;
-    let input = [];
-    for (let key in feedbackTypes) {
+    const feedbackTypes = this.props.feedbackTypes;
+    const input = [];
+    for (const key in feedbackTypes) {
       if (feedbackTypes.hasOwnProperty(key)) {
         input.push(
-          <option key={key} value={feedbackTypes[key].Type}>
-            {feedbackTypes[key].Label}
-          </option>
+            <option key={key} value={feedbackTypes[key].Type}>
+              {feedbackTypes[key].Label}
+            </option>
         );
       }
     }
@@ -665,10 +665,10 @@ class FeedbackPanel extends Component {
   }
 
   markThreadClosed(index) {
-    let threads = this.state.threads;
-    let entry = this.state.threads[index];
+    const threads = this.state.threads;
+    const entry = this.state.threads[index];
     threads.splice(index, 1);
-    let feedbackID = entry.FeedbackID;
+    const feedbackID = entry.FeedbackID;
     entry.QCStatus = 'closed';
 
     threads.push(entry);
@@ -693,9 +693,9 @@ class FeedbackPanel extends Component {
   }
 
   markThreadOpened(index) {
-    let threads = this.state.threads;
-    let entry = this.state.threads[index];
-    let feedbackID = entry.FeedbackID;
+    const threads = this.state.threads;
+    const entry = this.state.threads[index];
+    const feedbackID = entry.FeedbackID;
 
     entry.QCStatus = 'opened';
     threads.splice(index, 1);
@@ -721,7 +721,7 @@ class FeedbackPanel extends Component {
   }
 
   render() {
-    let title = 'New ' + this.props.feedbackLevel + ' level feedback';
+    const title = 'New ' + this.props.feedbackLevel + ' level feedback';
     return (
       <SliderPanel pscid={this.props.pscid}>
         <AccordionPanel title='Open Thread Summary'>
@@ -761,7 +761,7 @@ FeedbackPanel.propTypes = {
   commentID: PropTypes.string,
 };
 
-let RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
+const RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
 
 window.FeedbackPanel = FeedbackPanel;
 window.RBehaviouralFeedbackPanel = RBehaviouralFeedbackPanel;

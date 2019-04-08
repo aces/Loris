@@ -31,11 +31,11 @@ class MediaEditForm extends Component {
   }
 
   componentDidMount() {
-    let self = this;
+    const self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        let formData = {
+        const formData = {
           idMediaFile: data.mediaData.id,
           forSite: data.mediaData.forSite,
           dateTaken: data.mediaData.dateTaken,
@@ -176,8 +176,8 @@ class MediaEditForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    let self = this;
-    let myFormData = this.state.formData;
+    const self = this;
+    const myFormData = this.state.formData;
 
     $('#mediaEditEl').hide();
     $('#file-progress').removeClass('hide');
@@ -190,12 +190,12 @@ class MediaEditForm extends Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        let xhr = new window.XMLHttpRequest();
+        const xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
-            let progressbar = $('#progressbar');
-            let progresslabel = $('#progresslabel');
-            let percent = Math.round((evt.loaded / evt.total) * 100);
+            const progressbar = $('#progressbar');
+            const progresslabel = $('#progresslabel');
+            const percent = Math.round((evt.loaded / evt.total) * 100);
             $(progressbar).width(percent + '%');
             $(progresslabel).html(percent + '%');
             progressbar.attr('aria-valuenow', percent);
@@ -222,7 +222,7 @@ class MediaEditForm extends Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    const formData = this.state.formData;
 
     if (value === '') {
       formData[formElement] = null;

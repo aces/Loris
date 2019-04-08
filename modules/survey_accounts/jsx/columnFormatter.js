@@ -10,12 +10,12 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
   if (column === 'URL') {
-    let url = loris.BaseURL + '/survey.php?key=' + row.URL;
+    const url = loris.BaseURL + '/survey.php?key=' + row.URL;
     return (<td><a href={url}>{cell}</a></td>);
   }
   return <td>{cell}</td>;

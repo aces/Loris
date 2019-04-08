@@ -93,7 +93,7 @@ class ImagingUploader extends Component {
     }
 
     // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
+    const row = {};
     rowHeaders.forEach((header, index) => {
       row[header] = rowData[index];
     });
@@ -148,13 +148,13 @@ class ImagingUploader extends Component {
     if (column === 'Number Of MincCreated') {
       let violatedScans;
       if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
-        let numViolatedScans =
+        const numViolatedScans =
              row['Number Of MincCreated'] - row['Number Of MincInserted'];
 
-        let patientName = row.PatientName;
+        const patientName = row.PatientName;
         violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
            ({numViolatedScans} violated scans)
-         </a>;
+        </a>;
       }
 
       return (

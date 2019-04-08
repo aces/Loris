@@ -31,7 +31,7 @@ class LoadPane extends Component {
 
   // Indicates to the state which file has been chosen
   chooseFile(e) {
-    let value = e.target.files[0];
+    const value = e.target.files[0];
     this.setState({
       file: value,
       disabled: true,
@@ -58,7 +58,7 @@ class LoadPane extends Component {
   // Loads the specified file into builder tab.
   loadFile() {
     // Declare the success and error callbacks
-    let callback = {
+    const callback = {
       success: this.props.loadCallback,
       error: this.setAlert,
     };
@@ -156,21 +156,21 @@ class SavePane extends Component {
   }
   // Keep track of the file name, saving it in the state
   onChangeFile(e) {
-    let value = e.target.value;
+    const value = e.target.value;
     this.setState({
       fileName: value,
     });
   }
   // Keep track of the instrument name, saving it in the state
   onChangeInst(e) {
-    let value = e.target.value;
+    const value = e.target.value;
     this.setState({
       instrumentName: value,
     });
   }
   // Render the HTML
   render() {
-    let value = this.state.fileName;
+    const value = this.state.fileName;
     return (
       <TabPane Title='Save Instrument' {...this.props}>
         <div className='form-group'>
@@ -178,9 +178,9 @@ class SavePane extends Component {
             <label className='col-sm-2 control-label'>Filename: </label>
             <div className='col-sm-4'>
               <input className='form-control'
-                     type='text' id='filename'
-                     value={value}
-                     onChange={this.onChangeFile}
+                type='text' id='filename'
+                value={value}
+                onChange={this.onChangeFile}
               />
             </div>
           </div>
@@ -188,17 +188,17 @@ class SavePane extends Component {
             <label className='col-sm-2 control-label'>Instrument Name: </label>
             <div className='col-sm-4'>
               <input className='form-control'
-                     type='text' id='longname'
-                     value={this.state.instrumentName}
-                     onChange={this.onChangeInst}
+                type='text' id='longname'
+                value={this.state.instrumentName}
+                onChange={this.onChangeInst}
               />
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
             <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
               <input className='btn btn-primary col-xs-12'
-                     type='submit' value='Save'
-                     onClick={this.props.save}
+                type='submit' value='Save'
+                onClick={this.props.save}
               />
             </div>
           </div>
@@ -230,9 +230,9 @@ class DisplayElements extends Component {
   // Used for the drag and drop rows
   getPlaceholder() {
     if (!this.placeholder) {
-      let tr = document.createElement('tr');
+      const tr = document.createElement('tr');
       tr.className = 'placeholder';
-      let td = document.createElement('td');
+      const td = document.createElement('td');
       td.colSpan = 2;
       td.appendChild(document.createTextNode('Drop here'));
       tr.appendChild(td);
@@ -261,8 +261,8 @@ class DisplayElements extends Component {
     this.dragged.parentNode.removeChild(this.getPlaceholder());
 
     // Update data
-    let data = this.props.elements;
-    let from = Number(this.dragged.dataset.id);
+    const data = this.props.elements;
+    const from = Number(this.dragged.dataset.id);
     let to = Number(this.over.dataset.id);
     if (from < to) to--;
     if (this.nodePlacement === 'after') to++;
@@ -274,15 +274,15 @@ class DisplayElements extends Component {
   // Used for the drag and drop rows
   dragOver(e) {
     e.preventDefault();
-    let targetRow = this.getTableRow(e.target);
+    const targetRow = this.getTableRow(e.target);
 
     this.dragged.style.display = 'none';
     if (targetRow.className === 'placeholder') return;
     this.over = targetRow;
     // Inside the dragOver method
-    let relY = e.pageY - $(this.over).offset().top;
-    let height = this.over.offsetHeight / 2;
-    let parent = targetRow.parentNode;
+    const relY = e.pageY - $(this.over).offset().top;
+    const height = this.over.offsetHeight / 2;
+    const parent = targetRow.parentNode;
 
     if (relY >= height) {
       this.nodePlacement = 'after';
@@ -296,15 +296,15 @@ class DisplayElements extends Component {
   tableRows() {
     return this.props.elements.map(function(element, i) {
       let row;
-      let colStyles = {wordWrap: 'break-word'};
+      const colStyles = {wordWrap: 'break-word'};
       if (element.editing) {
         // If you are editing an element, show element as an AddElement object
         row = (
           <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}
           >
             <td className="col-xs-2" colSpan="3">
               <AddElement
@@ -318,10 +318,10 @@ class DisplayElements extends Component {
         // Else display element in regular way
         row = (
           <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}>
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}>
             <td style={colStyles}>
               {element.Name}
             </td>
@@ -355,14 +355,14 @@ class DisplayElements extends Component {
     return (
       <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
-        <tr>
-          <th className='col-xs-2'>Database Name</th>
-          <th className='col-xs-6'>Question Display (Front End)</th>
-          <th className='col-xs-4'>Edit</th>
-        </tr>
+          <tr>
+            <th className='col-xs-2'>Database Name</th>
+            <th className='col-xs-6'>Question Display (Front End)</th>
+            <th className='col-xs-4'>Edit</th>
+          </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
-        {tableRows}
+          {tableRows}
         </tbody>
       </table>
     );
@@ -412,8 +412,8 @@ class BuildPane extends Component {
   // were already present
   loadElements(elements) {
     // Populate existing DB names
-    let elContent = elements[this.state.currentPage].Elements;
-    let elNames = {};
+    const elContent = elements[this.state.currentPage].Elements;
+    const elNames = {};
     elContent.forEach(function(el) {
       elNames[el.Name] = '';
     });
@@ -431,9 +431,9 @@ class BuildPane extends Component {
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.Elements;
-      let edit = state.amountEditing + 1;
-      let dbNames = state.elementDBNames;
+      const temp = state.Elements;
+      const edit = state.amountEditing + 1;
+      const dbNames = state.elementDBNames;
       delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
       temp[state.currentPage].Elements[elementIndex].editing = true;
       return {
@@ -449,8 +449,8 @@ class BuildPane extends Component {
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.Elements;
-      let dbNames = state.elementDBNames;
+      const temp = state.Elements;
+      const dbNames = state.elementDBNames;
       delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
       temp[state.currentPage].Elements.splice(elementIndex, 1);
       return {
@@ -468,10 +468,10 @@ class BuildPane extends Component {
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.Elements;
+      const temp = state.Elements;
       // Decrement the editing count
-      let edit = state.amountEditing - 1;
-      let dbNa = state.elementDBNames;
+      const edit = state.amountEditing - 1;
+      const dbNa = state.elementDBNames;
       temp[state.currentPage].Elements[index] = element;
       if (element.Name) {
         // Add the DB name to the list of current names
@@ -495,8 +495,8 @@ class BuildPane extends Component {
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.Elements;
-      let dbNa = state.elementDBNames;
+      const temp = state.Elements;
+      const dbNa = state.elementDBNames;
       if (element.Name) {
         // Add the DB name to the list of current names
         dbNa[element.Name] = '';
@@ -515,9 +515,9 @@ class BuildPane extends Component {
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
-      let temp = state.Elements;
+      const temp = state.Elements;
       // change the current page to the new one
-      let page = state.currentPage + 1;
+      const page = state.currentPage + 1;
       temp.push({
         Type: 'ElementGroup',
         GroupType: 'Page',
@@ -538,9 +538,9 @@ class BuildPane extends Component {
   }
   // Render the HTML
   render() {
-    let draggable = this.state.amountEditing === 0;
+    const draggable = this.state.amountEditing === 0;
     // List the pages
-    let pages = this.state.Elements.map(function(element, i) {
+    const pages = this.state.Elements.map(function(element, i) {
       return (
         <li key={i} onClick={this.selectPage.bind(null, i)}>
           <a>{this.state.Elements[i].Description}</a>
@@ -611,32 +611,32 @@ class InstrumentBuilderApp extends Component {
   }
   // Render the HTML
   render() {
-    let tabs = [];
+    const tabs = [];
     tabs.push(
-      <LoadPane
-        TabId='Load'
-        ref='loadPane'
-        loadCallback={this.loadCallback}
-        key={1}
-      />
+        <LoadPane
+          TabId='Load'
+          ref='loadPane'
+          loadCallback={this.loadCallback}
+          key={1}
+        />
     );
     tabs.push(
-      <BuildPane
-        TabId='Build'
-        ref='buildPane'
-        key={2}
-      />
+        <BuildPane
+          TabId='Build'
+          ref='buildPane'
+          key={2}
+        />
     );
     tabs.push(
-      <SavePane
-        TabId='Save'
-        ref='savePane'
-        save={this.saveInstrument}
-        key={3}
-      />
+        <SavePane
+          TabId='Save'
+          ref='savePane'
+          save={this.saveInstrument}
+          key={3}
+        />
     );
 
-    let tabList = [
+    const tabList = [
       {
         id: 'Load',
         label: 'Load',
@@ -663,7 +663,7 @@ class InstrumentBuilderApp extends Component {
 InstrumentBuilderApp.propTypes = {
 };
 
-let RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
+const RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
 
 window.RInstrumentBuilderApp = RInstrumentBuilderApp;
 

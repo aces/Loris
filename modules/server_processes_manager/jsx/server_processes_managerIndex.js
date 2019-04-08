@@ -20,7 +20,7 @@ class ServerProcessesManagerIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -30,12 +30,12 @@ class ServerProcessesManagerIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -63,7 +63,7 @@ class ServerProcessesManagerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
+    /**
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in server_processes_manager.class.inc
     */
@@ -90,12 +90,12 @@ class ServerProcessesManagerIndex extends Component {
     ];
 
     return (
-          <FilterableDataTable
-            name="server_processes_manager"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
+      <FilterableDataTable
+        name="server_processes_manager"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }
@@ -106,9 +106,9 @@ ServerProcessesManagerIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <ServerProcessesManagerIndex
-      dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+      <ServerProcessesManagerIndex
+        dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

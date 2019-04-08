@@ -25,8 +25,8 @@ import PropTypes from 'prop-types';
 class Markdown extends Component {
   htmlSpecialCharsDecode(text) {
     return text
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '"');
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"');
   }
 
   render() {
@@ -37,25 +37,25 @@ class Markdown extends Component {
     fixedNewLines = this.htmlSpecialCharsDecode(fixedNewLines);
 
     // 2 newlines in a row mean it's a paragraph breaker.
-    let paragraphs = fixedNewLines.split('\n\n');
-    let headersRe = /^(#+)\s+(.+)$/;
+    const paragraphs = fixedNewLines.split('\n\n');
+    const headersRe = /^(#+)\s+(.+)$/;
 
     // Do a non-greedy match on text surrounded by ** or __ separately,
     // because we need to be sure that the end tag is the same as the
     // start and want the callback to reference the same index
-    let boldRe1 = /(\*\*)(.+?)(\*\*)/g;
-    let boldRe2 = /(__)(.+?)(__)/g;
+    const boldRe1 = /(\*\*)(.+?)(\*\*)/g;
+    const boldRe2 = /(__)(.+?)(__)/g;
     function boldCallback(match, start, content, end, offset, val) {
       return '<b>' + content + '</b>';
     }
 
-    let italRe1 = /(\*)(.+?)(\*)/g;
-    let italRe2 = /(_)(.+?)(_)/g;
+    const italRe1 = /(\*)(.+?)(\*)/g;
+    const italRe2 = /(_)(.+?)(_)/g;
     function italCallback(match, start, content, end, offset, val) {
       return '<i>' + content + '</i>';
     }
 
-    let linkRe = /\[(.+?)\]\((.+?)\)/g;
+    const linkRe = /\[(.+?)\]\((.+?)\)/g;
     function linkCallback(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
     }
@@ -122,7 +122,7 @@ Markdown.propTypes = {
   content: PropTypes.string.isRequired,
 };
 
-let RMarkdown = React.createFactory(Markdown);
+const RMarkdown = React.createFactory(Markdown);
 
 window.Markdown = Markdown;
 window.RMarkdown = RMarkdown;

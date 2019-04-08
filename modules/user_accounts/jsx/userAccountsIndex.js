@@ -21,7 +21,7 @@ class UserAccountsIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -33,19 +33,19 @@ class UserAccountsIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => {
+        .then((resp) => resp.json())
+        .then((data) => {
         // Convert concatenated string of sites to array
-        data.Data = data.Data.map((row) => {
-          row[0] = row[0].split('; ');
-          return row;
+          data.Data = data.Data.map((row) => {
+            row[0] = row[0].split('; ');
+            return row;
+          });
+          this.setState({data});
+        })
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
         });
-        this.setState({data});
-      })
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
   }
 
   /**
@@ -103,7 +103,7 @@ class UserAccountsIndex extends Component {
       return <Loader/>;
     }
 
-   /**
+    /**
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in userAccounts.class.inc
     */
@@ -161,10 +161,10 @@ UserAccountsIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <UserAccountsIndex
-      dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <UserAccountsIndex
+        dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

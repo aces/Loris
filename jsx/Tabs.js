@@ -75,10 +75,10 @@ class Tabs extends Component {
   }
 
   getTabs() {
-    let tabs = (this.props.tabs).map(function(tab) {
-      let tabClass = this.state.activeTab === tab.id ? 'active' : null;
-      let href = '#' + tab.id;
-      let tabID = 'tab-' + tab.id;
+    const tabs = (this.props.tabs).map(function(tab) {
+      const tabClass = this.state.activeTab === tab.id ? 'active' : null;
+      const href = '#' + tab.id;
+      const tabID = 'tab-' + tab.id;
       return (
         <li
           role="presentation"
@@ -86,10 +86,10 @@ class Tabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>
@@ -101,7 +101,7 @@ class Tabs extends Component {
   }
 
   getTabPanes() {
-    let tabPanes = React.Children.map(this.props.children, function(child, key) {
+    const tabPanes = React.Children.map(this.props.children, function(child, key) {
       if (child) {
         return React.cloneElement(child, {
           activeTab: this.state.activeTab,
@@ -114,9 +114,9 @@ class Tabs extends Component {
   }
 
   render() {
-    let tabs = this.getTabs();
-    let tabPanes = this.getTabPanes();
-    let tabStyle = {
+    const tabs = this.getTabs();
+    const tabPanes = this.getTabPanes();
+    const tabStyle = {
       marginLeft: 0,
       marginBottom: '5px',
     };
@@ -192,10 +192,10 @@ class VerticalTabs extends Component {
   }
 
   getTabs() {
-    let tabs = (this.props.tabs).map(function(tab) {
-      let tabClass = this.state.activeTab === tab.id ? 'active' : null;
-      let href = '#' + tab.id;
-      let tabID = 'tab-' + tab.id;
+    const tabs = (this.props.tabs).map(function(tab) {
+      const tabClass = this.state.activeTab === tab.id ? 'active' : null;
+      const href = '#' + tab.id;
+      const tabID = 'tab-' + tab.id;
       return (
         <li
           role="presentation"
@@ -203,10 +203,10 @@ class VerticalTabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>
@@ -218,7 +218,7 @@ class VerticalTabs extends Component {
   }
 
   getTabPanes() {
-    let tabPanes = React.Children.map(this.props.children, function(child, key) {
+    const tabPanes = React.Children.map(this.props.children, function(child, key) {
       if (child) {
         return React.cloneElement(child, {
           activeTab: this.state.activeTab,
@@ -231,9 +231,9 @@ class VerticalTabs extends Component {
   }
 
   render() {
-    let tabs = this.getTabs();
-    let tabPanes = this.getTabPanes();
-    let tabStyle = {
+    const tabs = this.getTabs();
+    const tabPanes = this.getTabPanes();
+    const tabStyle = {
       marginLeft: 0,
       marginBottom: '5px',
     };

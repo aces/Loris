@@ -51,7 +51,7 @@ class BrainBrowser extends Component {
   }
 
   render() {
-    let options = {
+    const options = {
       100: '100 Pixels',
       200: '200 Pixels',
       256: '256 Pixels',
@@ -72,9 +72,9 @@ class BrainBrowser extends Component {
             <button id='sync-volumes' className='control'>Sync Volumes</button>
             <button id='reset-view' className='control'>Reset View</button>
             <select id='panel-size'
-                    className='control'
-                    value={this.state.panelSize}
-                    onChange={this.handleChange}>
+              className='control'
+              value={this.state.panelSize}
+              onChange={this.handleChange}>
               <option value='-1'>Auto</option>
               {Object.keys(options).map(function(option) {
                 return (
@@ -91,7 +91,7 @@ class BrainBrowser extends Component {
   }
 }
 
-let RBrainBrowser = React.createFactory(BrainBrowser);
+const RBrainBrowser = React.createFactory(BrainBrowser);
 
 window.BrainBrowser = BrainBrowser;
 window.RBrainBrowser = RBrainBrowser;

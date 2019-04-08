@@ -34,20 +34,20 @@ class CandidateListIndex extends Component {
   }
 
   show(state) {
-    let show = this.state.show;
+    const show = this.state.show;
     show[state] = true;
     this.setState({show});
   }
 
   hide(state) {
-    let show = this.state.show;
+    const show = this.state.show;
     show[state] = false;
     this.setState({show});
   }
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -59,12 +59,12 @@ class CandidateListIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   // Basic/Advanced toggle
@@ -85,7 +85,7 @@ class CandidateListIndex extends Component {
    */
   formatColumn(column, cell, row) {
     if (column === 'PSCID' && this.props.hasPermission('access_all_profiles')) {
-      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      const url = this.props.baseURL + '/' + row['DCCID'] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
@@ -102,12 +102,12 @@ class CandidateListIndex extends Component {
         <td className="scanDoneLink">
           <a href="#"
             onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
-            {pscid: row['PSCID']})}
+                {pscid: row['PSCID']})}
           >
             {cell}
           </a>
         </td>
-    );
+      );
     }
     return <td>{cell}</td>;
   }
@@ -276,29 +276,29 @@ class CandidateListIndex extends Component {
 
     if (options.useprojects === 'true') {
       fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
+          {
+            'label': 'Project',
+            'show': true,
+            'filter': {
+              name: 'project',
+              type: 'select',
+              options: options.project,
+            },
           },
-        },
       );
     }
 
     if (options.useedc === 'true') {
       fields.push(
-        {
-          'label': 'EDC',
-          'show': true,
-          'filter': {
-            name: 'edc',
-            type: 'date',
-            hide: this.state.hideFilter,
-          },
-        }
+          {
+            'label': 'EDC',
+            'show': true,
+            'filter': {
+              name: 'edc',
+              type: 'date',
+              hide: this.state.hideFilter,
+            },
+          }
       );
     }
 
@@ -353,11 +353,11 @@ CandidateListIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <CandidateListIndex
-      dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
-      hasPermission={loris.userHasPermission}
-      baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+      <CandidateListIndex
+        dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
+        hasPermission={loris.userHasPermission}
+        baseURL={loris.BaseURL}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

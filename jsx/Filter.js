@@ -46,30 +46,30 @@ class Filter extends Component {
       if (filter && filter.hide !== true) {
         let element;
         switch (filter.type) {
-        case 'text':
-          element = <TextboxElement key={filter.name}/>;
-          break;
-        case 'select':
-          element = <SelectElement key={filter.name} options={filter.options}/>;
-          break;
-        case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
-          break;
-        case 'date':
-          element = <DateElement key={filter.name}/>;
-          break;
-        default:
-          element = <TextboxElement key={filter.name}/>;
+          case 'text':
+            element = <TextboxElement key={filter.name}/>;
+            break;
+          case 'select':
+            element = <SelectElement key={filter.name} options={filter.options}/>;
+            break;
+          case 'multiselect':
+            element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+            break;
+          case 'date':
+            element = <DateElement key={filter.name}/>;
+            break;
+          default:
+            element = <TextboxElement key={filter.name}/>;
         }
 
         result.push(React.cloneElement(
-          element,
-          {
-            name: filter.name,
-            label: field.label,
-            value: (this.props.filter[filter.name] || {}).value,
-            onUserInput: this.onFieldUpdate,
-          }
+            element,
+            {
+              name: filter.name,
+              label: field.label,
+              value: (this.props.filter[filter.name] || {}).value,
+              onUserInput: this.onFieldUpdate,
+            }
         ));
       }
 

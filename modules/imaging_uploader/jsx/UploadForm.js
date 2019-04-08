@@ -102,16 +102,16 @@ class UploadForm extends Component {
           type: 'error',
           confirmButtonText: 'OK',
         });
-        let fieldMsg = 'Field does not match the filename!';
+        const fieldMsg = 'Field does not match the filename!';
 
-        let errorMessage = {
+        const errorMessage = {
           mriFile: 'Filename does not match other fields!',
           candID: undefined,
           pSCID: undefined,
           visitLabel: undefined,
         };
 
-        let hasError = {
+        const hasError = {
           mriFile: true,
           candID: false,
           pSCID: false,
@@ -121,7 +121,7 @@ class UploadForm extends Component {
         // check filename fields individually to decide
         // which fields to apply error message
         // use limit of 2 to avoid splitting the visit label
-        let fileNameParts = fileName.split('_', 2);
+        const fileNameParts = fileName.split('_', 2);
         if (data.pSCID !== fileNameParts[0]) {
           errorMessage.pSCID = fieldMsg;
           hasError.pSCID = true;
@@ -133,8 +133,8 @@ class UploadForm extends Component {
         }
 
         // offset for visit label is size of the two parts plus 2 _'s
-        let visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
-        let fileNameRemains = fileName.substr(visitLabelOffset);
+        const visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
+        const fileNameRemains = fileName.substr(visitLabelOffset);
         // only check that this part of the filename begins with
         // the field, last part of file name includes optional
         // specifiers + file extension
@@ -150,7 +150,7 @@ class UploadForm extends Component {
 
     // Checks if a file with a given fileName has already been uploaded
     const mriFile = this.props.mriList.find(
-      (mriFile) => mriFile.fileName.indexOf(fileName) > -1
+        (mriFile) => mriFile.fileName.indexOf(fileName) > -1
     );
 
     // New File
@@ -227,8 +227,8 @@ class UploadForm extends Component {
    */
   uploadFile(overwriteFile) {
     const formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
+    const formObj = new FormData();
+    for (const key in formData) {
       if (formData[key] !== '') {
         formObj.append(key, formData[key]);
       }
@@ -260,9 +260,9 @@ class UploadForm extends Component {
       // - Displays pop up window with success message
       // - Returns to Browse tab
       success: (data) => {
-        let errorMessage = this.state.errorMessage;
-        let hasError = this.state.hasError;
-        for (let i in errorMessage) {
+        const errorMessage = this.state.errorMessage;
+        const hasError = this.state.hasError;
+        for (const i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = '';
             hasError[i] = false;
@@ -286,9 +286,9 @@ class UploadForm extends Component {
           type: 'error',
         });
         let errorMessage = this.state.errorMessage;
-        let hasError = this.state.hasError;
+        const hasError = this.state.hasError;
         errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
-        for (let i in errorMessage) {
+        for (const i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = errorMessage[i].toString();
             if (errorMessage[i].length) {
@@ -318,15 +318,15 @@ class UploadForm extends Component {
     );
 
     const notes = (
-        <span>
+      <span>
           File cannot exceed {this.props.maxUploadSize}<br/>
           File must be of type .tgz or tar.gz or .zip<br/>
           For files that are not Phantom Scans, file name must begin with
-          <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
+        <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
           For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
           Visit Label <i>V1</i> the file name should be prefixed by:
-          <b> ABC123_100000_V1</b><br/>
-        </span>
+        <b> ABC123_100000_V1</b><br/>
+      </span>
     );
 
     // Returns individual form elements

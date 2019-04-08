@@ -17,13 +17,13 @@ class InstrumentManagerIndex extends Component {
       isLoaded: false,
     };
 
-   this.fetchData = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -35,12 +35,12 @@ class InstrumentManagerIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -123,7 +123,7 @@ class InstrumentManagerIndex extends Component {
     const uploadTab = () => {
       let content = null;
       if (this.state.data.writable) {
-        let url = loris.BaseURL.concat('/instrument_manager/?format=json');
+        const url = loris.BaseURL.concat('/instrument_manager/?format=json');
         content = (
           <InstrumentUploadForm action={url}/>
         );
@@ -164,10 +164,10 @@ InstrumentManagerIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <InstrumentManagerIndex
-      dataURL={`${loris.BaseURL}/instrument_manager/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <InstrumentManagerIndex
+        dataURL={`${loris.BaseURL}/instrument_manager/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

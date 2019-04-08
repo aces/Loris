@@ -23,33 +23,33 @@ class FamilyInfo extends Component {
 
   fetchData() {
     $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        xhr: function() {
-          let xhr = new window.XMLHttpRequest();
-          xhr.addEventListener(
-            'progress',
-            function(evt) {
-              this.setState({
-                loadedData: evt.loaded,
-              });
-            }.bind(this));
-          return xhr;
-        }.bind(this),
-        success: function(data) {
-          this.setState({
-            Data: data,
-            isLoaded: true,
-            familyMembers: data.existingFamilyMembers,
-          });
-        }.bind(this),
-        error: function(data, errorCode, errorMsg) {
-          this.setState({
-            error: 'An error occurred when loading the form!',
-          });
-        }.bind(this),
-      }
+        this.props.dataURL,
+        {
+          dataType: 'json',
+          xhr: function() {
+            const xhr = new window.XMLHttpRequest();
+            xhr.addEventListener(
+                'progress',
+                function(evt) {
+                  this.setState({
+                    loadedData: evt.loaded,
+                  });
+                }.bind(this));
+            return xhr;
+          }.bind(this),
+          success: function(data) {
+            this.setState({
+              Data: data,
+              isLoaded: true,
+              familyMembers: data.existingFamilyMembers,
+            });
+          }.bind(this),
+          error: function(data, errorCode, errorMsg) {
+            this.setState({
+              error: 'An error occurred when loading the form!',
+            });
+          }.bind(this),
+        }
     );
   }
 
@@ -58,7 +58,7 @@ class FamilyInfo extends Component {
   }
 
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -90,7 +90,7 @@ class FamilyInfo extends Component {
       );
     }
 
-    let relationshipOptions = {
+    const relationshipOptions = {
       'full_sibling': 'Full Sibling',
       'half_sibling': 'Half Sibling',
       '1st_cousin': 'First Cousin',
@@ -103,34 +103,34 @@ class FamilyInfo extends Component {
       addButton = <ButtonElement label="Add"/>;
     }
 
-    let candidateList = this.state.Data.candidates;
+    const candidateList = this.state.Data.candidates;
 
-    let familyMembers = this.state.familyMembers;
-    let familyMembersHTML = [];
+    const familyMembers = this.state.familyMembers;
+    const familyMembersHTML = [];
 
-    for (let key in familyMembers) {
+    for (const key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
-        let candID = familyMembers[key].FamilyCandID;
-        let relationship = familyMembers[key].Relationship_type;
-        let link = '?candID=' + candID + '&identifier=' + candID;
+        const candID = familyMembers[key].FamilyCandID;
+        const relationship = familyMembers[key].Relationship_type;
+        const link = '?candID=' + candID + '&identifier=' + candID;
 
         familyMembersHTML.push(
-          <div key={key}>
-            <StaticElement
-              label="Family Member DCCID"
-              text={<a href={link}>{candID}</a>}
-            />
-            <StaticElement
-              label="Relation Type"
-              text={relationshipOptions[relationship]}
-            />
-            <ButtonElement
-              label="Delete"
-              type="button"
-              onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
-            />
-            <hr/>
-          </div>
+            <div key={key}>
+              <StaticElement
+                label="Family Member DCCID"
+                text={<a href={link}>{candID}</a>}
+              />
+              <StaticElement
+                label="Relation Type"
+                text={relationshipOptions[relationship]}
+              />
+              <ButtonElement
+                label="Delete"
+                type="button"
+                onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
+              />
+              <hr/>
+            </div>
         );
         // remove from list of candidates because it can only be added once
         delete candidateList[candID];
@@ -144,7 +144,7 @@ class FamilyInfo extends Component {
         alertClass = 'alert alert-success text-center';
         alertMessage = 'Update Successful!';
       } else if (this.state.updateResult === 'error') {
-        let errorMessage = this.state.errorMessage;
+        const errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
         alertMessage = errorMessage ? errorMessage : 'Failed to update!';
       }
@@ -204,15 +204,15 @@ class FamilyInfo extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    let myFormData = this.state.formData;
-    let self = this;
-    let formData = new FormData();
-    let formRefs = this.refs;
+    const myFormData = this.state.formData;
+    const self = this;
+    const formData = new FormData();
+    const formRefs = this.refs;
 
-    let familyMembers = this.state.familyMembers;
-    let familyMember = {};
+    const familyMembers = this.state.familyMembers;
+    const familyMember = {};
 
-    for (let key in myFormData) {
+    for (const key in myFormData) {
       if (myFormData.hasOwnProperty(key)) {
         if (myFormData[key] !== '') {
           familyMember[key] = myFormData[key];
@@ -254,12 +254,12 @@ class FamilyInfo extends Component {
         self.forceUpdate();
       },
       error: function(err) {
-        let errorMessage = JSON.parse(err.responseText).message;
+        const errorMessage = JSON.parse(err.responseText).message;
         self.setState(
-          {
-            updateResult: 'error',
-            errorMessage: errorMessage,
-          }
+            {
+              updateResult: 'error',
+              errorMessage: errorMessage,
+            }
         );
         self.showAlertMessage();
       },
@@ -271,26 +271,26 @@ class FamilyInfo extends Component {
    * Display a success/error alert message after form submission
    */
   showAlertMessage() {
-    let self = this;
+    const self = this;
     if (this.refs['alert-message'] === null) {
       return;
     }
 
-    let alertMsg = this.refs['alert-message'];
+    const alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      function() {
-        self.setState(
-          {
-            updateResult: null,
+        500,
+        function() {
+          self.setState(
+              {
+                updateResult: null,
 
-          }
-        );
-      });
+              }
+          );
+        });
   }
 
   deleteFamilyMember(candID, key, candidateList) {
-    let familyMembers = this.state.familyMembers;
+    const familyMembers = this.state.familyMembers;
     delete familyMembers[key];
 
     // readd to list of possible family members
@@ -300,10 +300,10 @@ class FamilyInfo extends Component {
       familyMembers: familyMembers,
     });
 
-    let myFormData = this.state.formData;
-    let self = this;
-    let formData = new FormData();
-    for (let key in myFormData) {
+    const myFormData = this.state.formData;
+    const self = this;
+    const formData = new FormData();
+    for (const key in myFormData) {
       if (myFormData.hasOwnProperty(key)) {
         if (myFormData[key] !== '') {
           formData.append(key, myFormData[key]);
@@ -323,19 +323,19 @@ class FamilyInfo extends Component {
       processData: false,
       success: function(data) {
         self.setState(
-          {
-            updateResult: 'success',
-          });
+            {
+              updateResult: 'success',
+            });
         self.showAlertMessage();
       },
       error: function(err) {
         if (err.responseText !== '') {
-          let errorMessage = JSON.parse(err.responseText).message;
+          const errorMessage = JSON.parse(err.responseText).message;
           self.setState(
-            {
-              updateResult: 'error',
-              errorMessage: errorMessage,
-            });
+              {
+                updateResult: 'error',
+                errorMessage: errorMessage,
+              });
           self.showAlertMessage();
         }
       },

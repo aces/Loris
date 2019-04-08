@@ -13,7 +13,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
@@ -37,8 +37,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         reactElement = (
           <td>
             <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-              'genomic_browser/viewGenomicFile/',
-              {candID: rowData[1]}
+                'genomic_browser/viewGenomicFile/',
+                {candID: rowData[1]}
             )}>{cell}</a>
           </td>
         );
@@ -57,7 +57,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             <span
               style={{cursor: 'pointer'}}
               onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/' + column.toLowerCase() + '_browser/', {DCCID: rowData[1]}
+                  'genomic_browser/' + column.toLowerCase() + '_browser/', {DCCID: rowData[1]}
               )}
             >
               {cell}
@@ -72,8 +72,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       break;
     default:
       reactElement = (
-       <td>{cell}</td>
-     );
+        <td>{cell}</td>
+      );
   }
   return reactElement;
 }

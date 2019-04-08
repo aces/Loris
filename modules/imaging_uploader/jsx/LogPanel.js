@@ -87,7 +87,7 @@ class LogPanel extends Component {
       // If the pipeline is still running, start polling
       // If the pipeline is not running, end the polling (if any was started)
       this.setServerPolling(
-        uploadProgress.getPipelineStatus() === UploadProgress.PIPELINE_STATUS_RUNNING
+          uploadProgress.getPipelineStatus() === UploadProgress.PIPELINE_STATUS_RUNNING
       );
     }.bind(this)); // post call
   }
@@ -104,7 +104,7 @@ class LogPanel extends Component {
       // If there were no POST requests being issued, start issuing some.
       if (!this.setServerPolling.getSummaryInterval) {
         this.setServerPolling.getSummaryInterval = setInterval(
-          this.monitorProgress, 5000
+            this.monitorProgress, 5000
         );
       }
       // If there were no updates to the string of dots, start updating

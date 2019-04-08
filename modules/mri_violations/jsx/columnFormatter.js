@@ -13,15 +13,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
   let resolutionStatusStyle;
   let resolutionStatus;
-  let fontColor = {color: '#FFFFFF'};
-  let patientname = row.PatientName;
-  let uid = row.SeriesUID;
+  const fontColor = {color: '#FFFFFF'};
+  const patientname = row.PatientName;
+  const uid = row.SeriesUID;
 
   if (column === 'Resolution Status') {
     switch (row['Resolution Status']) {
@@ -64,34 +64,34 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
 
     return (
-            <td className= {resolutionStatusStyle} style={fontColor}>
-                {resolutionStatus}
-            </td>
-           );
+      <td className= {resolutionStatusStyle} style={fontColor}>
+        {resolutionStatus}
+      </td>
+    );
   }
   if (column === 'Problem' && row.Problem === 'Protocol Violation') {
     return (
-            <td>
-                <a href= "#"
-                   onClick={loris.loadFilteredMenuClickHandler(
-                       'mri_violations/mri_protocol_check_violations',
-                       {PatientName: patientname,
-                        SeriesUID: uid}
-                   )}>Protocol Violation</a>
-            </td>
-           );
+      <td>
+        <a href= "#"
+          onClick={loris.loadFilteredMenuClickHandler(
+              'mri_violations/mri_protocol_check_violations',
+              {PatientName: patientname,
+                SeriesUID: uid}
+          )}>Protocol Violation</a>
+      </td>
+    );
   }
   if (column === 'Problem' && row.Problem === 'Could not identify scan type') {
     return (
-           <td>
-               <a href= "#"
-                  onClick={loris.loadFilteredMenuClickHandler(
-                      'mri_violations/mri_protocol_violations',
-                      {PatientName: patientname,
-                       SeriesUID: uid}
-                  )}>Could not identify scan type</a>
-           </td>
-           );
+      <td>
+        <a href= "#"
+          onClick={loris.loadFilteredMenuClickHandler(
+              'mri_violations/mri_protocol_violations',
+              {PatientName: patientname,
+                SeriesUID: uid}
+          )}>Could not identify scan type</a>
+      </td>
+    );
   }
   return (<td>{cell}</td>);
 }

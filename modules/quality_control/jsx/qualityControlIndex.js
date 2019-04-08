@@ -29,29 +29,29 @@ class QualityControlIndex extends Component {
    */
 
   formatColumn(column, cell, row) {
-      let result = <td>{cell}</td>;
-      switch (column) {
+    let result = <td>{cell}</td>;
+    switch (column) {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
-          let mpfURL = loris.BaseURL + '/instruments/mri_parameter_form/?commentID=' +
+          const mpfURL = loris.BaseURL + '/instruments/mri_parameter_form/?commentID=' +
               row.CommentID + '&sessionID=' + row['Session ID'] +
               '&candID=' + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
-          let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+          const imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
               row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
       case 'Tarchive':
         if (cell == 'In DICOM') {
-          let tarchiveURL = loris.BaseURL +
+          const tarchiveURL = loris.BaseURL +
               '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
           result = <td><a href = {tarchiveURL}>{cell}</a></td>;
         }
-      }
-      return result;
+    }
+    return result;
   }
 
   componentDidMount() {
@@ -66,15 +66,15 @@ class QualityControlIndex extends Component {
         .then((resp) => resp.json())
         .then((data) => this.setState({[state]: data}))
         .catch((error) => {
-            this.setState({error: true});
-      });
+          this.setState({error: true});
+        });
   }
 
   render() {
     if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg) {
       return <Loader/>;
     }
-    let tabList = [
+    const tabList = [
       {id: 'behavioral', label: 'Behavioral'},
       {id: 'imaging', label: 'Imaging'},
     ];
@@ -93,9 +93,9 @@ class QualityControlIndex extends Component {
         type: 'text',
       }},
       {label: 'Site', show: true, filter: {
-         name: 'site',
-         type: 'select',
-         options: ImgOptions.site,
+        name: 'site',
+        type: 'select',
+        options: ImgOptions.site,
       }},
       {label: 'Project', show: true, filter: {
         name: 'project',
@@ -201,7 +201,7 @@ class QualityControlIndex extends Component {
     return (
       <div>
         <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id}
-        updateURL={true}>
+          updateURL={true}>
           {tab0}
           {tab1}
         </Tabs>
@@ -218,12 +218,12 @@ QualityControlIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <QualityControlIndex
-      ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
-      BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <QualityControlIndex
+        ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
+        BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });
 

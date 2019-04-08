@@ -18,7 +18,7 @@ class ImagingBrowserIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -28,12 +28,12 @@ class ImagingBrowserIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -58,8 +58,8 @@ class ImagingBrowserIndex extends Component {
         }
         break;
       case 'Links':
-        let cellTypes = cell.split(',');
-        let cellLinks = [];
+        const cellTypes = cell.split(',');
+        const cellLinks = [];
         for (let i = 0; i < cellTypes.length; i += 1) {
           cellLinks.push(<a key={i} href={loris.BaseURL +
           '/imaging_browser/viewSession/?sessionID=' +
@@ -180,9 +180,9 @@ ImagingBrowserIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <ImagingBrowserIndex
-      dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+      <ImagingBrowserIndex
+        dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

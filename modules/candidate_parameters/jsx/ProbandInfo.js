@@ -72,7 +72,7 @@ class ProbandInfo extends React.Component {
    * @param {string} value - value of the form element
    */
   setFormData(formElement, value) {
-    let formData = JSON.parse(JSON.stringify(this.state.formData));
+    const formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -86,11 +86,11 @@ class ProbandInfo extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    let myFormData = this.state.formData;
+    const myFormData = this.state.formData;
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1; // January is 0!
-    let yyyy = today.getFullYear();
+    const yyyy = today.getFullYear();
     if (dd < 10) {
       dd = '0' + dd;
     }
@@ -98,9 +98,9 @@ class ProbandInfo extends React.Component {
       mm = '0' + mm;
     }
     today = yyyy + '-' + mm + '-' + dd;
-    let dob1 = myFormData.ProbandDoB ?
+    const dob1 = myFormData.ProbandDoB ?
       myFormData.ProbandDoB : null;
-    let dob2 = myFormData.ProbandDoB2 ?
+    const dob2 = myFormData.ProbandDoB2 ?
       myFormData.ProbandDoB2 : null;
     if (dob1 !== dob2) {
       alert('DOB do not match!');
@@ -113,8 +113,8 @@ class ProbandInfo extends React.Component {
     }
 
     // Set form data
-    let formData = new FormData();
-    for (let key in myFormData) {
+    const formData = new FormData();
+    for (const key in myFormData) {
       if (myFormData[key] !== '') {
         formData.append(key, myFormData[key]);
       }
@@ -138,7 +138,7 @@ class ProbandInfo extends React.Component {
       },
       error: (error) => {
         if (error.responseText !== '') {
-          let errorMessage = JSON.parse(error.responseText).message;
+          const errorMessage = JSON.parse(error.responseText).message;
           this.setState({
             updateResult: 'error',
             errorMessage: errorMessage,
@@ -157,14 +157,14 @@ class ProbandInfo extends React.Component {
       return;
     }
 
-    let alertMsg = this.refs['alert-message'];
+    const alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      () => {
-        this.setState({
-          updateResult: null,
-        });
-      }
+        500,
+        () => {
+          this.setState({
+            updateResult: null,
+          });
+        }
     );
   }
 
@@ -188,13 +188,13 @@ class ProbandInfo extends React.Component {
     if (this.state.formData.ProbandDoB !== null) {
       dob2Required = true;
     }
-    let extraParameterFields = [];
-    let extraParameters = this.state.Data.extra_parameters;
-    for (let key2 in extraParameters) {
+    const extraParameterFields = [];
+    const extraParameters = this.state.Data.extra_parameters;
+    for (const key2 in extraParameters) {
       if (extraParameters.hasOwnProperty(key2)) {
-        let paramTypeID = extraParameters[key2].ParameterTypeID;
-        let name = paramTypeID;
-        let value = this.state.formData[paramTypeID];
+        const paramTypeID = extraParameters[key2].ParameterTypeID;
+        const name = paramTypeID;
+        const value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
           case 'enu': {
@@ -202,15 +202,15 @@ class ProbandInfo extends React.Component {
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
             types = types.split(',');
-            let selectOptions = {};
-            for (let key3 in types) {
+            const selectOptions = {};
+            for (const key3 in types) {
               if (types.hasOwnProperty(key3)) {
                 selectOptions[types[key3]] = types[key3];
               }
             }
 
             extraParameterFields.push(
-              <SelectElement
+                <SelectElement
                   label={extraParameters[key2].Description}
                   name={name}
                   options={selectOptions}
@@ -219,13 +219,13 @@ class ProbandInfo extends React.Component {
                   ref={name}
                   disabled={disabled}
                   key={key2}
-              />
+                />
             );
             break;
           }
           case 'dat':
             extraParameterFields.push(
-              <DateElement
+                <DateElement
                   label={extraParameters[key2].Description}
                   name={name}
                   value={value}
@@ -233,12 +233,12 @@ class ProbandInfo extends React.Component {
                   ref={name}
                   disabled={disabled}
                   key={key2}
-              />
-          );
+                />
+            );
             break;
           default:
             extraParameterFields.push(
-              <TextareaElement
+                <TextareaElement
                   label={extraParameters[key2].Description}
                   name={name}
                   value={value}
@@ -246,8 +246,8 @@ class ProbandInfo extends React.Component {
                   ref={name}
                   disabled={disabled}
                   key={key2}
-              />
-          );
+                />
+            );
         }
       }
     }
@@ -259,7 +259,7 @@ class ProbandInfo extends React.Component {
         alertClass = 'alert alert-success text-center';
         alertMessage = 'Update Successful!';
       } else if (this.state.updateResult === 'error') {
-        let errorMessage = this.state.errorMessage;
+        const errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
         alertMessage = errorMessage ? errorMessage : 'Failed to update!';
       }

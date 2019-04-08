@@ -31,7 +31,7 @@ class HelpEditor extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true})); ;
+        .then(() => this.setState({isLoaded: true})); ;
   }
 
   /**
@@ -41,15 +41,15 @@ class HelpEditor extends React.Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
- /**
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -62,15 +62,15 @@ class HelpEditor extends React.Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+      case 'Topic':
+        url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
              row.HelpID + '&parentID=' + row.ParentID;
-      result = <td><a href ={url}>{cell}</a></td>;
-      break;
-    case 'Parent Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+        result = <td><a href ={url}>{cell}</a></td>;
+        break;
+      case 'Parent Topic':
+        url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
              row.ParentID + '&parentID=' + row.ParentTopicID;
-      result = <td><a href ={url}>{cell}</a></td>;
+        result = <td><a href ={url}>{cell}</a></td>;
     }
 
     return result;
@@ -125,10 +125,10 @@ HelpEditor.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <HelpEditor
-      Module="help_editor"
-      dataURL={loris.BaseURL + '/help_editor/?format=json'}
-    />,
-    document.getElementById('lorisworkspace')
+      <HelpEditor
+        Module="help_editor"
+        dataURL={loris.BaseURL + '/help_editor/?format=json'}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });

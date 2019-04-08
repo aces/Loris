@@ -45,7 +45,7 @@ class ExaminerIndex extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+        .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -57,12 +57,12 @@ class ExaminerIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
   }
 
   /**
@@ -72,7 +72,7 @@ class ExaminerIndex extends Component {
    * @param {string} value - value of the form element
    */
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -85,9 +85,9 @@ class ExaminerIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
-    let formData = this.state.formData;
-    let formObject = new FormData();
-    for (let key in formData) {
+    const formData = this.state.formData;
+    const formObject = new FormData();
+    for (const key in formData) {
       if (formData[key] !== '') {
         formObject.append(key, formData[key]);
       }
@@ -100,22 +100,22 @@ class ExaminerIndex extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => {
-      if (resp.ok && resp.status === 200) {
-        swal('Success!', 'Examiner added.', 'success').then((result) => {
-          if (result.value) {
-            this.fetchData();
+        .then((resp) => {
+          if (resp.ok && resp.status === 200) {
+            swal('Success!', 'Examiner added.', 'success').then((result) => {
+              if (result.value) {
+                this.fetchData();
+              }
+            });
+          } else {
+            resp.text().then((message) => {
+              swal('Error!', message, 'error');
+            });
           }
+        })
+        .catch((error) => {
+          console.error(error);
         });
-      } else {
-        resp.text().then((message) => {
-          swal('Error!', message, 'error');
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   /**
@@ -223,7 +223,7 @@ class ExaminerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
+    /**
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in examiner.class.inc
     */
@@ -273,11 +273,11 @@ ExaminerIndex.propTypes = {
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <ExaminerIndex
-      dataURL={`${loris.BaseURL}/examiner/?format=json`}
-      submitURL={`${loris.BaseURL}/examiner/`}
-      hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+      <ExaminerIndex
+        dataURL={`${loris.BaseURL}/examiner/?format=json`}
+        submitURL={`${loris.BaseURL}/examiner/`}
+        hasPermission={loris.userHasPermission}
+      />,
+      document.getElementById('lorisworkspace')
   );
 });
