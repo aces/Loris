@@ -36,7 +36,7 @@ class AnonymousUserTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,11 +45,11 @@ class AnonymousUserTest extends TestCase
     }
 
     /**
-     * Tests getSiteNames function,it will return an empty array.
+     * Tests getSiteNames function which should return an empty array.
      *
      * @return void
      */
-    public function testGetSiteNames()
+    public function testGetSiteNames(): void
     {
       $this->assertEquals(array(),$this->anonymousUser->getSiteNames());
     }
