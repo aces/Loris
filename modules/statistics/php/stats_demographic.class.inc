@@ -154,6 +154,11 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
+        //FIXME visits is never initialized properly though it is used in
+        //functions below. This declaration was added to satisfy phan but work
+        //should be done to properly populate this value. Until then there is
+        //the possibility of errors arising in the demographic stats.
+        $visits      = array();
         $db          = \Database::singleton();
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting('useProjects');
@@ -189,17 +194,17 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //SUBPROJECTS
-        $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+        $subprojectQuery = '';
+        // Only search for subprojects if $demographicProject is a positive int.
+        if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojList ="";
-            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
             foreach ($subprojects as $key=>$val) {
                 $subprojList .= $key.",";
             }
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
             }
         }
 
@@ -257,8 +262,8 @@ class Stats_Demographic extends \NDB_Form
                           AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active = 'Y'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -286,8 +291,8 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Active='Y'
                           AND (ps.participant_status=1
                                OR ps.participant_status IS NULL)
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -314,8 +319,8 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -341,8 +346,8 @@ class Stats_Demographic extends \NDB_Form
                           AND (ps.participant_status=1 OR
                                ps.participant_status IS NULL)
                           AND c.Sex='Male'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -372,8 +377,8 @@ class Stats_Demographic extends \NDB_Form
                           AND (ps.participant_status=1
                                OR ps.participant_status IS NULL)
                           AND c.Sex='Female'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -404,8 +409,8 @@ class Stats_Demographic extends \NDB_Form
                           AND (ps.participant_status=1
                           OR ps.participant_status IS NULL)
                           AND c.Active='Y'
-                          $Param_Project
-                          $Param_Site) 
+                          $paramProject
+                          $paramSite) 
                                 as res
               GROUP BY rowid",
             $this->params ?? array()
@@ -462,7 +467,7 @@ class Stats_Demographic extends \NDB_Form
                 WHERE s.Active='Y' 
                     AND c.RegistrationCenterID <> '1'
                     AND s.CenterID <> '1'
-                    $Param_Project
+                    $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat

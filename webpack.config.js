@@ -20,9 +20,9 @@ const config = [{
     './modules/conflict_resolver/js/resolvedConflictsIndex.js': './modules/conflict_resolver/jsx/resolvedConflictsIndex.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
-    './modules/candidate_list/js/AccessProfilePanel.js': './modules/candidate_list/jsx/AccessProfilePanel.js',
-    './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
+    './modules/candidate_list/js/openProfileForm.js': './modules/candidate_list/jsx/openProfileForm.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
+    './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',
     './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',
     './modules/data_integrity_flag/js/dataIntegrityFlagIndex.js': './modules/data_integrity_flag/jsx/dataIntegrityFlagIndex.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
@@ -50,6 +50,7 @@ const config = [{
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
+    './modules/new_profile/js/NewProfileIndex.js': './modules/new_profile/jsx/NewProfileIndex.js',
     './modules/quality_control/js/qualityControlIndex.js': './modules/quality_control/jsx/qualityControlIndex.js',
     './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
   },
@@ -126,7 +127,7 @@ const config = [{
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
-  config.push(projConfig);
+  config[0].entry = Object.assign(config[0].entry, projConfig);
 }
 
 module.exports = config;

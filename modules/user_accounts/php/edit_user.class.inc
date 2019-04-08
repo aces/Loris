@@ -1030,6 +1030,10 @@ class Edit_User extends \NDB_Form
                         . 'are identical: please choose another one';
                 }
             }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_Group'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
+            }
         }
 
         // if password is generated then the email user button should be clicked
@@ -1151,7 +1155,7 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        if (!is_null($passwords['Password_hash'] ?? null)) {
+        if (!is_null($passwords)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 

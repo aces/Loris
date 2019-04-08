@@ -386,7 +386,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
-                $errors['mri_file'],
+                $errors['mriFile'],
                 "This file has already been uploaded."
             );
         }

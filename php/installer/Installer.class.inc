@@ -12,8 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-use \LORIS\Installer\Database as Database;
-
+namespace LORIS\Installer;
 /**
  * The Installer class handles all the logic used by the installdb.php
  * script under htdocs. It's put in a class for testability (even if there
@@ -124,8 +123,8 @@ class Installer
     {
         // Check PHP version is supported.
         if (PHP_MAJOR_VERSION < 7) {
-            $this->_lastErr = "PHP version 7 or higher is required to run "
-            . "LORIS. $PHP_RELEASE_VERSION is not supported.";
+            $this->_lastErr = 'PHP version 7 or higher is required to run '
+            . 'LORIS. ' . PHP_RELEASE_VERSION . ' is not supported.';
             return false;
         }
 
@@ -141,14 +140,14 @@ class Installer
         // Check that the PDO is able to connect to MySQL.
         try {
             // and check that the MySQL driver is available.
-            $drivers = PDO::getAvailableDrivers();
+            $drivers = \PDO::getAvailableDrivers();
             if (in_array("mysql", $drivers) == false) {
                 $this->_lastErr = "You do not appear to have MySQL support"
                 . " available in PHP. Aborting.\n"
                 . " Please check your system dependencies and try again.";
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->_lastErr = "You do not appear to have PDO support in your "
             . "version of PHP, which is required to access the database.";
             return false;
@@ -193,7 +192,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -223,7 +222,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -302,7 +301,7 @@ class Installer
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -324,7 +323,6 @@ class Installer
 
         $this->_updateConfig($DB, "imagePath", $datadir);
         $this->_updateConfig($DB, "data", $datadir);
-        $this->_updateConfig($DB, "mincPath", $datadir);
         $this->_updateConfig($DB, "MRICodePath", $datadir);
 
         // Update the host based and URL based on the location that
@@ -336,7 +334,7 @@ class Installer
         // what it is, as long as the server always uses the same one to
         // validate tokens. So we use the new user password code to generate a
         // really long password and use that as the key.
-        $this->_updateConfig($DB, "JWTKey", User::newPassword(64));
+        $this->_updateConfig($DB, "JWTKey", \User::newPassword(64));
     }
 
     /**
@@ -346,7 +344,7 @@ class Installer
      * @param string   $setting The setting name to be updated.
      * @param string   $value   The value to set $setting to.
      *
-     * @return none
+     * @return void
      */
     private function _updateConfig($DB, $setting, $value)
     {
@@ -422,7 +420,7 @@ class Installer
         $connectHost = $DB->PDO->query(
             "SELECT host FROM `mysql`.`user`
 		WHERE CONCAT(user, '@', host)=CURRENT_USER"
-        )->fetch(PDO::FETCH_ASSOC);
+        )->fetch(\PDO::FETCH_ASSOC);
 
         if (!is_array($connectHost) || empty($connectHost['host'])) {
             // This should never happen. It would mean that the user
@@ -443,7 +441,7 @@ class Installer
              'q_host' => $connectHost,
             ]
         );
-        $results    = $userExistsQ->fetchAll(PDO::FETCH_ASSOC);
+        $results    = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
         $userExists = false;
 
         $quotedUser = $DB->PDO->quote($values['lorismysqluser']) .
@@ -460,7 +458,8 @@ class Installer
                 $values["dbname"],
                 $values["lorismysqluser"],
                 $values["lorismysqlpassword"]
-            )) {
+            )
+            ) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;

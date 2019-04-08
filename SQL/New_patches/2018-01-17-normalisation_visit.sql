@@ -20,6 +20,6 @@ CREATE TABLE `visit_project_subproject_rel` (
 
 
 INSERT INTO visit (SELECT ID, Visit_label FROM Visit_Windows);
-INSERT INTO visit (SELECT null, Visit_label FROM session WHERE Visit_label NOT IN (SELECT VisitName FROM visit));
+INSERT IGNORE INTO visit (SELECT null, Visit_label FROM session WHERE Visit_label NOT IN (SELECT VisitName FROM visit));
 
 -- add visit from config.xml

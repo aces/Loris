@@ -17,8 +17,8 @@
 namespace LORIS\Http;
 
 /**
- * A LORIS Http Response is an implementation of the PSR15 ResponseInterface to use
- * in LORIS.
+ * A LORIS Http Response is an implementation of the PSR15 ResponseInterface to
+ * use in LORIS.
  *
  * It is intended to reduce our coupling to any particular PSR15 implementation.
  */
