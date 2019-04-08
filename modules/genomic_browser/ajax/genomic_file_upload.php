@@ -188,7 +188,8 @@ function moveFileToFS(&$fileToUpload)
         if (move_uploaded_file(
             $fileToUpload->tmp_name,
             $fileToUpload->full_path
-        )) {
+        )
+        ) {
             reportProgress(99, "File successfully copied!");
         }
     } catch (Exception $ex){

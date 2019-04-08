@@ -419,8 +419,7 @@ class CouchDB
      *
      * @param string  $url        The URL relative to the server to make a POST
      *                            request to.
-     * @param array   $data       Associative array representing the JSON document
-     *                            to POST.
+     * @param string  $data       String representing the response from the server
      * @param array   $headers    The extra HTTP headers to send with the request
      * @param boolean $printValue If true the return from CouchDB will be printed
      *                            instead of returned. This avoids the overhead of
@@ -432,9 +431,9 @@ class CouchDB
      */
     function _postURL(
         string $url,
-        array $data,
-        array $headers = array(),
-        bool $printValue = false
+        string $data,
+        array  $headers = array(),
+        bool   $printValue = false
     ): ?string {
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
@@ -533,6 +532,11 @@ class CouchDB
         }
         $json = $this->_getRelativeURL($url);
         $data = json_decode($json, true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
             return array();
@@ -712,6 +716,11 @@ class CouchDB
             return $query;
         }
         $data = json_decode($query, true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
 
         if (isset($data['error']) && $data['error'] == 'not_found') {
             return array();

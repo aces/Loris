@@ -323,7 +323,6 @@ class Installer
 
         $this->_updateConfig($DB, "imagePath", $datadir);
         $this->_updateConfig($DB, "data", $datadir);
-        $this->_updateConfig($DB, "mincPath", $datadir);
         $this->_updateConfig($DB, "MRICodePath", $datadir);
 
         // Update the host based and URL based on the location that
@@ -459,7 +458,8 @@ class Installer
                 $values["dbname"],
                 $values["lorismysqluser"],
                 $values["lorismysqlpassword"]
-            )) {
+            )
+            ) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;

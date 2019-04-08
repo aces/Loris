@@ -215,7 +215,8 @@ class File_Upload
             if (!$this->file->moveUploadedFile(
                 $this->destinationDirectory,
                 $this->destinationFilename
-            )) {
+            )
+            ) {
                 $this->setError(
                     $this->fieldName,
                     "Could not move file to "

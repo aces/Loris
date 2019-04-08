@@ -118,15 +118,18 @@ class SinglePointLogin
         ) {
             $this->_lastError = 'The password is weak, or'
                . ' the passwords do not match';
+            return false;
         }
 
         if (password_verify($_POST['password'], $data['Password_hash'])) {
             $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
             return false;
+        }
+        // Check if password is present in existing data breaches.
+        if ($user->pwnedPassword($_POST['password'])) {
+            $this->_lastError = 'The password you chose is too common. Please '
+                . 'choose a more unique password.';
+                return false;
         }
 
         // Reset passwordExpired flag
@@ -277,7 +280,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (intval($row['User_count'] ?? 0) !== 1) {
+        if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
              * attacker will have a harder time knowing the difference
              * between a bad username and a bad password.

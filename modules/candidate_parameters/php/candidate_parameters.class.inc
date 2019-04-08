@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the NDB_Form_candidate_parameters class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -19,7 +19,7 @@ namespace LORIS\candidate_parameters;
  * Displays a list of candidate_parameter categories
  * and tabs to view them.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -55,61 +55,6 @@ class Candidate_Parameters extends \NDB_Form
     function display()
     {
         return "";
-    }
-
-    /**
-     * Gets the participant_status options from participant_status_options
-     * getParticipantStatusOptions()
-     *
-     * @note   This function was moved to the Candidate class and should be removed
-     *       in the next major release
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function getParticipantStatusOptions()
-    {
-        error_log(
-            "Function getParticipantStatusOptions() was moved out of ".
-            "the NDB_Form_Candidate_Parameters class and will be removed in ".
-            "the next Major release. Refer to the Candidate class for new location."
-        );
-        $DB      =& \Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
-            WHERE parentID IS NULL",
-            array()
-        );
-        return \Candidate::getParticipantStatusOptions();
-    }
-
-    /**
-     * Gets the participant_status options suboptions from participant_status_options
-     * getParticipantStatusSubOptions()
-     *
-     * @param int $parentID parent ID of the participant status option
-     *
-     * @note This function was moved to the Candidate class and should be removed
-     *       in the next major release
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    function getParticipantStatusSubOptions($parentID)
-    {
-        error_log(
-            "Function getParticipantStatusSubOptions() was moved out of ".
-            "the NDB_Form_Candidate_Parameters class and will be removed in ".
-            "the next Major release. Refer to the Candidate class for new location."
-        );
-        $DB      =& \Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
-            WHERE parentID=:pid",
-            array('pid' => $parentID)
-        );
-        return Candidate::getParticipantStatusSubOptions($parentID);
     }
 
     /**

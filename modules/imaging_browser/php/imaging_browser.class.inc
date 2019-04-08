@@ -358,9 +358,9 @@ END";
                 array()
             );
             $scan_types = $allAr;
-            foreach ($types_q as $key=>$sequenceType) {
-                $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
-            }
+        foreach ($types_q as $key=>$sequenceType) {
+            $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
+        }
 
             $outputTypes = $DB->pselect(
                 "SELECT DISTINCT OutputType AS outputType 
