@@ -50,6 +50,7 @@ const config = [{
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
+    './modules/new_profile/js/NewProfileIndex.js': './modules/new_profile/jsx/NewProfileIndex.js',
     './modules/quality_control/js/qualityControlIndex.js': './modules/quality_control/jsx/qualityControlIndex.js',
     './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
     './modules/publication/js/publicationIndex.js': './modules/publication/jsx/publicationIndex.js',
