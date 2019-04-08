@@ -223,6 +223,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
             }
+
             // Now go ahead and instantiate it
             $obj = new $class(
                 new Module($instrument, $base ."project/"),

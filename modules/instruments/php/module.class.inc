@@ -65,6 +65,7 @@ class Module extends \Module
             $commentID,
             $page
         );
+        $request = $request->withAttribute('pageclass', $instrument);
 
         return $instrument->process($request, $instrument);
     }
