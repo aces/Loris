@@ -329,6 +329,7 @@ class CreateTimepoint extends React.Component {
                   label={'Create Time Point'}
                   type={'submit'}
                   disable={this.state.form.disabled}
+                  name={'fire_away'}
                 />
               </FormElement>
             </Panel>

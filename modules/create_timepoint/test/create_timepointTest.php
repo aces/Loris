@@ -96,15 +96,14 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
-        )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("project")
-        )->sendKeys($project);
+        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subproject"));
+        $elementSid = new WebDriverSelect($selectSid);
+        $elementSid->selectByVisibleText($subproject);
+
+        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visit"));
+        $elementVl = new WebDriverSelect($selectVl);
+        $elementVl->selectByVisibleText($visitlabel);
+
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
