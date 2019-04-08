@@ -1467,7 +1467,6 @@ class CheckboxElement extends React.Component {
         <div className={'col-sm-12'}>
           <label htmlFor={this.props.id}
                  className={''}
-                 style={{padding: '5px'}}
           >
             <div style={divStyle}>
               <input
@@ -1538,6 +1537,7 @@ class ButtonElement extends Component {
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
+            {...(this.props.style ? {style: this.props.style} : {})}
             onClick={this.handleClick}
           >
             {this.props.label}
@@ -1553,6 +1553,7 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  style: PropTypes.object,
   columnSize: PropTypes.string,
   buttonClass: PropTypes.string,
   onUserInput: PropTypes.func,

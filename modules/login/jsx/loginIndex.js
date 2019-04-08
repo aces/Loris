@@ -230,6 +230,7 @@ class Login extends Component {
               name={'login'}
               id={'login'}
               columnSize={'col-sm-12'}
+              style={{margin: 0}}
               buttonClass={'btn btn-primary btn-block'}
             />
           </FormElement>
