@@ -229,8 +229,9 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getExternalLinks() method.Giving a valid ExternalLink, it should
-     * return an array containing the URL associated with the link text.
+     * Test getSubprojectSettings() method. Giving a projectID, it should
+     * return an array containing the subproject information.
+     * Giving an invalid ID, it should return an empty array.
      *
      * @return void
      */
