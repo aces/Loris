@@ -96,7 +96,7 @@ class CLI_Helper
         $error = "[-] ERROR: Command `$cmd` failed (error code $status)" . PHP_EOL;
         if (is_iterable($output)) {
             foreach ($output as $item) {
-                $error[] = $item . PHP_EOL;
+                $error .= $item . PHP_EOL;
             }
         }
         return $error;

@@ -57,11 +57,11 @@ if (!$b->apacheRequirementSatisfied()) {
 // Check "packages" -- apt, MySQL extensions, and other misc. tools
 $missingPackages = $b->getMissingPackages();
 if (count($missingPackages) > 0) {
-    $report[] = "Found missing packages required by LORIS:";
-    foreach ($missingPackages as $name) {
-        $report[] = "\t- $name";
-    }
     if (!installMode($helper)) {
+        $report[] = "Found missing packages required by LORIS:";
+        foreach ($missingPackages as $name) {
+            $report[] = "\t- $name";
+        }
         $report[] = "These may be installed by running this script with the " .
             "--install flag.";
     } else {
