@@ -66,9 +66,14 @@ class AjaxTimepoint extends \NDB_Page
          */
         $user = $request->getAttribute('user');
         if (!isset($requestBody['identifier'])) {
-            throw new LorisException(
-                'Failed to retrieve data for create timepoint.'
-            );
+            return (new \LORIS\Http\Response())
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        'Failed to retrieve data for create timepoint.'
+                    )
+                );
         }
         $identifier = intval($requestBody['identifier']);
         $candidate  = \Candidate::singleton($identifier);
