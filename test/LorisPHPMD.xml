@@ -19,6 +19,9 @@
 
     <rule ref="rulesets/design.xml">
         <exclude name="CouplingBetweenObjects" />
+        <exclude name="GotoStatement" />
+        <exclude name="NumberOfChildren" />
+        <exclude name="DepthOfInheritance" />
         <exclude name="ExitExpression" />
     </rule>
 </ruleset>
