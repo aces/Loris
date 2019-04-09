@@ -281,7 +281,6 @@ class AddSurvey extends \NDB_Form
             $deps,
             array(
              $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
-             $baseURL . "/survey_accounts/js/columnFormatter.js",
             )
         );
     }
