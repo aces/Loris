@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
+
 ini_set("max_input_vars", '4000');
 $user =& User::singleton();
 if (!$user->hasPermission('dataquery_view')) {
