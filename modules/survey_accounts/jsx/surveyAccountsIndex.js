@@ -113,6 +113,7 @@ class SurveyAccountsIndex extends Component {
 
     return (
        <FilterableDataTable
+         name="surveyAccounts"
          title="Survey Accounts"
          data={this.state.data.Data}
          fields={fields}
