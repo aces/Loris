@@ -103,7 +103,7 @@ class CLI_Helper
     }
 
     /**
-     * Returns the OS distribution based on the /etc/os-release file.
+     * Returns the OS distribution based on the hostnamectl tools.
      *
      * @return string The distribution.
      */
