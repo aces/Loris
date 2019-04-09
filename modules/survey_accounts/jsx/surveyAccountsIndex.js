@@ -105,9 +105,7 @@ class SurveyAccountsIndex extends Component {
       {label: 'Status', show: true},
     ];
   const addSurvey = () => {
-    window.location.replace(
-      loris.BaseURL+'/survey_accounts/addSurvey/'
-    );
+    location.href='/survey_accounts/addSurvey/';
   };
   const actions = [
     {label: 'Add Survey', action: addSurvey},
