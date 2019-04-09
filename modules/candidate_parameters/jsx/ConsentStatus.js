@@ -144,7 +144,7 @@ class ConsentStatus extends Component {
 
                 let consentWithdrawal = consentStatus + '_withdrawal';
                 let consentWithdrawal2 = consentStatus + '_withdrawal2';
-              
+
                 date1 = myFormData[consentWithdrawal] ?
                     myFormData[consentWithdrawal] : null;
                 date2 = myFormData[consentWithdrawal2] ?
