@@ -17,7 +17,7 @@
  * Defines an interface to be extended by classes corresponding to different
  * UNIX-like distributions. LORIS requires a minimum PHP and Apache version as
  * well as various system tools and PHP extensions in order to function. As
- * different systems will have differnt package managers and other programs used
+ * different systems will have different package managers and other programs used
  * to manage software, this cannot be done in a generic way. The classes
  * implementing this interface are responsible for using the appropriate OS tools
  * to install the required software.
