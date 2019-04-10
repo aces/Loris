@@ -247,7 +247,7 @@ class AjaxTimepoint extends \NDB_Page
             $user = \User::singleton();
             $DB   = \Database::singleton();
             $user_list_of_sites = $user->getData('CenterIDs');
-            $num_sites          = count($user->getData('CenterIDs'));
+            $num_sites          = count($user_list_of_sites);
             $psc_labelOptions   = array();
             if ($num_sites > 1) {
                 $psc_labelOptions = array(null => '');
