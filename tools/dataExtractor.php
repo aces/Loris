@@ -220,15 +220,19 @@ if ($mode === VISIT_EXPORT)
         }
         unset($result);
 
-        // Always include the CommentID column for intruments.
-        if (strpos($column, 'CommentID')  === false) {
-            $column = 'CommentID,' . $column;
-        }
-
         $headers = explode(',', $column);
-        $query = "SELECT $column 
-            FROM $table 
-            WHERE DATE(Date_taken) < :cutoffDate";
+        
+        // Add abbreviations to columns. 
+        // E.g. QCd --> s.QCd (for `session s` in SQL statement).
+        $columnQuery = implode(',', prependTableAbbreviation($headers, 't'));
+
+        $query = "SELECT c.PSCID, s.Visit_label, $columnQuery
+            from candidate c
+            INNER JOIN session s ON c.CandID = s.CandID
+            INNER JOIN flag f ON f.SessionID = s.ID
+            INNER JOIN $table t ON t.CommentID = f.CommentID
+            WHERE DATE(t.Date_taken) < :cutoffDate";
+
         $params['cutoffDate'] = $cutoffDate;
     }
 }
@@ -291,13 +295,13 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
 }
 
 /**
- * Callback used to append the string 's.' to all column names to be used in
- * querying the `session` table.
  *
- * @param string $column The value to be prepended to.
- *
- * @return string
+ * @return array
  */
-function prependSessionAbbreviation(string $column) {
-    return "s.$column";
+function prependTableAbbreviation(array $columnNames, string $prefix) {
+    $result = array();
+    foreach ($columnNames as $column) {
+        $result[] = "$prefix.$column";
+    }
+    return $result;
 }
