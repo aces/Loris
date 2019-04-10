@@ -133,22 +133,14 @@ if ($mode === VISIT_EXPORT)
         'MRIQCPending',
         'MRICaveat'
     );
-    // Prepend PSCID to the array column headers so that it will be properly
-    // marked in the CSV output.
-    array_unshift($sessionColumns, 'PSCID');
-    $headers = $sessionColumns;
 
     // Build query information
-    
     
     // Add abbreviations to columns. 
     // E.g. QCd --> s.QCd (for `session s` in SQL statement).
     $columnQuery = implode(
         ',', 
-        array_map(
-            'prependSessionAbbreviation', 
-            $sessionColumns
-        )
+        prependTableAbbreviation($sessionColumns, 's')
     );
 
     $query = "SELECT " .
@@ -161,6 +153,11 @@ if ($mode === VISIT_EXPORT)
         "AND DATE(Date_visit) < :cutoffDate";
 
     $params = array('cutoffDate' => $cutoffDate);
+
+    // Prepend PSCID to the array column headers so that it will be properly
+    // marked in the CSV output.
+    array_unshift($sessionColumns, 'PSCID');
+    $headers = $sessionColumns;
 } else {
     // COLUMN and INSTRUMENT export are similar in many ways so they have shared
     // preprocessing below.
@@ -221,6 +218,8 @@ if ($mode === VISIT_EXPORT)
         unset($result);
 
         $headers = explode(',', $column);
+
+
         
         // Add abbreviations to columns. 
         // E.g. QCd --> s.QCd (for `session s` in SQL statement).
@@ -234,6 +233,11 @@ if ($mode === VISIT_EXPORT)
             WHERE DATE(t.Date_taken) < :cutoffDate";
 
         $params['cutoffDate'] = $cutoffDate;
+        
+        // Prepend PSCID and Visit_label to the CSV headers so that they will
+        // be recorded properly in the output
+        array_unshift($headers, 'Visit_label');
+        array_unshift($headers, 'PSCID');
     }
 }
 

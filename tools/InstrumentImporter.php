@@ -37,63 +37,41 @@ class InstrumentImporter extends DataImporter {
 
     function buildSQLQuery(array $row) {
         $data = $row;
-        // Build the new CommentID by replacing the old CandID value with the
-        // new CandID and the old PSCID value with the new PSCID.
-        $oldPSCID = $this->extractPSCIDFromCommentID($data['CommentID']);
-        $newPSCID = $this->newPSCID($oldPSCID);
-        $newCommentID = $this->newCandID($newPSCID) . $newPSCID . substr(
-            $data['CommentID'], 
-            self::CANDID_LENGTH + self::PSCID_LENGTH
-        );
-        $data['CommentID'] = $newCommentID;
-        $command['data'] = $data;
-        $this->INSERTQueue[] = $command;
-    }
 
-    function calculateSharedCandidates() {
-        // CommentIDs begin with a CandID followed by a PSCID. In order to find
-        // the old PSCID we ignore the CandID and check if the characters
-        // immediatelly following are equal to an old PSCID value in the mapping
-        // file. 
-        // This requires an O(n^2) loop.
-        // TODO Need a branch to check for DDE_ CommentIDs.
-        foreach ($this->dataRows as $row) {
-            foreach (array_keys($this->PSCIDMapping) as $oldPSCID) {
-                // Check if the characeters immediately following CandID are equal
-                // to an old PSCID in the mapping file. If so, then add this to
-                // the lsit of shared candidates.
-                $pscidFound = strpos(
-                    $row['CommentID'], 
-                    $oldPSCID, 
-                    self::CANDID_LENGTH
-                ) === self::CANDID_LENGTH;
-                if ($pscidFound) {
-                    $this->sharedCandidates[] = $oldPSCID;
-                }
-            }
+        // Use the old PSCID to get the new CandID.
+        $newCandID = $this->newCandID($this->newPSCID($data['PSCID']));
+
+        // Retrieve the CommentID for this candidate/session/instrument using
+        // the new CandID and the visit label.
+        $query = "SELECT f.CommentID
+            FROM flag f
+            INNER JOIN session s ON s.ID = f.SessionID
+            INNER JOIN candidate c ON c.CandID = s.CandID
+            WHERE c.CandID = :newCandID AND s.Visit_label = :visitLabel;";
+
+        $newCommentID = \Database::singleton()->pselectOne(
+            $query, 
+            array(
+                'newCandID' => $newCandID,
+                'visitLabel' => $data['Visit_label']
+            )
+        );
+
+        if (empty($newCommentID)) {
+            $msg = "No CommentID could be found for candidate `%s`, " .
+                "visit label `%s`, and instrument `%s`";
+            echo sprintf($msg, $newCandID, $data['Visit_label'], $this->table)
+                . PHP_EOL;
+            return;
         }
-    }
 
-    /**
-     * CommentIDs begin with a CandID followed by a PSCID. This function grabs
-     * a number characters equal to PSCID_LENGTH
-     * from the CommentID, beginning at the index of CANDID_LENGTH.
-     */
-    function extractPSCIDFromCommentID(string $commentID) {
-        return substr(
-            $commentID, 
-            self::CANDID_LENGTH, 
-            self::PSCID_LENGTH
-        );
-    }
+        // PSCID and Visit_label in the source CSV ar eonly used for linking.
+        // They shouldn't be inserted into the database.
+        unset($data['PSCID'], $data['Visit_label']);
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides parent function by extracting the PSCID from the CommentID
-     * rather than directly querying a PSCID column.
-     */
-    function extractOldPSCIDFromRow(array $row) {
-        return $this->extractPSCIDFromCommentID($row['CommentID']);
+        $command['data'] = $data;
+        $command['where'] = array('CommentID' => $newCommentID);
+        $this->UPDATEQueue[] = $command;
     }
 }
+

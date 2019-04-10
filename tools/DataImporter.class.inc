@@ -69,17 +69,28 @@ abstract class DataImporter {
         );
     }
 
-    abstract function calculateSharedCandidates();
+    /**
+     * {@inheritDoc}
+     */
+    function calculateSharedCandidates() {
+        // Filter out candidates present in data export but not included in the
+        // mapping file. If the candidates are not present in the mapping file
+        // that means that they are being deliberately excluded from import.
+        foreach ($this->dataRows as $row) {
+            $oldPSCID = $row[$this->dataHeaders[self::OLD_PSCID]];
+            if (!is_null($this->newPSCID($oldPSCID))) {
+                $this->sharedCandidates[] = $oldPSCID;
+            }
+        }
+    }
 
     function processData() {
         foreach ($this->dataRows as $row) {
             // Get the old PSCID. Should always be in the column at index 0.
             $oldPSCID = $this->extractOldPSCIDFromRow($row);
-            echo "Old PSCID: $oldPSCID\n";
 
             // Skip candidates not present in mapping file.
             if (!in_array($oldPSCID, $this->sharedCandidates, true)) {
-                echo "skipping\n";
                 continue;
             }
 
@@ -199,11 +210,11 @@ SQL;
                 $value = $this->quoteWrapUnlessNULL($value);
                 $setString[] = "$column = $value";
             }
-            // Interpolate the $setString into the SQL heredoc above and add it to the
-            // final $report output.
             foreach ($command['where'] as $column => $value) {
                 $whereString[] = "$column = '$value'";
             }
+            // Interpolate the $setString into the SQL heredoc above and add it to the
+            // final $report output.
             $report[] = sprintf(
                 $formattedCommand, 
                 $this->table,
