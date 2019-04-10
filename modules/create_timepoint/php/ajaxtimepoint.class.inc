@@ -75,8 +75,13 @@ class AjaxTimepoint extends \NDB_Page
                     )
                 );
         }
-        $identifier = intval($requestBody['identifier']);
-        $candidate  = \Candidate::singleton($identifier);
+        $requestBody['identifier'] = isset($requestBody['identifier']) ?
+            intval($requestBody['identifier']) : null;
+        $requestBody['psc']        = empty($requestBody['psc']) ?
+            null : $requestBody['psc'];
+        $candidate = \Candidate::singleton(
+            $requestBody['identifier']
+        );
         if (!$user->hasPermission('data_entry')
             && !(in_array(
                 intval($candidate->getData('RegistrationCenterID')),
@@ -94,10 +99,6 @@ class AjaxTimepoint extends \NDB_Page
                     )
                 );
         }
-        /**
-         * Sanitize $postResponse data.
-         */
-        $requestBody = $this->sanitizer($requestBody);
 
         /**
          * Response to reply.
@@ -112,22 +113,6 @@ class AjaxTimepoint extends \NDB_Page
                     json_encode($response)
                 )
             );
-    }
-
-    /**
-     * Sanitize the $postResponse data.
-     *
-     * @param array $values that have been sanitized.
-     *
-     * @return array
-     */
-    function sanitizer(array $values) : array
-    {
-        // Verify cand ID.
-        $values['identifier'] = isset($values['identifier']) ?
-            intval($values['identifier']) : null;
-        $values['psc']        = empty($values['psc']) ? null : $values['psc'];
-        return $values;
     }
 
     /**
