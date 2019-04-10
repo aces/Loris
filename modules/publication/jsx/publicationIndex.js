@@ -56,7 +56,7 @@ class PublicationIndex extends React.Component {
         </button>
       );
     }
-    let tabList = [
+    const tabList = [
       {
         id: 'browse',
         label: 'Browse',
@@ -122,14 +122,14 @@ class PublicationIndex extends React.Component {
       return null;
     }
     // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
+    const row = {};
     rowHeaders.forEach(function(header, index) {
       row[header] = rowData[index];
     }, this);
-    let classes = [];
+    const classes = [];
     if (column === 'Title') {
-      let pubID = row['Publication ID'];
-      let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
+      const pubID = row['Publication ID'];
+      const viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
 
       return (
         <td>

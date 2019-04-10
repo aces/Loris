@@ -24,7 +24,7 @@ class ViewProject extends React.Component {
   }
 
   validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
+    const formErrors = this.state.formErrors;
 
     // don't supply error if email is blank
     if (email === '' || email === null || email === undefined) {
@@ -43,15 +43,15 @@ class ViewProject extends React.Component {
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal(
-        'Please fix any remaining form errors before submission',
-        '',
-        'error'
+          'Please fix any remaining form errors before submission',
+          '',
+          'error'
       );
       return;
     }
-    let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
+    const formData = this.state.formData;
+    const formObj = new FormData();
+    for (const key in formData) {
       if (formData.hasOwnProperty(key) && formData[key] !== '') {
         let formVal;
         if (Array.isArray(formData[key])) {
@@ -87,11 +87,11 @@ class ViewProject extends React.Component {
   }
 
   fetchData() {
-    let self = this;
+    const self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        let formData = {
+        const formData = {
           title: data.title,
           description: data.description,
           leadInvestigator: data.leadInvestigator,
@@ -107,10 +107,10 @@ class ViewProject extends React.Component {
         // set formdata for file meta data
         if (data.files) {
           data.files.forEach(function(f) {
-            let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-            let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-            let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+            const existFileFlag = 'existingUpload_';
+            const pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
+            const pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
+            const pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
             formData[pubType] = f.PublicationUploadTypeID;
             formData[pubCit] = f.Citation;
             formData[pubVer] = f.Version;
@@ -144,12 +144,12 @@ class ViewProject extends React.Component {
   }
 
   createFileDownloadLinks() {
-    let files = this.state.files;
-    let toReturn = [];
+    const files = this.state.files;
+    const toReturn = [];
     files.forEach(function(f) {
-      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
-      let link = <a href={download}>{f.URL}</a>;
-      let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
+      const download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
+      const link = <a href={download}>{f.URL}</a>;
+      const uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
       toReturn.push(
           <StaticElement
             label={'Download ' + uploadType}
@@ -158,18 +158,18 @@ class ViewProject extends React.Component {
       );
       if (f.Citation) {
         toReturn.push(
-          <StaticElement
-            label="Citation"
-            text={f.Citation}
-          />
+            <StaticElement
+              label="Citation"
+              text={f.Citation}
+            />
         );
       }
       if (f.Version) {
         toReturn.push(
-          <StaticElement
-            label="Version"
-            text={f.Version}
-          />
+            <StaticElement
+              label="Version"
+              text={f.Version}
+            />
         );
       }
     }, this);
@@ -178,20 +178,20 @@ class ViewProject extends React.Component {
   }
 
   createMenuFilterLinks(stringArr, filterVar) {
-    let links = [];
+    const links = [];
     stringArr.forEach(
-      function(value) {
-        links.push(
-          <span>
-            <a
-              href={loris.BaseURL + '/publication/?' + filterVar + '=' + value}
-            >
-              {value}
-            </a>
+        function(value) {
+          links.push(
+              <span>
+                <a
+                  href={loris.BaseURL + '/publication/?' + filterVar + '=' + value}
+                >
+                  {value}
+                </a>
             ; &nbsp;
-          </span>
-        );
-      }
+              </span>
+          );
+        }
     );
 
     return links;
@@ -208,8 +208,8 @@ class ViewProject extends React.Component {
 
     if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
-        this.state.formData.collaborators.map((c) => c.name),
-        'collaborators'
+          this.state.formData.collaborators.map((c) => c.name),
+          'collaborators'
       );
       collaborators = <StaticElement
         name="collaborators"
@@ -220,8 +220,8 @@ class ViewProject extends React.Component {
 
     if (this.state.formData.keywords.length > 0) {
       keywordLinks = this.createMenuFilterLinks(
-        this.state.formData.keywords,
-        'keywords'
+          this.state.formData.keywords,
+          'keywords'
       );
       keywords = <StaticElement
         name="keywords"
@@ -232,8 +232,8 @@ class ViewProject extends React.Component {
 
     if (this.state.formData.voiFields.length > 0) {
       voiLinks = this.createMenuFilterLinks(
-        this.state.formData.voiFields,
-        'voi'
+          this.state.formData.voiFields,
+          'voi'
       );
       vois = <StaticElement
         name="variablesOfInterest"
@@ -258,16 +258,16 @@ class ViewProject extends React.Component {
           text={this.state.formData.leadInvestigator}
         />
         <StaticElement
-         name="leadInvestigatorEmail"
-         label="Lead Investigator Email"
-         text={this.state.formData.leadInvestigatorEmail}
+          name="leadInvestigatorEmail"
+          label="Lead Investigator Email"
+          text={this.state.formData.leadInvestigatorEmail}
         />
         {collaborators}
         {keywords}
         {vois}
         {files}
       </div>
-   );
+    );
   }
 
   createEditableComponents() {
@@ -297,8 +297,8 @@ class ViewProject extends React.Component {
   }
 
   addListItem(formElement, value, pendingValKey) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement] || [];
+    const formData = this.state.formData;
+    const listItems = formData[formElement] || [];
     listItems.push(value);
     formData[formElement] = listItems;
     formData[pendingValKey] = null;
@@ -308,9 +308,9 @@ class ViewProject extends React.Component {
   }
 
   removeListItem(formElement, value) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement];
-    let index = listItems.indexOf(value);
+    const formData = this.state.formData;
+    const listItems = formData[formElement];
+    const index = listItems.indexOf(value);
 
     if (index > -1) {
       listItems.splice(index, 1);
@@ -323,7 +323,7 @@ class ViewProject extends React.Component {
   }
 
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -353,8 +353,8 @@ class ViewProject extends React.Component {
     let statusElement;
     let rejectReason;
     let reviewBtn;
-    let statusID = this.state.formData.status;
-    let status = this.state.statusOpts[statusID];
+    const statusID = this.state.formData.status;
+    const status = this.state.statusOpts[statusID];
     if (loris.userHasPermission('publication_approve')) {
       // if user has publication_approve permission, this means that status
       // in formData reflects the ID, not the description
@@ -387,7 +387,7 @@ class ViewProject extends React.Component {
         Approved: 'text-success',
         Rejected: 'text-danger',
       };
-      let statusText = (
+      const statusText = (
         <span className={statClassMap[status]}>
           <strong>{status}</strong>
         </span>

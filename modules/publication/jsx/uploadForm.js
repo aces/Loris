@@ -26,7 +26,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
+    const formErrors = this.state.formErrors;
 
     // don't supply error if email is blank
     if (email === '' || email === null || email === undefined) {
@@ -41,7 +41,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   fetchData() {
-    let self = this;
+    const self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -73,7 +73,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    const formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -81,8 +81,8 @@ class PublicationUploadForm extends React.Component {
   }
 
   addListItem(formElement, value, pendingValKey) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement] || [];
+    const formData = this.state.formData;
+    const listItems = formData[formElement] || [];
     listItems.push(value);
     formData[formElement] = listItems;
     formData[pendingValKey] = null;
@@ -92,9 +92,9 @@ class PublicationUploadForm extends React.Component {
   }
 
   removeListItem(formElement, value) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement];
-    let index = listItems.indexOf(value);
+    const formData = this.state.formData;
+    const listItems = formData[formElement];
+    const index = listItems.indexOf(value);
 
     if (index > -1) {
       listItems.splice(index, 1);
@@ -110,16 +110,16 @@ class PublicationUploadForm extends React.Component {
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal(
-        'Please fix any remaining form errors before submission',
-        '',
-        'error'
+          'Please fix any remaining form errors before submission',
+          '',
+          'error'
       );
       return;
     }
-    let formData = this.state.formData;
+    const formData = this.state.formData;
 
-    let formObj = new FormData();
-    for (let key in formData) {
+    const formObj = new FormData();
+    for (const key in formData) {
       if (formData.hasOwnProperty(key) && formData[key] !== '') {
         let formVal;
         if (Array.isArray(formData[key])) {
@@ -145,13 +145,13 @@ class PublicationUploadForm extends React.Component {
           numFiles: 0,
         });
         swal(
-          {
-            title: 'Submission Successful!',
-            type: 'success',
-          },
-          function() {
-            window.location.replace(loris.BaseURL + '/publication/');
-          }
+            {
+              title: 'Submission Successful!',
+              type: 'success',
+            },
+            function() {
+              window.location.replace(loris.BaseURL + '/publication/');
+            }
         );
       }.bind(this),
       error: function(jqXHR) {

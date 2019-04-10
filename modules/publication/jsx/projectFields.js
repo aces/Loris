@@ -14,8 +14,8 @@ class EmailElement extends React.Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
+    const disabled = this.props.disabled ? 'disabled' : null;
+    const required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
@@ -52,15 +52,15 @@ class EmailElement extends React.Component {
           {errorMessage}
         </div>
         <div className="col-sm-2">
-        <span>
-          <input
-            name={this.props.name + '_notify'}
-            type="checkbox"
-            onChange={this.props.toggleEmailNotify}
-            value={this.props.addressee}
-          />
-          <span>Send email notification?</span>
-        </span>
+          <span>
+            <input
+              name={this.props.name + '_notify'}
+              type="checkbox"
+              onChange={this.props.toggleEmailNotify}
+              value={this.props.addressee}
+            />
+            <span>Send email notification?</span>
+          </span>
         </div>
       </div>
     );
@@ -98,7 +98,7 @@ class ProjectFormFields extends React.Component {
   }
 
   deleteUpload(uploadID) {
-    let self = this;
+    const self = this;
     swal({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
@@ -107,10 +107,10 @@ class ProjectFormFields extends React.Component {
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
     },
-      function(willDelete) {
-        if (willDelete) {
-          let url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
-          $.ajax(
+    function(willDelete) {
+      if (willDelete) {
+        const url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
+        $.ajax(
             url,
             {
               method: 'DELETE',
@@ -118,17 +118,17 @@ class ProjectFormFields extends React.Component {
                 self.props.fetchData();
               },
             });
-        }
-      });
+      }
+    });
   }
 
   createFileFields() {
-    let fileFields = [];
+    const fileFields = [];
     // Create download link & edit fields for existing files
     if (this.props.files) {
       this.props.files.forEach(function(f) {
-        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.URL);
-        let link = (
+        const downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.URL);
+        const link = (
           <span>
             <a href={downloadURL}>{f.URL}</a>
             &nbsp;&nbsp;
@@ -139,72 +139,72 @@ class ProjectFormFields extends React.Component {
             />
           </span>
         );
-        let existFileFlag = 'existingUpload_';
-        let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-        let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-        let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
-        let pubTypeStr = this.props.uploadTypes[this.props.formData[pubType]];
+        const existFileFlag = 'existingUpload_';
+        const pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
+        const pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
+        const pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+        const pubTypeStr = this.props.uploadTypes[this.props.formData[pubType]];
         fileFields.push(
-          <div>
-            <StaticElement
-              label={pubTypeStr}
-              text={link}
-            />
-            <TextboxElement
-              name={pubCit}
-              label="Citation"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[pubCit]}
-            />
-            <TextboxElement
-              name={pubVer}
-              label="Publication Version"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[pubVer]}
-            />
-          </div>
+            <div>
+              <StaticElement
+                label={pubTypeStr}
+                text={link}
+              />
+              <TextboxElement
+                name={pubCit}
+                label="Citation"
+                onUserInput={this.props.setFormData}
+                value={this.props.formData[pubCit]}
+              />
+              <TextboxElement
+                name={pubVer}
+                label="Publication Version"
+                onUserInput={this.props.setFormData}
+                value={this.props.formData[pubVer]}
+              />
+            </div>
         );
       }, this);
     }
     // create fields for new files
     for (let i = 0; i <= this.props.numFiles; i++) {
-      let fileName = 'file_' + i;
+      const fileName = 'file_' + i;
       fileFields.push(
-        <FileElement
-          name={fileName}
-          id={'publicationUploadEl_' + i}
-          onUserInput={this.props.setFileData}
-          label="File to upload"
-          value={this.props.formData[fileName]}
-        />
+          <FileElement
+            name={fileName}
+            id={'publicationUploadEl_' + i}
+            onUserInput={this.props.setFileData}
+            label="File to upload"
+            value={this.props.formData[fileName]}
+          />
       );
       if (this.props.formData[fileName]) {
-        let publicationType = 'publicationType_' + i;
-        let publicationCitation = 'publicationCitation_' + i;
-        let publicationVersion = 'publicationVersion_' + i;
+        const publicationType = 'publicationType_' + i;
+        const publicationCitation = 'publicationCitation_' + i;
+        const publicationVersion = 'publicationVersion_' + i;
         fileFields.push(
-          <div>
-            <SelectElement
-              name={publicationType}
-              label="Publication Type"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[publicationType]}
-              options={this.props.uploadTypes}
-              required={true}
-            />
-            <TextboxElement
-              name={publicationCitation}
-              label="Citation"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[publicationCitation]}
-            />
-            <TextboxElement
-              name={publicationVersion}
-              label="Publication Version"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[publicationVersion]}
-            />
-          </div>
+            <div>
+              <SelectElement
+                name={publicationType}
+                label="Publication Type"
+                onUserInput={this.props.setFormData}
+                value={this.props.formData[publicationType]}
+                options={this.props.uploadTypes}
+                required={true}
+              />
+              <TextboxElement
+                name={publicationCitation}
+                label="Citation"
+                onUserInput={this.props.setFormData}
+                value={this.props.formData[publicationCitation]}
+              />
+              <TextboxElement
+                name={publicationVersion}
+                label="Publication Version"
+                onUserInput={this.props.setFormData}
+                value={this.props.formData[publicationVersion]}
+              />
+            </div>
         );
       }
     }
@@ -213,37 +213,37 @@ class ProjectFormFields extends React.Component {
   }
 
   createCollabEmailFields() {
-    let collabEmails = [];
+    const collabEmails = [];
     if (this.props.formData.collaborators) {
       this.props.formData.collaborators.forEach(
-        function(c, i) {
-          let name = 'collabEmail_' + c.name;
-          collabEmails.push(
-            <EmailElement
-              name={name}
-              label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
-              onUserInput={this.setCollaboratorEmail}
-              onUserBlur={this.props.validateEmail}
-              toggleEmailNotify={this.toggleEmailNotify}
-              errorMessage={this.props.formErrors[name]}
-              required={false}
-              value={this.props.formData.collaborators[i].email}
-              addressee={c.name}
-            />
-          );
-        }, this);
+          function(c, i) {
+            const name = 'collabEmail_' + c.name;
+            collabEmails.push(
+                <EmailElement
+                  name={name}
+                  label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
+                  onUserInput={this.setCollaboratorEmail}
+                  onUserBlur={this.props.validateEmail}
+                  toggleEmailNotify={this.toggleEmailNotify}
+                  errorMessage={this.props.formErrors[name]}
+                  required={false}
+                  value={this.props.formData.collaborators[i].email}
+                  addressee={c.name}
+                />
+            );
+          }, this);
     }
     return collabEmails;
   }
 
   addCollaborator(formElement, value, pendingValKey) {
-    let collaborators = this.props.formData.collaborators || [];
+    const collaborators = this.props.formData.collaborators || [];
     collaborators.push(
-      {
-        name: value,
-        email: null,
-        notify: false,
-      }
+        {
+          name: value,
+          email: null,
+          notify: false,
+        }
     );
 
     this.props.setFormData('collaborators', collaborators);
@@ -257,39 +257,39 @@ class ProjectFormFields extends React.Component {
   }
 
   setCollaboratorEmail(formElement, value) {
-    let collabName = formElement.split('_')[1];
-    let collaborators = this.props.formData.collaborators;
-    let i = collaborators.findIndex((c) => c.name === collabName);
+    const collabName = formElement.split('_')[1];
+    const collaborators = this.props.formData.collaborators;
+    const i = collaborators.findIndex((c) => c.name === collabName);
     collaborators[i].email = value;
     this.props.setFormData('collaborators', collaborators);
   }
 
   toggleEmailNotify(e) {
     if (e.target.name.indexOf('collabEmail') > -1) {
-      let collaborators = this.props.formData.collaborators;
-      let collabName = e.target.value;
-      let i = collaborators.findIndex((c) => c.name === collabName);
+      const collaborators = this.props.formData.collaborators;
+      const collabName = e.target.value;
+      const i = collaborators.findIndex((c) => c.name === collabName);
       collaborators[i].notify = !collaborators[i].notify;
       this.props.setFormData('collaborators', collaborators);
     } else if (e.target.name === 'leadInvestigatorEmail_notify') {
-      let currNotify = this.props.formData.notifyLead || false;
+      const currNotify = this.props.formData.notifyLead || false;
       this.props.setFormData('notifyLead', !currNotify);
     }
   }
 
   render() {
-    let collabEmails = this.createCollabEmailFields();
-    let fileFields = this.createFileFields();
+    const collabEmails = this.createCollabEmailFields();
+    const fileFields = this.createFileFields();
 
-    let voiHelp = (<div>For help finding variables of interest, consult
+    const voiHelp = (<div>For help finding variables of interest, consult
       the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
-      </div>);
+    </div>);
     let collabNames = [];
     if (this.props.formData.collaborators) {
       collabNames = this.props.formData.collaborators.map((c) => c.name);
     }
 
-    let voiTypeOptions = {
+    const voiTypeOptions = {
       All: 'All',
       Behavioral: 'Behavioral',
       Imaging: 'Imaging',
@@ -297,7 +297,7 @@ class ProjectFormFields extends React.Component {
 
     const allVOIs = this.props.allVOIs;
     let voiOptions = {};
-    let type = this.props.formData.voiType;
+    const type = this.props.formData.voiType;
     if (type && type !== 'All') {
       voiOptions = this.props.allVOIs[type];
     } else {
