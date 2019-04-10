@@ -212,7 +212,7 @@ class AddSurvey extends \NDB_Form
                  'CommentID'       => $commentID,
                 )
             );
-        } catch(DatabaseException $e) {
+        } catch(\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
