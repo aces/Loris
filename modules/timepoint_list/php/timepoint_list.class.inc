@@ -309,8 +309,6 @@ class Timepoint_List extends \NDB_Menu
         $candid = $this->tpl_data['candID'];
         $pscid  = $this->tpl_data['PSCID'];
 
-        $link = ltrim($_SERVER['REQUEST_URI'], '/');
-
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
                 'Access Profile',
@@ -318,7 +316,7 @@ class Timepoint_List extends \NDB_Menu
             ),
             new \LORIS\Breadcrumb(
                 "Candidate Profile $candid / $pscid",
-                "/$candid"
+                "$candid"
             )
         );
     }
