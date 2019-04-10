@@ -980,6 +980,30 @@ class DateElement extends Component {
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
+  componentDidMount() {
+    // Support Browsers not using type date.
+    if ($('[type="date"]').prop('type') !== 'date') {
+      let inputs = document.getElementsByTagName('input');
+      for (let i=0; i<inputs.length; i++) {
+        if ((inputs[i].outerHTML).includes('type="date"')) {
+          $(inputs[i]).datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: new Date(
+              parseInt(this.props.minYear),
+              1,
+              1
+            ),
+            maxDate: new Date(
+              parseInt(this.props.maxYear),
+              12,
+              31
+            ),
+          });
+        }
+      }
+    }
+  }
+
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
