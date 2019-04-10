@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import CandidateInfo from './CandidateInfo';
 import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
