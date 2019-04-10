@@ -369,8 +369,17 @@ class DataTable extends Component {
   render() {
     if (this.props.data === null || this.props.data.length === 0) {
       return (
-        <div className='alert alert-info no-result-found-panel'>
-          <strong>No result found.</strong>
+        <div>
+          <div className="row">
+            <div className="col-xs-12">
+              <div className="pull-right" style={{marginRight: '10px'}}>
+                {this.renderActions()}
+              </div>
+            </div>
+          </div>
+          <div className='alert alert-info no-result-found-panel'>
+            <strong>No result found.</strong>
+          </div>
         </div>
       );
     }
@@ -523,7 +532,7 @@ class DataTable extends Component {
           <div className="col-xs-12">
             <div>
               {rows.length} rows displayed of {filteredRows}.
-            (Maximum rows per page: {RowsPerPageDropdown})
+              (Maximum rows per page: {RowsPerPageDropdown})
             </div>
             <div className="pull-right" style={{marginTop: '-43px'}}>
               {this.renderActions()}
@@ -531,7 +540,7 @@ class DataTable extends Component {
                 className="btn btn-primary"
                 onClick={this.downloadCSV.bind(null, csvData)}
               >
-              Download Table as CSV
+                Download Table as CSV
               </button>
               <PaginationLinks
                 Total={filteredRows}
