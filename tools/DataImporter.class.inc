@@ -114,7 +114,7 @@ abstract class DataImporter {
                     true
                 );
                 if (!$skippedAlready) {
-                    $this->skippedPSCIDs[] = $newPSCID;
+                    $this->candidatesSkipped[] = $newPSCID;
                 }
                 continue;
             }
