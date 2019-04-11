@@ -112,8 +112,8 @@ class Data_Team_Helper extends \NDB_Form
             $default_site_array =array('All User Sites' => 'All User Sites');
             $list_of_sites      = $default_site_array + $list_of_sites;
         }
-            $this->tpl_data['siteList'] = $list_of_sites;
-            // Project list, if applicable
+        $this->tpl_data['siteList'] = $list_of_sites;
+        // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
             $projectList = \Utility::getProjectList();
             $this->tpl_data['projectList'] = $projectList;
