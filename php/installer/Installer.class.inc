@@ -460,7 +460,8 @@ class Installer
                 $values["dbname"],
                 $values["lorismysqluser"],
                 $values["lorismysqlpassword"]
-            )) {
+            )
+            ) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;

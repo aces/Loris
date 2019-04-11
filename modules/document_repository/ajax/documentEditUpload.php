@@ -82,7 +82,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         if (!move_uploaded_file(
             $_FILES['file']['tmp_name'],
             $fullPath . $fileName
-        )) {
+        )
+        ) {
             throw new LorisException(
                 'ERROR: Could not upload file. Contact your administrator.'
             );

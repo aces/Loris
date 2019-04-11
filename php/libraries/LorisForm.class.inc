@@ -1045,7 +1045,8 @@ class LorisForm
             '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
             $timeStamp,
             $bits
-        )) {
+        )
+        ) {
             $value['H'] = $bits[1];
             $value['i'] = $bits[2];
         }
@@ -1330,7 +1331,8 @@ class LorisForm
                 if (!$this->validateRequireIf(
                     $rule["requiredIf"]["elements"],
                     $rule["requiredIf"]["format"]
-                )) {
+                )
+                ) {
                     $this->setElementError(
                         $rule["requiredIf"]["elements"][0],
                         $rule["requiredIf"]["message"]
