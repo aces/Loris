@@ -6,6 +6,7 @@ class VisitImporter extends DataImporter {
 
     public $excludedVisitLabels = array();
     public $excludedCount = 0;
+    public $existingSessions = array();
 
     public function __construct(
         SplFileInfo $mappingFile, 
@@ -16,8 +17,7 @@ class VisitImporter extends DataImporter {
 
         // Get existing sessions so that there is a way to distinguish between
         // when to build UPDATE vs. INSERT statements.
-        $existingSessions = array();
-        $result = \Database::singleton()->pselect(
+        $this->existingSessions = \Database::singleton()->pselect(
             'SELECT CandID,Visit_label FROM session',
             array()
         );
@@ -77,10 +77,10 @@ class VisitImporter extends DataImporter {
             'where' => $where
         );
 
-        if (!isset($existingSessions[$newCandID])
+        if (!empty($this->existingSessions[$newCandID])
             || !in_array(
                 $row['Visit_label'],
-                $existingSessions[$newCandID],
+                $this->existingSessions[$newCandID],
                 true
             )
         ) {

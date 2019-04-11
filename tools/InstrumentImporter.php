@@ -43,17 +43,21 @@ class InstrumentImporter extends DataImporter {
 
         // Retrieve the CommentID for this candidate/session/instrument using
         // the new CandID and the visit label.
-        $query = "SELECT f.CommentID
+        $query = 'SELECT f.CommentID
             FROM flag f
             INNER JOIN session s ON s.ID = f.SessionID
             INNER JOIN candidate c ON c.CandID = s.CandID
-            WHERE c.CandID = :newCandID AND s.Visit_label = :visitLabel;";
+            WHERE c.CandID = :newCandID 
+            AND s.Visit_label = :visitLabel 
+            AND f.test_name = :table
+            AND f.CommentID NOT LIKE "DDE%"';
 
         $newCommentID = \Database::singleton()->pselectOne(
             $query, 
             array(
                 'newCandID' => $newCandID,
-                'visitLabel' => $data['Visit_label']
+                'visitLabel' => $data['Visit_label'],
+                'table' => $this->table
             )
         );
 
@@ -70,7 +74,9 @@ class InstrumentImporter extends DataImporter {
         unset($data['PSCID'], $data['Visit_label']);
 
         $command['data'] = $data;
-        $command['where'] = array('CommentID' => $newCommentID);
+        $command['where'] = array(
+            'CommentID' => $newCommentID,
+        );
         $this->UPDATEQueue[] = $command;
     }
 }
