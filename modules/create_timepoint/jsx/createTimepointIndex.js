@@ -105,10 +105,9 @@ class CreateTimepoint extends React.Component {
       identifier: state.url.params.identifier,
       subprojectID: state.form.subproject,
     });
-    const url = this.props.dataURL + '/create_timepoint/AjaxTimepoint';
 
     fetch(
-      url, {
+      this.props.dataURL, {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',
@@ -206,9 +205,8 @@ class CreateTimepoint extends React.Component {
       psc: state.form.value.psc,
       visit: state.form.value.visit,
     });
-    const url = this.props.dataURL + '/create_timepoint/AjaxTimepoint';
     fetch(
-      url, {
+      this.props.dataURL, {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',
