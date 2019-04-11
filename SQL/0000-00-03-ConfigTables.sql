@@ -1,13 +1,4 @@
 --
--- DROP tables
---
-
-DROP TABLE IF EXISTS `Config`;
-
-
-DROP TABLE IF EXISTS `ConfigSettings`;
-
---
 -- Table structure for table `ConfigSettings`
 --
 

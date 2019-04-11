@@ -1,19 +1,6 @@
-SET FOREIGN_KEY_CHECKS=0;
-
-
-DROP TABLE IF EXISTS `permissions`;
-
-
-DROP TABLE IF EXISTS `permissions_category`;
-
-
-DROP TABLE IF EXISTS `user_perm_rel`;
-
-SET FOREIGN_KEY_CHECKS=1;
 --
 -- Table structure for table `permissions_category`
 --
-
 
 CREATE TABLE `permissions_category` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
