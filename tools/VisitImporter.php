@@ -17,10 +17,13 @@ class VisitImporter extends DataImporter {
 
         // Get existing sessions so that there is a way to distinguish between
         // when to build UPDATE vs. INSERT statements.
-        $this->existingSessions = \Database::singleton()->pselect(
+        $result = \Database::singleton()->pselect(
             'SELECT CandID,Visit_label FROM session',
             array()
         );
+        foreach ($result as $row) {
+            $this->existingSessions[$row['CandID']] = $row['Visit_label'];
+        }
 
         // Read list of excluded visit labels into an array.
         if (!is_null($excludedFile)) {
