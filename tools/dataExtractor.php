@@ -225,7 +225,7 @@ if ($mode === VISIT_EXPORT)
         // E.g. QCd --> s.QCd (for `session s` in SQL statement).
         $columnQuery = implode(',', prependTableAbbreviation($headers, 't'));
 
-        $query = "SELECT c.PSCID, s.Visit_label, $columnQuery
+        $query = "SELECT c.PSCID, s.Visit_label, f.Data_entry, f.Administration, $columnQuery
             from candidate c
             INNER JOIN session s ON c.CandID = s.CandID
             INNER JOIN flag f ON f.SessionID = s.ID
@@ -237,8 +237,10 @@ if ($mode === VISIT_EXPORT)
         
         // Prepend PSCID and Visit_label to the CSV headers so that they will
         // be recorded properly in the output
-        array_unshift($headers, 'Visit_label');
-        array_unshift($headers, 'PSCID');
+        $headers = array_merge(
+            array('PSCID', 'Visit_label', 'Data_entry', 'Administration'),
+            $headers
+        );
     }
 }
 

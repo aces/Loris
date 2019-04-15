@@ -217,7 +217,7 @@ SQL;
             // final $report output.
             $report[] = sprintf(
                 $formattedCommand, 
-                $this->table,
+                $command['table'] ?? $this->table,
                 implode(', ', $setString),
                 implode(' AND ', $whereString)
             );
@@ -245,7 +245,7 @@ SQL;
         foreach ($commandQueue as $command) {
             $report[] = sprintf(
                 $formattedCommand,
-                $this->table,
+                $command['table'] ?? $this->table,
                 implode(',', array_keys($command['data'])),
                 implode(',', array_map(array($this, 'quoteWrapUnlessNULL'), array_values($command['data'])))
             );

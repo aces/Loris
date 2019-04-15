@@ -61,6 +61,7 @@ class InstrumentImporter extends DataImporter {
             )
         );
 
+        // Validate
         if (empty($newCommentID)) {
             $msg = "No CommentID could be found for candidate `%s`, " .
                 "visit label `%s`, and instrument `%s`";
@@ -69,15 +70,28 @@ class InstrumentImporter extends DataImporter {
             return;
         }
 
-        // PSCID and Visit_label in the source CSV ar eonly used for linking.
-        // They shouldn't be inserted into the database.
-        unset($data['PSCID'], $data['Visit_label']);
+        // Update the flag table
+        $command['table'] = 'flag';
+        $command['data'] = array(
+            'Data_entry' => $data['Data_entry'],
+            'Administration' => $data['Administration']
+        );
+        $command['where'] = array(
+            'CommentID' => $newCommentID,
+        );
+        $this->UPDATEQueue[] = $command;
+        unset($command);
+        // Unset all values that don't belong in the instrument table
+        unset($data['PSCID'], $data['Visit_label'], $data['Data_entry'], $data['Administration']);
 
+        // Update the instrument table
+        $command['table'] = $this->table;
         $command['data'] = $data;
         $command['where'] = array(
             'CommentID' => $newCommentID,
         );
         $this->UPDATEQueue[] = $command;
+
     }
 }
 
