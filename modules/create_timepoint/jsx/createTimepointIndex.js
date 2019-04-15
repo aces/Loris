@@ -118,44 +118,50 @@ class CreateTimepoint extends React.Component {
         },
         body: send,
       }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          // Populate the form errors.
-          if (data.errors) {
-            const state = Object.assign({}, this.state);
-            state.errors = data.errors;
-            this.setState(state);
-          }
-          // Populate the select options for subproject.
-          if (data.subproject) {
-            const state = Object.assign({}, this.state);
-            state.form.options.subproject = data.subproject;
-            state.form.value.subproject = null;
-            state.form.display.subproject = true;
-            this.setState(state);
-          }
-          // Populate the select options for psc.
-          if (data.psc) {
-            const state = Object.assign({}, this.state);
-            state.form.options.psc = data.psc;
-            state.form.value.psc = null;
-            state.form.display.psc = true;
-            this.setState(state);
-          }
-          // Populate the select options for visit.
-          if (data.visit) {
-            // Store the (complete) visit selection information.
-            const state = Object.assign({}, this.state);
-            state.storage.visit = data.visit;
-            this.setState(state);
-            // Handle visit selection.
-            this.handleVisitLabel();
-          }
-          // Display form to user.
-          this.setState({isLoaded: true});
+    ).then((response) => {
+      if (response.ok && response.status === 200) {
+        // Populate the form errors.
+        if (data.errors) {
+          const state = Object.assign({}, this.state);
+          state.errors = data.errors;
+          this.setState(state);
+        }
+        // Populate the select options for subproject.
+        if (data.subproject) {
+          const state = Object.assign({}, this.state);
+          state.form.options.subproject = data.subproject;
+          state.form.value.subproject = null;
+          state.form.display.subproject = true;
+          this.setState(state);
+        }
+        // Populate the select options for psc.
+        if (data.psc) {
+          const state = Object.assign({}, this.state);
+          state.form.options.psc = data.psc;
+          state.form.value.psc = null;
+          state.form.display.psc = true;
+          this.setState(state);
+        }
+        // Populate the select options for visit.
+        if (data.visit) {
+          // Store the (complete) visit selection information.
+          const state = Object.assign({}, this.state);
+          state.storage.visit = data.visit;
+          this.setState(state);
+          // Handle visit selection.
+          this.handleVisitLabel();
+        }
+        // Display form to user.
+        this.setState({isLoaded: true});
+      } else {
+        response.text().then((message) => {
+          const state = Object.assign({}, this.state);
+          state.errors = [{error: message}];
+          this.setState(state);
+        });
+      }
         }).catch((error) => {
-      this.populateErrors({message: 'Server error.'});
+          console.log(error);
       this.setState({isLoaded: true});
     });
   }
