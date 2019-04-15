@@ -1,38 +1,78 @@
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
+import Tree from './tree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-
+// const categoryPath = ['Root'];
+// const filterData = {};
 class DocIndex extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isLoaded: false,
       data: {},
       error: false,
       newCategory: false,
+      pid: '0', // for tree nodes table
+      tableData: {},
+      childrenNode: {},
+      parentNode: {},
     };
-
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.newCategoryState = this.newCategoryState.bind(this);
+    this.dataByNode = this.dataByNode.bind(this);
+    this.handle = this.handle.bind(this);
   }
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({isLoaded: true}))
+      .then(() => {
+// this.dataByNode(0);
+});
   }
+// function change tableData;
+  dataByNode(id) {
+     console.log(id);
+ return fetch(loris.BaseURL+'/document_repository/docTree/'+id)
+      .then((response)=> response.json())
+      .then((myJson)=> {
+     let allNodesArray = [];
+     let nodesArray = [];
+            allNodesArray = myJson['allsubcategories'];
+            allNodesArray.forEach((element)=>{
+           nodesArray.push(Object.values(element).toString());
+        });
+//     let filterData = this.state.data.Data;
+//     let fillData= filterData.filter((data) => {
+//      return Object.values(nodesArray).includes(data[10]);
+//    });         fillData
+//    this.setState({tableData: []});
+    this.setState({childrenNode: myJson['subcategories']});
+    this.setState({parentNode: myJson['currentcategory']});
+      });
+  }
+
+
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => {
+this.setState({data}); this.setState({tableData: []});
+})
       .then(()=>this.setState({newCategory: false}))
       .catch((error) => {
         this.setState({error: true});
     });
+  }
+
+  handle(obj) {
+    console.log('clicked ....');
+console.log(obj);
+    this.dataByNode(obj[0]);
   }
 
   newCategoryState() {
@@ -156,10 +196,16 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
           <FilterableDataTable
             name = "document"
-            data={this.state.data.Data}
+            data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
-          />
+          >
+            <Tree
+              action={this.handle}
+//              parentNode = {this.state.parentNode}
+              childrenNode = {this.state.childrenNode}
+            />
+          </FilterableDataTable>
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm

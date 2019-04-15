@@ -57,6 +57,7 @@ class FilterableDataTable extends Component {
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         />
+          {this.props.children}
         <DataTable
           data={this.props.data}
           fields={this.props.fields}

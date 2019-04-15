@@ -68,23 +68,13 @@ class DocTree extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
           if ($request->getMethod()=='GET'){
-          $data= $this->getTreeData();
-
-       echo '<pre>';
-
-//           $tree = $this->getTree($data, 0);
-//          var_dump($tree);
-   //      var_dump($data);
-  //        echo '---------';
-   
-         var_dump($this->getAllNodesID($data,0));
-
+           $id = basename($request->getUri()->getPath()); 
             return (new \LORIS\Http\Response())
               ->withHeader("Content-Type", "text/plain")
               ->withStatus(200)
               ->withBody(
                   new \LORIS\Http\StringStream(
-                      json_encode($tree)
+                      json_encode($this->fileTree($id))
                   )
               );
             }
@@ -129,6 +119,39 @@ class DocTree extends \NDB_Page
     }
     return $arr;
 
+}
+ public function fileTree($id)
+{
+        $result = array();
+        $allsubcategories = array();
+        $user  = \User::singleton();
+        $db    = \Database::singleton();   
+    
+    $tree = $this->getTreeData();    
+    $pids = $this->getAllNodesID($tree,$id);
+            
+    $currentcategory = $db->pselect(
+        "select id,category_name from document_repository_categories where id=$id",
+        array()
+    );
+     $allsubcategories[] = array('id'=>$id); 
+     foreach ($pids as $k=>$v){
+      $category = $db->pselectRow(
+        "select id from document_repository_categories where id=$v",
+        array()
+    );
+        $allsubcategories[] = $category;
+     }
+ 
+    $subcategories = $db->pselect(
+        "select id,category_name from document_repository_categories where parent_id=$id",
+        array()
+    ); 
+    
+    $result['allsubcategories'] = $allsubcategories;
+    $result['currentcategory'] = $currentcategory;
+    $result['subcategories'] = $subcategories;
+    return $result;
 }
 
 }
