@@ -63,6 +63,7 @@ class VisitController
                  v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
+ORDER BY ID
                 ',
                 array()
             )
@@ -124,6 +125,7 @@ class VisitController
                  JOIN
                   visit_project_subproject_rel vps
                  ON v.VisitID = vps.VisitID
+ORDER BY ID
                 ',
                 array()
             )

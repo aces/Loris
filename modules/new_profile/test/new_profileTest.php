@@ -11,7 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ .
-               "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * New_profile automated integration tests
  *
@@ -148,10 +148,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->webDriver->executescript(
-            "document.querySelector('$this->dateTaken').value='2009-05-05'"
+            "document.querySelector('$this->dateTaken').value='2015-01-01'"
         );
         $this->webDriver->executescript(
-            "document.querySelector('$this->dtc').value='2009-05-05'"
+            "document.querySelector('$this->dtc').value='2015-01-01'"
         );
 
         $startVisit =  $this->webDriver->executescript(
@@ -160,11 +160,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText   = $this->webDriver->executescript(
             "return document.querySelector('#default-panel').textContent"
         );
+
         $this->assertContains("New candidate created.", $bodyText);
         $this->restoreConfigSetting("useEDC");
         $this->restoreConfigSetting("useProjects");
-
     }
 
 }
-
