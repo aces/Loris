@@ -206,7 +206,6 @@ class RequestAccount extends Component {
             label={'Request Account'}
             type={'submit'}
             columnSize={'col-sm-12'}
-            style={{margin: 0}}
             buttonClass={'btn btn-primary btn-block'}
           />
         </FormElement>
