@@ -89,17 +89,17 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
                                'Series_Description',
                                'Minc_Location',
                                'PatientName',
-                               'TR_Range',
-                               'TE_Range',
-                               'TI_Range',
-                               'Slice_Thickness_Range',
-                               'Xspace_Range',
-                               'Yspace_Range',
-                               'Zspace_Range',
-                               'Xstep_Range',
-                               'Ystep_Range',
-                               'Zstep_Range',
-                               'Time_Range',
+                               'TR',
+                               'TE',
+                               'TI',
+                               'Slice_Thickness',
+                               'Xspace',
+                               'Yspace',
+                               'Zspace',
+                               'Xstep',
+                               'Ystep',
+                               'Zstep',
+                               'Time',
                                'SeriesUID',
                                'TarchiveID',
                               );
@@ -165,15 +165,15 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         // to mri_protocol's Scan_type
         $mri_protocols = $db->pselect(
             "SELECT p.ID, Center_name, ScannerID, CONCAT(
-                p.Scan_type, 
+                p.Scan_type,
                 IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
-            ) as Scan_type, TR_range, TE_range, TI_range, 
-            slice_thickness_range, FoV_x_range, FoV_y_range, 
-            xspace_range, yspace_range, zspace_range, 
-            xstep_range, ystep_range, zstep_range, 
-            time_range, series_description_regex 
-            FROM mri_protocol as p 
-            LEFT JOIN mri_scan_type as s 
+            ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+            TI_max, slice_thickness_min, slice_thickness_max,
+            xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+            zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+            zstep_min, zstep_max, time_min, time_max,series_description_regex
+            FROM mri_protocol as p
+            LEFT JOIN mri_scan_type as s
             ON p.Scan_type=s.ID",
             array()
         );

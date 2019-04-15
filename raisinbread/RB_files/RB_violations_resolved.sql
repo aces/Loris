@@ -1,0 +1,15 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `violations_resolved`;
+LOCK TABLES `violations_resolved` WRITE;
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (1,'1419c4074f9a90b215bea32af330f3ed',24,'MRICandidateErrors','admin','2016-08-09 10:13:25','emailed');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (2,'b4a92c3aa1fec4dcb9fc0f681d4f83ee',23,'MRICandidateErrors','admin','2016-08-09 10:13:26','emailed');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (3,'1f6490b7929143cdbce7a7eb3990474e',22,'MRICandidateErrors','admin','2016-08-09 10:13:52','rejected');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (4,'540c72b3241b82e21e673dedcdfdcb37',21,'MRICandidateErrors','admin','2016-08-09 10:13:52','rejected');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (5,'b08de7255e26654eeff2ddd98d9cac0f',20,'MRICandidateErrors','admin','2016-08-09 10:13:52','other');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (6,'f54ff31c91b8802c12e23288208e96cb',19,'MRICandidateErrors','admin','2016-08-09 10:13:53','other');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (7,'080bb9823db445648f90ab0ce9b7b5e0',18,'MRICandidateErrors','admin','2016-08-09 10:14:16','inserted_flag');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (8,'7b778599fbdcc48e37ba71aa3ca4bced',17,'MRICandidateErrors','admin','2016-08-09 10:14:16','inserted');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (9,'fabf6964630649ef31410290f6c77490',16,'MRICandidateErrors','admin','2016-08-09 10:14:16','reran');
+INSERT INTO `violations_resolved` (`ID`, `hash`, `ExtID`, `TypeTable`, `User`, `ChangeDate`, `Resolved`) VALUES (10,'92f96b5fecb2cfa7485b24b91119a414',15,'MRICandidateErrors','admin','2016-08-15 10:46:18','inserted');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

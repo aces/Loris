@@ -24,6 +24,7 @@
  */
 class SessionID extends ValidatableIdentifier
 {
+    protected const SESSIONID_MAX_LENGTH = 10;
     /**
      * Returns this identifier type
      *
@@ -36,7 +37,7 @@ class SessionID extends ValidatableIdentifier
 
     /**
      * Validate that the value of the SessionID is a positive integer that does
-     * not exceed 10 digits in length.
+     * not exceed a length defined by SESSIONID_MAX_LENGTH.
      * This does not check for uniqueness in the database or any other
      * state-related facts.
      *
@@ -50,7 +51,7 @@ class SessionID extends ValidatableIdentifier
     protected function validate(string $value): bool
     {
         return (intval($value) > 0)
-            && (strlen($value) <= 10)
+            && (strlen($value) <= self::SESSIONID_MAX_LENGTH)
             && (is_integer($value));
     }
 

@@ -302,9 +302,9 @@ CREATE TABLE `candidate` (
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `CenterID` integer unsigned DEFAULT NULL,
+  `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
-  `Visit_label` varchar(255) DEFAULT NULL,
+  `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(11) DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
@@ -359,7 +359,7 @@ CREATE TABLE `test_subgroups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments');
+INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments'),('Imaging');
 
 CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -697,20 +697,28 @@ CREATE TABLE `mri_protocol` (
   `Center_name` varchar(4) NOT NULL default '',
   `ScannerID` int(10) unsigned NOT NULL default '0',
   `Scan_type` int(10) unsigned NOT NULL default '0',
-  `TR_range` varchar(255) default NULL,
-  `TE_range` varchar(255) default NULL,
-  `TI_range` varchar(255) default NULL,
-  `slice_thickness_range` varchar(255) default NULL,
-  `FoV_x_range` varchar(255) default NULL,
-  `FoV_y_range` varchar(255) default NULL,
-  `FoV_z_range` varchar(255) default NULL,
-  `xspace_range` varchar(255) default NULL,
-  `yspace_range` varchar(255) default NULL,
-  `zspace_range` varchar(255) default NULL,
-  `xstep_range` varchar(255) default NULL,
-  `ystep_range` varchar(255) default NULL,
-  `zstep_range` varchar(255) default NULL,
-  `time_range` varchar(255) default NULL,
+  `TR_min` DECIMAL(10,4) DEFAULT NULL,
+  `TR_max` DECIMAL(10,4) DEFAULT NULL,
+ 	`TE_min` DECIMAL(10,4) DEFAULT NULL,
+ 	`TE_max` DECIMAL(10,4) DEFAULT NULL,
+ 	`TI_min` DECIMAL(10,4) DEFAULT NULL,
+ 	`TI_max` DECIMAL(10,4) DEFAULT NULL,
+ 	`slice_thickness_min` DECIMAL(9,4) DEFAULT NULL,
+ 	`slice_thickness_max` DECIMAL(9,4) DEFAULT NULL,
+ 	`xspace_min` int(4) DEFAULT NULL,
+ 	`xspace_max` int(4) DEFAULT NULL,
+ 	`yspace_min` int(4) DEFAULT NULL,
+ 	`yspace_max` int(4) DEFAULT NULL,
+ 	`zspace_min` int(4) DEFAULT NULL,
+ 	`zspace_max` int(4) DEFAULT NULL,
+ 	`xstep_min` DECIMAL(9,4) DEFAULT NULL,
+ 	`xstep_max` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_min` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_max` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_min` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_max` DECIMAL(9,4) DEFAULT NULL,
+ 	`time_min` int(4) DEFAULT NULL,
+ 	`time_max` int(4) DEFAULT NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -718,11 +726,12 @@ CREATE TABLE `mri_protocol` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES
-  ('ZZZZ',48,'8000-14000','80-130','0-200'),
-  ('ZZZZ',40,'1900-2700','10-30','0-500'),
-  ('ZZZZ',44,'2000-2500','2-5',NULL),
-  ('ZZZZ',45,'3000-9000','100-550',NULL);
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+ TE_max,time_min,time_max) VALUES
+   ('ZZZZ',48,8000,14000,80,130,0,200),
+   ('ZZZZ',40,1900,2700,10,30,0,500),
+   ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
+   ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -754,7 +763,8 @@ CREATE TABLE `mri_protocol_checks` (
   `Scan_type` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
-  `ValidRange` varchar(255) DEFAULT NULL,
+  `ValidMin` int(4) DEFAULT NULL,
+  `ValidMax` int(4) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
@@ -2136,11 +2146,10 @@ CREATE TABLE `visit_project_subproject_rel` (
  `ProjectID` int(2) NOT NULL,
  `SubprojectID` int(10) unsigned NOT NULL,
   CONSTRAINT `visit_project_subproject_rel_PK` PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
-  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`) 
+  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `visit_project_subproject_ProjectID_visit_ProjectID_FK` FOREIGN KEY (`ProjectID`)
     REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `visit_project_subproject_SubprojectID_visit_SubprojectID_FK` FOREIGN KEY (`SubprojectID`)
     REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
