@@ -166,7 +166,9 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
      */
     function installPackage(string $name): bool
     {
-        $cmd  = "sudo apt-get install ";
+        // Use -f flag to fix broken dependencies. Show help resolve package
+        // dependencies.
+        $cmd  = "sudo apt-get -f install ";
         $cmd .= escapeshellarg($name);
         return $this->doExec($cmd);
     }
