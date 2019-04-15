@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `physiological_task_event`;
+LOCK TABLES `physiological_task_event` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;
