@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Panel from 'Panel';
+import Panel from 'PanelTabs';
 
 /**
  * Study Progression Panel.
@@ -24,11 +24,38 @@ class StudyProgression extends Component {
    * @return {DOMRect}
    */
   render() {
-    if (this.props.display) {
+    if (this.props.data && this.props.display) {
+      console.log(this.props.data);
+      let panel = {
+        scansLineChart: {
+          title: null,
+          content: null,
+          div: null,
+        },
+        recruitmentLineChart: {
+          content: null,
+          div: null,
+        },
+      };
+
+
       return (
         <Panel
           title={'Study Progression'}
           id={'studyProgressionPanel'}
+          class={'panel panel-default'}
+          menu={
+            [
+              {
+                dataTarget: 'scans-line-chart-panel',
+                text: 'View scans per site',
+              },
+              {
+                dataTarget: 'recruitment-line-chart-panel',
+                text: 'View recruitment per site',
+              },
+            ]
+          }
         >
 
         </Panel>
