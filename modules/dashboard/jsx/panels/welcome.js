@@ -43,6 +43,11 @@ class Welcome extends Component {
         <Panel
           id={'welcomePanel'}
           class={'panel panel-default'}
+          footer={(
+            <div className='panel-footer'>
+              {links}
+            </div>
+          )}
         >
           <h3 className='welcome'>Welcome, {this.props.data.username}</h3>
           <p className='pull-right small login-time'>
@@ -51,9 +56,6 @@ class Welcome extends Component {
           <p className='project-description'>
             {this.props.data.projectDescription}
           </p>
-          <div className='panel-footer'>
-            {links}
-          </div>
         </Panel>
       );
     } else {
