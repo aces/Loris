@@ -102,10 +102,10 @@ class AjaxDashboard extends \NDB_Page
     function initializeSetup(array $values) : array
     {
         // data for panels.
-        $welcomeData = array();
-        $recruitmentData = array();
-        $studyProgressionData = array();
-        $myTasksData = array();
+        $welcomeData            = array();
+        $recruitmentData        = array();
+        $studyProgressionData   = array();
+        $myTasksData            = array();
         $documentRepositoryData = array();
         $behaviouralFeedbackData = array();
 
@@ -114,7 +114,7 @@ class AjaxDashboard extends \NDB_Page
         $config = \NDB_Config::singleton();
         $site   = $user->getSiteNames();
 
-        $userID     = $user->getUsername();
+        $userID    = $user->getUsername();
         $lastLogin = $DB->pselectOne(
             "SELECT MAX(Login_timestamp)
              FROM user_login_history
@@ -148,15 +148,15 @@ class AjaxDashboard extends \NDB_Page
                 // todo dashboard_links used with welcome
                 $welcomeData['links'][]
                     = array(
-                    'url'        => $url,
-                    'label'      => $text,
-                    'windowName' => md5($url),
-                );
+                       'url'        => $url,
+                       'label'      => $text,
+                       'windowName' => md5($url),
+                      );
             }
         }
 
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
-        $recruitmentData = $this->createProjectProgressBar(
+        $recruitmentData   = $this->createProjectProgressBar(
             'overall',
             "Overall Recruitment",
             $recruitmentTarget,
@@ -204,7 +204,7 @@ class AjaxDashboard extends \NDB_Page
         // New scans
         if ($user->hasPermission('imaging_browser_qc')) {
             // todo new_scans used with myTasks
-            $myTasksData['new_scans'] = $DB->pselectOne(
+            $myTasksData['new_scans']      = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT s.ID)
                  FROM files f 
                  LEFT JOIN session s ON (s.ID=f.SessionID)
@@ -221,7 +221,7 @@ class AjaxDashboard extends \NDB_Page
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
                 // todo conflicts used with myTasks
-                $myTasksData['conflicts'] = $DB->pselectOne(
+                $myTasksData['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
@@ -233,7 +233,7 @@ class AjaxDashboard extends \NDB_Page
                 $myTasksData['conflicts_site'] = 'Sites: all';
             } else {
                 // todo
-                $myTasksData['conflicts'] = $DB->pselectOne(
+                $myTasksData['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
@@ -405,11 +405,11 @@ class AjaxDashboard extends \NDB_Page
         }
         $studyProgressionData['total_scans'] = $recruitmentData['total_scans'];
 
-        $values['welcome'] = $welcomeData;
-        $values['recruitment'] = $recruitmentData;
+        $values['welcome']          = $welcomeData;
+        $values['recruitment']      = $recruitmentData;
         $values['studyProgression'] = $studyProgressionData;
-        $values['tasks'] = $myTasksData;
-        $values['documentRepository'] = $documentRepositoryData;
+        $values['tasks']            = $myTasksData;
+        $values['documentRepository']  = $documentRepositoryData;
         $values['behaviouralFeedback'] = $behaviouralFeedbackData;
 
         return $values;
@@ -490,8 +490,8 @@ class AjaxDashboard extends \NDB_Page
              WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
-                'sex' => $sex,
-                'PID' => $projectID,
+             'sex' => $sex,
+             'PID' => $projectID,
             )
         );
         return $total;
