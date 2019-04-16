@@ -25,7 +25,6 @@ class StudyProgression extends Component {
    */
   render() {
     if (this.props.display) {
-      console.log(this.props.data);
       let panel = {
         scansLineChart: {
           title: null,
@@ -39,9 +38,35 @@ class StudyProgression extends Component {
       };
 
       if (this.props.data) {
+        if (parseInt(this.props.data.total_scans) > 0) {
+          panel.scansLineChart.content = (
+            <div id='scanChart'/>
+          );
+        } else {
+          panel.scansLineChart.content = (
+            <p>There have been no scans yet.</p>
+          );
+        }
         panel.scansLineChart.div = (
           <div id='scans-line-chart-panel'>
+            {panel.scansLineChart.content}
+          </div>
+        );
 
+        if (this.props.data.id === 'overall' &&
+          parseInt(this.props.data.total_recruitment) > 0) {
+          panel.recruitmentLineChart.content = (
+            <div id='recruitmentChart'/>
+          );
+        } else if (this.props.data.id === 'overall') {
+          panel.recruitmentLineChart.content = (
+            <p>There have been no candidates registered yet.</p>
+          );
+        }
+        panel.recruitmentLineChart.div = (
+          <div id='recruitment-line-chart-panel' className='hidden'>
+            <h5 className='chart-title'>Recruitment per site</h5>
+            {panel.recruitmentLineChart.content}
           </div>
         );
       }
