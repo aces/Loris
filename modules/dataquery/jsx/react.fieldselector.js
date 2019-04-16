@@ -238,7 +238,7 @@ var FieldSelector = React.createClass({
         // Wrapper function for field changes
         this.props.onFieldChange(fieldName, category, downloadable);
     },
-    onCategorySelect: function(category) {
+    onCategorySelect: function(elementName, category) {
         // Used for getting the fields of the given category
 
         var that=this;
@@ -358,12 +358,12 @@ var FieldSelector = React.createClass({
                     <div className="form-group col-sm-8 search">
                         <label className="col-sm-12 col-md-2">Instrument:</label>
                         <div className="col-sm-12 col-md-8">
-                            <SelectDropdown
-                                multi={false}
+                              <SearchableDropdown
+                                name="fieldsDropdown"
                                 options={this.state.instruments}
-                                onFieldClick={this.onCategorySelect}
-                                selectedCategory={this.state.selectedCategory}
-                            />
+                                onUserInput={this.onCategorySelect}
+                                placeHolder="Select One"
+                              />
                         </div>
                     </div>
                     <div className="form-group col-sm-4 search">
