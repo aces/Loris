@@ -157,7 +157,7 @@ class Recruitment extends Component {
           div: null,
         },
       };
-      if (this.props.data && this.props.display) {
+      if (this.props.data) {
         panel.overall = this.progressBarBuilder(panel.overall);
         panel.overall.div = (
           <div className='recruitment-panel' id='overall-recruitment'>
