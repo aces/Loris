@@ -23,41 +23,20 @@ class PanelTabs extends Component {
 
     this.state = {
       collapsed: this.props.initCollapsed,
+      collapseClass: 'panel-collapse collapse in',
     };
-
-    // Initialize panel class based on collapsed status
-    this.panelClass = (
-      this.props.initCollapsed ?
-        'panel-collapse collapse' :
-        'panel-collapse collapse in'
-    );
-
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
 
-  componentDidMount() {
-    // Make dashboard panels collapsible
-    $('.panel-heading span.clickable').on('click', function() {
-      if ($(this).hasClass('panel-collapsed')) {
-        // expand the panel
-        $(this).parents('.panel').find('.panel-body').slideDown();
-        $(this).removeClass('panel-collapsed');
-        $(this).removeClass(
-          'glyphicon-chevron-down'
-        ).addClass('glyphicon-chevron-up');
-      } else {
-        // collapse the panel
-        $(this).parents('.panel').find('.panel-body').slideUp();
-        $(this).addClass('panel-collapsed');
-        $(this).removeClass(
-          'glyphicon-chevron-up'
-        ).addClass('glyphicon-chevron-down');
-      }
-    }.bind(this));
-  }
-
   toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
+    const state = Object.assign({}, this.state);
+    state.collapsed = !this.state.collapsed;
+    if (state.collapsed) {
+      state.collapseClass = 'panel-collapse collapse';
+    } else {
+      state.collapseClass = 'panel-collapse collapse in';
+    }
+    this.setState(state);
   }
 
   render() {
@@ -92,7 +71,10 @@ class PanelTabs extends Component {
         className='panel-heading'
       >
         {this.props.title}
-        <span className={glyphClass}/>
+        <span className={glyphClass}
+              onClick={this.toggleCollapsed}
+              data-toggle='collapse'
+              data-target={'#' + this.props.id}/>
         <div className={'pull-right'}>
           <div className={'btn-group views'}>
             <button type={'button'}
@@ -115,15 +97,14 @@ class PanelTabs extends Component {
     ) : '';
 
     return (
-      <div className='panel panel-primary'>
+      <div className={'panel panel-primary'}>
         {panelHeading}
-        <div className='panel-body' style={
-          {
-            display: 'block',
-            height: this.props.height,
-          }
-        }>
-          {this.props.children}
+        <div className={this.state.collapseClass} role='tabpanel'>
+          <div className={'panel-body'}
+               style={{display: 'block', height: this.props.height}
+          }>
+            {this.props.children}
+          </div>
         </div>
       </div>
     );

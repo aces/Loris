@@ -64,6 +64,7 @@ class Panel extends Component {
           <div className="panel-body" style={{height: this.props.height}}>
             {this.props.children}
           </div>
+          {this.props.footer}
         </div>
       </div>
     );
@@ -74,11 +75,13 @@ Panel.propTypes = {
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
+  footer: PropTypes.element,
 };
 Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  footer: null,
 };
 
 export default Panel;

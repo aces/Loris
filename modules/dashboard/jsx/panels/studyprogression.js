@@ -27,7 +27,6 @@ class StudyProgression extends Component {
     if (this.props.display) {
       let panel = {
         scansLineChart: {
-          title: null,
           content: null,
           div: null,
         },
