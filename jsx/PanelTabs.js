@@ -14,6 +14,10 @@ import PropTypes from 'prop-types';
  * Wraps children in a collapsible bootstrap panel
  */
 class PanelTabs extends Component {
+  /**
+   * Constructor of component
+   * @param {object} props - the component properties.
+   */
   constructor(props) {
     super(props);
 
@@ -31,6 +35,27 @@ class PanelTabs extends Component {
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
 
+  componentDidMount() {
+    // Make dashboard panels collapsible
+    $('.panel-heading span.clickable').on('click', function() {
+      if ($(this).hasClass('panel-collapsed')) {
+        // expand the panel
+        $(this).parents('.panel').find('.panel-body').slideDown();
+        $(this).removeClass('panel-collapsed');
+        $(this).removeClass(
+          'glyphicon-chevron-down'
+        ).addClass('glyphicon-chevron-up');
+      } else {
+        // collapse the panel
+        $(this).parents('.panel').find('.panel-body').slideUp();
+        $(this).addClass('panel-collapsed');
+        $(this).removeClass(
+          'glyphicon-chevron-up'
+        ).addClass('glyphicon-chevron-down');
+      }
+    });
+  }
+
   toggleCollapsed() {
     this.setState({collapsed: !this.state.collapsed});
   }
@@ -43,14 +68,28 @@ class PanelTabs extends Component {
         'pull-right clickable glyphicon glyphicon-chevron-up'
     );
 
+    let menuOptions = [];
+
+    for (let i=0; i<this.props.menu.length; i++) {
+      const elementProps = {
+        className: i===0 ? 'active' : null,
+      };
+      const element = (
+        <li {...elementProps} key={
+          this.props.title + '_menu_options_' + i
+        }>
+          <a data-target={this.props.menu[i].dataTarget}>
+            {this.props.menu[i].text}
+          </a>
+        </li>
+      );
+      menuOptions.push(element);
+    }
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
         className='panel-heading'
-        onClick={this.toggleCollapsed}
-        data-toggle='collapse'
-        data-target={'#' + this.props.id}
-        style={{cursor: 'pointer'}}
       >
         {this.props.title}
         <span className={glyphClass}/>
@@ -68,16 +107,7 @@ class PanelTabs extends Component {
             <ul className={'dropdown-menu pull-right'}
                 role={'menu'}
                 >
-              <li className={'active'}>
-                <a data-target={'overall-recruitment'}>
-                  View overall recruitment
-                </a>
-              </li>
-              <li>
-                <a data-target={'recruitment-site-breakdown'}>
-                  View site breakdown
-                </a>
-              </li>
+              {menuOptions}
             </ul>
           </div>
         </div>
@@ -87,10 +117,13 @@ class PanelTabs extends Component {
     return (
       <div className='panel panel-primary'>
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role='tabpanel'>
-          <div className='panel-body' style={{height: this.props.height}}>
-            {this.props.children}
-          </div>
+        <div className='panel-body' style={
+          {
+            display: 'block',
+            height: this.props.height,
+          }
+        }>
+          {this.props.children}
         </div>
       </div>
     );
@@ -101,11 +134,13 @@ PanelTabs.propTypes = {
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
+  menu: PropTypes.array,
 };
 PanelTabs.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  menu: [],
 };
 
 export default PanelTabs;
