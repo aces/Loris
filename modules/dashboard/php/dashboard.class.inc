@@ -43,8 +43,8 @@ class Dashboard extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . '/dashboard/css/dashboard.css',
-                $baseURL . '/css/c3.css'
+             $baseURL . '/dashboard/css/dashboard.css',
+             $baseURL . '/css/c3.css',
             ]
         );
     }
