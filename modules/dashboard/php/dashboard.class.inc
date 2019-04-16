@@ -43,7 +43,10 @@ class Dashboard extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/dashboard/css/dashboard.css"]
+            [
+                $baseURL . '/dashboard/css/dashboard.css',
+                $baseURL . '/css/c3.css'
+            ]
         );
     }
 
@@ -68,7 +71,6 @@ class Dashboard extends \NDB_Form
             array(
              $baseurl . '/js/d3.min.js',
              $baseurl . '/js/c3.min.js',
-             $baseurl . '/dashboard/js/dashboard-helper.js',
              $baseurl . '/dashboard/js/dashboardIndex.js',
             )
         );

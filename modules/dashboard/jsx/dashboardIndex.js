@@ -7,7 +7,6 @@ import StudyProgressionPanel from './panels/studyprogression';
 import MyTasksPanel from './panels/mytasks';
 import DocumentRepositoryPanel from './panels/documentrepository';
 import BehaviouralFeedbackPanel from './panels/behaviouralfeedback';
-// import * as d3 from 'd3';
 
 /**
  * Dashboard.
