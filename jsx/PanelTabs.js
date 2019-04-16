@@ -53,7 +53,7 @@ class PanelTabs extends Component {
           'glyphicon-chevron-up'
         ).addClass('glyphicon-chevron-down');
       }
-    });
+    }.bind(this));
   }
 
   toggleCollapsed() {

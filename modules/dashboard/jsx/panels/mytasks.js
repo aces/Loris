@@ -27,13 +27,11 @@ class MyTasks extends Component {
     if (this.props.display) {
       let panel = {
         tasks: {
-          title: null,
           content: [],
           div: null,
         },
       };
       if (this.props.data) {
-        console.log(this.props.data);
         if (this.props.data.new_scans !== '' ||
             this.props.data.conflicts !== '' ||
             this.props.data.incomplete_forms !== '' ||
@@ -149,7 +147,7 @@ class MyTasks extends Component {
                   <div className={'col-xs-8 text-left'}>
                     <div className='huge'>{this.props.data.new_scans}</div>
                     New and pending imaging session{parseInt(
-                    this.props.data.$new_scans) > 1 ? 's' : null}
+                    this.props.data.new_scans) > 1 ? 's' : null}
                   </div>
                   <div className={'col-xs-4 text-right alert-chevron'}>
                     <span className={
@@ -165,30 +163,104 @@ class MyTasks extends Component {
             panel.tasks.content.push(content);
           }
           if (parseInt(this.props.data.violated_scans) > 0) {
-
+            const content = (
+              <a key={'list_item_mri_violations'}
+                href={window.origin + '/mri_violations/'}
+                 className={'list-group-item mri_violations'}
+              >
+                <div className={'row'}>
+                  <div className={'col-xs-8 text-left'}
+                  >
+                    <div className='huge'>
+                      {this.props.data.violated_scans}
+                    </div>
+                    Violated scan{parseInt(
+                    this.props.data.violated_scans) > 1 ? 's' : null}
+                    </div>
+                    <div className={'col-xs-4 text-right alert-chevron'}>
+                    <span className={
+                      'glyphicon glyphicon-chevron-right medium'
+                    }/>
+                    <p className={'small task-site'}>
+                      {this.props.data.violated_scans_site}
+                    </p>
+                    </div>
+                </div>
+              </a>
+            );
+            panel.tasks.content.push(content);
           }
           if (parseInt(this.props.data.pending_users) > 0) {
-
+            const content = (
+              <a key={'list_item_user_accounts'}
+                href={window.origin + '/user_accounts/'}
+                 className={'list-group-item pending-accounts'}
+              >
+                <div className={'row'}>
+                  <div className={'col-xs-8 text-left'}>
+                    <div className={'huge'}>
+                      {this.props.data.pending_users}
+                    </div>
+                    Account{parseInt(
+                    this.props.data.pending_users) > 1 ? 's' : null}
+                    pending approval
+                  </div>
+                  <div className={'col-xs-4 text-right alert-chevron'}>
+                    <span className={
+                      'glyphicon glyphicon-chevron-right medium'
+                    }/>
+                    <p className={'small task-site'}>
+                      {this.props.data.pending_users_site}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            );
+            panel.tasks.content.push(content);
           }
           if (parseInt(this.props.data.issues_assigned) > 0) {
-
+            const content = (
+              <a key={'list_item_issue_tracker'}
+                href={
+                  window.origin + '/issue_tracker/?submenu=my_issue_tracker'
+                }
+                 className={'list-group-item issue_tracker'}>
+                <div className={'row'}>
+                  <div className={'col-xs-8 text-left'}>
+                    <div className={'huge'}>
+                      {this.props.data.issues_assigned}
+                    </div>
+                    Issue{parseInt(
+                    this.props.data.issues_assigned) > 1 ? 's' : null}
+                    assigned to you
+                  </div>
+                  <div className={'col-xs-4 text-right alert-chevron'}>
+                    <span className={
+                      'glyphicon glyphicon-chevron-right medium'
+                    }/>
+                    <p className={'small task-site'}>
+                      {this.props.data.issues_assigned_site}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            );
+            panel.tasks.content.push(content);
           }
         }
         panel.tasks.div = (
-          <div>
+          <div className={'list-group tasks'}>
             {panel.tasks.content}
           </div>
         );
       }
       return (
-        <div className='col-lg-12 col-md-6 col-sm-6 col-xs-12'>
-          <Panel
-            title={'My Tasks'}
-            id={'tasksPanel'}
-          >
-            {panel.tasks.div}
-          </Panel>
-        </div>
+        <Panel
+          title={'My Tasks'}
+          id={'tasksPanel'}
+        >
+          {panel.tasks.div}
+        </Panel>
       );
     } else {
       return null;

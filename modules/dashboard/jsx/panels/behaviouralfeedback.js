@@ -25,12 +25,58 @@ class BehaviouralFeedbackNotifications extends Component {
    */
   render() {
     if (this.props.display) {
+      let panel = {
+        behaviouralFeedback: {
+          content: [],
+          div: null,
+        },
+      };
+      if (this.props.data) {
+        if (this.props.data.notifications) {
+          let notifications = [];
+          for (let notification in this.props.data.notifications) {
+            if (this.props.data.notifications.hasOwnProperty(notification)) {
+              notifications.push(
+                (
+                  <a key={'behavioural_feedback_notification_' + notification}
+                    href={
+                    window.origin +
+                    this.props.data.notifications[notification].URL
+                  }
+                     className={'list-group-item'}
+                  >
+                    {parseInt(this.props.data.notifications[notification].new) === 1 ? (
+                      <span className={'pull-left new-flag'}>NEW</span>
+                    ) : null}
+                    <span className={'pull-right text-muted small'}>
+                      Updated:&nbsp;
+                      {this.props.data.notifications[notification].Testdate}
+                    </span>
+                    <br/>
+                    {
+                      this.props.data.notifications[notification].Name}:&nbsp;
+                    {this.props.data.notifications[notification].Comment
+                    }
+                  </a>
+                )
+              );
+            }
+          }
+          panel.behaviouralFeedback.content.push(notifications);
+
+          panel.behaviouralFeedback.div = (
+            <div className='list-group bvl-feedback-item'>
+              {panel.behaviouralFeedback.content}
+            </div>
+          );
+        }
+      }
       return (
         <Panel
           title={'Behavioural Feedback Notifications'}
           id={'behaviouralFeedbackPanel'}
         >
-
+          {panel.behaviouralFeedback.div}
         </Panel>
       );
     } else {

@@ -1,4 +1,3 @@
-
 function process() {
   $(document).ready(function() {
     let scanLineChart;
