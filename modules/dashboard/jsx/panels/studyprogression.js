@@ -24,7 +24,7 @@ class StudyProgression extends Component {
    * @return {DOMRect}
    */
   render() {
-    if (this.props.data && this.props.display) {
+    if (this.props.display) {
       console.log(this.props.data);
       let panel = {
         scansLineChart: {
@@ -38,6 +38,13 @@ class StudyProgression extends Component {
         },
       };
 
+      if (this.props.data) {
+        panel.scansLineChart.div = (
+          <div id='scans-line-chart-panel'>
+
+          </div>
+        );
+      }
 
       return (
         <Panel
@@ -57,7 +64,8 @@ class StudyProgression extends Component {
             ]
           }
         >
-
+          {panel.scansLineChart.div}
+          {panel.recruitmentLineChart.div}
         </Panel>
       );
     } else {
