@@ -403,6 +403,7 @@ class AjaxDashboard extends \NDB_Page
         if ($recruitmentData['progress']['overall']) {
             $studyProgressionData = $recruitmentData['progress']['overall'];
         }
+        $studyProgressionData['total_scans'] = $recruitmentData['total_scans'];
 
         $values['welcome'] = $welcomeData;
         $values['recruitment'] = $recruitmentData;

@@ -161,6 +161,11 @@ class Dashboard extends React.Component {
             {welcome}
             {recruitment}
             {study}
+            <small>
+              <i>Note that the Recruitment and Study Progression charts
+                include data from ineligible, excluded, and
+                consent withdrawn candidates.</i>
+            </small>
           </div>
           <div className='col-lg-4'>
             <div className='col-lg-12 col-md-6 col-sm-6 col-xs-12'>
