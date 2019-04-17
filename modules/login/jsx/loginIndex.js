@@ -257,7 +257,7 @@ class Login extends Component {
               placeholder={'Password'}
               class={'col-sm-12'}
               required={true}
-              type={'password'}
+              isPassword={true}
             />
             {error}
             <ButtonElement

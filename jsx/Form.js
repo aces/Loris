@@ -934,7 +934,7 @@ class TextboxElement extends Component {
         {label}
         <div className={this.props.class}>
           <input
-            type={this.props.type}
+            type={this.props.isPassword ? 'password' : 'text'}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
@@ -965,6 +965,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  isPassword: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -983,6 +984,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  isPassword: false,
 };
 
 /**
