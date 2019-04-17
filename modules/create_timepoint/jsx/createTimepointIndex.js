@@ -157,8 +157,8 @@ class CreateTimepoint extends React.Component {
         }).catch((error) => {
       const state = Object.assign({}, this.state);
       state.errors = [{message: error}];
+      state.isLoaded = true;
       this.setState(state);
-      this.setState({isLoaded: true});
     });
   }
   /**
