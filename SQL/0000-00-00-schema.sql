@@ -993,10 +993,13 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'new_category', 'N', 'notifier_document_repository_new_category.tpl', 'Document Repository: New Category'),
   ('document_repository', 'upload', 'N', 'notifier_document_repository_upload.tpl', 'Document Repository: New Document Uploaded'),
   ('document_repository', 'delete', 'N', 'notifier_document_repository_delete.tpl', 'Document Repository: Document Deleted'),
-  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited');
+  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
+  ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
+  ('publication', 'review', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
+  ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
 
--- enable doc repo basic text emails
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -2159,41 +2162,3 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
-
-SET @reportsTab = (SELECT ID FROM LorisMenu WHERE Label='Reports');
-SET @orderNum = (SELECT MAX(OrderNumber) + 1 FROM LorisMenu WHERE Parent=@reportsTab);
-INSERT INTO LorisMenu (Parent, Label, Link, OrderNumber) VALUES (@reportsTab, 'Publications', 'publication/', @orderNum);
-INSERT INTO permissions (code, description, categoryID) VALUES ('publication_view', 'Publication - Access to module', 2);
-INSERT INTO permissions (code, description, categoryID) VALUES ('publication_propose', 'Publication - Propose a project', 2);
-INSERT INTO permissions (code, description, categoryID) VALUES ('publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
-INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_view'));
-INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_propose'));
-INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_approve'));
-INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_approve'));
-INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_view'));
-INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_propose'));
-
-INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
-INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'review', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed');
-INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
-
-INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES (
-  (SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='submission'),
-  (SELECT id FROM notification_services WHERE service='email_text')
-);
-INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES (
-  (SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='review'),
-  (SELECT id FROM notification_services WHERE service='email_text')
-);
-INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES (
-  (SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='edit'),
-  (SELECT id FROM notification_services WHERE service='email_text')
-);
-
-SET @pathID = (SELECT ID FROM ConfigSettings WHERE Name='paths');
-SET @order  = (SELECT MAX(OrderNumber) + 1 FROM ConfigSettings WHERE Parent=@pathID);
-INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to uploaded publications', 1, @pathID, 'Publications', 'text', @order + 1);
-INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_uploads'), '/data/publication_uploads/');
-
-INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_deletions', 'Path to deleted publications', 1, @pathID, 'Deleted Publications', 'text', @order + 1);
-INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_deletions'), '/data/publication_uploads/to_be_deleted/');
