@@ -36,7 +36,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * These properties describe a pool entity.
      *
-     * @var int       $id
+     * @var string    $id
      * @var string    $label
      * @var array     $specimenIds
      * @var int       $candidateId
@@ -68,9 +68,11 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setId(?int $id = null) : void
+    public function setId(int $id) : void
     {
-        $this->id = $id;
+        if ($id > 0) {
+            $this->id = $id;
+        }
     }
 
     /**
@@ -127,24 +129,18 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
         return $this->specimenIds;
     }
 
-
-    // XXX: Candidate ID and Session ID were made nullable because no candidate
-    // ID or session ID is sent from the client side. These values are only set
-    // when pools are being instantiated from the database. There is likely a
-    // better way to resolve this issue, such as using logic to determine what
-    // candidate and session should be associated with this pool and setting it.
-    // But is that really worth it since the data will never be submitted into
-    // the database? Opinions welcome.
     /**
      * Sets the Candidate ID of the pool
      *
-     * @param ?int $candidateId Candidate ID of the pool
+     * @param int $candidateId Candidate ID of the pool
      *
      * @return void
      */
-    public function setCandidateId(?int $candidateId) : void
+    public function setCandidateId(int $candidateId) : void
     {
-        $this->candidateId = $candidateId;
+        if ($candidateId > 0) {
+            $this->candidateId = $candidateId;
+        }
     }
 
     /**
@@ -166,7 +162,9 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setSessionId(?int $sessionId) : void
     {
-        $this->sessionId = $sessionId;
+        if ($sessionId > 0) {
+            $this->sessionId = $sessionId;
+        }
     }
 
     /**
@@ -188,7 +186,9 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setCenterId(int $centerId) : void
     {
-        $this->centerId = $centerId;
+        if ($centerId > 0) {
+            $this->centerId = $centerId;
+        }
     }
 
     /**
@@ -254,18 +254,14 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */                                                                         
     public function fromArray(array $data) : Pool                    
     {                                                                           
-        // XXX: fix this by passing strings to the setters which are then
-        // validated.
-        if ($data['id']) {
-          $this->setId(intval($data['id']));                                              
-        }
-        $this->setLabel($data['label']);                                        
-        $this->setSpecimenIds($data['specimenIds']);                            
-        $this->setCandidateId(intval($data['candidateId']));                            
-        $this->setSessionId(intval($data['sessionId']));                                
-        $this->setCenterId(intval($data['centerId']));                                  
-        $this->setDate(new \DateTime($data['date']));                           
-        $this->setTime(new \DateTime($data['time']));                           
+        isset($data['id'])          && $this->setId((int) ($data['id']));                                              
+        isset($data['label'])       && $this->setLabel((string) $data['label']);                                        
+        isset($data['specimenIds']) && $this->setSpecimenIds($data['specimenIds']);                            
+        isset($data['candidateId']) && $this->setCandidateId((int) $data['candidateId']);                            
+        isset($data['sessionId'])   && $this->setSessionId((int) $data['sessionId']);                                
+        isset($data['centerId'])    && $this->setCenterId((int) $data['centerId']);                                  
+        isset($data['date'])        && $this->setDate(new \DateTime($data['date']));                           
+        isset($data['time'])        && $this->setTime(new \DateTime($data['time']));                           
                                                                                 
         return $this;                                                           
     }                                                                           

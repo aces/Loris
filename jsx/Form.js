@@ -258,9 +258,11 @@ class SearchableDropdown extends Component {
   componentDidUpdate(prevProps) {
     // need to clear out currentInput for when props.value gets wiped
     // if the previous value prop contained data and the current one doesn't
-    // clear currentInput
+    // clear currentInput.
     if (prevProps.value && !this.props.value) {
       this.setState({currentInput: ''});
+    } else if (this.props.value !== prevProps.value && this.props.value) {
+      this.setState({currentInput: this.props.options[this.props.value]});
     }
   }
 
@@ -443,8 +445,8 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === '')) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
+    if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
+      errorMessage = <span>{this.props.errorMessagei || 'The field is required!'}</span>;
       elementClass = 'row form-group has-error';
     }
 
@@ -513,7 +515,6 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -530,8 +531,6 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
-  hasError: false,
-  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -784,7 +783,6 @@ TagsElement.defaultProps = {
   required: false,
   disabled: false,
   emptyOption: true,
-  hasError: false,
   allowDupl: false,
   useSearch: false,
   strictSearch: false, // only accept items specified in options
@@ -984,14 +982,22 @@ class DateElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
@@ -1005,10 +1011,11 @@ class DateElement extends Component {
             min={this.props.minYear}
             max={this.props.maxYear}
             onChange={this.handleChange}
-            value={this.props.value || ''}
+            value={this.props.value}
             required={required}
             disabled={disabled}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1060,14 +1067,22 @@ class TimeElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
@@ -1085,6 +1100,7 @@ class TimeElement extends Component {
             pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
             title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1131,9 +1147,22 @@ class NumericElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
 
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -1151,6 +1180,7 @@ class NumericElement extends Component {
             required={required}
             onChange={this.handleChange}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1225,7 +1255,7 @@ class FileElement extends Component {
     };
 
     // Add error message
-    if (this.props.hasError) {
+    if (this.props.errorMessage) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
     }
@@ -1300,7 +1330,6 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -1312,8 +1341,6 @@ FileElement.defaultProps = {
   id: null,
   disabled: false,
   required: false,
-  hasError: false,
-  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },

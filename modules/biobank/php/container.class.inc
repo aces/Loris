@@ -37,17 +37,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * These properties describe a container entity.
      *
-     * @var int   $id
-     * @var int   $barcode
-     * @var int   $typeId
-     * @var int   $dimensionId
-     * @var float $temperature
-     * @var int   $statusId
-     * @var int   $originId
-     * @var int   $centerId
-     * @var int   $parentContainerId
-     * @var array $childContainerIds
-     * @var int   $coordinate
+     * @var int    $id
+     * @var string $barcode
+     * @var int    $typeId
+     * @var int    $dimensionId
+     * @var float  $temperature
+     * @var int    $statusId
+     * @var int    $originId
+     * @var int    $centerId
+     * @var int    $parentContainerId
+     * @var array  $childContainerIds
+     * @var int    $coordinate
      *
      * @access private
      */
@@ -73,13 +73,15 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's ID
      *
-     * @param ?int $id the container's ID
+     * @param int $id the container's ID
      *
      * @return void
      */
-    public function setId(?int $id = null) : void
+    public function setId(int $id) : void
     {
-        $this->id = $id;
+        if ($id > 0) {
+            $this->id = $id;
+        }
     }
 
     /**
@@ -107,9 +109,9 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the container's barcode
      *
-     * @return string
+     * @return ?string
      */
-    public function getBarcode() : string
+    public function getBarcode() : ?string
     {
         return $this->barcode;
     }
@@ -123,15 +125,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setTypeId(int $typeId) : void
     {
-        $this->typeId = $typeId;
+        if ($typeId > 0) {
+            $this->typeId = $typeId;
+        }
     }
 
     /**
      * Gets the ID of the container type
      *
-     * @return int
+     * @return ?int
      */
-    public function getTypeId() : int
+    public function getTypeId() : ?int
     {
         return $this->typeId;
     }
@@ -145,15 +149,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setDimensionId(int $dimensionId) : void
     {
-        $this->dimensionId = $dimensionId;
+        if ($dimensionId > 0) {
+            $this->dimensionId = $dimensionId;
+        }
     }
 
     /**
      * Gets the ID of the container's dimensions
      *
-     * @return int
+     * @return ?int
      */
-    public function getDimensionId() : int
+    public function getDimensionId() : ?int
     {
         return $this->dimensionId;
     }
@@ -173,9 +179,9 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the container's temperature in Celsius.
      *
-     * @return float
+     * @return ?float
      */
-    public function getTemperature() : float
+    public function getTemperature() : ?float
     {
         return $this->temperature;
     }
@@ -189,15 +195,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setStatusId(int $statusId) : void
     {
-        $this->statusId = $statusId;
+        if ($statusId > 0) {
+            $this->statusId = $statusId;
+        }
     }
 
     /**
      * Gets the ID of the container's current status
      *
-     * @return int
+     * @return ?int
      */
-    public function getStatusId() : int
+    public function getStatusId() : ?int
     {
         return $this->statusId;
     }
@@ -211,15 +219,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setOriginId(int $originId) : void
     {
-        $this->originId = $originId;
+        if ($originId > 0) {
+            $this->originId = $originId;
+        }
     }
 
     /**
      * Gets the ID of the container's origin
      *
-     * @return int
+     * @return ?int
      */
-    public function getOriginId() : int
+    public function getOriginId() : ?int
     {
         return $this->originId;
     }
@@ -233,15 +243,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setCenterId(int $centerId) : void
     {
-        $this->centerId = $centerId;
+        if ($centerId > 0) {
+            $this->centerId = $centerId;
+        }
     }
 
     /**
      * Gets the ID of the container's current centerId
      *
-     * @return int
+     * @return ?int
      */
-    public function getCenterId() : int
+    public function getCenterId() : ?int
     {
         return $this->centerId;
     }
@@ -249,19 +261,21 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the parent container's ID
      *
-     * @param ?int $parentContainerId the parent container's ID
+     * @param int $parentContainerId the parent container's ID
      *
      * @return void
      */
-    public function setParentContainerId(?int $parentContainerId = null) : void
+    public function setParentContainerId(int $parentContainerId) : void
     {
-        $this->parentContainerId = $parentContainerId;
+        if ($parentContainerId > 0) {
+            $this->parentContainerId = $parentContainerId;
+        }
     }
 
     /**
      * Gets the parent container's ID
      *
-     * @return int|null
+     * @return ?int
      */
     public function getParentContainerId() : ?int
     {
@@ -271,11 +285,11 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the IDs of the children containers
      *
-     * @param ?array $childContainerIds array of IDs of children container
+     * @param array $childContainerIds array of IDs of children container
      *
      * @return void
      */
-    public function setChildContainerIds(?array $childContainerIds = null) : void
+    public function setChildContainerIds(array $childContainerIds) : void
     {
         $this->childContainerIds = $childContainerIds;
     }
@@ -293,13 +307,15 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's current coordinate in storage
      *
-     * @param ?int $coordinate the container's current coordinate
+     * @param int $coordinate the container's current coordinate
      *
      * @return void
      */
-    public function setCoordinate(?int $coordinate = null) : void
+    public function setCoordinate(int $coordinate = null) : void
     {
-        $this->coordinate = $coordinate;
+        if ($coordinate > 0) {
+            $this->coordinate = intval($coordinate);
+        }
     }
 
     /**
@@ -321,17 +337,17 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */                                                                         
     public function fromArray(array $data) : Container               
     {                                                                           
-        if (isset($data['id'])) $this->setId(intval($data['id']));                                         
-        $this->setBarcode($data['barcode']);                               
-        $this->setTypeId(intval($data['typeId']));
-        if (isset($data['dimensionId'])) $this->setDimensionId(intval($data['dimensionId']));                       
-        $this->setTemperature(floatval($data['temperature']));                       
-        $this->setStatusId(intval($data['statusId']));                             
-        $this->setCenterId(intval($data['centerId']));                            
-        $this->setOriginId(intval($data['originId']));                             
-        if (isset($data['parentContainerId'])) $this->setParentContainerId(intval($data['parentContainerId']));           
-        if (isset($data['childContainerIds'])) $this->setChildContainerIds($data['childContainerIds']);           
-        if (isset($data['coordinate'])) $this->setCoordinate(intval($data['coordinate']));                         
+        isset($data['id'])                && $this->setId((int) $data['id']);
+        isset($data['barcode'])           && $this->setBarcode((string) $data['barcode']);
+        isset($data['typeId'])            && $this->setTypeId((int) $data['typeId']);
+        isset($data['dimensionId'])       && $this->setDimensionId((int) $data['dimensionId']);
+        isset($data['temperature'])       && $this->setTemperature((float) ($data['temperature']));
+        isset($data['statusId'])          && $this->setStatusId((int) $data['statusId']);
+        isset($data['centerId'])          && $this->setCenterId((int) $data['centerId']);
+        isset($data['originId'])          && $this->setOriginId((int) $data['originId']);
+        isset($data['parentContainerId']) && $this->setParentContainerId((int) $data['parentContainerId']);
+        isset($data['childContainerIds']) && $this->setChildContainerIds($data['childContainerIds']);
+        isset($data['coordinate'])        && $this->setCoordinate((int) $data['coordinate']);
                                                                                 
         return $this;
     }                                                                           

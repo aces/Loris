@@ -95,14 +95,20 @@ class SpecimenEndpoint implements RequestHandlerInterface
                 $specimens = $specCont->getInstances();
                 return new \LORIS\Http\Response\OK($specimens); 
             case 'POST':
-                $requestBody = $request->getParsedBody();
-                $specimens = json_decode($requestBody['data'], true);
-                if ($requestBody['update']) {
-                    $specCont->updateInstance($specimens);
+                $specimens = json_decode($request->getBody()->getContents(), true);
+                $specCont->createInstances($specimens);
+
+                if (!empty($request->getUploadedFiles())) {
+                  $response = $this->uploadFiles($request);
+                  if ($response->getStatusCode() !== 200) {
+                      $db->rollBack();
+                      return $response;
+                  }
                 }
-                if (!$requestBody['update']) {
-                    $specCont->createInstances($specimens);
-                }
+                return new \LORIS\Http\Response\OK(); 
+            case 'PUT':
+                $specimen = json_decode($request->getBody()->getContents(), true);
+                $specCont->updateInstance($specimen);
                 return new \LORIS\Http\Response\OK(); 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -111,11 +117,6 @@ class SpecimenEndpoint implements RequestHandlerInterface
 
             // I would like to move this logic into the controller, but the only
             // way to do that while maintaining 
-            $response = $this->uploadFiles($request);
-            if ($response->getStatusCode() !== 200) {
-                $db->rollBack();
-                return $response;
-            }
         } catch (\BadRequest $e) {
             $db->rollBack();
             return new \LORIS\Http\Response\BadRequest($e->getMessage());
@@ -128,6 +129,7 @@ class SpecimenEndpoint implements RequestHandlerInterface
         } catch (\Exception $e) {
             $db->rollBack();
             // PUT SOMETHING HERE LATER
+            return new \LORIS\Http\Response\BadRequest($e->getMessage());
         } finally {
             if ($db->inTransaction()) {
                 $db->commit();

@@ -58,9 +58,9 @@ class Collection extends Process
     /**
      * Gets the current amount of specimen available
      *
-     * @return string
+     * @return ?string
      */
-    public function getQuantity() : string
+    public function getQuantity() : ?string
     {
         return $this->quantity;
     }
@@ -80,9 +80,9 @@ class Collection extends Process
     /**
      * Gets the ID of the specimen's unit of quantity
      *
-     * @return int
+     * @return ?int
      */
-    public function getUnitId() : int
+    public function getUnitId() : ?int
     {
         return $this->unitId;
     }
@@ -97,8 +97,8 @@ class Collection extends Process
     public function fromArray(array $data) : Process
     {
         parent::fromArray($data);
-        $this->setQuantity($data['quantity']);
-        $this->setUnitId(intval($data['unitId']));
+        isset($data['quantity']) && $this->setQuantity((string) $data['quantity']);
+        isset($data['unitId'])   && $this->setUnitId((int) $data['unitId']);
 
         return $this;
     }

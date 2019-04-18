@@ -83,9 +83,9 @@ class SpecimenController
     {
         $this->validatePermission('create');
 
-        foreach ($list as $i => $item) {
-            $containerList[$i] = $item['container'];
-            $specimenList[$i]  = $this->prepare($item['specimen']);
+        foreach ($list as $i => $specimen) {
+            $containerList[$i] = $specimen['container'];
+            $specimenList[$i]  = $this->prepare($specimen);
         }
 
         $contController = new ContainerController($this->db, $this->user);
@@ -140,12 +140,12 @@ class SpecimenController
         return array(
                 'types'              => $this->dao->getTypes(),
                 'typeUnits'          => $this->dao->getTypeUnits(),
+                'typeContainerTypes' => $this->dao->getTypeContainerTypes(),
                 'protocols'          => $this->dao->getProtocols(),
+                'processes'          => $this->dao->getProcesses(),
                 'protocolAttributes' => $this->dao->getProtocolAttributes(),
-                'methods'            => $this->dao->getMethods(),
-                'methodAttributes'   => $this->dao->getMethodAttributes(),
+                'protocolContainers' => $this->dao->getProtocolContainers(),
                 'units'              => $this->dao->getUnits(),
-                'typeAttributes'     => $this->dao->getTypeAttributes(),
                 'attributeDatatypes' => $this->dao->getAttributeDatatypes(),
                 'attributeOptions'   => $this->dao->getAttributeReferenceTableOptions(),
                );
@@ -282,8 +282,8 @@ class SpecimenController
     {
         $fTCycle = $specimen->getFTCycle();
         if (isset($fTCycle)) {
-            if (!is_numeric($fTCycle) || intval($fTCycle) <= 0) {
-                throw new \BadRequest("F/T Cycle must be an integer greater than 0");
+            if (!is_numeric($fTCycle) || intval($fTCycle) < 0) {
+                throw new \BadRequest("F/T Cycle must be 0 or more");
             }
         }
     }
@@ -348,6 +348,7 @@ class SpecimenController
     private function validateCollection(Specimen $specimen) : void
     {
         $collection = $specimen->getCollection();
+        $this->validateProtocolId($collection);
         $this->validateQuantity($collection);
         $this->validateUnitId($collection);
         $this->validateCenterId($collection);
@@ -378,22 +379,6 @@ class SpecimenController
     }
 
     /**
-     * Validates Specimen Preperation Protocol ID.
-     *
-     * @param Preparation $preparation Preparation to be validated.
-     *
-     * @throws BadRequest if the provided Specimen does not meet validation requirements.
-     *
-     * @return void
-     */
-    private function validateProtocolId(Preparation $preparation) : void
-    {
-        if (is_null($preparation->getProtocolId())) {
-            throw new \BadRequest('Specimen Preparation Protocol must be set');
-        }
-    }
-
-    /**
      * Validates Specimen Object Type ID.
      *
      * @param Specimen $specimen Specimen to be validated.
@@ -407,7 +392,7 @@ class SpecimenController
         // Validate Analysis
         $analysis = $specimen->getAnalysis();
         if (isset($analysis)) {
-            $this->validateMethodId($analysis);
+            $this->validateProtocolId($analysis);
             $this->validateCenterId($analysis);
             $this->validateDate($analysis);
             $this->validateTime($analysis);
@@ -416,18 +401,18 @@ class SpecimenController
     }
 
     /**
-     * Validates Specimen Analysis Method ID.
+     * Validates Specimen Process Protocol ID.
      *
-     * @param Analysis $analysis Analysis to be validated.
+     * @param Process $process Process to be validated.
      *
-     * @throws BadRequest if the provided Analysis does not meet validation requirements.
+     * @throws BadRequest if the provided Specimen does not meet validation requirements.
      *
      * @return void
      */
-    private function validateMethodId(Analysis $analysis) : void
+    private function validateProtocolId(Process $process) : void
     {
-        if (is_null($analysis->getMethodId())) {
-            throw new \BadRequest('Specimen Analysis Method must be set');
+        if (is_null($process->getProtocolId())) {
+            throw new \BadRequest('Specimen Processing Protocol must be set');
         }
     }
 

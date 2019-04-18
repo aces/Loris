@@ -36,13 +36,17 @@ abstract class Process implements \JsonSerializable
      *
      * These variables describe a process instance.
      *
+     * @var int       $protocolId
      * @var int       $centerId
+     * @var int       $examinerId
      * @var \DateTime $date
      * @var \DateTime $time
      * @var string    $comments
      * @var array     $data
      */
+    private $protocolId;
     private $centerId;
+    private $examinerId;
     private $date;
     private $time;
     private $comments;
@@ -56,6 +60,30 @@ abstract class Process implements \JsonSerializable
     }
 
     /**
+     * Sets the ID of the specimen's processing protocol.
+     *
+     * @param int $protocolId the ID of the processing protocol
+     *
+     * @return void
+     */
+    public function setProtocolId(int $protocolId) : void
+    {
+        if ($protocolId > 0) {
+            $this->protocolId = $protocolId;
+        }
+    }
+
+    /**
+     * Gets the ID of the specimen's processing protocol.
+     *
+     * @return int
+     */
+    public function getProtocolId() : int
+    {
+        return $this->protocolId;
+    }
+
+    /**
      * Sets the ID of the specimen's center at time of processing.
      *
      * @param int $centerId the ID of the processing center
@@ -64,7 +92,9 @@ abstract class Process implements \JsonSerializable
      */
     public function setCenterId(int $centerId) : void
     {
-        $this->centerId = $centerId;
+        if ($centerId > 0) {
+            $this->centerId = $centerId;
+        }
     }
 
     /**
@@ -75,6 +105,30 @@ abstract class Process implements \JsonSerializable
     public function getCenterId() : int
     {
         return $this->centerId;
+    }
+
+    /**
+     * Sets the ID of the specimen's examiner at time of processing.
+     *
+     * @param int $examinerId the ID of the processing center
+     *
+     * @return void
+     */
+    public function setExaminerId(int $examinerId) : void
+    {
+        if ($examinerId > 0) {
+            $this->examinerId = $examinerId;
+        }
+    }
+
+    /**
+     * Gets the ID of the specimen's processing examiner
+     *
+     * @return int
+     */
+    public function getExaminerId() : int
+    {
+        return $this->examinerId;
     }
 
     /**
@@ -124,11 +178,11 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets processing comments
      *
-     * @param ?string $comments comments relating to processing
+     * @param string $comments comments relating to processing
      *
      * @return void
      */
-    public function setComments(?string $comments = null) : void
+    public function setComments(string $comments) : void
     {
         $this->comments = $comments;
     }
@@ -146,11 +200,11 @@ abstract class Process implements \JsonSerializable
     /**
      * Sets the Data array that contains custom attributes and values.
      *
-     * @param ?array $data of custom attributes and values.
+     * @param array $data of custom attributes and values.
      *
      * @return void
      */
-    public function setData(?array $data = null) : void
+    public function setData(array $data) : void
     {
         $this->data = $data;
     }
@@ -174,10 +228,13 @@ abstract class Process implements \JsonSerializable
      */
     public function fromArray(array $data) : Process
     {
-        $this->setCenterId(intval($data['centerId']));
-        $this->setDate(new \DateTime($data['date']));
-        $this->setTime(new \DateTime($data['time']));
-        $this->setData(($data['data']));
+        isset($data['protocolId']) && $this->setProtocolId((int) $data['protocolId']);
+        isset($data['centerId'])   && $this->setCenterId((int) $data['centerId']);
+        isset($data['examinerId']) && $this->setExaminerId((int) $data['examinerId']);
+        isset($data['date'])       && $this->setDate(new \DateTime($data['date']));
+        isset($data['time'])       && $this->setTime(new \DateTime($data['time']));
+        isset($data['data'])       && $this->setData($data['data']);
+        isset($data['comments'])   && $this->setComments((string) $data['comments']);
 
         return $this;
     }
@@ -193,11 +250,13 @@ abstract class Process implements \JsonSerializable
         // TODO: Date and Time formats should be gotten from some sort of config
         // setting.
         return array(
-                'centerId' => $this->centerId,
-                'date'     => $this->date->format('d-m-Y'),
-                'time'     => $this->time->format('H:i'),
-                'comments' => $this->comments,
-                'data'     => $this->data,
+                'protocolId' => $this->protocolId,
+                'centerId'   => $this->centerId,
+                'examinerId' => $this->examinerId,
+                'date'       => $this->date->format('Y-m-d'),
+                'time'       => $this->time->format('H:i'),
+                'comments'   => $this->comments,
+                'data'       => $this->data,
                );
     }
 }

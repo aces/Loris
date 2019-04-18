@@ -79,8 +79,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $specimen    = $specimenDAO->getInstanceFromId(intval($specimenIds[0]));
 
         $poolArray                = $this->getInstanceDataFromId($id);
-        $poolArray['candidateId'] = $specimen->getCandidateId();
-        $poolArray['sessionId']   = $specimen->getSessionId();
+        $poolArray['CandidateID'] = $specimen->getCandidateId();
+        $poolArray['SessionID']   = $specimen->getSessionId();
 
         $pool = $this->getInstanceFromSQL($poolArray, $specimenIds);
 
@@ -261,14 +261,14 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     private function getInstanceFromSQL(array $data, array $specimenIds) : Pool
     {
         $pool = new Pool();
-        $pool->setId(intval($data['PoolID']));
-        $pool->setLabel($data['Label']);
-        $pool->setSpecimenIds($specimenIds);
-        $pool->setCandidateId($data['candidateId']);
-        $pool->setSessionId($data['sessionId']);
-        $pool->setCenterId(intval($data['CenterID']));
-        $pool->setDate(new \DateTime($data['Date']));
-        $pool->setTime(new \DateTime($data['Time']));
+        isset($data['PoolID'])      && $pool->setId((int) $data['PoolID']);
+        isset($data['Label'])       && $pool->setLabel((string) $data['Label']);
+        !empty($specimenIds)        && $pool->setSpecimenIds($specimenIds);
+        isset($data['CandidateID']) && $pool->setCandidateId((int) $data['CandidateID']);
+        isset($data['SessionID'])   && $pool->setSessionId((int) $data['SessionID']);
+        isset($data['CenterID'])    && $pool->setCenterId((int) $data['CenterID']);
+        isset($data['Date'])        && $pool->setDate(new \DateTime($data['Date']));
+        isset($data['Time'])        && $pool->setTime(new \DateTime($data['Time']));
 
         return $pool;
     }

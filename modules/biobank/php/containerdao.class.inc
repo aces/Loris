@@ -83,7 +83,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * Queries data from the database for the Container at the requested ID.
      *
      * @param int $id Value of the $id for the Container whose data is being
-     *                queried.
+     *                   queried.
      *
      * @return array $container Container Data at that ID.
      */
@@ -117,12 +117,12 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * Returns an array of all the Child Container IDs associated with
      * the given Container ID from the biobank_container_parent table.
      *
-     * @param int $id of Container
+     * @param ?int $id of Container
      *
      * @return array $childContainerIds List of Container IDs that are
      *                                  children of the Container ID
      */
-    private function getChildContainerIds(int $id) : array
+    private function getChildContainerIds(?int $id) : array
     {
          $query = 'SELECT ContainerID
                    FROM biobank_container_parent
@@ -158,7 +158,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $containers = array();
         if (!empty($result)) {
             foreach ($result as $row) {
-                $id        = intval($row['ContainerID']);
+                $id        = (int) $row['ContainerID'];
                 $container = $this->getInstanceFromId($id);
                 $containers[$id] = $container;
             }
@@ -257,8 +257,11 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     {
         $query      = "SELECT ContainerDimensionID as id,
                          X as x,
+                         XNumerical as xNum,
                          Y as y,
-                         Z as z 
+                         YNumerical as yNum,
+                         Z as z,
+                         ZNumerical as zNum
                   FROM biobank_container_dimension";
         $dimensions = $this->db->pselectWithIndexKey($query, array(), 'id');
 
@@ -274,7 +277,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     public function getStati() : array
     {
         $query = "SELECT ContainerStatusID as id,
-                         Label as status
+                         Label as label
                   FROM biobank_container_status";
         $stati = $this->db->pselectWithIndexKey($query, array(), 'id');
 
@@ -318,7 +321,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * and inserts it into all relevant tables in the database. Certain
      * information is then cascaded to the children of the Container.
      *
-     * @param object $container The Container Object to be saved into the
+     * @param Container $container The Container Object to be saved into the
      *                             database.
      *
      * @return int $containerId The ID of the Container that was saved.
@@ -348,7 +351,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
             }
         } else {
             // If insert:
-            $container->setId(intval($this->db->getLastInsertId()));
+            $container->setId((int) $this->db->getLastInsertId());
             // set the respective data array index to the value of the new
             // container ID.
             $data['biobank_container_parent']['ContainerID'] = $container->getId();
@@ -372,9 +375,6 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $centerId = $container->getCenterID();
         $this->cascadeToChildren($container, 'CurrentCenterID', $centerId);
 
-        //TODO: not sure if this is good practice, but the specimen controller
-        //needs this information to be able to associate itself with the proper
-        //container.
         return $container->getId();
     }
 
@@ -426,7 +426,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $childContainerIds = $this->getChildContainerIds($container->getId());
         if (!empty($childContainerIds)) {
             foreach ($childContainerIds as $id) {
-                $childContainers[$id] = $this->getInstanceFromId(intval($id));
+                $childContainers[$id] = $this->getInstanceFromId((int) $id);
             }
         }
         return $childContainers;
@@ -477,21 +477,18 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getInstanceFromSQL(array $data, ?array $childContainerIds) : Container
     {
-        // TODO: fix hack on line 490 that accounts for when parentContainerId
-        // and Coordinate are null. perhaps an if statement would be better,
-        // although messier solution.
         $container = $this->getInstance();
-        $container->setId(intval($data['ContainerID']));
-        $container->setBarcode($data['Barcode']);
-        $container->setTypeId(intval($data['ContainerTypeID']));
-        $container->setDimensionId(intval($data['ContainerDimensionID']));
-        $container->setTemperature(floatval($data['Temperature']));
-        $container->setStatusId(intval($data['ContainerStatusID']));
-        $container->setOriginId(intval($data['OriginCenterID']));
-        $container->setCenterId(intval($data['CurrentCenterID']));
-        $container->setParentContainerId($data['ParentContainerID'] ? intval($data['ParentContainerID']) : null);
-        $container->setChildContainerIds($childContainerIds);
-        $container->setCoordinate($data['Coordinate'] ? intval($data['Coordinate']) : null);
+        isset($data['ContainerID'])          && $container->setId((int) $data['ContainerID']);
+        isset($data['Barcode'])              && $container->setBarcode((string) $data['Barcode']);
+        isset($data['ContainerTypeID'])      && $container->setTypeId((int) $data['ContainerTypeID']);
+        isset($data['ContainerDimensionID']) && $container->setDimensionId((int) $data['ContainerDimensionID']);
+        isset($data['Temperature'])          && $container->setTemperature((float) $data['Temperature']);
+        isset($data['ContainerStatusID'])    && $container->setStatusId((int) $data['ContainerStatusID']);
+        isset($data['OriginCenterID'])       && $container->setOriginId((int) $data['OriginCenterID']);
+        isset($data['CurrentCenterID'])      && $container->setCenterId((int) $data['CurrentCenterID']);
+        isset($data['ParentContainerID'])    && $container->setParentContainerId((int) $data['ParentContainerID']);
+        isset($childContainerIds)            && $container->setChildContainerIds($childContainerIds);
+        isset($data['Coordinate'])           && $container->setCoordinate((int) $data['Coordinate']);
 
         return $container;
     }

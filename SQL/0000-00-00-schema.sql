@@ -42,7 +42,6 @@ DROP TABLE IF EXISTS `biobank_specimen_type_unit_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol_container_type_rel`;            
 DROP TABLE IF EXISTS `biobank_specimen_type_container_type_rel`;                
 DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;                 
-DROP TABLE IF EXISTS `biobank_specimen_type_attribute_rel`;                     
 DROP TABLE IF EXISTS `biobank_pool`;                                            
 DROP TABLE IF EXISTS `biobank_specimen_attribute`;                              
 DROP TABLE IF EXISTS `biobank_specimen_attribute_referencetable`;               
@@ -1953,19 +1952,6 @@ CREATE TABLE `biobank_pool` (
 
 
 /*Relational Tables*/
-CREATE TABLE `biobank_specimen_type_attribute_rel` (
-  `SpecimenTypeID` integer unsigned NOT NULL,
-  `SpecimenAttributeID` integer unsigned NOT NULL,
-  `Required` BIT(1) NOT NULL, 
-  CONSTRAINT `PK_biobank_specimen_type_attribute_rel` PRIMARY KEY (`SpecimenTypeID`, `SpecimenAttributeID`),
-  CONSTRAINT `FK_biobank_specimen_type_attribute_rel_SpecimenTypeID`
-    FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT `FK_biobank_specimen_type_attribute_rel_SpecimenAttributeID` 
-    FOREIGN KEY (`SpecimenAttributeID`) REFERENCES `biobank_specimen_attribute`(`SpecimenAttributeID`)
-    ON UPDATE RESTRICT ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `biobank_specimen_protocol_attribute_rel` (
   `SpecimenProtocolID` integer unsigned NOT NULL,
   `SpecimenAttributeID` integer unsigned NOT NULL,
@@ -1994,7 +1980,7 @@ CREATE TABLE `biobank_specimen_protocol_container_type_rel` (
 CREATE TABLE `biobank_specimen_type_container_type_rel` (
   `SpecimenTypeID` integer unsigned NOT NULL,
   `ContainerTypeID` integer unsigned NOT NULL,
-  `Regex` varchar(255) NOT NULL,
+  `Regex` varchar(255),
   CONSTRAINT `PK_biobank_specimen_type_container_type_rel` PRIMARY KEY (SpecimenTypeID, ContainerTypeID),
   CONSTRAINT `FK_biobank_specimen_type_container_type_rel_SpecimenTypeID` 
     FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type`(`SpecimenTypeID`)
@@ -2059,65 +2045,20 @@ CREATE TABLE `biobank_container_parent` (
 
 /*INSERTS*/
 
-/*XXX: The following 4 lines are for testing. Delete before merging.*/
-DELETE FROM LorisMenu WHERE `Label`='Specimens';
-DELETE FROM LorisMenu WHERE `Label`='Containers';
-DELETE FROM LorisMenu WHERE `Label`='Pools';
-DELETE FROM LorisMenu WHERE `Label`='Biobank';
-
-DELETE FROM permissions WHERE 
-    `code`='biobank_specimen_view' OR 
-    `code`='biobank_specimen_create' OR
-    `code`='biobank_specimen_update' OR
-    `code`='biobank_container_view' OR
-    `code`='biobank_container_create' OR
-    `code`='biobank_container_update' OR
-    `code`='biobank_pool_view' OR
-    `code`='biobank_pool_create';
-
-DELETE FROM ConfigSettings WHERE
-    `Name`='biobankPath';
-
-/*Loris Menu*/
-UPDATE LorisMenu SET `OrderNumber`=5 WHERE `Label`='Reports';
-UPDATE LorisMenu SET `OrderNumber`=6 WHERE `Label`='Tools';
-UPDATE LorisMenu SET `OrderNumber`=7 WHERE `Label`='Admin';
-
-INSERT INTO LorisMenu (Label, OrderNumber) VALUES
-    ('Biobank', 4)
-;
-
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES                  
-    ('Specimens', 'biobank#specimens/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1),
-    ('Containers', 'biobank#containers/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 2),
-    ('Pools', 'biobank#pools/', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 3)
-;
-
-/*Permissions*/
-INSERT INTO permissions (code, description, categoryID) VALUES
-    ('biobank_specimen_view', 'Biobank: View Specimen Data', 2),
-    ('biobank_specimen_create', 'Biobank: Create Specimen Data', 2),
-    ('biobank_specimen_update', 'Biobank: Update Specimen Data', 2),
-    ('biobank_container_view', 'Biobank: View Container Data', 2),
-    ('biobank_container_create', 'Biobank: Create Container Data', 2),
-    ('biobank_container_update', 'Biobank: Update Container Data', 2),
-    ('biobank_pool_view', 'Biobank: View Pool Data', 2),
-    ('biobank_pool_create', 'Biobank: Create Pool Data', 2)
-;
-
-/*Config*/
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
-    SELECT 'biobankPath', 'Path to Biobank data files', 1, 0, 'text', ID, 'Biobank', 10
-    FROM ConfigSettings
-    WHERE Name="paths";
-
-/*Global*/
+/*Specimen*/
 INSERT INTO biobank_specimen_attribute_datatype (Datatype)
 VALUES  ('boolean'),
         ('number'),
         ('text'),
-        ('datetime'),
+        ('date'),
+        ('time'),
         ('file')
+;
+
+INSERT INTO biobank_specimen_process (Label)
+VALUES ('Collection'),
+       ('Analysis'),
+       ('Preparation')
 ;
 
 /*Container*/

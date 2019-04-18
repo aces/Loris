@@ -127,6 +127,12 @@ class OptionsEndpoint implements RequestHandlerInterface
         $sessions = $db->pselectWithIndexKey($query, array(), 'id');
 
         // XXX: This should eventually be replaced by a call directly to a
+        // Examiner endpoint or Examiner controller that will be able to provide
+        // Examiner Objects.
+        $query     = 'SELECT examinerID as id, full_name as label FROM examiners';
+        $examiners = $db->pselectWithIndexKey($query, array(), 'id');
+
+        // XXX: This should eventually be replaced by a call directly to a
         // Center Endpoint or Center Controller that will be able to provide
         // Center Objects.
         $centers = \Utility::getSiteList();
@@ -160,6 +166,7 @@ class OptionsEndpoint implements RequestHandlerInterface
                 'candidates'        => $candidates,
                 'sessions'          => $sessions,
                 'centers'           => $centers,
+                'examiners'         => $examiners,
                 'candidateSessions' => $candidateSessions,
                 'sessionCenters'    => $sessionCenters,
                 'container'         => $contCont->getOptions(),

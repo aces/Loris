@@ -323,7 +323,7 @@ class ContainerController
             $parentContainer = $this->dao->getInstanceFromId($parentContainerId);
             if ($container->getCenterID() !== $parentContainer->getCenterID()) {
                 throw new \BadRequest(
-                    'A container must be checked out before moving location.'
+                        "A container must be at the same location as it's parent."
                 );
             }
         }

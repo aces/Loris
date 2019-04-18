@@ -809,7 +809,7 @@ class Database
 
             // If you get here, we just need to build the new array
             $filteredResult[$row[$uniqueKey]] = $row;
-            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
+            //unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
         }
 
         return $filteredResult;

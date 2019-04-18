@@ -122,7 +122,7 @@ class Modal extends Component {
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
+              onUserInput={onSubmit}
             />
           </div>
         );

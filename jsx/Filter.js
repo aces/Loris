@@ -27,13 +27,16 @@ class Filter extends Component {
    */
   onFieldUpdate(name, value, id, type) {
     const filter = JSON.parse(JSON.stringify(this.props.filter));
-    const exactMatch = type === 'textbox' ? false : true;
+    // XXX: The field.filter||{} is a hack and can be resolved by placing the
+    // name property directly under fields and not nested within filter.
+    const field = this.props.fields.find((field) => (field.filter||{}).name === name);
+    const exact = field.filter.exact || false;
     if (value === null || value === '') {
       delete filter[name];
     } else {
       filter[name] = {
         value: value,
-        exactMatch: exactMatch,
+        exact: exact,
       };
     }
 
@@ -47,24 +50,28 @@ class Filter extends Component {
         let element;
         switch (filter.type) {
         case 'text':
-          element = <TextboxElement key={filter.name}/>;
+          element = <TextboxElement/>;
           break;
         case 'select':
-          element = <SelectElement key={filter.name} options={filter.options}/>;
+          element = <SelectElement options={filter.options}/>;
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+          element = <SelectElement options={filter.options} multiple={true}/>;
+          break;
+        case 'search':
+          element = <SearchableDropdown options={filter.options}/>;
           break;
         case 'date':
-          element = <DateElement key={filter.name}/>;
+          element = <DateElement/>;
           break;
         default:
-          element = <TextboxElement key={filter.name}/>;
+          element = <TextboxElement/>;
         }
 
         result.push(React.cloneElement(
           element,
           {
+            key: filter.name,
             name: filter.name,
             label: field.label,
             value: (this.props.filter[filter.name] || {}).value,

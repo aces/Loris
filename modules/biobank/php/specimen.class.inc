@@ -78,9 +78,11 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setId(?int $id = null) : void
+    public function setId(int $id) : void
     {
-        $this->id = $id;
+        if ($id > 0) {
+            $this->id = $id;
+        }
     }
 
     /**
@@ -93,10 +95,6 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
         return $this->id;
     }
 
-    // XXX: Option of null was added as a temperary fix. This is because specimens
-    // can't be created before receiving a container id from their saved container.
-    // However, specimens should not be instantiated without have a container ID.
-    // Brainstorm a solution to this with Rida.
     /**
      * Sets the ID of the specimen's container
      *
@@ -104,9 +102,11 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setContainerId(?int $containerId = null) : void
+    public function setContainerId($containerId) : void
     {
-        $this->containerId = $containerId;
+        if ($containerId > 0) {
+            $this->containerId = $containerId;
+        }
     }
 
     /**
@@ -128,7 +128,9 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setTypeId(int $typeId) : void
     {
-        $this->typeId = $typeId;
+        if ($typeId > 0) {
+            $this->typeId = $typeId;
+        }
     }
 
     /**
@@ -156,9 +158,9 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the current amount of specimen available
      *
-     * @return string
+     * @return ?string
      */
-    public function getQuantity() : string
+    public function getQuantity() : ?string
     {
         return $this->quantity;
     }
@@ -172,15 +174,17 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setUnitId(int $unitId) : void
     {
-        $this->unitId = $unitId;
+        if ($unitId > 0) {
+            $this->unitId = $unitId;
+        }
     }
 
     /**
      * Gets the ID of the specimen's unit of quantity
      *
-     * @return int
+     * @return ?int
      */
-    public function getUnitId() : int
+    public function getUnitId() : ?int
     {
         return $this->unitId;
     }
@@ -192,9 +196,11 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setFTCycle(?int $fTCycle = null) : void
+    public function setFTCycle(int $fTCycle) : void
     {
-        $this->fTCycle = $fTCycle;
+        if ($fTCycle >= 0) {
+            $this->fTCycle = $fTCycle;
+        }
     }
 
     /**
@@ -214,7 +220,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setParentSpecimenIds(?array $parentSpecimenIds = null) : void
+    public function setParentSpecimenIds(array $parentSpecimenIds) : void
     {
         $this->parentSpecimenIds = $parentSpecimenIds;
     }
@@ -238,15 +244,17 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setCandidateId(int $candidateId) : void
     {
-        $this->candidateId = $candidateId;
+        if ($candidateId > 0) {
+            $this->candidateId = $candidateId;
+        }
     }
 
     /**
      * Gets the ID of the candidate to which the specimen belongs
      *
-     * @return int
+     * @return ?int
      */
-    public function getCandidateId() : int
+    public function getCandidateId() : ?int
     {
         return $this->candidateId;
     }
@@ -260,16 +268,18 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function setSessionId(int $sessionId) : void
     {
-        $this->sessionId = $sessionId;
+        if ($sessionId > 0) {
+            $this->sessionId = $sessionId;
+        }
     }
 
     /**
      * Gets the ID of the candidate's session/timepoint in which the specimen
      * was collected.
      *
-     * @return int
+     * @return ?int
      */
-    public function getSessionId() : int
+    public function getSessionId() : ?int
     {
         return $this->sessionId;
     }
@@ -281,9 +291,11 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return void
      */
-    public function setPoolId(?int $poolId = null) : void
+    public function setPoolId(int $poolId) : void
     {
-        $this->poolId = $poolId;
+        if ($poolId > 0) {
+            $this->poolId = $poolId;
+        }
     }
 
     /**
@@ -311,9 +323,9 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets an associative array of data stored for the specimen's collection stage
      *
-     * @return Collection
+     * @return ?Collection
      */
-    public function getCollection() : Collection
+    public function getCollection() : ?Collection
     {
         return $this->collection;
     }
@@ -390,31 +402,21 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function fromArray(array $data) : Specimen
     {
-        // XXX: All these if statements make this feel messy...
-        // Should we just have the conditional sets accept null as a value?
-        // In that case there is still the issue of intval(null) return 0
-        // Ask Rida about this.
-        if (isset($data['id'])) {
-            $this->setId(intval($data['id']));
-        }
-        if (isset($data['containerId'])) $this->setContainerId(intval($data['containerId']));
-        $this->setTypeId(intval($data['typeId']));
-        $this->setQuantity($data['quantity']);
-        $this->setUnitId(intval($data['unitId']));
-        if (isset($data['fTCycle'])) {
-            $this->setFTCycle(intval($data['fTCycle']));
-        }
-        if (isset($data['parentSpecimenIds'])) {
-            $this->setParentSpecimenIds($data['parentSpecimenIds']);
-        }
-        $this->setCandidateId(intval($data['candidateId']));
-        $this->setSessionId(intval($data['sessionId']));
-        if (isset($data['poolId'])) {
-            $this->setPoolId(intval($data['poolId']));
-        }
+        isset($data['id'])                && $this->setId((int) $data['id']);
+        isset($data['containerId'])       && $this->setContainerId((int) $data['containerId']);
+        isset($data['typeId'])            && $this->setTypeId((int) $data['typeId']);
+        isset($data['quantity'])          && $this->setQuantity((string) $data['quantity']);
+        isset($data['unitId'])            && $this->setUnitId((int) $data['unitId']);
+        isset($data['fTCycle'])           && $this->setFTCycle((int) $data['fTCycle']);
+        isset($data['parentSpecimenIds']) && $this->setParentSpecimenIds($data['parentSpecimenIds']);
+        isset($data['candidateId'])       && $this->setCandidateId((int) $data['candidateId']);
+        isset($data['sessionId'])         && $this->setSessionId((int) $data['sessionId']);
+        isset($data['poolId'])            && $this->setPoolId((int) $data['poolId']);
 
-        $collection = (new Collection())->fromArray($data['collection']);
-        $this->setCollection($collection);
+        if (isset($data['collection'])) {
+            $collection = (new Collection())->fromArray($data['collection']);
+            $this->setCollection($collection);
+        }
 
         if (isset($data['preparation'])) {
             $preparation = (new Preparation())->fromArray($data['preparation']);
@@ -446,7 +448,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        return array(
+        $array = array(
                 'id'                => $this->id,
                 'containerId'       => $this->containerId,
                 'typeId'            => $this->typeId,
@@ -458,11 +460,14 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
                 'sessionId'         => $this->sessionId,
                 'poolId'            => $this->poolId,
                 'collection'        => $this->collection->jsonSerialize(),
-                'preparation'       => $this->preparation ? $this->preparation->jsonSerialize() : null,
-                'analysis'          => $this->analysis ? $this->analysis->jsonSerialize() : null,
                );
-        // XXX: This jsonSerializing may cause double jsonSerializing, but it
-        // may be necessary??? not sure until I try saving data.
+        if ($this->preparation) {
+            $array['preparation'] = $this->preparation->jsonSerialize();
+        }
+        if ($this->analysis) {
+            $array['analysis'] = $this->analysis->jsonSerialize();
+        }
+        return $array;
     }
 
     /**

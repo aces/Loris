@@ -286,14 +286,14 @@ class DataTable extends Component {
    */
   hasFilterKeyword(name, data) {
     let filterData = null;
-    let exactMatch = false;
+    let exact = false;
     let result = false;
     let searchKey = null;
     let searchString = null;
 
     if (this.props.filter[name]) {
       filterData = this.props.filter[name].value;
-      exactMatch = this.props.filter[name].exactMatch;
+      exact = this.props.filter[name].exact;
     }
 
     // Handle null inputs
@@ -316,15 +316,22 @@ class DataTable extends Component {
           // and you want to search through it for
           // the string you are filtering by
           let searchArray = data.map((e) => e.toLowerCase());
-          if (exactMatch) {
+          if (exact) {
             result = searchArray.includes(searchKey);
           } else {
             result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
           }
           break;
+        case 'number':
+          if (exact) {
+            result = (data == searchKey);
+          } else {
+            result = (data.toString().indexOf(searchKey.toString()) > -1);
+          }
+          break;
         default:
             searchString = data.toLowerCase();
-            if (exactMatch) {
+            if (exact) {
               result = (searchString === searchKey);
             } else {
               result = (searchString.indexOf(searchKey) > -1);
