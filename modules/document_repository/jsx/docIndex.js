@@ -14,10 +14,9 @@ class DocIndex extends React.Component {
       data: {},
       error: false,
       newCategory: false,
-      pid: '0', // for tree nodes table
-      tableData: {},
-      childrenNode: {},
-      parentNode: {},
+      tableData: [],
+      childrenNode: [],
+      parentNode: [],
     };
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
@@ -29,30 +28,31 @@ class DocIndex extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}))
       .then(() => {
-// this.dataByNode(0);
-});
+ this.dataByNode(0);
+})
+      .then(() => this.setState({isLoaded: true}));
   }
+
 // function change tableData;
   dataByNode(id) {
-     console.log(id);
- return fetch(loris.BaseURL+'/document_repository/docTree/'+id)
+    return fetch(loris.BaseURL+'/document_repository/docTree/'+id)
       .then((response)=> response.json())
       .then((myJson)=> {
-     let allNodesArray = [];
-     let nodesArray = [];
-            allNodesArray = myJson['allsubcategories'];
-            allNodesArray.forEach((element)=>{
-           nodesArray.push(Object.values(element).toString());
+        let allNodesArray = [];
+        let nodesArray = [];
+        allNodesArray = myJson['allsubcategories'];
+        allNodesArray.forEach((element)=>{
+          nodesArray.push(Object.values(element).toString());
         });
-//     let filterData = this.state.data.Data;
-//     let fillData= filterData.filter((data) => {
-//      return Object.values(nodesArray).includes(data[10]);
-//    });         fillData
-//    this.setState({tableData: []});
-    this.setState({childrenNode: myJson['subcategories']});
-    this.setState({parentNode: myJson['currentcategory']});
+        let filterData = this.state.data.Data;
+        let fillData= filterData.filter((data) => {
+          return Object.values(nodesArray).includes(data[10]);
+        });
+        this.setState({tableData: fillData,
+                      childrenNode: myJson['subcategories'],
+                     parentNode: myJson['parentcategory'],
+        });
       });
   }
 
@@ -61,7 +61,7 @@ class DocIndex extends React.Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-this.setState({data}); this.setState({tableData: []});
+this.setState({data: data, tableData: data.Data});
 })
       .then(()=>this.setState({newCategory: false}))
       .catch((error) => {
@@ -70,11 +70,8 @@ this.setState({data}); this.setState({tableData: []});
   }
 
   handle(obj) {
-    console.log('clicked ....');
-console.log(obj);
     this.dataByNode(obj[0]);
   }
-
   newCategoryState() {
     this.setState({newCategory: true});
   }
@@ -191,21 +188,34 @@ console.log(obj);
       {id: 'upload', label: 'Upload'},
       {id: 'category', label: 'Category'},
     ];
-    return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabList[0].id}>
+ const treeTable = (this.state.tableData.length === 0) ? (
+          <div>
+            <Tree
+              action={this.handle}
+              parentNode = {this.state.parentNode}
+              childrenNode = {this.state.childrenNode}
+            />
+          </div> ) : (
           <FilterableDataTable
             name = "document"
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
           >
+          <div>
             <Tree
               action={this.handle}
-//              parentNode = {this.state.parentNode}
+              parentNode = {this.state.parentNode}
               childrenNode = {this.state.childrenNode}
             />
-          </FilterableDataTable>
+           <div onClick={()=>this.dataByNode(0)}> fdsfdsafdsfaf </div>
+         </div>
+         </FilterableDataTable>
+          );
+    return (
+      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
+          {treeTable}
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm

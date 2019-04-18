@@ -93,18 +93,6 @@ class DocTree extends \NDB_Page
         //  var_dump($res);
           
     }
-   public function getTree($data, $pId)
-   {
-   $tree = array();
-   foreach($data as $k => $v)
-         {
-            if($v['parent_id'] == $pId){
-            $v['nodes'] = $this->getTree($data, $v['id']);
-            $tree[] = $v;
-            }
-         }
-      return $tree;
-   }
    public function getAllNodesID($data, $parent_id = '0',$is_first_time = true)
 {
     static $arr = [];
@@ -118,6 +106,20 @@ class DocTree extends \NDB_Page
         }
     }
     return $arr;
+
+}
+
+Public function getParents($cate, $id) {
+            $arr = array();
+            foreach ($cate as $v) {
+                if ($v['id'] == $id) {
+                    $arr[] = $v;
+                   if($v['parent_id'] != 0){
+                        $arr = array_merge($this->getParents($cate, $v['parent_id']),$arr);
+                    }
+                }
+            }
+            return $arr;
 
 }
  public function fileTree($id)
@@ -147,10 +149,12 @@ class DocTree extends \NDB_Page
         "select id,category_name from document_repository_categories where parent_id=$id",
         array()
     ); 
-    
+    $parentcategories =   $this->getParents($tree,$id); 
     $result['allsubcategories'] = $allsubcategories;
     $result['currentcategory'] = $currentcategory;
+    $result['parentcategory'] = $parentcategories;
     $result['subcategories'] = $subcategories;
+    
     return $result;
 }
 
