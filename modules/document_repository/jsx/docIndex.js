@@ -2,6 +2,8 @@ import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
 import Tree from './tree';
+import ParentTree from './parentTree';
+import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 // const categoryPath = ['Root'];
@@ -28,9 +30,6 @@ class DocIndex extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => {
- this.dataByNode(0);
-})
       .then(() => this.setState({isLoaded: true}));
   }
 
@@ -49,6 +48,7 @@ class DocIndex extends React.Component {
         let fillData= filterData.filter((data) => {
           return Object.values(nodesArray).includes(data[10]);
         });
+        console.log(fillData);
         this.setState({tableData: fillData,
                       childrenNode: myJson['subcategories'],
                      parentNode: myJson['parentcategory'],
@@ -61,8 +61,10 @@ class DocIndex extends React.Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-this.setState({data: data, tableData: data.Data});
-})
+ this.setState({data: data, tableData: data.Data});
+ }).then(() => {
+  this.dataByNode(0);
+ })
       .then(()=>this.setState({newCategory: false}))
       .catch((error) => {
         this.setState({error: true});
@@ -189,24 +191,32 @@ this.setState({data: data, tableData: data.Data});
       {id: 'category', label: 'Category'},
     ];
  const treeTable = (this.state.tableData.length === 0) ? (
+// todo make a new tree-children component pass to datatable as props.
           <div>
             <Tree
               action={this.handle}
               parentNode = {this.state.parentNode}
               childrenNode = {this.state.childrenNode}
             />
-          </div> ) : (
+          </div>
+
+          ) : (
           <FilterableDataTable
             name = "document"
             data={this.state.tableData}
+
             fields={fields}
             getFormattedCell={this.formatColumn}
+            folder={
+            <ChildTree
+              action={this.handle}
+              childrenNode = {this.state.childrenNode}
+            />}
           >
           <div>
-            <Tree
+            <ParentTree
               action={this.handle}
               parentNode = {this.state.parentNode}
-              childrenNode = {this.state.childrenNode}
             />
            <div onClick={()=>this.dataByNode(0)}> fdsfdsafdsfaf </div>
          </div>

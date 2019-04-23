@@ -9,8 +9,11 @@
  *
  * */
 const divStyle = {
-  margin: '40px',
-  border: '5px solid pink',
+  margin: '5px',
+  fontSize: '110%',
+  fontFamily: 'verdana, sans-serif',
+  color: '#034785',
+  cursor: 'pointer',
 };
 
 
@@ -26,17 +29,21 @@ class Tree extends React.Component {
  const parentNode = this.props.parentNode;
  parentNode.unshift(['0', 'Root']);
  // let parentList = null;
-  const parentList = parentNode.map((node, index) => (<span style={divStyle} onClick={()=>this.action(Object.values(node))} className="glyphicon glyphicon-folder-open">{Object.values(node)[1]} ></span>));
+  const parentList = parentNode.map((node, index) => (<span style={divStyle} onClick={()=>this.action(Object.values(node))} className="pointer"><span className="glyphicon glyphicon-folder-open"></span><span style={divStyle}>{Object.values(node)[1]} > </span></span>));
   const childrenNode = this.props.childrenNode;
  let childList = null;
  if (Object.entries(childrenNode).length !== 0) {
-  childList = childrenNode.map((node, index) =>(<span style={divStyle} className="glyphicon glyphicon-folder-close" onClick={()=>this.action(Object.values(node))} key={index} > {Object.values(node)[1]} </span>));
+  childList = childrenNode.map((node, index) =>(<span style={divStyle} onClick={()=>this.action(Object.values(node))} key={index} className="pointer" style={divStyle}><span className="glyphicon glyphicon-folder-close"></span><span style={divStyle}>{Object.values(node)[1]}</span> </span>));
  }
     return (
+<div>
      <div>
        {parentList}
+     </div>
+     <div>
        {childList}
      </div>
+</div>
     );
   }
 }

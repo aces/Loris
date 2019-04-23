@@ -64,6 +64,7 @@ class FilterableDataTable extends Component {
           filter={this.state.filter}
           getFormattedCell={this.props.getFormattedCell}
           actions={this.props.actions}
+          folder={this.props.folder}
         />
       </Panel>
     );
