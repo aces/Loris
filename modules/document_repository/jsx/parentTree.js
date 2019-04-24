@@ -9,7 +9,7 @@
  *
  * */
 const divStyle = {
-  margin: '5px',
+  marginLeft: '20px',
   fontSize: '110%',
   fontFamily: 'verdana, sans-serif',
   color: '#034785',

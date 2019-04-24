@@ -1,18 +1,14 @@
 <?php
 /**
- * It includes two functions.
- * Post method handles updating a file.
- * Delete method handles deleting a file.
- * Get method handles getting a file.
- *            (Files/id) will return file's infomation
- *            (Files/name) will download this file
- * Put method handles editing a file.
+ * It includes one main function.
+ * Get method handles getting the parent's categroies and 
+ * the children's categories of one category.
  *
  * PHP Version 7
  *
  * @category Main
  * @package  Document_Repository
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -21,15 +17,15 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * It includes two functions.
- * Post method handles updating a file.
- * Delete method handles deleting a file.
- *
+ * It includes one main function.
+ * Get method handles getting the parent's categroies and 
+ * the children's categories of one category.
+ * 
  * PHP Version 7
  *
  * @category Main
  * @package  Document_Repository
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -55,11 +51,8 @@ class DocTree extends \NDB_Page
     }
 
     /**
-     * Handle how to operate all the files.
-     * PUT method updates a file's info.
-     * DELETE method deletes a file.
-     * POST method uploads a file.
-     * GET method gets a file.
+     * GET method gets a list of parent's categroies and 
+     * the children's categories.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -79,49 +72,77 @@ class DocTree extends \NDB_Page
               );
             }
     }
-
-
+    /**
+     * This method will return an array of document_repository_categories
+     *
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
     public function getTreeData() {
-
           $DB   = \Database::singleton();
           $category  = $DB->pselect(
             "SELECT * FROM document_repository_categories",
             array()
           );
-     return $category;
-        //  echo '<pre>';
-        //  var_dump($res);
-          
+          return $category;
     }
-   public function getAllNodesID($data, $parent_id = '0',$is_first_time = true)
-{
-    static $arr = [];
-    if ($is_first_time) {
-        $arr = [];
-    }
+    /**
+     * This method will return an array of all children's categories
+     *
+     * 
+     * @param array $data  an array of document_repository_categories
+     * @param string $parent_id default parent_id 
+     * @param bool $is_first_time  it is the first time to run the function
+     *
+     * @return array the result
+     */
+    public function getAllNodesID($data, $parent_id = '0',$is_first_time = true) {
+         static $arr = [];
+         if ($is_first_time) {
+           $arr = [];
+          }
     foreach ($data as $key => $val) {
         if ($val['parent_id'] == $parent_id) {
             $arr[]           = $val['id'];
             $this->getAllNodesID($data, $val['id'], false);
         }
-    }
-    return $arr;
+     }
+     return $arr;
 
-}
+  }  
 
-Public function getParents($cate, $id) {
+    /**
+     * This method will return an array of all parents' categories
+     *
+     * 
+     * @param array $data  an array of document_repository_categories
+     * @param string $id  the id of the current category
+     *
+     * @return array the result
+     */
+    Public function getParents($data, $id) {
             $arr = array();
-            foreach ($cate as $v) {
+            foreach ($data as $v) {
                 if ($v['id'] == $id) {
                     $arr[] = $v;
                    if($v['parent_id'] != 0){
-                        $arr = array_merge($this->getParents($cate, $v['parent_id']),$arr);
+                        $arr = array_merge(
+                          $this->getParents($data, $v['parent_id']),$arr
+                              );
                     }
                 }
             }
             return $arr;
 
 }
+    /**
+     * This method will return a json of the parent's categroies and 
+     * the children's categories of one category.
+     * 
+     * @param string $id  the id of current category
+     *
+     * @return array the result
+     */
  public function fileTree($id)
 {
         $result = array();

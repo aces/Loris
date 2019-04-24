@@ -8,15 +8,17 @@
  * @version 1.0.0
  *
  * */
-const divStyle = {
-  margin: '10px',
+const spanStyle = {
+  marginLeft: '15px',
   fontSize: '110%',
   fontFamily: 'verdana, sans-serif',
   color: '#034785',
-  cursor: 'pointer',
   border: '0px',
 };
 
+const trStyle = {
+  cursor: 'pointer',
+};
 
 class ChildTree extends React.Component {
   constructor(props) {
@@ -30,7 +32,7 @@ class ChildTree extends React.Component {
  let childList = null;
  let childrenNode = this.props.childrenNode;
  if (Object.entries(childrenNode).length !== 0) {
-  childList = childrenNode.map((node, index) =>(<tr><td colspan="9"><span style={divStyle} onClick={()=>this.action(Object.values(node))} key={index} className="pointer" style={divStyle}><span className="glyphicon glyphicon-folder-close"></span><span style={divStyle}>{Object.values(node)[1]}</span></span></td></tr>));
+  childList = childrenNode.map((node, index) =>(<tr onClick={()=>this.action(Object.values(node))} style={trStyle}><td colSpan="9"><span style={spanStyle} key={index} className="pointer" style={spanStyle}><span className="glyphicon glyphicon-folder-close"></span><span style={spanStyle}>{Object.values(node)[1]}</span></span></td></tr>));
  }
     return (
     <thead>
