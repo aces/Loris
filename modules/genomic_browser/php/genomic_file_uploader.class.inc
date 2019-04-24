@@ -39,8 +39,12 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('genomic_browser_view_allsites')
-                || $user->hasPermission('genomic_browser_view_site'));
+        return $user->hasAnyPermission(
+            array(
+             'genomic_browser_view_allsites',
+             'genomic_browser_view_site',
+            )
+        );
     }
 
 

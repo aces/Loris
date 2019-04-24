@@ -4,11 +4,12 @@
  *
  * PHP version 5
  *
- * @category Utility_Script
- * @package  Loris_Script 
+ * @category Main
+ * @package  Loris 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @license  Loris License
- * @link     https://github.com/aces/IBIS
+ * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
@@ -19,22 +20,31 @@ require_once "Utility.class.inc";
 require_once "NDB_Client.class.inc";
 
 /**
- * *Todo:
+ * TODO:
  * 1) The option for removing the excluded_feedbacks should be added as well
  */
+
+/* @var int The minimum number of arguments required to run this script. */
+const MIN_NUMBER_OF_ARGS = 2;
+
+/* @var int The maximum number of arguments to run this script. */
+const MAX_NUMBER_OF_ARGS = 6;
+
+/* @var int The getCommentIDs function must return an array of at least this
+ * size to be included in the csv output.
+ */
+const MIN_SIZE_OF_COMMENTID_ARRAY = 2;
 
 /**
  * User prompt
  */
-if ((count($argv)<2) || (count($argv)>6)) {
 
-
+if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) {
     echo "Usage: php detect_duplicated_commentids.php -i Instrument \n";
     echo "Example: php detect_duplicated_commentids.php bdi \n";
 
     echo "to run the script for all the instruments
             simply type -i all \n";
-
     die();
 }
 
@@ -117,7 +127,7 @@ foreach ($instruments as $instrument=>$full_name) {
                         $pscid, $subprojectid['subprojectid']
                         );
                         $size = sizeof($commentid);
-                        if ($size>=2) {
+                        if ($size >= MIN_SIZE_OF_COMMENTID_ARRAY) {
                             $commentids[] = $commentid;
                         }
                     }

@@ -25,6 +25,11 @@ class Project
 {
     private static $_instances = array();
 
+    /**
+     * The id of the project in database.
+     *
+     * @var int
+     */
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
@@ -75,7 +80,7 @@ class Project
 
                 $project = new Project();
 
-                $project->_projectId         = $projectData['projectId'];
+                $project->_projectId         = (int) $projectData['projectId'];
                 $project->_projectName       = $projectData['name'];
                 $project->_recruitmentTarget = (integer) $projectData['recTarget'];
             } else {

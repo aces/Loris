@@ -27,6 +27,14 @@ require_once __DIR__ .
  */
 class Server_Processes_ManagerTest extends LorisIntegrationTest
 {
+    /* Set mriCodePath to a valid, readable path. The integration tests
+     * don't actually interact with the LORIS-MRI libraries so /etc/ works
+     * as a dummy value since Travis should always have this directory.
+     *
+     * @var string
+     */
+    const MRI_CODE_PATH = '/etc/';
+
     /**
      * UI elements and locations
      * breadcrumb - ''
@@ -48,6 +56,24 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'End Time'                 => '#dynamictable > thead > tr',
            );
     /**
+     * Tests that the page does not load if config setting mriCodePath has
+     * not been set.
+     *
+     * @return void
+     */
+    function testDoesNotLoadWithoutMRICodePath()
+    {
+        $this->setupConfigSetting('mriCodePath', null);
+        $this->setupPermissions(array("server_processes_manager"));
+        $this->safeGet($this->url . "/server_processes_manager/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains('Cannot continue', $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
      * Tests that the page does not load if the user does not have correct
      * permissions
      *
@@ -55,6 +81,8 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithoutPermissionRead()
     {
+        // This function sets mriCodePath for all future functions
+        $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->setupPermissions(array(""));
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
@@ -79,6 +107,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
+
     /**
       * Testing UI elements when page loads
       *

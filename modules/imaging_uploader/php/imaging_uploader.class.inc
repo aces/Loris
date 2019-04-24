@@ -121,7 +121,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            $upload_max_size = ini_get('upload_max_filesize');
+            $upload_max_size = \Utility::getMaxUploadSize();
             $error_message   = "Please make sure files are not larger than " .
                                 $upload_max_size;
             http_response_code(400);
@@ -386,7 +386,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
-                $errors['mri_file'],
+                $errors['mriFile'],
                 "This file has already been uploaded."
             );
         }

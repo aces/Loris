@@ -5,7 +5,7 @@ do before contributing is probably sign up for the [LORIS developers'
 mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 
 Your next step before issuing a pull request is to review our
-[Coding Standards](./docs/CodingStandards). If you are doing
+[Coding Standards](./docs/CodingStandards.md). If you are doing
 front-end development you should also check out our [React
 guidelines](./LORIS_react.README.md).
 
@@ -87,10 +87,10 @@ issues and/or Redmine tickets (if applicable).
   directory. You can look at other modules for examples of how to
   write tests.
 * Add your new automated tests to TravisCI in the `.travis.yml`.
-* Make sure you run PHP codesniffer using the standards file in
-docs/LorisCS.xml by running `vendor/bin/phpcs --standard=docs/LorisCS.xml
-<path_to_changed_files>` before sending any pull request,
-otherwise the automated tests will fail.  
+* Before sending any pull request, make sure you run our static analysis tools 
+using the command `make checkstatic` and fix any resulting errors. Otherwise,
+      your pull request will fail our automatic testing and we will not be able
+      to merge it.
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
@@ -108,9 +108,7 @@ to begin, here are some ideas to get you started:
 * You can browse some of our public
 [Issues](https://github.com/aces/Loris/issues). Issues tagged with **Beginner
 Friendly** are good ones to tackle if you are new to LORIS development.
-* You can run PHP CodeSniffer on modules that haven't had it run yet.
 * You can help improve our documentation if you find any parts of it
-confusing or
-  lacking.
+confusing or lacking.
 * You can track down bugs by browsing the application and reviewing the
 PHP error log.

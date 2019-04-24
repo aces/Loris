@@ -27,7 +27,7 @@ $couchConfig = $config->getSetting('CouchDB');
 $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['dbName'],
     $couchConfig['hostname'],
-    $couchConfig['port'],
+    intval($couchConfig['port']),
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
@@ -72,6 +72,7 @@ $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
 
+$query = array();
 if ($_REQUEST['OverwriteQuery'] === "true") {
     unset($baseDocument['_id']);
     $cdb->replaceDoc($qid, $baseDocument);

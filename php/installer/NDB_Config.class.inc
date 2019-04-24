@@ -14,6 +14,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\Installer;
 
 /**
  * This NDB_Config class is a stub that gets autoloaded by the LORIS installer.
@@ -30,14 +31,17 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Config
+class NDB_Config extends \NDB_Config
 {
     /**
      * Returns a single NDB_Config object.
      *
+     * @param ?string $configFile Unused, for signature compatibility with
+     *                            \NDB_Config
+     *
      * @return NDB_Config
      */
-    public static function singleton()
+    public static function &singleton(?string $configFile=null) : \NDB_Config
     {
         static $cfg = null;
         if (is_null($cfg)) {
@@ -54,7 +58,7 @@ class NDB_Config
      *
      * @return mixed the setting value
      */
-    public function getSetting($setting)
+    public function getSetting(string $setting)
     {
         // the base path is used by smarty, so calculate it relative
         // to the current directory. Nothing else needs to be supported.

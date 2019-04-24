@@ -188,21 +188,22 @@ class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer     $candID         6 digit CandID having a timepoint created.
+     * @param \Candidate  $candidate      The Candidate to create this timepoint for
      * @param integer     $SubprojectID   The subprojectID of the new timepoint
      * @param string|null $nextVisitLabel The visit label of the timepoint
-     *                                    being created
-     * @param string|null $psc            The centre of the timepoint
+     *                                    being created. If null, consecutive V1, V2,
+     *                                    etc will be created.
+     * @param \Site       $psc            The center of the timepoint
      *
      * @throws DatabaseException
      *
      * @return void
      */
     static function createNew(
-        int $candID,
+        \Candidate $candidate,
         int $SubprojectID,
-        ?string $nextVisitLabel = null,
-        ?string $psc = null
+        ?string $nextVisitLabel,
+        \Site $psc
     ): void {
 
         // insert into session set CandID=$candID,
@@ -211,15 +212,6 @@ class TimePoint
         // specified here!
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-
-        // select the candidate data
-        $query = "SELECT c.RegistrationCenterID,
-                         IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo
-                    FROM candidate AS c
-                        LEFT OUTER JOIN session AS s USING (CandID)
-                    WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null)
-                    GROUP BY c.CandID";
-        $row   = $db->pselectRow($query, array('CaID' => $candID));
 
         // if this is a web hit (thus state exists)
         if (isset($_SESSION) && is_object($_SESSION['State'])) {
@@ -233,19 +225,19 @@ class TimePoint
         // generate today's date for the Date registered field
         $today = date("Y-m-d");
 
+        $visitNo = $candidate->getNextVisitNo();
         // setup the insert data array
-        $VisitLabel = $nextVisitLabel == null
-            ? 'V' . $row['nextVisitNo']
-            : $nextVisitLabel;
-        $centerID   = $psc == null
-        ? $row['CenterID']
-        : $psc;
+        $VisitLabel = $nextVisitLabel;
+        if ($VisitLabel === null) {
+            $VisitLabel = "V$visitNo";
+        }
+
         $insertData = array(
-                       'CandID'          => $candID,
+                       'CandID'          => $candidate->getCandID(),
                        'SubprojectID'    => $SubprojectID,
-                       'VisitNo'         => $row['nextVisitNo'],
+                       'VisitNo'         => $visitNo,
                        'Visit_label'     => $VisitLabel,
-                       'CenterID'        => $centerID,
+                       'CenterID'        => $psc->getCenterID(),
                        'Current_stage'   => 'Not Started',
                        'Submitted'       => 'N',
                        'registeredBy'    => $userID,
@@ -597,9 +589,9 @@ class TimePoint
     /**
      * Returns the list of BVLQC exclusion statuses
      *
-     * @return string
+     * @return array
      */
-    function getBVLQCExclusionStatusList(): string
+    function getBVLQCExclusionStatusList(): array
     {
         return $this->bvlQcExclusionStatuses;
     }

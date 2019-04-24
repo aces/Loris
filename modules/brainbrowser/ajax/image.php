@@ -37,17 +37,7 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
 
     if (!empty($query)) {
         $image_file = $DB->pselectOne($query, array('LogID' => $id));
-        $file       = implode('/', array_slice(explode('/', $image_file), -2));
-
-        if (strpos($image_file, 'assembly') !== false) {
-            if (strpos($image_file, 'assembly') === 0) {
-                $image_path = getFileLocation() . $image_file;
-            } else {
-                $image_path = $image_file;
-            }
-        } else {
-            $image_path = getFileLocation() . "trashbin/" . $file;
-        }
+        $image_path = getFileLocation() . $image_file;
     }
 } else {
     $query      = "select File from files where FileID = :FileID";
@@ -84,7 +74,7 @@ function getFileLocation()
 {
     $config     = & NDB_Config::singleton();
     $paths      = $config->getSetting('paths');
-    $image_path = $paths['mincPath'];
+    $image_path = $paths['imagePath'];
     return $image_path;
 }
 

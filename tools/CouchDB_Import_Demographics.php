@@ -87,7 +87,7 @@ class CouchDBDemographicsImporter {
         ),
         'Config' => array(
             'GroupString'  => 'How to arrange data: ',
-            'GroupOptions' => 
+            'GroupOptions' =>
                 array('Cross-sectional', 'Longitudinal')
         )
     );
@@ -100,7 +100,7 @@ class CouchDBDemographicsImporter {
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
-            $couchConfig['port'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );

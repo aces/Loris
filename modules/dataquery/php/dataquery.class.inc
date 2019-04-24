@@ -54,7 +54,7 @@ class Dataquery extends \NDB_Form
         $couch       = \NDB_Factory::singleton()->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
-            $couchConfig['port'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );

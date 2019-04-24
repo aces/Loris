@@ -256,7 +256,7 @@ class NDB_Factory
 
             $database = $couchConfig['dbName'];
             $host     = $couchConfig['hostname'];
-            $port     = $couchConfig['port'];
+            $port     = intval($couchConfig['port']);
             $user     = $couchConfig['admin'];
             $password = $couchConfig['adminpass'];
             error_log(
@@ -277,7 +277,7 @@ class NDB_Factory
             $couchConfig = $config->getSetting("CouchDB");
 
             $host     = $couchConfig['hostname'];
-            $port     = $couchConfig['port'];
+            $port     = intval($couchConfig['port']);
             $user     = $couchConfig['admin'];
             $password = $couchConfig['adminpass'];
             error_log(

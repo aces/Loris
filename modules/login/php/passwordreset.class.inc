@@ -55,7 +55,7 @@ class PasswordReset extends \NDB_Form
 
         // create the user object
         $username = $values['username'];
-        $user     =& \User::singleton($username);
+        $user     = \User::factory($username);
 
         $email = $user->getData('Email');
         // check that it is a valid user
@@ -72,10 +72,6 @@ class PasswordReset extends \NDB_Form
                   // reset the password in the database
                   // expire password so user must change it upon login
                   $user->updatePassword($password, '1999-01-01');
-                if ($success === false) {
-                     error_log("Could not update password for $username");
-                    return;
-                }
                   // send the user an email
                   $msg_data['study']    = $config->getSetting('title');
                   $msg_data['url']      = $config->getSetting('url');

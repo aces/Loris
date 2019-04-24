@@ -1,24 +1,24 @@
 <?php
 /**
-* The candidate list menu
-*
-* PHP Version 5
-*
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * The candidate list menu
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\candidate_list;
 /**
  * Implements the candidate_list menu
  *
-* @category Main
-* @package  Candidate_List
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Candidate_List
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Candidate_List extends \NDB_Menu_Filter
 {
@@ -34,10 +34,6 @@ class Candidate_List extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        $aap = $user->hasPermission('access_all_profiles');
-
-        $this->tpl_data['access_all_profiles'] = $aap;
-
         return (
             $user->hasPermission('access_all_profiles')
             || ($user->hasStudySite() && $user->hasPermission('data_entry'))
@@ -53,10 +49,10 @@ class Candidate_List extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user   = \User::singleton();
+        $config = \NDB_Config::singleton();
 
-        $this->tpl_data['toggled_visible'] =false;
+        $this->skipTemplate = true;
 
         // set the class variables
         $useProjects = $config->getSetting("useProjects");
@@ -66,59 +62,27 @@ class Candidate_List extends \NDB_Menu_Filter
 
         // set the class variables
         $this->columns = array(
-                          'psc.Name AS RegistrationSite',
-                          'c.CandID AS DCCID',
                           'c.PSCID',
+                          'c.CandID AS DCCID',
+                          'GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel',
+                          'psc.Name AS RegistrationSite',
+                          'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
+                          'c.Entity_type AS EntityType',
+                          'MAX(s.Scan_done) as scanDone',
+                          'COALESCE(pso.Description,"Active") AS ParticipantStatus',
+                          'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
                           'c.Sex',
-                          'c.Entity_type',
-                          "COALESCE(pso.Description,'Active') "
-                          . " AS Participant_Status",
+                          'COUNT(DISTINCT s.Visit_label) AS VisitCount',
+                          "IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback",
+                          'max(s.Current_stage) AS LatestVisitStatus',
                          );
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
         }
-        $this->columns =array_merge(
-            $this->columns,
-            array(
-             'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
-             'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-             'MAX(s.Scan_done) as scan_Done',
-            )
-        );
 
-        $this->formToFilter = array(
-                               'centerID'     => 'c.RegistrationCenterID',
-                               'DCCID'        => 'c.CandID',
-                               'PSCID'        => 'c.PSCID',
-                               'Sex'          => 'c.Sex',
-                               'SubprojectID' => 's.SubprojectID',
-                              );
-
-        $this->validFilters = array(
-                               'pso.ID',
-                               'c.RegistrationCenterID',
-                               'c.CandID',
-                               'c.PSCID',
-                               'c.Sex',
-                              );
-        if ($config->getSetting("useEDC")==="true") {
-            $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
-            $this->formToFilter['edc'] = 'c.EDC';
-            $this->validFilters[]      = 'c.EDC';
+        if ($config->getSetting("useEDC") === "true") {
+            $this->columns[] = 'DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
         }
-
-        // Need distinct because of joining with feedback_bvl_thread
-        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
-        $FeedbackSQL   = 'IFNULL(MIN(feedback_bvl_thread.Status+0),0)';
-
-        $this->columns = array_merge(
-            $this->columns,
-            array(
-             "$VisitCountSQL as Visit_count",
-             'max(s.Current_stage) as Latest_visit_status',
-             "$FeedbackSQL as Feedback",
-            )
-        );
 
         $this->query = " FROM candidate c
             LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
@@ -133,7 +97,6 @@ class Candidate_List extends \NDB_Menu_Filter
             WHERE c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.RegistrationCenterID IN (" . $site_arr . ")";
         }
@@ -141,59 +104,6 @@ class Candidate_List extends \NDB_Menu_Filter
         //'COALESCE(pso.ID,1) AS Participant_Status',
         $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex';
         $this->order_by = 'c.PSCID ASC';
-
-        if ($useProjects) {
-            $this->validFilters[] = 'c.ProjectID';
-        }
-        $this->validFilters = array_merge(
-            $this->validFilters,
-            array(
-             's.SubprojectID',
-             'c.DoB',
-             $VisitCountSQL,
-             'max(s.Current_stage)',
-             $FeedbackSQL,
-             's.Scan_done',
-             's.Visit_label',
-             'c.Entity_type',
-             'COALESCE(pso.ID, 1)',
-            )
-        );
-
-        $this->validHavingFilters = array(
-                                     $VisitCountSQL,
-                                     'max(s.Current_stage)',
-                                     $FeedbackSQL,
-                                    );
-        $this->EqualityFilters    = array(
-                                     's.SubprojectID',
-                                     'c.RegistrationCenterID',
-                                     'c.ProjectID',
-                                     's.Scan_done',
-                                     's.Visit_label',
-                                     'c.Sex',
-                                    );
-
-        if ($useProjects) {
-            $this->formToFilter = array_merge(
-                $this->formToFilter,
-                array('ProjectID' => 'c.ProjectID')
-            );
-        }
-        $this->formToFilter = array_merge(
-            $this->formToFilter,
-            array(
-             'dob'                 => 'c.DoB',
-             'Visit_Count'         => $VisitCountSQL,
-             'Latest_Visit_Status' => 'max(s.Current_stage)',
-             'Feedback'            => $FeedbackSQL,
-             'Participant_Status'  => 'COALESCE(pso.ID, 1)',
-             'scan_done'           => 's.Scan_done',
-             'Visit_label'         => 's.Visit_label',
-             'Entity_type'         => 'c.Entity_type',
-            )
-        );
-
     }
 
 
@@ -210,125 +120,48 @@ class Candidate_List extends \NDB_Menu_Filter
         \Module::factory('candidate_parameters');
 
         // create user object
-         $user    =& \User::singleton();
-          $config =& \NDB_Config::singleton();
-        // PSC
+        $user   = \User::singleton();
+        $config = \NDB_Config::singleton();
+
+        // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
-            }
         } else {
-            // allow only to view own site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+        }
+        foreach ($list_of_sites as $id => $name) {
+            $site_options[$name] = $name;
         }
 
-        // SubprojectID
+        // get the list of projects
+        $list_of_projects = \Utility::getProjectList();
+        $project_options  = array();
+        foreach ($list_of_projects as $id => $name) {
+            $project_options[$name] = $name;
+        }
+
+        // get the list of subprojects
         $list_of_subprojects = \Utility::getSubprojectList();
-
-        // list of feedback statuses
-        $feedback_status_options = array(
-                                    null => 'All',
-                                    '0'  => 'None',
-                                    '1'  => 'opened',
-                                    '2'  => 'answered',
-                                    '3'  => 'closed',
-                                    '4'  => 'comment',
-                                   );
-
-        $latest_visit_status_options = array(
-                                        null            => 'All',
-                                        'Not Started'   => 'Not Started',
-                                        'Screening'     => 'Screening',
-                                        'Visit'         => 'Visit',
-                                        'Approval'      => 'Approval',
-                                        'Recycling Bin' => 'Recycling Bin',
-                                       );
-
-        $participant_status_options = array(null => 'All')
-             + \Candidate::getParticipantStatusOptions();
-        $scan_options = array(
-                         null => 'All',
-                         'Y'  => 'Yes',
-                         'N'  => 'No',
-                        );
-        // Get visits
-        $visits = \Utility::getVisitList();
-        $visits = array_merge(array('' => 'All'), $visits);
-
-        // add form elements
-        $this->addSelect('centerID', 'Registration Site', $list_of_sites);
-        $this->addBasicText('PSCID', 'PSCID');
-        $this->addBasicText('DCCID', 'DCCID');
-        $this->addBasicText('candID', 'DCCID');
-        $this->addSelect(
-            'Visit_label',
-            'Visit Label',
-            $visits
-        );
-
-        $this->addSelect(
-            'sex',
-            'Biological Sex',
-            array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female',
-            )
-        );
-        $this->addSelect(
-            'Entity_type',
-            'Entity Type',
-            array(
-             ''        => '',
-             'Human'   => 'Human',
-             'Scanner' => 'Scanner',
-            )
-        );
-        $this->addSelect(
-            'SubprojectID',
-            'Subproject',
-            array('' => 'All') + $list_of_subprojects
-        );
-        $this->addBasicText('dob', 'Date of Birth', array('maxlength' => 10));
-        $this->addBasicText('Visit_Count', 'Number of Visits');
-        $this->addSelect(
-            'Latest_Visit_Status',
-            'Latest Visit Status',
-            $latest_visit_status_options
-        );
-        $this->addSelect('Feedback', 'Feedback', $feedback_status_options);
-        $this->addSelect(
-            'Participant_Status',
-            'Participant Status',
-            $participant_status_options
-        );
-        $this->addSelect('scan_done', 'Scan Done', $scan_options);
-
-        // Project list, if applicable
-        if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = array(null => 'All');
-            $projectList      = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] =$value;
-            }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects);
+        foreach ($list_of_subprojects as $id => $name) {
+            $subproject_options[$name] = $name;
         }
-        if ($config->getSetting("useEDC")=="true") {
-            $this->addBasicText(
-                'edc',
-                'EDC',
-                array('maxlength' => 10)
-            );
-            $this->tpl_data['useEDC'] = "true";
+
+        // get the list participant status options
+        $list_of_participant_status
+            = \Candidate::getParticipantStatusOptions();
+        foreach ($list_of_participant_status as $id => $name) {
+            $participant_status_options[$name] = $name;
         }
-        $this->addSelect(
-            'feedback',
-            'Feedback Status',
-            array_merge(array('' => 'All'), $feedback_status_options)
-        );
+
+        $useProjects        = $config->getSetting("useProjects");
+        $this->fieldOptions = [
+                               'site'              => $site_options,
+                               'project'           => $project_options,
+                               'subproject'        => $subproject_options,
+                               'participantstatus' => $participant_status_options,
+                               'useedc'            => $config->getSetting("useEDC"),
+                               'useprojects'       => $useProjects,
+                              ];
 
         return true;
     }
@@ -347,11 +180,7 @@ class Candidate_List extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/js/advancedMenu.js",
-             $baseURL . "/candidate_list/js/columnFormatter.js",
-             $baseURL . "/candidate_list/js/candidate_list_helper.js",
-             $baseURL . "/js/components/Form.js",
-             $baseURL . "/candidate_list/js/onLoad.js",
+             $baseURL . "/candidate_list/js/candidateListIndex.js",
             )
         );
     }
