@@ -1,13 +1,12 @@
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
-import Tree from './tree';
 import ParentTree from './parentTree';
 import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-// const categoryPath = ['Root'];
-// const filterData = {};
+import NullFilterableDataTable from './NullFilterableDataTable';
+
 class DocIndex extends React.Component {
   constructor(props) {
     super(props);
@@ -19,6 +18,7 @@ class DocIndex extends React.Component {
       tableData: [],
       childrenNode: [],
       parentNode: [],
+      checked: false,
     };
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
@@ -32,7 +32,10 @@ class DocIndex extends React.Component {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
-
+  handleCheck() {
+    this.setState({checked: true});
+    this.dataByNode(0);
+  }
 // function change tableData;
   dataByNode(id) {
     return fetch(loris.BaseURL+'/document_repository/docTree/'+id)
@@ -45,10 +48,16 @@ class DocIndex extends React.Component {
           nodesArray.push(Object.values(element).toString());
         });
         let filterData = this.state.data.Data;
+       console.log(this.state.data.Data);
         let fillData= filterData.filter((data) => {
           return Object.values(nodesArray).includes(data[10]);
         });
         console.log(fillData);
+        if (id > 0) {
+           console.log(id);
+           this.setState({checked: false});
+           console.log(this.state.checked);
+        }
         this.setState({tableData: fillData,
                       childrenNode: myJson['subcategories'],
                      parentNode: myJson['parentcategory'],
@@ -176,11 +185,7 @@ class DocIndex extends React.Component {
       {label: 'Date Upload', show: false},
       {label: 'Edit', show: true},
       {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
-      {label: 'File Category', show: false, filter: {
-        name: 'fileCategories',
-        type: 'select',
-        options: options.fileCategories,
-      }},
+      {label: 'File Category', show: false},
       {label: 'Category', show: false},
       {label: 'Data Dir', show: false},
     ];
@@ -191,20 +196,12 @@ class DocIndex extends React.Component {
       {id: 'category', label: 'Category'},
     ];
  const treeTable = (this.state.tableData.length === 0) ? (
-// todo make a new tree-children component pass to datatable as props.
-          <div>
-            <Tree
-              action={this.handle}
-              parentNode = {this.state.parentNode}
-              childrenNode = {this.state.childrenNode}
-            />
-          </div>
-
-          ) : (
-          <FilterableDataTable
+         <NullFilterableDataTable>
+           <div>
+           <input type="checkbox" onChange={()=>this.handleCheck()} defaultChecked={this.state.checked} checked={this.state.checked}/> Global Selection Filter
+           <FilterableDataTable
             name = "document"
             data={this.state.tableData}
-
             fields={fields}
             getFormattedCell={this.formatColumn}
             folder={
@@ -218,9 +215,32 @@ class DocIndex extends React.Component {
               action={this.handle}
               parentNode = {this.state.parentNode}
             />
-           <div onClick={()=>this.dataByNode(0)}> fdsfdsafdsfaf </div>
          </div>
          </FilterableDataTable>
+          </div>
+         </NullFilterableDataTable>
+          ) : (
+        <div>
+          <input type="checkbox" onChange={()=>this.handleCheck()} defaultChecked={this.state.checked} checked={this.state.checked}/> Global Selection Filter
+          <FilterableDataTable
+            name = "document"
+            data={this.state.tableData}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+            folder={
+            <ChildTree
+              action={this.handle}
+              childrenNode = {this.state.childrenNode}
+            />}
+          >
+          <div>
+            <ParentTree
+              action={this.handle}
+              parentNode = {this.state.parentNode}
+            />
+         </div>
+         </FilterableDataTable>
+       </div>
           );
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
