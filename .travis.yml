@@ -21,7 +21,7 @@ before_install:
     # Ensure node version is up to date
     #- nvm install 6.10
     - npm install -g npm@latest
-    - npm install -g node
+    - npm install node
 #    - sudo apt-get install -y nodejs
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
