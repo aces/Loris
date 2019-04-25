@@ -20,7 +20,8 @@ before_install:
     #- "sh -e /etc/init.d/xvfb start"
     # Ensure node version is up to date
     #- nvm install 6.10
-    - nvm install 12.0 
+    - npm install -g n
+    - sudo n latest
     - sudo apt-get install -y nodejs
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
