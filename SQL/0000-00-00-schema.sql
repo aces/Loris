@@ -698,6 +698,8 @@ CREATE TABLE `mri_protocol` (
   `ScannerID` int(10) unsigned NOT NULL default '0',
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_range` varchar(255) default NULL,
+  `TE_range` varchar(255) default NULL,
+  `TI_range` varchar(255) default NULL,
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
   `TE_min` DECIMAL(10,4) DEFAULT NULL,
