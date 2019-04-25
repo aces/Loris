@@ -76,8 +76,8 @@ class Password
      *
      * @param string $value The proposed password value.
      *
-     * @return bool Whether the submitted value meets the minimum score required
-     *              by Zxcvbn as defined by MIN_COMPLEXITY_SCORE.
+     * @return bool Whether the submitted value meets the minimum score defined
+     *              above and given by Zxcvbn.
      */
     protected function hasSufficientComplexity(string $value): bool
     {
