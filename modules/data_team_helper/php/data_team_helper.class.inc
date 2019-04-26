@@ -114,6 +114,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         $this->tpl_data['siteList'] = $list_of_sites;
         // Project list, if applicable
+
         if ($config->getSetting("useProjects")==="true") {
             $projectList = \Utility::getProjectList();
             $this->tpl_data['projectList'] = $projectList;

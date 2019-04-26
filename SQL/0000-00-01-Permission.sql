@@ -111,7 +111,10 @@ INSERT INTO `permissions` VALUES
     (49,'data_release_upload', 'Data Release: Upload file', 2),
     (50,'data_release_edit_file_access', 'Data Release: Grant other users view-file permissions', 2),
     (51,'instrument_manager_read', 'Instrument Manager: View module', 2),
-    (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2);
+    (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
+    (53,'publication_view', 'Publication - Access to module', 2),
+    (54,'publication_propose', 'Publication - Propose a project', 2),
+    (55,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -133,3 +136,4 @@ CREATE TABLE `notification_modules_perm_rel` (
 -- populate notification perm table
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='publication' AND (p.code='publication_view' OR p.code='publication_propose' OR p.code='publication_approve');
