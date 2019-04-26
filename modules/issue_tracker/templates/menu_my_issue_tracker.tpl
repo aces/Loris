@@ -150,7 +150,7 @@
                     <div class="row">
                         <div class="form-group col-sm-4 col-md-2 col-xs-12">
                           <a class="btn btn-sm btn-primary col-xs-12"
-                             href="{$baseurl}/issue_tracker/issue/?issueID=0"
+                             href="{$baseurl}/issue_tracker/issue/0"
                           >Add Issue</a>
                         </div>
                         <div class="form-group col-sm-4 col-md-2 col-xs-12 col-sm-offset-2 col-md-offset-5">

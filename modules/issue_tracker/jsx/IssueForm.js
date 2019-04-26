@@ -183,6 +183,7 @@ class IssueForm extends React.Component {
             ref="centerID"
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
+            required={true}
           />
           <SelectElement
             name="status"
