@@ -98,9 +98,13 @@ function process() {
       'use strict';
       const processedData = [];
       const females = ['Female'];
-      processedData.push(females.concat(data.datasets.female));
+      if (data.datasets) {
+        processedData.push(females.concat(data.datasets.female));
+      }
       const males = ['Male'];
-      processedData.push(males.concat(data.datasets.male));
+      if (data.datasets) {
+        processedData.push(males.concat(data.datasets.male));
+      }
       return processedData;
     }
 
