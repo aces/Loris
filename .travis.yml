@@ -33,7 +33,6 @@ install:
 
 
     # Install node modules specified in package.json
-    - npm install node
     - npm install
 
     # Download a Selenium Web Driver release
