@@ -64,24 +64,45 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $factory    = \NDB_Factory::singleton();
         $DB         = $factory->Database();
         $QCStatus   = $DB->pselectRow(
-            "SELECT QCStatus, 
-                pf.Value as Selected FROM files f
-                LEFT JOIN files_qcstatus fqc ON (f.FileID=fqc.FileID)
-                LEFT JOIN parameter_file pf ON (f.FileID=pf.FileID)
-                LEFT JOIN parameter_type pt 
-                    ON (pf.ParameterTypeID=pt.ParameterTypeID AND pt.Name='Selected')
-                WHERE f.File LIKE CONCAT('%', :FName)",
+            "SELECT QCStatus, Selected 
+             FROM files_qcstatus
+             WHERE FileID in (
+                SELECT FileID
+                FROM files
+                WHERE File LIKE CONCAT('%', :FName)
+            )",
             array('FName' => $this->Filename)
         );
-        $this->JSON = [
-                       'Meta'     => [
+        $caveats    = $this->getImageCaveats();
+        $this->JSON = array(
+                       'Meta'     => array(
                                       'CandID' => $this->CandID,
                                       'Visit'  => $this->VisitLabel,
                                       'File'   => $this->Filename,
-                                     ],
+                                     ),
                        'QC'       => $QCStatus['QCStatus'],
                        'Selected' => $QCStatus['Selected'],
-                      ];
+                       'Caveats'  => $caveats,
+                      );
+    }
+
+    /**
+     * Gets the list of Caveats for the file.
+     *
+     * @return array A list of caveats for the file
+     */
+    function getImageCaveats(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->Database();
+        $rows    = $DB->pselect(
+            "SELECT Severity, Header, Value, ValidRange, ValidRegex 
+                FROM files f 
+                LEFT JOIN mri_violations_log mvl ON (f.SeriesUID=mvl.SeriesUID)
+                WHERE f.File LIKE CONCAT('%', :FName)",
+            array('FName' => $this->Filename)
+        );
+        return $rows;
     }
 
     /**

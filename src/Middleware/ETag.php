@@ -36,7 +36,7 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
 
     /**
      * Process processes an incoming request by delegating to $handler,
-     * and adds an HTTP Content-Length header to the response if possible.
+     * and adds an HTTP ETag header to the response if possible.
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request.
      * @param RequestHandlerInterface $handler The PSR15 handler to delegate
@@ -54,21 +54,37 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             return $handler->handle($request);
         }
 
-        $clientETag = $request->getHeaderLine("If-None-Match") ?? false;
-        if ($clientETag  && $handler->ETag($request) === $clientETag) {
-            if ($handler->ETag($request) == $clientETag) {
+        $clientETag = $request->getHeaderLine("If-None-Match");
+        if ($clientETag !== '') {
+            // If-None-Match header provided
+            $endpointETag = $handler->ETag($request);
+            if ($clientETag == $endpointETag) {
                 // It matches, so just return a 304 Not modified instead of
                 // doing any work.
-                return (new \LORIS\Http\Response())->withStatus(304);
+                return new \LORIS\Http\Response\NotModified(
+                    $endpointETag
+                );
             }
         }
-    
+
         // It either doesn't match or the client didn't send an ETag. In either
         // case, we calculate one and add it to the response header after calling
         // the handler.
-        return $handler->handle($request)->withHeader(
-            "ETag",
-            $handler->ETag($request)
-        );
+        $response = $handler->handle($request);
+
+        if ($response->getStatusCode() >= 400) {
+            // In case of client or server error, do not calculate ETag
+            return $response;
+        }
+
+        if (empty($response->getHeaderLine('Etag'))) {
+            // If a sub-endpoint already added a Etag, do not calculate ETag
+            $response = $response->withHeader(
+                "ETag",
+                $handler->ETag($request)
+            );
+        }
+
+        return $response;
     }
 }
