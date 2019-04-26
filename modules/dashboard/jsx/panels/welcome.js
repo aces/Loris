@@ -26,18 +26,20 @@ class Welcome extends Component {
   render() {
     if (this.props.display) {
       let links = []; // links to render.
-      for (let i =0; i<this.props.data.links.length; i++) {
-        links.push(
-          (
-            <div key={'link_' + i}>
-              <a href={this.props.data.links[i].url}
-                 target={this.props.data.links[i].windowName}>
-                {this.props.data.links[i].label}
-              </a>
-              &nbsp;|
-            </div>
-          )
-        );
+      if (this.props.data) {
+        for (let i = 0; i < this.props.data.links.length; i++) {
+          links.push(
+            (
+              <div key={'link_' + i}>
+                <a href={this.props.data.links[i].url}
+                   target={this.props.data.links[i].windowName}>
+                  {this.props.data.links[i].label}
+                </a>
+                &nbsp;|
+              </div>
+            )
+          );
+        }
       }
       return (
         <Panel
@@ -49,12 +51,14 @@ class Welcome extends Component {
             </div>
           )}
         >
-          <h3 className='welcome'>Welcome, {this.props.data.username}</h3>
+          <h3 className='welcome'>Welcome,
+            &nbsp;{this.props.data ? this.props.data.username : null}
+          </h3>
           <p className='pull-right small login-time'>
-            Last login: {this.props.data.lastLogin}
+            Last login: {this.props.data ? this.props.data.lastLogin : null}
           </p>
           <p className='project-description'>
-            {this.props.data.projectDescription}
+            {this.props.data ? this.props.data.projectDescription : null}
           </p>
         </Panel>
       );

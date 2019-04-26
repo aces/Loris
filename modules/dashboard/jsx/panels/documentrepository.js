@@ -65,7 +65,9 @@ class DocumentRepositoryNotifications extends Component {
 
         panel.documentRepository.div = (
           <div className={'list-group document-repository-item'}>
-            {panel.documentRepository.content}
+            {panel.documentRepository.content > 0 ?
+              panel.documentRepository.content
+              : 'There have been no documents yet.'}
           </div>
         );
       }
