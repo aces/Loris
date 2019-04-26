@@ -77,7 +77,7 @@ CREATE TABLE `publication_test_names_rel` (
     CONSTRAINT `PK_publication_test_names_rel` PRIMARY KEY(`PublicationID`, `TestNameID`),
     CONSTRAINT `FK_publication_test_names_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
     CONSTRAINT `FK_publication_test_names_rel_TestNameID` FOREIGN KEY (`TestNameID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- Publication Uploads
 CREATE TABLE `publication_upload_type` (
