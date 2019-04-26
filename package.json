@@ -18,7 +18,7 @@
     "eslint": "3.8.1",
     "eslint-config-google": "0.6.0",
     "eslint-plugin-react": "^5.2.2",
-    "webpack": "4.30.0"
+    "webpack": "1.14.0"
   },
   "scripts": {
     "lint:javascript": "./test/run-js-linter.sh",
