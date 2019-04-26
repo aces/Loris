@@ -1,4 +1,4 @@
-v-- ********************************
+-- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
 DROP TABLE IF EXISTS `candidate_consent_rel`;
