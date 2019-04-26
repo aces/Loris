@@ -97,5 +97,3 @@ before_script:
 
 script:
     - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
-
-dist: precise

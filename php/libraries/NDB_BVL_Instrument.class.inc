@@ -284,7 +284,8 @@ class NDB_BVL_Instrument extends NDB_Page
         } else if (!array_key_exists(
             'useInstrumentPermissions',
             $instrumentPermissions
-        )) {
+        )
+        ) {
             //instrument permissions not used...
             return true; //default
         } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
