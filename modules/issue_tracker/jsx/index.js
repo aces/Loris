@@ -4,8 +4,6 @@ import IssueForm from './IssueForm';
  * Render IssueForm on page load
  */
 $(function() {
-//  const args = QueryString.get();
-//   console.log(location.search);
   var id = location.href.split("/issue/")[1];
   const issueTracker = (
     <div className="page-issue-tracker">
