@@ -64,25 +64,36 @@ $dupFields = $DB->pselectWithIndexKey(
     	WHERE ptc.Type='Instrument'
     	GROUP BY fieldName
     	HAVING duplicationCount>1) as dr ON (dr.fieldName=pt.Name)
-    WHERE pt.ParameterTypeID < dr.maxID;",
+    WHERE pt.ParameterTypeID < dr.maxID",
     array(),
     "ParameterTypeID"
 );
 
-$dupCategories = $DB->pselectWithIndexKey(
-    "SELECT ptc.ParameterTypeCategoryID, ptc.Name, dr.maxID as DuplicateOf
-    FROM parameter_type_category ptc
-    JOIN (
-    	SELECT MAX(ptc.ParameterTypeCategoryID) as maxID, 
-    	    ptc.Name as instrumentName, 
-    	    COUNT(*) as duplicationCount 
-    	FROM parameter_type_category ptc
-    	WHERE ptc.Type='Instrument'
-    	GROUP BY instrumentName
-    	HAVING duplicationCount>1) as dr ON (dr.instrumentName=ptc.Name)
-    WHERE ptc.ParameterTypeCategoryID < dr.maxID",
-    array(),
-    "ParameterTypeCategoryID"
+//$dupCategories = $DB->pselectWithIndexKey(
+//    "SELECT ptc.ParameterTypeCategoryID, ptc.Name, dr.maxID as DuplicateOf
+//    FROM parameter_type_category ptc
+//    JOIN (
+//    	SELECT MAX(ptc.ParameterTypeCategoryID) as maxID,
+//    	    ptc.Name as instrumentName,
+//    	    COUNT(*) as duplicationCount
+//    	FROM parameter_type_category ptc
+//    	WHERE ptc.Type='Instrument'
+//    	GROUP BY instrumentName
+//    	HAVING duplicationCount>1) as dr ON (dr.instrumentName=ptc.Name)
+//    WHERE ptc.ParameterTypeCategoryID < dr.maxID",
+//    array(),
+//    "ParameterTypeCategoryID"
+//);
+
+$emptyFields = $DB->pselectCol(
+    "SELECT pt.ParameterTypeID
+    FROM parameter_type pt
+      JOIN parameter_type_category_rel ptcr USING(ParameterTypeID) 
+	  JOIN parameter_type_category ptc USING(ParameterTypeCategoryID)
+	WHERE (pt.Name IS NULL OR pt.Name='')
+	  AND pt.ParameterTypeID IS NOT NULL
+	  AND ptc.Type='Instrument'",
+    array()
 );
 
 $orphanCategories = $DB->pselect(
@@ -90,13 +101,13 @@ $orphanCategories = $DB->pselect(
     FROM parameter_type_category ptc
 		LEFT JOIN parameter_type_category_rel ptcr USING(ParameterTypeCategoryID) 
 		LEFT JOIN parameter_type pt USING(ParameterTypeID) 
-    WHERE ptc.Type='Instrument' AND pt.ParameterTypeID IS NULL;",
+    WHERE ptc.Type='Instrument' AND pt.ParameterTypeID IS NULL",
     array()
 );
 
 
 // CHECK FOR ISSUES AND REPORT THEM
-if (empty($dupFields) && empty($dupCategories)&& empty($orphanCategories)) {
+if (empty($dupFields) && empty($dupCategories) && empty($emptyFields) && empty($orphanCategories)) {
     echo "No issues have been detected in the database.\n\n";
     die();
 }
@@ -108,14 +119,14 @@ if (!empty($dupFields)) {
     echo "PARAMETER TYPE ENTRIES (instrument fields)
     The following entries are duplicated. Each duplicated entry below is listed along 
     with it's ID, name and the ID of the homologue entry that will be preserved. 
-    Duplicated fields can be caused by sever factors such as:
+    Duplicated fields can be caused by several factors such as:
      - Failed attempt at clearing the fields before rebuilding the dictionary.
      - A duplicated field in an instrument.
      - other...
     Duplicated entries should be removed in order for the data_dictionary_builder.php
     script to run on LORIS versions 21.0.0 and above. Removal of duplicated fields 
     should be handled with care to avoid creating orphan entries in database tables 
-    referring to the parameterTypeID field of the parameter_type table.\n\n";
+    with a foreign key reference to the parameterTypeID field of the parameter_type table.\n\n";
 
     print_r($dupFields);
 }
@@ -123,19 +134,29 @@ if (!empty($dupFields)) {
 // Handle case where a `Name` entry in the parameter_type_category table is not unique.
 // A non-unique value can be caused by several factors including but not limited to:
 // - two or more instruments sharing a display name
-if (!empty($dupCategories)) {
-    echo "PARAMETER TYPE CATEGORY ENTRIES (instruments)
-    The following entries are duplicated. Each duplicated entry below is listed along 
-    with it's ID, name and the ID of the homologue entry that will be preserved. 
-    Duplicated fields can be caused by sever factors such as:
-     - Failed attempt at clearing the fields before rebuilding the dictionary.
-     - Two or more instruments sharing a display name.
-     - other...
-    Duplicated entries should be removed in order for the data_dictionary_builder.php
-    script to run on LORIS versions 21.0.0 and above. Removal of duplicated fields 
-    should be handled with care to avoid creating orphan entries in database tables 
-    referring to the parameterTypeID field of the parameter_type table.\n\n";
-    print_r($dupCategories);
+//if (!empty($dupCategories)) {
+//    echo "PARAMETER TYPE CATEGORY ENTRIES (instruments)
+//    The following entries are duplicated. Each duplicated entry below is listed along
+//    with it's ID, name and the ID of the homologue entry that will be preserved.
+//    Duplicated fields can be caused by several factors such as:
+//     - Failed attempt at clearing the fields before rebuilding the dictionary.
+//     - Two or more instruments sharing a display name.
+//     - other...
+//    Duplicated entries should be removed in order for the data_dictionary_builder.php
+//    script to run on LORIS versions 21.0.0 and above. Removal of duplicated fields
+//    should be handled with care to avoid creating orphan entries in database tables
+//    with a foreign key reference to the parameterTypeID field of the parameter_type table.\n\n";
+//
+//    print_r($dupCategories);
+//}
+
+// Handle case where the parameter_type table has fields with an empty `Name` value.
+// The database column should not be nullable however empty names are possible and
+// thus should be detected and eliminated as they are not informative in any way.
+if (!empty($emptyFields)) {
+    echo "The following entries in the parameter_type table do not have a `Name` 
+    value and are thus invalid. these entries can be safely removed.\n\n";
+    print_r($emptyFields);
 }
 
 // Handle case where the parameter_type_category table has orphans for instruments.
@@ -158,26 +179,57 @@ if (!$apply && !$printToSQL) {
     // run changes in database
     // Fields first since they might generate orphan category entries.
     // delete the parameter_type and parameter_type_category_rel entries
+    echo "#### CLEARING DUPLICATE PARAMETER TYPE ENTRIES ####\n";
     foreach ($dupFields as $pti => $fieldData) {
         $DB->delete(
-            "parameter_type",
+            "parameter_type_category_rel",
             array("ParameterTypeID" => $pti)
         );
         $DB->delete(
-            "parameter_type_category_rel",
+            "parameter_type",
             array("ParameterTypeID" => $pti)
         );
     }
     // Categories second since they might generate orphan entries as well
     // Delete parameter_type_category_rel, these will be regenerated by the builder
     // orphaned categories will be removed below
-    foreach ($dupCategories as $ptci => $InstrumentData) {
+//    echo "#### CLEARING DUPLICATE PARAMETER TYPE CATEGORY ENTRIES ####\n";
+//    foreach ($dupCategories as $ptci => $InstrumentData) {
+//
+//        try {
+//            $DB->update(
+//                "parameter_type_category_rel",
+//                array("ParameterTypeCategoryID" => $InstrumentData['DuplicateOf']),
+//                array("ParameterTypeCategoryID" => $ptci)
+//            );
+//        } catch (DatabaseException $e) {
+//            $matches = array();
+//            preg_match(
+//                "/Duplicate entry '([0-9]+)\-([0-9]+)' for/",
+//                $e->getMessage(),
+//                $matches
+//            );
+//            echo $e->getMessage();
+//            print_r($matches);
+//        }
+//    }
+
+    // Empty Fields next since they might generate orphan category entries.
+    // delete the parameter_type and parameter_type_category_rel entries
+    echo "#### CLEARING NAMELESS PARAMETER TYPE ENTRIES ####\n";
+    foreach ($emptyFields as $pti) {
         $DB->delete(
             "parameter_type_category_rel",
-            array("ParameterTypeCategoryID" => $ptci)
+            array("ParameterTypeID" => $pti)
+        );
+        $DB->delete(
+            "parameter_type",
+            array("ParameterTypeID" => $pti)
         );
     }
-    // Single query for orphan categories
+
+    // Single query for orphan categories to clean-up the tables
+    echo "#### CLEARING ORPHAN PARAMETER TYPE CATEGORY ENTRIES ####\n";
     $DB->run(
         "DELETE ptc
       FROM parameter_type_category ptc
@@ -185,6 +237,7 @@ if (!$apply && !$printToSQL) {
 	    LEFT JOIN parameter_type pt USING(ParameterTypeID)
       WHERE ptc.Type='Instrument' AND pt.ParameterTypeID IS NULL"
     );
+
 } elseif ($printToSQL) {
     // generate SQL statements
     $output = "";
@@ -197,8 +250,14 @@ if (!$apply && !$printToSQL) {
     // Categories second since they might generate orphan entries as well
     // Update parameter_type_category_rel to point to the same ID for each instrument
     // orphaned categories will be removed below
-    foreach ($dupCategories as $ptci => $InstrumentData) {
-        $output .= "DELETE FROM parameter_type_category_rel WHERE ParameterTypeCategoryID=$ptci;\n";
+//    foreach ($dupCategories as $ptci => $InstrumentData) {
+//        $output .= "DELETE FROM parameter_type_category_rel WHERE ParameterTypeCategoryID=$ptci;\n";
+//    }
+    // Empty Fields next since they might generate orphan category entries.
+    // delete the parameter_type and parameter_type_category_rel entries
+    foreach ($emptyFields as $pti) {
+        $output .= "DELETE FROM parameter_type_category_rel WHERE ParameterTypeID=$pti;\n";
+        $output .= "DELETE FROM parameter_type WHERE ParameterTypeID=$pti;\n";
     }
     // Single query for orphan categories
     $output .= "DELETE ptc ".

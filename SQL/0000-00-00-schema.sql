@@ -1600,10 +1600,9 @@ CREATE TABLE `parameter_type_category_rel` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`ParameterTypeCategoryID`,`ParameterTypeID`),
   KEY `FK_parameter_type_category_rel_1` (`ParameterTypeID`),
-  CONSTRAINT `FK_parameter_type_category_rel_2` FOREIGN KEY (`ParameterTypeCategoryID`) REFERENCES `parameter_type_category` (`ParameterTypeCategoryID`),
-  CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
+  CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_parameter_type_category_rel_2` FOREIGN KEY (`ParameterTypeCategoryID`) REFERENCES `parameter_type_category` (`ParameterTypeCategoryID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID)
   SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID
