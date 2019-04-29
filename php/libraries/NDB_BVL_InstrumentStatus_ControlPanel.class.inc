@@ -192,7 +192,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($this->getDataEntryStatus() == $option) {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'selected';
+                $this->tpl_data['data_entry'][$i]['icon'] = 'far fa-check-square';
             } elseif ($hasAccess && $this->getAdministrationStatus()) {
                 // make the option a link unless this field is locked
                 // the field is locked if the Administration flag has not
@@ -227,7 +227,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'locked';
+                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -258,7 +258,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($this->getAdministrationStatus() == $option) {
-                $this->tpl_data['administration'][$i]['icon'] = 'selected';
+                $this->tpl_data['administration'][$i]['icon'] = 'far fa-check-square';
             } elseif ($hasAccess
                 && $dataEntry != 'Complete'
                 && $dataEntry != 'Not Complete'
@@ -271,7 +271,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->tpl_data['administration'][$i]['showlink'] = true;
             } else {
                 // block the button
-                $this->tpl_data['administration'][$i]['icon'] = 'locked';
+                $this->tpl_data['administration'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -304,7 +304,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($validityStatus == $option) {
-                $this->tpl_data['validity'][$i]['icon'] = 'selected';
+                $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
             }
             if ($data_entry_status == 'Complete') {
                 $this->tpl_data['validity'][$i]['showLink'] = false;
@@ -341,7 +341,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($exclusionStatus == $option) {
-                $this->tpl_data['exclusion'][$i]['icon'] = 'selected';
+                $this->tpl_data['exclusion'][$i]['icon'] = 'far fa-check-square';
             }
             $i++;
         }
