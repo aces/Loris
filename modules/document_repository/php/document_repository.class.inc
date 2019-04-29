@@ -462,7 +462,9 @@ class Document_Repository extends \NDB_Menu_Filter
         if (is_null($value)) {
             return null;
         }
-
+        
+        $value = (int)$value;  
+       
         if ($value >= 1000000000) {
             $value = floor($value/1000000000);
             return "{$value} GB";
