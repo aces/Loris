@@ -119,7 +119,11 @@ case 'validaterootaccount':
             break;
         }
     }
-    if (!Database::canLogIn(
+    if (isset($_POST['dbhost']) && 
+        isset($_POST['dbname']) &&
+        isset($_POST['dbadminuser']) &&
+        isset($_POST['dbadminpassword']) &&
+        !Database::canLogIn(
         $_POST['dbhost'],
         $_POST['dbname'],
         $_POST['dbadminuser'],
