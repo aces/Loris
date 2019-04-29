@@ -86,5 +86,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (88,96,'flair');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (89,96,'t1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (90,96,'t2');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (91,96,'pd');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (92,97,'/data/publication_uploads/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (93,98,'/data/publication_uploads/to_be_deleted/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (94,99,'true');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
