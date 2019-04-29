@@ -51,7 +51,8 @@ class Utility
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
             $dob,
             $matches
-        )) {
+        )
+        ) {
             throw new Exception(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
@@ -66,7 +67,8 @@ class Utility
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
             $testdate,
             $matches
-        )) {
+        )
+        ) {
             throw new Exception(
                 "Argument 2 does not match expected date format (YYYY-MM-DD)"
             );

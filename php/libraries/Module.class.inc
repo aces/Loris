@@ -236,6 +236,19 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     {
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
+            $path = $request->getURI()->getPath();
+            if (preg_match('/(\.css)$/', $path) == 1) {
+                $resp = $resp->withHeader(
+                    "Content-Type",
+                    "text/css"
+                );
+            }
+            if (preg_match('/(\.js)$/', $path) == 1) {
+                $resp = $resp->withHeader(
+                    "Content-Type",
+                    "application/javascript"
+                );
+            }
             return $resp;
         }
 

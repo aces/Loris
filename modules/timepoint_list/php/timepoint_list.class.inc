@@ -189,7 +189,8 @@ class Timepoint_List extends \NDB_Menu
                      'Visit',
                      'Screening',
                     )
-                )) {
+                )
+                ) {
                     // for static stages, don't bother showing current status
                     $this->tpl_data['timePoints'][$x]['staticStage'] = true;
 
