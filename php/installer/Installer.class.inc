@@ -280,10 +280,10 @@ class Installer
                $RequestScheme = 'https';
         }
         if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-          return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
+            return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
             . preg_replace("#/installdb.php#", "", $_SERVER['REQUEST_URI']);
         } else {
-          return null;
+            return null;
         }
 
     }
