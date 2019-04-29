@@ -201,6 +201,10 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        $stats = @stat($this->filename) ?: array(
+                                            "size"  => "0",
+                                            "atime" => "0",
+                                           );
+        return md5($stats['atime'] . $stats['size'] . $this->filename);
     }
 }
