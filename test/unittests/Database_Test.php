@@ -73,8 +73,7 @@ class Database_Test extends TestCase
                 )
 
             )
-        );
-
+        ); 
     }
 
 
@@ -156,7 +155,157 @@ class Database_Test extends TestCase
         $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), array());
 
     }
+
+    function testDeleteWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+
+        $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => '99991',
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                )
+            )
+        );
+
+    } 
+
+    function testUpdateWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+        $DB->update("ConfigSettings", array('Visible' => null, 'Description' => 'new description'), array('Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => 'new description',
+                    'Visible' => null
+                )
+            )
+        );
+    }
+
+    function testInsertWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                )
+            )
+        );
+        $DB->insert("ConfigSettings", array('ID' => 99992, 'Name' => 'test 2', 'Visible' => 1, 'Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+    }
+
+    function testReplaceWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                )
+            )
+        );
+        $DB->replace("ConfigSettings", array('ID' => 99991, 'Name' => 'test 1', 'Visible' => 1, 'Description' => null));
+        $DB->replace("ConfigSettings", array('ID' => 99992, 'Name' => 'test 2', 'Visible' => 1, 'Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+        $DB->run("DROP TEMPORARY TABLE ConfigSettings");
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => null,
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+    }
 }
-
-
-?>

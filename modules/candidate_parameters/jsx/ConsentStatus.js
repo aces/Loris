@@ -17,8 +17,7 @@ class ConsentStatus extends React.Component {
       },
       Data: [],
       formData: {},
-      updateResult: null,
-      errorMessage: null,
+      error: false,
       isLoaded: false,
       loadedData: 0
     };
@@ -29,7 +28,6 @@ class ConsentStatus extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
@@ -66,8 +64,9 @@ class ConsentStatus extends React.Component {
         });
       },
       error: error => {
+        console.error(error);
         this.setState({
-          error: 'An error occurred when loading the form!'
+          error: true
         });
       }
     });
@@ -82,6 +81,21 @@ class ConsentStatus extends React.Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
+    for (let consent in this.state.Data.consents) {
+      if (this.state.Data.consents.hasOwnProperty(consent)) {
+        const oldConsent = this.state.Data.consentStatuses[consent];
+        const newConsent = this.state.formData[consent];
+        // Clear withdrawal date if consent status changes from no
+        // (or empty if uncleaned data) to yes
+        if (formElement === consent) {
+          if ((newConsent === "yes" && oldConsent !== "yes") ||
+              (newConsent === "no" && oldConsent === null)) {
+            formData[consent + "_withdrawal"] = '';
+            formData[consent + "_withdrawal2"] = '';
+          }
+        }
+      }
+    }
     this.setState({
       formData: formData
     });
@@ -148,6 +162,7 @@ class ConsentStatus extends React.Component {
     // Set form data
     let formData = new FormData();
     for (let key in myFormData) {
+      // Does not submit data with empty string
       if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
@@ -162,44 +177,24 @@ class ConsentStatus extends React.Component {
       contentType: false,
       processData: false,
       success: data => {
-        this.setState({
-          updateResult: "success"
-        });
-        this.showAlertMessage();
+        swal('Success!', 'Update successful.', 'success');
         this.fetchData();
       },
       error: error => {
-        if (error.responseText !== "") {
-          let errorMessage = JSON.parse(error.responseText).message;
-          this.setState({
-            updateResult: "error",
-            errorMessage: errorMessage
-          });
-          this.showAlertMessage();
-        }
+        console.error(error);
+        let errorMessage = error.responseText || 'Update failed.';
+        swal('Error!', errorMessage, 'error');
       }
     });
   }
 
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    if (this.refs["alert-message"] === null) {
-      return;
+  render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
     }
 
-    let alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-              500,
-              () => {
-                this.setState({
-                  updateResult: null
-                });
-              });
-  }
-
-  render() {
     if (!this.state.isLoaded) {
       return <Loader />;
     }
@@ -210,20 +205,39 @@ class ConsentStatus extends React.Component {
       disabled = false;
       updateButton = <ButtonElement label ="Update" />;
     }
-    let dateRequired = [];
-    let withdrawalRequired = [];
+    const emptyOption = [];
+    const dateRequired = [];
+    const withdrawalRequired = [];
+    const withdrawalDisabled = [];
     let i = 0;
     for (let consent in this.state.Data.consents) {
       if (this.state.Data.consents.hasOwnProperty(consent)) {
-        let withdrawal = consent + "_withdrawal";
-
-        if (this.state.formData[consent] === "yes") {
+        const oldConsent = this.state.Data.consentStatuses[consent];
+        const newConsent = this.state.formData[consent];
+        const withdrawalDate = this.state.Data.withdrawals[consent];
+        // Set defaults
+        emptyOption[i] = true;
+        dateRequired[i] = false;
+        withdrawalRequired[i] = false;
+        // Let date of withdrawal field be disabled until it is needed
+        withdrawalDisabled[i] = true;
+        // If answer to consent is "yes", require date of consent
+        if (newConsent === "yes") {
           dateRequired[i] = true;
         }
-        if (this.state.formData[withdrawal]) {
-          withdrawalRequired[i] = true;
-        } else {
-          withdrawalRequired[i] = false;
+        // If answer to consent is "no", require date of consent
+        if (newConsent === "no") {
+          dateRequired[i] = true;
+          // If answer was previously "yes" and consent is now being withdrawn, enable and require withdrawal date
+          // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
+          if (oldConsent === "yes" || (oldConsent === "no" && withdrawalDate)) {
+            withdrawalDisabled[i] = false;
+            withdrawalRequired[i] = true;
+          }
+        }
+        // Disallow clearing a valid consent status by removing empty option
+        if (oldConsent === "no" || oldConsent === "yes") {
+          emptyOption[i] = false;
         }
         i++;
       }
@@ -255,6 +269,7 @@ class ConsentStatus extends React.Component {
               ref={consentStatus}
               disabled={disabled}
               required={false}
+              emptyOption={emptyOption[i]}
             />
             <DateElement
               label={consentDateLabel}
@@ -280,8 +295,8 @@ class ConsentStatus extends React.Component {
               value={this.state.formData[consentWithdrawal]}
               onUserInput={this.setFormData}
               ref={consentWithdrawal}
-              disabled={disabled}
-              required={false}
+              disabled={disabled || withdrawalDisabled[i]}
+              required={withdrawalRequired[i]}
             />
             <DateElement
               label={consentWithdrawalConfirmationLabel}
@@ -289,7 +304,7 @@ class ConsentStatus extends React.Component {
               value={this.state.formData[consentWithdrawal2]}
               onUserInput={this.setFormData}
               ref={consentWithdrawal2}
-              disabled={disabled}
+              disabled={disabled || withdrawalDisabled[i]}
               required={withdrawalRequired[i]}
             />
             <hr/>
@@ -349,24 +364,8 @@ class ConsentStatus extends React.Component {
       }
     }
 
-    let alertMessage = "";
-    let alertClass = "alert text-center hide";
-    if (this.state.updateResult) {
-      if (this.state.updateResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.updateResult === "error") {
-        let errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Failed to update!";
-      }
-    }
-
     return (
       <div className="row">
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
-        </div>
         <FormElement
           name="consentStatus"
           onSubmit={this.handleSubmit}

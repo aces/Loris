@@ -19,59 +19,47 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
-
-
-// Load config file and ensure paths are correct
-set_include_path(
-    get_include_path() . ":../../../project/libraries:../../../php/libraries"
-);
 require_once __DIR__ . "/../../../vendor/autoload.php";
 // Since we're sending binary data, we don't want PHP to print errors or warnings
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");
 
 // Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 if ($client->initialize("../../../project/config.xml") == false) {
-    return false;
+    http_response_code(401);
+    echo "User is not authenticated.";
+    return;
 }
 
 // Checks that config settings are set
-$config   =& NDB_Config::singleton();
+$config   = \NDB_Config::singleton();
 $paths    = $config->getSetting('paths');
 $pipeline = $config->getSetting('imaging_pipeline');
 
-// Basic config validation
 $imagePath    = $paths['imagePath'];
 $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
-if (empty($imagePath) || empty($DownloadPath)
-    || empty($mincPath) || empty($tarchivePath)
+// Basic config validation
+if (!validConfigPaths(
+    array(
+     $imagePath,
+     $DownloadPath,
+     $mincPath,
+     $tarchivePath,
+    )
+)
 ) {
-    error_log("ERROR: Config settings are missing");
-    header("HTTP/1.1 500 Internal Server Error");
-    exit(1);
+    http_response_code(500);
+    return;
 }
 
-if ($imagePath === '/' || $DownloadPath === '/'
-    || $mincPath === '/' || $tarchivePath === '/'
-) {
-    error_log("ERROR: Path can not be root for security reasons.");
-    header("HTTP/1.1 500 Internal Server Error");
-    exit(2);
-}
-
-// Now get the file and do file validation.
 // Resolve the filename before doing anything.
 $File = Utility::resolvePath($_GET['file']);
-// Extra sanity checks, just in case something went wrong with path resolution.
-// File validation
-if (strpos($File, ".") === false) {
-    error_log("ERROR: Could not determine file type.");
-    header("HTTP/1.1 400 Bad Request");
-    exit(3);
+if (!validDownloadPath($File)) {
+    http_response_code(400);
+    return;
 }
 
 // Find the extension
@@ -88,16 +76,6 @@ if (strcmp($FileExt, "gz") == 0) {
 }
 unset($path_parts);
 
-// Make sure that the user isn't trying to break out of the $path by
-// using a relative filename.
-// No need to check for '/' since all downloads are relative to $imagePath,
-// $DownloadPath or $mincPath
-if (strpos($File, "..") !== false) {
-    error_log("ERROR: Invalid filename");
-    header("HTTP/1.1 400 Bad Request");
-    exit(4);
-}
-
 // If basename of $File starts with "DCM_", prefix automatically
 // inserted by the LORIS-MRI pipeline, identify it as $FileExt:
 // "DICOMTAR"
@@ -107,6 +85,10 @@ if (strpos($FileBase, "DCM_") === 0) {
     $FileExt = "DICOMTAR";
 }
 
+/* Determine and construct the appropriate download path for the requested file
+ * name based on its extension.
+ */
+$DownloadFilename = '';
 switch($FileExt) {
 case 'mnc':
     $FullPath         = $mincPath . '/' . $File;
@@ -162,13 +144,19 @@ default:
     break;
 }
 
+// Make sure file exists.
 if (!file_exists($FullPath)) {
-    error_log("ERROR: File $FullPath does not exist");
-    header("HTTP/1.1 404 Not Found");
-    exit(5);
+    error_log("ERROR: Requested file $FullPath does not exist");
+    http_response_code(404);
+    return;
 }
 
+// Build and send the response with the file data.
 header("Content-type: $MimeType");
+
+// Build filename and send attachment Content-Disposition header for files that
+// should be downloaded rather than displayed, i.e. png, jpg, header, and
+// raw_byte.gz files.
 if (!empty($DownloadFilename)) {
     // Prepend the patient name to the beginning of the file name.
     if ($FileExt === 'DICOMTAR' && !empty($PatientName)) {
@@ -190,4 +178,62 @@ if (!empty($DownloadFilename)) {
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
-?>
+
+/**
+ * Checks that config settings used are not empty and not the root dir.
+ *
+ * @param array $paths The values to validate.
+ *
+ * @return bool
+ */
+function validConfigPaths(array $paths): bool
+{
+    foreach ($paths as $p) {
+        if (empty($p)) {
+            throw new \LorisException(
+                'Config paths are not initialized. Please ensure that valid ' .
+                'paths are set for imagePath, downloadPath, mincPath and ' .
+                'tarchiveLibraryDir'
+            );
+            return false;
+        }
+        if ($p === '/') {
+            throw new \LorisException(
+                'Config path invalid. Paths cannot be set to root, i.e., `/`' .
+                ' Please verify your path settings for imagePath, ' .
+                'downloadPath, mincPath and tarchiveLibraryDir.'
+            );
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Check that the requested download path does not have the '..' sequence and
+ * that it has an intelligible file extension.
+ *
+ * @param string $path The requested file.
+ *
+ * @return bool Whether the path passes the validation criteria.
+ */
+function validDownloadPath($path): bool
+{
+    // Extra sanity checks, just in case something went wrong with path
+    // resolution.
+    if (strpos($path, '.') === false) {
+        error_log('ERROR: Invalid filename. Could not determine file type');
+        return false;
+    }
+    // Make sure that the user isn't trying to break out of the $path by
+    // using a relative filename.
+    // No need to check for '/' since all downloads are relative to $imagePath,
+    // $DownloadPath or $mincPath
+    if (strpos($path, "..") !== false) {
+        error_log(
+            'ERROR: Invalid filename. Contains path traversal characters'
+        );
+        return false;
+    }
+    return true;
+}

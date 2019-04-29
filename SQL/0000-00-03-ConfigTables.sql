@@ -17,7 +17,7 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` ENUM('text', 'boolean', 'email', 'instrument', 'textarea', 'scan_type', 'lookup_center') DEFAULT NULL,
+    `DataType` ENUM('text', 'boolean', 'email', 'instrument', 'textarea', 'scan_type', 'lookup_center', 'path', 'web_path') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
     `Label` varchar(255) DEFAULT NULL,
     `OrderNumber` int(11) DEFAULT NULL,
@@ -83,7 +83,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', 'Path to the upload directory for incoming MRI studies', 1, 0, 'text', ID, 'MRI Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mediaPath', 'Path to uploaded media files', 1, 0, 'text', ID, 'Media', 9 FROM ConfigSettings WHERE Name="paths";
-
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_uploads', 'Path to uploaded publications', 1, 0, 'text', ID, 'Publications', 10 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_deletions', 'Path to deleted publications', 1, 0, 'text', ID, 'Deleted Publications', 11 FROM ConfigSettings WHERE Name="paths";
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'css', 'CSS file used for rendering (default main.css)', 1, 0, 'text', ID, 'CSS file', 1 FROM ConfigSettings WHERE Name="gui";
@@ -154,6 +155,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MriConfigFile', 'Name of the MRI config file (stored in dicom-archive/.loris_mri/)', 1, 0, 'text', ID, 'Name of the MRI config file', 19 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EnvironmentFile', 'Name of the environment file that need to be sourced for the imaging pipeline', 1, 0, 'text', ID, 'Name of the environment file', 20 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'compute_snr_modalities', 'Modalities for which the SNR should be computed when running the insertion MRI scripts', 1, 1, 'scan_type', ID, 'Modalities on which SNR should be calculated', 21 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reference_scan_type_for_defacing', 'Scan type to use as a reference for registration when defacing anatomical images (typically a T1W image)', 1, 0, 'scan_type', ID, 'Scan type to use as a reference for defacing (typically a T1W image)', 22 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'modalities_to_deface', 'Modalities for which defacing should be run and defaced image inserted in the database', 1, 1, 'scan_type', ID, 'Modalities on which to run the defacing pipeline', 23 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
 --
 -- Filling Config table with default values
@@ -195,6 +198,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/bin/mri/" F
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="MRIUploadIncomingPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/Genomic-Data/" FROM ConfigSettings WHERE Name="GenomicDataPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/uploads/" FROM ConfigSettings WHERE Name="mediaPath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/" FROM ConfigSettings WHERE Name="publication_uploads";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/to_be_deleted/" FROM ConfigSettings WHERE Name="publication_deletions";
 
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
@@ -207,10 +212,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "http://localhost/" FROM ConfigS
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/./" FROM ConfigSettings WHERE Name="patientIDRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="patientNameRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/phantom/i" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientIDRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Name="patientNameRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=44;
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=45;
@@ -255,3 +260,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 'flair' FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="compute_snr_modalities";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="reference_scan_type_for_defacing";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'flair' FROM ConfigSettings WHERE Name="modalities_to_deface";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHERE Name="modalities_to_deface";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";
+
+

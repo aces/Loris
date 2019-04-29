@@ -284,7 +284,8 @@ class NDB_BVL_Instrument extends NDB_Page
         } else if (!array_key_exists(
             'useInstrumentPermissions',
             $instrumentPermissions
-        )) {
+        )
+        ) {
             //instrument permissions not used...
             return true; //default
         } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
@@ -1422,6 +1423,22 @@ class NDB_BVL_Instrument extends NDB_Page
             return $visitLabel;
         }
         return '';
+    }
+
+    /**
+     * Gets the subprojectID for the timepoint to which this instrument pertains
+     *
+     * @return int|null The subprojectID
+     */
+    function getSubprojectID(): ?int
+    {
+        $sessionID = $this->getSessionID();
+        if (!empty($sessionID)) {
+            $timepoint    = \Timepoint::singleton($sessionID);
+            $subprojectID = $timepoint->getSubprojectID();
+            return $subprojectID;
+        }
+        return null;
     }
 
 
