@@ -36,5 +36,6 @@ INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumbe
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (33,6,'Configuration','configuration/',NULL,5);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (34,6,'Server Processes Manager','server_processes_manager/',NULL,6);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (35,5,'Quality Control','quality_control/',NULL,10);
+INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (36,4,'Publications','publication/',NULL,3);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

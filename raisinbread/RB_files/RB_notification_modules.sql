@@ -7,5 +7,8 @@ INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_a
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (10,'document_repository','upload','N','notifier_document_repository_upload.tpl','Document Repository: New Document Uploaded');
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (11,'document_repository','delete','N','notifier_document_repository_delete.tpl','Document Repository: Document Deleted');
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (12,'document_repository','edit','N','notifier_document_repository_edit.tpl','Document Repository: Document Edited');
+INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (13,'publication','submission','N','notifier_publication_submission.tpl','Publication: Submission Received');
+INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (14,'publication','review','N','notifier_publication_review.tpl','Publication: Proposal has been reviewed');
+INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (15,'publication','edit','N','notifier_publication_edit.tpl','Publication: Proposal has been edited');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
