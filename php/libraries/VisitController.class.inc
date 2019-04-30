@@ -99,18 +99,16 @@ ORDER BY ID
         );
     }
     /**
-     * Returns a list of configured Visits and their association with projects
-     * and subprojects
+     * Returns a list of configured Visits and their association with subprojects
      *
-     * @return array The list of visits, projectID and subprojectID
+     * @return array The list of visits and subprojectID
      */
-    public function getVisitsAndProject(): array
+    public function getVisitsAndSubproject(): array
     {
         return array_map(
             function ($row) {
                 return array(
                         new \LORIS\Visit($row['name'], $row['ID']),
-                        $row['project'],    // will be modified to object when
                         $row['subproject'], // available
                        );
             },
@@ -118,14 +116,13 @@ ORDER BY ID
                 'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
-                  vps.ProjectID as "project",
-                  vps.SubProjectID as "subproject"
+                  vs.SubProjectID as "subproject"
                  FROM
                   visit v
                  JOIN
-                  visit_project_subproject_rel vps
-                 ON v.VisitID = vps.VisitID
-ORDER BY ID
+                  visit_subproject_rel vs
+                 ON v.VisitID = vs.VisitID
+                ORDER BY ID
                 ',
                 array()
             )

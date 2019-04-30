@@ -75,112 +75,21 @@ class VisitTest extends TestCase
                                $v9,
                               );
 
-        $this->_listOfVisitProject = array(
-                                      array(
-                                       $v1,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v1,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v1,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v2,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v2,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v2,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v3,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v3,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v3,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v4,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v4,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v4,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v5,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v5,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v5,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v6,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v6,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v6,
-                                       3,
-                                       3,
-                                      ),
+        $this->_listOfVisitSubproject = array(
+                                      array($v1, 1),
+                                      array($v1, 2),
+                                      array($v2, 1),
+                                      array($v2, 2),
+                                      array($v3, 1),
+                                      array($v3, 2),
+                                      array($v3, 3),
+                                      array($v3, 4),
+                                      array($v4, 3),
+                                      array($v4, 4),
+                                      array($v5, 3),
+                                      array($v5, 4),
+                                      array($v6, 3),
+                                      array($v6, 4),
                                      );
 
     }
@@ -200,8 +109,8 @@ class VisitTest extends TestCase
 
     function testVisitsProjects()
     {
-        $visits = $this->_visitController->getVisitsAndProject();
-        $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
+        $visits = $this->_visitController->getVisitsAndSubproject();
+        $this->assertEquals($this->_listOfVisitProject, $visits, "the subproject relation does not match value in DB");
     }
 
     /**

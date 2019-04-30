@@ -1,20 +1,17 @@
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
-  CONSTRAINT `visit_PK` PRIMARY KEY (`VisitID`),
-  CONSTRAINT `visit_name_UK` UNIQUE KEY (`VisitName`)
+  CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
+  CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `visit_project_subproject_rel` (
+CREATE TABLE `visit_subproject_rel` (
   `VisitID` int(10) unsigned NOT NULL,
-  `ProjectID` int(2) NOT NULL,
   `SubprojectID` int(10) unsigned NOT NULL,
-  CONSTRAINT visit_project_subproject_rel_PK PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
-  CONSTRAINT visit_project_subproject_rel_VisitID_visit_VisitID_FK FOREIGN KEY (`VisitID`) 
+  CONSTRAINT PK_visit_subproject_rel PRIMARY KEY (`VisitID`, `SubprojectID`),
+  CONSTRAINT FK_visit_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT visit_project_subproject_ProjectID_visit_ProjectID_FK FOREIGN KEY (`ProjectID`)
-    REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT visit_project_subproject_SubprojectID_visit_SubprojectID_FK FOREIGN KEY (`SubprojectID`)
+  CONSTRAINT FK_visit_subproject_rel_SubprojectID FOREIGN KEY (`SubprojectID`)
     REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
