@@ -224,7 +224,7 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData = [];
+    $sessionData = array();
     foreach ($sessionRecords as $record) {
 
         // Populate sites
@@ -353,7 +353,7 @@ function showMediaError($message)
  */
 function toSelect($options, $item, $item2)
 {
-    $selectOptions = [];
+    $selectOptions = array();
 
     $optionsValue = $item;
     if (isset($item2)) {
@@ -378,7 +378,7 @@ function getFilesList()
     $db       =& Database::singleton();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
-    $mediaFiles = [];
+    $mediaFiles = array();
     foreach ($fileList as $row) {
         $mediaFiles[$row['id']] = $row['file_name'];
     }

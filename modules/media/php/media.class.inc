@@ -88,7 +88,7 @@ class Media extends \NDB_Menu_Filter
             }
         }
 
-        $instrumentList   = [];
+        $instrumentList   = array();
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
@@ -97,7 +97,7 @@ class Media extends \NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = [];
+        $fileTypeList  = array();
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
@@ -105,7 +105,7 @@ class Media extends \NDB_Menu_Filter
 
         //Language selector
         $languages    = \Utility::getLanguageList();
-        $languageList = [];
+        $languageList = array();
         foreach ($languages as $language) {
             $languageList[$language] = $language;
         }
