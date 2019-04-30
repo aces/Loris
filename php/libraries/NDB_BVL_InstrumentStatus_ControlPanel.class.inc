@@ -258,7 +258,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($this->getAdministrationStatus() == $option) {
-                $this->tpl_data['administration'][$i]['icon'] = 'far fa-check-square';
+                $this->tpl_data['administration'][$i]['icon']
+                    = 'far fa-check-square';
             } elseif ($hasAccess
                 && $dataEntry != 'Complete'
                 && $dataEntry != 'Not Complete'
