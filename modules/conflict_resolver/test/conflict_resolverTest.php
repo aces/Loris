@@ -171,12 +171,12 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/conflict_resolver/");
         //testing data
         // site = montreal
-        $this-> _testFilter(self::$ForSite, "20 rows displayed of 319", '2');
+        $this-> _testFilter(self::$ForSite, "20 rows displayed of 311", '2');
         // Visit label = V1
-        $this-> _testFilter(self::$VisitLabel, "displayed of 581", '1');
-        $this-> _testFilter(self::$CandID, "8 rows displayed of 8", '300001');
-        $this-> _testFilter(self::$PSCID, "8 rows displayed of 8", 'MTL001');
-        $this-> _testFilter(self::$Question, "displayed of 182", 'height_inches');
+        $this-> _testFilter(self::$VisitLabel, "displayed of 576", '1');
+        $this-> _testFilter(self::$CandID, "2 rows displayed of 2", '300004');
+        $this-> _testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004');
+        $this-> _testFilter(self::$Question, "displayed of 181", 'height_inches');
          // project = Pumpernickel
         $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1');
     }
@@ -225,6 +225,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $inputText = $this->webDriver->executescript(
                 "return document.querySelector('$element').value"
             );
+sleep(1);
             $this->assertEquals("", $inputText);
     }
      /**
@@ -236,13 +237,12 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForResolvedConflicts()
     {
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
-
         $this-> _testFilter(self::$ForSite, "displayed of 14", '2');
         $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1');
         $this-> _testFilter(self::$CandID, "1 row", '400167');
         $this-> _testFilter(self::$PSCID, "1 row", 'ROM167');
         $this-> _testFilter(self::$Question, "9 rows", 'date_taken');
-        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 14:35:51');
+        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 18:35:51');
 
     }
      /**
