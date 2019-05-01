@@ -193,13 +193,15 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             \Utility::getAssociativeSiteList()
         );
 
+        $pscid = $data['Candidate']['PSCID'] ?? null;
+
         try {
             $candid = \Candidate::createNew(
                 $centerid,
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
                 $data['Candidate']['Gender'],
-                null
+                $pscid
             );
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\BadRequest($e->getMessage());

@@ -157,15 +157,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
                 'application/x.minc2' : 'application/octet-stream';
 
-            $imagepath = \NDB_factory::singleton()
-                ->config()
-                ->getSetting('mincPath');
-
-            $filelocation = $image->asDTO()->getFilelocation();
-
-            $fullpath = $imagepath . $filelocation;
-
-            $info = new \SplFileInfo($fullpath);
+            $info = $image->getFileInfo();
             if (!$info->isFile()) {
                 error_log('file in database but not in file system');
                 return new \LORIS\Http\Response\NotFound();
@@ -185,7 +177,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 )
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        $file->fread($file->getSize())
+                        $file->fpassthru()
                     )
                 );
         }
@@ -201,10 +193,22 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $stats = @stat($this->filename) ?: array(
-                                            "size"  => "0",
-                                            "atime" => "0",
-                                           );
-        return md5($stats['atime'] . $stats['size'] . $this->filename);
+        $user = $request->getAttribute('user');
+
+        try {
+            $image = $this->visit->getImageByFilename($user, $this->filename);
+        } catch (\Throwable $e) {
+            return '';
+        }
+
+        $info = $image->getFileInfo();
+
+        $signature = array(
+                      'filename' => $this->filename,
+                      'size'     => $info->getSize(),
+                      'mtime'    => $info->getMTime(),
+                     );
+
+        return md5(json_encode($signature));
     }
 }

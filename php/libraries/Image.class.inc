@@ -141,6 +141,11 @@ class Image
         );
     }
 
+    /**
+     * Get this image QC status from the database
+     *
+     * @return \LORIS\ImageQcStatus
+     */
     public function getQcStatus(): \LORIS\ImageQcStatus
     {
         $row = \NDB_Factory::singleton()->database()->pselectRow(
@@ -220,6 +225,24 @@ class Image
             },
             $rows
         );
+    }
+
+    /**
+     * Return a SPLFileINfo object based on this images's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_factory::singleton()
+            ->config()
+            ->getSetting('mincPath');
+
+        $fullpath = $imagepath . $this->_filelocation;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
     }
 
     /**

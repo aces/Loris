@@ -10,7 +10,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Project;
+namespace LORIS\Api\Endpoints\Project\Instrument;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;

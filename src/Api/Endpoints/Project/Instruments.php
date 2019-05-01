@@ -111,7 +111,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $endpoint = new Instrument($this->project, $instrument);
+        $endpoint = new Instrument\Instrument($this->project, $instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);

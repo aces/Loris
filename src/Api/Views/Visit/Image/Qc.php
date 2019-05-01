@@ -33,19 +33,20 @@ class Qc
      * Constructor which sets the instance variables based on the provided timepoint
      * and image qc status.
      *
-     * @param \Timepoint $timepoint The timepoint to represent
+     * @param \Timepoint   $timepoint The timepoint to represent
+     * @param \LORIS\Image $image     The requested image
      */
     public function __construct(\Timepoint $timepoint, \LORIS\Image $image)
     {
         $this->_meta['CandID'] = $timepoint->getCandID();
         $this->_meta['Visit']  = $timepoint->getVisitLabel();
-        $this->_meta['File']   = $image->asDTO()->getFilename();
+        $this->_meta['File']   = $image->getFileInfo()->getFilename();
 
-        $imageqcstatus  = $image->getQcStatus();
+        $imageqcstatus = $image->getQcStatus();
 
         $this->_qc       = $imageqcstatus->getQcStatus();
         $this->_selected = $imageqcstatus->isSelected();
-        $this->_caveats  = $image->getCaveats(); 
+        $this->_caveats  = $image->getCaveats();
     }
 
     /**
@@ -55,15 +56,18 @@ class Qc
      */
     public function toArray(): array
     {
-        $caveats = array_map(function ($caveat) {
-            return array(
-                'Severity' => $caveat->getSeverity(),
-                'Header' => $caveat->getHeader(),
-                'Value' => $caveat->getValue(),
-                'ValidRange' => $caveat->getValidRange(),
-                'ValidRegex' => $caveat->getValidRegex(),
-            );
-        }, $this->_caveats);
+        $caveats = array_map(
+            function ($caveat) {
+                return array(
+                        'Severity'   => $caveat->getSeverity(),
+                        'Header'     => $caveat->getHeader(),
+                        'Value'      => $caveat->getValue(),
+                        'ValidRange' => $caveat->getValidRange(),
+                        'ValidRegex' => $caveat->getValidRegex(),
+                       );
+            },
+            $this->_caveats
+        );
 
         return array(
                 'Meta'     => $this->_meta,

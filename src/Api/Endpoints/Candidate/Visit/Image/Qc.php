@@ -153,7 +153,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $inputfilename = $data['Meta']['File'] ?? null;
-        if ($inputfilename != $this->image->asDTO()->getFilename()) {
+        if ($inputfilename != $this->image->getFileInfo()->getFilename()) {
             return new \LORIS\Http\Response\BasRequest(
                 'File name from URL does not match JSON metadata.'
             );
@@ -173,13 +173,14 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-
         // TODO :: This is (and was) not checking or handling Caveats
         try {
-            $this->image->saveQcStatus(new \LORIS\ImageQcStatus(
-                $inputqcstatus,
-                $inputselected
-            ));
+            $this->image->saveQcStatus(
+                new \LORIS\ImageQcStatus(
+                    $inputqcstatus,
+                    $inputselected
+                )
+            );
         } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\InternalServerError(
