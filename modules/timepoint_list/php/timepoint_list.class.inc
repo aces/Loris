@@ -316,7 +316,7 @@ class Timepoint_List extends \NDB_Menu
             ),
             new \LORIS\Breadcrumb(
                 "Candidate Profile $candid / $pscid",
-                "$candid"
+                $this->candID
             )
         );
     }
