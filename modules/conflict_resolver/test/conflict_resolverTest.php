@@ -225,7 +225,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $inputText = $this->webDriver->executescript(
                 "return document.querySelector('$element').value"
             );
-sleep(1);
             $this->assertEquals("", $inputText);
     }
      /**
