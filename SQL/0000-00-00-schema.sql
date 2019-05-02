@@ -24,9 +24,11 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Experimental', false, 'optimal');
 
 CREATE TABLE `project_rel` (
+  `ProjectSubprojectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(2) NOT NULL,
   `SubprojectID` int(2) NOT NULL,
-  PRIMARY KEY (ProjectID, SubprojectID)
+  PRIMARY KEY (`ProjectSubprojectID`),
+  CONSTRAINT UK_project_subproject_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -1969,14 +1971,16 @@ CREATE TABLE `visit` (
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `visit_subproject_rel` (
+CREATE TABLE `visit_project_subproject_rel` (
+  `VisitProjectSubprojectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `VisitID` int(10) unsigned NOT NULL,
-  `SubprojectID` int(10) unsigned NOT NULL,
-  CONSTRAINT PK_visit_subproject_rel PRIMARY KEY (`VisitID`, `SubprojectID`),
-  CONSTRAINT FK_visit_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
+  `ProjectSubprojectID` int(10) unsigned NOT NULL,
+  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectID`),
+  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectID UNIQUE KEY (`VisitID`, `ProjectSubprojectID`),
+  CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_visit_subproject_rel_SubprojectID FOREIGN KEY (`SubprojectID`)
-    REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectID FOREIGN KEY (`ProjectSubprojectID`)
+    REFERENCES `project_rel`(`ProjectSubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status
