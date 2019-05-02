@@ -112,15 +112,25 @@
 20. First, set the config setting 'ImagingUploader auto launch' to 'No'. Upload an MRI archive that can successfully be
     uploaded. Check that the value of the Progress column for the uploaded archive is 'Not started'.
     [Manual Testing]
-21. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload a file that can successfully be uploaded but that 
+21. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload an MRI archive that can successfully be
+    uploaded and that will be processed successfully by the pipeline. Once the upload is finished, check that the value of 
+    the Progress column for the uploaded archive is 'In Progress...'
+    [Manual Testing]
+22. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload an MRI archive that can successfully be
+    uploaded and that will be processed successfully by the pipeline. Once the upload is finished, click on the uploaded
+    archive in the results table and select 'Detailed' in the combo box of the log panel. Check that an increasing serie of
+    dots is displayed along with a rotating bar to indicate the the archive is being processed.
+    [Manual Testing]
+23. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload a file that can successfully be uploaded but that 
     will fail the processing done by the MRI pipeline. After the upload succeeds, wait for the MRI pipeline to finish processing
     the archive and check that the Progress column is set to 'Failure'. Note down the text that is displayed in the log panel
     (Detailed view). Now change the config setting 'ImagingUploader auto launch' to 'No'. Upload the same file again. once the
     upload is finished, make sure that the detailed log messages seen earlier are gone and have been replaced by a message that
     indicates that processing of the archive has not begun yet.
     [Manual Testing]
-22. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Change config setting MRICodePath so that its value is set to
+24. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Change config setting MRICodePath so that its value is set to
     a directory that does not exist. Upload an MRI archive that can successfully be uploaded. Once the upload is done, check that
     the value in the 'Progress' column for this scan is set to 'Failure'. Also check that a message in the log panel indicate that
     there is something wrong with the setup of the LORIS-MRI code base.
+    [Manual Testing]
     
