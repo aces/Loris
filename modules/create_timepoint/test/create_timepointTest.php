@@ -26,6 +26,10 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
+    //UI location
+    static $subProject = "subproject, select";
+    static $visitLabel = "#visit, select";
+    static $button     = "button.btn";
     /**
      * It does the setUp before running the tests
      *
