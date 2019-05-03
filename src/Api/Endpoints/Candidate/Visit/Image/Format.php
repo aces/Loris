@@ -96,7 +96,7 @@ class Format extends Endpoint
             $handler = new Format\Raw($this->image);
             break;
         case 'brainbrowser':
-            $handler = new Format\Brainbrowser($this->visit, $this->image);
+            $handler = new Format\Brainbrowser($this->image);
             break;
         case 'thumbnail':
             $handler = new Format\Thumbnail($this->visit, $this->image);
