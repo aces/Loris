@@ -294,9 +294,9 @@ class UploadForm extends Component {
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
         let text = "";
-        if (this.props.imagingUploaderAutoLaunch == 'true') {
-            text = "Processing of this file by the MRI pipeline has started\n"
-                 + "Select this upload in the result table to view the processing progress";
+        if (this.props.imagingUploaderAutoLaunch === 'true') {
+          text = "Processing of this file by the MRI pipeline has started\n" +
+            "Select this upload in the result table to view the processing progress";
         }
         swal({
           title: "Upload Successful!",
