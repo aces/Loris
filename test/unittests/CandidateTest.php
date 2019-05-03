@@ -490,7 +490,7 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->willReturn();
+            ->willReturn($this->_listOfProjects);
 
         $this->_dbMock->expects($this->at(1))
             ->method('pselect')
