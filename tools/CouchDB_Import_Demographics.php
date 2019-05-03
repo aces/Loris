@@ -229,16 +229,14 @@ class CouchDBDemographicsImporter {
                 'Type' => "varchar(255)"
             );
         }
-        if ($config->getSetting("useProjects") === "true") {
-            $projects = \Utility::getProjectList();
-            $projectsEnum = "enum('";
-            $projectsEnum .= implode("', '", $projects);
-            $projectsEnum .= "')";
-            $this->Dictionary["Project"] = array(
-                'Description' => 'Project for which the candidate belongs',
-                'Type' => $projectsEnum
-            );
-        }
+        $projects = \Utility::getProjectList();
+        $projectsEnum = "enum('";
+        $projectsEnum .= implode("', '", $projects);
+        $projectsEnum .= "')";
+        $this->Dictionary["Project"] = array(
+            'Description' => 'Project for which the candidate belongs',
+            'Type' => $projectsEnum
+        );
         // If consent is being used, update the data dictionary
         if ($config->getSetting("useConsent") === "true") {
           $consents = \Utility::getConsentList();

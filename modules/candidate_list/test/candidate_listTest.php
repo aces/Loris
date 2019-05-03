@@ -48,7 +48,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
-        $this->setUpConfigSetting("useProjects", "true");
     }
 
     /**
@@ -60,7 +59,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
-        $this->restoreConfigSetting("useProjects");
     }
     /**
      * Tests that, the homepage should not have "You do not have access

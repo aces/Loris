@@ -183,30 +183,14 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $config =& \NDB_Config::singleton();
-
-        // set the class variables
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-            $this->tpl_data['useProjects'] ='false';
-        } else {
-            // add 1 to colspan in menu_resolved_conflicts.tpl if using project
-            // to account for "Projects" header
-            $this->tpl_data['useProjects'] ='true';
-        }
-
         // set the class variables
         $this->columns = array(
                           'conflicts_unresolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
                           'session.Visit_label as Visit_Label',
+                          'Project.Name as Project',
                          );
-
-        if ($useProjects) {
-            $this->columns[] = 'Project.Name as Project';
-        }
 
         $this->columns = array_merge(
             $this->columns,
@@ -251,66 +235,35 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                                'conflicts_unresolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
+                               'candidate.ProjectID',
+                               'candidate.PSCID',
+                               'session.CandID',
+                               'conflicts_unresolved.Fieldname',
                               );
 
-        if ($useProjects) {
-            $this->validFilters[] = 'candidate.ProjectID';
-        }
+        $this->headers = array(
+                          'Instrument',
+                          'CandID',
+                          'PSCID',
+                          'Visit_label',
+                          'Project',
+                          'Question',
+                          'Correct Answer',
+                          'Value1',
+                          'Value2',
+                          'Hash',
+                         );
 
-        $this->validFilters = array_merge(
-            $this->validFilters,
-            array(
-             'candidate.PSCID',
-             'session.CandID',
-             'conflicts_unresolved.Fieldname',
-            )
-        );
-        $this->headers      = array(
-                               'Instrument',
-                               'CandID',
-                               'PSCID',
-                               'Visit_label',
-                              );
-
-        if ($useProjects) {
-            $this->headers = array_merge(
-                $this->headers,
-                array('Project')
-            );
-        }
-
-        $this->headers =array_merge(
-            $this->headers,
-            array(
-             'Question',
-             'Correct Answer',
-             'Value1',
-             'Value2',
-             'Hash',
-            )
-        );
         $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
                                'visit'      => 'session.Visit_label',
+                               'Project'    => 'candidate.ProjectID',
+                               'CandID'     => 'session.CandID',
+                               'PSCID'      => 'candidate.PSCID',
+                               'Question'   => 'conflicts_unresolved.Fieldname',
                               );
-
-        if ($useProjects) {
-            $this->formToFilter = array_merge(
-                $this->formToFilter,
-                array('Project' => 'candidate.ProjectID')
-            );
-        }
-
-        $this->formToFilter = array_merge(
-            $this->formToFilter,
-            array(
-             'CandID'   => 'session.CandID',
-             'PSCID'    => 'candidate.PSCID',
-             'Question' => 'conflicts_unresolved.Fieldname',
-            )
-        );
 
         return true;
     }
@@ -372,14 +325,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $this->addBasicText('Question', 'Search keyword:');
 
         // Project list, if applicable
-        if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = array(null => 'All');
-            $projectList      = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] = $value;
-            }
-            $this->addSelect('Project', 'Project: ', $list_of_projects);
+        $list_of_projects = array(null => 'All');
+        $projectList      = \Utility::getProjectList();
+        foreach ($projectList as $key => $value) {
+            $list_of_projects[$key] = $value;
         }
+        $this->addSelect('Project', 'Project: ', $list_of_projects);
 
         return true;
     }

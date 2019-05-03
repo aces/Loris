@@ -82,25 +82,21 @@ class Dashboard extends \NDB_Form
             $this->getTotalRecruitment()
         );
 
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
-        if ($useProjects == "true") {
-            $projects = \Utility::getProjectList();
-            foreach ($projects as $projectID => $project) {
-                $projectInfo = $config->getProjectSettings($projectID);
-                if (is_null($projectInfo)) {
-                    throw new \LorisException(
-                        'No project settings exist in the Database for ' .
-                        'project ID ' . intval($projectID)
-                    );
-                }
-                $this->createProjectProgressBar(
-                    $projectID,
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($projectID)
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectInfo = $config->getProjectSettings($projectID);
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval($projectID)
                 );
             }
+            $this->createProjectProgressBar(
+                $projectID,
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject($projectID)
+            );
         }
 
         // Charts

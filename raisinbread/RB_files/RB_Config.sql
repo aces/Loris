@@ -14,7 +14,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (10,10,'2016');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (11,11,'2028');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (12,13,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (13,14,'false');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (14,15,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (15,16,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (16,20,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (17,21,'true');

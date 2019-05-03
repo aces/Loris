@@ -103,20 +103,16 @@ class CandidateTest extends TestCase
         parent::setUp();
 
         $this->_configMap = array(
-                             array(
-                              'useProjects',
-                              false,
-                             ),
-                             array(
-                              'HeaderTable',
-                              null,
-                             ),
+                             array('HeaderTable', null),
                             );
 
         $this->_listOfTimePoints = array(
                                     array('ID' => '97'),
                                     array('ID' => '98'),
                                    );
+
+        $this->_listOfProjects = array(
+            array('ProjectID' => 1, 'Name' => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
@@ -491,6 +487,10 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
+
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->willReturn();
 
         $this->_dbMock->expects($this->at(1))
             ->method('pselect')
