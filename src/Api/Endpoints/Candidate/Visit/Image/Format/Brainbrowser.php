@@ -40,7 +40,6 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\LORIS\Image $image)
     {
-        error_log(print_r($image, true));
         $this->image = $image;
     }
 
