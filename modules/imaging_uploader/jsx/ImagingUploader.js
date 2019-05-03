@@ -120,14 +120,14 @@ class ImagingUploader extends Component {
         );
       }
 
-      if(cell === 'Success') {
-          const created = row['Number Of MincCreated'];
-          const inserted = row['Number Of MincInserted'];
-          return (
-              <td style={cellStyle}>
-              {cell} ({inserted} out of {created})
-              </td>
-          );
+      if (cell === 'Success') {
+        const created = row['Number Of MincCreated'];
+        const inserted = row['Number Of MincInserted'];
+        return (
+          <td style={cellStyle}>
+          {cell} ({inserted} out of {created})
+          </td>
+        );
       }
 
       // cell == 'Not started'
