@@ -188,8 +188,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     );
                     $values = array(
                                'NotificationTypeID' => $notificationTypeID,
-                               'Message'            => 'MRI pipeline could not be started: '
-                                              . $e->getMessage() . "\n"
+                               'Message'            => 'MRI pipeline could not be '
+                                              . 'started: ' . $e->getMessage() . "\n"
                                               . 'This indicates an incorrect or non-'
                                               . "existent MRI pipeline setup\n",
                                'Origin'             => 'Launch of the MRI pipeline',
