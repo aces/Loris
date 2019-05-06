@@ -49,12 +49,14 @@ class Panel extends Component {
       </h3>
     ) : this.props.title;
 
+    const collapse = this.props.collapsing ? 'collapse' : null;
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
         className='panel-heading'
         onClick={this.toggleCollapsed}
-        data-toggle={this.props.collapsing ? 'collapse' : ''}
+        data-toggle={collapse}
         data-target={'#' + this.props.id}
         style={this.props.collapsing ?
           {cursor: 'pointer'} : {cursor: 'default'}
