@@ -26,6 +26,10 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
+    //UI location
+    static $subProject = "subproject, select";
+    static $visitLabel = "#visit, select";
+    static $button     = "button.btn";
     /**
      * It does the setUp before running the tests
      *
@@ -72,42 +76,49 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'Stale', 'V1');
+        $this->_createTimepoint('900000', '1', '1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
 
     }
-
     /**
      * Create a timepoint with three parameters.
      *
-     * @param string $canID      ID of candidate
-     * @param string $subproject text of subproject
-     * @param string $visitlabel text of visit label
+     * @param string $canID           ID of candidate
+     * @param string $subprojectValue text of subproject
+     * @param string $visitlabelValue text of visit label
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
+    private function _createTimepoint($canID, $subprojectValue, $visitlabelValue)
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
-        )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        sleep(1);
+            $subproject = self::$subProject;
+            $this->webDriver->executescript(
+                "input = document.querySelector('$subproject');
+                 input.selectedIndex = '$subprojectValue';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+            );
+            $visit = self::$visitLabel;
+            $this->webDriver->executescript(
+                "input = document.querySelector('$visit');
+                 input.selectedIndex = '$visitlabelValue';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+            );
+            $btn = self::$button;
+            $this->webDriver->executescript(
+                "document.querySelector('$btn').click();"
+            );
     }
-
-
     /**
      * Tests that, create a timepoint and input a empty subproject
      * get Error message
