@@ -21,7 +21,7 @@ class RequestAccount extends Component {
           lastname: '',
           email: '',
           site: this.props.data.site
-            ? Object.keys(this.props.data.site)[0]
+            ? Object.keys(this.props.data.site)['']
             : '',
           examiner: false,
           radiologist: false,
@@ -39,6 +39,7 @@ class RequestAccount extends Component {
     if (this.props.data.captcha) {
       this.loadGoogleCaptcha();
     }
+    console.log(this.state.form);
   }
 
   /**

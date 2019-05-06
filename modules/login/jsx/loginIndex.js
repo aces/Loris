@@ -95,6 +95,9 @@ class Login extends Component {
           state.study.logo = window.location.origin
             + '/' + data.login.logo;
           // request account setup.
+          console.log('request:');
+          console.log(data.requestAccount);
+          data.requestAccount.site[''] = 'Choose your site:';
           state.component.requestAccount = data.requestAccount;
           state.isLoaded = true;
           this.setState(state);
