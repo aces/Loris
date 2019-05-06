@@ -1472,9 +1472,7 @@ class CheckboxElement extends React.Component {
     return (
       <div className={elementClass}>
         <div className={'col-sm-12'}>
-          <label htmlFor={this.props.id}
-                 className={''}
-          >
+          <label htmlFor={this.props.id}>
             <div style={divStyle}>
               <input
                 type="checkbox"

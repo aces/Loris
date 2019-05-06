@@ -54,7 +54,7 @@ class Panel extends Component {
           {cursor: 'pointer'} : {cursor: 'default'}
         }
       >
-        <h3 className={'panel-title'}>{this.props.title}</h3>
+        {this.props.title}
         {this.props.collapsing ? <span className={glyphClass}/> : ''}
       </div>
     ) : '';
