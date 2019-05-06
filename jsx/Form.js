@@ -934,7 +934,7 @@ class TextboxElement extends Component {
         {label}
         <div className={this.props.class}>
           <input
-            type={this.props.isPassword ? 'password' : 'text'}
+            type={'text'}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
@@ -965,7 +965,6 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
-  isPassword: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -984,7 +983,113 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
-  isPassword: false,
+};
+
+/**
+ * Password Component
+ * React wrapper for a <input type="password"> element.
+ */
+class PasswordElement extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id,
+      'textbox'
+    );
+  }
+
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    let label = null;
+    if (this.props.label) {
+      label = (
+        <label className='col-sm-3 control-label' htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+    }
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
+          <input
+            type={'password'}
+            className='form-control'
+            name={this.props.name}
+            id={this.props.id}
+            value={this.props.value || ''}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            placeholder={this.props.placeholder}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+PasswordElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  class: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+};
+
+PasswordElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  type: 'text',
+  class: 'col-sm-9',
+  placeholder: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  },
 };
 
 /**
@@ -1674,6 +1779,7 @@ window.TagsElement = TagsElement;
 window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
+window.PasswordElement = PasswordElement;
 window.DateElement = DateElement;
 window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
@@ -1693,6 +1799,7 @@ export default {
   SearchableDropdown,
   TextareaElement,
   TextboxElement,
+  PasswordElement,
   DateElement,
   TimeElement,
   NumericElement,
