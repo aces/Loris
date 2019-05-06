@@ -30,7 +30,7 @@ command:
 INSERT INTO psc (Name, Alias, MRI_alias, Study_site) VALUES ('Montreal','MTL','MTL','Y');
 ```
 
-> Please refer to the [SQL taxonomy]() for additional information about
+> Please refer to the [SQL Dictionary]() for additional information about
 > this table and its fields.
 
 ### API
