@@ -39,7 +39,6 @@ class RequestAccount extends Component {
     if (this.props.data.captcha) {
       this.loadGoogleCaptcha();
     }
-    console.log(this.state.form);
   }
 
   /**
