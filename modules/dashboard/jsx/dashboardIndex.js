@@ -81,7 +81,6 @@ class Dashboard extends React.Component {
     ).then((response) => response.json())
         .then(
             (data) => {
-              console.log(data);
               this.setState({
                 data: data,
                 isLoaded: true,
@@ -89,7 +88,7 @@ class Dashboard extends React.Component {
             })
         .catch(
             (error) => {
-              console.log(error);
+              console.error(error);
               this.setState({
                 isLoaded: true,
               });

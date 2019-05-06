@@ -250,7 +250,7 @@ class MyTasks extends Component {
         }
         panel.tasks.div = (
           <div className={'list-group tasks'}>
-            {panel.tasks.content > 0 ?
+            {panel.tasks.content.length > 0 ?
               panel.tasks.content :
               'There have been no tasks yet.'}
           </div>
