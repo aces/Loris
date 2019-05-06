@@ -250,7 +250,7 @@ class Login extends Component {
               class={'col-sm-12'}
               required={true}
             />
-            <TextboxElement
+            <PasswordElement
               name={'password'}
               value={this.state.form.value.password}
               onUserInput={this.setForm}
