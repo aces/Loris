@@ -66,7 +66,7 @@ class BehaviouralFeedbackNotifications extends Component {
 
           panel.behaviouralFeedback.div = (
             <div className='list-group bvl-feedback-item'>
-              {panel.behaviouralFeedback.content > 0 ?
+              {panel.behaviouralFeedback.content.length > 0 ?
                 panel.behaviouralFeedback.content :
                 'There have been no notifications yet.'}
             </div>
