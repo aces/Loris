@@ -43,6 +43,12 @@ class Panel extends Component {
         'glyphicon pull-right glyphicon-chevron-up'
     );
 
+    const title = this.props.bold ? (
+      <h3 className={'panel-title'}>
+        {this.props.title}
+      </h3>
+    ) : this.props.title;
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
@@ -54,7 +60,7 @@ class Panel extends Component {
           {cursor: 'pointer'} : {cursor: 'default'}
         }
       >
-        {this.props.title}
+        {title}
         {this.props.collapsing ? <span className={glyphClass}/> : ''}
       </div>
     ) : '';
@@ -78,6 +84,7 @@ Panel.propTypes = {
   title: PropTypes.string,
   class: PropTypes.string,
   collapsing: PropTypes.bool,
+  bold: PropTypes.bool,
 };
 Panel.defaultProps = {
   initCollapsed: false,
@@ -85,6 +92,7 @@ Panel.defaultProps = {
   height: '100%',
   class: 'panel-primary',
   collapsing: true,
+  bold: false,
 };
 
 export default Panel;

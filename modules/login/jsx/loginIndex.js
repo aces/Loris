@@ -254,6 +254,7 @@ class Login extends Component {
                 title={'Login to LORIS'}
                 class={'panel-default login-panel'}
                 collapsing={false}
+                bold={true}
               >
                 {login}
               </Panel>
@@ -263,6 +264,7 @@ class Login extends Component {
                 title={this.state.study.title}
                 class={'panel-default login-panel'}
                 collapsing={false}
+                bold={true}
               >
                 {study}
               </Panel>
