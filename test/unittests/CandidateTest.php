@@ -41,6 +41,7 @@ class CandidateTest extends TestCase
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
            'ProjectID'    => 1,
+           'ProjectTitle' => '',
           );
 
     /**
