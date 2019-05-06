@@ -158,6 +158,7 @@ class PasswordExpired extends Component {
       <div className={'success-message'}>
         <h1>Thank you!</h1>
         <p>Your request for an account has been received successfully.</p>
+        <p>Please contact your project administrator to activate this account.</p>
         <a onClick={() => window.location.href = window.location.origin}
            style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
