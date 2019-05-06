@@ -308,40 +308,36 @@ class CreateTimepoint extends React.Component {
     if (!this.state.success) {
       return (
         <div>
-          <div>
-            <Panel title='Create Time Point'>
-              {errors}
-              <FormElement
-                name={'timepointInfo'}
-                class={'form-group col-sm-12'}
-                onSubmit={this.handleSubmit}
-              >
-                <StaticElement
-                  label={'DCCID'}
-                  text={this.state.data.dccid}
-                />
-                {subproject}
-                {psc}
-                {visit}
-                <ButtonElement
-                  label={'Create Time Point'}
-                  type={'submit'}
-                  name={'fire_away'}
-                />
-              </FormElement>
-            </Panel>
-          </div>
+          <Panel title='Create Time Point'>
+            {errors}
+            <FormElement
+              name={'timepointInfo'}
+              class={'form-group col-sm-12'}
+              onSubmit={this.handleSubmit}
+            >
+              <StaticElement
+                label={'DCCID'}
+                text={this.state.data.dccid}
+              />
+              {subproject}
+              {psc}
+              {visit}
+              <ButtonElement
+                label={'Create Time Point'}
+                type={'submit'}
+                name={'fire_away'}
+              />
+            </FormElement>
+          </Panel>
         </div>
       );
     } else {
       return (
         <div>
-          <div>
-            <h3>New time point successfully registered.</h3>
-            <a href={'/' + this.state.url.params.candID}>
-              Click here to continue.
-            </a>
-          </div>
+          <h3>New time point successfully registered.</h3>
+          <a href={'/' + this.state.url.params.candID}>
+            Click here to continue.
+          </a>
         </div>
       );
     }
