@@ -1,4 +1,4 @@
-# Sites
+# Centers
 
 ## Overview Study
 
@@ -7,14 +7,14 @@
 (_psc_ stands for _Project Study Center_).
 
 LORIS' default schema defines the first `psc` (`CenterID=1`) as the
-Data Coordinating Center or "DCC".  This center is generally used for
-dummy data and is assumed by the codebase to store non-study data.
-Therefore, it is not recommended to modify or use this center for registering
-real participants or study data.
+Data Coordinating Center (DCC).  This center is generally used for
+dummy data and it is assumed by the codebase to store exclusively 
+non-study data. Therefore, it is not recommended to modify or use 
+this center for registering real participants or study data.
 
 >  Note: There cannot be more than one center with the same name.
 
-## Adding Options
+## Adding Site Options
 
 ### Front End
 
@@ -24,11 +24,14 @@ _not yet available_
 
 The `psc` table in the database contains all the information stored
 for centers. Populate additional centers using the following MySQL
-command :
+command:
 
 ```sql 
 INSERT INTO psc (Name, Alias, MRI_alias, Study_site) VALUES ('Montreal','MTL','MTL','Y');
 ```
+
+> Please refer to the [SQL taxonomy]() for additional information about
+> this table and its fields.
 
 ### API
 
