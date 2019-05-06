@@ -267,7 +267,7 @@ class CandidateTest extends TestCase
                          );
 
         //mock pselect from getListOfVisitLabels
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->with(
                 $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
@@ -300,7 +300,7 @@ class CandidateTest extends TestCase
                        );
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -330,7 +330,7 @@ class CandidateTest extends TestCase
         $subprojects = array();
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -351,7 +351,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('V01');
 
@@ -491,14 +491,21 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->willReturn($this->_listOfProjects);
-
-        $this->_dbMock->expects($this->at(1))
-            ->method('pselect')
             ->willReturn(
-                $this->_listOfTimePoints
+                array(array("projectID" => "1" , "Name" =>"test_project"))
             );
 
+        $this->_dbMock->expects($this->at(1))
+             ->method('pselect')
+             ->willReturn(
+                array(array("ID" => 97),array("ID"=>98))
+            );
+
+        $this->_dbMock->expects($this->at(2))
+            ->method('pselect')
+            ->willReturn(
+                 $this->_listOfTimePoints
+             );
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
