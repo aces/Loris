@@ -83,14 +83,20 @@ class AjaxChartHelper extends \NDB_Page
      */
     function processRequest(array $values) : array
     {
-        if (isset($values['command']) && $values['command'] == 'get_scan_line_data') {
-            $response = $this->populateDataForScanLineChart($values);
+        if (isset($values['command'])
+            && $values['command'] == 'get_scan_line_data'
+        ) {
+            $response           = $this->populateDataForScanLineChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'get_recruitment_pie_data') {
-            $response = $this->populateDataForPieChart($values);
+        } else if (isset($values['command'])
+            && $values['command'] == 'get_recruitment_pie_data'
+        ) {
+            $response           = $this->populateDataForPieChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'get_recruitment_bar_data') {
-            $response = $this->populateDataForBarChart($values);
+        } else if (isset($values['command'])
+            && $values['command'] == 'get_recruitment_bar_data'
+        ) {
+            $response           = $this->populateDataForBarChart($values);
             $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
@@ -102,10 +108,11 @@ class AjaxChartHelper extends \NDB_Page
      * Used by Dashboard (AJAX) Post to
      * get the data for scan line chart.
      *
-     * @param  array $values
-     * @return array $values the scan line data.
+     * @param array $values the user data received.
+     *
+     * @return array
      */
-    private function populateDataForScanLineChart($values) : array
+    function populateDataForScanLineChart($values) : array
     {
         $client = new NDB_Client();
         $client->makeCommandLine();
@@ -127,9 +134,12 @@ class AjaxChartHelper extends \NDB_Page
         $list_of_sites      = Utility::getAssociativeSiteList(true, false);
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = array(
-                "name" => $siteName,
-                "data" => $this->getScanData($siteID, $scanData['labels']),
-            );
+                                       'name' => $siteName,
+                                       'data' => $this->getScanData(
+                                           $siteID,
+                                           $scanData['labels']
+                                       ),
+                                      );
         }
         $values['scanData'] = $scanData;
         return $values;
@@ -185,9 +195,9 @@ class AjaxChartHelper extends \NDB_Page
              AND MONTH(mad.AcquisitionDate)=:Month 
              AND YEAR(mad.AcquisitionDate)=:Year",
                 array(
-                    'Site'  => $siteID,
-                    'Month' => $month,
-                    'Year'  => $year,
+                 'Site'  => $siteID,
+                 'Month' => $month,
+                 'Year'  => $year,
                 )
             );
         }
@@ -198,10 +208,11 @@ class AjaxChartHelper extends \NDB_Page
      * Used by Dashboard (AJAX) Post to
      * get the data for pie chart.
      *
-     * @param  array $values
-     * @return array $values the scan line data.
+     * @param array $values the user data received.
+     *
+     * @return array
      */
-    private function populateDataForPieChart($values) : array
+    function populateDataForPieChart($values) : array
     {
         $DB = Database::singleton();
 
@@ -221,9 +232,9 @@ class AjaxChartHelper extends \NDB_Page
             );
 
             $recruitmentBySiteData[] = array(
-                'label' => $siteName,
-                'total' => $totalRecruitment,
-            );
+                                        'label' => $siteName,
+                                        'total' => $totalRecruitment,
+                                       );
         }
         $values['recruitmentBySiteData'] = $recruitmentBySiteData;
         return $values;
@@ -233,10 +244,11 @@ class AjaxChartHelper extends \NDB_Page
      * Used by Dashboard (AJAX) Post to
      * get the data for bar chart.
      *
-     * @param  array $values
-     * @return array $values the scan line data.
+     * @param array $values the user data received.
+     *
+     * @return array
      */
-    private function populateDataForBarChart($values) : array
+    function populateDataForBarChart($values) : array
     {
         $DB            = Database::singleton();
         $sexData       = array();
