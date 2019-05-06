@@ -302,10 +302,15 @@ CREATE TABLE `biobank_specimen_attribute` (
 CREATE TABLE `biobank_pool` (
   `PoolID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(40) NOT NULL,
+  `Quantity` DECIMAL(10, 3) NOT NULL,
+  `UnitID` integer unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
   `Date` DATE NOT NULL,
   `Time` TIME NOT NULL,
   CONSTRAINT `PK_biobank_pool` PRIMARY KEY (`PoolID`),
+  CONSTRAINT `FK_biobank_pool_UnitID` 
+    FOREIGN KEY (`UnitID`) REFERENCES `biobank_unit` (`UnitID`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_pool_CenterID`
     FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `UK_biobank_pool_Label` UNIQUE (`Label`)

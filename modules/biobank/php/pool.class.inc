@@ -38,18 +38,24 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @var string    $id
      * @var string    $label
+     * @var float     $quantity
+     * @var int       $unitId
      * @var array     $specimenIds
      * @var int       $candidateId
      * @var int       $sessionId
+     * @var int       $typeId
      * @var int       $centerId
      * @var \DateTime $date
      * @var \DateTime $time
      */
     private $id;
     private $label;
+    private $quantity;
+    private $unitId;
     private $specimenIds;
     private $candidateId;
     private $sessionId;
+    private $typeId;
     private $centerId;
     private $date;
     private $time;
@@ -105,6 +111,52 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     public function getLabel() : string
     {
         return $this->label;
+    }
+
+    /**
+     * Sets the quantity of the pool
+     *
+     * @param float $quantity the pool's quantity
+     *
+     * @return void
+     */
+    public function setQuantity(float $quantity) : void
+    {
+        $this->quantity = $quantity;
+    }
+
+    /**
+     * Gets the quantity of the pool
+     *
+     * @return float
+     */
+    public function getQuantity() : float
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Sets the Unit ID of the pool
+     *
+     * @param int $unitId Unit ID of the pool
+     *
+     * @return void
+     */
+    public function setUnitId(int $unitId) : void
+    {
+        if ($unitId > 0) {
+            $this->unitId = $unitId;
+        }
+    }
+
+    /**
+     * Gets the Unit ID of the pool
+     *
+     * @return ?int
+     */
+    public function getUnitId() : ?int
+    {
+        return $this->unitId;
     }
 
     /**
@@ -175,6 +227,30 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     public function getSessionId() : ?int
     {
         return $this->sessionId;
+    }
+
+    /**
+     * Sets the Type ID of the pool
+     *
+     * @param ?int $typeId Type ID of the pool
+     *
+     * @return void
+     */
+    public function setTypeId(?int $typeId) : void
+    {
+        if ($typeId > 0) {
+            $this->typeId = $typeId;
+        }
+    }
+
+    /**
+     * Gets the Type ID of the pool
+     *
+     * @return ?int
+     */
+    public function getTypeId() : ?int
+    {
+        return $this->typeId;
     }
 
     /**
@@ -256,9 +332,12 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     {                                                                           
         isset($data['id'])          && $this->setId((int) ($data['id']));                                              
         isset($data['label'])       && $this->setLabel((string) $data['label']);                                        
+        isset($data['quantity'])    && $this->setQuantity((float) $data['quantity']);                            
+        isset($data['unitId'])      && $this->setUnitId((int) $data['unitId']);                            
         isset($data['specimenIds']) && $this->setSpecimenIds($data['specimenIds']);                            
         isset($data['candidateId']) && $this->setCandidateId((int) $data['candidateId']);                            
         isset($data['sessionId'])   && $this->setSessionId((int) $data['sessionId']);                                
+        isset($data['typeId'])      && $this->setTypeId((int) $data['typeId']);                                
         isset($data['centerId'])    && $this->setCenterId((int) $data['centerId']);                                  
         isset($data['date'])        && $this->setDate(new \DateTime($data['date']));                           
         isset($data['time'])        && $this->setTime(new \DateTime($data['time']));                           
@@ -289,9 +368,12 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
         return array(
                 'id'          => $this->id,
                 'label'       => $this->label,
+                'quantity'    => $this->quantity,
+                'unitId'      => $this->unitId,
                 'specimenIds' => $this->specimenIds,
                 'candidateId' => $this->candidateId,
                 'sessionId'   => $this->sessionId,
+                'typeId'      => $this->typeId,
                 'centerId'    => $this->centerId,
                 'date'        => $this->date->format('d-m-Y'),
                 'time'        => $this->time->format('H:i'),

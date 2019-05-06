@@ -132,6 +132,8 @@ class PoolController
     function validateInstance(Pool $pool) : void
     {
         $this->validateLabel($pool);
+        $this->validateQuantity($pool);
+        $this->validateUnitId($pool);
         $this->validateSpecimenIds($pool);
         $this->validateCenterId($pool);
         $this->validateDate($pool);
@@ -150,6 +152,34 @@ class PoolController
     private function validateLabel(Pool $pool) : void
     {
         //TODO: Validate Label with Regex and required
+    }
+
+    /**
+     * Validates Pool Object Quantity
+     *
+     * @param Pool $pool Pool to be checked.
+     *
+     * @throws BadRequest if the provided Pool does not meet validation requirements
+     *
+     * @return void
+     */
+    private function validateQuantity(Pool $pool) : void
+    {
+        //TODO: Validate Quantity
+    }
+
+    /**
+     * Validates Pool Object UnitId
+     *
+     * @param Pool $pool Pool to be checked.
+     *
+     * @throws BadRequest if the provided Pool does not meet validation requirements
+     *
+     * @return void
+     */
+    private function validateUnitId(Pool $pool) : void
+    {
+        //TODO: Validate UnitId
     }
 
     /**
@@ -177,7 +207,6 @@ class PoolController
 
         foreach ($specimenIds as $specimenId) {
             //TODO: Make sure to check that containers are available.
-            //TODO: Make sure to check there are atleast two items in the list
             $specimen  = $specimenDAO->getInstanceFromId($specimenId);
             $container = $containerDAO->getInstanceFromId($specimen->getContainerId());
             $barcode   = $container->getBarcode();

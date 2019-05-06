@@ -81,6 +81,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $poolArray                = $this->getInstanceDataFromId($id);
         $poolArray['CandidateID'] = $specimen->getCandidateId();
         $poolArray['SessionID']   = $specimen->getSessionId();
+        $poolArray['TypeID']      = $specimen->getTypeId();
 
         $pool = $this->getInstanceFromSQL($poolArray, $specimenIds);
 
@@ -100,6 +101,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         // them from the database.
         $query = "SELECT bp.PoolID,
                          bp.Label,
+                         bp.Quantity,
+                         bp.UnitID,
                          bp.CenterID,
                          bp.Date,
                          DATE_FORMAT(bp.Time, '%H:%i') as Time
@@ -146,7 +149,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $pools  = array();
         if (!empty($result)) {
             foreach ($result as $row) {
-                $id         = intval($row['PoolID']);
+                $id         = (int) $row['PoolID'];
                 $pool       = $this->getInstanceFromId($id);
                 $pools[$id] = $pool;
             }
@@ -229,6 +232,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $poolData = array(
                      'PoolID'   => $pool->getId(),
                      'Label'    => $pool->getLabel(),
+                     'Quantity' => $pool->getQuantity(),
+                     'UnitID'   => $pool->getUnitId(),
                      'CenterID' => $pool->getCenterId(),
                      'Date'     => \Utility::toMysqlDateFormat($pool->getDate()),
                      'Time'     => \Utility::toMysqlDateFormat($pool->getTime()),
@@ -263,9 +268,12 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $pool = new Pool();
         isset($data['PoolID'])      && $pool->setId((int) $data['PoolID']);
         isset($data['Label'])       && $pool->setLabel((string) $data['Label']);
+        isset($data['Quantity'])    && $pool->setQuantity((float) $data['Quantity']);
+        isset($data['UnitID'])      && $pool->setUnitId((int) $data['UnitID']);
         !empty($specimenIds)        && $pool->setSpecimenIds($specimenIds);
         isset($data['CandidateID']) && $pool->setCandidateId((int) $data['CandidateID']);
         isset($data['SessionID'])   && $pool->setSessionId((int) $data['SessionID']);
+        isset($data['TypeID'])      && $pool->setTypeId((int) $data['TypeID']);
         isset($data['CenterID'])    && $pool->setCenterId((int) $data['CenterID']);
         isset($data['Date'])        && $pool->setDate(new \DateTime($data['Date']));
         isset($data['Time'])        && $pool->setTime(new \DateTime($data['Time']));
