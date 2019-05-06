@@ -2,9 +2,7 @@
 /**
  * POST request methods.
  *
- * Used to retrieve info & create timepoint by the create_timepoint form.
- * Ensures the user can create timepoint before processing
- * the POST body (array) data.
+ * Used for populating the Dashboard.
  *
  * PHP Version 7
  *
@@ -15,8 +13,12 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\dashboard;
+use Database;
+use NDB_Client;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use Utility;
+
 /**
  * The NDB_Page for the POST requests.
  *
@@ -83,8 +85,6 @@ class AjaxDashboard extends \NDB_Page
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
             $response = $this->initializeSetup($values);
-        } else if (isset($values['command']) && $values['command'] == 'create') {
-            $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
         }
@@ -551,17 +551,4 @@ class AjaxDashboard extends \NDB_Page
         return $recruitmentData;
     }
 
-
-    /**
-     * Validate the post data,
-     * from the create timepoint form.
-     *
-     * @param array $values the form values.
-     *
-     * @return array
-     */
-    function validate(array $values) : array
-    {
-        return $values;
-    }
 }

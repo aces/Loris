@@ -129,140 +129,200 @@ function process() {
       return processedData;
     }
 
-    // AJAX to get scan line chart data
-    $.ajax({
-      url: loris.BaseURL + '/dashboard/ajax/get_scan_line_data.php',
-      type: 'post',
-      success: function(data) {
-        const scanLineData = formatLineData(data);
-        scanLineChart = c3.generate({
-          bindto: '#scanChart',
-          data: {
-            x: 'x',
-            xFormat: '%m-%Y',
-            columns: scanLineData,
-            type: 'area-spline',
-          },
-          axis: {
-            x: {
-              type: 'timeseries',
-              tick: {
-                format: '%m-%Y',
+    /**
+     * Used with sending POST data to the server.
+     * @param {object} json - json object converted for POST.
+     * @return {string} send in POST to server.
+     */
+    function urlSearchParams(json) {
+      return Object.keys(json).map((key) => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+      }).join('&');
+    }
+
+
+    // Updated AJAX to get scan line chart data
+    fetch(
+      window.origin + '/dashboard/AjaxChartHelper', {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlSearchParams({
+          command: 'get_scan_line_data',
+        }),
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          const scanLineData = formatLineData(data.scanData);
+          scanLineChart = c3.generate({
+            bindto: '#scanChart',
+            data: {
+              x: 'x',
+              xFormat: '%m-%Y',
+              columns: scanLineData,
+              type: 'area-spline',
+            },
+            axis: {
+              x: {
+                type: 'timeseries',
+                tick: {
+                  format: '%m-%Y',
+                },
+              },
+              y: {
+                label: 'Scans',
               },
             },
-            y: {
-              label: 'Scans',
+            zoom: {
+              enabled: true,
             },
-          },
-          zoom: {
-            enabled: true,
-          },
-          color: {
-            pattern: siteColours,
-          },
+            color: {
+              pattern: siteColours,
+            },
+          });
+        })
+      .catch(
+        (error) => {
+          console.error(error);
         });
-      },
-      error: function(xhr, desc, err) {
-        console.log(xhr);
-        console.log('Details: ' + desc + '\nError:' + err);
-      },
-    });
 
     // AJAX to get pie chart data
-    $.ajax({
-      url: loris.BaseURL + '/dashboard/ajax/get_recruitment_pie_data.php',
-      type: 'post',
-      success: function(data) {
-        const jsonData = $.parseJSON(data);
-        const recruitmentPieData = formatPieData(jsonData);
-        recruitmentPieChart = c3.generate({
-          bindto: '#recruitmentPieChart',
-          data: {
-            columns: recruitmentPieData,
-            type: 'pie',
-          },
-          color: {
-            pattern: siteColours,
-          },
+    fetch(
+      window.origin + '/dashboard/AjaxChartHelper', {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlSearchParams({
+          command: 'get_recruitment_pie_data',
+        }),
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          const jsonData = data.recruitmentBySiteData;
+          const recruitmentPieData = formatPieData(jsonData);
+          recruitmentPieChart = c3.generate({
+            bindto: '#recruitmentPieChart',
+            data: {
+              columns: recruitmentPieData,
+              type: 'pie',
+            },
+            color: {
+              pattern: siteColours,
+            },
+          });
+        })
+      .catch(
+        (error) => {
+          console.error(error);
         });
-      },
-      error: function(xhr, desc, err) {
-        console.log(xhr);
-        console.log('Details: ' + desc + '\nError:' + err);
-      },
-    });
 
     // AJAX to get bar chart data
-    $.ajax({
-      url: loris.BaseURL + '/dashboard/ajax/get_recruitment_bar_data.php',
-      type: 'post',
-      success: function(data) {
-        const recruitmentBarData = formatBarData(data);
-        const recruitmentBarLabels = data.labels;
-        recruitmentBarChart = c3.generate({
-          bindto: '#recruitmentBarChart',
-          data: {
-            columns: recruitmentBarData,
-            type: 'bar',
-          },
-          axis: {
-            x: {
-              type: 'categorized',
-              categories: recruitmentBarLabels,
+    fetch(
+      window.origin + '/dashboard/AjaxChartHelper', {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlSearchParams({
+          command: 'get_recruitment_bar_data',
+        }),
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          const recruitmentBarData = formatBarData(data.sexData);
+          const recruitmentBarLabels = data.labels;
+          recruitmentBarChart = c3.generate({
+            bindto: '#recruitmentBarChart',
+            data: {
+              columns: recruitmentBarData,
+              type: 'bar',
             },
-            y: {
-              label: 'Candidates registered',
-            },
-          },
-          color: {
-            pattern: sexColours,
-          },
-        });
-      },
-      error: function(xhr, desc, err) {
-        console.log(xhr);
-        console.log('Details: ' + desc + '\nError:' + err);
-      },
-    });
-
-    // AJAX to get recruitment line chart data
-    $.ajax({
-      url: loris.BaseURL + '/dashboard/ajax/get_recruitment_line_data.php',
-      type: 'post',
-      success: function(data) {
-        const recruitmentLineData = formatLineData(data);
-        recruitmentLineChart = c3.generate({
-          bindto: '#recruitmentChart',
-          data: {
-            x: 'x',
-            xFormat: '%m-%Y',
-            columns: recruitmentLineData,
-            type: 'area-spline',
-          },
-          axis: {
-            x: {
-              type: 'timeseries',
-              tick: {
-                format: '%m-%Y',
+            axis: {
+              x: {
+                type: 'categorized',
+                categories: recruitmentBarLabels,
+              },
+              y: {
+                label: 'Candidates registered',
               },
             },
-            y: {
-              label: 'Candidates registered',
+            color: {
+              pattern: sexColours,
             },
-          },
-          zoom: {
-            enabled: true,
-          },
-          color: {
-            pattern: siteColours,
-          },
+          });
+        })
+      .catch(
+        (error) => {
+          console.error(error);
         });
-      },
-      error: function(xhr, desc, err) {
-        console.log(xhr);
-        console.log('Details: ' + desc + '\nError:' + err);
-      },
-    });
+
+    // AJAX to get recruitment line chart data
+    fetch(
+      window.origin + '/dashboard/AjaxChartHelper', {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlSearchParams({
+          command: 'get_scan_line_data',
+        }),
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          const recruitmentLineData = formatLineData(data);
+          recruitmentLineChart = c3.generate({
+            bindto: '#recruitmentChart',
+            data: {
+              x: 'x',
+              xFormat: '%m-%Y',
+              columns: recruitmentLineData,
+              type: 'area-spline',
+            },
+            axis: {
+              x: {
+                type: 'timeseries',
+                tick: {
+                  format: '%m-%Y',
+                },
+              },
+              y: {
+                label: 'Candidates registered',
+              },
+            },
+            zoom: {
+              enabled: true,
+            },
+            color: {
+              pattern: siteColours,
+            },
+          });
+        })
+      .catch(
+        (error) => {
+          console.error(error);
+        });
   });
 }
 
