@@ -522,7 +522,7 @@ class File_Upload
     {
         $filename =$this->getSplitFilename($name);
         if (! $this->_seeded) {
-            srand(microtime() * 1000000);
+            srand((int) microtime() * 1000000);
             $this->_seeded = 1;
         }
         $name =$filename['name']."-".uniqid((string) rand()).$filename['ext'];

@@ -674,9 +674,10 @@ class LorisForm
         }
 
         // Apply filters that should be applied on all fields
+        $count = count($this->filters['__ALL__'] ?? array());
         if (isset($this->filters['__ALL__'])) {
-            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
-                if (in_array('trim', $this->filters['__ALL__'])) {
+            for ($i = 0; $i < $count; $i++) {
+                if (in_array('trim', $this->filters['__ALL__'] ?? array())) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
                     if (is_array($value)) {
