@@ -39,15 +39,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $this->DB->insert(
-            "document_repository_categories",
-            array(
-             'id'            => '9999999',
-             'category_name' => 'TESTTESTTESTTEST',
-             'parent_id'     => '0',
-             'comments'      => 'Test Comment',
-            )
-        );
-        $this->DB->insert(
             "document_repository",
             array(
              'record_id'     => '9999999',
@@ -73,10 +64,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-        $this->DB->delete(
-            "document_repository_categories",
-            array('category_name' => 'TestTestTest')
-        );
         $this->DB->delete(
             "document_repository_categories",
             array('category_name' => 'test')
@@ -124,7 +111,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("TESTTESTTESTTEST", $bodyText);
+        $this->assertContains("test", $bodyText);
     }
     /**
      * Tests Upload page.
