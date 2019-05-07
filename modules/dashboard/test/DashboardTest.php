@@ -405,8 +405,13 @@ class DashboardTest extends LorisIntegrationTest
         $views = $this->webDriver
             ->findElement(
                 WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/di".
-                    "v[1]/div[2]/div[1]/div/div/button"
+                    "/html[@class=' webgl']/body/div[@id='wrap']".
+                    "/div[@id='page']/div[@class='page-content inset']".
+                    "/div/div[@id='lorisworkspace']/div/div[@class='row']".
+                    "/div[@class='col-lg-8']/div[@class='panel ".
+                    "panel-primary'][2]/div[@class='panel-heading']".
+                    "/div[@class='pull-right']/div[@class='btn-group".
+                    " views']/button"
                 )
             );
         $views->click();
@@ -414,15 +419,25 @@ class DashboardTest extends LorisIntegrationTest
         $assertText1 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[1]/a"
+                    "/html[@class=' webgl']/body/div[@id='wrap']".
+                    "/div[@id='page']/div[@class='page-content inset']/div".
+                    "/div[@id='lorisworkspace']/div[@class='row']/div".
+                    "[@class='col-lg-8']/div[@class='panel panel-default']".
+                    "[2]/div[@class='panel-heading']/div[@class='pull-right']".
+                    "/div[@class='btn-group views open']/ul[@class='".
+                    "dropdown-menu pull-right']/li[@class='active']/a"
                 )
             )->getText();
         $assertText2 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[2]/a"
+                    "/html[@class=' webgl']/body/div[@id='wrap']/div[@".
+                    "id='page']/div[@class='page-content inset']/div/div[@id=".
+                    "'lorisworkspace']/div[@class='row']/div[@class='col-lg-8']".
+                    "/div[@class='panel panel-default'][2]/div[@class=".
+                    "'panel-heading']/div[@class='pull-right']/div[@class=".
+                    "'btn-group views open']/ul[@class='dropdown-menu pull-right']".
+                    "/li[2]/a"
                 )
             )->getText();
         $this->assertContains("View overall recruitment", $assertText1);
