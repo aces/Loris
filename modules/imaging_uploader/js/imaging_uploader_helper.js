@@ -75,15 +75,15 @@ function UploadProgress() {
         // Display pSCID, CandID and VisitLabel for the selected upload
         var progressHeader = 'Processing ' + progressType + ' for upload ' + uploadId;
         if(pscid) {
-	        progressHeader += ' of ' + pscid;
-	    }
-	    if(candid) {
-			progressHeader += ' (CandID ' + candid + ')';
-	    }
-	    if(visitLabel) {
-			progressHeader += ' at ' + visitLabel;
-	    }
-	    progressHeader += ":\n";
+            progressHeader += ' of ' + pscid;
+        }
+        if(candid) {
+            progressHeader += ' (CandID ' + candid + ')';
+        }
+        if(visitLabel) {
+            progressHeader += ' at ' + visitLabel;
+        }
+        progressHeader += ":\n";
 
         // If pipeline is still running
         if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING) {
