@@ -13,11 +13,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\dashboard;
+
 use Database;
-use NDB_Client;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use Utility;
 
 /**
  * The NDB_Page for the POST requests.
@@ -114,7 +113,7 @@ class AjaxChartHelper extends \NDB_Page
      */
     function populateDataForScanLineChart($values) : array
     {
-        $client = new NDB_Client();
+        $client = new \NDB_Client;
         $client->makeCommandLine();
         $client->initialize();
 
@@ -131,7 +130,7 @@ class AjaxChartHelper extends \NDB_Page
         );
         $scanData['labels']
             = $this->createLineChartLabels($scanStartDate, $scanEndDate);
-        $list_of_sites      = Utility::getAssociativeSiteList(true, false);
+        $list_of_sites      = \Utility::getAssociativeSiteList(true, false);
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = array(
                                        'name' => $siteName,
@@ -214,10 +213,10 @@ class AjaxChartHelper extends \NDB_Page
      */
     function populateDataForPieChart($values) : array
     {
-        $DB = Database::singleton();
+        $DB =& Database::singleton();
 
         $recruitmentBySiteData = array();
-        $list_of_sites         = Utility::getAssociativeSiteList(true, false);
+        $list_of_sites         = \Utility::getAssociativeSiteList(true, false);
 
         foreach ($list_of_sites as $siteID => $siteName) {
 
@@ -252,7 +251,7 @@ class AjaxChartHelper extends \NDB_Page
     {
         $DB            = Database::singleton();
         $sexData       = array();
-        $list_of_sites = Utility::getAssociativeSiteList(true, false);
+        $list_of_sites = \Utility::getAssociativeSiteList(true, false);
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;

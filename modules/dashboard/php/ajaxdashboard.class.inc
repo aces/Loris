@@ -13,11 +13,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\dashboard;
-use Database;
-use NDB_Client;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use Utility;
 
 /**
  * The NDB_Page for the POST requests.
