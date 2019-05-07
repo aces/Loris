@@ -9,7 +9,7 @@
 LORIS' default schema defines the first `psc` (`CenterID=1`) as the
 Data Coordinating Center (DCC).  This center is generally used for
 dummy data and it is assumed by the codebase to store exclusively 
-non-study data. Therefore, it is not recommended to modify or use 
+non-study data. Therefore, it is recommended not to modify or use 
 this center for registering real participants or study data.
 
 >  Note: There cannot be more than one center with the same name.
