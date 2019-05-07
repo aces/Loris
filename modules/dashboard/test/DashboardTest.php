@@ -404,39 +404,26 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
             ->findElement(
-                WebDriverBy::Xpath(
-                    "/html[@class=' webgl']/body/div[@id='wrap']".
-                    "/div[@id='page']/div[@class='page-content inset']".
-                    "/div/div[@id='lorisworkspace']/div/div[@class='row']".
-                    "/div[@class='col-lg-8']/div[@class='panel ".
-                    "panel-primary'][2]/div[@class='panel-heading']".
-                    "/div[@class='pull-right']/div[@class='btn-group".
-                    " views']/button"
+                WebDriverBy::cssSelector(
+                    "#lorisworkspace"
                 )
             );
         $views->click();
 
         $assertText1 = $this->webDriver
             ->findElement(
-                WebDriverBy::XPath(
-                    "/html[@class=' webgl']/body/div[@id='wrap']".
-                    "/div[@id='page']/div[@class='page-content inset']/div".
-                    "/div[@id='lorisworkspace']/div[@class='row']/div".
-                    "[@class='col-lg-8']/div[@class='panel panel-default']".
-                    "[2]/div[@class='panel-heading']/div[@class='pull-right']".
-                    "/div[@class='btn-group views open']/ul[@class='".
-                    "dropdown-menu pull-right']/li[@class='active']/a"
+                WebDriverBy::cssSelector(
+                    "#lorisworkspace > div > div > div.col-lg-8 >".
+                    " div:nth-child(2) > div.panel-heading > div >".
+                    " div > ul > li.active > a"
                 )
             )->getText();
         $assertText2 = $this->webDriver
             ->findElement(
-                WebDriverBy::XPath(
-                    "/html[@class=' webgl']/body/div[@id='wrap']/div[@".
-                    "id='page']/div[@class='page-content inset']/div/div[@id=".
-                    "'lorisworkspace']/div[@class='row']/div[@class='col-lg-8']".
-                    "/div[@class='panel panel-default'][2]/div[@class=".
-                    "'panel-heading']/div[@class='pull-right']/div[@class=".
-                    "'btn-group views open']/ul[@class='dropdown-menu pull-right']/li[2]/a"
+                WebDriverBy::cssSelector(
+                    "#lorisworkspace > div > div > div.col-lg-8 >".
+                    " div:nth-child(2) > div.panel-heading > div > div".
+                    " > ul > li:nth-child(2) > a"
                 )
             )->getText();
         $this->assertContains("View overall recruitment", $assertText1);
