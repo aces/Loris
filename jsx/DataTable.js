@@ -491,7 +491,7 @@ class DataTable extends Component {
           <div className="col-xs-12">
             <div>
               {rows.length} rows displayed of {filteredRows}.
-              (Maximum rows per page: {RowsPerPageDropdown})
+              (Maximum rows per page: {rowsPerPageDropdown})
             </div>
             <div className="pull-right" style={{marginTop: '-43px'}}>
               {this.renderActions()}
@@ -530,7 +530,12 @@ class DataTable extends Component {
               </button>
             </div>
             <div className="pull-right" style={{marginTop: '-23px'}}>
-              {pagination}
+              <PaginationLinks
+                Total={filteredRows}
+                onChangePage={this.changePage}
+                RowsPerPage={rowsPerPage}
+                Active={this.state.PageNumber}
+              />
             </div>
           </div>
         </div>
