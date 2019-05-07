@@ -41,7 +41,6 @@ class MediaTest extends LorisIntegrationTest
     static $Site        = "#media_filter > div > div > fieldset".
                               " > div:nth-child(7) > div > div > select";
     static $clearFilter = ".col-sm-2 .btn";
-                          
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
