@@ -29,7 +29,7 @@ class ParentTree extends React.Component {
  const parentNode = this.props.parentNode;
  parentNode.unshift(['0', 'Root']);
  // let parentList = null;
-  const parentList = parentNode.map((node, index) => (<span style={divStyle} onClick={()=>this.action(Object.values(node))} className="pointer"><span className="glyphicon glyphicon-folder-open"></span><span style={divStyle}>{Object.values(node)[1]} > </span></span>));
+  const parentList = parentNode.map((node, index) => (<span style={divStyle} onClick={()=>this.action(Object.values(node))} className="pointer"><i class="fa fa-folder-open" aria-hidden="true"></i><span style={divStyle}>{Object.values(node)[1]} > </span></span>));
     return (
 <div>
      <div>

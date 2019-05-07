@@ -32,7 +32,7 @@ class ChildTree extends React.Component {
  let childList = null;
  let childrenNode = this.props.childrenNode;
  if (Object.entries(childrenNode).length !== 0) {
-  childList = childrenNode.map((node, index) =>(<tr onClick={()=>this.action(Object.values(node))} style={trStyle}><td colSpan="9"><span style={spanStyle} key={index} className="pointer" style={spanStyle}><span className="glyphicon glyphicon-folder-close"></span><span style={spanStyle}>{Object.values(node)[1]}</span></span></td></tr>));
+  childList = childrenNode.map((node, index) =>(<tr onClick={()=>this.action(Object.values(node))} style={trStyle}><td colSpan="9"><span style={spanStyle} key={index} className="pointer" style={spanStyle}><i className="fa fa-folder"></i><span style={spanStyle}>{Object.values(node)[1]}</span></span></td></tr>));
  }
     return (
     <thead>
