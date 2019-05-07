@@ -40,6 +40,6 @@ additions_
 
 ## Interaction With LORIS
 
-**Centers** have a direct impact on results returned in all LORIS modules. Users are only able to access data which has been collected by the centers they are affiliated with.
+**Centers** have a direct impact on results returned in all LORIS modules. Users are only able to access data which has been collected by the centers they are affiliated with in most modules.
 
 > note: Sessions are tagged with a specific center but are only accessible to users if and only if the candidate itself is affiliated with a center to which the user belongs.
