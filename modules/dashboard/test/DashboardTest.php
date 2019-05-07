@@ -436,8 +436,7 @@ class DashboardTest extends LorisIntegrationTest
                     "'lorisworkspace']/div[@class='row']/div[@class='col-lg-8']".
                     "/div[@class='panel panel-default'][2]/div[@class=".
                     "'panel-heading']/div[@class='pull-right']/div[@class=".
-                    "'btn-group views open']/ul[@class='dropdown-menu pull-right']".
-                    "/li[2]/a"
+                    "'btn-group views open']/ul[@class='dropdown-menu pull-right']/li[2]/a"
                 )
             )->getText();
         $this->assertContains("View overall recruitment", $assertText1);
