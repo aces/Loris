@@ -44,8 +44,8 @@ class MediaTest extends LorisIntegrationTest
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
-    static $display = ".panel-body > div > div:nth-child(1) > div:nth-child(1)";
-
+    static $display = "#browse > div > div > div > div:nth-child(2) >".
+                      " div:nth-child(1) > div > div > div:nth-child(1)";
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
