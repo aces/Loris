@@ -53,7 +53,7 @@ class UserSiteMatch implements \LORIS\Data\Filter
             return false;
         } else if (method_exists($resource, 'getCenterID')) {
             $resourceSite = $resource->getCenterID();
-            if (!is_null($resourceSite) {
+            if (!is_null($resourceSite)) {
                 return $user->hasCenter($resourceSite);
             }
         }
