@@ -402,28 +402,27 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $views = $this->webDriver
-            ->findElement(
-                WebDriverBy::cssSelector(
-                    "#lorisworkspace"
-                )
+        $assertText = $this->webDriver
+            ->executescript(
+                "document.querySelector('#lorisworkspace > div".
+                " > div > div.col-lg-8 > div:nth-child(2) > div.".
+                "panel-heading > div > div > button').textContent"
             );
-        $views->click();
-
+        $this->assertContains("Views", $assertText);
         $assertText1 = $this->webDriver
-            ->findElement(
-                WebDriverBy::cssSelector(
-                    "#lorisworkspace > div > div > div.col-lg-8 >".
-                    " div:nth-child(2) > div.panel-heading > div >".
-                    " div > ul > li.active > a"
-                )
-            )->getText();
+            ->executescript(
+                "document.querySelector('#lorisworkspace > div >".
+                " div > div.col-lg-8 > div:nth-child(2) > ".
+                "div.panel-heading > div > div > ul > li.active > a')".
+                ".textContent"
+            );
         $assertText2 = $this->webDriver
             ->findElement(
                 WebDriverBy::cssSelector(
-                    "#lorisworkspace > div > div > div.col-lg-8 >".
-                    " div:nth-child(2) > div.panel-heading > div > div".
-                    " > ul > li:nth-child(2) > a"
+                    "document.querySelector('#lorisworkspace > div".
+                    " > div > div.col-lg-8 > div:nth-child(2) > div.".
+                    "panel-heading > div > div > ul > li:nth-child(2)".
+                    " > a').textContent"
                 )
             )->getText();
         $this->assertContains("View overall recruitment", $assertText1);
