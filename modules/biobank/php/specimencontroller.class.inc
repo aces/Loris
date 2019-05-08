@@ -29,7 +29,6 @@ namespace LORIS\biobank;
  */
 class SpecimenController
 {
-    $specimen
     /**
      * Private instances of the Database, User and ContainerDAO classes
      *
