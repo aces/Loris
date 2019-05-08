@@ -49,8 +49,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                 " > div > div > fieldset > div:nth-child(8)".
                                 " > div > div > button";
     private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
-    private $_addUserBtn  = "#default-panel > div > div > div:nth-child(1) >".
-                                " div:nth-child(1)";
+    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
+                                " div > div > div.pull-right > button:nth-child(1)";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
