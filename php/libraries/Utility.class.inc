@@ -963,7 +963,7 @@ class Utility
      *
      * @return bool Whether $value is a positive int.
      */
-    public static function isPositiveInteger($value): bool
+    public static function valueIsPositiveInteger($value): bool
     {
 
         // Reject arrays and objects

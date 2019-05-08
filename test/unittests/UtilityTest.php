@@ -825,7 +825,7 @@ class UtilityTest extends TestCase
 =======
 >>>>>>> 81d586a44... Fix file and class doc
     /*
-     * dataProvider for function testIsPositiveIntegerReturnsFalse
+     * dataProvider for function testValueIsPositiveIntegerReturnsFalse
      */
     public function notPositiveIntegerValues(): array
     {
@@ -844,7 +844,7 @@ class UtilityTest extends TestCase
     }
 
     /*
-     * dataProvider for function testIsPositiveIntegerReturnsTrue
+     * dataProvider for function testValueIsPositiveIntegerReturnsTrue
      */
     public function positiveIntegerValues(): array
     {
@@ -858,16 +858,16 @@ class UtilityTest extends TestCase
     /**
      * @dataProvider notPositiveIntegerValues
      */
-    public function testIsPositiveIntegerReturnsFalse($notInt): void
+    public function testValueIsPositiveIntegerReturnsFalse($notInt): void
     {
-        $this->assertFalse(\Utility::isPositiveInteger($notInt));
+        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
     }
 
     /**
      * @dataProvider positiveIntegerValues
      */
-    public function testIsPositiveIntegerReturnsTrue($int): void
+    public function testValueIsPositiveIntegerReturnsTrue($int): void
     {
-        $this->assertTrue(\Utility::isPositiveInteger($int));
+        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
 }
