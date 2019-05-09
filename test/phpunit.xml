@@ -62,11 +62,14 @@
             <!-- CodeCov crashes because installer/ has classes with the same
                  name as libraries/, so for now we only cover libraries and
                  exceptions under php/ -->
-            <directory suffix=".inc">../php/exceptions</directory>
+            <!-- In order to facilitate the calculation of the workload of the intern -->  
+            <!--directory suffix=".inc">../php/exceptions</directory-->
             <!--directory suffix=".php">../htdocs</directory-->
-            <directory suffix=".inc">../modules/*/php</directory>
+            <!--directory suffix=".inc">../modules/*/php</directory-->
             <!--directory>../modules/dashboard/ajax/</directory-->
         </whitelist>
     </filter>
-
+    <logging>
+        <log type="coverage-php" target="/tmp/coverage.serialized"/>
+    </logging>
 </phpunit>
