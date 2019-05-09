@@ -466,7 +466,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
-        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(8) > select";
+        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(9) > select";
         $savebtn          = "#mri_violations > div.pull-right > input:nth-child(1)";
         $this->webDriver->executescript(
             "document.querySelector('$resolutionStatus').value='other'"
