@@ -10,7 +10,7 @@
 	|:------------:|:------------------------------------------------:|:--------------------------------------------------------------------------------------------:|
 	| `CenterID`   | Identifier of the Center                         | Avoid setting this field explicitly when inserting data, it auto increments.                 |
 	| `Name`       | Full name of the center                          |                                                                                              |
-	| `PSCArea`    | ???????                |                                                                                              |
+	| `PSCArea`    |                                                  | Deprecated                                                                                              |
 	| `Address`    | Civic address of the center                      |                                                                                              |
 	| `City`       | City where the center is located                 |                                                                                              |
 	| `StateID`    | Identifier of the state where center is located  |                                                                                              |
@@ -21,5 +21,5 @@
 	| `Contact2`   | Contact person 2                                 |                                                                                              |
 	| `Alias`      | Shortname of the center. Limited to 3 characters | This field affects the alias section of the PSCID of candidates                              |
 	| `MRI_alias`  | MRI specific shortname. Limited to 4 characters  |                                                                                              |
-	| `Account`    | ???????                                              |                                                                                              |
+	| `Account`    |                                                  | Deprecated                                                                                              |
 	| `Study_site` | Does this center recruit candidates?             | This field will affect the appearance of the center in dropdowns in several modules of LORIS |
