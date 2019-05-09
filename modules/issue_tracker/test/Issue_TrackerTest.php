@@ -37,9 +37,6 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024, 1768);
-        $window->setSize($size);
          $this->DB->insert(
              "psc",
              array(
@@ -103,7 +100,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("issue_tracker_reporter"));
+        $this->setupPermissions(array("access_all_profiles"));
         $this->webDriver->get($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -134,13 +131,6 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     private function _testFilter($name,$value)
     {
-        $this->webDriver->get($this->url . "/issue_tracker/");
-        $this->webDriver->findElement(
-            WebDriverBy::Name($name)
-        )->sendKeys($value);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        )->click();
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($value, $bodyText);
