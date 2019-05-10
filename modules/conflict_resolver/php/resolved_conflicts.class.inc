@@ -62,10 +62,11 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
                           'conflicts_resolved.NewValue  as new_value',
                           'conflicts_resolved.OldValue2 as old_value2',
                           'session.CenterID as CenterID',
-                          '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
+                          '(SELECT name FROM psc WHERE CenterID=session.CenterID)'
+                          .' as site',
                          );
 
-        $this->query   = " FROM conflicts_resolved
+        $this->query = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
@@ -168,7 +169,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
 
         // Project list, if applicable
         $list_of_projects = array();
-        $projectList = \Utility::getProjectList();
+        $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $value) {
             $list_of_projects[$value] = $value;
         }
