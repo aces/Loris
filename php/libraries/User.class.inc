@@ -508,6 +508,7 @@ class User extends UserPermissions
      */
     function updatePassword($password, $expiry = null)
     {
+        $password = htmlspecialchars_decode($password);
         if (is_null($expiry)) {
             $expiry = date(
                 'Y-m-d',
