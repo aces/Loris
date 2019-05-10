@@ -133,18 +133,17 @@ class Profile extends \NDB_Page
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
         $user   = \User::singleton();
-        $result['startYear']  = $config->getSetting('startYear');
-        $result['endYear']    = $config->getSetting('endYear');
-        $result['ageMax']     = $config->getSetting('ageMax');
-        $result['ageMin']     = $config->getSetting('ageMin');
-        $result['dobFormat']  = $config->getSetting('dobFormat');
-        $result['edc']        = $config->getSetting('useEDC');
-        $result['useProject'] = $config->getSetting('useProjects');
-        $result['sex']        = array(
-                                 'male'   => 'Male',
-                                 'female' => 'Female',
-                                );
-        $result['pscidSet']   = "false";
+        $result['startYear'] = $config->getSetting('startYear');
+        $result['endYear']   = $config->getSetting('endYear');
+        $result['ageMax']    = $config->getSetting('ageMax');
+        $result['ageMin']    = $config->getSetting('ageMin');
+        $result['dobFormat'] = $config->getSetting('dobFormat');
+        $result['edc']       = $config->getSetting('useEDC');
+        $result['sex']       = array(
+                                'male'   => 'Male',
+                                'female' => 'Female',
+                               );
+        $result['pscidSet']  = "false";
         //get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);

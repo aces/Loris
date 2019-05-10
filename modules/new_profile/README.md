@@ -26,8 +26,6 @@ anything else related to candidates, only the candidate itself.
 
 - `useEDC`: This config setting determines whether to prompt for
   the EDC of the candidate being created.
-- `useProject`: This setting determines whether to prompt for the
-  project of the candidate being created.
 - `StartYear`, `EndYear`, `AgeMin`, `AgeMax`: These are used to
   determine whether the candidate's date of birth is within the
   range of the study protocol.

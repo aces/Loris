@@ -55,12 +55,6 @@ class Candidate_List extends \NDB_Menu_Filter
         $this->skipTemplate = true;
 
         // set the class variables
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-        }
-
-        // set the class variables
         $this->columns = array(
                           'c.PSCID',
                           'c.CandID AS DCCID',
@@ -75,10 +69,8 @@ class Candidate_List extends \NDB_Menu_Filter
                           'COUNT(DISTINCT s.Visit_label) AS VisitCount',
                           "IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback",
                           'max(s.Current_stage) AS LatestVisitStatus',
+                          'p.Name as Project',
                          );
-        if ($useProjects) {
-            $this->columns[] = 'p.Name as Project';
-        }
 
         if ($config->getSetting("useEDC") === "true") {
             $this->columns[] = 'DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
@@ -153,14 +145,12 @@ class Candidate_List extends \NDB_Menu_Filter
             $participant_status_options[$name] = $name;
         }
 
-        $useProjects        = $config->getSetting("useProjects");
         $this->fieldOptions = [
                                'site'              => $site_options,
                                'project'           => $project_options,
                                'subproject'        => $subproject_options,
                                'participantstatus' => $participant_status_options,
                                'useedc'            => $config->getSetting("useEDC"),
-                               'useprojects'       => $useProjects,
                               ];
 
         return true;

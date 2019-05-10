@@ -158,11 +158,8 @@ class Stats_Demographic extends \NDB_Form
         //functions below. This declaration was added to satisfy phan but work
         //should be done to properly populate this value. Until then there is
         //the possibility of errors arising in the demographic stats.
-        $visits      = array();
-        $db          = \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
+        $visits = array();
+        $db     = \Database::singleton();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;

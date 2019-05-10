@@ -211,10 +211,7 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        $this->tpl_data['useProjects'] = $useProjects;
+        $DB =& \Database::singleton();
 
         $bigTable_params = array();
         $this->params    = array();

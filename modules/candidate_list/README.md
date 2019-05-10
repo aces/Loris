@@ -33,10 +33,6 @@ can exclusively see candidates at study sites where they are affiliated.
 
 ## Configurations
 
-The `useProjects` configuration affects whether the table has a
-"Project" column for the candidate, and whether there is a filter
-dropdown for that column.
-
 The `useEDC` configuration variable has a similar function for the
 "EDC" ("EDC" stands for "Expected Date Of Confinement" which refers
 to the pregnancy due date) column.
