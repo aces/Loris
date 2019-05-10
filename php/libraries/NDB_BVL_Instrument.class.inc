@@ -2053,7 +2053,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
      *                                               to be retrieved.
-     * @param array $fieldsArray Contains the fields of interest
+     * @param array              $fieldsArray        Contains the fields of interest
      *
      * @return array containing the data for the fields specified in $fieldsArray
      */
