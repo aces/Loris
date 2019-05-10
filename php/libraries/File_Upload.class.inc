@@ -488,17 +488,17 @@ class File_Upload
      * incrementing by one for each additional file.
      *
      * @param string $dir  The target directory for the file.
-     * @param int    $name The proposed name for the file.
+     * @param string $name The proposed name for the file.
      *
      * @return string New filename
      * @see    File_Upload::moveFile()
      */
-    function nameToIncremental($dir, $name)
+    function nameToIncremental(string $dir, string $name): string
     {
-        $done =false;
-        $i    =0;
+        $done = false;
+        $i    = 0;
         while ($done==false) {
-            $ext      =str_pad($i, 3, "0", STR_PAD_LEFT);
+            $ext      =str_pad((string) $i, 3, "0", STR_PAD_LEFT);
             $filename =$this->getSplitFilename($name);
             $new_name =$filename['name']."-".$ext.$filename['ext'];
             if (!file_exists($dir.$new_name)) {
@@ -522,10 +522,10 @@ class File_Upload
     {
         $filename =$this->getSplitFilename($name);
         if (! $this->_seeded) {
-            srand((double) microtime() * 1000000);
+            srand((int) microtime() * 1000000);
             $this->_seeded = 1;
         }
-        $name =$filename['name']."-".uniqid(rand()).$filename['ext'];
+        $name =$filename['name']."-".uniqid((string) rand()).$filename['ext'];
         return $name;
     }
 

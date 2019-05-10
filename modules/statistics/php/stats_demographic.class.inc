@@ -63,34 +63,35 @@ class Stats_Demographic extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string $sectionHeader    the value of sectionHeader
-     * @param string $tableHeader      the value of tableHeader
-     * @param string $subcats          the value of subcats
-     * @param string $visits           the value of visits
-     * @param string $dropdownName     the value of dropdownName
-     * @param string $dropdownOpt      the value of dropdownOpt
-     * @param string $dropdownSelected the value of dropdownSelected
-     * @param array  $centers          the value of centers
-     * @param array  $data             the value of data
-     * @param string $subsection       the value of subsection=''
-     * @param string $disclamer        the value of disclamer=''
-     * @param string $projectID        the value of projectID is null
+     * @param string  $sectionHeader    the value of sectionHeader
+     * @param string  $tableHeader      the value of tableHeader
+     * @param array   $subcats          the value of subcats
+     * @param ?array  $visits           the value of visits
+     * @param string  $dropdownName     the value of dropdownName
+     * @param string  $dropdownOpt      the value of dropdownOpt
+     * @param string  $dropdownSelected the value of dropdownSelected
+     * @param array   $centers          the value of centers
+     * @param array   $data             the value of data
+     * @param string  $subsection       the value of subsection=''
+     * @param string  $disclamer        the value of disclamer=''
+     * @param ?string $projectID        the value of projectID is null
      *
      * @return string
      */
-    function renderStatsTable($sectionHeader,
+    function renderStatsTable(
+        $sectionHeader,
         $tableHeader,
-        $subcats,
-        $visits,
+        array $subcats,
+        ?array $visits,
         $dropdownName,
         $dropdownOpt,
         $dropdownSelected,
         $centers,
-        $data,
+        array $data,
         $subsection='',
         $disclamer='',
         $projectID=null
-    ) {
+    ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
@@ -116,11 +117,13 @@ class Stats_Demographic extends \NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits)
+            if (in_array($vl, $visits ?? array())
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
+                // Ensure $tpl_data['data'] is not null before continuing
+                $tpl_data['data'] = $tpl_data['data'] ?? array();
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
@@ -158,11 +161,8 @@ class Stats_Demographic extends \NDB_Form
         //functions below. This declaration was added to satisfy phan but work
         //should be done to properly populate this value. Until then there is
         //the possibility of errors arising in the demographic stats.
-        $visits      = array();
-        $db          = \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
+        $visits = array();
+        $db     = \Database::singleton();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;

@@ -441,7 +441,7 @@ class CouchDB
 
         $handler->open();
         $handler->write($url . " HTTP/1.0\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n");
+        $handler->write("Content-Length: " . strlen(json_encode($data)) . "\r\n");
         $handler->write("Content-type: application/json\r\n");
 
         $handler->write(
@@ -715,7 +715,7 @@ class CouchDB
         if ($full_json) {
             return $query;
         }
-        $data = json_decode($query, true);
+        $data = json_decode($query ?? '', true);
         if (is_null($data)) {
             throw new \LorisException(
                 'Decoded JSON data returned null. Cannot continue.'

@@ -144,7 +144,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         $env            = escapeshellarg($env);
         $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
         $uploadScript   = escapeshellarg($uploadScript);
-        $uploadId       = escapeshellarg($this->_mriUploadId);
+        $uploadId       = escapeshellarg((string) $this->_mriUploadId);
         $sourceLocation = escapeshellarg($this->_sourceLocation);
         $prodFile       = escapeshellarg($this->_prodFile);
         return "source $env ;"

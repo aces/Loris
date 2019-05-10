@@ -63,9 +63,6 @@ tblScanTypes - This setting determines which scan types are considered "NEW" for
 ImagingBrowserLinkedInstruments - This setting defines which instruments to 
         include a link to on the "View Session" page.
 
-useProjects - This setting determines whether "project" filtering dropdowns exist
-        on the menu page.
-
 useEDC - This setting determines whether "EDC" filtering dropdowns exist
         on the menu page.
 
