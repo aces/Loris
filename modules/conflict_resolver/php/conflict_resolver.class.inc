@@ -182,28 +182,14 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        // Rest the filter because this is broken with react modules
-        //$this->_resetFilters();
-
-        $config =& \NDB_Config::singleton();
-
-        // set the class variables
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === 'false') {
-            $useProjects = false;
-        }
-
         // set the class variables
         $this->columns = array(
                           'conflicts_unresolved.TableName as instrument',
                           'session.CandID as candID',
                           'candidate.PSCID as pscid',
                           'session.Visit_label as visit_label',
+                          'Project.Name as Project',
                          );
-
-        if ($useProjects) {
-            $this->columns[] = 'Project.Name as Project';
-        }
 
         $this->columns = array_merge(
             $this->columns,
@@ -245,30 +231,19 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
-
-        $this->headers = array(
-                          'Instrument',
-                          'CandID',
-                          'PSCID',
-                          'Visit Label',
-                         );
-        if ($useProjects) {
-            $this->headers = array_merge(
-                $this->headers,
-                array('Project')
-            );
-        }
-        $this->headers =array_merge(
-            $this->headers,
-            array(
-             'Question',
-             'Correct Answer',
-             'Value1',
-             'Value2',
-             'Hash',
-             'Site',
-            )
-        );
+        $this->headers  = array(
+                           'Instrument',
+                           'CandID',
+                           'PSCID',
+                           'Visit Label',
+                           'Project',
+                           'Question',
+                           'Correct Answer',
+                           'Value1',
+                           'Value2',
+                           'Hash',
+                           'Site',
+                          );
     }
 
     /**
@@ -340,14 +315,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         // Project list, if applicable
         $list_of_projects = array();
-        if ($config->getSetting('useProjects')==='true') {
-            $projectList = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$value] = $value;
-            }
-
-            $this->addSelect('project', 'Project: ', $list_of_projects);
+        $projectList      = \Utility::getProjectList();
+        foreach ($projectList as $key => $value) {
+            $list_of_projects[$value] = $value;
         }
+
+        $this->addSelect('project', 'Project: ', $list_of_projects);
     }
 
     /**

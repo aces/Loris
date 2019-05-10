@@ -50,37 +50,21 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        // set the class variables
-        $config =& \NDB_Config::singleton();
-
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === 'false') {
-            $useProjects = false;
-        }
-
         $this->columns = array(
                           'conflicts_resolved.TableName as instrument',
                           'session.CandID as candID',
                           'candidate.PSCID as pscid',
                           'session.Visit_label as visit_label',
                           'conflicts_resolved.ResolutionTimestamp as timestamp',
+                          'Project.Name as Project',
+                          'conflicts_resolved.FieldName as question',
+                          'conflicts_resolved.OldValue1 as correct_answer',
+                          'conflicts_resolved.NewValue  as new_value',
+                          'conflicts_resolved.OldValue2 as old_value2',
+                          'session.CenterID as CenterID',
+                          '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
                          );
 
-        if ($useProjects) {
-            $this->columns[] = 'Project.Name as Project';
-        }
-
-        $this->columns = array_merge(
-            $this->columns,
-            array(
-             'conflicts_resolved.FieldName as question',
-             'conflicts_resolved.OldValue1 as correct_answer',
-             'conflicts_resolved.NewValue  as new_value',
-             'conflicts_resolved.OldValue2 as old_value2',
-             'session.CenterID as CenterID',
-             '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
-            )
-        );
         $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
@@ -103,26 +87,15 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
                           'CandID',
                           'PSCID',
                           'Visit Label',
+                          'Project',
                           'Resolution Timestamp',
+                          'Question',
+                          'Correct Answer',
+                          'New Value',
+                          'Old Value2',
+                          'CenterID',
+                          'Site',
                          );
-
-        if ($useProjects) {
-            $this->headers = array_merge(
-                $this->headers,
-                array('Project')
-            );
-        }
-        $this->headers =array_merge(
-            $this->headers,
-            array(
-             'Question',
-             'Correct Answer',
-             'New Value',
-             'Old Value2',
-             'CenterID',
-             'Site',
-            )
-        );
     }
 
     /**
@@ -195,13 +168,11 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
 
         // Project list, if applicable
         $list_of_projects = array();
-        if ($config->getSetting('useProjects')==='true') {
-            $projectList = \Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$value] = $value;
-            }
-            $this->addSelect('project', 'Project: ', $list_of_projects);
+        $projectList = \Utility::getProjectList();
+        foreach ($projectList as $key => $value) {
+            $list_of_projects[$value] = $value;
         }
+        $this->addSelect('project', 'Project: ', $list_of_projects);
     }
 
     /**
