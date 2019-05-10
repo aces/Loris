@@ -23,7 +23,6 @@ return [
         "PhanTypeMismatchDimFetch",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",

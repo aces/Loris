@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `candidate_consent_rel`;
+LOCK TABLES `candidate_consent_rel` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

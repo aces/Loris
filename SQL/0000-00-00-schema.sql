@@ -359,7 +359,7 @@ CREATE TABLE `test_subgroups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments');
+INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments'),('Imaging');
 
 CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -697,20 +697,28 @@ CREATE TABLE `mri_protocol` (
   `Center_name` varchar(4) NOT NULL default '',
   `ScannerID` int(10) unsigned NOT NULL default '0',
   `Scan_type` int(10) unsigned NOT NULL default '0',
-  `TR_range` varchar(255) default NULL,
-  `TE_range` varchar(255) default NULL,
-  `TI_range` varchar(255) default NULL,
-  `slice_thickness_range` varchar(255) default NULL,
-  `FoV_x_range` varchar(255) default NULL,
-  `FoV_y_range` varchar(255) default NULL,
-  `FoV_z_range` varchar(255) default NULL,
-  `xspace_range` varchar(255) default NULL,
-  `yspace_range` varchar(255) default NULL,
-  `zspace_range` varchar(255) default NULL,
-  `xstep_range` varchar(255) default NULL,
-  `ystep_range` varchar(255) default NULL,
-  `zstep_range` varchar(255) default NULL,
-  `time_range` varchar(255) default NULL,
+  `TR_min` DECIMAL(10,4) DEFAULT NULL,
+  `TR_max` DECIMAL(10,4) DEFAULT NULL,
+  `TE_min` DECIMAL(10,4) DEFAULT NULL,
+  `TE_max` DECIMAL(10,4) DEFAULT NULL,
+  `TI_min` DECIMAL(10,4) DEFAULT NULL,
+  `TI_max` DECIMAL(10,4) DEFAULT NULL,
+  `slice_thickness_min` DECIMAL(9,4) DEFAULT NULL,
+  `slice_thickness_max` DECIMAL(9,4) DEFAULT NULL,
+  `xspace_min` int(4) DEFAULT NULL,
+  `xspace_max` int(4) DEFAULT NULL,
+  `yspace_min` int(4) DEFAULT NULL,
+  `yspace_max` int(4) DEFAULT NULL,
+  `zspace_min` int(4) DEFAULT NULL,
+  `zspace_max` int(4) DEFAULT NULL,
+  `xstep_min` DECIMAL(9,4) DEFAULT NULL,
+  `xstep_max` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_min` DECIMAL(9,4) DEFAULT NULL,
+  `ystep_max` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_min` DECIMAL(9,4) DEFAULT NULL,
+  `zstep_max` DECIMAL(9,4) DEFAULT NULL,
+  `time_min` int(4) DEFAULT NULL,
+  `time_max` int(4) DEFAULT NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -718,11 +726,12 @@ CREATE TABLE `mri_protocol` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES
-  ('ZZZZ',48,'8000-14000','80-130','0-200'),
-  ('ZZZZ',40,'1900-2700','10-30','0-500'),
-  ('ZZZZ',44,'2000-2500','2-5',NULL),
-  ('ZZZZ',45,'3000-9000','100-550',NULL);
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+ TE_max,time_min,time_max) VALUES
+   ('ZZZZ',48,8000,14000,80,130,0,200),
+   ('ZZZZ',40,1900,2700,10,30,0,500),
+   ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
+   ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -754,7 +763,8 @@ CREATE TABLE `mri_protocol_checks` (
   `Scan_type` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
-  `ValidRange` varchar(255) DEFAULT NULL,
+  `ValidMin` int(4) DEFAULT NULL,
+  `ValidMax` int(4) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
@@ -1088,10 +1098,13 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'new_category', 'N', 'notifier_document_repository_new_category.tpl', 'Document Repository: New Category'),
   ('document_repository', 'upload', 'N', 'notifier_document_repository_upload.tpl', 'Document Repository: New Document Uploaded'),
   ('document_repository', 'delete', 'N', 'notifier_document_repository_delete.tpl', 'Document Repository: Document Deleted'),
-  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited');
+  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
+  ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
+  ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
 
--- enable doc repo basic text emails
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -1546,7 +1559,6 @@ CREATE TABLE `parameter_type` (
   `SourceField` text,
   `SourceFrom` text,
   `SourceCondition` text,
-  `CurrentGUITable` varchar(255) default NULL,
   `Queryable` tinyint(1) default '1',
   `IsFile` tinyint(1) default '0',
   PRIMARY KEY  (`ParameterTypeID`),
@@ -1554,21 +1566,21 @@ CREATE TABLE `parameter_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
 
-INSERT INTO `parameter_type` VALUES
-  (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0),
-  (8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
-  (9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
+INSERT INTO `parameter_type` (ParameterTypeID, Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, SourceCondition, Queryable, IsFile) VALUES
+  (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,1,0),
+  (8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0),
+  (9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 
 
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES
-  ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null),
-  ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null),
-  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+INSERT INTO `parameter_type` (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, Queryable, SourceCondition) VALUES
+  ('candidate_label','text','Identifier_of_candidate',NULL,NULL,'PSCID','candidate',1,NULL),
+  ('Visit_label','varchar(255)','Visit_label',NULL,NULL,'visit_label','session',1,NULL),
+  ('candidate_dob','date','Candidate_Dob',NULL,NULL,'DoB','candidate',1,NULL);
 
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
@@ -1588,10 +1600,9 @@ CREATE TABLE `parameter_type_category_rel` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`ParameterTypeCategoryID`,`ParameterTypeID`),
   KEY `FK_parameter_type_category_rel_1` (`ParameterTypeID`),
-  CONSTRAINT `FK_parameter_type_category_rel_2` FOREIGN KEY (`ParameterTypeCategoryID`) REFERENCES `parameter_type_category` (`ParameterTypeCategoryID`),
-  CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
+  CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_parameter_type_category_rel_2` FOREIGN KEY (`ParameterTypeCategoryID`) REFERENCES `parameter_type_category` (`ParameterTypeCategoryID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID)
   SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID
@@ -2136,7 +2147,7 @@ CREATE TABLE `visit_project_subproject_rel` (
  `ProjectID` int(2) NOT NULL,
  `SubprojectID` int(10) unsigned NOT NULL,
   CONSTRAINT `visit_project_subproject_rel_PK` PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
-  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`) 
+  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `visit_project_subproject_ProjectID_visit_ProjectID_FK` FOREIGN KEY (`ProjectID`)
     REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2144,3 +2155,116 @@ CREATE TABLE `visit_project_subproject_rel` (
     REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Publication Status
+CREATE TABLE `publication_status` (
+  `PublicationStatusID` int(2) unsigned NOT NULL AUTO_INCREMENT,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_publication_status` PRIMARY KEY(`PublicationStatusID`),
+  CONSTRAINT `UK_publication_status_Label` UNIQUE (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+INSERT INTO publication_status (`Label`) VALUES ('Pending');
+INSERT INTO publication_status (`Label`) VALUES ('Approved');
+INSERT INTO publication_status (`Label`) VALUES ('Rejected');
+
+CREATE TABLE `publication_collaborator` (
+  `PublicationCollaboratorID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Email` varchar(255),
+  CONSTRAINT `PK_publication_collaborator` PRIMARY KEY(`PublicationCollaboratorID`),
+  CONSTRAINT `UK_publication_collaborator_Email` UNIQUE (`Email`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- Main table
+CREATE TABLE `publication` (
+    `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `PublicationStatusID` int(2) unsigned NOT NULL default 1,
+    `LeadInvestigatorID` int(10) unsigned NOT NULL,
+    `UserID` int(10) unsigned NOT NULL,
+    `RatedBy` int(10) unsigned,
+    `DateProposed` date NOT NULL,
+    `DateRated` date default NULL,
+    `Title` varchar(255) NOT NULL,
+    `RejectedReason` varchar(255) default NULL,
+    `Description` text NOT NULL,
+    CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
+    CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
+    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
+    CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- Separate table for Keywords
+CREATE TABLE `publication_keyword` (
+  `PublicationKeywordID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_publication_keyword` PRIMARY KEY(`PublicationKeywordID`),
+  CONSTRAINT `UK_publication_Label` UNIQUE (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- Publication - Keyword relational table
+CREATE TABLE `publication_keyword_rel` (
+  `PublicationID` int(10) unsigned NOT NULL,
+  `PublicationKeywordID` int(10) unsigned NOT NULL,
+  CONSTRAINT `PK_publication_keyword_rel` PRIMARY KEY(PublicationID, PublicationKeywordID),
+  CONSTRAINT `FK_publication_keyword_PublicationID` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_keyword_PublicationKeywordID` FOREIGN KEY(`PublicationKeywordID`) REFERENCES `publication_keyword` (`PublicationKeywordID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE `publication_collaborator_rel` (
+  `PublicationID` int(10) unsigned NOT NULL,
+  `PublicationCollaboratorID` int(10) unsigned NOT NULL,
+  CONSTRAINT `PK_publication_collaborator_rel` PRIMARY KEY(PublicationID, PublicationCollaboratorID),
+  CONSTRAINT `FK_publication_collaborator_rel_PublicationID` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_collaborator_rel_PublicationCollaboratorID` FOREIGN KEY(`PublicationCollaboratorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- Publication - Variable of Interest  relational table
+CREATE TABLE `publication_parameter_type_rel` (
+    `PublicationID` int(10) unsigned NOT NULL,
+    `ParameterTypeID` int(10) unsigned NOT NULL,
+    CONSTRAINT `PK_publication_parameter_type_rel` PRIMARY KEY (PublicationID, ParameterTypeID),
+    CONSTRAINT `FK_publication_parameter_type_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_parameter_type_rel_ParameterTypeID` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE `publication_test_names_rel` (
+    `PublicationID` int(10) unsigned NOT NULL,
+    `TestNameID` int(10) unsigned NOT NULL,
+    CONSTRAINT `PK_publication_test_names_rel` PRIMARY KEY(`PublicationID`, `TestNameID`),
+    CONSTRAINT `FK_publication_test_names_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_test_names_rel_TestNameID` FOREIGN KEY (`TestNameID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- Publication Uploads
+CREATE TABLE `publication_upload_type` (
+  `PublicationUploadTypeID` int(2) unsigned NOT NULL AUTO_INCREMENT,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_publication_upload_type` PRIMARY KEY (`PublicationUploadTypeID`),
+  CONSTRAINT `UK_publication_Label` UNIQUE (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+INSERT INTO publication_upload_type (`Label`) VALUES ('Paper');
+INSERT INTO publication_upload_type (`Label`) VALUES ('Poster');
+INSERT INTO publication_upload_type (`Label`) VALUES ('Presentation');
+INSERT INTO publication_upload_type (`Label`) VALUES ('Other');
+
+CREATE TABLE `publication_upload` (
+    `PublicationUploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `PublicationID` int(10) unsigned NOT NULL,
+    `PublicationUploadTypeID` int(2) unsigned NOT NULL,
+    `Filename` varchar(255) NOT NULL,
+    `Version` varchar(255),
+    `Citation` text,
+    CONSTRAINT `PK_publication_upload` PRIMARY KEY (`PublicationUploadID`),
+    CONSTRAINT `UK_publication_upload_Filename` UNIQUE (Filename),
+    CONSTRAINT `FK_publication_upload_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_upload_PublicationUploadTypeID` FOREIGN KEY (`PublicationUploadTypeID`) REFERENCES `publication_upload_type` (`PublicationUploadTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE `publication_users_edit_perm_rel` (
+  `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `UserID` int(10) unsigned NOT NULL,
+  CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';

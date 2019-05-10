@@ -44,6 +44,12 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'CenterID' => 1,
             'Current_stage'   => 'Not Started',
         ));
+	$this->DB->insert('test_names', array(
+	    'ID' => '999999',
+            'Test_name' => 'testtest',
+            'Full_name' => 'Test Test',
+            'Sub_group' => 1,
+        ));
         $this->DB->insert('flag', array(
             'ID' => '999999',
             'SessionID' => '999999',
@@ -62,6 +68,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("session", array('CandID' => '900000'));
         $this->DB->delete("candidate", array('CandID' => '900000'));
         $this->DB->delete("flag", array('ID' => '999999'));
+        $this->DB->delete("test_names", array('ID' => '999999'));
         parent::tearDown();
     }
     /**

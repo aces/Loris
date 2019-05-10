@@ -132,23 +132,17 @@ class Create_Timepoint extends \NDB_Form
         $sp_labelOptions = array(null => '');
         $subprojList     = null;
         //List of valid subprojects for a given project
-        if ($config->getSetting('useProjects') === 'true') {
-            // If projects enabled, loop through and add valid subprojects only
-            $subprojList = $candidate->getValidSubprojects();
-            if (empty($subprojList)) {
-                $this->form->errors['subprojectID'] = "No subprojects have been 
-                defined for the project this candidate is affiliated with. 
-                If you are an administrator, please use the Configuration module to 
-                add new subprojects and associate them with projects.";
+        $subprojList = $candidate->getValidSubprojects();
+        if (empty($subprojList)) {
+            $this->form->errors['subprojectID'] = "No subprojects have been 
+            defined for the project this candidate is affiliated with. 
+            If you are an administrator, please use the Configuration module to 
+            add new subprojects and associate them with projects.";
+        }
+        foreach ($allSubprojects as $subprojectID => $title) {
+            if (in_array($subprojectID, $subprojList)) {
+                $sp_labelOptions[$subprojectID] = $title;
             }
-            foreach ($allSubprojects as $subprojectID => $title) {
-                if (in_array($subprojectID, $subprojList)) {
-                    $sp_labelOptions[$subprojectID] = $title;
-                }
-            }
-        } else {
-            // If projects disabled, add all subprojects
-            $sp_labelOptions += $allSubprojects;
         }
 
         $attributes = array(

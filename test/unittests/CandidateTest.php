@@ -41,6 +41,7 @@ class CandidateTest extends TestCase
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
            'ProjectID'    => 1,
+           'ProjectTitle' => '',
           );
 
     /**
@@ -103,20 +104,16 @@ class CandidateTest extends TestCase
         parent::setUp();
 
         $this->_configMap = array(
-                             array(
-                              'useProjects',
-                              false,
-                             ),
-                             array(
-                              'HeaderTable',
-                              null,
-                             ),
+                             array('HeaderTable', null),
                             );
 
         $this->_listOfTimePoints = array(
                                     array('ID' => '97'),
                                     array('ID' => '98'),
                                    );
+
+        $this->_listOfProjects = array(
+            array('ProjectID' => 1, 'Name' => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
@@ -270,7 +267,7 @@ class CandidateTest extends TestCase
                          );
 
         //mock pselect from getListOfVisitLabels
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->with(
                 $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
@@ -303,7 +300,7 @@ class CandidateTest extends TestCase
                        );
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -333,7 +330,7 @@ class CandidateTest extends TestCase
         $subprojects = array();
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -354,7 +351,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('V01');
 
@@ -492,12 +489,23 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
-        $this->_dbMock->expects($this->at(1))
+        $this->_dbMock->expects($this->at(0))
             ->method('pselect')
             ->willReturn(
-                $this->_listOfTimePoints
+                array(array("projectID" => "1" , "Name" =>"test_project"))
             );
 
+        $this->_dbMock->expects($this->at(1))
+             ->method('pselect')
+             ->willReturn(
+                array(array("ID" => 97),array("ID"=>98))
+            );
+
+        $this->_dbMock->expects($this->at(2))
+            ->method('pselect')
+            ->willReturn(
+                 $this->_listOfTimePoints
+             );
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
