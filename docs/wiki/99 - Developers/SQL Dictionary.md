@@ -4,7 +4,7 @@
 
  - Table: `psc`
  
- 	*this is the missing description*
+ 	*This table stores the list of centers configured for the study.*
  
 	|     Field    |                    Description                   |                                             Notes                                            |
 	|:------------:|:------------------------------------------------:|:--------------------------------------------------------------------------------------------:|
