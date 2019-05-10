@@ -2048,6 +2048,31 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Gets specified fields of data from an instrument out of the database and
+     * returns it as an array.
+     *
+     * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
+     *                                               to be retrieved.
+     * @param array $fieldsArray Contains the fields of interest
+     *
+     * @return array containing the data for the fields specified in $fieldsArray
+     */
+    static function loadInstanceDataFromArray($instrumentInstance, $fieldsArray)
+    {
+        // Load instance data
+        $instanceData = NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+
+        // Filter results
+        $filteredData = array();
+        foreach ($fieldsArray as $key) {
+            if (array_key_exists($key, $instanceData)) {
+                $filteredData[$key] = $instanceData[$key];
+            }
+        }
+        return $filteredData;
+    }
+
+    /**
      * Calculates the candidate's age at the time of this instrument.
      * If Date_taken was based in, it will calculate the age as of
      * the date passed as a parameter (this is used, for instance, in
