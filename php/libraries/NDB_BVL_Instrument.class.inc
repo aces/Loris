@@ -771,7 +771,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $oldData = array();
         }
-        $newData = array_merge($oldData, $values);
+        $newData = array_merge($oldData ?? array(), $values);
 
         // Save the JSON to the flag.Data column.
         //

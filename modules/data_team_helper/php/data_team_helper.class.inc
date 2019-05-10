@@ -76,7 +76,7 @@ class Data_Team_Helper extends \NDB_Form
         ) {
             $candID = ($sanitize['candidate']);
         } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
-                $candID = $sanitize['candidate'];
+            $candID = $sanitize['candidate'];
         } elseif (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $query   = "SELECT CandID FROM candidate WHERE PSCID = :PID";
             $qparams = (array('PID' => $sanitize['PSCID']));
@@ -84,21 +84,21 @@ class Data_Team_Helper extends \NDB_Form
         }
 
         //Percentage completed for the given instrument
-            $percent_completed = $this->_getPercentCompleted(
-                $instrument,
-                $sanitize['visit_label'] ?? null,
-                $candID,
-                $sanitize['site'] ?? $site_default,
-                $sanitize['project'] ?? null
-            );
-            $this->tpl_data['percent_completed'] = $percent_completed;
+        $percent_completed = $this->_getPercentCompleted(
+            $instrument,
+            $sanitize['visit_label'] ?? null,
+            $candID,
+            $sanitize['site'] ?? $site_default,
+            $sanitize['project'] ?? null
+        );
+        $this->tpl_data['percent_completed'] = $percent_completed;
 
-            /* Visit_labels
-             */
-            $visit_array   =\Utility::getExistingVisitLabels();
-            $visit_array   = array_combine($visit_array, $visit_array);
-            $list_of_sites = array();
-            $this->tpl_data['visitLabels'] = $visit_array;
+        /* Visit_labels
+         */
+        $visit_array   =\Utility::getExistingVisitLabels();
+        $visit_array   = array_combine($visit_array, $visit_array);
+        $list_of_sites = array();
+        $this->tpl_data['visitLabels'] = $visit_array;
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites      = \Utility::getSiteList();
@@ -114,59 +114,55 @@ class Data_Team_Helper extends \NDB_Form
         }
         $this->tpl_data['siteList'] = $list_of_sites;
         // Project list, if applicable
-        if ($config->getSetting("useProjects")==="true") {
-            $projectList = \Utility::getProjectList();
-            $this->tpl_data['projectList'] = $projectList;
-        }
 
-            $incompleteCandidates = $this->
-                 getIncompleteCandidates(
-                     $instrument,
-                     $sanitize['visit_label'] ?? null,
-                     $candID,
-                     $sanitize['site'] ?? $site_default,
-                     $sanitize['project'] ?? null
-                 );
+        $projectList = \Utility::getProjectList();
+        $this->tpl_data['projectList'] = $projectList;
 
-            $this->tpl_data['Incomplete_candidates']
-                = json_encode($incompleteCandidates);
+        $incompleteCandidates = $this->getIncompleteCandidates(
+            $instrument,
+            $sanitize['visit_label'] ?? null,
+            $candID,
+            $sanitize['site'] ?? $site_default,
+            $sanitize['project'] ?? null
+        );
 
-            $this->tpl_data['Incomplete_candidates_length']
-                = count($incompleteCandidates);
+        $this->tpl_data['Incomplete_candidates']
+            = json_encode($incompleteCandidates);
 
-            $conflicts = $this->
-            instrumentInConflict(
-                $instrument,
-                $sanitize['visit_label'] ?? null,
-                $candID,
-                $sanitize['site'] ?? $site_default,
-                $sanitize['project'] ?? null
-            );
+        $this->tpl_data['Incomplete_candidates_length']
+            = count($incompleteCandidates);
 
-            $this->tpl_data['Conflicts'] =  json_encode($conflicts);
+        $conflicts = $this->instrumentInConflict(
+            $instrument,
+            $sanitize['visit_label'] ?? null,
+            $candID,
+            $sanitize['site'] ?? $site_default,
+            $sanitize['project'] ?? null
+        );
 
-            $this->tpl_data['Conflicts_length'] = count($conflicts);
+        $this->tpl_data['Conflicts'] =  json_encode($conflicts);
 
-            $bvlFeedback = $this->getFeedbacks(
-                $instrument,
-                $candID,
-                $sanitize['visit_label'] ?? null,
-                $sanitize['site'] ?? $site_default,
-                $sanitize['project'] ?? null
-            );
+        $this->tpl_data['Conflicts_length'] = count($conflicts);
 
-            $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
+        $bvlFeedback = $this->getFeedbacks(
+            $instrument,
+            $candID,
+            $sanitize['visit_label'] ?? null,
+            $sanitize['site'] ?? $site_default,
+            $sanitize['project'] ?? null
+        );
 
-            $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
+        $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
-            $this->tpl_data['percent_complete'] = $this
-                ->_getPercentCompleted(
-                    $instrument,
-                    $sanitize['visit_label'] ?? null,
-                    $candID,
-                    $sanitize['site'] ?? $site_default,
-                    $sanitize['project'] ?? null
-                );
+        $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
+
+        $this->tpl_data['percent_complete'] = $this->_getPercentCompleted(
+            $instrument,
+            $sanitize['visit_label'] ?? null,
+            $candID,
+            $sanitize['site'] ?? $site_default,
+            $sanitize['project'] ?? null
+        );
 
     }
     /**
@@ -377,7 +373,7 @@ class Data_Team_Helper extends \NDB_Form
                 JOIN test_names t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)";
             $where = " WHERE ca.Active = 'Y' AND s.Active = 'Y'".
-                     " AND psc.Centerid!= '1' AND ca.Entity_type != 'Scanner'";
+                " AND psc.Centerid!= '1' AND ca.Entity_type != 'Scanner'";
         }
 
         //filter for testname
@@ -500,16 +496,16 @@ class Data_Team_Helper extends \NDB_Form
 
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
-                 " f.SessionID, f.test_name,f.data_entry,f.commentid,".
-                 " t.Full_name FROM session s".
-                 " JOIN flag f ON (f.sessionid = s.id) JOIN candidate c".
-                 " ON (c.candid = s.candid)".
-                 " JOIN test_names t ON (t.Test_name = f.Test_name)".
-                 " JOIN psc ON (s.CenterID = psc.CenterID)";
+            " f.SessionID, f.test_name,f.data_entry,f.commentid,".
+            " t.Full_name FROM session s".
+            " JOIN flag f ON (f.sessionid = s.id) JOIN candidate c".
+            " ON (c.candid = s.candid)".
+            " JOIN test_names t ON (t.Test_name = f.Test_name)".
+            " JOIN psc ON (s.CenterID = psc.CenterID)";
 
         $where = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
-                   " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
-                   " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
+            " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
+            " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
 
         if (count($ddeInstruments) > 0) {
             $ddeInstruments = implode(",", $ddeInstruments);
@@ -772,8 +768,8 @@ class Data_Team_Helper extends \NDB_Form
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".
-                                " FROM test_battery".
-                                " WHERE Test_name_display=:display";
+                    " FROM test_battery".
+                    " WHERE Test_name_display=:display";
                 $test_name    = $DB->pselectOne(
                     $sqlSelectOne,
                     array('display' => $full_name)
@@ -800,7 +796,7 @@ class Data_Team_Helper extends \NDB_Form
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $sqlSelect  = "SELECT distinct Test_name_display".
-                         " from test_battery where Visit_label =:vl";
+                " from test_battery where Visit_label =:vl";
             $test_names = $DB->pselect($sqlSelect, array('vl' => $visit_label));
         } else {
             $test_names = $DB->pselect(
@@ -841,12 +837,12 @@ class Data_Team_Helper extends \NDB_Form
         );
     }
 
-     /**
-        * Include additional CSS files:
-        *  1. data_team_helper
-        *
-        * @return array of CSS to be inserted
-        */
+    /**
+     * Include additional CSS files:
+     *  1. data_team_helper
+     *
+     * @return array of CSS to be inserted
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

@@ -15,6 +15,7 @@ class MediaIndex extends Component {
 
     this.state = {
       data: {},
+      fieldOptions: {},
       error: false,
       isLoaded: false,
     };
@@ -38,7 +39,7 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => this.setState({data: data.data, fieldOptions: data.fieldOptions}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -79,6 +80,9 @@ class MediaIndex extends Component {
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
+    case 'Site':
+      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
+      break;
     case 'Edit Metadata':
       const editButton = (
         <TriggerableModal title="Edit Media File" label="Edit">
@@ -113,7 +117,7 @@ class MediaIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
-    const options = this.state.data.fieldOptions;
+    const options = this.state.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
@@ -174,7 +178,7 @@ class MediaIndex extends Component {
             <MediaUploadForm
               DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
               action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-              maxUploadSize={this.state.data.maxUploadSize}
+              maxUploadSize={options.maxUploadSize}
             />
           </TabPane>
         );
@@ -186,7 +190,7 @@ class MediaIndex extends Component {
         <TabPane TabId={tabs[0].id}>
           <FilterableDataTable
             name="media"
-            data={this.state.data.Data}
+            data={this.state.data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />

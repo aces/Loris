@@ -48,7 +48,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfilePageLoads()
     {
         $this->setUpConfigSetting("useEDC", "true");
-        $this->setUpConfigSetting("useProjects", "true");
         $this->safeGet($this->url . "/new_profile/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -68,33 +67,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Project", $project);
 
         $this->restoreConfigSetting("useEDC");
-        $this->restoreConfigSetting("useProjects");
-    }
-
-    /**
-     * Tests that with useProjects turned off, project related fields do not
-     * appear on the page
-     *
-     * @return void
-     */
-    function testNewProfileLoadsWithoutProjects()
-    {
-        $this->setUpConfigSetting("useProjects", "false");
-
-        $this->safeGet($this->url . "/new_profile/");
-
-        try {
-            $value   = "#default-panel > div > form > div >".
-                 " div:nth-child(8) > div > div:nth-child(1) > label";
-            $project = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-        } catch(UnknownServerException $e) {
-            $projectField = null;
-        }
-        $this->assertNull($projectField);
-
-        $this->restoreConfigSetting("useProjects");
     }
 
     /**
@@ -136,7 +108,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             'Skipping tests until Travis and React get along better'
         );
         $this->setUpConfigSetting("useEDC", "false");
-        $this->setUpConfigSetting("useProjects", "false");
         $this->webDriver->get($this->url . "/new_profile/");
         // send a key to sex
         $this->webDriver->executescript(
@@ -163,7 +134,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->assertContains("New candidate created.", $bodyText);
         $this->restoreConfigSetting("useEDC");
-        $this->restoreConfigSetting("useProjects");
     }
 
 }

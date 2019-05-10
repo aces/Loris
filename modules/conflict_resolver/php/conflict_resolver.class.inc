@@ -319,7 +319,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         foreach ($projectList as $key => $value) {
             $list_of_projects[$value] = $value;
         }
-
+      
         $this->addSelect('project', 'Project: ', $list_of_projects);
     }
 
