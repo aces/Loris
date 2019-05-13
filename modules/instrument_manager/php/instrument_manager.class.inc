@@ -200,7 +200,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        try {
+            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        } catch (\ConfigurationException $e) {
+            error_log(
+                "Cannot populate certification tables for uploaded " .
+                "instrument. Details: `$e`"
+            );
+            return new \LORIS\Http\Response\InternalServerError(
+                'LORIS is not configured properly and cannot install this ' .
+                'instrument. Please contact your administrator.'
+            );
+        }
+
         $db_config  = $this->factory->config()->getSetting('database');
         exec(
             "mysql".

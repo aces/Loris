@@ -848,6 +848,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * override getExaminerNames() can still easily get the config
      * settings and don't need to parse the config file themselves.
      *
+     * @throws \ConfigurationException
+     *
      * @return array
      */
     function _getCertificationConfig(): array
@@ -873,9 +875,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $CertificationProjects[$projID] = $projID;
                 }
             }
+            $instruments = $CertificationConfig['CertificationInstruments'];
+            if (!is_array($instruments)) {
+                throw new \ConfigurationException(
+                    'CertificationInstruments setting in configuration file ' .
+                    'must be an array!'
+                );
+            }
             foreach (
                 Utility::associativeToNumericArray(
-                    $CertificationConfig['CertificationInstruments']
+                    $instruments
                 )
                 as $instrument
             ) {
