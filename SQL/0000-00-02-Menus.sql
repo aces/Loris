@@ -2,11 +2,6 @@
 -- Table Definition
 --
 
-DROP TABLE IF EXISTS `LorisMenuPermissions`;
-
-
-DROP TABLE IF EXISTS `LorisMenu`;
-
 
 CREATE TABLE `LorisMenu` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
