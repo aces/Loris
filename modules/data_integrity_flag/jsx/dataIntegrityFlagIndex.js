@@ -56,13 +56,16 @@ class DataIntegrityFlagIndex extends Component {
     case 'Instrument':
       const url = loris.BaseURL + '/data_team_helper/?visit_label=' +
         row['Visit Label'] + '&instrument=' + row.Instrument;
-      result = <td><a href={url}>{cell}</a></td>;
+      result = <td><a href={url}>{this.state.data.fieldOptions.instruments[cell]}</a></td>;
       break;
     case 'Flag Status':
       const statusList = this.state.data.fieldOptions.flagStatusList;
       if (Object.keys(statusList).length > 0 && statusList[cell]) {
         result = <td>{statusList[cell]}</td>;
       }
+      break;
+    case 'User':
+      result = <td>{this.state.data.fieldOptions.users[cell]}</td>;
       break;
     }
 
