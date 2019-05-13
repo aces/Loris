@@ -346,7 +346,7 @@ class AcknowledgementsIndex extends Component {
         type: 'date',
       }},
       {label: 'End Date', show: true, filter: {
-        name: 'startDate',
+        name: 'endDate',
         type: 'date',
       }},
       {label: 'Present', show: true, filter: {
