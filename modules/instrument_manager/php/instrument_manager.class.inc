@@ -213,7 +213,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             );
         }
 
-        $db_config  = $this->factory->config()->getSetting('database');
+        $db_config = $this->factory->config()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
