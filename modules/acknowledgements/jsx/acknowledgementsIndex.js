@@ -215,7 +215,7 @@ class AcknowledgementsIndex extends Component {
         title='Add Acknowledgement'
         onClose={this.closeModalForm}
         show={this.state.showModal}
-        throwWarning={true}
+        throwWarning={(Object.keys(this.state.formData).length !== 0) && true}
       >
         <FormElement
           Module='acknowledgements'
