@@ -55,7 +55,7 @@ class DataIntegrityFlagIndex extends Component {
     switch (column) {
     case 'Instrument':
       const url = loris.BaseURL + '/data_team_helper/?visit_label=' +
-        row['Visit Label'] + '&instrument=' + row.Instrument;
+        row['Visit Label'] + '&instrument=' + this.state.data.fieldOptions.instruments[row.Instrument];
       result = <td><a href={url}>{this.state.data.fieldOptions.instruments[cell]}</a></td>;
       break;
     case 'Flag Status':
