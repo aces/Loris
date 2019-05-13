@@ -16,6 +16,7 @@ require_once __DIR__ .
     '/../../../../../../modules/imaging_uploader/php/imaging_uploader.class.inc';
 require_once __DIR__ .
     '/../../../../../../modules/imaging_uploader/php/module.class.inc';
+use LORIS\server_processes_manager as SP;
 /**
  * Handles utility tasks for Dicom fileset upload and processing
  *

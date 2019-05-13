@@ -127,6 +127,11 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $processDbId   = $dh->_process($args);
 
         if ($processDbId) {
+            // Add mri_upload_id to response in case of Auto-launch
+            $this->JSON = array(
+                           "status"        => "uploaded",
+                           "mri_upload_id" => $dh->mri_upload_id,
+                          );
             $this->printProcessResults(array($processDbId), $mri_upload_id);
         } else if ($dh->mri_upload_id) {
             $this->JSON = array(
