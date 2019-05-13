@@ -270,11 +270,11 @@ abstract class NDB_Notifier_Abstract
      * Function asserting if given user should receive a notification
      * for this operation given his permissions.
      *
-     * @param int $uid containing the userID
+     * @param string $uid containing the userID
      *
      * @return bool   permissions sufficient for notification
      */
-    private function _hasNotificationPermission(int $uid): bool
+    private function _hasNotificationPermission(string $uid): bool
     {
         $DB      = Database::singleton();
         $current = $DB->pselect(
@@ -316,11 +316,11 @@ abstract class NDB_Notifier_Abstract
     /**
      * Get email of a user from his ID
      *
-     * @param int $uid containing the userID
+     * @param string $uid containing the userID
      *
      * @return string  email of the user
      */
-    protected function getEmail(int $uid): string
+    protected function getEmail(string $uid): string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",
@@ -331,11 +331,11 @@ abstract class NDB_Notifier_Abstract
     /**
      * Get phone number of a user from his ID
      *
-     * @param int $uid containing the userID
+     * @param string $uid containing the userID
      *
      * @return ?string  Phone number of the user
      */
-    protected function getPhone(int $uid): ?string
+    protected function getPhone(string $uid): ?string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Phone FROM users WHERE ID=:uid",
@@ -354,15 +354,15 @@ abstract class NDB_Notifier_Abstract
     /**
      * Logs in the history table the notifications that have been sent
      *
-     * @param int    $trigger_user user that triggered the notification system
-     * @param int    $target_user  user that receives a notification from the system
+     * @param string $trigger_user user that triggered the notification system
+     * @param string $target_user  user that receives a notification from the system
      * @param string $service      notification service used for this message
      *
      * @return void
      */
     protected function log(
-        int $trigger_user,
-        int $target_user,
+        string $trigger_user,
+        string $target_user,
         string $service
     ): void {
 
