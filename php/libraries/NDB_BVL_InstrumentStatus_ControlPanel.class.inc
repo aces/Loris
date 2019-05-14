@@ -42,11 +42,11 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         int $sessionid,
         ?string $subtest
     ) {
-        $this->candID    = $candid;
-        $this->testname  = $testname;
-        $this->commentID = $commentid;
-        $this->sessionID = $sessionid;
-        $this->subtest   = $subtest;
+        $this->candID     = $candid;
+        $this->testname   = $testname;
+        $this->_commentID = $commentid;
+        $this->sessionID  = $sessionid;
+        $this->subtest    = $subtest;
     }
 
     /**
@@ -63,7 +63,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         $this->tpl_data['candID']    = $this->candID ?? '';
         $this->tpl_data['sessionID'] = $this->sessionID;
-        $this->tpl_data['commentID'] = $this->commentID;
+        $this->tpl_data['commentID'] = $this->_commentID;
         $this->tpl_data['test_name'] = $this->testname;
         $this->tpl_data['subtest']   = $this->subtest ?? '';
 
@@ -88,7 +88,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // create an instance of the instrument
             $instrument = NDB_BVL_Instrument::factory(
                 $this->testname,
-                $this->commentID,
+                $this->_commentID,
                 $this->subtest ?? ''
             );
 
@@ -158,9 +158,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $user = User::singleton();
                 if ($user->hasPermission('send_to_dcc')) {
                     $instrument = \NDB_BVL_Instrument::factory(
-                        $_REQUEST['test_name'],
-                        $_REQUEST['commentID'],
-                        $_REQUEST['subtest']
+                        $this->testname,
+                        $this->_commentID,
+                        $this->subtest ?? ''
                     );
                     $instrument->clearInstrument();
                     return false;
@@ -383,7 +383,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         $user = \User::singleton();
 
         // make a timepoint object
-        $timePoint = \TimePoint::singleton($this->getSessionID());
+        $timePoint = \TimePoint::singleton($this->sessionID);
 
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
