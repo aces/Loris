@@ -231,7 +231,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->userInfo['ID'];
+        return intval($this->userInfo['ID']);
     }
 
     /**
