@@ -550,6 +550,7 @@ class DataTable extends Component {
               alignItems: 'center',
               flexWrap: 'nowrap',
               padding: '5px 0',
+              marginLeft: 'auto',
             }}>
               {this.renderActions()}
               <button
@@ -573,12 +574,25 @@ class DataTable extends Component {
     let footer = this.state.Hide.downloadCSV === true ? '' : (
       <div>
         <div className="row">
-          <div className="col-xs-12" style={{marginTop: '10px'}}>
-            <div className="footerText">
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            padding: '5px 15px',
+          }}>
+            <div style={{
+              order: '1',
+              padding: '5px 0',
+            }}>
               {rows.length} rows displayed of {filteredRows}.
               (Maximum rows per page: {RowsPerPageDropdown})
             </div>
-            <div className="pull-right" style={{marginTop: '-23px'}}>
+            <div style={{
+              order: '2',
+              padding: '5px 0',
+              marginLeft: 'auto',
+            }}>
               <PaginationLinks
                 Total={filteredRows}
                 onChangePage={this.changePage}
