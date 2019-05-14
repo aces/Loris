@@ -151,7 +151,6 @@ class IssueForm extends Component {
         <FormElement
           name='issueEdit'
           onSubmit={this.handleSubmit}
-          ref='form'
         >
           <h3>{headerText}</h3>
           {header}
@@ -159,7 +158,6 @@ class IssueForm extends Component {
             name='title'
             label='Title'
             onUserInput={this.setFormData}
-            ref='title'
             value={this.state.formData.title}
             disabled={!hasEditPermission}
             required={true}
@@ -171,7 +169,6 @@ class IssueForm extends Component {
             emptyOption={true}
             options={this.state.Data.assignees}
             onUserInput={this.setFormData}
-            ref='assignee'
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
             required={true}
@@ -182,9 +179,9 @@ class IssueForm extends Component {
             emptyOption={true}
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref='centerID'
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
+            required={true}
           />
           <SelectElement
             name='status'
@@ -192,7 +189,6 @@ class IssueForm extends Component {
             emptyOption={false}
             options={this.state.Data.statuses}
             onUserInput={this.setFormData}
-            ref='status'
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
                                                // different if the user doesn't have
@@ -204,7 +200,6 @@ class IssueForm extends Component {
             emptyOption={false}
             options={this.state.Data.priorities}
             onUserInput={this.setFormData}
-            ref='priority'
             required={false}
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
@@ -215,7 +210,6 @@ class IssueForm extends Component {
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}
-            ref='category'
             disabled={!hasEditPermission}
             value={this.state.formData.category}
           />
@@ -225,7 +219,6 @@ class IssueForm extends Component {
             emptyOption={true}
             options={this.state.Data.modules}
             onUserInput={this.setFormData}
-            ref='module'
             disabled={!hasEditPermission}
             value={this.state.formData.module}
           />
@@ -233,7 +226,6 @@ class IssueForm extends Component {
             name='PSCID'
             label='PSCID'
             onUserInput={this.setFormData}
-            ref='PSCID'
             disabled={!hasEditPermission}
             value={this.state.formData.PSCID}
           />
@@ -241,7 +233,6 @@ class IssueForm extends Component {
             name='visitLabel'
             label='Visit Label'
             onUserInput={this.setFormData}
-            ref='visitLabel'
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
           />
@@ -251,7 +242,6 @@ class IssueForm extends Component {
             emptyOption={false}
             options={{No: 'No', Yes: 'Yes'}}
             onUserInput={this.setFormData}
-            ref='watching'
             value={isWatching}
           />
           <SelectElement
@@ -260,7 +250,6 @@ class IssueForm extends Component {
             emptyOption={true}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
-            ref='watching'
             multiple={true}
             value={this.state.formData.othersWatching}
           />
@@ -268,7 +257,6 @@ class IssueForm extends Component {
             name='comment'
             label={commentLabel}
             onUserInput={this.setFormData}
-            ref='comment'
             value={this.state.formData.comment}
           />
           <ButtonElement label={submitButtonValue}/>
@@ -429,6 +417,11 @@ class IssueForm extends Component {
     } else if (msgType === 'error') {
       type = 'error';
       title = 'Error!';
+    } else if (msgType === 'success' && !this.state.isNewIssue) {
+      callback = function() {
+        this.setState({submissionResult: null});
+        this.getFormData();
+      };
     }
 
     swal({
