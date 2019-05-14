@@ -548,7 +548,7 @@ class DataTable extends Component {
               display: 'flex',
               justifyContent: 'flex-end',
               alignItems: 'center',
-              flexWrap: 'nowrap',
+              flexWrap: 'wrap',
               padding: '5px 0',
               marginLeft: 'auto',
             }}>
