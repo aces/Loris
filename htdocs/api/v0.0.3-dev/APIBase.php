@@ -127,7 +127,9 @@ abstract class APIBase
      */
     function handleETag()
     {
+        session_destroy();
         session_cache_limiter('private');
+        session_start(array('cookie_httponly' => true));
         $ETag = $this->calculateETag();
 
         $this->header("ETag: $ETag");
