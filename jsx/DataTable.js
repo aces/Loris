@@ -21,6 +21,7 @@ class DataTable extends Component {
       },
     };
 
+    this.changePage = this.changePage.bind(this);
     this.setSortColumn = this.setSortColumn.bind(this);
     this.updateSortColumn = this.updateSortColumn.bind(this);
     this.toggleSortOrder = this.toggleSortOrder.bind(this);
@@ -28,9 +29,15 @@ class DataTable extends Component {
     this.updatePageRows = this.updatePageRows.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
     this.countFilteredRows = this.countFilteredRows.bind(this);
-    this.getSortedRows = this.getSortedRows.bind(this);//
+    this.getSortedRows = this.getSortedRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
     this.renderActions = this.renderActions.bind(this);
+  }
+
+  changePage(i) {
+    const page = this.state.page;
+    page.number = i;
+    this.setState({page});
   }
 
   setSortColumn(column) {
@@ -467,7 +474,7 @@ class DataTable extends Component {
     let rowsPerPageDropdown = (
       <select
         className="input-sm perPage"
-        onChange={this.props.updatePageRows}
+        onChange={this.updatePageRows}
         value={this.state.page.rows}
       >
         <option>20</option>
@@ -522,7 +529,7 @@ class DataTable extends Component {
                 Total={filteredRows}
                 onChangePage={this.changePage}
                 RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
+                Active={this.state.page.number}
               />
             </div>
           </div>
@@ -564,7 +571,7 @@ class DataTable extends Component {
                 Total={filteredRows}
                 onChangePage={this.changePage}
                 RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
+                Active={this.state.page.number}
               />
             </div>
           </div>
