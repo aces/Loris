@@ -369,6 +369,8 @@ class TimePoint
              'ID' => $this->getData('SessionID'),
             )
         );
+        // this select updates the timepoint object
+        $this->select(intval($this->getData('SessionID')));
         return true;
     }
 
