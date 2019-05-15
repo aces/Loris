@@ -70,9 +70,15 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             if ($values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
-            $affiliations = implode(", ", $values['addAffiliations']);
-            $degrees      = implode(", ", $values['addDegrees']);
-            $roles        = implode(", ", $values['addRoles']);
+            $affiliations = is_array($values['addAffiliations']) ?
+                implode(', ', $values['addAffiliations']) :
+                $values['addAffiliations'];
+            $degrees      = is_array($values['addDegrees']) ?
+                implode(', ', $values['addDegrees']) :
+                $values['addDegrees'];
+            $roles        = is_array($values['addRoles']) ?
+                implode(', ', $values['addRoles']) :
+                $values['addRoles'];
             $results      = array(
                              'ordering'      => $values['addOrdering'],
                              'full_name'     => $values['addFullName'],
