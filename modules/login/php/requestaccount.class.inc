@@ -170,9 +170,12 @@ class RequestAccount extends \NDB_Form
                 )
             );
 
-            if ($_REQUEST['examiner'] == 'on') {
+            $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
+            $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
+
+            if ($examinerCheck == 'on') {
                 $rad = 0;
-                if ($_REQUEST['radiologist'] == 'on') {
+                if ($radiologistCheck == 'on') {
                     $rad = 1;
                 }
                 //insert in DB as inactive until account approved
