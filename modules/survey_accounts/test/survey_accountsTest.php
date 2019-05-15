@@ -37,7 +37,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     // clear filter button
     static $clearFilter = ".col-sm-9 > .btn";
     static $add         = "#default-panel > div > div > div.table-header >".
-                          " div > div > div.pull-right > button:nth-child(1)";
+                          " div > div > div:nth-child(2) > button:nth-child(1)";
     // header of the table
     static $table = "#default-panel > div > div > div.table-header".
                     " > div > div > div:nth-child(1)";
