@@ -486,7 +486,7 @@ class DataTable extends Component {
     }
 
     let header = this.props.hide.rowsPerPage === true ? '' : (
-      <div className="table-header panel-heading">
+      <div className="table-header">
         <div className="row">
           <div style={{
             display: 'flex',
@@ -531,7 +531,7 @@ class DataTable extends Component {
     );
 
     let footer = this.props.hide.downloadCSV === true ? '' : (
-      <div className="panel-footer table-footer">
+      <div>
         <div className="row">
           <div style={{
             display: 'flex',
