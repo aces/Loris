@@ -1,2 +1,2 @@
-DELETE FROM LorisMenu WHERE Link='reliability/';
+DELETE FROM LorisMenu WHERE Link='reliability/' OR Label='Reliability';
 
