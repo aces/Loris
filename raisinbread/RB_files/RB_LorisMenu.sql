@@ -12,7 +12,6 @@ INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumbe
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (9,2,'Reliability','reliability/',NULL,1);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (10,2,'Conflict Resolver','conflict_resolver/',NULL,2);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (11,2,'Examiner','examiner/',NULL,3);
-INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (12,2,'Training','training/',NULL,4);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (13,2,'Media','media/',NULL,5);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (14,3,'DICOM Archive','dicom_archive/',NULL,1);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (15,3,'Imaging Browser','imaging_browser/',NULL,2);

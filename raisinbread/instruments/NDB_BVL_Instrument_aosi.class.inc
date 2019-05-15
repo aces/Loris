@@ -1,6 +1,8 @@
 <?php
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $scores = array(
                    "total_score_1_18"                                 => "",
                    "total_score_1_18_override"                        => "",

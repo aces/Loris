@@ -25,8 +25,12 @@
 2019-01-28_Add_Pwned_Password_ConfigSetting.sql
 2019-02-08_cleanup_duplicated_data_path_in_Config.sql
 2019-03-20-session-notnull.sql
+2019-04-26-Delete_cascades_parameter_type_rel.sql
+2019-05-03-deprecate_useprojects.sql
 
 
 #cleanup
 2018-02-20_remove_duplicate_value_from_Config.sql
 2018-04-05_RemovePendingStagingFromFiles.sql
+2018-11-20-remove_currentGUITable_field.sql
+2019-05-13-RemoveTraining.sql

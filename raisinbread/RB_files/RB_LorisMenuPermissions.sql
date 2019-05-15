@@ -14,7 +14,6 @@ INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (8,11);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (18,11);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (11,12);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (11,13);
-INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (12,14);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (10,17);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (19,18);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (20,18);
