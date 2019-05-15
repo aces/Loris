@@ -547,14 +547,6 @@ class DataTable extends Component {
               {rows.length} rows displayed of {filteredRows}.
               (Maximum rows per page: {rowsPerPageDropdown})
             </div>
-            <div className="col-xs-6">
-              <button
-                className="btn btn-primary downloadCSV"
-                onClick={this.downloadCSV.bind(null, csvData)}
-              >
-                Download Table as CSV
-              </button>
-            </div>
             <div style={{
               order: '2',
               padding: '5px 0',
