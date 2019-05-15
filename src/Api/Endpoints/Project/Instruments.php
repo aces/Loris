@@ -102,8 +102,8 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $instrument = \NDB_BVL_Instrument::factory(
                 $instrumentname,
-                null,
-                null,
+                '',
+                '',
                 true
             );
         } catch (\Exception $e) {
