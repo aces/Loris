@@ -48,8 +48,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Conflict Resolver', 'conflict_resolver/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 2),
     ('Examiner', 'examiner/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 3),
-    ('Training', 'training/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 4),
-    ('Media', 'media/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 5);
+    ('Media', 'media/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 4);
 
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
