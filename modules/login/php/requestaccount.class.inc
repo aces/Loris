@@ -169,8 +169,8 @@ class RequestAccount extends \NDB_Form
                  'CenterID' => $site,
                 )
             );
-            
-            $examinerCheck = $_REQUEST['examiner'] ?? 'off';
+
+            $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
             $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
 
             if ($examinerCheck == 'on') {
