@@ -492,9 +492,10 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string Male|Female String describing the sex
+     * @return string|null Male|Female String describing the sex
+     *                     and null if scanner
      */
-    function getCandidateSex(): string
+    function getCandidateSex(): ?string
     {
         return $this->candidateInfo["Sex"];
     }
