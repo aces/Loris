@@ -43,15 +43,19 @@ class Statistics_Site extends \NDB_Menu
         //TODO: Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
             array(
-                'access_all_profiles',
-                'data_entry'
+             'access_all_profiles',
+             'data_entry',
             )
         );
         // If a CenterID is passed in the request, check if the user has the
         // data_entry permission at the site/center specified by CenterID.
-        $hasCenterPermission = !empty($_REQUEST['CenterID'] ?? '') ?
-            $user->hasCenterPermission('data_entry', intval($centerID))
-            : false;
+        $hasCenterPermission = false;
+        if (!empty($_REQUEST['CenterID'] ?? '')) {
+            $hasCenterPermission = $user->hasCenterPermission(
+                'data_entry',
+                intval($centerID)
+            );
+        }
 
         return $hasAccessToAllProfiles || $hasCenterPermission;
 
