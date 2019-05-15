@@ -1,4 +1,5 @@
-####This test script includes:
+#### This test script includes:
+
 Automate generating an instrument file into Loris with LorisForm.
 Automate testing the new instrument.
 
