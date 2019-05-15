@@ -1,10 +1,9 @@
 DELETE cs, c FROM ConfigSettings cs JOIN Config c ON c.ConfigID=cs.ID WHERE cs.Name='useProjects';
 
 -- if Project table is empty, add default 'loris' project
-INSERT IGNORE INTO Project (ProjectID, Name)
-  (SELECT * FROM
-     (SELECT min(ProjectID), 'loris' FROM Project AS q1)
-  AS q2);
+INSERT INTO Project (Name)
+(SELECT 'loris' FROM DUAL
+WHERE NOT EXISTS (SELECT * FROM Project));
 
 -- associate all subprojects to the loris project by default if project table was empty
 INSERT INTO project_rel (ProjectID,SubprojectID)
