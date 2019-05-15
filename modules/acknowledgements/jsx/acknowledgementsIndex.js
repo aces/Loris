@@ -175,7 +175,7 @@ class AcknowledgementsIndex extends Component {
         if (i===0) {
           parsed = this.state[key][data[i]];
         } else {
-          parsed = parsed + ' ' + this.state[key][data[i]];
+          parsed = parsed + ', ' + this.state[key][data[i]];
         }
       }
     } else {
