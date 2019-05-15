@@ -356,8 +356,8 @@ class StaticDataTable extends Component {
     ];
 
     for (let i = 0; i < this.props.Headers.length; i += 1) {
-      if (typeof this.props.hiddenHeaders === 'undefined' ||
-        this.props.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+      if (typeof loris.hiddenHeaders === 'undefined' ||
+        loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
         let colIndex = i + 1;
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
