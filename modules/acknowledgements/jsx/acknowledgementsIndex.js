@@ -32,7 +32,6 @@ class AcknowledgementsIndex extends Component {
       affiliationsOptions: {
         'douglas': 'Douglas',
         'mcgill': 'McGill',
-        'mcgill,douglas': 'McGill, Douglas',
       },
       degreesOptions: {
         bachelors: 'Bachelors',
