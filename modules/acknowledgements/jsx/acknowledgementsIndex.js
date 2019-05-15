@@ -30,8 +30,8 @@ class AcknowledgementsIndex extends Component {
       error: false,
       isLoaded: false,
       affiliationsOptions: {
-        'douglas': 'Douglas',
-        'mcgill': 'McGill',
+        douglas: 'Douglas',
+        mcgill: 'McGill',
       },
       degreesOptions: {
         bachelors: 'Bachelors',
