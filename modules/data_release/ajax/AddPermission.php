@@ -38,7 +38,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         && !empty($_POST['data_release_version'])
     ) {
         $userid = $_POST['userid'];
-        $data_release_version = $_POST['data_release_version'] == 'Unversioned' ? '' : $_POST['data_release_version'];
+        $data_release_version = $_POST['data_release_version'] == 'Unversioned'
+                                ? '' : $_POST['data_release_version'];
 
         $IDs = $DB->pselectCol(
             "SELECT id 
