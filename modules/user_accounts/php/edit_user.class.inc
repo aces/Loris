@@ -278,7 +278,7 @@ class Edit_User extends \NDB_Form
         // END multi-site UPDATE
 
         // EXAMINER UPDATE
-        if ($editor->hasPermission('examiner_multisite')) {
+        if ($this->showExaminerFields($editor)) {
             // get all fields that are related to examiners
             $ex_curr_sites  = array();
             $ex_prev_sites  = array();
@@ -716,10 +716,16 @@ class Edit_User extends \NDB_Form
             array('multiple' => 'multiple')
         );
 
-        if ($editor->hasPermission('examiner_multisite')) {
+        // Should be able to view examiner fields in the following cases:
+        // (1) Editor has 'examiner_multisite' permission.
+        // (2) Editor has 'examiner_view' permission
+        //      AND  either:
+        //          i) The user is from same site as editor,
+        //         OR
+        //          ii) The editor is creating a new user.
+        if ($this->showExaminerFields($editor)) {
             //get site aliases
-            $DB      =& \Database::singleton();
-            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
+            $aliases = $this->getEditorSiteAliases($editor);
 
             foreach ($aliases as $row) {
                 $groupA[] = $this->createCheckbox(
@@ -1087,7 +1093,7 @@ class Edit_User extends \NDB_Form
         //======================================
         //        Validate Examiner Status
         //======================================
-        if ($editor->hasPermission('examiner_multisite')) {
+        if ($this->showExaminerFields($editor)) {
             $matched = false;
             foreach ($values as $k => $v) {
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
@@ -1216,6 +1222,70 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * This function returns a boolean representing whether or not
+     * to display examiner fields to a user that is editing an account.
+     * Examiner fields SHOULD be displayed in the following cases:
+     *      (1) Editor has 'examiner_multisite' permission
+     *          (which allows to add / certify examiners across all sites).
+     *      (2) Editor has 'examiner_view' permission
+     *          (which allows them to add / certify examiner at their own site)
+     *              AND  either:
+     *                  i) The user is from same site as editor,
+     *                      OR
+     *                  ii) The editor is creating a new user.
+     *
+     * @param \User $editor User editing the form
+     *
+     * @return bool  - whether or not to display examiner fields
+     */
+    function showExaminerFields($editor)
+    {
+        $siteMatch = false;
+        if (!$this->isCreatingNewUser()) {
+            $user        = \User::factory($this->identifier);
+            $userSites   = $user->getCenterIDs();
+            $editorSites = $editor->getCenterIDs();
+            foreach ($userSites as $site) {
+                if (in_array($site, $editorSites)) {
+                    $siteMatch = true;
+                }
+            }
+        }
+        return $editor->hasPermission('examiner_multisite')
+            || ($editor->hasPermission('examiner_view') &&
+                ($this->isCreatingNewUser() || $siteMatch));
+    }
+
+    /**
+     * Returns an array of site aliases that the editor is affiliated with.
+     *
+     * @param \User $editor User editing the form
+     *
+     * @return array - array of aliases
+     *
+     * @throws \DatabaseException
+     */
+    function getEditorSiteAliases($editor)
+    {
+        $DB      =& \Database::singleton();
+        $aliases = array();
+        if ($editor->hasPermission('examiner_multisite')) {
+            $aliases = $DB->pselect(
+                "SELECT CenterID, Alias FROM psc",
+                array()
+            );
+        } elseif ($editor->hasPermission('examiner_view')) {
+            $aliases = $DB->pselect(
+                "SELECT p.CenterID, Alias FROM psc p
+                JOIN user_psc_rel u ON (p.CenterID=u.CenterID)
+                WHERE UserID=:uid",
+                array("uid" => $editor->getId())
+            );
+        }
+        return $aliases;
     }
 
     /**
