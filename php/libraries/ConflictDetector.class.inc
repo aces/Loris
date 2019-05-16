@@ -59,14 +59,14 @@ class ConflictDetector
         $instance1 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId1,
-            null
+            ''
         );
 
         // Create the instrument instance for $commentId2
         $instance2 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId2,
-            null
+            ''
         );
 
         // Run the diff
