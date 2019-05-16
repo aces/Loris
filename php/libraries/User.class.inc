@@ -541,7 +541,7 @@ class User extends UserPermissions
      *
      * @return bool Whether the password is known to be pwned.
      */
-    function pwnedPassword(string $password): bool
+    static function pwnedPassword(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
