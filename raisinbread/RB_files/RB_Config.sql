@@ -89,5 +89,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (92,97,'/data/publicatio
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (93,98,'/data/publication_uploads/to_be_deleted/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (94,99,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (95,49,'1000');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (96,100,'environment');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
