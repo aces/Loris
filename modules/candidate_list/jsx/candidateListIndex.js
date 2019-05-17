@@ -24,7 +24,6 @@ class CandidateListIndex extends Component {
       error: false,
       isLoaded: false,
       hideFilter: true,
-      buttonLabel: 'Show Advanced Filters',
       show: {profileForm: false},
     };
 
@@ -48,6 +47,11 @@ class CandidateListIndex extends Component {
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
+
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.has('hide')) {
+      this.setState({hideFilter: JSON.parse(searchParams.get('hide'))});
+    }
   }
 
   /**
@@ -70,8 +74,12 @@ class CandidateListIndex extends Component {
   // Basic/Advanced toggle
   toggleFilters() {
     const hideFilter = !this.state.hideFilter;
-    const buttonLabel = hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters';
-    this.setState({hideFilter, buttonLabel});
+    this.setState({hideFilter});
+
+    // Updates query params to reflect advance filter toggle.
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('hide', hideFilter);
+    history.replaceState(history.state, '', `?${searchParams.toString()}`);
   };
 
   /**
@@ -317,7 +325,7 @@ class CandidateListIndex extends Component {
     // FIXME: move toggle button in the filter component next to the clear button
     const actions = [
       {
-        label: this.state.buttonLabel,
+        label: this.state.hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters',
         action: this.toggleFilters,
         name: 'advanced',
       },
