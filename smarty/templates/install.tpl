@@ -1,4 +1,4 @@
-<html>
+html>
     <head>
     {* installdb.php is in the root directory, so we know these relative
        links should work. Load in the base LORIS bootstrap CSS
@@ -175,7 +175,7 @@
             <fieldset>
                 <legend>Options</legend>
             <div>
-                <div class="col-md-2">
+                <div class="col-md-9">
                     <label for="use_existing_database">Use existing database:</label>
                 </div>
                 <div class="col-md-9">
@@ -184,7 +184,7 @@
                 </div>
             </div>
             <div>
-                <div class="col-md-2">
+                <div class="col-md-10">
                     <label for="use_existing_tables">Use existing tables:</label>
                 </div>
                 <div class="col-md-10">
@@ -193,7 +193,7 @@
                 </div>
             </div>
             <div>
-                <div class="col-md-2">
+                <div class="col-md-10">
                     <label for="use_existing_configs">Use existing configs:</label>
                 </div>
                 <div class="col-md-10">
