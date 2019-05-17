@@ -74,7 +74,7 @@ class DataDictIndex extends React.Component {
     this.setState({filter});
   }
 
-  // TODO: deprecate clearing filters via refs in future refactoring.
+  // Deprecate clearing filters via refs in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */

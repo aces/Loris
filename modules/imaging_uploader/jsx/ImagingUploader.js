@@ -47,7 +47,7 @@ class ImagingUploader extends React.Component {
       method: "GET",
       dataType: 'json',
       success: data => {
-        // FIXME: Remove the following line of code, add ['PatientName'] to the
+        // Remove the following line of code, add ['PatientName'] to the
         // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
         // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
         // the StaticDataTable Component.
@@ -70,7 +70,7 @@ class ImagingUploader extends React.Component {
     this.setState({filter});
   }
 
-  // TODO: deprecate clearing filters via refs in future refactoring.
+  // Deprecate clearing filters via refs in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */

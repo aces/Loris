@@ -25,7 +25,7 @@ class HelpEditor extends React.Component {
       data: {}
     };
 
-    // TODO: refs should be deprecated in future refactoring.
+    // Refs should be deprecated in future refactoring.
     /**
      * Set filter to the element's ref for filtering
      */
@@ -55,7 +55,7 @@ class HelpEditor extends React.Component {
       method: 'GET',
       dataType: 'json',
       success: data => {
-        // FIXME: Remove the following line of code as soon as hiddenHeaders is
+        // Remove the following line of code as soon as hiddenHeaders is
         // accepted as a prop by the StaticDataTable Component.
         loris.hiddenHeaders = data.hiddenHeaders || [];
         this.setState({
@@ -76,7 +76,7 @@ class HelpEditor extends React.Component {
     this.setState({filter});
   }
 
-  // TODO: Clearing filters via refs should be deprecated in future refactoring.
+  // Clearing filters via refs should be deprecated in future refactoring.
   /**
    * Reset the filter elements with textInput refs to empty values
    */

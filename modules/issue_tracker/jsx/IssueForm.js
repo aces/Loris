@@ -192,7 +192,7 @@ class IssueForm extends React.Component {
             onUserInput={this.setFormData}
             ref="status"
             disabled={!hasEditPermission}
-            value={this.state.formData.status} // todo: edit this so the options are
+            value={this.state.formData.status} // edit this so the options are
                                                // different if the user doesn't have
                                                // permission
           />
@@ -361,7 +361,7 @@ class IssueForm extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    // todo: only give valid inputs for fields given previous input to other fields
+    // only give valid inputs for fields given previous input to other fields
     const formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 

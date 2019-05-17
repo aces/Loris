@@ -190,7 +190,7 @@ class ConsentStatus extends React.Component {
 
   render() {
     // If error occurs, return a message.
-    // XXX: Replace this with a UI component for 500 errors.
+    // Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
     }
