@@ -17,13 +17,6 @@ class Filter extends Component {
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
-  componentDidMount() {
-    const queryParams = new URLSearchParams(location.search);
-    const filter = JSON.parse(JSON.stringify(this.props.filter));
-    queryParams.forEach((value, name) => filter[name]= {value});
-    this.props.updateFilter(filter);
-  }
-
   /**
    * Sets filter object to reflect values of input fields.
    *
@@ -43,11 +36,6 @@ class Filter extends Component {
         exactMatch: exactMatch,
       };
     }
-
-    const queryParams = Object.keys(filter)
-                          .map((name) => name+'='+filter[name].value)
-                          .join('&');
-    history.replaceState(filter, '', `?${queryParams}`);
 
     this.props.updateFilter(filter);
   }
