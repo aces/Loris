@@ -25,7 +25,10 @@ namespace LORIS\dicom_archive;
  */
 class ViewDetails extends \NDB_Form
 {
-   var $tarchiveID;
+    /**
+     * ID of the tarchive for which the details should be displayed.
+     */
+    var $tarchiveID;
 
     /**
      * Keeps array of protocols from mri_protocol
@@ -55,8 +58,8 @@ class ViewDetails extends \NDB_Form
 
         $user = \User::singleton();
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
-            $this->tarchiveID = $_REQUEST['tarchiveID'];
-            $this->tpl_data['archive']        = $this->_getTarchiveData(
+            $this->tarchiveID          = $_REQUEST['tarchiveID'];
+            $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $this->tarchiveID,
                 'tarchive',
                 'LastUpdate'
@@ -169,13 +172,15 @@ class ViewDetails extends \NDB_Form
             $dicomArchiveSettings['patientIDRegex']
         );
 
-        $query = "SELECT IsPhantom "
-               . "FROM mri_upload m "
-               . "JOIN tarchive t USING(TarchiveID) "
-               . "WHERE t.TarchiveID =:tid "
-               . "AND t.archivelocation LIKE CONCAT("
-               .     "'%', substring_index(m.decompressedlocation, '/', -1),  '.tar'"
-               . ")";
+        $query     = "SELECT IsPhantom "
+                   . "FROM mri_upload m "
+                   . "JOIN tarchive t USING(TarchiveID) "
+                   . "WHERE t.TarchiveID =:tid "
+                   . "AND t.archivelocation LIKE CONCAT("
+                   .     "'%', "
+                   .     "substring_index(m.decompressedlocation, '/', -1), "
+                   .     " '.tar'"
+                   . ")";
         $isPhantom = $db->pselectRow(
             $query,
             array('tid' => $this->tpl_data['archive']['TarchiveID'])
