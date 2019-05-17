@@ -10,12 +10,13 @@ DROP TABLE IF EXISTS `biobank_specimen_type_unit_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol_container_type_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_type_container_type_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_method_attribute_rel`;
 
 /*Pool*/
 DROP TABLE IF EXISTS `biobank_pool`;
 
 /*Specimen*/
-DROP TABLE IF EXISTS `biobank_specimen_attribute`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute_referencetable`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute_datatype`;
 DROP TABLE IF EXISTS `biobank_specimen_analysis`;
@@ -26,6 +27,8 @@ DROP TABLE IF EXISTS `biobank_specimen`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol`;
 DROP TABLE IF EXISTS `biobank_specimen_process`;
 DROP TABLE IF EXISTS `biobank_specimen_type`;
+DROP TABLE IF EXISTS `biobank_specimen_attribute`;
+DROP TABLE IF EXISTS `biobank_specimen_method`;
 
 /*Container*/
 DROP TABLE IF EXISTS `biobank_container`;
@@ -165,7 +168,7 @@ CREATE TABLE `biobank_specimen` (
   `SpecimenTypeID` integer unsigned NOT NULL,
   `Quantity` DECIMAL(10, 3) NOT NULL,
   `UnitID` integer unsigned NOT NULL,
-  `SessionID` integer unsigned UNSIGNED NOT NULL,
+  `SessionID` integer unsigned NOT NULL,
   CONSTRAINT `PK_biobank_specimen` PRIMARY KEY (`SpecimenID`),
   CONSTRAINT `FK_biobank_specimen_ContainerID`
     FOREIGN KEY (`ContainerID`) REFERENCES `biobank_container`(`ContainerID`)
