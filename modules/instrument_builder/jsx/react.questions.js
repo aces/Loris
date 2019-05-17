@@ -606,8 +606,6 @@ class AddElement extends Component {
   constructor(props) {
     super(props);
     if (this.props.element !== undefined && this.props.element) {
-       alert(this.props.element);
-       console.log(this.props.element.Options);
       // Editing an element, set to elements state
       this.state = {
         Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
