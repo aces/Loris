@@ -17,7 +17,7 @@
     * QC class should be what page the feedback was submitted on (i.e. profile, instrument)
     * Instrument should be populated if QC class is instrument
     * Visit should be populated if QC class is not profile
-    * # Threads should be the thread number
+    * Threads should be the thread number
   * New visit level feedback
     * Should have "The new thread has been submitted" appear in the text box
   * Feedback threads
