@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `biobank_specimen_method_attribute_rel`;
 DROP TABLE IF EXISTS `biobank_pool`;
 
 /*Specimen*/
+DROP TABLE IF EXISTS `biobank_specimen_attribute`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute_referencetable`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute_datatype`;
 DROP TABLE IF EXISTS `biobank_specimen_analysis`;
@@ -27,7 +28,6 @@ DROP TABLE IF EXISTS `biobank_specimen`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol`;
 DROP TABLE IF EXISTS `biobank_specimen_process`;
 DROP TABLE IF EXISTS `biobank_specimen_type`;
-DROP TABLE IF EXISTS `biobank_specimen_attribute`;
 DROP TABLE IF EXISTS `biobank_specimen_method`;
 
 /*Container*/
