@@ -49,7 +49,8 @@ When creating or editing a user: (subtest: edit_user)
 16. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list (and in examiners table).
 17. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
 18. Check that setting the radiologist to Yes/No changes the values for X for all sites
-19. Check that by removing the "examiner_multisite" permission, the user(editor) can not modify X's Examiner Status.
+19. Check that by removing the "examiner_view" and "examiner_multisite" permission, the user(editor) cannot modify X's Examiner Status.
+20. Check that by removing the "examiner_multisite" permission, the user(editor) can only modify X's Examiner Status if the editor and user X are affiliated with a common site.
 20. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
 21. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
 22. Check that modifications made to the basic user infos are displayed when the user table is reloaded.
