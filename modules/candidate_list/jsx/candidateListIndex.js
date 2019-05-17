@@ -98,16 +98,11 @@ class CandidateListIndex extends Component {
       }
     }
     if (column === 'Scan Done' && cell === 'Y') {
+      let url = this.props.baseURL + '/imaging_browser/?PSCID=' + row['PSCID'];
       return (
         <td className="scanDoneLink">
-          <a href="#"
-            onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
-            {pscid: row['PSCID']})}
-          >
-            {cell}
-          </a>
-        </td>
-    );
+          <a href={url}>{cell}</a></td>
+      );
     }
     return <td>{cell}</td>;
   }
