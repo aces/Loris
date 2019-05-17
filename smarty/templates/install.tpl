@@ -1,4 +1,4 @@
-html>
+<html>
     <head>
     {* installdb.php is in the root directory, so we know these relative
        links should work. Load in the base LORIS bootstrap CSS
