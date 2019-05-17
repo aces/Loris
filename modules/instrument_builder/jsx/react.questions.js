@@ -605,10 +605,12 @@ class ListElements extends Component {
 class AddElement extends Component {
   constructor(props) {
     super(props);
-    if (this.props !== undefined && this.props.element) {
+    if (this.props.element !== undefined && this.props.element) {
+       alert(this.props.element);
+       console.log(this.props.element.Options);
       // Editing an element, set to elements state
       this.state = {
-        Options: Instrument.clone(this.props.element.Options),
+        Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
         Description: Instrument.clone(this.props.element.Description),
         Name: Instrument.clone(this.props.element.Name),
         selected: Instrument.clone(this.props.element.selected),
