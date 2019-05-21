@@ -37,7 +37,6 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
-    console.warn(value);
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = type === 'textbox' ? false : true;
