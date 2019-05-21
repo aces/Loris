@@ -38,17 +38,26 @@ class RequestAccount extends \NDB_Form
         $this->addBasicText(
             "firstname",
             "First name",
-            array("placeholder" => "First Name")
+            array(
+             "placeholder" => "First Name",
+             "required"    => true,
+            )
         );
         $this->addBasicText(
             "lastname",
             "Last name",
-            array("placeholder" => "Last Name")
+            array(
+             "placeholder" => "Last Name",
+             "required"    => true,
+            )
         );
         $this->addBasicText(
             "from",
             "Email address",
-            array("placeholder" => "Email address")
+            array(
+             "placeholder" => "Email address",
+             "required"    => true,
+            )
         );
 
         //merging array using + sign to avoid reindexing of keys which
@@ -56,7 +65,8 @@ class RequestAccount extends \NDB_Form
         $this->addSelect(
             "site",
             "Site",
-            array("" => "Choose your site:") + \Utility::getSiteList()
+            array("" => "Choose your site:") + \Utility::getSiteList(),
+            array("required" => true)
         );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());

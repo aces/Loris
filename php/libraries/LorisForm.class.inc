@@ -787,7 +787,7 @@ class LorisForm
 
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
-            if ($el['requireMsg']) {
+            if (isset($el['requireMsg']) && $el['requireMsg']) {
                 $retVal .= ' onChange="this.setCustomValidity('
                     . 'this.value === \'\' ? \''
                     . $el['requireMsg']
