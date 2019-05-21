@@ -13,7 +13,7 @@
    - check to see if the % Male is being calculated properly by looking at the data that's in the table.
 
 ### Behavioural Statistics
-1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table. Does it work? Does it change what appears in both the top table and bottom table?
+1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table (The `use projects` option need to set to `yes` under Loris configration). Does it work? Does it change what appears in both the top table and bottom table?
 2. For both tables:
    - check that the % Completion makes sense in relation to the values in the table.
    - check that the data in the table matches what is stored in the database.
