@@ -39,24 +39,24 @@ class RequestAccount extends \NDB_Form
             "firstname",
             "First name",
             array(
-              "placeholder" => "First Name",
-              "required"    => true
+             "placeholder" => "First Name",
+             "required"    => true,
             )
         );
         $this->addBasicText(
             "lastname",
             "Last name",
             array(
-              "placeholder" => "Last Name",
-              "required"    => true
+             "placeholder" => "Last Name",
+             "required"    => true,
             )
         );
         $this->addBasicText(
             "from",
             "Email address",
             array(
-              "placeholder" => "Email address",
-              "required"    => true
+             "placeholder" => "Email address",
+             "required"    => true,
             )
         );
 
