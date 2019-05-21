@@ -22,7 +22,7 @@ class Filter extends Component {
      const filter = JSON.parse(JSON.stringify(this.props.filter));
      searchParams.forEach((value, name) => {
        if (this.props.fields.find((field) => (field.filter||{}).name == name)) {
-         filter[name] = {value};
+         filter[name] = {value: searchParams.getAll(name)};
        }
      });
      this.props.updateFilter(filter);
@@ -37,6 +37,7 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
+    console.warn(value);
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = type === 'textbox' ? false : true;
@@ -44,8 +45,13 @@ class Filter extends Component {
       delete filter[name];
       searchParams.delete(name);
     } else {
+      if (value.constructor === Array) {
+        searchParams.delete(name);
+        value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.set(name, value);
+      }
       filter[name] = {value, exactMatch};
-      searchParams.set(name, value);
     }
 
     this.props.updateFilter(filter);
