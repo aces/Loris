@@ -1,4 +1,4 @@
-ALTER TABLE project_rel DROP PRIMARY KEY, ADD COLUMN `ProjectSubprojectID` int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;
+ALTER TABLE project_rel DROP PRIMARY KEY, ADD COLUMN `ProjectSubprojectRelID` int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;
 ALTER TABLE project_rel ADD CONSTRAINT UK_project_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID);
 
 CREATE TABLE `visit` (
@@ -9,15 +9,15 @@ CREATE TABLE `visit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `visit_project_subproject_rel` (
-  `VisitProjectSubprojectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `VisitProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `VisitID` int(10) unsigned NOT NULL,
-  `ProjectSubprojectID` int(10) unsigned NOT NULL,
-  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectID`),
-  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectID UNIQUE KEY (`VisitID`, `ProjectSubprojectID`),
+  `ProjectSubprojectRelID` int(10) unsigned NOT NULL,
+  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectRelID`),
+  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectRelID UNIQUE KEY (`VisitID`, `ProjectSubprojectRelID`),
   CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectID FOREIGN KEY (`ProjectSubprojectID`)
-    REFERENCES `project_rel`(`ProjectSubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
+    REFERENCES `project_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

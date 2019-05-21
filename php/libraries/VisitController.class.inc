@@ -128,7 +128,7 @@ ORDER BY ID
                  ON v.VisitID = vps.VisitID
                  JOIN 
                   project_rel pr 
-                 ON vps.ProjectSubprojectID = pr.ProjectSubprojectID
+                 ON vps.ProjectSubprojectRelID = pr.ProjectSubprojectRelID
                 ORDER BY ID, project, subproject
                 ',
                 array()
