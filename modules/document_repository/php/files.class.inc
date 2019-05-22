@@ -148,8 +148,6 @@ class Files extends \NDB_Page
      *
      * @param array $req the request
      *
-     * @throws \Exception
-     *
      * @return void
      */
     function editDocFile(array $req): void
@@ -169,7 +167,7 @@ class Files extends \NDB_Page
                 $updateValues,
                 ['record_id' => $req['id']]
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo 'Could not update the file.',  $e->getMessage(), "\n";
         }
     }
@@ -191,7 +189,8 @@ class Files extends \NDB_Page
             "document_repository",
             "delete"
         );
-
+        $factory  = \NDB_Factory::singleton();
+        $baseURL  = $factory->settings()->getBaseURL();
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository
              WHERE record_id =:identifier",
