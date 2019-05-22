@@ -640,7 +640,7 @@ class TimePoint
     /**
      * Defines the next study stage
      *
-     * @return string study stage title
+     * @return string|null study stage title
      */
     function getNextStage(): ?string
     {
