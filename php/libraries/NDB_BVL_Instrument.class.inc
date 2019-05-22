@@ -343,9 +343,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Gets data for candidate and timepoint to display the tables at the top of the
+     * page. This info is then set in the tpl_data array.
      *
+     * @return void
      */
-    function setupCandidateInfoTables() {
+    function setupCandidateInfoTables(): void
+    {
         try {
             $timePoint = \TimePoint::singleton($this->getSessionID());
         } catch (Exception $e) {
