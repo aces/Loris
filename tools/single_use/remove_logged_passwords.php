@@ -16,6 +16,8 @@ INFO;
 
 echo $info;
 
+echo "Checking for exposed passwords...\n";
+
 // Query DB for burned passwords. The bug caused passwords to be stored on 
 // update so we'll limit the query to that. Additionally we will filter out
 // results from the `new` data that are password hashes i.e. those that begin
@@ -32,12 +34,18 @@ $sql = "select h.userID,
 $result = $DB->pselect($sql, array());
 
 // Reduce the result to one entry per user with the most recent date changed.
+$compromised = array();
 foreach($result as $row) {
     $compromised[$row['userID']] = array(
         'date' => $row['changeDate'],
         'email' => $row['Email'],
         'active' => $row['Active']
     );
+}
+
+if (count($compromised) === 0) {
+    echo "There are no passwords exposed within this LORIS instance.\n";
+    exit(0);
 }
 
 // Set up output
@@ -48,6 +56,7 @@ $entry = <<<REPORT
 \tEmail: %s
 \tDate of Password Change: %s
 \tActive? %s
+\n
 REPORT;
 
 // Add the user's details to the report for output to the user.
@@ -69,12 +78,10 @@ foreach($compromised as $username => $details) {
     );
 }
 
-echo implode("\n", $report) . "\n\n";
+echo implode("\n", $report) . "\n";
 echo "These users should be contacted and informed of the potential password "
     . "exposure and encouraged to change their passwords in other software if "
     . "their LORIS password is also used elsewhere.\n";
-
-exit;
 
 // Delete all passwords from history table.
 $DB->delete(
