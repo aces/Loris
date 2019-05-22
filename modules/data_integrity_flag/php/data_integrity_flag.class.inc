@@ -52,7 +52,6 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $stdin = file_get_contents('php://input');
             $req   = json_decode($stdin, true);
-            error_log(print_r($req, true));
             $this->_insertDataFlag($req);
         }
 
