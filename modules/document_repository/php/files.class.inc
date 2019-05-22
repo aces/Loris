@@ -272,6 +272,7 @@ class Files extends \NDB_Page
                    'instruments' => $instrumentsList,
                    'docData'     => $docData,
                   );
+
         return $result;
     }
     /**
