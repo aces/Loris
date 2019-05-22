@@ -642,7 +642,7 @@ class TimePoint
      *
      * @return string study stage title
      */
-    function getNextStage(): string
+    function getNextStage(): ?string
     {
         if ($this->getData('Current_stage') == 'Approval'
             && $this->getData('Approval') != 'Pass'
