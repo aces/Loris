@@ -2,7 +2,7 @@
  NumericOptions, ListElements, AddElement */
 
 /* global Instrument */
-
+z
 /**
  * This file contains the React classes for instrument builder
  * module. It is used to add and edit questions in the instrument
@@ -610,7 +610,7 @@ class AddElement extends Component {
       this.state = {
         Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
         Description: Instrument.clone(this.props.element.Description),
-        Name: Instrument.clone(this.props.element.Name),
+        Name: Instrument.clone(this.props.element.Name === undefined ? '' : this.props.element.Name),
         selected: Instrument.clone(this.props.element.selected),
       };
     } else {
