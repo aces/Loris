@@ -310,6 +310,10 @@ class DataTable extends Component {
     return result;
   }
 
+  componentDidMount() {
+    $('.dynamictable').DynamicTable();
+  }
+
   renderActions() {
     if (this.props.actions) {
       return this.props.actions.map((action, key) => {
@@ -345,7 +349,7 @@ class DataTable extends Component {
     }
     let rowsPerPage = this.state.page.rows;
     let headers = this.props.hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' onClick={() => {
+      <th key='th_col_0' className="col-xs-2" onClick={() => {
         this.setSortColumn(-1);
       }}>
         {this.props.rowNumLabel}
@@ -357,7 +361,7 @@ class DataTable extends Component {
         let colIndex = i + 1;
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
-            <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
+            <th key={'th_col_' + colIndex} className="col-xs-2" id={this.props.freezeColumn}
                 onClick={() => {
                   this.setSortColumn(i);
                 }}>
@@ -366,7 +370,7 @@ class DataTable extends Component {
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={() => {
+            <th key={'th_col_' + colIndex} className="col-xs-2" onClick={() => {
               this.setSortColumn(i);
             }}>
               {this.props.fields[i].label}
@@ -582,7 +586,7 @@ class DataTable extends Component {
     return (
       <div style={{margin: '14px'}}>
         {header}
-        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+        <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
