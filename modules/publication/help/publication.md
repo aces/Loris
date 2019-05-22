@@ -38,6 +38,7 @@ project proposals.
 - `publication_uploads`: This configuration determines the directory where file uploads
  get stored. By default, this directory will be `/data/publication_uploads/` but
   it is not automatically created.
+- `publication_delections`: Only users that are affiliated with the proposal can delete.
 
 ## Interactions with LORIS
 
