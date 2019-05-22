@@ -111,6 +111,8 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $db = \NDB_Factory::singleton()->database();
+
         // set the class variables
         $this->columns = [
                           'dataflag_id',
@@ -127,6 +129,17 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->order_by     = 'dataflag_date desc';
         $this->validFilters = [];
         $this->formToFilter = [];
+
+        $users         = array();
+        $selectedUsers = $db->pselect(
+            "SELECT u.UserID, u.Real_name FROM data_integrity_flag dif " .
+            "INNER JOIN users u ON (dif.dataflag_userid=u.UserID)",
+            array()
+        );
+        foreach ($selectedUsers as $row) {
+            $users[$row['UserID']] = $row['Real_name'];
+        }
+
         $flagStatusList     = [
                                '1' => '1 - Ready For Review',
                                '2' => '2 - Review Completed',
@@ -136,7 +149,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->fieldOptions = [
                                'visits'         => \Utility::getVisitList(),
                                'instruments'    => \Utility::getAllInstruments(),
-                               'users'          => ['admin' => 'admin'],
+                               'users'          => $users,
                                'flagStatusList' => $flagStatusList,
                               ];
     }
