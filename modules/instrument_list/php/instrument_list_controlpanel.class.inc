@@ -294,7 +294,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCStatus'])) && empty($_REQUEST['setBVLQCStatus'])) {
             $this->setData(
                 array('BVLQCStatus' => null)
             );
@@ -309,7 +309,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCType']) && empty($_REQUEST['setBVLQCType'])) {
             $this->setData(
                 array('BVLQCType' => null)
             );
