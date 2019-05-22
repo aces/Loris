@@ -131,22 +131,13 @@ class DocEditForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
     let formData = this.state.docData;
-    let formObject= new FormData();
-    for (let key in formData) {
-      if (formData[key] !== '' && formData[key] !== null && formData[key] !== undefined) {
-        formObject.append(key, formData[key]);
-      }
-    }
-   fetch(this.props.action, {
+    fetch(this.props.action, {
       method: 'PUT',
-      cache: 'no-cache',
-      credentials: 'same-origin',
       headers: {
             'Content-Type': 'multipart/form-data',
       },
-      body: formObject,
+      body: JSON.stringify(formData),
     })
     .then((resp) => resp.json())
     .then(()=>{
