@@ -337,6 +337,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $this->commentID = $commentID;
         $this->page      = $page;
+
+        if (isset($this->commentID)) {
+            try {
+                $timePoint = \TimePoint::singleton($this->getSessionID());
+            } catch (Exception $e) {
+                throw new LorisException($e->getMessage());
+            }
+
+            try {
+                $candidate = \Candidate::singleton($timePoint->getCandID());
+            } catch(Exception $e) {
+                throw new LorisException($e->getMessage());
+            }
+
+            $this->tpl_data['candidate'] = $candidate->getData();
+            $this->tpl_data['timePoint'] = $timePoint->getData();
+        }
+
     }
 
     /**
@@ -448,6 +466,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
+            $smarty->assign($this->tpl_data);
             $html = $smarty->fetch("instrument_html.tpl");
         }
 
