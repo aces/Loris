@@ -90,7 +90,9 @@ class Files extends \NDB_Page
             }
             break;
         case "PUT":
-            $this->editDocFile();
+            $tmp = $request->getBody();
+            $arr = (array)json_decode($tmp);
+            $this->editDocFile($arr);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -144,16 +146,16 @@ class Files extends \NDB_Page
     /**
      * Handles the document editing process
      *
-     * @throws \DatabaseException
+     * @param array $req the request
+     *
+     * @throws \Exception
      *
      * @return void
      */
-    function editDocFile(): void
+    function editDocFile(array $req): void
     {
-        $db   = \Database::singleton();
-        $user = \User::singleton();
-        $req  = array();
-        $this->parseRawHttpRequest($req);
+        $db           = \Database::singleton();
+        $user         = \User::singleton();
         $updateValues = [
                          'instrument' => $req['instrument'] ?? null,
                          'comments'   => $req['comments'] ?? null,
@@ -167,57 +169,8 @@ class Files extends \NDB_Page
                 $updateValues,
                 ['record_id' => $req['id']]
             );
-        } catch (\DatabaseException $e) {
-            showError("Could not update the file. Please try again!");
-        }
-    }
-    /**
-     * Handles the raw form-data from PUT method to an array.
-     *
-     * @param array $a_data an init array
-     *
-     * @throws \DatabaseException
-     * @return void
-     */
-    function parseRawHttpRequest(array &$a_data): void
-    {
-        // read incoming data
-        $input = file_get_contents('php://input');
-        // grab multipart boundary from content type header
-        preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-        $boundary = $matches[1];
-
-        // split content by boundary and get rid of last -- element
-        $a_blocks = preg_split("/-+$boundary/", $input);
-        array_pop($a_blocks);
-
-        // loop data blocks
-        foreach ($a_blocks as $id => $block) {
-            if (empty($block)) {
-                continue;
-            }
-
-            // you'll have to var_dump $block to understand this and maybe replace
-            //  \n or \r with a visibile char
-
-            // parse uploaded files
-            if (strpos($block, 'application/octet-stream') !== false) {
-                // match "name", then everything after "stream" (optional) except
-                // for prepending newlines
-                preg_match(
-                    "/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s",
-                    $block,
-                    $matches
-                );
-            } else {
-                // match "name" and optional value in between newline sequences
-                preg_match(
-                    '/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s',
-                    $block,
-                    $matches
-                );
-            }
-             $a_data[$matches[1]] = $matches[2];
+        } catch (Exception $e) {
+            echo 'Could not update the file.',  $e->getMessage(), "\n";
         }
     }
     /**
@@ -299,11 +252,7 @@ class Files extends \NDB_Page
         );
         $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
         //docFile
-        $docData = null;
-        if (isset($id)) {
-            $idDocFile = $id;
-            $docData   = $db->pselectRow(
-                "SELECT " .
+        $query   ="SELECT " .
                 "record_id as id, " .
                 "PSCID as pscid, " .
                 "File_category as category," .
@@ -314,10 +263,10 @@ class Files extends \NDB_Page
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
-                " WHERE record_id = $idDocFile",
-                array()
-            );
-        }
+                " WHERE record_id = :record_id";
+        $where   = array('record_id' => $id);
+        $docData = $db->pselectRow($query, $where);
+
         $result = array(
                    'categories'  => $categoriesList,
                    'sites'       => $siteList,
@@ -344,8 +293,9 @@ class Files extends \NDB_Page
                 $depth       += 1;
                 $parent_id    = $value['parent_id'];
                 $query        = "SELECT * FROM document_repository_categories".
-                            " WHERE id=$parent_id";
-                $value        = $DB->pselectRow($query, array());
+                            " WHERE id=:parent_id";
+                $where        = array('parent_id' => $parent_id);
+                $value        = $DB->pselectRow($query, $where);
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
