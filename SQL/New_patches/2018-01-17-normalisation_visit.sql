@@ -1,4 +1,5 @@
-ALTER TABLE project_rel DROP PRIMARY KEY, ADD COLUMN `ProjectSubprojectRelID` int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;
+ALTER TABLE project_rel DROP PRIMARY KEY;
+ALTER TABLE project_rel ADD COLUMN `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
 ALTER TABLE project_rel ADD CONSTRAINT UK_project_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID);
 
 CREATE TABLE `visit` (
