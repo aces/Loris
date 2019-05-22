@@ -41,6 +41,7 @@ class FilterableDataTable extends Component {
    */
   clearFilter() {
     this.updateFilter({});
+    history.replaceState({}, '', '?');
   }
 
   render() {

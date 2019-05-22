@@ -17,6 +17,17 @@ class Filter extends Component {
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  componentDidMount() {
+     const searchParams = new URLSearchParams(location.search);
+     const filter = JSON.parse(JSON.stringify(this.props.filter));
+     searchParams.forEach((value, name) => {
+       if (this.props.fields.find((field) => (field.filter||{}).name == name)) {
+         filter[name] = {value: searchParams.getAll(name)};
+       }
+     });
+     this.props.updateFilter(filter);
+   }
+
   /**
    * Sets filter object to reflect values of input fields.
    *
@@ -26,18 +37,24 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
+    const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = type === 'textbox' ? false : true;
     if (value === null || value === '') {
       delete filter[name];
+      searchParams.delete(name);
     } else {
-      filter[name] = {
-        value: value,
-        exactMatch: exactMatch,
-      };
+      if (value.constructor === Array) {
+        searchParams.delete(name);
+        value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.set(name, value);
+      }
+      filter[name] = {value, exactMatch};
     }
 
     this.props.updateFilter(filter);
+    history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
   renderFilterFields() {
