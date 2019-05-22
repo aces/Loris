@@ -93,7 +93,7 @@
             <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
         </div>
         <div class="col-sm-2">
-            <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onClick="this.form.reset()" />
+            <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
         </div>
     </div>
 

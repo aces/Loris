@@ -70,6 +70,7 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
+     * @param bool    $scanDoneExists    does the column exist in the databse
      *
      * @return string
      */
@@ -84,128 +85,122 @@ class Stats_MRI extends \NDB_Form
         array $data,
         $Subsection="",
         $disclamer='',
-        $projectID=null
+        $projectID=null,
+        $scanDoneExists = true
     ): string {
 
         $tpl_data = array();
-        $smarty = new \Smarty_neurodb("statistics");
         // Sanitize test name if present. Otherwise use empty string.
-        $tpl_data['test_name'] = isset($_REQUEST['test_name'])
+        $tpl_data['test_name']  = isset($_REQUEST['test_name'])
             ? htmlspecialchars($_REQUEST['test_name'])
             : '';
         $tpl_data['Subsection'] = $Subsection;
-        $tpl_data['DropdownName'] = $dropdown_name;
-        $tpl_data['DropdownOptions'] = $dropdown_opt;
+        $tpl_data['Visits']     = $visits;
+        $smarty = new \Smarty_neurodb("statistics");
+        $tpl_data['SectionHeader'] = $sectionHeader;
+        $tpl_data['TableHeader']   = $tableHeader;
+        $tpl_data['Disclamer']     = $disclamer;
+        $tpl_data['Subcategories'] = $subcats;
+        $tpl_var = \Utility::getSubprojectsForProject($projectID);
+        $tpl_data['Subprojects']      = $tpl_var;
+        $tpl_data['DropdownName']     = $dropdown_name;
+        $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
+        $tpl_data['Centers']          = $centers;
+        foreach ($data as $row) {
+            $subproj = $row['SubprojectID'];
+            $vl      = $row['VLabel'];
+            $subcat  = $row['Subcat'];
+            $center  = $row['CenterID'];
 
-        // if the data array is empty, means the scan_done does not exist for that
-        // scan type
-        if (!empty($data)) {
-            $tpl_data['scan_done_exists'] = true;
-            $tpl_data['Visits'] = $visits;
-            $tpl_data['SectionHeader'] = $sectionHeader;
-            $tpl_data['TableHeader'] = $tableHeader;
-            $tpl_data['Disclamer'] = $disclamer;
-            $tpl_data['Subcategories'] = $subcats;
-            $tpl_var = \Utility::getSubprojectsForProject($projectID);
-            $tpl_data['Subprojects'] = $tpl_var;
-            $tpl_data['Centers'] = $centers;
-            foreach ($data as $row) {
-                $subproj = $row['SubprojectID'];
-                $vl = $row['VLabel'];
-                $subcat = $row['Subcat'];
-                $center = $row['CenterID'];
-
-                /* Calculate the totals for each element of the stats table. Each
-                 * node of this nested array contains a key-value array consisting
-                 * of the subcategories as they keys and the totals as values.
-                 * There is one additional key, 'total'.
-                 * E.g.
-                 *      array(
-                 *          'total' = x;
-                 *          $subcategory1 = y;
-                 *          $subcategory2 = z;
-                 *          ...
-                 *      )
+            /* Calculate the totals for each element of the stats table. Each
+             * node of this nested array contains a key-value array consisting
+             * of the subcategories as they keys and the totals as values.
+             * There is one additional key, 'total'.
+             * E.g.
+             *      array(
+             *          'total' = x;
+             *          $subcategory1 = y;
+             *          $subcategory2 = z;
+             *          ...
+             *      )
+             */
+            if (in_array($vl, $visits)
+                && in_array($subcat, $subcats)
+                && $this->_inCenter($center, $centers)
+            ) {
+                $C = 'C' . $center;
+                /* This array contains all the $subcategories as keys as well
+                * as 'total'. All values are 0.
+                */
+                $blankStatsArray = $this->initializeStatsArray($subcats);
+                /* Initialize values for all of the endpoints using the array
+                 * just created. This step is done to prevent undefined index
+                 * notices from appearing in the PHP logs for uninitialzed keys.
                  */
-                if (in_array($vl, $visits)
-                    && in_array($subcat, $subcats)
-                    && $this->_inCenter($center, $centers)
-                ) {
-                    $C = 'C' . $center;
-                    /* This array contains all the $subcategories as keys as well
-                    * as 'total'. All values are 0.
-                    */
-                    $blankStatsArray = $this->initializeStatsArray($subcats);
-                    /* Initialize values for all of the endpoints using the array
-                     * just created. This step is done to prevent undefined index
-                     * notices from appearing in the PHP logs for uninitialzed keys.
-                     */
 
-                    // Data
-                    if (!isset($tpl_data['data'])) {
-                        $tpl_data['data'] = $blankStatsArray;
-                    }
-                    // Data => Visit_Label
-                    if (!isset($tpl_data['data'][$vl])) {
-                        $tpl_data['data'][$vl] = $blankStatsArray;
-                    }
-                    // Data => Subproject
-                    if (!isset($tpl_data['data'][$subproj])) {
-                        $tpl_data['data'][$subproj] = $blankStatsArray;
-                    }
-                    // Data => Subproject => Visit_label
-                    if (!isset($tpl_data['data'][$subproj][$vl])) {
-                        $tpl_data['data'][$subproj][$vl] = $blankStatsArray;
-                    }
-                    // Data => Subproject => Center
-                    if (!isset($tpl_data['data'][$subproj][$C])) {
-                        $tpl_data['data'][$subproj][$C] = $blankStatsArray;
-                    }
-                    // Data => Subproject => Center => Visit_Label
-                    if (!isset($tpl_data['data'][$subproj][$C][$vl])) {
-                        $tpl_data['data'][$subproj][$C][$vl] = $blankStatsArray;
-                    }
-                    // Data => Center
-                    if (!isset($tpl_data['data'][$C])) {
-                        $tpl_data['data'][$C] = $blankStatsArray;
-                    }
-                    // Data => Center => Visit_Label
-                    if (!isset($tpl_data['data'][$C][$vl])) {
-                        $tpl_data['data'][$C][$vl] = $blankStatsArray;
-                    }
-
-                    // Update the $subcat and total values for each element.
-                    // Data
-                    $tpl_data['data'][$subcat] += $row['val'];
-                    $tpl_data['data']['total'] += $row['val'];
-                    // Data => Visit_Label
-                    $tpl_data['data'][$vl][$subcat] += $row['val'];
-                    $tpl_data['data'][$vl]['total'] += $row['val'];
-                    // Data => Subproject
-                    $tpl_data['data'][$subproj][$subcat] += $row['val'];
-                    $tpl_data['data'][$subproj]['total'] += $row['val'];
-                    // Data => Subproject => Visit_Label
-                    $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
-                    $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
-                    // Data => Subproject => Center
-                    $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
-                    $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
-                    // Data => Subproject => Center => Visit_Label
-                    $tpl_data['data'][$subproj][$C][$vl][$subcat] = $row['val'];
-                    $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
-                    // Data => Center
-                    $tpl_data['data'][$C][$subcat] += $row['val'];
-                    $tpl_data['data'][$C]['total'] += $row['val'];
-                    // Data => Center => Visit_Label
-                    $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
-                    $tpl_data['data'][$C][$vl]['total'] += $row['val'];
+                // Data
+                if (!isset($tpl_data['data'])) {
+                    $tpl_data['data'] = $blankStatsArray;
                 }
+                // Data => Visit_Label
+                if (!isset($tpl_data['data'][$vl])) {
+                    $tpl_data['data'][$vl] = $blankStatsArray;
+                }
+                // Data => Subproject
+                if (!isset($tpl_data['data'][$subproj])) {
+                    $tpl_data['data'][$subproj] = $blankStatsArray;
+                }
+                // Data => Subproject => Visit_label
+                if (!isset($tpl_data['data'][$subproj][$vl])) {
+                    $tpl_data['data'][$subproj][$vl] = $blankStatsArray;
+                }
+                // Data => Subproject => Center
+                if (!isset($tpl_data['data'][$subproj][$C])) {
+                    $tpl_data['data'][$subproj][$C] = $blankStatsArray;
+                }
+                // Data => Subproject => Center => Visit_Label
+                if (!isset($tpl_data['data'][$subproj][$C][$vl])) {
+                    $tpl_data['data'][$subproj][$C][$vl] = $blankStatsArray;
+                }
+                // Data => Center
+                if (!isset($tpl_data['data'][$C])) {
+                    $tpl_data['data'][$C] = $blankStatsArray;
+                }
+                // Data => Center => Visit_Label
+                if (!isset($tpl_data['data'][$C][$vl])) {
+                    $tpl_data['data'][$C][$vl] = $blankStatsArray;
+                }
+
+                // Update the $subcat and total values for each element.
+                // Data
+                $tpl_data['data'][$subcat] += $row['val'];
+                $tpl_data['data']['total'] += $row['val'];
+                // Data => Visit_Label
+                $tpl_data['data'][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$vl]['total'] += $row['val'];
+                // Data => Subproject
+                $tpl_data['data'][$subproj][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj]['total'] += $row['val'];
+                // Data => Subproject => Visit_Label
+                $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+                // Data => Subproject => Center
+                $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
+                // Data => Subproject => Center => Visit_Label
+                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                // Data => Center
+                $tpl_data['data'][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$C]['total'] += $row['val'];
+                // Data => Center => Visit_Label
+                $tpl_data['data'][$C][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$C][$vl]['total'] += $row['val'];
             }
-        } else {
-            $tpl_data['scan_done_exists'] = false;
         }
 
+        $tpl_data['scan_done_exists'] = $scanDoneExists;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
@@ -345,8 +340,8 @@ class Stats_MRI extends \NDB_Form
         }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
-        $MRIHeader = "$MRI_Type Breakdown";
-        $CaseStatement = "
+        $MRIHeader      = "$MRI_Type Breakdown";
+        $CaseStatement  = "
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
                           WHEN 'No' THEN 'No Scan'
@@ -355,9 +350,11 @@ class Stats_MRI extends \NDB_Form
 
         // Check if the mri_parameter_form contains the necessary columns before
         // running the query
-        $result = array();
+        $result         = array();
+        $scanDoneExists = false;
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
-            $result = $DB->pselect(
+            $scanDoneExists = true;
+            $result         = $DB->pselect(
                 "SELECT s.SubprojectID,
                     s.CenterID,
                     s.Visit_label as VLabel,
@@ -368,6 +365,7 @@ class Stats_MRI extends \NDB_Form
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
@@ -395,7 +393,8 @@ class Stats_MRI extends \NDB_Form
             $result,
             "mri",
             "",
-            $currentProject
+            $currentProject,
+            $scanDoneExists
         );
         //END BIGTABLE
 
