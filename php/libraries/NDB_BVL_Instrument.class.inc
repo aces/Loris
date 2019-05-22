@@ -234,6 +234,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
+        if (isset($commentID)) {
+            $obj->setupCandidateInfoTables();
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -337,24 +340,26 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $this->commentID = $commentID;
         $this->page      = $page;
+    }
 
-        if (isset($this->commentID)) {
-            try {
-                $timePoint = \TimePoint::singleton($this->getSessionID());
-            } catch (Exception $e) {
-                throw new LorisException($e->getMessage());
-            }
-
-            try {
-                $candidate = \Candidate::singleton($timePoint->getCandID());
-            } catch(Exception $e) {
-                throw new LorisException($e->getMessage());
-            }
-
-            $this->tpl_data['candidate'] = $candidate->getData();
-            $this->tpl_data['timePoint'] = $timePoint->getData();
+    /**
+     *
+     */
+    function setupCandidateInfoTables() {
+        try {
+            $timePoint = \TimePoint::singleton($this->getSessionID());
+        } catch (Exception $e) {
+            throw new LorisException($e->getMessage());
         }
 
+        try {
+            $candidate = \Candidate::singleton($timePoint->getCandID());
+        } catch(Exception $e) {
+            throw new LorisException($e->getMessage());
+        }
+
+        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['timePoint'] = $timePoint->getData();
     }
 
     /**
