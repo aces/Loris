@@ -52,6 +52,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $stdin = file_get_contents('php://input');
             $req   = json_decode($stdin, true);
+            error_log(print_r($req, true));
             $this->_insertDataFlag($req);
         }
 
@@ -79,6 +80,9 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             return "Error";
         }
         $req = \Utility::asArray($req);
+        // comment may not be set since it is not a required field
+        $comment = (isset($req['comment']) && !empty($req['comment'])) ?
+            $req['comment'] : null;
 
         $db->update(
             'data_integrity_flag',
@@ -93,7 +97,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             [
              'dataflag_instrument' => $req['instrument'],
              'dataflag_visitlabel' => $req['visitLabel'],
-             'dataflag_comment'    => $req['comment'],
+             'dataflag_comment'    => $comment,
              'dataflag_date'       => $req['date'],
              'dataflag_status'     => $req['flagStatus'],
              'latest_entry'        => 1,
