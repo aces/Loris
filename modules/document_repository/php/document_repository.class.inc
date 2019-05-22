@@ -106,7 +106,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                                'instruments'    => $instrumentsList,
                                'fileTypes'      => $fileTypeList,
                               );
-        return $true;
+        return;
     }
     /**
      * Handler of parsing category
