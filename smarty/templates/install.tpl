@@ -174,33 +174,27 @@
             </fieldset>
             <fieldset>
                 <legend>Options</legend>
-            <div>
-                <div class="col-md-9">
-                    <label for="use_existing_database">Use existing database:</label>
-                </div>
-                <div class="col-md-9">
-                    <input type="checkbox" id="use_existing_database" name="use_existing_database" value="on" {($use_existing_database == 'on') ? 'checked' : ''}/>
-                                        Check this if the database already exists but does not have Loris installed yet
-                </div>
+            <div class="col-md-12">
+                <label for="use_existing_database">Use existing database:</label>
             </div>
-            <div>
-                <div class="col-md-10">
-                    <label for="use_existing_tables">Use existing tables:</label>
-                </div>
-                <div class="col-md-10">
-                    <input type="checkbox" id="use_existing_tables" name="use_existing_tables" value="on" {($use_existing_tables == 'on') ? 'checked' : ''}/>
-                                        Check this if you already installed Loris at the specified database
-                </div>
+            <div class="col-md-12">
+                <input type="checkbox" id="use_existing_database" name="use_existing_database" value="on" {($use_existing_database == 'on') ? 'checked' : ''}/>
+                                    Check this if the database already exists but does not have Loris installed yet
             </div>
-            <div>
-                <div class="col-md-10">
-                    <label for="use_existing_configs">Use existing configs:</label>
-                </div>
-                <div class="col-md-10">
-                    <input type="checkbox" id="use_existing_configs" name="use_existing_configs" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
-                                        Check this if you don't want to update the configuration.
-                                    <em>(You really should update the configuration if possible, though)</em>
-                </div>
+            <div class="col-md-12">
+                <label for="use_existing_tables">Use existing tables:</label>
+            </div>
+            <div class="col-md-12">
+                <input type="checkbox" id="use_existing_tables" name="use_existing_tables" value="on" {($use_existing_tables == 'on') ? 'checked' : ''}/>
+                                    Check this if you already installed Loris at the specified database
+            </div>
+            <div class="col-md-12">
+                <label for="use_existing_configs">Use existing configs:</label>
+            </div>
+            <div class="col-md-12">
+                <input type="checkbox" id="use_existing_configs" name="use_existing_configs" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
+                                    Check this if you don't want to update the configuration.
+                                <em>(You really should update the configuration if possible, though)</em>
             </div>
             </fieldset>
             <input type="hidden" name="formname" value="validaterootaccount" />
