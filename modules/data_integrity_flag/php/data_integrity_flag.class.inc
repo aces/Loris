@@ -73,7 +73,6 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
 
         if (!isset($req['instrument'])
             || !isset($req['visitLabel'])
-            || !isset($req['comment'])
             || !isset($req['date'])
             || !isset($req['flagStatus'])
         ) {
