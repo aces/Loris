@@ -50,7 +50,7 @@ class Statistics_Site extends \NDB_Menu
         // If a CenterID is passed in the request, check if the user has the
         // data_entry permission at the site/center specified by CenterID.
         $hasCenterPermission = false;
-        if (!empty($_REQUEST['CenterID'] ?? '')) {
+        if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
                 intval($centerID)
