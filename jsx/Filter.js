@@ -58,6 +58,9 @@ class Filter extends Component {
         case 'date':
           element = <DateElement key={filter.name}/>;
           break;
+        case 'checkbox':
+          element = <CheckboxElement key={filter.name}/>;
+          break;
         default:
           element = <TextboxElement key={filter.name}/>;
         }

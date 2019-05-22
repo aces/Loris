@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS bids_mri_scan_type_rel;
-DROP TABLE IF EXISTS bids_category;
-DROP TABLE IF EXISTS bids_scan_type;
-DROP TABLE IF EXISTS bids_scan_type_subcategory;
-
 CREATE TABLE `bids_category` (
  `BIDSCategoryID`   int(3)      UNSIGNED NOT NULL AUTO_INCREMENT,
  `BIDSCategoryName` varchar(10)          NOT NULL UNIQUE,

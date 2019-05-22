@@ -75,7 +75,7 @@ class Email
         $headers .= "Content-transfer-encoding: 8bit\n";
         $headers .= "Date: " . date('r', time()) . "\n";
         $headers .= "Message-ID: <"
-            . md5(uniqid(time()))
+            . md5(uniqid((string) time()))
             . "@"
             . $config->getSetting('host')
             . "\n";

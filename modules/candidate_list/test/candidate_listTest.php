@@ -32,10 +32,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $sex            = "#candidateList_filter > div > div > fieldset >".
                              " div:nth-child(11) > div > div > select";
     static $project        = ".col-xs-12:nth-child(15) .form-control, select";
-    static $advancedFilter = ".pull-right > .btn:nth-child(1)";
-    static $openProfile    = ".pull-right > .btn:nth-child(2)";
-    static $clearFilter    =".col-sm-9 > .btn";
-    static $display        = ".table-header .col-xs-12 > div:nth-child(1)";
+    static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
+                             " button:nth-child(1)";
+    static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
+                             " button:nth-child(2)";
+    static $clearFilter    = ".col-sm-9 > .btn";
+    static $display        = ".table-header > div > div > div:nth-child(1)";
     static $pscidLink      = "tr:nth-child(1) a";
 
     /**
@@ -48,7 +50,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
-        $this->setUpConfigSetting("useProjects", "true");
     }
 
     /**
@@ -60,7 +61,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
-        $this->restoreConfigSetting("useProjects");
     }
     /**
      * Tests that, the homepage should not have "You do not have access

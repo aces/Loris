@@ -68,6 +68,7 @@ class AcknowledgementsIndex extends Component {
     this.closeModalForm = this.closeModalForm.bind(this);
     this.renderCitationPolicy = this.renderCitationPolicy.bind(this);
     this.renderAddForm = this.renderAddForm.bind(this);
+    this.parseMultiple = this.parseMultiple.bind(this);
   }
 
   componentDidMount() {
@@ -158,27 +159,52 @@ class AcknowledgementsIndex extends Component {
   }
 
   /**
+   * Return parsed string without commas.
+   *
+   * @param {string} data - string with commas
+   * @param {string} key - string for state json retrieval.
+   *
+   * @return {string} formatted string for table cell
+   */
+  parseMultiple(data, key) {
+    let parsed = '';
+    if (data && data.includes(',')) {
+      data = data.split(',');
+      for (let i=0; i<data.length; i++) {
+        if (i===0) {
+          parsed = this.state[key][data[i]];
+        } else {
+          parsed = parsed + ', ' + this.state[key][data[i]];
+        }
+      }
+    } else {
+      parsed = this.state[key][data];
+    }
+    return parsed;
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
    *
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
 
     switch (column) {
       case 'Affiliations':
-        result = <td>{this.state.affiliationsOptions[cell]}</td>;
+        result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
         break;
       case 'Degrees':
-        result = <td>{this.state.degreesOptions[cell]}</td>;
+        result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
         break;
 
       case 'Roles':
-        result = <td>{this.state.rolesOptions[cell]}</td>;
+        result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
         break;
     }
     return result;

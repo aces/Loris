@@ -172,7 +172,7 @@ try {
     }
     if (isset($caller->feedbackPanel)) {
         if (!isset($user)) {
-            throw new Exception(401);
+            throw new \LorisException('Unauthorized');
         }
         if ($user->hasPermission('bvl_feedback')) {
             $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(

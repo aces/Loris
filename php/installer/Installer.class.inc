@@ -279,9 +279,12 @@ class Installer
         ) {
                $RequestScheme = 'https';
         }
-
-        return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
+        if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+            return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
             . preg_replace("#/installdb.php#", "", $_SERVER['REQUEST_URI']);
+        } else {
+            return null;
+        }
 
     }
     /**
@@ -568,7 +571,7 @@ class Installer
      * @param array $values An associative array with keys for dbhost,
      *                      lorismysqluser, lorismysqlpassword, and dbname
      *
-     * @return true on success, false if there were any problems.
+     * @return string|array The output of str_replace
      */
     function getConfigContent($values)
     {

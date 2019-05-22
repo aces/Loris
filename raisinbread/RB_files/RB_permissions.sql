@@ -53,5 +53,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (50,'instrument_manager_write','Instrument Manager: Install new instruments via file upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (51,'data_release_upload','Data Release: Upload file',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (52,'data_release_edit_file_access','Data Release: Grant other users view-file permissions',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (53,'publication_view','Publication - Access to module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (54,'publication_propose','Publication - Propose a project',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (55,'publication_approve','Publication - Approve or reject proposed publication projects',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

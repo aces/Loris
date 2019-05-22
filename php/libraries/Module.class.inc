@@ -309,28 +309,28 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
              * as their more generic parent class which reduces precision.
              */
         } catch (\DatabaseException $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return $this->responseStatus500(
                 $request,
                 $user,
                 self::GENERIC_500_ERROR
             );
         } catch (\ConfigurationException $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return $this->responseStatus500(
                 $request,
                 $user,
                 self::CONFIGURATION_ERROR
             );
         } catch (\LorisException $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return $this->responseStatus500(
                 $request,
                 $user,
                 self::GENERIC_500_ERROR
             );
         } catch (\Exception $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return $this->responseStatus500(
                 $request,
                 $user,

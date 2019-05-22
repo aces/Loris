@@ -36,13 +36,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                             ">div>div>fieldset>div:nth-child(4)>div>div>input";
     static $dateOfBirth = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(5)>div>div>input";
-    static $clearFilter = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(10)>div>div>button";
+    static $clearFilter = ".col-sm-9 > .btn";
     // first row of react table
-    static $table = "#dynamictable > tbody > tr:nth-child(1)";
-    // rows displayed of
-    static $display = "#default-panel".
-                       ">div>div>div.table-header > div > div > div:nth-child(1)";
+    static $table   = "#dynamictable > tbody > tr:nth-child(1)";
+    static $display = ".table-header > div > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -182,12 +179,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('body').textContent"
-        );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
-        );
+        $text = $this->webDriver->getPageSource();
         $this->assertContains('View Details', $text);
     }
     /**
@@ -209,9 +201,8 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('body').textContent"
-        );
+        sleep(1);
+        $text = $this->webDriver->getPageSource();
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );

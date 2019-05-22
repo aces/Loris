@@ -43,5 +43,8 @@ INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (15,47);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (15,48);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (32,49);
 INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (32,50);
+INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (36,53);
+INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (36,54);
+INSERT INTO `LorisMenuPermissions` (`MenuID`, `PermID`) VALUES (36,55);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

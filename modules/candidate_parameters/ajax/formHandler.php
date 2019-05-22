@@ -81,7 +81,7 @@ function editCandInfoFields($db, $user)
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
-    foreach (array_keys($_POST) as $field) {
+    foreach (array_keys($_POST ?? array()) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);

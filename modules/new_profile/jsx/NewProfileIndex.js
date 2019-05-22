@@ -130,17 +130,15 @@ class NewProfileIndex extends React.Component {
     let pscid = null;
     let minYear = this.state.configData.startYear-this.state.configData.ageMax;
     let maxYear = this.state.configData.endYear-this.state.configData.ageMin;
-    if (this.state.configData['useProject'] === 'true') {
-      project =
-        <SelectElement
-          name = "project"
-          label = "Project"
-          options = {this.state.configData.project}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.project}
-          required = {true}
-        />;
-    }
+    project =
+      <SelectElement
+        name = "project"
+        label = "Project"
+        options = {this.state.configData.project}
+        onUserInput = {this.setFormData}
+        value = {this.state.formData.project}
+        required = {true}
+      />;
     if (this.state.configData['edc'] === 'true') {
       edc =
         <div>

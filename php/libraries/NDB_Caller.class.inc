@@ -123,7 +123,7 @@ class NDB_Caller
             // below this we can assume a valid module.
             $m = Module::factory($mname);
             if (!$m->isPublicModule() && $anonymous) {
-                throw new Exception(403);
+                throw new Exception('Forbidden');
             }
             if (!empty($subtest)) {
                 // We shouldn't care what type of page something is, we should

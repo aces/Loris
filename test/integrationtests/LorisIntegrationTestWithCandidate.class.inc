@@ -47,6 +47,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
             'CandID'               => '900000',
             'PSCID'                => 'TST0001',
             'RegistrationCenterID' => 1,
+            'ProjectID'            => 1,
             'Active'               => 'Y',
             'UserID'               => 1,
             'Entity_type'          => 'Human'

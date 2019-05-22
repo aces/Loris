@@ -107,10 +107,12 @@ function formatPieData(data) {
 function formatBarData(data) {
     "use strict";
     var processedData = new Array();
-    var females = ['Female'];
-    processedData.push(females.concat(data.datasets.female));
-    var males = ['Male'];
-    processedData.push(males.concat(data.datasets.male));
+    if (data.datasets) {
+      var females = ['Female'];
+      processedData.push(females.concat(data.datasets.female));
+      var males = ['Male'];
+      processedData.push(males.concat(data.datasets.male));
+    }
     return processedData;
 }
 function formatLineData(data) {

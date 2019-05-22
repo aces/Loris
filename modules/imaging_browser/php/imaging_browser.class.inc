@@ -49,10 +49,10 @@ class Imaging_Browser extends \NDB_Menu_Filter
              'imaging_browser_phantom_ownsite',
             )
         )
-        || (
-            $user->hasStudySite()
-            && $user->hasPermission('imaging_browser_view_site')
-        );
+            || (
+                $user->hasStudySite()
+                && $user->hasPermission('imaging_browser_view_site')
+            );
     }
 
     /**
@@ -90,7 +90,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
         if (!empty($scan_id_types)) {
             $this->acqpid = "AND AcquisitionProtocolID IN (".
-                    implode(",", array_keys($scan_id_types)) .")";
+                implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
             $acqpif       = '';
             $newQueryCase = '';
@@ -218,14 +218,17 @@ END";
             $modalities_subquery[$key] = $value;
             $as[$key] = $scan_id_types[$key] . '_QC_Status';
             $modalities_subquery_as[$key] = $modalities_subquery[$key] .
-                                            ' as ' .
-                                            $as[$key];
+                ' as ' .
+                $as[$key];
         }
 
         $this->columns = array(
                           'p.Name as Site',
                           'c.PSCID as PSCID',
                           'c.CandID as DCCID',
+                          '(SELECT Name 
+                            FROM Project 
+                            WHERE ProjectID=c.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
                           'MIN(md.AcquisitionDate) as First_Acquisition',
@@ -246,17 +249,6 @@ END";
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
-
-        // Insert project column after DCCID, if useProject config is enabled
-        if ($config->getSetting('useProjects') === "true") {
-            array_splice(
-                $this->columns,
-                3,
-                0,
-                '(SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project'
-            );
-            array_splice($this->headers, 3, 0, 'Project');
-        }
     }
 
     /**
@@ -333,51 +325,49 @@ END";
                 $as[$key];
         }
 
-        if ($config->getSetting('useProjects') === "true") {
-            $list_of_projects = $allAr;
-            $projectList      = \Utility::getProjectList();
-            foreach ($projectList as $key => $project) {
-                unset($projectList[$key]);
-                $list_of_projects[$project] = $project;
-            }
+        $list_of_projects = $allAr;
+        $projectList      = \Utility::getProjectList();
+        foreach ($projectList as $key => $project) {
+            unset($projectList[$key]);
+            $list_of_projects[$project] = $project;
         }
 
-            $visitQCStatus = array(
-                              'Pass' => 'Pass',
-                              'Fail' => 'Fail',
-                             );
+        $visitQCStatus = array(
+                          'Pass' => 'Pass',
+                          'Fail' => 'Fail',
+                         );
 
-            $pending = array(
-                        'P' => 'Pending',
-                        'N' => 'New',
-                       );
+        $pending = array(
+                    'P' => 'Pending',
+                    'N' => 'New',
+                   );
 
-            $types_q    = $DB->pselect(
-                "SELECT ID, Scan_type FROM mri_scan_type mri
+        $types_q    = $DB->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-                array()
-            );
-            $scan_types = $allAr;
+            array()
+        );
+        $scan_types = $allAr;
         foreach ($types_q as $key=>$sequenceType) {
             $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
         }
 
-            $outputTypes = $DB->pselect(
-                "SELECT DISTINCT OutputType AS outputType 
+        $outputTypes = $DB->pselect(
+            "SELECT DISTINCT OutputType AS outputType 
             FROM files WHERE FileType='mnc' AND OutputType!='native'",
-                array()
-            );
+            array()
+        );
 
-            $this->fieldOptions = [
-                                   'sites'         => $siteList,
-                                   'projects'      => $list_of_projects,
-                                   'visitQCStatus' => $visitQCStatus,
-                                   'sequenceTypes' => $scan_types,
-                                   'pendingNew'    => $pending,
-                                   'configLabels'  => $scan_id_types,
-                                  ];
+        $this->fieldOptions = [
+                               'sites'         => $siteList,
+                               'projects'      => $list_of_projects,
+                               'visitQCStatus' => $visitQCStatus,
+                               'sequenceTypes' => $scan_types,
+                               'pendingNew'    => $pending,
+                               'configLabels'  => $scan_id_types,
+                              ];
 
-            $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
     /**
      * Converts this menu filter to an array of the form

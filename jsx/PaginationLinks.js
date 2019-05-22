@@ -13,6 +13,12 @@ class PaginationLinks extends Component {
     this.changePage = this.changePage.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.Total < prevProps.Total) {
+      this.props.onChangePage(1);
+    }
+  }
+
   changePage(i) {
     return function(evt) {
       // Don't jump to the top of the page

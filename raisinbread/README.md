@@ -46,7 +46,7 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/medical_history.sql \
     raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
-    test/test_instrument.sql \
+    test/test_instrument/testtest.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
 
@@ -54,7 +54,7 @@ cat SQL/0000-00-00-schema.sql \
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
 some configurations are necessary.
 
-1. Copy the `raisinbread/config.config.xml` file into `project/config.xml`
+1. Copy the `raisinbread/config/config.xml` file into `project/config.xml`
 2. Input the correct `<database>` information in the `project/config.xml` file 
 3. Change the values the the `Config` table of the SQL database to reflect the 
 correct `host` and `base` values

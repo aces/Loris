@@ -1,14 +1,14 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `visit`;
 LOCK TABLES `visit` WRITE;
+INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (8,'Living_Phantom_DCC_SD_3dwi');
+INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (9,'Living_Phantom_DCC_SD_3mprage');
+INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (7,'Living_Phantom_DCC_SD_3t2');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (1,'V1');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (2,'V2');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (3,'V3');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (4,'V4');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (5,'V5');
 INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (6,'V6');
-INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (7,'Living_Phantom_DCC_SD_3t2');
-INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (8,'Living_Phantom_DCC_SD_3dwi');
-INSERT INTO `visit` (`VisitID`, `VisitName`) VALUES (9,'Living_Phantom_DCC_SD_3mprage');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

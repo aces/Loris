@@ -139,7 +139,7 @@ if [ -f ../project/config.xml ]; then
 fi
 
 # Create some subdirectories, if needed.
-create-project.sh ../project
+./create-project.sh ../project
 
 mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
