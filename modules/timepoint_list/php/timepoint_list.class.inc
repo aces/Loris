@@ -112,7 +112,6 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints         = $candidate->getListOfTimePoints();
         $this->tpl_data['candidate'] = $candidate->getData();
 
-
         if (!empty($listOfTimePoints)) {
             $user     =& \User::singleton();
             $username = $user->getData('UserID');
