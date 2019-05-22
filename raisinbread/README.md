@@ -56,10 +56,13 @@ some configurations are necessary.
 
 1. Copy the `raisinbread/config/config.xml` file into `project/config.xml`
 2. Input the correct `<database>` information in the `project/config.xml` file 
-3. Change the values the the `Config` table of the SQL database to reflect the 
-correct `host` and `base` values
+3. Change the values of the `Config` table of the SQL database to reflect the 
+correct `host`, `url` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
 `projects/instruments/` directory
+
+> The password of the `admin` user on the RB database is `demo20!7`
+
 
 ### Modifying RB
 The RaisinBread database should be handled like any other project. The data should 

@@ -23,6 +23,7 @@
 
 class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
