@@ -234,7 +234,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
-        if (isset($commentID)) {
+        if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
         }
         // Adds all of the form element and form rules to the page after
