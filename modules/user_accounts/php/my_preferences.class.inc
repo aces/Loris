@@ -191,7 +191,7 @@ class My_Preferences extends \NDB_Form
         // update the user
         $success = $user->update($set);
 
-        // Now set the password. Note that this field is named incorrectly
+        // Now set the password. Note that this field is named incorrectly at this point in the code
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
             $user->updatePassword($values['Password_hash']);
