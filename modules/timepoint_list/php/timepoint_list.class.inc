@@ -110,6 +110,8 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
+        $this->tpl_data['candidate'] = $candidate->getData();
+
 
         if (!empty($listOfTimePoints)) {
             $user     =& \User::singleton();
@@ -230,6 +232,7 @@ class Timepoint_List extends \NDB_Menu
         }
 
         $this->tpl_data['actions'] = $this->getActionButtons();
+
     }
     /**
      * Determining Previous Stage
