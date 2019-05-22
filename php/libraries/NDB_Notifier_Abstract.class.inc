@@ -270,11 +270,11 @@ abstract class NDB_Notifier_Abstract
      * Function asserting if given user should receive a notification
      * for this operation given his permissions.
      *
-     * @param string $uid containing the userID
+     * @param int $uid containing the userID
      *
      * @return bool   permissions sufficient for notification
      */
-    private function _hasNotificationPermission(string $uid): bool
+    private function _hasNotificationPermission(int $uid): bool
     {
         $DB      = Database::singleton();
         $current = $DB->pselect(
@@ -316,11 +316,11 @@ abstract class NDB_Notifier_Abstract
     /**
      * Get email of a user from his ID
      *
-     * @param string $uid containing the userID
+     * @param int $uid containing the userID
      *
      * @return string  email of the user
      */
-    protected function getEmail(string $uid): string
+    protected function getEmail(int $uid): string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",
@@ -354,15 +354,15 @@ abstract class NDB_Notifier_Abstract
     /**
      * Logs in the history table the notifications that have been sent
      *
-     * @param string $trigger_user user that triggered the notification system
-     * @param string $target_user  user that receives a notification from the system
+     * @param int    $trigger_user user that triggered the notification system
+     * @param int    $target_user  user that receives a notification from the system
      * @param string $service      notification service used for this message
      *
      * @return void
      */
     protected function log(
-        string $trigger_user,
-        string $target_user,
+        int $trigger_user,
+        int $target_user,
         string $service
     ): void {
 
