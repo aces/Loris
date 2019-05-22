@@ -70,7 +70,8 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
-     * @param bool    $scanDoneExists    whether the "Scan done" column exists in the database
+     * @param bool    $scanDoneExists    whether the "Scan done" column exists in
+     *                                   the database
      *
      * @return string
      */
