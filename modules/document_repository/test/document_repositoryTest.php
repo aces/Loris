@@ -38,24 +38,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->DB->insert(
-            "document_repository",
-            array(
-             'record_id'     => '9999999',
-             'Date_uploaded' => '2016-05-16 15:34:35',
-             'Data_dir'      => 'admin/README.md',
-             'File_name'     => 'README.md',
-             'File_type'     => 'NULL',
-             'File_size'     => '3305',
-             'uploaded_by'   => 'admin',
-             'For_site'      => '3',
-             'comments'      => 'tester',
-             'EARLI'         => '0',
-             'hide_video'    => '0',
-             'File_category' => '9999999',
-            )
-        );
-
     }
     /**
      * Deleting test data
@@ -64,18 +46,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-        $this->DB->delete(
-            "document_repository_categories",
-            array('category_name' => 'test')
-        );
-        $this->DB->delete(
-            "document_repository",
-            array('record_id' => '9999999')
-        );
-        $this->DB->delete(
-            "document_repository_categories",
-            array('id' => '9999999')
-        );
         parent::tearDown();
     }
      /**
