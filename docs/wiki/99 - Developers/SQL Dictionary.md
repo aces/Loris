@@ -4,7 +4,7 @@
 
  - Table: `psc`
  
- 	*This table stores the list of centers configured for the study.*
+ 	*This table stores the list of sites configured for the study.*
  
 	|     Field    |                    Description                   |                                             Notes                                            |
 	|:------------:|:------------------------------------------------:|:--------------------------------------------------------------------------------------------:|
