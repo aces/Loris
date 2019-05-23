@@ -276,6 +276,13 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        console.log(data);
+        if (data.issueData
+          && data.issueData.centerID
+          && !Array.isArray(data.issueData.centerID)
+        ) {
+          this.setState({site: data.issueData.centerID});
+        }
         this.setState({
           Data: data,
           isLoaded: true,

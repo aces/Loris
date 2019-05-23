@@ -163,6 +163,9 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
 
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
+
+        $check = $table->toJSON($user);
+
         $arr   = array_map(
             function ($row) {
                 return array_values($row);
