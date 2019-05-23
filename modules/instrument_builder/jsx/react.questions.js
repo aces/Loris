@@ -2,7 +2,7 @@
  NumericOptions, ListElements, AddElement */
 
 /* global Instrument */
-z
+
 /**
  * This file contains the React classes for instrument builder
  * module. It is used to add and edit questions in the instrument
