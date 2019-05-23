@@ -582,6 +582,7 @@ class DataTable extends Component {
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
+            {this.props.folder}
           <tbody>
             {rows}
           </tbody>
@@ -614,3 +615,4 @@ DataTable.defaultProps = {
 };
 
 export default DataTable;
+
