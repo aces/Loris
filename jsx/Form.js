@@ -1408,12 +1408,19 @@ LinkElement.defaultProps = {
  * React wrapper for a <input type="checkbox"> element.
  */
 class CheckboxElement extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: this.props.id,
+      name: this.props.name,
+      checked: this.props.value,
+      label: this.props.label,
+    };
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e) {
+    this.setState({checked: e.target.checked});
     this.props.onUserInput(this.props.name, e.target.checked);
   }
 
@@ -1423,7 +1430,6 @@ class CheckboxElement extends React.Component {
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'checkbox-inline col-sm-offset-3';
-    let label = null;
 
     // Add required asterix
     if (required) {
@@ -1438,18 +1444,18 @@ class CheckboxElement extends React.Component {
 
     return (
       <div className={elementClass}>
-        <label htmlFor={this.props.id}>
+        <label htmlFor={this.state.id}>
           <input
             type="checkbox"
-            name={this.props.name}
-            id={this.props.id}
-            checked={this.props.value}
+            name={this.state.name}
+            id={this.state.id}
+            checked={this.state.value}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
           />
           {errorMessage}
-          {this.props.label}
+          {this.state.label}
           {requiredHTML}
         </label>
       </div>
