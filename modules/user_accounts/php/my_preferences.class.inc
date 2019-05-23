@@ -178,26 +178,23 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
-
-        // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value)) {
+            // Password updates are handled separately. Password_hash is removed
+            // from the initial update as otherwise it will be recorded in the
+            // history table unencrypted.
+            if (!empty($value) && $key != 'Password_hash') {
                 $set[$key] = $value;
             } else {
                 $set[$key] = null;
             }
         }
-
         // update the user
         $success = $user->update($set);
 
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $user->updatePassword(
-                $set['Password_hash'],
-                $values['Password_expiry'] ?? ''
-            );
+        // Now set the password. Note that this field is named incorrectly at this point in the code
+        // and represents a plaintext password, not a hash.
+        if (isset($values['Password_hash'])) {
+            $user->updatePassword($values['Password_hash']);
         }
 
         // send the user an email
