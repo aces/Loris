@@ -39,7 +39,8 @@ class Filter extends Component {
   onFieldUpdate(name, value, id, type) {
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
-    const exactMatch = type === 'textbox' ? false : true;
+    let exactMatch = type === 'textbox' ? false : true;
+    exactMatch = name.includes('date') ? false : exactMatch;
     if (value === null || value === '') {
       delete filter[name];
       searchParams.delete(name);
@@ -52,7 +53,6 @@ class Filter extends Component {
       }
       filter[name] = {value, exactMatch};
     }
-
     this.props.updateFilter(filter);
     history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
