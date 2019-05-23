@@ -142,7 +142,7 @@ class ImagingBrowserIndex extends Component {
       {label: 'New Data', show: true},
       {label: 'Links', show: true},
       {label: 'SessionID', show: false},
-      {label: 'Sequence Type', show: false, filter: {
+      {label: 'Sequence Type', show: true, filter: {
         name: 'sequenceType',
         type: 'multiselect',
         options: options.sequenceTypes,
