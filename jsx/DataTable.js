@@ -42,7 +42,7 @@ class DataTable extends Component {
 
   setSortColumn(column) {
     if (this.state.sort.column === column) {
-      this.props.toggleSortOrder();
+      this.toggleSortOrder();
     } else {
       this.updateSortColumn(column);
     }
