@@ -157,7 +157,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * True if the page is being previewed from the instrument builder,
      * and not really loaded. only applies to LINST instrument.
      */
-    var $preview = false;
+    public $preview = false;
 
     /**
      * Factory generates a new instrument instance of type
