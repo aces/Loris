@@ -52,7 +52,6 @@ class Filter extends Component {
       }
       filter[name] = {value, exactMatch};
     }
-
     this.props.updateFilter(filter);
     history.replaceState(filter, '', `?${searchParams.toString()}`);
   }

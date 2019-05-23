@@ -221,6 +221,8 @@ class IssueTrackerIndex extends Component {
       {label: 'New Issue', action: addIssue},
     ];
 
+    console.log(fields);
+
     return (
       <FilterableDataTable
         name="issuesTracker"

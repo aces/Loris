@@ -276,7 +276,6 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        data.issueData.centerID[''] = '';
         this.setState({
           Data: data,
           isLoaded: true,
