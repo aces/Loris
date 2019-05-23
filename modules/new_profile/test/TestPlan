@@ -12,5 +12,3 @@ New Profile Test Plan:
    [Automation Testing]
 6. Change PSCID generation configuration to "user". Ensure that you get an error if an invalid PSCID entered (and not if a valid PSCID is entered)
    [Automation Testing]
-7. Change date format from 'YMd' to 'YM' in the Configuration module and repeat steps 4 to 6 while asserting that database values being saved are correct.
-   [Manual Testing]
