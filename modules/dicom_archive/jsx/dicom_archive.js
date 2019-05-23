@@ -64,7 +64,8 @@ class DicomArchive extends Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'Archive Location': {
-        const downloadURL = '/mri/jiv/get_file.php?file=' + cell;
+        const downloadURL = '/mri/jiv/get_file.php?file=' + cell
+            + '&patientName=' + row['Patient Name'];
         result =
           <td>
             <a href={downloadURL}>
