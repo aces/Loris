@@ -18,7 +18,10 @@ class IssueForm extends Component {
 
     this.state = {
       Data: [],
-      formData: {},
+      formData: {
+        othersWatching: [],
+      },
+      site: '',
       submissionResult: null,
       errorMessage: null,
       isLoaded: false,
@@ -74,7 +77,6 @@ class IssueForm extends Component {
     let dateCreated;
     let submitButtonValue;
     let commentLabel;
-    let isWatching = this.state.issueData.watching;
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -180,7 +182,8 @@ class IssueForm extends Component {
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
-            value={this.state.formData.centerID}
+            value={this.state.site}
+            multiple={false}
             required={true}
           />
           <SelectElement
@@ -242,7 +245,7 @@ class IssueForm extends Component {
             emptyOption={false}
             options={{No: 'No', Yes: 'Yes'}}
             onUserInput={this.setFormData}
-            value={isWatching}
+            value={this.state.issueData.watching}
           />
           <SelectElement
             name='othersWatching'
@@ -273,6 +276,7 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        data.issueData.centerID[''] = '';
         this.setState({
           Data: data,
           isLoaded: true,
@@ -335,7 +339,7 @@ class IssueForm extends Component {
         });
       }.bind(this),
       error: function(err) {
-        console.error(err);
+        console.error(err.responseText);
         this.setState({submissionResult: 'error'});
         let msgType = 'error';
         let message = 'Failed to submit issue :(';
@@ -357,6 +361,7 @@ class IssueForm extends Component {
 
     this.setState({
       formData: formDataUpdate,
+      site: value,
     });
   }
 

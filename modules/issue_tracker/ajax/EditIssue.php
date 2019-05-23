@@ -33,7 +33,8 @@ require_once "Email.class.inc";
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
 } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    echo json_encode(editIssue());
+    $send = editIssue();
+    echo json_encode($send);
 } else {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -70,8 +71,8 @@ function editIssue()
                              );
 
     foreach ($fields as $field) {
-        $value = $_POST[$field];
-        if ($_POST[$field] === "null") {
+        $value = isset($_POST[$field]) ? $_POST[$field] : null;
+        if (isset($_POST[$field]) && $_POST[$field] === "null") {
             $value = null;
         }
         if (isset($field)) {
@@ -103,6 +104,7 @@ function editIssue()
     } else {
         $issueValues['reporter']    = $user->getData('UserID');
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
+
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
@@ -502,18 +504,18 @@ function emailUser($issueID, $changed_assignee)
 
     if (isset($changed_assignee)) {
         $issueChangeEmailsAssignee = $db->pselect(
-            "SELECT u.Email as Email, u.First_name as firstname " .
+            "SELECT u.Email as Email, u.First_name as First_name " .
             "FROM users u WHERE u.UserID=:assignee
-            AND u.UserID<>:currentUser",
+            OR u.UserID=:currentUser",
             array(
              'assignee'    => $changed_assignee,
              'currentUser' => $user->getUserName(),
             )
         );
-        $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
+        $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['First_name'];
 
         Email::send(
-            $issueChangeEmailsAssignee[0]['Email'],
+            $issueChangeEmailsAssignee[0]['Email'] ?? '',
             'issue_assigned.tpl',
             $msg_data
         );
