@@ -225,10 +225,10 @@ class Profile extends \NDB_Page
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
             return ['error' => 'Site must be selected from the available dropdown.'];
         }
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === 'true' && empty($values['project'])) {
-            return array('error' => 'Project is required.');
-        }
+//        $useProjects = $config->getSetting('useProjects');
+//        if ($useProjects === 'true' && empty($values['project'])) {
+//            return array('error' => 'Project is required.');
+//        }
         return $values;
     }
 
