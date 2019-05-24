@@ -204,6 +204,14 @@ class AjaxTimepoint extends \NDB_Page
             defined for the project this candidate is affiliated with. 
             If you are an administrator, please use the Configuration module to 
             add new subprojects and associate them with projects.';
+
+            $tmp = array();
+            foreach ($allSubprojects as $subprojectID => $title) {
+                if (in_array($subprojectID, $subprojList)) {
+                    $tmp[$subprojectID] = $title;
+                }
+                $values['subproject'] = $tmp;
+            }
         }
 
         // Retrieve visit labels.
