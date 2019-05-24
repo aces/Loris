@@ -33,8 +33,7 @@ require_once "Email.class.inc";
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
 } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $send = editIssue();
-    echo json_encode($send);
+    echo json_encode(editIssue());
 } else {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -104,7 +103,6 @@ function editIssue()
     } else {
         $issueValues['reporter']    = $user->getData('UserID');
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
-
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }

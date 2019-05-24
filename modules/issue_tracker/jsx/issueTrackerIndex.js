@@ -140,7 +140,6 @@ class IssueTrackerIndex extends Component {
     * queried columns in _setupVariables() in media.class.inc
     */
     const options = this.state.data.fieldOptions;
-    console.log(options);
     const fields = [
       {label: 'Issue ID', show: true, filter: {
         name: 'issueID',
@@ -221,8 +220,6 @@ class IssueTrackerIndex extends Component {
     const actions = [
       {label: 'New Issue', action: addIssue},
     ];
-
-    console.log(this.state.data.data);
 
     return (
       <FilterableDataTable

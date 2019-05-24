@@ -18,9 +18,7 @@ class IssueForm extends Component {
 
     this.state = {
       Data: [],
-      formData: {
-        othersWatching: [],
-      },
+      formData: {},
       site: '',
       submissionResult: null,
       errorMessage: null,
@@ -345,7 +343,7 @@ class IssueForm extends Component {
         });
       }.bind(this),
       error: function(err) {
-        console.error(err.responseText);
+        console.error(err);
         this.setState({submissionResult: 'error'});
         let msgType = 'error';
         let message = 'Failed to submit issue :(';
