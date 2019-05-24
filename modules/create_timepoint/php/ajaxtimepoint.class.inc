@@ -180,25 +180,19 @@ class AjaxTimepoint extends \NDB_Page
         }
 
         // List of valid subprojects for a given project
-        if ($config->getSetting('useProjects') === 'true') {
-            // If projects enabled, loop through and add valid subprojects only
-            $subprojList = $candidate->getValidSubprojects();
-            if (empty($subprojList)) {
-                $errors['subprojectID'] = 'No subprojects have been 
-                defined for the project this candidate is affiliated with. 
-                If you are an administrator, please use the Configuration module to 
-                add new subprojects and associate them with projects.';
-            }
-            $tmp = array();
-            foreach ($allSubprojects as $subprojectID => $title) {
-                if (in_array($subprojectID, $subprojList)) {
-                    $tmp[$subprojectID] = $title;
-                }
+        $subprojList = $candidate->getValidSubprojects();
+        if (empty($subprojList)) {
+            $this->form->errors['subprojectID'] = "No subprojects have been 
+            defined for the project this candidate is affiliated with. 
+            If you are an administrator, please use the Configuration module to 
+            add new subprojects and associate them with projects.";
+        }
+        $tmp = array();
+        foreach ($allSubprojects as $subprojectID => $title) {
+            if (in_array($subprojectID, $subprojList)) {
+                $tmp[$subprojectID] = $title;
             }
             $values['subproject'] = $tmp;
-        } else {
-            // projects disabled, add all subprojects
-            $values['subproject'] = $allSubprojects;
         }
 
         // Retrieve visit labels.
