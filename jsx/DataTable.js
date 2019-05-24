@@ -310,6 +310,10 @@ class DataTable extends Component {
     return result;
   }
 
+  componentDidMount() {
+    $('.dynamictable').DynamicTable();
+  }
+
   renderActions() {
     if (this.props.actions) {
       return this.props.actions.map((action, key) => {
@@ -574,10 +578,11 @@ class DataTable extends Component {
     return (
       <div style={{margin: '14px'}}>
         {header}
-        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+        <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
+            {this.props.folder}
           <tbody>
             {rows}
           </tbody>
@@ -610,3 +615,4 @@ DataTable.defaultProps = {
 };
 
 export default DataTable;
+
