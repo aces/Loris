@@ -19,7 +19,7 @@ class IssueForm extends Component {
     this.state = {
       Data: [],
       formData: {},
-      site: '',
+      site: null,
       submissionResult: null,
       errorMessage: null,
       isLoaded: false,
@@ -176,11 +176,11 @@ class IssueForm extends Component {
           <SelectElement
             name='centerID'
             label='Site'
-            emptyOption={true}
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.site}
+            emptyOption={true}
             multiple={false}
             required={true}
           />
