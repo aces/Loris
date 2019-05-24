@@ -19,6 +19,7 @@ class NewProfileIndex extends React.Component {
       isLoaded: false,
       isCreated: false,
       errMessage: '',
+      formError: null,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -69,7 +70,7 @@ class NewProfileIndex extends React.Component {
   /**
    * Handles form submission
    *
-   * @param {event} e - Form submition event
+   * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
@@ -95,8 +96,15 @@ class NewProfileIndex extends React.Component {
         })
       .then((resp) => resp.json())
       .then((data) => {
-        this.setState({newData: data});
-        this.setState({isCreated: true});
+        console.log(data);
+        if (data.error) {
+          console.log('error:' + data.error);
+          this.setState({formError: data.error});
+        } else {
+          this.setState({formError: null});
+          this.setState({newData: data});
+          this.setState({isCreated: true});
+        }
        });
     }
   }
@@ -130,6 +138,11 @@ class NewProfileIndex extends React.Component {
     let pscid = null;
     let minYear = this.state.configData.startYear-this.state.configData.ageMax;
     let maxYear = this.state.configData.endYear-this.state.configData.ageMin;
+    let error = this.state.formError ? (
+      <div>
+        <h4 style={{color: 'red'}}>{this.state.formError}</h4>
+      </div>
+    ) : null;
     project =
       <SelectElement
         name = "project"
@@ -173,7 +186,7 @@ class NewProfileIndex extends React.Component {
         />;
     }
     if (!this.state.isCreated) {
-      profile =
+      profile = (
         <FormElement
           name = "newProfileForm"
           onSubmit = {this.handleSubmit}
@@ -219,7 +232,8 @@ class NewProfileIndex extends React.Component {
           {pscid}
           {project}
           <ButtonElement label = "Create" id = "button"/>
-        </FormElement>;
+        </FormElement>
+      );
     } else {
       profile =
         <div>
@@ -228,7 +242,11 @@ class NewProfileIndex extends React.Component {
           <p><a href = "/new_profile/" > Recruit another candidate </a></p>
         </div>;
     }
-    return (<Panel title="Create a new profile">{profile}</Panel>);
+    return (
+      <Panel title="Create a new profile">
+        {error}
+        {profile}
+      </Panel>);
   }
 }
 window.addEventListener(
