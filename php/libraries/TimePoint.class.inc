@@ -490,9 +490,9 @@ class TimePoint
     /**
      * Return the approval status of this timepoint.
      *
-     * @return string 'In Progress', 'Pass' or 'Failure'
+     * @return string|null 'In Progress', 'Pass' or 'Failure'
      */
-    function getApprovalStatus(): string
+    function getApprovalStatus(): ?string
     {
         return $this->_timePointInfo["Approval"];
     }
