@@ -8,18 +8,18 @@
  
 	|     Field    |                    Description                   |                                             Notes                                            |
 	|:------------:|:------------------------------------------------:|:--------------------------------------------------------------------------------------------:|
-	| `CenterID`   | Identifier of the Center                         | Avoid setting this field explicitly when inserting data, it auto increments.                 |
-	| `Name`       | Full name of the center                          |                                                                                              |
+	| `CenterID`   | Identifier of the site                           | Avoid setting this field explicitly when inserting data, it auto increments.                 |
+	| `Name`       | Full name of the site                          |                                                                                              |
 	| `PSCArea`    |                                                  | Deprecated                                                                                              |
-	| `Address`    | Civic address of the center                      |                                                                                              |
-	| `City`       | City where the center is located                 |                                                                                              |
-	| `StateID`    | Identifier of the state where center is located  |                                                                                              |
-	| `ZIP`        | ZIP code of the center                           |                                                                                              |
+	| `Address`    | Civic address of the site                      |                                                                                              |
+	| `City`       | City where the site is located                 |                                                                                              |
+	| `StateID`    | Identifier of the state where the site is located  |                                                                                              |
+	| `ZIP`        | ZIP code of the site                           |                                                                                              |
 	| `Phone1`     | Phone number 1                                   |                                                                                              |
 	| `Phone2`     | Phone number 2                                   |                                                                                              |
 	| `Contact1`   | Contact person 1                                 |                                                                                              |
 	| `Contact2`   | Contact person 2                                 |                                                                                              |
-	| `Alias`      | Shortname of the center. Limited to 3 characters | This field affects the alias section of the PSCID of candidates                              |
+	| `Alias`      | Shortname of the site. Limited to 3 characters | This field affects the alias section of the PSCID of candidates                              |
 	| `MRI_alias`  | MRI specific shortname. Limited to 4 characters  |                                                                                              |
 	| `Account`    |                                                  | Deprecated                                                                                              |
-	| `Study_site` | Does this center recruit candidates?             | This field will affect the appearance of the center in dropdowns in several modules of LORIS |
+	| `Study_site` | Does this site recruit candidates?             | This field will affect the appearance of the center in dropdowns in several modules of LORIS |
