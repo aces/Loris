@@ -84,7 +84,7 @@ function editIssue()
         }
     }
 
-    $issueID = $_POST['issueID'];
+    $issueID = isset($_POST['issueID']) ? $_POST['issueID'] : null;
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
     $validatedInput = validateInput($validateValues);
@@ -107,8 +107,9 @@ function editIssue()
         $issueID = $db->getLastInsertId();
     }
 
+    $comment = isset($_POST['comment']) ? $_POST['comment'] : null;
     updateHistory($historyValues, $issueID);
-    updateComments($_POST['comment'], $issueID);
+    updateComments($comment, $issueID);
 
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
@@ -120,13 +121,14 @@ function editIssue()
     }
 
     // Adding editor to the watching table unless they don't want to be added.
-    if ($_POST['watching'] == 'Yes') {
+    $watching = isset($_POST['watching']) ? $_POST['watching'] : null;
+    if ($watching == 'Yes') {
         $nowWatching = array(
                         'userID'  => $user->getData('UserID'),
                         'issueID' => $issueID,
                        );
         $db->replace('issues_watching', $nowWatching);
-    } else if ($_POST['watching'] == "No") {
+    } else if ($watching == "No") {
         $db->delete(
             'issues_watching',
             array(
