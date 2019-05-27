@@ -38,7 +38,7 @@ class LorisElement extends Component {
         elementHtml = <p>{element.Description}</p>;
         break;
       case 'line':
-        elementHtml = <div>{element.Description}</div>;
+        elementHtml = <div></div>;
         break;
       case 'score':
         elementHtml = <StaticElement text={0} label={element.Description} />;
