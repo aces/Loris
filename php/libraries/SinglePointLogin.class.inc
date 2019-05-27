@@ -238,9 +238,9 @@ class SinglePointLogin
                      'Success'         => 'Y',
                      'Failcode'        => null,
                      'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => isset($_SERVER['REMOTE_ADDR'])
-                                              ? $_SERVER['REMOTE_ADDR']
-                                              : 'Unknown',
+                     'IP_address'      => $_SERVER['HTTP_X_FORWARDED_FOR']
+                         ?? $_SERVER['REMOTE_ADDR']
+                         ?? 'Unknown',
                      'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
