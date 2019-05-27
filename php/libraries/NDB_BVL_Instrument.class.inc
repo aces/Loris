@@ -240,6 +240,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
+        if (!empty($commentID)) {
+            $obj->setupCandidateInfoTables();
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -343,6 +346,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $this->commentID = $commentID;
         $this->page      = $page;
+    }
+
+    /**
+     * Gets data for candidate and timepoint to display the tables at the top of the
+     * page. This info is then set in the tpl_data array.
+     *
+     * @return void
+     */
+    function setupCandidateInfoTables(): void
+    {
+        try {
+            $timePoint = \TimePoint::singleton($this->getSessionID());
+        } catch (Exception $e) {
+            throw new LorisException($e->getMessage());
+        }
+
+        try {
+            $candidate = \Candidate::singleton($timePoint->getCandID());
+        } catch(Exception $e) {
+            throw new LorisException($e->getMessage());
+        }
+
+        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['timePoint'] = $timePoint->getData();
     }
 
     /**
@@ -454,6 +481,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
+            $smarty->assign($this->tpl_data);
             $html = $smarty->fetch("instrument_html.tpl");
         }
 
