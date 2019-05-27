@@ -58,10 +58,10 @@ class Profile extends \NDB_Page
         // Ensure it's a POST request.
         switch ($request->getMethod()) {
         case "POST":
-            $values    = $request->getParsedBody();
-            $DB        = \Database::singleton();
-            $user      = \User::singleton();
-            $config    = \NDB_Config::singleton();
+            $values = $request->getParsedBody();
+            $DB     = \Database::singleton();
+            $user   = \User::singleton();
+            $config = \NDB_Config::singleton();
 
             // Validation of user input.
             $values = $this->processValidity($values);
@@ -176,7 +176,7 @@ class Profile extends \NDB_Page
                 return array('error' => 'Estimated Due date fields must match.');
             }
         } else {
-            $values['edcDateTaken'] = null;
+            $values['edcDateTaken']        = null;
             $values['edcDateTakenConfirm'] = null;
         }
         // Validate Gender.
@@ -209,17 +209,17 @@ class Profile extends \NDB_Page
                 $site->getSiteAlias()
             )
             ) {
-                return array('error' => 'PSCID does not match the required structure.');
+                return ['error' => 'PSCID does not match the required structure.'];
             } else if ($db->pselectOne(
-                    "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                    array('V_PSCID' => $values['site'])
-                ) > 0
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
+                array('V_PSCID' => $values['site'])
+            ) > 0
             ) {
                 return array('error' => 'PSCID has already been registered.');
             }
         }
         // Validate site.
-        $site               = intval($values['site']) ?? null;
+        $site = intval($values['site']) ?? null;
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
