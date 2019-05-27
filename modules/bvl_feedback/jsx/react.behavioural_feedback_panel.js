@@ -385,7 +385,7 @@ class NewThreadPanel extends Component {
     this.state = {
       textValue: '',
       selectValue: 'Across All Fields',
-      inputValue: 1,
+      inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
