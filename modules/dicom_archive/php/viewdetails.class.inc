@@ -28,7 +28,7 @@ class ViewDetails extends \NDB_Form
     /**
      * ID of the tarchive for which the details should be displayed.
      */
-    var $tarchiveID;
+    public $tarchiveID;
 
     /**
      * Keeps array of protocols from mri_protocol
