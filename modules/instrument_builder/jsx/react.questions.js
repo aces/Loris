@@ -37,6 +37,9 @@ class LorisElement extends Component {
       case 'label':
         elementHtml = <p>{element.Description}</p>;
         break;
+      case 'line':
+        elementHtml = <div>{element.Description}</div>;
+        break;
       case 'score':
         elementHtml = <StaticElement text={0} label={element.Description} />;
 
@@ -772,6 +775,7 @@ class AddElement extends Component {
     // Setup the desired element to be added
     switch (selected) {
       case 'header':
+      case 'line':
       case 'label':
         questionName = '';
         break;
@@ -852,6 +856,7 @@ class AddElement extends Component {
         // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
       case 'header':
+      case 'line':
       case 'label':
         questionInput = <QuestionText updateState={this.updateState} element={this.state}/>;
         break;
