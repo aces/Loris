@@ -53,7 +53,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                intval($centerID)
+                intval($_REQUEST['CenterID'])
             );
         }
 
