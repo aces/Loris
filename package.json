@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "babel-core": "^6.26.3",
+    "npm": "^6.9.0",
     "prop-types": "^15.6.2",
     "sweetalert2": "^7.29.2"
   },
