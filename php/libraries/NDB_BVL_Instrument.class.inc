@@ -838,64 +838,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Process the Config file. This results in:
-     *     1. $CertificationEnabled being true or false,
-     *     2. $CertificationProjects being a list of projects which
-     *        use ceritification and,
-     *     3. $CertificationInstruments being a list of instruments
-     *        that use certification.
-     * This is put in a different function so that instruments that
-     * override getExaminerNames() can still easily get the config
-     * settings and don't need to parse the config file themselves.
-     *
-     * @return array
-     */
-    function _getCertificationConfig(): array
-    {
-        $config = \NDB_Config::singleton();
-
-        $CertificationConfig      = $config->getSetting("Certification");
-        $CertificationEnabled     = $CertificationConfig['EnableCertification'];
-        $CertificationProjects    = array();
-        $CertificationInstruments = array();
-
-        if ($CertificationEnabled) {
-            foreach (
-                Utility::associativeToNumericArray(
-                    $CertificationConfig['CertificationProjects']
-                )
-                as $value
-            ) {
-                if (is_array($value['CertificationProject'])) {
-                    $value = $value['CertificationProject'];
-                }
-                foreach ($value as $projID) {
-                    $CertificationProjects[$projID] = $projID;
-                }
-            }
-            foreach (
-                Utility::associativeToNumericArray(
-                    $CertificationConfig['CertificationInstruments']
-                )
-                as $instrument
-            ) {
-                foreach (
-                    Utility::associativeToNumericArray($instrument['test'])
-                    as $test
-                ) {
-                    $CertificationInstruments[] = $test['@']['value'];
-                }
-            }
-        }
-        return array(
-                $CertificationEnabled,
-                $CertificationProjects,
-                $CertificationInstruments,
-               );
-    }
-
-
-    /**
      * Gets the list of examiners for the site of the current instrument
      *
      * @return array
@@ -913,53 +855,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $centerID = null;
         }
 
-        //get examiner certifications for profiles part of IBIS2
-        $candID  = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
-        $project = $db->pselectOne(
-            "SELECT ProjectID from candidate where CandID =:cnd_id",
-            array('cnd_id' => $candID)
+        $results = $db->pselect(
+            "SELECT e.examinerID, e.full_name
+            FROM examiners e
+            JOIN examiners_psc_rel epr
+            ON (epr.examinerID=e.examinerID)
+            WHERE epr.centerID=:centID
+            ORDER BY full_name",
+            array('centID' => $centerID)
         );
-
-        list(
-            $CertificationEnabled,
-            $CertificationProjects,
-            $CertificationInstruments
-            ) = $this->_getCertificationConfig();
-        if ($CertificationEnabled && in_array($project, $CertificationProjects)
-            && in_array($this->testName, $CertificationInstruments)
-        ) {
-            $test_id = $db->pselectOne(
-                "SELECT ID FROM test_names WHERE Test_name=:tst_name",
-                array('tst_name' => $this->testName)
-            );
-            $results = $db->pselect(
-                "SELECT c.examinerID, e.full_name
-                 FROM certification c
-                     JOIN examiners e
-                         ON (c.examinerID = e.examinerID)
-                     JOIN examiners_psc_rel epr
-                         ON (epr.examinerID=e.examinerID)
-                 WHERE c.testID =:tid
-                    AND c.pass =:cert_id
-                    AND epr.centerID =:cid
-                 ORDER BY full_name",
-                array(
-                 'tid'     => $test_id,
-                 'cert_id' => 'certified',
-                 'cid'     => $centerID,
-                )
-            );
-        } else {
-            $results = $db->pselect(
-                "SELECT e.examinerID, e.full_name
-                     FROM examiners e
-                         JOIN examiners_psc_rel epr
-                             ON (epr.examinerID=e.examinerID)
-                 WHERE epr.centerID=:centID
-                     ORDER BY full_name",
-                array('centID' => $centerID)
-            );
-        }
 
         $examiners = array('' => '');
         if (is_array($results) && !empty($results)) {

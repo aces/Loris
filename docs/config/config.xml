@@ -72,19 +72,6 @@
             </labelSet>
         </visitLabel>
 
-         <!-- certification module -->
-        <Certification>
-            <EnableCertification>0</EnableCertification>
-            <CertificationProjects>
-                <!-- add project for which certification module should be enabled-->
-                <CertificationProject></CertificationProject>
-            </CertificationProjects>
-
-            <CertificationInstruments>
-                <!--test value=InstrumentName>InstrumentName</test-->
-            </CertificationInstruments>
-        </Certification>
-
     </study>
     <!-- end of study definition -->
 

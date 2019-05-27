@@ -14,7 +14,7 @@
 /**
  * Menu class, with filtering
  *
- * Used in the likes of access profile, user accounts, certification, etc.
+ * Used in the likes of access profile, user accounts, etc.
  *
  * @category Behavioural
  * @package  Main
