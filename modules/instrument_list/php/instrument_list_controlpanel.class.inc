@@ -377,7 +377,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
-        $ddeConflictDetected =false;
+        $ddeConflictDetected = false;
+        $dataEntry           = '';
         foreach ($batteryList as $instrument) {
             $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
