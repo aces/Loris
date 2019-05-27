@@ -37,12 +37,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     var $LinstLines = array();
 
     /**
-     * True if the page is being previewed from the instrument builder,
-     * and not really loaded.
-     */
-    var $preview = false;
-
-    /**
      * Sets up the variables required for a LINST instrument to load
      *
      * @param string|null $commentID The CommentID being loaded

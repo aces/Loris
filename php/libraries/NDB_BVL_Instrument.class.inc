@@ -154,6 +154,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     var $WrapperDateWithStatusElements = array();
 
     /**
+     * True if the page is being previewed from the instrument builder,
+     * and not really loaded. only applies to LINST instrument.
+     */
+    public $preview = false;
+
+    /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
