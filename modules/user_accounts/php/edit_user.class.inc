@@ -1251,6 +1251,7 @@ class Edit_User extends \NDB_Form
             foreach ($userSites as $site) {
                 if (in_array($site, $editorSites)) {
                     $siteMatch = true;
+                    break;
                 }
             }
         }
