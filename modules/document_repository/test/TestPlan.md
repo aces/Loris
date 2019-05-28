@@ -2,7 +2,7 @@
    [Automation Testing]
 2. Create a category and a sub category.
    [Automation Testing]
-3. Check that the comments for a category are displayed properly. Also check that they can be edited/added.
+3. Check that the comments for a category are displayed properly as a tooltip.
    [Automation Testing]
 4. Upload a file.
    [Manual Testing]
