@@ -19,8 +19,7 @@
    [Manual Testing]
 10. Check that if a category contains special characters (e.g. space, dot or comma) it can be expanded.
    [Manual Testing]
-11. Add two files with the same name but with different contents in two different categories. Verify that, when 
-   downloaded, their contents are different.
+11. Add two files with the same name. You should get a 'duplicate file name' error.
    [Manual Testing]
 12. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
