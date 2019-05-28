@@ -182,7 +182,7 @@ class DocIndex extends React.Component {
         name: 'Comments',
         type: 'text',
       }},
-      {label: 'Date Upload', show: false},
+      {label: 'Date Uploaded', show: true},
       {label: 'Edit', show: true},
       {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
       {label: 'File Category', show: false},
