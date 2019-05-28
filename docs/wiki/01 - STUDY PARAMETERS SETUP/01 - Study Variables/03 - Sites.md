@@ -1,6 +1,6 @@
 # Sites
 
-## Overview Study
+## Overview
 
 **Sites** (preferred) or **Centers** are terms used interchangeably 
 in LORIS. **Sites** are defined in the `psc` table of the database 
@@ -11,8 +11,6 @@ Data Coordinating Center (DCC).  This site is generally used for
 dummy data and it is assumed by the codebase to store exclusively 
 non-study data. Therefore, it is recommended not to modify or use 
 this site for registering real participants or study data.
-
->  Note: There cannot be more than one site with the same name.
 
 ## Adding Site Options
 
