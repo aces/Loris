@@ -288,6 +288,9 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCStatus' is set and not empty,
+            // update the value of 'BVLQCStatus' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
@@ -299,7 +302,11 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             // In order to set the 'BVLQCStatus' value as null, the
             // front-end appends 'setBVLQCStatus' to the request with
-            // an empty string as value
+            // an empty string as value.
+            //
+            // If 'setBVLQCStatus' is set and empty,
+            // update the value of 'BVLQCStatus' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCStatus' => null)
             );
@@ -308,6 +315,9 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCType' is set and not empty,
+            // update the value of 'BVLQCType' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCType' => $_REQUEST['setBVLQCType'],
@@ -319,7 +329,11 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             // In order to set the 'BVLQCType' value as null, the
             // front-end appends 'setBVLQCType' to the request with
-            // an empty string as value
+            // an empty string as value.
+            //
+            // If 'setBVLQCType' is set and empty,
+            // update the value of 'BVLQVType' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCType' => null)
             );
