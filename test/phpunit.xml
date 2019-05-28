@@ -70,6 +70,6 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-php" target="/tmp/coverage.serialized"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 </phpunit>
