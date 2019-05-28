@@ -115,9 +115,10 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $record = basename($request->getUri()->getPath());
+            $name   = \User::singleton()->getUsername();
+            $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
-                $file = __DIR__ . "/../user_uploads/$record";
+                $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
                 ->withHeader(
                     'Content-Disposition',
