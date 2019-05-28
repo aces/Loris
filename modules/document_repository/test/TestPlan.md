@@ -23,21 +23,20 @@
    [Manual Testing]
 12. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-13. Upload a file using another user and then update it. Check that “Last updated by” field is updated.
     [Manual Testing]
-14. User A edits a file. User B tries to delete the same file in the meantime. Check that he can't.
+13. User A edits a file. User B tries to delete the same file in the meantime. Check that he can't.
     [Manual Testing]
-15. Check that preference “Receive Document Repository Notifications” works.
+14. Check that preference “Receive Document Repository Notifications” works.
     [Manual Testing]
-16. Check that performance is OK with large number of files.
+15. Check that performance is OK with large number of files.
     [Manual Testing]
-17. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
+16. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
     time one of the following event occurs:
        - Addition, deletion or modification of a file
        - Addition of a category.
     Also check that the www address contained in the notification email is correct.
     [Manual Testing]
-18. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
+17. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
       session.gc_maxlifetime 10800
       max_execution_time  10800
       upload_max_filesize 1020M
