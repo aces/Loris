@@ -278,7 +278,7 @@ class Edit_User extends \NDB_Form
         // END multi-site UPDATE
 
         // EXAMINER UPDATE
-        if ($this->showExaminerFields($editor)) {
+        if ($this->isViewableExaminerFields($editor)) {
             // get all fields that are related to examiners
             $ex_curr_sites  = array();
             $ex_prev_sites  = array();
@@ -723,7 +723,7 @@ class Edit_User extends \NDB_Form
         //          i) The user is from same site as editor,
         //         OR
         //          ii) The editor is creating a new user.
-        if ($this->showExaminerFields($editor)) {
+        if ($this->isViewableExaminerFields($editor)) {
             //get site aliases
             $aliases = $this->getEditorSiteAliases($editor);
 
@@ -1093,7 +1093,7 @@ class Edit_User extends \NDB_Form
         //======================================
         //        Validate Examiner Status
         //======================================
-        if ($this->showExaminerFields($editor)) {
+        if ($this->isViewableExaminerFields($editor)) {
             $matched = false;
             foreach ($values as $k => $v) {
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
@@ -1241,7 +1241,7 @@ class Edit_User extends \NDB_Form
      *
      * @return bool  - whether or not to display examiner fields
      */
-    function showExaminerFields($editor)
+    function isViewableExaminerFields($editor)
     {
         $siteMatch = false;
         if (!$this->isCreatingNewUser()) {
