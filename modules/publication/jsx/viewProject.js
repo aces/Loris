@@ -25,16 +25,6 @@ class ViewProject extends React.Component {
 
   validateEmail(field, email) {
     let formErrors = this.state.formErrors;
-
-    // don't supply error if email is blank
-    if (email === '' || email === null || email === undefined) {
-      delete formErrors[field];
-      // if email is invalid, set error, else nullify error
-    } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
-      formErrors[field] = 'Invalid email';
-    } else {
-      delete formErrors[field];
-    }
     this.setState({formErrors});
   }
 
@@ -257,10 +247,11 @@ class ViewProject extends React.Component {
           label="Lead Investigator"
           text={this.state.formData.leadInvestigator}
         />
-        <StaticElement
-         name="leadInvestigatorEmail"
-         label="Lead Investigator Email"
-         text={this.state.formData.leadInvestigatorEmail}
+        <EmailElement
+          id={'leadInvestigatorEmail'}
+          name="leadInvestigatorEmail"
+          label="Lead Investigator Email"
+          text={this.state.formData.leadInvestigatorEmail}
         />
         {collaborators}
         {keywords}

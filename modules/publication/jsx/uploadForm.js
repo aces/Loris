@@ -27,12 +27,8 @@ class PublicationUploadForm extends React.Component {
 
   validateEmail(field, email) {
     let formErrors = this.state.formErrors;
-
-    // don't supply error if email is blank
-    if (email === '' || email === null || email === undefined) {
-      delete formErrors[field];
-      // if email is invalid, set error, else nullify error
-    } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
+    const emailDiv = document.getElementById(field);
+    if (!emailDiv.checkValidity()) {
       formErrors[field] = 'Invalid email';
     } else {
       delete formErrors[field];

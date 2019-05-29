@@ -39,7 +39,7 @@ class EmailElement extends React.Component {
         </label>
         <div className="col-sm-7">
           <input
-            type="text"
+            type="email"
             className="form-control"
             name={this.props.name}
             id={this.props.id}
@@ -308,106 +308,109 @@ class ProjectFormFields extends React.Component {
 
     return (
       <div>
-        <TextareaElement
-          name="description"
-          label="Description"
-          onUserInput={this.props.setFormData}
-          required={true}
-          value={this.props.formData.description}
-        />
-        <TextboxElement
-          name="leadInvestigator"
-          label="Lead Investigator"
-          onUserInput={this.props.setFormData}
-          required={true}
-          value={this.props.formData.leadInvestigator}
-        />
-        <EmailElement
-          name="leadInvestigatorEmail"
-          label="Lead Investigator Email"
-          onUserInput={this.props.setFormData}
-          onUserBlur={this.props.validateEmail}
-          toggleEmailNotify={this.toggleEmailNotify}
-          errorMessage={this.props.formErrors.leadInvestigatorEmail}
-          required={true}
-          value={this.props.formData.leadInvestigatorEmail}
-          addressee="leadInvestigator"
-        />
-        <TagsElement
-          name="usersWithEditPerm"
-          id="usersWithEditPerm"
-          label="LORIS Users with Edit Permission"
-          options={this.props.users}
-          useSearch={true}
-          strictSearch={true}
-          onUserInput={this.props.setFormData}
-          onUserAdd={this.props.addListItem}
-          onUserRemove={this.props.removeListItem}
-          value={this.props.formData.pendingUWEP}
-          pendingValKey="pendingUWEP"
-          items={this.props.formData.usersWithEditPerm}
-          btnLabel="Add User"
-        />
-        <TagsElement
-          name="collaborators"
-          id="collaborators"
-          label="Collaborators"
-          options={this.props.allCollabs}
-          useSearch={true}
-          strictSearch={false}
-          onUserInput={this.props.setFormData}
-          onUserAdd={this.addCollaborator}
-          onUserRemove={this.removeCollaborator}
-          value={this.props.formData.pendingCollab}
-          pendingValKey="pendingCollab"
-          items={collabNames}
-          btnLabel="Add Collaborator"
-        />
-        {collabEmails}
-        <TagsElement
-          name="keywords"
-          id="keywords"
-          label="Keywords"
-          options={this.props.allKWs}
-          useSearch={true}
-          strictSearch={false}
-          onUserInput={this.props.setFormData}
-          onUserAdd={this.props.addListItem}
-          onUserRemove={this.props.removeListItem}
-          value={this.props.formData.pendingKWItem}
-          pendingValKey="pendingKWItem"
-          items={this.props.formData.keywords}
-          btnLabel="Add Keyword"
-        />
-        <SelectElement
-          name="voiType"
-          label="Type of Variables of Interest"
-          options={voiTypeOptions}
-          onUserInput={this.props.setFormData}
-          value={this.props.formData.voiType}
-          emptyOption={false}
-        />
-        <TagsElement
-          name="voiFields"
-          id="voiFields"
-          label="Variables of Interest"
-          useSearch={true}
-          strictSearch={true}
-          onUserInput={this.props.setFormData}
-          onUserAdd={this.props.addListItem}
-          onUserRemove={this.props.removeListItem}
-          required={false}
-          value={this.props.formData.pendingItemVF}
-          options={voiOptions}
-          pendingValKey="pendingItemVF"
-          items={this.props.formData.voiFields}
-          btnLabel="Add Variable of Interest"
-        />
-        <StaticElement
-          text={voiHelp}
-        />
-        {fileFields}
-        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}/>
+        <form>
+          <TextareaElement
+            name="description"
+            label="Description"
+            onUserInput={this.props.setFormData}
+            required={true}
+            value={this.props.formData.description}
+          />
+          <TextboxElement
+            name="leadInvestigator"
+            label="Lead Investigator"
+            onUserInput={this.props.setFormData}
+            required={true}
+            value={this.props.formData.leadInvestigator}
+          />
+          <EmailElement
+            id={'leadInvestigatorEmail'}
+            name="leadInvestigatorEmail"
+            label="Lead Investigator Email"
+            onUserInput={this.props.setFormData}
+            onUserBlur={this.props.validateEmail}
+            toggleEmailNotify={this.toggleEmailNotify}
+            errorMessage={this.props.formErrors.leadInvestigatorEmail}
+            required={true}
+            value={this.props.formData.leadInvestigatorEmail}
+            addressee="leadInvestigator"
+          />
+          <TagsElement
+            name="usersWithEditPerm"
+            id="usersWithEditPerm"
+            label="LORIS Users with Edit Permission"
+            options={this.props.users}
+            useSearch={true}
+            strictSearch={true}
+            onUserInput={this.props.setFormData}
+            onUserAdd={this.props.addListItem}
+            onUserRemove={this.props.removeListItem}
+            value={this.props.formData.pendingUWEP}
+            pendingValKey="pendingUWEP"
+            items={this.props.formData.usersWithEditPerm}
+            btnLabel="Add User"
+          />
+          <TagsElement
+            name="collaborators"
+            id="collaborators"
+            label="Collaborators"
+            options={this.props.allCollabs}
+            useSearch={true}
+            strictSearch={false}
+            onUserInput={this.props.setFormData}
+            onUserAdd={this.addCollaborator}
+            onUserRemove={this.removeCollaborator}
+            value={this.props.formData.pendingCollab}
+            pendingValKey="pendingCollab"
+            items={collabNames}
+            btnLabel="Add Collaborator"
+          />
+          {collabEmails}
+          <TagsElement
+            name="keywords"
+            id="keywords"
+            label="Keywords"
+            options={this.props.allKWs}
+            useSearch={true}
+            strictSearch={false}
+            onUserInput={this.props.setFormData}
+            onUserAdd={this.props.addListItem}
+            onUserRemove={this.props.removeListItem}
+            value={this.props.formData.pendingKWItem}
+            pendingValKey="pendingKWItem"
+            items={this.props.formData.keywords}
+            btnLabel="Add Keyword"
+          />
+          <SelectElement
+            name="voiType"
+            label="Type of Variables of Interest"
+            options={voiTypeOptions}
+            onUserInput={this.props.setFormData}
+            value={this.props.formData.voiType}
+            emptyOption={false}
+          />
+          <TagsElement
+            name="voiFields"
+            id="voiFields"
+            label="Variables of Interest"
+            useSearch={true}
+            strictSearch={true}
+            onUserInput={this.props.setFormData}
+            onUserAdd={this.props.addListItem}
+            onUserRemove={this.props.removeListItem}
+            required={false}
+            value={this.props.formData.pendingItemVF}
+            options={voiOptions}
+            pendingValKey="pendingItemVF"
+            items={this.props.formData.voiFields}
+            btnLabel="Add Variable of Interest"
+          />
+          <StaticElement
+            text={voiHelp}
+          />
+          {fileFields}
+          <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'} />
+        </form>
       </div>
     );
   }

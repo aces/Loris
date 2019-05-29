@@ -1366,6 +1366,57 @@ StaticElement.defaultProps = {
 };
 
 /**
+ * Email element component.
+ * Used to displays plain/formatted email input as part of a form
+ *
+ * To pass a formatted text, you need to wrap it in a single parent element.
+ * Example usage:
+ *
+ * ```
+ * let myText = (<span>This is my <b>text</b></span>);
+ * <EmailElement
+ *    text={myText}
+ *    label={note}
+ * />
+ * ```
+ */
+class EmailElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-9">
+          <input className="form-control-static" type={'email'} id={this.props.id}>
+            {this.props.text}
+          </input>
+        </div>
+      </div>
+    );
+  }
+}
+
+EmailElement.propTypes = {
+  label: PropTypes.string,
+  id: PropTypes.string,
+  text: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+  ]),
+};
+
+EmailElement.defaultProps = {
+  id: null,
+  label: '',
+  text: null,
+};
+
+
+/**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
