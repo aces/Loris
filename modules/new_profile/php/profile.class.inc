@@ -202,17 +202,17 @@ class Profile extends \NDB_Page
                 // PSCID against the Site selected.
                 $site =& \Site::singleton($values['site']);
             }
-            if (empty($values['PSCID'])) {
+            if (empty($values['pscid'])) {
                 return array('error' => 'PSCID must be specified.');
             } else if (!\Candidate::validatePSCID(
-                $values['PSCID'],
+                $values['pscid'],
                 $site->getSiteAlias()
             )
             ) {
                 return ['error' => 'PSCID does not match the required structure.'];
             } else if ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values['site'])
+                array('V_PSCID' => $values['pscid'])
             ) > 0
             ) {
                 return array('error' => 'PSCID has already been registered.');

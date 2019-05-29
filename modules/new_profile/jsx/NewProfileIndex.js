@@ -96,14 +96,14 @@ class NewProfileIndex extends React.Component {
         })
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
         if (data.error) {
-          console.log('error:' + data.error);
           this.setState({formError: data.error});
         } else {
-          this.setState({formError: null});
-          this.setState({newData: data});
-          this.setState({isCreated: true});
+          this.setState({
+            formError: null,
+            newData: data,
+            isCreated: true,
+          });
         }
        });
     }
