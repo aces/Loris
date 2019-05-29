@@ -49,7 +49,6 @@ class SavedQueriesList extends Component {
     // Build the list for the user queries
     for (let i = 0; i < this.props.userQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.userQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -60,7 +59,6 @@ class SavedQueriesList extends Component {
     // Build the list for the global queries
     for (let i = 0; i < this.props.globalQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.globalQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -172,16 +170,15 @@ class DataQueryApp extends Component {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
-      console.log(this.state.queryIDs[key][0]);
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + that.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
             dataType: 'json'
-          }).then(function(value) {
+          }).then(value => {
           let queries = this.state.savedQueries;
 
           queries[value._id] = value;
@@ -191,7 +188,7 @@ class DataQueryApp extends Component {
       }
     }
 
-    let allDone = Promise.all(promises).then(function(value) {
+    let allDone = Promise.all(promises).then(value => {
       this.setState({'queriesLoaded': true});
     });
     let component = this;
@@ -257,7 +254,7 @@ class DataQueryApp extends Component {
       }
       $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
         function(value) {
-          let queries = that.state.savedQueries;
+          let queries = this.state.savedQueries;
 
           queries[value._id] = value;
           this.setState({
@@ -740,7 +737,6 @@ class DataQueryApp extends Component {
               }
               that.setState({'sessiondata': sessiondata});
             }
-            console.log('Received data');
             semaphore--;
             ajaxComplete();
           }
