@@ -51,38 +51,38 @@ When creating or editing a user: (subtest: edit_user)
 18. Check that setting the radiologist to Yes/No changes the values for X for all sites
 19. Check that by removing the "examiner_view" and "examiner_multisite" permission, the user(editor) cannot modify X's Examiner Status.
 20. Check that by removing the "examiner_multisite" permission, the user(editor) can only modify X's Examiner Status if the editor and user X are affiliated with a common site.
-20. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
-21. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
-22. Check that modifications made to the basic user infos are displayed when the user table is reloaded.
-23. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
+21. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
+22. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
+23. Check that modifications made to the basic user infos are displayed when the user table is reloaded.
+24. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
     retain any changes).
-24. When editing an existing user: Check that Back button takes you to the User Account page and does not save any
+25. When editing an existing user: Check that Back button takes you to the User Account page and does not save any
     changes. 
-25. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page
+26. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page
     without saving any changes to the user profile.
     
 ### Testing permissions:
 *Log in as a simple user (non-admin) and ensure the following. Define `editee` as the user being edited and `editor` as the logged in user making the changes.*
 
-26. Editor can only see and manipulate permissions for editee if and only if editor has the permissions in question
-27. When page is saved with any set of selected permissions, on reload all selected permissions are kept and all unselected permissions are removed.
-28. If editee has permissions that editor does not have, said permissions are not impacted by manipulating the editee's visible permissions (requires admin user login in a side window to be able to view all permissions for editee as editor will only be able to view permissions they own)
-29. See security testing below
+27. Editor can only see and manipulate permissions for editee if and only if editor has the permissions in question
+28. When page is saved with any set of selected permissions, on reload all selected permissions are kept and all unselected permissions are removed.
+29. If editee has permissions that editor does not have, said permissions are not impacted by manipulating the editee's visible permissions (requires admin user login in a side window to be able to view all permissions for editee as editor will only be able to view permissions they own)
+30. See security testing below
 
 ##### Security testing:
- - Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
+31. Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
 
 On the My Preferences page:
 ==========================
 
-30. Check that all users (even those with NO permissions) have access to the My Preferences page.
-31. Change the user’s password.  Check that the password rules are enforced.
-32. Check that if password and confirmed password do not match you get an error.
-33. Check that saving fails if any field is left blank (except password).
-34. Check that if you do not enter an email address that is syntactically valid you get an error.
-35. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
+32. Check that all users (even those with NO permissions) have access to the My Preferences page.
+33. Change the user’s password.  Check that the password rules are enforced.
+34. Check that if password and confirmed password do not match you get an error.
+35. Check that saving fails if any field is left blank (except password).
+36. Check that if you do not enter an email address that is syntactically valid you get an error.
+37. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
     displayed when looking at the modified user account.  
-36. Verify that all notification checkboxes match what the project has enabled in the `notification_modules_services_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-37. Verify that checkboxes available respect the permission restrictions set in the `notification_modules_perm_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-38. Verify that the notifications are sent when the trigger event occurs. (NB the user triggering the event will not get the email, only other registered users are notified)
-39. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
+38. Verify that all notification checkboxes match what the project has enabled in the `notification_modules_services_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
+39. Verify that checkboxes available respect the permission restrictions set in the `notification_modules_perm_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
+40. Verify that the notifications are sent when the trigger event occurs. (NB the user triggering the event will not get the email, only other registered users are notified)
+41. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
