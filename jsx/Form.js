@@ -977,7 +977,7 @@ class DateElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
   render() {
