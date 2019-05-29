@@ -49,7 +49,6 @@ class SavedQueriesList extends Component {
     // Build the list for the user queries
     for (let i = 0; i < this.props.userQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.userQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -60,7 +59,6 @@ class SavedQueriesList extends Component {
     // Build the list for the global queries
     for (let i = 0; i < this.props.globalQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.globalQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -730,7 +728,6 @@ class DataQueryApp extends Component {
               }
               this.setState({'sessiondata': sessiondata});
             }
-            console.log('Received data');
             semaphore--;
             ajaxComplete();
           }
