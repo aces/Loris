@@ -138,11 +138,11 @@ class Profile extends \NDB_Page
     }
 
     /**
-     * Processes the values and saves to database
+     * Verifies the values from POST message.
      *
-     * @param array $values the user data received..
+     * @param array $values the POST data received from frontend form.
      *
-     * @return array
+     * @return array the verified parsed POST response.
      */
     function processValidity($values)
     {
@@ -189,18 +189,18 @@ class Profile extends \NDB_Page
         }
         // Validate PSCID.
         $pscidSettings = $config->getSetting('PSCID');
-        $user          =& \User::singleton();
+        $user          = \User::singleton();
         if ($pscidSettings['generation'] == 'user') {
             // Setup Database object.
             $db = \Database::singleton();
             if (empty($values['site'])) { // user is in only one site.
                 $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
-                $site      =& \Site::singleton($centerID);
+                $site      = \Site::singleton($centerID);
             } else {
                 // user has multiple sites, so validate
                 // PSCID against the Site selected.
-                $site =& \Site::singleton($values['site']);
+                $site = \Site::singleton($values['site']);
             }
             if (empty($values['pscid'])) {
                 return array('error' => 'PSCID must be specified.');
@@ -209,7 +209,8 @@ class Profile extends \NDB_Page
                 $site->getSiteAlias()
             )
             ) {
-                return ['error' => 'PSCID does not match the required structure.'];
+                $msg = 'PSCID does not match the required structure.';
+                return array('error' => $msg);
             } else if ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
                 array('V_PSCID' => $values['pscid'])
@@ -219,11 +220,12 @@ class Profile extends \NDB_Page
             }
         }
         // Validate site.
-        $site = intval($values['site']) ?? null;
+        $site = isset($values['site']) ? intval($values['site']) : null;
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
-            return ['error' => 'Site must be selected from the available dropdown.'];
+            $msg = 'Site must be selected from the available dropdown.';
+            return array('error' => $msg);
         }
         return $values;
     }
