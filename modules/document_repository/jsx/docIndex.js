@@ -136,7 +136,7 @@ class DocIndex extends React.Component {
       }
       );
     }
-    result = <td><a onClick={click}>Delete</a></td>;
+    result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
       break;
     }
     return result;

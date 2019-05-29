@@ -362,11 +362,11 @@ class Files extends \NDB_Page
             "SELECT CenterID FROM psc WHERE Name=:name",
             array('name' => $site)
         );
-        $instrument = $req['instrument'] !== '' ? $req['instrument'] : null;
-        $pscid      = $req['pscid']      !== '' ? $req['pscid'] : null;
-        $visit      = $req['visitLabel'] !== '' ? $req['visitLabel'] : null;
-        $comments   = $req['comments']   !== '' ? $req['comments'] : null;
-        $version    = $req['version']    !== '' ? $req['version'] : null;
+        $instrument = !empty($req['instrument']) ? $req['instrument'] : null;
+        $pscid      = !empty($req['pscid'])      ? $req['pscid']      : null;
+        $visit      = !empty($req['visitLabel']) ? $req['visitLabel'] : null;
+        $comments   = !empty($req['comments'])   ? $req['comments']   : null;
+        $version    = !empty($req['version'])    ? $req['version']    : null;
 
         $uploadedFile = $uploadedFiles['file'];
         $fileSize     = $uploadedFile->getSize();
