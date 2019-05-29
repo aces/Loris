@@ -27,6 +27,9 @@
 2019-03-20-session-notnull.sql
 2019-04-26-Delete_cascades_parameter_type_rel.sql
 2019-05-03-deprecate_useprojects.sql
+2019-05-15-LorisMenuPermissions_QC_and_datarelease.sql
+2019-05-22-ChangePublicationPathsToWebPathType.sql
+2019-05-23-correct_type_ValidMin_ValidMax_of_mri_protocol_checks.sql
 
 
 #cleanup
@@ -34,3 +37,4 @@
 2018-04-05_RemovePendingStagingFromFiles.sql
 2018-11-20-remove_currentGUITable_field.sql
 2019-05-13-RemoveTraining.sql
+2019-05-15-Reliability_link.sql

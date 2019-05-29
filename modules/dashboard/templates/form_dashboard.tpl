@@ -250,7 +250,7 @@
                     <div class="panel-body">
                         <div class="list-group document-repository-item">
                             {foreach from=$document_repository_notifications item=link}
-                                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}"
+                                <a href="/document_repository/Files/{$link.Data_dir}"
                                    download="{$link.File_name}" class="list-group-item">
                                     {if $link.new eq 1}
                                         <span class="pull-left new-flag">NEW</span>
