@@ -124,7 +124,7 @@ class FieldItem extends Component {
           checked = true;
         }
         return (
-          <div class='checkbox'>
+          <div key={visit} className='checkbox'>
             <label>
               <input
                 type='checkbox'
