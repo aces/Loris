@@ -78,13 +78,12 @@ class FilterRule extends Component {
 
   selectInstrument(event) {
     // Update the rules instrument, getting the instruments avalible fields
-    let rule = this.props.rule,
-      that = this;
+    let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php', {category: rule.instrument}, function(data) {
+      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php', {category: rule.instrument}, (data) => {
         rule.fields = data;
-        that.props.updateRule(that.props.index, rule);
+        this.props.updateRule(that.props.index, rule);
       }, 'json');
     }
   }
@@ -223,23 +222,28 @@ class FilterRule extends Component {
   render() {
     // Renders the html for the component
 
-    let rule,
-      fieldIndex,
-      forVisits,
-      visits,
-      that = this;
+    let rule;
+    let fieldIndex;
+    let forVisits;
+    let visits;
     if (this.props.rule.instrument) {
       // Only display field select and etc. if instrument is selected
-      let fields = this.props.rule.fields.map(function(field, index) {
-          if (that.props.rule.field && field.key[1] === that.props.rule.field) {
-            fieldIndex = index
-          }
-          return (
-            <option value={index}>{field.key[1]}</option>
-          );
-        }),
-        operators = [],
-        inputOptions, input, operatorKey, operatorSelect, options, value, inputType;
+      let fields = this.props.rule.fields.map((field, index) => {
+        if (this.props.rule.field && field.key[1] === this.props.rule.field) {
+          fieldIndex = index;
+        }
+        return (
+          <option key={index} value={index}>{field.key[1]}</option>
+        );
+      });
+      let operators = [];
+      let inputOptions = [];
+      let input = [];
+      let operatorKey = '';
+      let operatorSelect = [];
+      let options = [];
+      let value = '';
+      let inputType = [];
 
       if (this.props.rule.fieldType) {
         // Only display operators if field is selected
@@ -268,9 +272,9 @@ class FilterRule extends Component {
           switch (operatorKey) {
             case 'enum':
               inputOptions = enumToArray(this.props.rule.fieldType);
-              options = inputOptions.map(function(option) {
+              options = inputOptions.map((option, index) => {
                 return (
-                  <option value={option}>
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 );
@@ -297,9 +301,9 @@ class FilterRule extends Component {
         if (this.props.rule.visit) {
           // Display dropdown for visit select. This only displays after a value
           // has been inputed
-          visits = Object.keys(this.props.Visits).map(function(visit) {
+          visits = Object.keys(this.props.Visits).map((visit, index) => {
             return (
-              <option value={visit}>
+              <option key={index} value={visit}>
                 {visit}
               </option>
             );
@@ -330,9 +334,9 @@ class FilterRule extends Component {
       );
     } else {
       // Else display dropdown for instrument select
-      let options = this.props.items.map(function(item) {
+      let options = this.props.items.map((item, index) => {
         return (
-          <option value={item.category}>{item.category}</option>
+          <option key={index} value={item.category}>{item.category}</option>
         );
       });
       rule = (
@@ -476,55 +480,56 @@ class FilterGroup extends Component {
 
   render() {
     // Renders the html for the component
-
     let logicOperator = (
-        <LogicOperator logicOperator={this.props.group.activeOperator}
-                       updateGroupOperator={this.updateGroupOperator}
-        />
-      ),
-      that = this,
+      <LogicOperator
+        logicOperator={this.props.group.activeOperator}
+        updateGroupOperator={this.updateGroupOperator}
+      />
+    );
 
-      // Render the children based on their type
-      children = this.props.group.children.map(function(child, index) {
-        if (child.type === 'rule') {
-          return (
-            <li>
-              <FilterRule rule={child}
-                          items={that.props.items}
-                          index={index}
-                          updateRule={that.updateChild}
-                          updateSessions={that.updateSessions}
-                          deleteRule={that.deleteChild}
-                          Visits={that.props.Visits}
-              />
-            </li>
-          );
-        } else if (child.type === 'group') {
-          return (
-            <li>
-              <FilterGroup group={child}
-                           items={that.props.items}
-                           index={index}
-                           updateGroup={that.updateChild}
-                           updateSessions={that.updateSessions}
-                           deleteGroup={that.deleteChild}
-                           Visits={that.props.Visits}
-              />
-            </li>
-          );
-        }
-      }),
-      deleteButton;
+    // Render the children based on their type
+    let children = this.props.group.children.map((child, index) => {
+      if (child.type === 'rule') {
+        return (
+          <li key={index}>
+            <FilterRule rule={child}
+                        items={this.props.items}
+                        index={index}
+                        updateRule={this.updateChild}
+                        updateSessions={this.updateSessions}
+                        deleteRule={this.deleteChild}
+                        Visits={this.props.Visits}
+            />
+          </li>
+        );
+      } else if (child.type === 'group') {
+        return (
+          <li key={index}>
+            <FilterGroup group={child}
+                         items={this.props.items}
+                         index={index}
+                         updateGroup={this.updateChild}
+                         updateSessions={this.updateSessions}
+                         deleteGroup={this.deleteChild}
+                         Visits={this.props.Visits}
+            />
+          </li>
+        );
+      }
+    });
+
+    let deleteButton;
 
     if (this.props.deleteGroup) {
       // Can only delete a group that isn't the base group
       deleteButton = (
-        <button className='btn btn-danger btn-sm pull-right'
-                onClick={this.props.deleteGroup.bind(this, this.props.index)}
+        <button
+          className='btn btn-danger btn-sm pull-right'
+          onClick={this.props.deleteGroup.bind(this, this.props.index)}
         >
           <span className='glyphicon glyphicon-remove'></span> Delete Group
         </button>
-      )
+      );
     }
     return (
       <div className='tree'>
@@ -554,7 +559,7 @@ class FilterGroup extends Component {
           </li>
         </ul>
       </div>
-    )
+    );
   }
 }
 

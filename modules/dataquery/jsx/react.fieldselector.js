@@ -96,10 +96,9 @@ class FieldItem extends Component {
 
   visitSelect(evt) {
     // Selects and deselects visits
-
     let field = {
       instrument: this.props.Category,
-      field: this.props.FieldName
+      field: this.props.FieldName,
     };
     if (evt.target.checked) {
       this.props.fieldVisitSelect('check', evt.target.value, field);
@@ -111,28 +110,35 @@ class FieldItem extends Component {
   render() {
     // Renders the html for the component
 
-    let classList = 'list-group-item row',
-      downloadIcon = '',
-      criteria,
-      multiselect,
-      that = this;
+    let classList = 'list-group-item row';
+    let downloadIcon = '';
+    let criteria;
+    let multiselect;
+
     if (this.props.selected) {
       // If field is selected, add active class and visits
       classList += ' active';
-      multiselect = Object.keys(this.props.Visits).map(function(visit) {
+      multiselect = Object.keys(this.props.Visits).map((visit) => {
         let checked = false;
-        if (that.props.selectedVisits[visit]) {
+        if (this.props.selectedVisits[visit]) {
           checked = true;
         }
         return (
           <div class='checkbox'>
             <label>
-              <input type='checkbox' value={visit} checked={checked} onChange={that.visitSelect}/> {visit}
+              <input
+                type='checkbox'
+                value={visit}
+                checked={checked}
+                onChange={this.visitSelect}
+              />
+              {visit}
             </label>
           </div>
         );
       });
     }
+
     if (this.props.downloadable) {
       // Add download icon if field is downloadable
       downloadIcon = <span className='glyphicon glyphicon-download-alt pull-right' title='Downloadable File'></span>

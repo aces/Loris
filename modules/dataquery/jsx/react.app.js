@@ -172,7 +172,6 @@ class DataQueryApp extends Component {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
-      console.log(this.state.queryIDs[key][0]);
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
@@ -191,12 +190,11 @@ class DataQueryApp extends Component {
       }
     }
 
-    let allDone = Promise.all(promises).then(function(value) {
+    let allDone = Promise.all(promises).then((value) => {
       this.setState({'queriesLoaded': true});
     });
-    let component = this;
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-      component.setState({
+    $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
+      this.setState({
         ActiveTab: e.target.getAttribute('href').substr(1)
       });
     });
@@ -529,8 +527,7 @@ class DataQueryApp extends Component {
 
   fieldVisitSelect(action, visit, field) {
     // Used to select visits for a given field
-
-    this.setState(function(state) {
+    this.setState((state) => {
       let temp = state.selectedFields[field.instrument];
       if (action === 'check') {
         // Adding a new visit for field, add visit to field and
@@ -905,10 +902,13 @@ class DataQueryApp extends Component {
   render() {
     // Renders the html for the component
 
-    let tabs = [], tabsNav = [], alert = <div/>;
+    let tabs = [];
+    let tabsNav = [];
+    let alert = <div/>;
 
     // Add the info tab
     tabs.push(<InfoTabPane
+      key='Info'
       TabId='Info'
       UpdatedTime={this.props.UpdatedTime}
       Loading={this.state.loading}
@@ -916,6 +916,7 @@ class DataQueryApp extends Component {
 
     // Add the field select tab
     tabs.push(<FieldSelectTabPane
+      key='DefineFields'
       TabId='DefineFields'
       categories={this.props.categories}
       onFieldChange={this.fieldChange}
@@ -927,6 +928,7 @@ class DataQueryApp extends Component {
 
     // Add the filter builder tab
     tabs.push(<FilterSelectTabPane
+        key='DefineFilters'
         TabId='DefineFilters'
         categories={this.props.categories}
         filter={this.state.filter}
@@ -939,6 +941,7 @@ class DataQueryApp extends Component {
     // Define the data displayed type and add the view data tab
     let displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
     tabs.push(<ViewDataTabPane
+      key='ViewData'
       TabId='ViewData'
       Fields={this.state.fields}
       Criteria={this.state.criteria}
@@ -956,6 +959,7 @@ class DataQueryApp extends Component {
 
     // Add the stats tab
     tabs.push(<StatsVisualizationTabPane
+      key='Statistics'
       TabId='Statistics'
       Fields={this.state.rowData.RowHeaders}
       Data={this.state.rowData.rowdata}
@@ -964,6 +968,7 @@ class DataQueryApp extends Component {
 
     // Add the manage saved queries tab
     tabs.push(<ManageSavedQueriesTabPane
+      key='SavedQueriesTab'
       TabId='SavedQueriesTab'
       userQueries={this.state.queryIDs.User}
       globalQueries={this.state.queryIDs.Shared}

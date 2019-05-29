@@ -56,10 +56,10 @@ class TabPane extends Component {
         <div className={classList} id={this.props.TabId}>
           <Loading/>
         </div>
-      )
+      );
     }
     return (
-      <div className={classList} id={this.props.TabId}>
+      <div key={this.props.TabId}className={classList} id={this.props.TabId}>
         <h1>{this.props.Title}</h1>
         {this.props.children}
       </div>
@@ -77,25 +77,31 @@ class InfoTabPane extends Component {
   }
 
   render() {
-    return <TabPane Title='Welcome to the Data Query Tool'
-                    TabId={this.props.TabId} Active={true} Loading={this.props.Loading}>
-      <p>Data was last updated on {this.props.UpdatedTime}.</p>
-      <p>Please define or use your query by using the following tabs.</p>
-      <dl>
-        <dt>Define Fields</dt>
-        <dd>Define the fields to be added to your query here.</dd>
-        <dt>Define Filters</dt>
-        <dd>Define the criteria to filter the data for your query here.</dd>
-        <dt>View Data</dt>
-        <dd>See the results of your query.</dd>
-        <dt>Statistical Analysis</dt>
-        <dd>Visualize or see basic statistical measures from your query here.</dd>
-        <dt>Load Saved Query</dt>
-        <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
-        <dt>Manage Saved Queries</dt>
-        <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
-      </dl>
-    </TabPane>
+    return (
+      <TabPane
+        Title='Welcome to the Data Query Tool'
+        TabId={this.props.TabId}
+        Active={true}
+        Loading={this.props.Loading}
+      >
+        <p>Data was last updated on {this.props.UpdatedTime}.</p>
+        <p>Please define or use your query by using the following tabs.</p>
+        <dl>
+          <dt>Define Fields</dt>
+          <dd>Define the fields to be added to your query here.</dd>
+          <dt>Define Filters</dt>
+          <dd>Define the criteria to filter the data for your query here.</dd>
+          <dt>View Data</dt>
+          <dd>See the results of your query.</dd>
+          <dt>Statistical Analysis</dt>
+          <dd>Visualize or see basic statistical measures from your query here.</dd>
+          <dt>Load Saved Query</dt>
+          <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+          <dt>Manage Saved Queries</dt>
+          <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
+        </dl>
+      </TabPane>
+    );
   }
 }
 
@@ -109,15 +115,21 @@ class FieldSelectTabPane extends Component {
   }
 
   render() {
-    return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-      <FieldSelector title='Fields'
-                     items={this.props.categories}
-                     onFieldChange={this.props.onFieldChange}
-                     selectedFields={this.props.selectedFields}
-                     Visits={this.props.Visits}
-                     fieldVisitSelect={this.props.fieldVisitSelect}
-      />
-    </TabPane>
+    return (
+      <TabPane
+        TabId={this.props.TabId}
+        Loading={this.props.Loading}
+      >
+        <FieldSelector
+          title='Fields'
+          items={this.props.categories}
+          onFieldChange={this.props.onFieldChange}
+          selectedFields={this.props.selectedFields}
+          Visits={this.props.Visits}
+          fieldVisitSelect={this.props.fieldVisitSelect}
+        />
+      </TabPane>
+    );
   }
 }
 
@@ -337,38 +349,45 @@ class ViewDataTabPane extends Component {
       }
 
     }
-    return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-      <h2>Query Criteria</h2>{criteria} {buttons}
-      <div className='form-group form-horizontal row'>
-        <label for='selected-input' className='col-sm-1 control-label'>Data</label>
-        <div className='col-sm-4'>
-          <div className='btn-group'>
-            <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
-              <span id='search_concept'>{this.props.displayType}</span>
-              <span className='caret'></span>
-            </button>
-            <ul className='dropdown-menu' role='menu'>
-              <li onClick={this.changeDataDisplay.bind(this, 0)}>
-                <div className='col-sm-12'>
-                  <h5 className="">Cross-sectional</h5>
-                </div>
-              </li>
-              <li onClick={this.changeDataDisplay.bind(this, 1)}>
-                <div className='col-sm-12'>
-                  <h5 className=''>Longitudinal</h5>
-                </div>
-              </li>
-            </ul>
+    return (
+      <TabPane
+        TabId={this.props.TabId}
+        Loading={this.props.Loading}
+      >
+        <h2>Query Criteria</h2>
+        {criteria}
+        {buttons}
+        <div className='form-group form-horizontal row'>
+          <label htmlFor='selected-input' className='col-sm-1 control-label'>Data</label>
+          <div className='col-sm-4'>
+            <div className='btn-group'>
+              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
+                <span id='search_concept'>{this.props.displayType}</span>
+                <span className='caret'></span>
+              </button>
+              <ul className='dropdown-menu' role='menu'>
+                <li onClick={this.changeDataDisplay.bind(this, 0)}>
+                  <div className='col-sm-12'>
+                    <h5 className="">Cross-sectional</h5>
+                  </div>
+                </li>
+                <li onClick={this.changeDataDisplay.bind(this, 1)}>
+                  <div className='col-sm-12'>
+                    <h5 className=''>Longitudinal</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <StaticDataTable
-        Headers={this.props.RowHeaders}
-        RowNumLabel='Identifiers'
-        Data={this.props.Data}
-        RowNameMap={this.props.RowInfo}
-      />
-    </TabPane>
+        <StaticDataTable
+          Headers={this.props.RowHeaders}
+          RowNumLabel='Identifiers'
+          Data={this.props.Data}
+          RowNameMap={this.props.RowInfo}
+        />
+      </TabPane>
+    );
   }
 }
 ViewDataTabPane.propTypes = {
@@ -860,10 +879,13 @@ class ManageSavedQueryRow extends Component {
           } else {
             operator = (<span>OR</span>)
           }
-          filter = this.props.Query.Conditions.children.map(function(element, key) {
-            return <ManageSavedQueryFilter
-              filterItem={element}
-            />
+          filter = this.props.Query.Conditions.children.map((element, key) => {
+            return (
+              <ManageSavedQueryFilter
+                key={key}
+                filterItem={element}
+              />
+            );
           });
         } else {
           operator = (<span>No filters defined</span>);
@@ -873,10 +895,12 @@ class ManageSavedQueryRow extends Component {
           operator = (<span>No filters defined</span>);
         } else {
           operator = (<span>AND</span>);
-          filter = this.props.Query.Conditions.map(function(element, key) {
-            return <ManageSavedQueryFilter
-              filterItem={element}
-            />
+          filter = this.props.Query.Conditions.map((element, key) => {
+            return (
+              <ManageSavedQueryFilter
+                filterItem={element}
+              />
+            );
           });
         }
       }
@@ -931,6 +955,7 @@ class ManageSavedQueriesTabPane extends Component {
     };
     this.dismissDialog = this.dismissDialog.bind(this);
     this.saveQuery = this.saveQuery.bind(this);
+    this.savedQuery = this.savedQuery.bind(this);
   }
 
   dismissDialog() {
@@ -957,20 +982,18 @@ class ManageSavedQueriesTabPane extends Component {
         if (query.Meta.name) {
           name = query.Meta.name;
         }
-
         queryRows.push(
           <ManageSavedQueryRow Name={name} Query={query}/>
         );
-
       }
     } else {
       queryRows.push(
-        <tr>
+        <tr key='loading'>
           <td colSpan="3">Loading saved query details</td>
         </tr>
       );
-    }
 
+    }
     let savePrompt = '';
     if (this.state.savePrompt) {
       savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
@@ -982,7 +1005,7 @@ class ManageSavedQueriesTabPane extends Component {
         <button onClick={this.saveQuery}>Save Current Query</button>
         <table className='table table-hover table-primary table-bordered colm-freeze'>
           <thead>
-          <tr className='info'>
+          <tr key='info' className='info'>
             <th>Query Name</th>
             <th>Fields</th>
             <th>Filters</th>
