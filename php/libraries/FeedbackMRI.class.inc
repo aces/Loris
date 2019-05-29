@@ -82,7 +82,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function setPredefinedComments(array $predefinedCommentIDs): bool
+    function setPredefinedComments(?array $predefinedCommentIDs): ?bool
     {
         // choke if we are passed an empty array
         if (empty($predefinedCommentIDs)) {
@@ -134,7 +134,7 @@ class FeedbackMRI
      *               comments) where $typeID is always the CommentTypeID from
      *               feedback_mri_comment_types table
      */
-    function getComments(): array
+    function getComments(): ?array
     {
         // create DB object
         $DB =& Database::singleton();
