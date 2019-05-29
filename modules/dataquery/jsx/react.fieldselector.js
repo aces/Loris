@@ -50,20 +50,19 @@ class CategoryList extends Component {
   }
 
   selectCategoryHandler(category) {
-    let that = this;
-    return function(evt) {
-      if (that.props.onCategorySelect) {
-        that.props.onCategorySelect(category);
+    return ((evt) => {
+      if (this.props.onCategorySelect) {
+        this.props.onCategorySelect(category);
       }
-      that.setState({
+      this.setState({
         selectedCategory: category
       });
-    };
+    });
   }
 
   render() {
     let items = [],
-      selectClosure = function(name) {
+      selectClosure = (name) => {
         return this.selectCategory(name);
       };
     for (i = 0; i < this.props.items.length; i += 1) {

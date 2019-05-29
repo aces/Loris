@@ -228,10 +228,9 @@ class ViewDataTabPane extends Component {
       CompleteMask = new Array(FileList.length),
       saveworker,
       dataURLs = [],
-      that = this,
-      multiLinkHandler = function(buffer) {
-        return function(ce) {
-          var downloadLink = document.getElementById('DownloadLink'),
+      multiLinkHandler = (buffer) => {
+        return ((ce) => {
+          let downloadLink = document.getElementById('DownloadLink'),
             dv = new DataView(buffer),
             blb;
 
@@ -244,7 +243,7 @@ class ViewDataTabPane extends Component {
           downloadLink.click();
 
           window.URL.revokeObjectURL(downloadLink.href);
-        }
+        });
       };
 
     // Does this work if we hold a global reference instead of a closure
@@ -253,7 +252,7 @@ class ViewDataTabPane extends Component {
 
     if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
       saveworker = new Worker(loris.BaseURL + '/dataquery/js/workers/savezip.js');
-      saveworker.addEventListener('message', function(e) {
+      saveworker.addEventListener('message', (e) => {
         let link,
           progress,
           FileName,
@@ -261,7 +260,7 @@ class ViewDataTabPane extends Component {
           downloadLinks,
           i;
         if (e.data.cmd === 'SaveFile') {
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           //progress.textContent = "Downloaded files";
           //hold a reference to the blob so that chrome doesn't release it. This shouldn't
           //be required.
@@ -269,15 +268,15 @@ class ViewDataTabPane extends Component {
           ;
           dataURLs[e.data.FileNo - 1] = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
 
-          link = that.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
+          link = this.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
           link.href = dataURLs[e.data.FileNo - 1];
           //link.onclick = multiLinkHandler(e.data.buffer);
           //link.href = "#";
-          progress = that.getOrCreateProgressElement('zip_progress');
+          progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = '';
 
         } else if (e.data.cmd === 'Progress') {
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           progress.innerHTML = 'Downloading files: <progress value="' + e.data.Complete + '" max="' + e.data.Total + '">' + e.data.Complete + ' out of ' + e.data.Total + '</progress>';
         } else if (e.data.cmd === 'Finished') {
           if (dataURLs.length === 1) {
@@ -297,12 +296,12 @@ class ViewDataTabPane extends Component {
               downloadLinks[i].textContent = 'Zip file: ' + NewFileName;
             }
           }
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           progress.textContent = 'Finished generating zip files';
           //this.terminate();
 
         } else if (e.data.cmd === 'CreatingZip') {
-          progress = that.getOrCreateProgressElement('zip_progress');
+          progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = 'Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.';
         }
 
@@ -469,7 +468,7 @@ class ScatterplotGraph extends Component {
       start,
       plots = [],
       label,
-      plotY = function(x) {
+      plotY = (x) => {
         return [x, start + (slope * x)];
       },
       dataset;
@@ -542,7 +541,7 @@ class ScatterplotGraph extends Component {
   }
 
   render() {
-    let options = this.props.Fields.map(function(element, key) {
+    let options = this.props.Fields.map((element, key) => {
         console.log(element);
         return (
           <option value={key}>
@@ -784,7 +783,7 @@ class ManageSavedQueryFilter extends Component {
       filter = this.props.filterItem;
     if (filter.activeOperator) {
       let logicOp = 'AND',
-        children = filter.children.map(function(element, key) {
+        children = filter.children.map((element, key) => {
           return <ManageSavedQueryFilter
             filterItem={element}
           />

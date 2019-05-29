@@ -158,7 +158,7 @@ class DataQueryApp extends Component {
     // them two separate ones, so we need to make sure that only one is selected by removing
     // "active" from all the tab classes and only adding it to the really active one
     let domNode = this;
-    $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+    $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       $(domNode).find('li').removeClass('active');
       if (e.target) {
         e.target.classList.add('active');
@@ -175,12 +175,12 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + that.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
             dataType: 'json'
-          }).then(function(value) {
+          }).then((value) => {
           let queries = this.state.savedQueries;
 
           queries[value._id] = value;
@@ -242,7 +242,7 @@ class DataQueryApp extends Component {
       QueryName: name,
       SharedQuery: shared,
       OverwriteQuery: override
-    }, function(data) {
+    }, (data) => {
       // Once saved, add the query to the list of saved queries
       let id = JSON.parse(data).id,
         queryIDs = this.state.queryIDs;
@@ -254,8 +254,8 @@ class DataQueryApp extends Component {
         }
       }
       $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
-        function(value) {
-          let queries = that.state.savedQueries;
+        (value) => {
+          let queries = this.state.savedQueries;
 
           queries[value._id] = value;
           this.setState({
@@ -268,7 +268,7 @@ class DataQueryApp extends Component {
             }
           });
         });
-    }).fail(function(data) {
+    }).fail((data) => {
       if (data.status === 409) {
         this.setState({
           alertConflict: {
@@ -301,7 +301,7 @@ class DataQueryApp extends Component {
     // This call is made synchronously
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
-      success: function(data) {
+      success: (data) => {
         rule.fields = data;
       },
       async: false,
@@ -345,7 +345,7 @@ class DataQueryApp extends Component {
     }
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-      success: function(data) {
+      success: (data) => {
         let i,
           allSessions = {},
           allCandiates = {};
@@ -422,7 +422,7 @@ class DataQueryApp extends Component {
         activeOperator: 0,
         children: []
       };
-      filterState.children = criteria.map(function(item) {
+      filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
         let rule = {
           instrument: fieldInfo[0],
@@ -493,29 +493,24 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
-    this.setState(function(state) {
-      return {
-        fields: fieldsList,
-        selectedFields: selectedFields,
-        filter: filterState,
-        alertLoaded: true,
-        alertSaved: false,
-        loading: false
-      }
+    this.setState({
+      fields: fieldsList,
+      selectedFields: selectedFields,
+      filter: filterState,
+      alertLoaded: true,
+      alertSaved: false,
+      loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
-      let that = this;
       $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
-        success: function(data) {
+        success: (data) => {
           if (data[0].value.IsFile) {
-            that.setState(function(state) {
-              let key = data[0].key[0] + ',' + data[0].key[1];
-              let downloadable = state.downloadableFields;
-              downloadable[key] = true;
-              return {
-                downloadableFields: downloadable
-              };
+            let key = data[0].key[0] + ',' + data[0].key[1];
+            let downloadable = this.state.downloadableFields;
+            downloadable[key] = true;
+            this.setState({
+              downloadableFields: downloadable,
             })
           }
         },
@@ -557,18 +552,17 @@ class DataQueryApp extends Component {
   fieldChange(fieldName, category, downloadable) {
     // Used to add and remove fields from the current query being built
 
-    let that = this;
-    this.setState(function(state) {
+    this.setState((state) => {
       let selectedFields = state.selectedFields,
         fields = state.fields.slice(0);
       if (!selectedFields[category]) {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(this.props.Visits));
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
-        for (let key in that.props.Visits) {
+        for (let key in this.props.Visits) {
           selectedFields[category].allVisits[key] = 1;
         }
 
@@ -648,14 +642,13 @@ class DataQueryApp extends Component {
     // Run the current query
 
     let DocTypes = [],
-      that = this,
       semaphore = 0,
       sectionedSessions,
-      ajaxComplete = function() {
+      ajaxComplete = () => {
         // Wait until all ajax calls have completed before computing the rowdata
         if (semaphore == 0) {
-          let rowdata = that.getRowData(that.state.grouplevel);
-          that.setState({
+          let rowdata = this.getRowData(this.state.grouplevel);
+          this.setState({
             rowData: rowdata,
             loading: false
           });
@@ -708,10 +701,10 @@ class DataQueryApp extends Component {
             Sessions: sectionedSessions
           },
           dataType: 'text',
-          success: function(data) {
+          success: (data) => {
             if (data) {
               let i, row, rows, identifier,
-                sessiondata = that.state.sessiondata;
+                sessiondata = this.state.sessiondata;
               data = JSON.parse(data);
               rows = data.rows;
               for (i = 0; i < rows.length; i += 1) {
@@ -735,7 +728,7 @@ class DataQueryApp extends Component {
                 sessiondata[identifier][row.key[0]] = row.doc;
 
               }
-              that.setState({'sessiondata': sessiondata});
+              this.setState({'sessiondata': sessiondata});
             }
             console.log('Received data');
             semaphore--;
@@ -890,13 +883,10 @@ class DataQueryApp extends Component {
 
   updateFilter(filter) {
     // Update the filter
-    let that = this;
-    this.setState(function(state) {
-      if (filter.children.length === 0) {
-        filter.session = that.props.AllSessions
-      }
-      return {filter: filter}
-    });
+    if (filter.children.length === 0) {
+      filter.session = this.props.AllSessions
+    }
+    this.setState({filter});
   }
 
   render() {
