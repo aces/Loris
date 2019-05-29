@@ -178,7 +178,6 @@ class FieldList extends Component {
 
   render() {
     // Renders the html for the component
-
     let fields = [];
     let items = this.props.items || [];
     let fieldName, desc, isFile, type, selected;
@@ -220,7 +219,8 @@ class FieldList extends Component {
         selectedFields = {}
       }
 
-      fields.push(<FieldItem FieldName={fieldName}
+      fields.push(<FieldItem key={fieldName}
+                             FieldName={fieldName}
                              Category={this.props.category}
                              Description={desc}
                              ValueType={type}
@@ -276,26 +276,22 @@ class FieldSelector extends Component {
     this.props.onFieldChange(fieldName, category, downloadable);
   }
 
-  onCategorySelect(category) {
-    // Used for getting the fields of the given category
-
-    let that = this;
-
+  onCategorySelect(elementName, category) {
     // Use the cached version if it exists
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, function(data) {
-        let cf = that.state.categoryFields;
+      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, (data) => {
+        let cf = this.state.categoryFields;
         cf[category] = data;
-        that.setState({
+        this.setState({
           categoryFields: cf
         });
       }, 'json');
     }
     this.setState({
       selectedCategory: category,
-      PageNumber: 1
+      PageNumber: 1,
     });
   }
 
@@ -345,7 +341,7 @@ class FieldSelector extends Component {
             visit,
             {instrument: this.state.selectedCategory, field: field}
           );
-        } else if (action === uncheck && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
+        } else if (action === 'uncheck' && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
           this.props.fieldVisitSelect(
             action,
             visit,
@@ -402,11 +398,11 @@ class FieldSelector extends Component {
           <div className='form-group col-sm-8 search'>
             <label className='col-sm-12 col-md-2'>Instrument:</label>
             <div className='col-sm-12 col-md-8'>
-              <SelectDropdown
-                multi={false}
+              <SearchableDropdown
+                name="fieldsDropdown"
                 options={this.state.instruments}
-                onFieldClick={this.onCategorySelect}
-                selectedCategory={this.state.selectedCategory}
+                onUserInput={this.onCategorySelect}
+                placeHolder="Select One"
               />
             </div>
           </div>
