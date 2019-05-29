@@ -897,6 +897,7 @@ class ManageSavedQueryRow extends Component {
           filter = this.props.Query.Conditions.map((element, key) => {
             return (
               <ManageSavedQueryFilter
+                key={key}
                 filterItem={element}
               />
             );
@@ -991,8 +992,8 @@ class ManageSavedQueriesTabPane extends Component {
           <td colSpan="3">Loading saved query details</td>
         </tr>
       );
-
     }
+
     let savePrompt = '';
     if (this.state.savePrompt) {
       savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
