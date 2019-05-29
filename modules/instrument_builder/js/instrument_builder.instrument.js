@@ -99,7 +99,7 @@ var Instrument = {
                         content += "NULL=>''";
                         for (option in element.Options.Values) {
                             if (option !== '') {
-                            content += "{-}'" + option + "'=>'" + element.Options.Values[option] + "'";
+                                content += "{-}'" + option + "'=>'" + element.Options.Values[option] + "'";
                             }
                         }
                         content += "{-}'not_answered'=>'Not Answered'\n";
