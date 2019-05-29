@@ -144,7 +144,7 @@ class Profile extends \NDB_Page
      *
      * @return array the verified parsed POST response.
      */
-    function processValidity($values)
+    function processValidity(array $values): array
     {
         // Validate (dateTaken, dateTakenConfirm, sex) not set.
         if (!isset($values['dateTaken'])
