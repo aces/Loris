@@ -1241,7 +1241,7 @@ class Edit_User extends \NDB_Form
      *
      * @return bool  - whether or not to display examiner fields
      */
-    function isViewableExaminerFields($editor)
+    function isViewableExaminerFields($editor) : bool
     {
         $siteMatch = false;
         if (!$this->isCreatingNewUser()) {
