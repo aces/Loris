@@ -74,39 +74,32 @@ class NewProfileIndex extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    const match = this.validateMatchDate();
-    if (!match) {
-      this.setState({
-        errMessage: 'Date of Birth or EDC fields must match',
-        isCreated: false,
-      });
-    } else {
-      let formData = this.state.formData;
-      let formObject = new FormData();
-      for (let key in formData) {
-        if (formData[key] !== '') {
-          formObject.append(key, formData[key]);
-        }
+    this.setState({formError: null});
+    let formData = this.state.formData;
+    let formObject = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
       }
-      fetch(this.props.submitURL, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject,
-        })
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (data.error) {
-          this.setState({formError: data.error});
-        } else {
-          this.setState({
-            formError: null,
-            newData: data,
-            isCreated: true,
-          });
-        }
-       });
     }
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+      })
+    .then((resp) => resp.json())
+    .then((data) => {
+      if (data.error) {
+        this.setState({formError: data.error});
+      } else {
+        this.setState({
+          formError: null,
+          newData: data,
+          isCreated: true,
+        });
+      }
+     });
   }
 
   /**

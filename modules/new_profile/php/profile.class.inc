@@ -165,10 +165,10 @@ class Profile extends \NDB_Page
         $config =& \NDB_Config::singleton();
         // Validate edc.
         if ($config->getSetting('useEDC') == 'true'
-            && is_array($values['edcDateTaken'])
-            && is_array($values['edcDateTakenConfirm'])
+            && isset($values['edcDateTaken'])
+            && isset($values['edcDateTakenConfirm'])
         ) {
-            if (strlen(implode($values['edcDateTaken'])) > 2
+            if (strlen($values['edcDateTaken']) > 2
                 && !$this->_checkDate($values['edcDateTaken'])
             ) {
                 return array('error' => 'EDC is not a valid date.');
