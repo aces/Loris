@@ -132,7 +132,7 @@ class Issue extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->issueID = $request->getQueryParams()['issueID'];
-        if (empty($this->issueID)) {
+        if (empty($this->issueID) && $this->issueID !== '0') {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
             return new \Loris\Http\Error($request, 404, "Issue not found");
