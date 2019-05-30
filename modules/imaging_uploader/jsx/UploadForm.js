@@ -281,7 +281,7 @@ class UploadForm extends Component {
       // - Updates errorMessage and hasError so relevant errors are displayed on form
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
-        let errorMessage = this.state.errorMessage;
+        let errorMessage = Object.assign({}, this.state.errorMessage);
         let hasError = this.state.hasError;
         let messageToPrint = '';
         errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
