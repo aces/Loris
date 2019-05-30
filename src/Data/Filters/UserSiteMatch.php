@@ -41,24 +41,10 @@ class UserSiteMatch implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        if (method_exists($resource, 'getCenterIDs')) {
-            // If the Resource belongs to multiple CenterIDs, the user can
-            // access the data if the user is part of any of thos centers.
-            $resourceSites = $resource->getCenterIDs();
-            foreach ($resourceSites as $site) {
-                if ($user->hasCenter($site)) {
-                       return true;
-                }
+            $arr = (array)$resource;
+            if (!is_null($arr['CenterID'])) {
+                return $user->hasCenter($arr['CenterID']);
             }
-            return false;
-        } else if (method_exists($resource, 'getCenterID')) {
-            $resourceSite = $resource->getCenterID();
-            if (!is_null($resourceSite)) {
-                return $user->hasCenter($resourceSite);
-            }
-        }
-        throw new \LorisException(
-            "Can not implement SiteMatchFilter on a resource type that has no sites."
-        );
+           return true;
     }
 }
