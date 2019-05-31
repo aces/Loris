@@ -68,7 +68,7 @@ correct `host`, `url` and `base` values
 MCIN members can get access to the imaging files by putting in a request on redmine
 to mount the /data-raisin bread folder with the imaging files on their VM.
 
-For external user, please email the loris-dev mailing list.
+External users should email the loris-dev mailing list.
 
 ### Modifying RB
 The RaisinBread database should be handled like any other project. The data should 
