@@ -505,10 +505,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "Test Description"
         );
         //testing search by SeriesUID
-        $this->_searchTest(
-            "SeriesUID",
-            "5555"
-        );
+       // $this->_searchTest(
+       //     "SeriesUID",
+       //     "5555"
+       // );
         //testing search by site
         $this->_searchTest(
             "Site",
