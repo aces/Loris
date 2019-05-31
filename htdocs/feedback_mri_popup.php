@@ -145,7 +145,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        $Saved = $saved_comments[$comment_type_id];
+        $Saved = $saved_comments[$comment_type_id] ?? '';
         if ($Saved['predefined'][$predefined_comment_id]) {
             $CommentTpl['predefined'][$j]['checked'] = true;
         }
@@ -154,7 +154,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // print a form element for a free-form comment
     $CommentTpl['type']       = $comment_type_id;
-    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
+    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'] ?? '';
     $i++;
 }
 
