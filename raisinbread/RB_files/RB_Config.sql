@@ -21,7 +21,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (18,22,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (19,23,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (20,24,'Modify this to your project\'s citation policy');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (22,12,'YMd');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/demo/data/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/var/www/loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (26,30,'/PATH/TO/EXTERNAL/LIBRARY/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (28,32,'/data/');
@@ -55,7 +55,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (55,73,'/data/demo/bin/m
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (56,74,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (57,75,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (58,76,'dcm2mnc');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbread/demo/data/tarchive/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbread/tarchive/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (62,80,'1');
@@ -90,6 +90,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (93,98,'/data/publicatio
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (94,99,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (95,49,'1000');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (96,100,'environment');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (97,70,'/data-raisinbread/demo/data');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (97,70,'/data-raisinbread/');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
