@@ -64,20 +64,11 @@ correct `host`, `url` and `base` values
 > The password of the `admin` user on the RB database is `demo20!7`
 
 
-#### Downloading the imaging files
-In order to be able to view the image links in the Imaging Modules of LORIS, download
-of the imaging files are necessary. 
+#### Getting the imaging files
+MCIN members can get access to the imaging files by putting in a request on redmine
+to mount the /data-raisin bread folder with the imaging files on their VM.
 
-Note that for now, the files to download are only accessible to active members of the 
-MCIN lab using their LDAP credentials.
-
-1. Create a `/data/demo/data` directory where the files will go (make sure to have 
-21GB available on your disk)
-2. Run the following RSYNC command using your LDAP credentials:
-```
-rsync -av <myldapname>@ace-lab-1.acelab.ca:/home/users/shared/raisinbread/new_raisinbread_2019-05-30/ /data/demo/data/
-```
-
+For external user, please email the loris-dev mailing list.
 
 ### Modifying RB
 The RaisinBread database should be handled like any other project. The data should 
