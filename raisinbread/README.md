@@ -105,3 +105,12 @@ to avoid data corruption during sourcing. If the data has been modified between
 sourcing these files and exporting them, the modification will be reported as git 
 uncommitted changes and thus they can be verified and submitted to the LORIS repo 
 in the same pull request as the code.
+
+Note: when contributing back new imaging files in raisinbread, the file 
+RB_parameter_file.sql can become too big due to the complete header being dumped 
+in the parameter_file using ParameterTypeID=238. To decrease the size of the 
+RB_parameter_file.sql file, run the following query on your mysql and recreate
+the RB_parameter_file.sql file.
+```
+DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
+```
