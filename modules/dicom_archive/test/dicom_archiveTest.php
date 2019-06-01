@@ -108,7 +108,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         );
         $this-> _testFilter(self::$sex, self::$table, "1", "M");
         $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
-        $this-> _testFilter(self::$site, self::$table, "4", "4");
+        $this-> _testFilter(self::$site, self::$table, "8", "4");
     }
     /**
      * Testing filter funtion and clear button
