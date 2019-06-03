@@ -149,6 +149,9 @@ var Instrument = {
                     case "header":
                         content += 'header{@}{@}' + element.Description + "\n";
                         break;
+                    case "line":
+                        content += 'line{@}{@}' + element.Description + "\n";
+                        break;
                     default:
                         break;
                 }
@@ -291,6 +294,14 @@ var Instrument = {
                             tempElement.selected = {
                                 id: "header",
                                 value: "Header"
+                            };
+                            break;
+                        case "line":
+                            tempElement.Type = 'line';
+                            tempElement.Description = pieces[2];
+                            tempElement.selected = {
+                                id: "line",
+                                value: "Blank Line"
                             };
                             break;
                         default:
