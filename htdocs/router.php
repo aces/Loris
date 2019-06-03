@@ -12,7 +12,7 @@
  */
 
 
-$url     = ltrim($_SERVER['REQUEST_URI'], "/");
+$url     = ltrim($_SERVER['PHP_SELF'], "/");
 $request = $_SERVER['REQUEST_URI'];
 
 if ($request != '/'
