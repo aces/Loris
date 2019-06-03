@@ -1,5 +1,7 @@
 import Panel from 'Panel';
 import Loader from 'Loader';
+import Swal from 'sweetalert2';
+
 /**
  * New Profile Form
  *
@@ -79,6 +81,12 @@ class NewProfileIndex extends React.Component {
       this.setState({
         errMessage: 'Date of Birth or EDC fields must match',
       });
+      Swal.fire({
+        title: 'User Error',
+        text: 'Date of Birth or EDC fields must match',
+        type: 'info',
+        confirmButtonText: 'Okay!',
+      });
     } else {
       this.setState({formError: null});
       let formData = this.state.formData;
@@ -98,6 +106,12 @@ class NewProfileIndex extends React.Component {
         .then((data) => {
           if (data.error) {
             this.setState({formError: data.error});
+            Swal.fire({
+              title: 'User Error',
+              text: data.error,
+              type: 'info',
+              confirmButtonText: 'Okay!',
+            });
           } else {
             this.setState({
               formError: null,
