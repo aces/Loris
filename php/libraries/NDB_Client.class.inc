@@ -142,7 +142,8 @@ class NDB_Client
         // API Detect
         if (strpos(
             $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?? '',
-            '/api/v0.0.3-dev/') !== false
+            '/api/v0.0.3-dev/'
+        ) !== false
         ) {
             session_cache_limiter('private');
         }
