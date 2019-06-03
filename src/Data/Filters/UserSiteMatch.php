@@ -56,9 +56,13 @@ class UserSiteMatch implements \LORIS\Data\Filter
             if (!is_null($resourceSite)) {
                 return $user->hasCenter($resourceSite);
             }
+            // We don't know if the resource thought a null CenterID
+            // should mean "no one can access it" or "anyone can access
+            // it", so throw an exception.
+            throw new \LorisException("getCenterID on resource returned null");
         }
         throw new \LorisException(
-            "Can not implement SiteMatchFilter on a resource type that has no sites."
+            "Can not implement UserSiteMatch on a resource type that has no sites."
         );
     }
 }
