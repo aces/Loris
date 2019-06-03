@@ -68,7 +68,7 @@ correct `host`, `url` and `base` values
 MCIN members have automatic access to the imaging files on their dev VM
 where the raisinbread dataset is automatically mounted in the `/data-raisinbread` directory.
 
-External users should email the loris-dev mailing list.
+External users should email the loris-dev mailing list to request a copy of the data.
 
 ### Modifying RB
 The RaisinBread database should be handled like any other project. The data should 
