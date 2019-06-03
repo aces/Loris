@@ -150,6 +150,8 @@ class Profile extends \NDB_Page
         if (!isset($values['dateTaken'])
             || !isset($values['dateTakenConfirm'])
             || !isset($values['sex'])
+            || !isset($values['site'])
+            || !isset($values['project'])
         ) {
             return array('error' => 'Incomplete candidate fields.');
         }
@@ -160,7 +162,7 @@ class Profile extends \NDB_Page
             return array('error' => 'Birth date is not a valid date.');
         } else if ($values['dateTaken'] != $values['dateTakenConfirm']) {
             // Validate (dob1 & dob2) are not equal.
-            return array('error' => 'Birth date confirmation mismatch.');
+            return array('error' => 'Date of Birth fields must match.');
         }
         $config =& \NDB_Config::singleton();
         // Validate edc.
@@ -171,9 +173,9 @@ class Profile extends \NDB_Page
             if (strlen($values['edcDateTaken']) > 2
                 && !$this->_checkDate($values['edcDateTaken'])
             ) {
-                return array('error' => 'EDC is not a valid date.');
+                return array('error' => 'Expected Date of Confinement field is not a valid date.');
             } else if ($values['edcDateTaken'] != $values['edcDateTakenConfirm']) {
-                return array('error' => 'Estimated Due date fields must match.');
+                return array('error' => 'Expected Date of Confinement fields must match.');
             }
         } else {
             $values['edcDateTaken']        = null;
