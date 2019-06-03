@@ -65,7 +65,7 @@ correct `host`, `url` and `base` values
 
 
 #### Getting the imaging files
-MCIN members have automatically accessed to the imaging files on their dev VM
+MCIN members have automatic access to the imaging files on their dev VM
 where the raisinbread dataset is automatically mount in `/data-raisinbread`.
 
 External users should email the loris-dev mailing list.
