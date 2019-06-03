@@ -115,9 +115,10 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $record = basename($request->getUri()->getPath());
+            $name   = \User::singleton()->getUsername();
+            $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
-                $file = __DIR__ . "/../user_uploads/$record";
+                $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
                 ->withHeader(
                     'Content-Disposition',
@@ -372,7 +373,7 @@ class Files extends \NDB_Page
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
         $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = "$base/modules/document_repository/user_uploads/";
+        $uploadPath   = "$base/modules/document_repository/user_uploads/$name/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
@@ -380,7 +381,7 @@ class Files extends \NDB_Page
                 "'Category' parameter must be a positive integer."
             );
         }
-        // Check to see if $fullPath is writable. If not, throw an error. If it
+        // Check to see if $uploadPath is writable. If not, throw an error. If it
         // doesn't exist, create an uploads folder for the logged-in user.
         if (!is_writable($uploadPath)) {
             if (file_exists($uploadPath)) {
