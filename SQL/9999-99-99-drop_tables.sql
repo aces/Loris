@@ -64,6 +64,19 @@ DROP TABLE IF EXISTS `genotyping_platform`;
 DROP TABLE IF EXISTS `gene`;
 DROP TABLE IF EXISTS `genome_loc`;
 
+DROP TABLE IF EXISTS `publication_upload`;
+DROP TABLE IF EXISTS `publication_upload_type`;
+DROP TABLE IF EXISTS `publication_test_names_rel`;
+DROP TABLE IF EXISTS `publication_users_edit_perm_rel`;
+DROP TABLE IF EXISTS `publication_keyword_rel`;
+DROP TABLE IF EXISTS `publication_keyword`;
+DROP TABLE IF EXISTS `publication_parameter_type_rel`;
+DROP TABLE IF EXISTS `publication_collaborator_rel`;
+DROP TABLE IF EXISTS `publication`;
+DROP TABLE IF EXISTS `publication_status`;
+DROP TABLE IF EXISTS `publication_collaborator`;
+
+
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
 DROP TABLE IF EXISTS `parameter_candidate`;
