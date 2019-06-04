@@ -86,7 +86,7 @@ abstract class IdentifierGenerator
         if (count($this->getExistingIDs()) < 1) {
             return str_pad(
                 strval($this->minValue),
-                $this->length,
+                is_null($this->length) ? 4 : $this->length,
                 "0",
                 STR_PAD_LEFT
             );
