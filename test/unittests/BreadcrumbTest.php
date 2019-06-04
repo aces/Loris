@@ -46,7 +46,7 @@ class BreadcrumbTest extends TestCase
      */
     protected $link;
 
-     /**
+    /**
      * This method is called before each test is executed.
      *
      * @return void
