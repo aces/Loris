@@ -10,7 +10,7 @@ services:
       - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
-      - MYSQL_ROOT_PASSWORD=yes
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
     image: selenium/standalone-firefox-debug:2.53.1
