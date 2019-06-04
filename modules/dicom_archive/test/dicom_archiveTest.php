@@ -87,6 +87,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
+        $this->assertNotContains(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
