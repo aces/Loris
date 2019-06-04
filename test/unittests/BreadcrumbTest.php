@@ -70,7 +70,7 @@ class BreadcrumbTest extends TestCase
      * @covers Breadcrumb::__toString
      * @return void
      */
-    public function testToString($label, $link, $expected)
+    public function testToString()
     {
         $this->assertEquals('{"text":"testLabel","query":"testLink"}', $this->breadcrumb->__toString());
     }
