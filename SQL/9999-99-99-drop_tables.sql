@@ -75,7 +75,6 @@ DROP TABLE IF EXISTS `publication`;
 DROP TABLE IF EXISTS `publication_status`;
 DROP TABLE IF EXISTS `publication_collaborator`;
 
-
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
 DROP TABLE IF EXISTS `parameter_candidate`;
