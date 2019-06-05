@@ -277,7 +277,7 @@ class Dashboard extends \NDB_Form
                 if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
-                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
+                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID='
                         . $bvl_feedback[$i]['CandID'] . '&sessionID='
                         . $bvl_feedback[$i]['SessionID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
