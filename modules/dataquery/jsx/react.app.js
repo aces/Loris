@@ -49,7 +49,6 @@ class SavedQueriesList extends Component {
     // Build the list for the user queries
     for (let i = 0; i < this.props.userQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.userQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -60,7 +59,6 @@ class SavedQueriesList extends Component {
     // Build the list for the global queries
     for (let i = 0; i < this.props.globalQueries.length; i += 1) {
       curQuery = this.props.queryDetails[this.props.globalQueries[i]];
-      console.log(curQuery.Meta);
       if (curQuery.Meta && curQuery.Meta.name) {
         queryName = curQuery.Meta.name;
       } else {
@@ -158,7 +156,7 @@ class DataQueryApp extends Component {
     // them two separate ones, so we need to make sure that only one is selected by removing
     // "active" from all the tab classes and only adding it to the really active one
     let domNode = this;
-    $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+    $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       $(domNode).find('li').removeClass('active');
       if (e.target) {
         e.target.classList.add('active');
@@ -172,16 +170,15 @@ class DataQueryApp extends Component {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
-      console.log(this.state.queryIDs[key][0]);
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + that.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
             dataType: 'json'
-          }).then(function(value) {
+          }).then((value) => {
           let queries = this.state.savedQueries;
 
           queries[value._id] = value;
@@ -191,12 +188,11 @@ class DataQueryApp extends Component {
       }
     }
 
-    let allDone = Promise.all(promises).then(function(value) {
+    let allDone = Promise.all(promises).then((value) => {
       this.setState({'queriesLoaded': true});
     });
-    let component = this;
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-      component.setState({
+    $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
+      this.setState({
         ActiveTab: e.target.getAttribute('href').substr(1)
       });
     });
@@ -244,7 +240,7 @@ class DataQueryApp extends Component {
       QueryName: name,
       SharedQuery: shared,
       OverwriteQuery: override
-    }, function(data) {
+    }, (data) => {
       // Once saved, add the query to the list of saved queries
       let id = JSON.parse(data).id,
         queryIDs = this.state.queryIDs;
@@ -256,8 +252,8 @@ class DataQueryApp extends Component {
         }
       }
       $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
-        function(value) {
-          let queries = that.state.savedQueries;
+        (value) => {
+          let queries = this.state.savedQueries;
 
           queries[value._id] = value;
           this.setState({
@@ -270,7 +266,7 @@ class DataQueryApp extends Component {
             }
           });
         });
-    }).fail(function(data) {
+    }).fail((data) => {
       if (data.status === 409) {
         this.setState({
           alertConflict: {
@@ -303,7 +299,7 @@ class DataQueryApp extends Component {
     // This call is made synchronously
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
-      success: function(data) {
+      success: (data) => {
         rule.fields = data;
       },
       async: false,
@@ -347,7 +343,7 @@ class DataQueryApp extends Component {
     }
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-      success: function(data) {
+      success: (data) => {
         let i,
           allSessions = {},
           allCandiates = {};
@@ -424,7 +420,7 @@ class DataQueryApp extends Component {
         activeOperator: 0,
         children: []
       };
-      filterState.children = criteria.map(function(item) {
+      filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
         let rule = {
           instrument: fieldInfo[0],
@@ -495,29 +491,24 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
-    this.setState(function(state) {
-      return {
-        fields: fieldsList,
-        selectedFields: selectedFields,
-        filter: filterState,
-        alertLoaded: true,
-        alertSaved: false,
-        loading: false
-      }
+    this.setState({
+      fields: fieldsList,
+      selectedFields: selectedFields,
+      filter: filterState,
+      alertLoaded: true,
+      alertSaved: false,
+      loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
-      let that = this;
       $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
-        success: function(data) {
+        success: (data) => {
           if (data[0].value.IsFile) {
-            that.setState(function(state) {
-              let key = data[0].key[0] + ',' + data[0].key[1];
-              let downloadable = state.downloadableFields;
-              downloadable[key] = true;
-              return {
-                downloadableFields: downloadable
-              };
+            let key = data[0].key[0] + ',' + data[0].key[1];
+            let downloadable = this.state.downloadableFields;
+            downloadable[key] = true;
+            this.setState({
+              downloadableFields: downloadable,
             })
           }
         },
@@ -529,8 +520,7 @@ class DataQueryApp extends Component {
 
   fieldVisitSelect(action, visit, field) {
     // Used to select visits for a given field
-
-    this.setState(function(state) {
+    this.setState((state) => {
       let temp = state.selectedFields[field.instrument];
       if (action === 'check') {
         // Adding a new visit for field, add visit to field and
@@ -560,18 +550,17 @@ class DataQueryApp extends Component {
   fieldChange(fieldName, category, downloadable) {
     // Used to add and remove fields from the current query being built
 
-    let that = this;
-    this.setState(function(state) {
+    this.setState((state) => {
       let selectedFields = state.selectedFields,
         fields = state.fields.slice(0);
       if (!selectedFields[category]) {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(this.props.Visits));
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
-        for (let key in that.props.Visits) {
+        for (let key in this.props.Visits) {
           selectedFields[category].allVisits[key] = 1;
         }
 
@@ -651,14 +640,13 @@ class DataQueryApp extends Component {
     // Run the current query
 
     let DocTypes = [],
-      that = this,
       semaphore = 0,
       sectionedSessions,
-      ajaxComplete = function() {
+      ajaxComplete = () => {
         // Wait until all ajax calls have completed before computing the rowdata
         if (semaphore == 0) {
-          let rowdata = that.getRowData(that.state.grouplevel);
-          that.setState({
+          let rowdata = this.getRowData(this.state.grouplevel);
+          this.setState({
             rowData: rowdata,
             loading: false
           });
@@ -711,10 +699,10 @@ class DataQueryApp extends Component {
             Sessions: sectionedSessions
           },
           dataType: 'text',
-          success: function(data) {
+          success: (data) => {
             if (data) {
               let i, row, rows, identifier,
-                sessiondata = that.state.sessiondata;
+                sessiondata = this.state.sessiondata;
               data = JSON.parse(data);
               rows = data.rows;
               for (i = 0; i < rows.length; i += 1) {
@@ -738,9 +726,8 @@ class DataQueryApp extends Component {
                 sessiondata[identifier][row.key[0]] = row.doc;
 
               }
-              that.setState({'sessiondata': sessiondata});
+              this.setState({'sessiondata': sessiondata});
             }
-            console.log('Received data');
             semaphore--;
             ajaxComplete();
           }
@@ -893,22 +880,22 @@ class DataQueryApp extends Component {
 
   updateFilter(filter) {
     // Update the filter
-    let that = this;
-    this.setState(function(state) {
-      if (filter.children.length === 0) {
-        filter.session = that.props.AllSessions
-      }
-      return {filter: filter}
-    });
+    if (filter.children.length === 0) {
+      filter.session = this.props.AllSessions
+    }
+    this.setState({filter});
   }
 
   render() {
     // Renders the html for the component
 
-    let tabs = [], tabsNav = [], alert = <div/>;
+    let tabs = [];
+    let tabsNav = [];
+    let alert = <div/>;
 
     // Add the info tab
     tabs.push(<InfoTabPane
+      key='Info'
       TabId='Info'
       UpdatedTime={this.props.UpdatedTime}
       Loading={this.state.loading}
@@ -916,6 +903,7 @@ class DataQueryApp extends Component {
 
     // Add the field select tab
     tabs.push(<FieldSelectTabPane
+      key='DefineFields'
       TabId='DefineFields'
       categories={this.props.categories}
       onFieldChange={this.fieldChange}
@@ -927,6 +915,7 @@ class DataQueryApp extends Component {
 
     // Add the filter builder tab
     tabs.push(<FilterSelectTabPane
+        key='DefineFilters'
         TabId='DefineFilters'
         categories={this.props.categories}
         filter={this.state.filter}
@@ -939,6 +928,7 @@ class DataQueryApp extends Component {
     // Define the data displayed type and add the view data tab
     let displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
     tabs.push(<ViewDataTabPane
+      key='ViewData'
       TabId='ViewData'
       Fields={this.state.fields}
       Criteria={this.state.criteria}
@@ -956,6 +946,7 @@ class DataQueryApp extends Component {
 
     // Add the stats tab
     tabs.push(<StatsVisualizationTabPane
+      key='Statistics'
       TabId='Statistics'
       Fields={this.state.rowData.RowHeaders}
       Data={this.state.rowData.rowdata}
@@ -964,6 +955,7 @@ class DataQueryApp extends Component {
 
     // Add the manage saved queries tab
     tabs.push(<ManageSavedQueriesTabPane
+      key='SavedQueriesTab'
       TabId='SavedQueriesTab'
       userQueries={this.state.queryIDs.User}
       globalQueries={this.state.queryIDs.Shared}
