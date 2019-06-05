@@ -81,9 +81,9 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php', {category: rule.instrument}, (data) => {
+      $.get(loris.BaseURL + '/dataquery/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
         rule.fields = data;
-        this.props.updateRule(that.props.index, rule);
+        this.props.updateRule(this.props.index, rule);
       }, 'json');
     }
   }
@@ -139,44 +139,43 @@ class FilterRule extends Component {
 
   valueSet() {
     // Update the value to filter for, and runs the query for the rules parameters
-    let rule = JSON.parse(JSON.stringify(this.props.rule)),
-      that = this;
+    let rule = JSON.parse(JSON.stringify(this.props.rule));
     if (this.state.value) {
-      let responseHandler = function(data) {
-          let i,
-            allSessions = {},
-            allCandiates = {};
-          // Loop through data and divide into individual visits with unique PSCIDs
-          // storing a master list of unique PSCIDs
-          for (i = 0; i < data.length; i++) {
-            if (!allSessions[data[i][1]]) {
-              allSessions[data[i][1]] = [];
-            }
-            allSessions[data[i][1]].push(data[i][0]);
-            if (!allCandiates[data[i][0]]) {
-              allCandiates[data[i][0]] = []
-            }
-            allCandiates[data[i][0]].push(data[i][1]);
+      let responseHandler = (data) => {
+        let i;
+        let allSessions = {};
+        let allCandiates = {};
+        // Loop through data and divide into individual visits with unique PSCIDs
+        // storing a master list of unique PSCIDs
+        for (i = 0; i < data.length; i++) {
+          if (!allSessions[data[i][1]]) {
+            allSessions[data[i][1]] = [];
           }
-          rule.candidates = {
-            allCandiates: allCandiates,
-            allSessions: allSessions
-          };
-          rule.session = Object.keys(allCandiates);
-          rule.visit = 'All';
-          that.props.updateSessions(that.props.index, rule);
-        },
-        ajaxRetrieve = function(script) {
-          $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-            {
-              category: rule.instrument,
-              field: rule.field,
-              value: that.state.value
-            },
-            responseHandler,
-            'json'
-          );
+          allSessions[data[i][1]].push(data[i][0]);
+          if (!allCandiates[data[i][0]]) {
+            allCandiates[data[i][0]] = [];
+          }
+          allCandiates[data[i][0]].push(data[i][1]);
+        }
+        rule.candidates = {
+          allCandiates: allCandiates,
+          allSessions: allSessions,
         };
+        rule.session = Object.keys(allCandiates);
+        rule.visit = 'All';
+        this.props.updateSessions(this.props.index, rule);
+      };
+      let ajaxRetrieve = (script) => {
+        $.get(loris.BaseURL + '/dataquery/ajax/' + script,
+          {
+            category: rule.instrument,
+            field: rule.field,
+            value: this.state.value,
+          },
+          responseHandler,
+          'json',
+        );
+      };
       switch (rule.operator) {
         case 'equal':
         case 'isNull':
