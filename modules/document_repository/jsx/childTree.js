@@ -41,7 +41,7 @@ class ChildTree extends Component {
           onClick={()=>this.action(Object.values(node))}
           style={trStyle}
         >
-          <td colSpan="9">
+          <td colSpan="10">
             <span
               style={spanStyle}
               key={index}
