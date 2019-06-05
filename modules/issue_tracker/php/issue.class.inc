@@ -131,7 +131,9 @@ class Issue extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->issueID = $request->getQueryParams()['issueID'];
+        $results = [];
+        preg_match('#/issue/([0-9]+)$#', $request->getURI()->getPath(), $results);
+        $this->issueID = $results[1] ?? null;
         if (empty($this->issueID)) {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
