@@ -31,8 +31,8 @@
 
 ## Project
 
-1. Click on the project link at the top of the page and confirm that it brings you to project configuration page.[Manual Test]
+1. Click on the project link at the top of the page and confirm that it brings you to the project configuration page.[Manual Test]
 2. Click the 'New ProjectID' in the left column navigation. Try to add a new project.[Manual Test]
 3. Test editing a currently existing project. Test resetting the form as well with the reset button.[Manual Test]
 4. Test the breadcrumb to see if you can navigate back to the main config page.[Automation Test]
-5. Go back to the project configuration page and click on the subproject link and confirm that it bring you to the subproject configuration page.[Manual Test]
+5. Go back to the project configuration page and click on the subproject link and confirm that it brings you to the subproject configuration page.[Manual Test]
