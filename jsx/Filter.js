@@ -69,7 +69,7 @@ class Filter extends Component {
           element = <SelectElement key={filter.name} options={filter.options}/>;
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;
