@@ -203,7 +203,7 @@ class FeedbackMRI
     /**
      * Gets the value of a single field in the MRI table
      *
-     * @param int $fieldName field to select from in mri table
+     * @param string $fieldName field to select from in mri table
      *
      * @return string value of $fieldName in mri table
      */
