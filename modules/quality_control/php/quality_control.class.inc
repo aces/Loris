@@ -278,7 +278,7 @@ class Quality_Control extends \NDB_Menu_Filter
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
                 $query_params
             );
-            //base on the rasinbread instrument - mri_parameter_form table
+            //base on the raisinbread instrument - mri_parameter_form table
             // there are only "3d_t1w_Scan_Done" and "2d_flair_Scan_Done"
             if (substr("$scan_type", 0, 2) == "t1") {
                 $scans_done[$scan_type] = "3d_t1w_Scan_Done";
