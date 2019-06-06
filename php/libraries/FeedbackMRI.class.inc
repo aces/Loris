@@ -203,11 +203,11 @@ class FeedbackMRI
     /**
      * Gets the value of a single field in the MRI table
      *
-     * @param int $fieldName field to select from in mri table
+     * @param string $fieldName field to select from in mri table
      *
      * @return string value of $fieldName in mri table
      */
-    function getMRIValue(int $fieldName): string
+    function getMRIValue(string $fieldName): string
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
