@@ -146,6 +146,7 @@ class FeedbackMRI
 
         $result = $DB->pselect($query, array());
 
+        $comments = array();
         // build the output array
         if (is_array($result)) {
             foreach ($result as $row) {
@@ -347,8 +348,8 @@ class FeedbackMRI
                     $overallType = $CTID;
                     $overallName = array(
                                     'name'   => stripslashes($CommentName),
-                                    'field'  => $statusField['field'],
-                                    'values' => $statusField['values'],
+                                    'field'  => $statusField['field'] ?? 'overall',
+                                    'values' => $statusField['values'] ?? '',
                                    );
                 } else {
                     // add a row to the output array

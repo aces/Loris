@@ -39,7 +39,7 @@ $comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ??
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away']) {
+if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     // clear all predefined comments
     $comments->clearAllComments();
 
@@ -145,8 +145,8 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        $Saved = $saved_comments[$comment_type_id];
-        if ($Saved['predefined'][$predefined_comment_id]) {
+        $Saved = $saved_comments[$comment_type_id] ?? array();
+        if ($Saved['predefined'][$predefined_comment_id] ?? false) {
             $CommentTpl['predefined'][$j]['checked'] = true;
         }
         $j++;
@@ -154,7 +154,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // print a form element for a free-form comment
     $CommentTpl['type']       = $comment_type_id;
-    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
+    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'] ?? '';
     $i++;
 }
 
