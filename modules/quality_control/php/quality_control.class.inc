@@ -119,8 +119,15 @@ class Quality_Control extends \NDB_Menu_Filter
                   LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
                   WHERE
                       ts.TarchiveID = t.TarchiveID
-                      AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
-                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)".
+                      AND 
+                          (ts.EchoTime BETWEEN 
+                                SUBSTRING_INDEX(mp.TE_range,'.',1) AND
+                                SUBSTRING_INDEX(mp.TE_range,'.',2)
+                          )
+                      AND 
+                          (ts.RepetitionTime BETWEEN
+                                SUBSTRING_INDEX(mp.TR_range,'.',1) AND
+                                SUBSTRING_INDEX(mp.TR_range,'.',2))".
                " ) THEN 'In DICOM'".
               " ELSE 'Missing'
            END as tarchive_loc,
@@ -218,7 +225,6 @@ class Quality_Control extends \NDB_Menu_Filter
         foreach ($subprojectList as $key => $value) {
             $subprojectList2[$value] = $value;
         }
-        //print_r($subprojectList2);
         $uploaderList = array();
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -272,17 +278,14 @@ class Quality_Control extends \NDB_Menu_Filter
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
                 $query_params
             );
+            //base on the rasinbread instrument - mri_parameter_form table
+            // there are only "3d_t1w_Scan_Done" and "2d_flair_Scan_Done"
             if (substr("$scan_type", 0, 2) == "t1") {
-                $scans_done[$scan_type] = "T1_Scan_done";
-            } elseif (substr("$scan_type", 0, 3) == "t2w") {
-                $scans_done[$scan_type] = "T2_Scan_done";
-            } elseif (substr("$scan_type", 0, 3) == "dti") {
-                $scans_done[$scan_type] = "dti_Scan_done";
+                $scans_done[$scan_type] = "3d_t1w_Scan_Done";
             } else {
-                $scans_done[$scan_type] = $scan_type . "_Scan_done";
+                $scans_done[$scan_type] = "2d_flair_Scan_Done";
             }
         }
-
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
                 = $this->_buildQuery(
