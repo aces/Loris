@@ -32,7 +32,8 @@ if (!$user->hasPermission('imaging_browser_qc')
     return;
 }
 
-$tpl_data['has_permission'] = true;
+$tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
+
 // instantiate feedback mri object
 $comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
 
