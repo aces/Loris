@@ -290,7 +290,7 @@ class DataTable extends Component {
 
     // Handle boolean inputs
     if (typeof filterData === 'boolean') {
-      result = filterData;
+      result = (filterData === data);
     }
 
     // Handle array inputs for multiselects
