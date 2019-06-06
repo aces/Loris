@@ -40,7 +40,7 @@ class Filter extends Component {
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '') {
+    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
       delete filter[name];
       searchParams.delete(name);
     } else {
