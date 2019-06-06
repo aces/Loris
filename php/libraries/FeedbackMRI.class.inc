@@ -207,7 +207,7 @@ class FeedbackMRI
      *
      * @return string value of $fieldName in mri table
      */
-    function getMRIValue(int $fieldName): string
+    function getMRIValue(string $fieldName): string
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {

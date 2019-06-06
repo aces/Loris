@@ -123,7 +123,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         }
         $CommentTpl['selected'] = $comments
             ->getMRIValue(
-                intval($comment_array['field'])
+                $comment_array['field']
             );
     }
 
