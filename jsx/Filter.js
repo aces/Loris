@@ -81,12 +81,15 @@ class Filter extends Component {
           element = <TextboxElement key={filter.name}/>;
         }
 
+        // The value prop has to default to false if the first two options
+        // are undefined so that the checkbox component is a controlled input
+        // element with a starting default value
         result.push(React.cloneElement(
           element,
           {
             name: filter.name,
             label: field.label,
-            value: (this.props.filter[filter.name] || {}).value,
+            value: (this.props.filter[filter.name] || {}).value || false,
             onUserInput: this.onFieldUpdate,
           }
         ));
