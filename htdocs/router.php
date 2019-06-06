@@ -16,10 +16,8 @@ $urlpath = ltrim($_SERVER['PHP_SELF'], "/");
 $request = $_SERVER['REQUEST_URI'];
 
 if ($request != '/'
-    && (
-        file_exists(__DIR__ . $request)
-        || file_exists(__DIR__ . "/" . $urlpath)
-    )
+    && (    file_exists(__DIR__ . $request)
+    || file_exists(__DIR__ . "/" . $urlpath))
     && $request != "/acknowledgements/"
     && strpos($request, "/api/") === false
 ) {
