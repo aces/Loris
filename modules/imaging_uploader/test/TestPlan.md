@@ -9,13 +9,13 @@
 4. Ensure that the Browse tab allows searching based on CandID, PSCID, and/or Visit Label. Ensure that the Visit Label 
    is a dropdown menu containing all the possible visit labels (taken from the Visit_label column in the session table 
    for any Active candidate), and ensure that the CandID and PSCID automatically filter the list of entries in Imaging 
-   Uploader table on the 'fly', as fields are being filled out. Make sure that this works no matter what page of results
+   Uploader table on the 'fly', as fields are being filled out. Ensure that this works no matter what page of results
    from the query to the uploads table you are currently on. Ensure that 'Clear Filters' button works.
    [Manual Testing]      
 5. Ensure that the 'Upload' tab has the CandID, PSCID, and Visit Label greyed out upon loading. These greyed out fields remain
    as such if the 'Phantom Scans' is set to Yes, and become fillable and required fields if 'Phantom Scans' is set to No.  
    [Manual Testing]
-6. Test validation errors for 'CandID', 'PSCID', and 'Visit Label' in the 'Upload' tab and make sure that the appropriate
+6. Test validation errors for 'CandID', 'PSCID', and 'Visit Label' in the 'Upload' tab and ensure that the appropriate
    error messages are displayed under the relevant form elements.
 
    Set Phantom Scans to 'No' and try to upload a valid `.zip` file for each scenario below:
@@ -36,7 +36,7 @@
 
    [Manual Testing]
 
-7. Test validations for 'File to Upload' in the 'Upload' tab and make sure that the appropriate
+7. Test validations for 'File to Upload' in the 'Upload' tab and ensure that the appropriate
    error messages are displayed under the 'File to Upload' element.
 
    Set Phantom Scans to 'Yes' and try to upload a file for each scenario below:
@@ -54,22 +54,22 @@
 8. Once all the values in the form have been validated, ensure that you can upload a `.zip` file and a `.tgz` file
    [Manual Testing]
 9. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column. 
-   Make sure you get the Warning message 'Are you sure? A file with this name already exists! Would you like to override 
+   Ensure you get the Warning message 'Are you sure? A file with this name already exists! Would you like to override 
    existing file?'. Ensure the correct behavior of the two possible actions by the user: 'Yes, I am sure!' or 'No, cancel it!'.  
    [Manual Testing]      
 10. Upload a scan which was already uploaded and which was processed with 'Success' status in the Progress column. 
-   Make sure you can not re-upload the file, and get the Error message 'File already exists! A file with this name has already 
+   Ensure you can not re-upload the file, and get the Error message 'File already exists! A file with this name has already 
    successfully passed the MRI pipeline!'. 
    [Manual Testing]      
 11. Upload a new, valid, anonymized `.tar.gz` DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
     file appears in the table after loading is complete. 
     [Manual Testing]
-12. In the Study section of the Admin/Configuration module, make sure the 'ImagingUploader Auto launch' option is set to 'No'. 
+12. In the Study section of the Admin/Configuration module, ensure the 'ImagingUploader Auto launch' option is set to 'No'. 
     Click on the show-data button and check the contents of the upload table after the successful upload done in 8. Ensure that
     the Progress column entry for that UploadID displays 'Not Started'. 
-    Launch the imaging insertion scripts from a terminal window. Make sure the Progress column entry for that UploadID displays
+    Launch the imaging insertion scripts from a terminal window. Ensure the Progress column entry for that UploadID displays
     'In Progress ...' during the insertion process, and either 'Success' or 'Failure' at the end of the insertion process.
-    Make sure all fields are correct. Also check that:
+    Ensure all fields are correct. Also check that:
 
     - the Tarchive info column contains a link to the DICOM archive page with the details of the archive displayed (with
       the view Dicom Archive module and pages permission).
@@ -79,12 +79,12 @@
       the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincCreated column has a 
       clickable link that takes the user to the MRI violations page, displaying the violated scans of this upload.
     [Manual Testing]      
-13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Make sure 
+13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Ensure 
     that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
     page with all the valid scans for this candidate loaded in the result table.
     [Manual Testing]
 14. Go in the profile details for the candidate found in step 13 and go into the visit table. Check that the MR Scan 
-    done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and make sure you 
+    done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and ensure you 
     are taken to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded 
     in the result table.
     [Manual Testing]
@@ -102,30 +102,30 @@
     Check that an appropriate message is written in the Console Output (i.e. "`The PatientName read from the DICOM header
     does not start with MTL0002_222222_V01 from the mri_upload table`").
     [Manual Testing]
-19. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
+19. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
 	<LORIS MRI code dir>/dicom-archive/.loris-mri) and comment out the definition of the @db array. Once these operations
 	are done, upload any valid scan: check in the server processes manager that this fails with an error code of 4.
 	Now try to upload the scan again. When the system asks you if you want to overwrite the existing 
 	archive, answer 'Yes'. Check that this reupload fails with error code 4 (and not 2). 
 	Related to Redmine#14093 and PR#3555.
 	[Manual Testing]
-20. First, set the config setting 'ImagingUploader auto launch' to 'No'. Upload an MRI archive that can successfully be
+20. Set the config setting 'ImagingUploader auto launch' to 'No'. Upload an MRI archive that can successfully be
     uploaded. Check that the value of the Progress column for the uploaded archive is 'Not started'.
     [Manual Testing]
-21. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload an MRI archive that can successfully be
-    uploaded and that will be processed successfully by the pipeline. Once the upload is finished, check that the value of 
-    the Progress column for the uploaded archive is 'In Progress...'
-    [Manual Testing]
-22. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload an MRI archive that can successfully be
-    uploaded and that will be processed successfully by the pipeline. Once the upload is finished, click on the uploaded
-    archive in the results table and select 'Detailed' in the combo box of the log panel. Check that an increasing serie of
-    dots is displayed along with a rotating bar to indicate the the archive is being processed.
+21. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload an MRI archive that can successfully be
+    uploaded and that will be processed successfully by the pipeline. Once the upload is finished and processing of the
+    archive has begun, check that the value of the Progress column for the uploaded archive is 'In Progress...'.  Click 
+    on the uploaded archive in the results table and select 'Detailed' in the combo box of the log panel. Check that an 
+    increasing serie of dots is displayed along with a rotating bar to indicate that the archive is being processed. Once
+    processing is finished, reload the page and check that the value of the Progress column for the uploaded archive is 
+    'Success (X out of Y)', where X is the number of MINC files successfully inserted and Y is the total number of MINC 
+    files created. 
     [Manual Testing]
 23. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Upload a file that can successfully be uploaded but that 
     will fail the processing done by the MRI pipeline. After the upload succeeds, wait for the MRI pipeline to finish processing
     the archive and check that the Progress column is set to 'Failure'. Note down the text that is displayed in the log panel
     (Detailed view). Now change the config setting 'ImagingUploader auto launch' to 'No'. Upload the same file again. once the
-    upload is finished, make sure that the detailed log messages seen earlier are gone and have been replaced by a message that
+    upload is finished, ensure that the detailed log messages seen earlier are gone and have been replaced by a message that
     indicates that processing of the archive has not begun yet.
     [Manual Testing]
 24. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Change config setting MRICodePath so that its value is set to
