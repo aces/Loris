@@ -173,9 +173,11 @@ class Profile extends \NDB_Page
             if (strlen($values['edcDateTaken']) > 2
                 && !$this->_checkDate($values['edcDateTaken'])
             ) {
-                return array('error' => 'Expected Date of Confinement field is not a valid date.');
+                $msg = 'Expected Date of Confinement field is not a valid date.';
+                return array('error' => $msg);
             } else if ($values['edcDateTaken'] != $values['edcDateTakenConfirm']) {
-                return array('error' => 'Expected Date of Confinement fields must match.');
+                $msg = 'Expected Date of Confinement fields must match.';
+                return array('error' => $msg);
             }
         } else {
             $values['edcDateTaken']        = null;
