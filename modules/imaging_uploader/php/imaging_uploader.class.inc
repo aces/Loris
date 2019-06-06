@@ -150,10 +150,11 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if ($this->_saveFile($values)) {
             // MRI archive is now in the mri_upload table. If there are existing
             // records in table notification_spool for that upload (i.e a re-upload
-            // of a scan that the MRI pipeline failed to process), erase them
+            // of a scan that the MRI pipeline failed to process), inactivate them
             $db = \Database::singleton();
-            $db->delete(
+            $db->update(
                 'notification_spool',
+                array('Active'    => 'N'),
                 array('ProcessID' => $this->mri_upload_id)
             );
 
