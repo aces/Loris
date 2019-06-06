@@ -10,15 +10,16 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
-
 $url     = ltrim($_SERVER['REQUEST_URI'], "/");
 $urlpath = ltrim($_SERVER['PHP_SELF'], "/");
 
 $request = $_SERVER['REQUEST_URI'];
 
 if ($request != '/'
-    && file_exists(__DIR__ . $request)
+    && (
+        file_exists(__DIR__ . $request)
+        || file_exists(__DIR__ . "/" . $urlpath)
+    )
     && $request != "/acknowledgements/"
     && strpos($request, "/api/") === false
 ) {
