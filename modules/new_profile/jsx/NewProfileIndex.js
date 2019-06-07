@@ -1,5 +1,7 @@
 import Panel from 'Panel';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
+
 /**
  * New Profile Form
  *
@@ -12,13 +14,12 @@ class NewProfileIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {},
       configData: {},
       formData: {},
       newData: {},
       isLoaded: false,
       isCreated: false,
-      errMessage: '',
+      error: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -39,7 +40,7 @@ class NewProfileIndex extends React.Component {
     return fetch(this.props.dataURL,
       {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({configData: data}))
+      .then((data) => this.setState({configData: data.fieldOptions}))
       .catch((error) => {
         this.setState({error: true});
       });
@@ -52,31 +53,30 @@ class NewProfileIndex extends React.Component {
    * @return {boolean}
    */
   validateMatchDate() {
-    const data = this.state.formData;
-    let dateMatch = false;
-    if (data.dateTaken == data.dateTakenConfirm) {
-      dateMatch = true;
+    let validate = false;
+    const formData = this.state.formData;
+    if (formData.dobDate !== formData.dobDateConfirm) {
+      swal('Error!', 'Date of Birth fields must match', 'error');
+    } else if (this.state.configData['edc'] === 'true' &&
+         (formData.edcDate !== formData.edcDateConfirm)
+    ) {
+      swal('Error!', 'EDC fields must match', 'error');
+    } else {
+      validate = true;
     }
-    let edcMatch = true;
-    if (this.state.configData['edc'] === 'true' &&
-         data.edcDateTaken !== data.edcDateTakenConfirm
-       ) {
-      edcMatch = false;
-    }
-    return dateMatch && edcMatch;
+    return validate;
   }
 
   /**
    * Handles form submission
    *
-   * @param {event} e - Form submition event
+   * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
     const match = this.validateMatchDate();
     if (!match) {
       this.setState({
-        errMessage: 'Date of Birth or EDC fields must match',
         isCreated: false,
       });
     } else {
@@ -87,17 +87,29 @@ class NewProfileIndex extends React.Component {
           formObject.append(key, formData[key]);
         }
       }
+      formObject.append('fire_away', 'New Candidate');
+
       fetch(this.props.submitURL, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'same-origin',
         body: formObject,
         })
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({newData: data});
-        this.setState({isCreated: true});
-       });
+      .then((resp) => {
+        if (resp.ok && resp.status === 201) {
+          resp.json().then((data) => {
+            this.setState({newData: data});
+            this.setState({isCreated: true});
+          });
+        } else {
+          resp.text().then((message) => {
+            swal('Error!', message, 'error');
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -128,8 +140,8 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let project = null;
     let pscid = null;
-    let minYear = this.state.configData.startYear-this.state.configData.ageMax;
-    let maxYear = this.state.configData.endYear-this.state.configData.ageMin;
+    let minYear = this.state.configData.minYear;
+    let maxYear = this.state.configData.maxYear;
     project =
       <SelectElement
         name = "project"
@@ -143,21 +155,21 @@ class NewProfileIndex extends React.Component {
       edc =
         <div>
           <DateElement
-            name = "edcDateTaken"
+            name = "edcDate"
             label = "Expected Date of Confinement"
             minYear = {minYear}
             maxYear = {maxYear}
             onUserInput = {this.setFormData}
-            value = {this.state.formData.edcDateTaken}
+            value = {this.state.formData.edcDate}
             required = {true}
           />
           <DateElement
-            name = "edcDateTakenConfirm"
+            name = "edcDateConfirm"
             label = "Confirm EDC"
             minYear = {minYear}
             maxYear = {maxYear}
             onUserInput = {this.setFormData}
-            value = {this.state.formData.edcDateTakenConfirm}
+            value = {this.state.formData.edcDateConfirm}
             required = {true}
           />
         </div>;
@@ -173,30 +185,27 @@ class NewProfileIndex extends React.Component {
         />;
     }
     if (!this.state.isCreated) {
-      profile =
+      profile = (
         <FormElement
           name = "newProfileForm"
           onSubmit = {this.handleSubmit}
         >
-          <label className = "error">
-            {this.state.errMessage}
-          </label>
           <DateElement
-            name = "dateTaken"
+            name = "dobDate"
             label = "Date of Birth"
-            minYear = "2000"
-            maxYear = "2017"
+            minYear = {minYear}
+            maxYear = {maxYear}
             onUserInput = {this.setFormData}
-            value = {this.state.formData.dateTaken}
+            value = {this.state.formData.dobDate}
             required = {true}
           />
           <DateElement
-            name = "dateTakenConfirm"
+            name = "dobDateConfirm"
             label = "Date of Birth Confirm"
-            minYear = "2000"
-            maxYear = "2017"
+            minYear = {minYear}
+            maxYear = {maxYear}
             onUserInput = {this.setFormData}
-            value = {this.state.formData.dateTakenConfirm}
+            value = {this.state.formData.dobDateConfirm}
             required = {true}
           />
           {edc}
@@ -218,27 +227,33 @@ class NewProfileIndex extends React.Component {
           />
           {pscid}
           {project}
-          <ButtonElement label = "Create" id = "button"/>
-        </FormElement>;
+          <ButtonElement
+            name = "fire_away"
+            label = "Create"
+            id = "button"
+            type = "submit"
+          />
+        </FormElement>
+      );
     } else {
-      profile =
+      profile = (
         <div>
           <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
           <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
           <p><a href = "/new_profile/" > Recruit another candidate </a></p>
-        </div>;
+        </div>
+      );
     }
     return (<Panel title="Create a new profile">{profile}</Panel>);
   }
 }
-window.addEventListener(
-  'load',
-  () => {
-    ReactDOM.render(
-      <NewProfileIndex dataURL = {`${loris.BaseURL}/new_profile/profile`}
-        submitURL = {`${loris.BaseURL}/new_profile/Profile`}
-        hasPermission = {loris.userHasPermission}
-      />,
-      document.getElementById('lorisworkspace'));
-  }
-);
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <NewProfileIndex
+      dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
+      submitURL = {`${loris.BaseURL}/new_profile/`}
+      hasPermission = {loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
+});
