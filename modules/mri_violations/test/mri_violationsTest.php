@@ -512,7 +512,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         //testing search by site
         $this->_searchTest(
             "Site",
-            "Montreal"
+            "TESTinPSC"
         );
 
     }
