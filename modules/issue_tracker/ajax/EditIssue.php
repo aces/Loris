@@ -513,8 +513,8 @@ function emailUser($issueID, $changed_assignee)
             )
         );
 
-        if(isset($issueChangeEmailsAssignee[0])) {
-            $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
+        if (isset($issueChangeEmailsAssignee[0])) {
+            $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
 
             Email::send(
                 $issueChangeEmailsAssignee[0]['Email'],
