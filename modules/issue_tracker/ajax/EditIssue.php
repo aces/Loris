@@ -124,23 +124,6 @@ function editIssue()
         emailUser($issueID, $issueValues['assignee']);
     }
 
-    // Adding editor to the watching table unless they don't want to be added.
-    if ($_POST['watching'] == 'Yes') {
-        $nowWatching = array(
-                        'userID'  => $user->getData('UserID'),
-                        'issueID' => $issueID,
-                       );
-        $db->replace('issues_watching', $nowWatching);
-    } else if ($_POST['watching'] == "No") {
-        $db->delete(
-            'issues_watching',
-            array(
-             'issueID' => $issueID,
-             'userID'  => $user->getData('UserID'),
-            )
-        );
-    }
-
     // Adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
 
@@ -664,8 +647,9 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     if (!empty($_GET['issueID'])
         && $_GET['issueID'] != "new"
     ) { //if an existing issue
-        $issueID    = $_GET['issueID'];
-        $issueData  = getIssueData($issueID);
+        $issueID   = $_GET['issueID'];
+        $issueData = getIssueData($issueID);
+
         $desc       = $db->pselect(
             "SELECT issueComment
 FROM issues_comments WHERE issueID=:i
@@ -680,7 +664,11 @@ ORDER BY dateAdded LIMIT 1",
              'userID'  => $user->getData('UserID'),
             )
         );
-        $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
+        if ($isWatching === null) {
+            $issueData['watching'] = "No";
+        } else {
+            $issueData['watching'] = "Yes";
+        }
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'];
