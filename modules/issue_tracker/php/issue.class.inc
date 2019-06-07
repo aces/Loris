@@ -132,7 +132,11 @@ class Issue extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $results = [];
-        preg_match('#/issue/([0-9]+|new)$#', $request->getURI()->getPath(), $results);
+        preg_match(
+            '#/issue/([0-9]+|new)$#',
+            $request->getURI()->getPath(),
+            $results
+        );
         $this->issueID = $results[1] ?? null;
         if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl

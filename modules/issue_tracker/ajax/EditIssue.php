@@ -656,7 +656,9 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
 
     //Now get issue values
     $issueData = getIssueData();
-    if (!empty($_GET['issueID']) && $_GET['issueID'] != "new") { //if an existing issue
+    if (!empty($_GET['issueID'])
+        && $_GET['issueID'] != "new"
+    ) { //if an existing issue
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
         $desc       = $db->pselect(
