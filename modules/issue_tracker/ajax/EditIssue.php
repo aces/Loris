@@ -26,7 +26,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-
 require_once "Email.class.inc";
 
 //TODO: or split it into two files... :P
