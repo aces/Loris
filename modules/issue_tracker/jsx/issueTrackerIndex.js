@@ -214,7 +214,7 @@ class IssueTrackerIndex extends Component {
 
     const addIssue = () => {
       window.location.replace(
-        loris.BaseURL+'/issue_tracker/issue/?issueID=0'
+        loris.BaseURL+'/issue_tracker/issue/new'
       );
     };
     const actions = [
