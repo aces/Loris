@@ -98,7 +98,7 @@ function editIssue()
     // Get changed values to save in history
     $historyValues = getChangedValues($issueValues, $issueID);
 
-    if (!empty($issueID) || $issueID != 0) {
+    if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
         $issueValues['reporter']    = $user->getData('UserID');
@@ -656,7 +656,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
 
     //Now get issue values
     $issueData = getIssueData();
-    if (!empty($_GET['issueID'])) { //if an existing issue
+    if (!empty($_GET['issueID']) && $_GET['issueID'] != "new") { //if an existing issue
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
         $desc       = $db->pselect(
