@@ -83,7 +83,6 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
             $cid = $row['centerId'];
-            unset($row['centerId']);
             return new IssueRow($row, $cid);
     }
 }
