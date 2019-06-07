@@ -18,8 +18,6 @@ if ($client->initialize() == false) {
     return;
 }
 
-require_once "FeedbackMRI.class.inc";
-
 // create DB object
 $DB = \Database::singleton();
 
@@ -27,12 +25,15 @@ $DB = \Database::singleton();
 $user = \User::singleton($_SESSION['State']->getUsername());
 
 // check permissions
-if (!$user->hasPermission('imaging_browser_qc')) {
+if (!$user->hasPermission('imaging_browser_qc')
+    && $_SERVER['REQUEST_METHOD'] !== 'GET'
+) {
     http_response_code(403);
     return;
 }
 
-$tpl_data['has_permission'] = true;
+$tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
+
 // instantiate feedback mri object
 $comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
 
