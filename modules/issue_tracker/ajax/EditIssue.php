@@ -69,8 +69,11 @@ function editIssue()
                              );
 
     foreach ($fields as $field) {
-        $value = $_POST[$field];
-        if ($_POST[$field] === "null") {
+        // The default is a string "null" because if the front end submits
+        // null, it comes through as a string, so the default is to behave
+        // the same way
+        $value = $_POST[$field] ?? "null";
+        if ($value === "null") {
             $value = null;
         }
         if (isset($field)) {
@@ -509,13 +512,16 @@ function emailUser($issueID, $changed_assignee)
              'currentUser' => $user->getUserName(),
             )
         );
-        $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
 
-        Email::send(
-            $issueChangeEmailsAssignee[0]['Email'],
-            'issue_assigned.tpl',
-            $msg_data
-        );
+        if(isset($issueChangeEmailsAssignee[0])) {
+            $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
+
+            Email::send(
+                $issueChangeEmailsAssignee[0]['Email'],
+                'issue_assigned.tpl',
+                $msg_data
+            );
+        }
     } else {
         $changed_assignee = $user->getUsername(); // so query below doesn't break..
     }
