@@ -61,15 +61,18 @@ $parameter_types = $DB->pselectColWithIndexKey(
 // This data will be rebuilt below and IDs will be preserved when possible using
 // the data queried above
 $DB->run(
-    "DELETE parameter_type,
-        parameter_type_category_rel,
-        parameter_type_category
-    FROM parameter_type_category
-		JOIN parameter_type_category_rel USING(ParameterTypeCategoryID)
-		JOIN parameter_type USING(ParameterTypeID)
-    WHERE parameter_type_category.Type='Instrument';"
+    "DELETE parameter_type,  parameter_type_category_rel
+    FROM parameter_type
+    JOIN parameter_type_category_rel USING (ParameterTypeID)
+    WHERE ParameterTypeCategoryID IN (
+       SELECT ParameterTypeCategoryID
+       FROM parameter_type_category
+       WHERE Type = 'Instrument'
+    );"
 );
 
+$DB->delete("parameter_type_category", array("Type" => "Instrument"));
+   
 print "Cleared data from BVL instruments\n";
 
 print "Reading instruments\n";
