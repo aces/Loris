@@ -147,7 +147,6 @@ function editIssue()
             }
         }
     }
-
     return ['issueID' => $issueID];
 }
 
