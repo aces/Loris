@@ -33,6 +33,7 @@ class New_Profile extends \NDB_Form
     public  $skipTemplate = true;
     private $candID;
     private $pscid;
+    private $error;
 
     /**
      * Tie the access to a data_entry permission
@@ -66,11 +67,11 @@ class New_Profile extends \NDB_Form
                 $values[$key] = null;
             }
         }
-        /* When a user has multiple centers, or when a centerID has not been
+        /* When a user has only one site, or when a centerID has not been
          * passed, choose the first one in the User's centerID list.
          */
         $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) > 1 || !isset($values['site'])) {
+        if (count($centerIDs) <= 1 || !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
 
@@ -109,7 +110,16 @@ class New_Profile extends \NDB_Form
         $this->setup();
         if ($request->getMethod() === "POST") {
             $this->save();
-
+            if (!empty($this->error)) {
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "application/json")
+                    ->withStatus(400)
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode($this->error)
+                        )
+                    );
+            }
             $result = array(
                        'candID' => $this->candID,
                        'pscid'  => $this->pscid,
@@ -204,45 +214,45 @@ class New_Profile extends \NDB_Form
      *
      * @param array $values the value
      *
-     * @return void
+     * @return array $errors
      */
     function _validateNewCandidate($values)
     {
-        $errors = array();
-        $config = \NDB_Config::singleton();
-        $user   = \User::singleton();
-        $db     = \Database::singleton();
-        $error = '';
+        $this->error = null;
+        $errors      = array();
+        $config      = \NDB_Config::singleton();
+        $user        = \User::singleton();
+        $db          = \Database::singleton();
 
         // Validate DOB fields
         if (empty($values['dobDate'])) {
-            $error = 'Date of Birth field is required';
+            $errors['dobDate'] = 'Date of Birth field is required';
         }
         if (empty($values['dobDateConfirm'])) {
-            $error = 'Confirm Date of Birth field is required';
+            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required';
         }
         if ($values['dobDate'] != $values['dobDateConfirm']) {
-            $error = 'Date of Birth fields must match.';
+            $errors['dobDate'] = 'Date of Birth fields must match.';
         }
 
         // Validate EDC fields
         if ($config->getSetting('useEDC') == "true") {
             if (empty($values['edcDate'])) {
-                $error = 'Expected Date of Confinement field is required';
+                $errors['edcDate'] = 'Expected Date of Confinement field is required';
             }
 
             if (empty($values['edcDateConfirm'])) {
-                $error = 'Confirm EDC field is required';
+                $errors['edcDateConfirm'] = 'Confirm EDC field is required';
             }
 
             if ($values['edcDate'] != $values['edcDateConfirm']) {
-                $error = 'Expected Date of Confinement fields must match.';
+                $errors['edDate'] = 'Expected Date of Confinement fields must match.';
             }
         }
 
         // Validate sex fields
         if (empty($values['sex'])) {
-            $error = 'Sex is required.';
+            $errors['sex'] = 'Sex is required.';
         }
 
         // Validate pscid
@@ -259,42 +269,45 @@ class New_Profile extends \NDB_Form
             }
 
             if (empty($values['pscid'])) {
-                $error = 'PSCID must be specified';
+                $errors['pscid'] = 'PSCID must be specified';
             } elseif (!\Candidate::validatePSCID(
                 $values['pscid'],
                 $site->getSiteAlias()
             )
             ) {
-                $error = 'PSCID does not match the required structure';
+                $errors['pscid'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
                 array('V_PSCID' => $values['pscid'])
             ) > 0
             ) {
-                $error = 'PSCID has already been registered';
+                $errors['pscid'] = 'PSCID has already been registered';
             }
         }
 
         // Validate site entered
         if (empty($values['site'])) {
-            $error = 'Site is required.';
+            $errors['site'] = 'Site is required.';
         } else {
             $psc = (int)$values['site'];
             $user_list_of_sites = $user->getData('CenterIDs');
             $num_sites          = count($user_list_of_sites);
-            if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
-                $error = "Site must be selected from the available dropdown.";
+            if ($num_sites > 1 && !$user->hasCenter($psc)) {
+                $errors['site'] = "Site must be selected from the available dropdown.";
             }
 
             // Validate project
             $useProjects = $config->getSetting('useProjects');
             if ($useProjects === "true" && empty($values['project'])) {
-                $error = "Project is required";
+                $errors['project'] = "Project is required";
             }
         }
-        http_response_code(400);
-        echo($error);
-        return;
+
+        if (!empty($errors)) {
+          $this->error = reset($errors);
+        }
+
+        return $errors;
     }
 
     /**

@@ -102,7 +102,7 @@ class NewProfileIndex extends React.Component {
             this.setState({isCreated: true});
           });
         } else {
-          resp.text().then((message) => {
+          resp.json().then((message) => {
             swal('Error!', message, 'error');
           });
         }
