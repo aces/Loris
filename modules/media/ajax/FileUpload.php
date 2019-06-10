@@ -91,7 +91,7 @@ function uploadFile()
 
     if (!isset($mediaPath)) {
         showMediaError(
-            "Media path not set in Loris settings! "
+            "Media path not set in LORIS settings! "
             . "Please contact your LORIS administrator",
             500
         );
