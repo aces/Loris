@@ -119,6 +119,9 @@ function editIssue()
                         'issueID' => $issueID,
                        );
         $db->replace('issues_watching', $nowWatching);
+
+        //sending email
+        emailUser($issueID, $issueValues['assignee']);
     }
 
     // Adding editor to the watching table unless they don't want to be added.
@@ -161,9 +164,6 @@ function editIssue()
             }
         }
     }
-
-    //sending email
-    emailUser($issueID, $issueValues['assignee']);
 
     return ['issueID' => $issueID];
 }
