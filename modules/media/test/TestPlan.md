@@ -69,7 +69,7 @@ In order to use the media module the user might need one or both of the followin
     - After downloading the file to your computer make sure it is playable/viewable and works exactly like the copy you uploaded (also make sure they are of the same size)
   5. Click on 👉 **visit label** in data table to go to associated timepoint (make sure it links to the proper timepoint)
   6. Click on 👉 **Edit** in order to edit an existing file
-    - This will bring you to a new page ```$LORISURL/media/edit/?id=$fileID```
+    - This will open a modal in which you can edit the file
 
 **Test file edit**
   1. Make sure that PSCID, Visit Label, Instrument and Site display proper information and are greyed-out (unchangeable by the user)
