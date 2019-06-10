@@ -57,9 +57,9 @@ $parameter_types = $DB->pselectColWithIndexKey(
     "Name"
 );
 
-// Single query to clear all old parameter_type data associated to instruments.
+// 2 query to clear all old parameter_type data associated to instruments.
 // This data will be rebuilt below and IDs will be preserved when possible using
-// the data queried above
+// the data queried above. Note, a single multi-join query fail with MySQL 5.7
 $DB->run(
     "DELETE parameter_type,  parameter_type_category_rel
     FROM parameter_type
