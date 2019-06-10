@@ -140,6 +140,7 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let project = null;
     let pscid = null;
+    let site = null;
     let minYear = this.state.configData.minYear;
     let maxYear = this.state.configData.maxYear;
     project =
@@ -184,6 +185,17 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />;
     }
+    if (this.state.configData['site'] !== null) {
+      site =
+        <SelectElement
+          name = "site"
+          label = "Site"
+          options = {this.state.configData.site}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.site}
+          required = {true}
+        />;
+    }
     if (!this.state.isCreated) {
       profile = (
         <FormElement
@@ -217,14 +229,7 @@ class NewProfileIndex extends React.Component {
             value = {this.state.formData.sex}
             required = {true}
           />
-          <SelectElement
-            name = "site"
-            label = "Site"
-            options = {this.state.configData.site}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.site}
-            required = {true}
-          />
+          {site}
           {pscid}
           {project}
           <ButtonElement
