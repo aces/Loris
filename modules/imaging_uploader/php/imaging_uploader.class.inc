@@ -154,7 +154,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $db = \Database::singleton();
             $db->update(
                 'notification_spool',
-                array('Active'    => 'N'),
+                array('Active' => 'N'),
                 array('ProcessID' => $this->mri_upload_id)
             );
 
