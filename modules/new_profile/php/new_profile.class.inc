@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @category Main
  * @package  Loris
  * @author   Shen Wang <shen.wang2@mcgill.ca>
-             Zaliqa Rosli <zaliqa.rosli@mcin.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
