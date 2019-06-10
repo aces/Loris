@@ -49,8 +49,11 @@ function editFile()
         showMediaError("Media ID $idMediaFile not found", 404);
     }
 
+    $dateTaken = $req['dateTaken'];
+    checkDateTaken($dateTaken);
+
     $updateValues = [
-                     'date_taken' => $req['dateTaken'],
+                     'date_taken' => $dateTaken,
                      'comments'   => $req['comments'],
                      'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
@@ -116,18 +119,8 @@ function uploadFile()
         return;
     }
 
-    if ($dateTaken != null) {
-        $date = date_create_from_format("Y-m-d", $dateTaken);
-        if ($date === false) {
-            showMediaError("Invalid date: $dateTaken", 400);
-        }
+    checkDateTaken($dateTaken);
 
-        $now  = new DateTime();
-        $diff = date_diff($date, $now)->format("%a");
-        if ($diff > 0) {
-            showMediaError("Date of administration can not be in the future", 400);
-        }
-    }
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
@@ -402,4 +395,28 @@ function getFilesList()
     }
 
     return $mediaFiles;
+}
+
+/**
+ * Checks that a date is not in the future.
+ *
+ * @param string $dateTaken The date (in YYYY-MM-DD
+ *                          format) to check)
+ *
+ * @return void (but may terminate as a side-effect)
+ */
+function checkDateTaken($dateTaken)
+{
+    if (!empty($dateTaken)) {
+        $date = date_create_from_format("Y-m-d", $dateTaken);
+        if ($date === false) {
+            showMediaError("Invalid date: $dateTaken", 400);
+        }
+
+        $now  = new DateTime();
+        $diff = date_diff($date, $now)->format("%a");
+        if ($diff > 0) {
+            showMediaError("Date of administration can not be in the future", 400);
+        }
+    }
 }
