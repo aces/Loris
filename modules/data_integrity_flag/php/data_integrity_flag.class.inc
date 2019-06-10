@@ -80,7 +80,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         }
         $req = \Utility::asArray($req);
         // comment may not be set since it is not a required field
-        $comment = (isset($req['comment']) && !empty($req['comment'])) ?
+        $comment = !empty($req['comment']) ?
             $req['comment'] : null;
 
         $db->update(
