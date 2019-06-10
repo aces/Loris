@@ -67,11 +67,11 @@ class New_Profile extends \NDB_Form
                 $values[$key] = null;
             }
         }
-        /* When a user has only one site, or when a centerID has not been
+        /* When a user has only one site and centerID has not been
          * passed, choose the first one in the User's centerID list.
          */
         $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) <= 1 || !isset($values['site'])) {
+        if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
 
@@ -134,6 +134,7 @@ class New_Profile extends \NDB_Form
                     )
                 );
         }
+
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
@@ -286,21 +287,17 @@ class New_Profile extends \NDB_Form
         }
 
         // Validate site entered
-        if (empty($values['site'])) {
-            $errors['site'] = 'Site is required.';
-        } else {
-            $psc = (int)$values['site'];
-            $user_list_of_sites = $user->getData('CenterIDs');
-            $num_sites          = count($user_list_of_sites);
-            if ($num_sites > 1 && !$user->hasCenter($psc)) {
-                $errors['site'] = "Site must be selected from the available dropdown.";
-            }
+        $psc = (int)$values['site'] ?? '';
+        $user_list_of_sites = $user->getData('CenterIDs');
+        $num_sites          = count($user_list_of_sites);
+        if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
+            $errors['site'] = "Site must be selected from the available dropdown.";
+        }
 
-            // Validate project
-            $useProjects = $config->getSetting('useProjects');
-            if ($useProjects === "true" && empty($values['project'])) {
-                $errors['project'] = "Project is required";
-            }
+        // Validate project
+        $useProjects = $config->getSetting('useProjects');
+        if ($useProjects === "true" && empty($values['project'])) {
+            $errors['project'] = "Project is required";
         }
 
         if (!empty($errors)) {
