@@ -84,16 +84,20 @@ class MediaIndex extends Component {
       result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
       break;
     case 'Edit Metadata':
-      const editButton = (
-        <TriggerableModal title="Edit Media File" label="Edit">
-          <MediaEditForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
-            fetchData={this.fetchData /* this should be passed to onSubmit function
-                   upon refactoring editForm.js*/}
-          />
-        </TriggerableModal>
-      );
+      let editButton = <div />;
+      if (this.props.hasPermission('media_write')) {
+        editButton = (
+            <TriggerableModal title="Edit Media File" label="Edit">
+                    <MediaEditForm
+                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+                /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/
+                fetchData={this.fetchData }
+                    />
+            </TriggerableModal>
+        );
+      }
       result = <td className={style}>{editButton}</td>;
       break;
     }
