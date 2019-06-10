@@ -115,6 +115,19 @@ function uploadFile()
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
+
+    if ($dateTaken != null) {
+        $date = date_create_from_format("Y-m-d", $dateTaken);
+        if ($date === false) {
+            showMediaError("Invalid date: $dateTaken", 400);
+        }
+
+        $now  = new DateTime();
+        $diff = date_diff($date, $now)->format("%a");
+        if ($diff > 0) {
+            showMediaError("Date of administration can not be in the future", 400);
+        }
+    }
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
