@@ -59,7 +59,7 @@ class New_Profile extends \NDB_Form
      *
      * @return void
      */
-    function _process($values)
+    function _process($values): void
     {
         // Change empty strings to null before passing as arguments.
         foreach ($values as $key => $value) {
@@ -145,7 +145,7 @@ class New_Profile extends \NDB_Form
      *
      * @return void
      */
-    function setup()
+    function setup(): void
     {
         $DB         = \Database::singleton();
         $config     = \NDB_Config::singleton();
@@ -216,7 +216,7 @@ class New_Profile extends \NDB_Form
      *
      * @return array $errors
      */
-    function _validateNewCandidate($values)
+    function _validateNewCandidate($values): array
     {
         $this->error = null;
         $errors      = array();
@@ -315,7 +315,7 @@ class New_Profile extends \NDB_Form
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

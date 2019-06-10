@@ -201,7 +201,7 @@ class NDB_Form extends NDB_Page
      *
      * @return array
      */
-    function toArray()
+    function toArray(): array
     {
         return array(
                 'fieldOptions' => $this->fieldOptions,
@@ -214,7 +214,7 @@ class NDB_Form extends NDB_Page
      *
      * @return string a json encoded string of the options to send to the form
      */
-    function toJSON()
+    function toJSON(): string
     {
         return json_encode($this->toArray());
     }
