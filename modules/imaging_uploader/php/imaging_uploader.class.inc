@@ -461,10 +461,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         if (!copy($temp_file, $new_temp_file)) {
-            throw new \LorisException(
-                "failed to copy $temp_file to $new_temp_file \n"
-            );
+            $msg = "An internal server error prevented this file from being "
+                 . "uploaded. Please contact the system administrator: "
+                 . "failed to copy $temp_file to $new_temp_file";
+            array_push($errors["mriFile"], $msg);
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
+
         $this->setTempPath($new_temp_file);
         return true;
     }
