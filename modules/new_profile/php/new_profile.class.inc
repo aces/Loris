@@ -148,22 +148,22 @@ class New_Profile extends \NDB_Form
      */
     function setup(): void
     {
-        $DB         = \Database::singleton();
-        $config     = \NDB_Config::singleton();
-        $user       = \User::singleton();
-        $startYear  = $config->getSetting('startYear');
-        $endYear    = $config->getSetting('endYear');
-        $ageMax     = $config->getSetting('ageMax');
-        $ageMin     = $config->getSetting('ageMin');
-        $dobFormat  = $config->getSetting('dobFormat');
-        $edc        = $config->getSetting('useEDC');
-        $sex        = array(
-                       'male'   => 'Male',
-                       'female' => 'Female',
-                      );
-        $pscidSet   = "false";
-        $minYear    = $startYear - $ageMax;
-        $maxYear    = $endYear - $ageMin;
+        $DB        = \Database::singleton();
+        $config    = \NDB_Config::singleton();
+        $user      = \User::singleton();
+        $startYear = $config->getSetting('startYear');
+        $endYear   = $config->getSetting('endYear');
+        $ageMax    = $config->getSetting('ageMax');
+        $ageMin    = $config->getSetting('ageMin');
+        $dobFormat = $config->getSetting('dobFormat');
+        $edc       = $config->getSetting('useEDC');
+        $sex       = array(
+                      'male'   => 'Male',
+                      'female' => 'Female',
+                     );
+        $pscidSet  = "false";
+        $minYear   = $startYear - $ageMax;
+        $maxYear   = $endYear - $ageMin;
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
@@ -196,15 +196,14 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = array(
-                               'minYear'    => $minYear,
-                               'maxYear'    => $maxYear,
-                               'dobFormat'  => $dobFormat,
-                               'edc'        => $edc,
-                               'useProject' => $useProject,
-                               'sex'        => $sex,
-                               'pscidSet'   => $pscidSet,
-                               'site'       => $site,
-                               'project'    => $project,
+                               'minYear'   => $minYear,
+                               'maxYear'   => $maxYear,
+                               'dobFormat' => $dobFormat,
+                               'edc'       => $edc,
+                               'sex'       => $sex,
+                               'pscidSet'  => $pscidSet,
+                               'site'      => $site,
+                               'project'   => $project,
                               );
 
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
