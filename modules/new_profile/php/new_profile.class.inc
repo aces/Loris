@@ -31,9 +31,9 @@ use \Psr\Http\Message\ResponseInterface;
 class New_Profile extends \NDB_Form
 {
     public  $skipTemplate = true;
-    private $candID;
-    private $pscid;
-    private $error;
+    private $_candID;
+    private $_pscid;
+    private $_error;
 
     /**
      * Tie the access to a data_entry permission
@@ -90,8 +90,8 @@ class New_Profile extends \NDB_Form
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
          */
-        $this->candID  = $candID;
-        $this->pscid   = $values['pscid']
+        $this->_candID = $candID;
+        $this->_pscid  = $values['pscid']
             ?? \Candidate::singleton($candID)->getPSCID();
 
         // freeze it, just in case
@@ -110,19 +110,19 @@ class New_Profile extends \NDB_Form
         $this->setup();
         if ($request->getMethod() === "POST") {
             $this->save();
-            if (!empty($this->error)) {
+            if (!empty($this->_error)) {
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "application/json")
                     ->withStatus(400)
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode($this->error)
+                            json_encode($this->_error)
                         )
                     );
             }
             $result = array(
-                       'candID' => $this->candID,
-                       'pscid'  => $this->pscid,
+                       'candID' => $this->_candID,
+                       'pscid'  => $this->_pscid,
                       );
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
@@ -192,7 +192,7 @@ class New_Profile extends \NDB_Form
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-          $pscidSet = "true";
+            $pscidSet = "true";
         }
 
         $this->fieldOptions = array(
@@ -219,7 +219,7 @@ class New_Profile extends \NDB_Form
      */
     function _validateNewCandidate($values): array
     {
-        $this->error = null;
+        $this->_error = null;
         $errors      = array();
         $config      = \NDB_Config::singleton();
         $user        = \User::singleton();
@@ -239,7 +239,8 @@ class New_Profile extends \NDB_Form
         // Validate EDC fields
         if ($config->getSetting('useEDC') == "true") {
             if (empty($values['edcDate'])) {
-                $errors['edcDate'] = 'Expected Date of Confinement field is required';
+                $errors['edcDate'] = 'Expected Date of Confinement field is
+                                      required';
             }
 
             if (empty($values['edcDateConfirm'])) {
@@ -247,7 +248,8 @@ class New_Profile extends \NDB_Form
             }
 
             if ($values['edcDate'] != $values['edcDateConfirm']) {
-                $errors['edDate'] = 'Expected Date of Confinement fields must match.';
+                $errors['edDate'] = 'Expected Date of Confinement fields must
+                                     match.';
             }
         }
 
@@ -301,7 +303,7 @@ class New_Profile extends \NDB_Form
         }
 
         if (!empty($errors)) {
-          $this->error = reset($errors);
+            $this->_error = reset($errors);
         }
 
         return $errors;
@@ -319,8 +321,7 @@ class New_Profile extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . '/new_profile/js/NewProfileIndex.js'
+            [$baseURL . '/new_profile/js/NewProfileIndex.js']
             )
         );
     }
