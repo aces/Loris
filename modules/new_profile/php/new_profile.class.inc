@@ -322,7 +322,6 @@ class New_Profile extends \NDB_Form
         return array_merge(
             $deps,
             [$baseURL . '/new_profile/js/NewProfileIndex.js']
-            )
         );
     }
 }
