@@ -211,6 +211,7 @@ class DocIndex extends React.Component {
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
+            nullTableShow="show"
             folder={
               <ChildTree
                 action={this.handle}

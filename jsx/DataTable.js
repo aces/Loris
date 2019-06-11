@@ -331,7 +331,7 @@ class DataTable extends Component {
   }
 
   render() {
-    if (this.props.data === null || this.props.data.length === 0) {
+    if ((this.props.data === null || this.props.data.length === 0) && this.props.nullTableShow !== 'show' ) {
       return (
         <div>
           <div className="row">
