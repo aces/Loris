@@ -220,10 +220,10 @@ class New_Profile extends \NDB_Form
     function _validateNewCandidate($values): array
     {
         $this->_error = null;
-        $errors      = array();
-        $config      = \NDB_Config::singleton();
-        $user        = \User::singleton();
-        $db          = \Database::singleton();
+        $errors       = array();
+        $config       = \NDB_Config::singleton();
+        $user         = \User::singleton();
+        $db           = \Database::singleton();
 
         // Validate DOB fields
         if (empty($values['dobDate'])) {
