@@ -2623,7 +2623,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
-                $this->name,
+                $this->getFullName(),
                 ''
             )
         );
