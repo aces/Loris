@@ -209,7 +209,8 @@ class MediaEditForm extends Component {
         this.props.fetchData();
       },
       error: function(err) {
-        swal('Upload Error!', '', 'error');
+        let msg = err.responseJSON.message || 'Error updating file';
+        swal(msg, '', 'error');
         console.error(err);
       },
     });
