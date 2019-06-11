@@ -138,20 +138,10 @@ class NewProfileIndex extends React.Component {
     }
     let profile = null;
     let edc = null;
-    let project = null;
     let pscid = null;
     let site = null;
     let minYear = this.state.configData.minYear;
     let maxYear = this.state.configData.maxYear;
-    project =
-      <SelectElement
-        name = "project"
-        label = "Project"
-        options = {this.state.configData.project}
-        onUserInput = {this.setFormData}
-        value = {this.state.formData.project}
-        required = {true}
-      />;
     if (this.state.configData['edc'] === 'true') {
       edc =
         <div>
@@ -231,7 +221,14 @@ class NewProfileIndex extends React.Component {
           />
           {site}
           {pscid}
-          {project}
+          <SelectElement
+            name = "project"
+            label = "Project"
+            options = {this.state.configData.project}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.project}
+            required = {true}
+          />
           <ButtonElement
             name = "fire_away"
             label = "Create"

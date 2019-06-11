@@ -157,7 +157,6 @@ class New_Profile extends \NDB_Form
         $ageMin     = $config->getSetting('ageMin');
         $dobFormat  = $config->getSetting('dobFormat');
         $edc        = $config->getSetting('useEDC');
-        $useProject = $config->getSetting('useProjects');
         $sex        = array(
                        'male'   => 'Male',
                        'female' => 'Female',
@@ -183,6 +182,7 @@ class New_Profile extends \NDB_Form
         $site = $psc_labelOptions;
 
         // Get projects for the select dropdown
+        $projList = array();
         $projects = \Utility::getProjectList();
         foreach ($projects as $projectID => $projectName) {
             $projList[$projectID] = $projectName;
@@ -297,8 +297,7 @@ class New_Profile extends \NDB_Form
         }
 
         // Validate project
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === "true" && empty($values['project'])) {
+        if (empty($values['project'])) {
             $errors['project'] = "Project is required";
         }
 
