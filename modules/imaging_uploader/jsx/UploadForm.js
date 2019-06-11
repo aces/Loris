@@ -293,15 +293,15 @@ class UploadForm extends Component {
           }
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
-        let text = "";
+        let text = '';
         if (this.props.imagingUploaderAutoLaunch === 'true') {
-          text = "Processing of this file by the MRI pipeline has started\n" +
-            "Select this upload in the result table to view the processing progress";
+          text = 'Processing of this file by the MRI pipeline has started\n' +
+            'Select this upload in the result table to view the processing progress';
         }
         swal({
-          title: "Upload Successful!",
+          title: 'Upload Successful!',
           text: text,
-          type: "success"
+          type: 'success',
         }, function() {
           window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
@@ -330,7 +330,8 @@ class UploadForm extends Component {
           title: 'Submission error!',
           text: messageToPrint,
           type: 'error',
-        });        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
+        });
+        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
       },
     });
   }
