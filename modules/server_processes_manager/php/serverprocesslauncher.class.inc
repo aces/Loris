@@ -28,6 +28,7 @@ namespace LORIS\server_processes_manager;
 
 class ServerProcessLauncher
 {
+    const CANNOT_EXECUTE_EXIT_CODE = 2;
 
     /**
      * Entity used to get a handle on the database
@@ -128,6 +129,8 @@ class ServerProcessLauncher
      * @param AbstractServerProcess $process process to launch.
      *
      * @return int ID of the process saved in the database.
+     *
+     * @throws LorisException if the process cannot be launched successfully.
      */
     private function _launch(AbstractServerProcess $process)
     {
@@ -136,6 +139,19 @@ class ServerProcessLauncher
         }
 
         $process->execute();
+
+        // Wait one second before checking the exit code: if the command is invalid
+        // this will give enough time for the process to die and we can get the
+        // exit code (otherwise the check happens too soon and the process is
+        // considered to be "still running" (i.e. exit code undefined yet)
+        sleep(1);
+
+        if ($process->getExitCode() == self::CANNOT_EXECUTE_EXIT_CODE) {
+            throw new LorisException(
+                "Cannot run command " . $process->getShellCommand()
+            );
+        }
+
         return $this->_saveProcess($process);
     }
 
@@ -154,7 +170,7 @@ class ServerProcessLauncher
             $mriUploadId,
             $sourceLocation
         );
-        return $this->_launch($mriUploadProcess);
+        $pid = $this->_launch($mriUploadProcess);
     }
 }
 
