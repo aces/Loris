@@ -391,7 +391,7 @@ class Files extends \NDB_Page
             }
             if (!mkdir($uploadPath, 0770)) {
                 throw new \LorisException(
-                    "User can't make a directory."
+                    "Cannot create directory $uploadPath."
                 );
             }
         }
