@@ -28,7 +28,7 @@ class Utility
     /**
      * Stops anyone from instantiating an instance of Utility
      */
-    private function __construct()
+    public function __construct()
     {
     }
 
