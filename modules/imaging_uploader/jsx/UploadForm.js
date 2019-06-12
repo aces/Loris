@@ -320,7 +320,6 @@ class UploadForm extends Component {
             errorMessage[i] = errorMessage[i].toString();
             if (errorMessage[i].length) {
               hasError[i] = true;
-              messageToPrint += errorMessage[i] + '\n';
             } else {
               hasError[i] = false;
             }

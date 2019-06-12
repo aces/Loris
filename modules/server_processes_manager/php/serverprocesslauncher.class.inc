@@ -130,7 +130,7 @@ class ServerProcessLauncher
      *
      * @return int ID of the process saved in the database.
      *
-     * @throws LorisException if the process cannot be launched successfully.
+     * @throws \LorisException if the process cannot be launched successfully.
      */
     private function _launch(AbstractServerProcess $process)
     {
@@ -170,7 +170,7 @@ class ServerProcessLauncher
             $mriUploadId,
             $sourceLocation
         );
-        $pid = $this->_launch($mriUploadProcess);
+        return $this->_launch($mriUploadProcess);
     }
 }
 
