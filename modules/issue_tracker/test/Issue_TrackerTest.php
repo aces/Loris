@@ -100,7 +100,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("issue_tracker_reporter"));
+        $this->setupPermissions(array("issue_tracker_developer"));
         $this->webDriver->get($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
