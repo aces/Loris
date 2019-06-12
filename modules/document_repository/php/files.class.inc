@@ -119,9 +119,14 @@ class Files extends \NDB_Page
             $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
                 $file = __DIR__ . "/../user_uploads/$name/$record";
-                if (file_exists($file)) {
-                    $this->download($file);
-                }
+                readfile($file);
+                return (new \LORIS\Http\Response())
+                  ->withHeader('Content-Type', 'application/octet-stream')
+                  ->withHeader(
+                      'Content-Disposition',
+                      'attachment; filename=' . basename($file)
+                  )->withHeader('Content-Length', filesize($file));
+
             }
             return (new \LORIS\Http\Response())
               ->withHeader("Content-Type", "text/plain")
@@ -138,25 +143,6 @@ class Files extends \NDB_Page
                 ->withStatus(405)
                 ->withHeader("Allow", "GET,POST,PUT,DELETE");
         }
-    }
-    /**
-     * Handles the document download process
-     *
-     * @param string $file the file name
-     *
-     * @return void
-     */
-    function download(string $file): void
-    {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="'.basename($file).'"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
-        exit;
     }
     /**
      * Handles the document editing process
