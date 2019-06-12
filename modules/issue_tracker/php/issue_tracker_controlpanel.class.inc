@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Imaging browser control panel class file
+ * Issue Tracker control panel class file
  *
  * PHP version 5
  *
@@ -14,10 +14,9 @@
 namespace LORIS\issue_tracker;
 
 /**
- * Imaging browser control panel class
+ * Issue Tracker control panel class
  *
- * This class provides the management GUI for the status flags
- * and some links of the imaging browser.
+ * This class provides the management GUI for navigation of issueIDs
  *
  * @category Behavioural
  * @package  Main
@@ -29,7 +28,7 @@ namespace LORIS\issue_tracker;
 class Issue_Tracker_ControlPanel
 {
     /**
-     * Var to store the sessionID.
+     * Var to store the issueID.
      */
     var $issueID;
 
@@ -46,33 +45,32 @@ class Issue_Tracker_ControlPanel
     }
 
     /**
-     * Determine whether the user has permission to view the imaging_browser page
+     * Determine whether the user has permission to view the issue_tracker page
      *
-     * @return bool whether the user hass access
+     * @param \User $user The user whose access in being checked
+     *
+     * @return bool if the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-        if ($user->hasPermission('issue_tracker_reporter')
-            || $user->hasPermission('issue_tracker_developer')
-        ) {
-                return true;
-        }
-        return false;
+        return $user->hasAnyPermission(
+            array(
+             'issue_tracker_reporter',
+             'issue_tracker_developer',
+            )
+        );
     }
 
     /**
     *  Gets data for the control panel template
     *
-    * @return array ($subjectData array with data for the template)
+    * @return array $issueData array with data for the template
     */
-    function getData()
+    function getData() : array
     {
         $factory = \NDB_Factory::singleton();
-        $issueData['backURL'] = isset($_REQUEST['backURL']) ?
-            $factory->settings()->getBaseURL()
-                . "/issue_tracker/" :
-            null;
+        $issueData['backURL'] = $factory->settings()->getBaseURL()
+                . '/issue_tracker/';
 
         $NavBar = new IssueNavigation($this->issueID);
         if ($this->issueID != 0) {
@@ -83,12 +81,12 @@ class Issue_Tracker_ControlPanel
     }
     /**
      * Generates the HTML to display the set of buttons
-     * for the timepoint status flags
+     * for the issue navigation
      *
      * @return string
      * @access public
      */
-    function display()
+    function display() : string
     {
         $this->tpl_data['issue'] = $this->getData();
         $smarty = new \Smarty_neurodb("issue_tracker");
@@ -102,8 +100,8 @@ class Issue_Tracker_ControlPanel
 /**
  * IssueNavigation class
  *
- * This class provides the management of sessions
- * to navigate to the previous and/or next session.
+ * This class provides the management of issues
+ * to navigate to the previous and/or next issue.
  * Thanks to imaging browser MRINavigation class
  *
  * @category Behavioural
@@ -115,82 +113,82 @@ class Issue_Tracker_ControlPanel
 
 class IssueNavigation
 {
-
-    public $urlParams = array();
+    var $issueID;
+    var $filteredIssueList = array();
+    var $currentListIndex;
 
     /**
-    *  Gets the session
+    *  Gets the issue
     *
-    * @param int $issueID sessionID
+    * @param int $issueID issueID
     *
     * @return void
     */
     function __construct($issueID = null)
     {
         $this->issueID = $issueID;
-        $this->FilteredSessionList = $_SESSION['State']
-            ->getProperty('issuesListed');
 
-        if (!is_array($this->FilteredSessionList)) {
-            $this->FilteredSessionList = array();
+        $user    = \User::singleton();
+        $table   = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $dataArr = $table->toArray($user);
+        foreach ($dataArr as $data) {
+            array_push($this->filteredIssueList, $data['issueID']);
         }
+
         $this->currentListIndex = array_search(
             $this->issueID,
-            $this->FilteredSessionList
+            $this->filteredIssueList
         );
-        $this->urlParams        = $this->_splitURL();
     }
+
     /**
-    * Parses the request into hostname/params, so that it can be
-    * reconstructed into a link which has the same parameters
-    *
-    * @return string $urlParams parameters
-    */
-    function _splitURL()
+     * Gets the data source for this navigation
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $linkBase      = $_SERVER['REQUEST_URI'];
-        $this->bits[0] = substr($linkBase, 0, strpos($linkBase, '?'));
-        $this->bits[1] = substr($linkBase, strpos($linkBase, '?')+1);
-        parse_str($this->bits[1], $urlParams);
-        return $urlParams;
+        $provisioner = new IssueRowProvisioner();
+
+        $user = \User::singleton();
+
+        if ($user->hasPermission('access_all_profiles') === false) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+        $provisioner = $provisioner->map(new IssueWatcherMapper());
+        return $provisioner;
     }
+
     /**
     * Gets next or previous link
     *
     * @param int $delta offset for the next/prev link
     *
-    * @return string $urlParams    parameters
+    * @return string|null the next/previous issueID
     */
-    function _otherLink($delta)
+    function _otherLink($delta) : ?string
     {
-        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {
-            $urlParams            = $this->urlParams;
-            $urlParams['issueID'] = $this
-                ->FilteredSessionList[$this->currentListIndex+$delta];
-
-            $this->bits[1] = http_build_query($urlParams);
-
-            return implode('?', $this->bits);
-        }
+        return $this->filteredIssueList[$this->currentListIndex+$delta] ?? null;
     }
     /**
     * Sets the offset for the next link and gets the next link
     *
-    * @return string $_OtherLink
+    * @return string|null $_otherLink
     */
-    function nextLink()
+    function nextLink() : ?string
     {
         return $this->_otherLink(1);
     }
     /**
     * Sets the offset for the prev link and gets the prev link
     *
-    * @return string $_OtherLink
+    * @return string|null $_otherLink
     */
-    function prevLink()
+    function prevLink() : ?string
     {
         return $this->_otherLink(-1);
     }
 }
-
-

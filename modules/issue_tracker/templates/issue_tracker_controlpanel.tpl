@@ -1,6 +1,7 @@
 <h3>Navigation</h3>
 <ul>
     {if $issue.backURL}
+    <br>
     <li>
         <a href="{$issue.backURL}">
             <span class="text-default">
@@ -8,6 +9,7 @@
             </span>
         </a>
     </li>
+    <br>
     {/if}
     {if $issue.prevIssue.URL != ''}
     <li>
