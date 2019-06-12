@@ -89,10 +89,9 @@ class UploadForm extends Component {
       }
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
-      const pcvu = pcv + '_';
-      const properName = new RegExp('^' + pcv + '.(zip|tgz|tar.gz)');
-      const properNameExt = new RegExp('^' + pcvu + '.*(.(zip|tgz|tar.gz))');
-      if (!fileName.match(properName) && !fileName.match(properNameExt)) {
+      const properName = new RegExp('^' + pcv + '(_|.)');
+      const properExt = new RegExp('.(zip|tgz|tar.gz)$');
+      if (!fileName.match(properName)) {
         swal({
           title: 'Filename does not match other fields!',
           text: 'Filename and values in the PSCID, CandID ' +
@@ -142,6 +141,31 @@ class UploadForm extends Component {
           errorMessage.visitLabel = fieldMsg;
           hasError.visitLabel = true;
         }
+
+        this.setState({errorMessage, hasError});
+        return;
+      }
+      if (!fileName.match(properExt)) {
+        swal({
+          title: 'Invalid extension for the uploaded file!',
+          text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+          type: 'error',
+          confirmButtonText: 'OK',
+        });
+
+        let errorMessage = {
+          mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
+          candID: undefined,
+          pSCID: undefined,
+          visitLabel: undefined,
+        };
+
+        let hasError = {
+          mriFile: true,
+          candID: false,
+          pSCID: false,
+          visitLabel: false,
+        };
 
         this.setState({errorMessage, hasError});
         return;
@@ -281,7 +305,7 @@ class UploadForm extends Component {
       // - Updates errorMessage and hasError so relevant errors are displayed on form
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
-        let errorMessage = this.state.errorMessage;
+        let errorMessage = Object.assign({}, this.state.errorMessage);
         let hasError = this.state.hasError;
         let messageToPrint = '';
         errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
