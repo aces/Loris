@@ -3,7 +3,7 @@
 /**
  * Issue Tracker control panel class file
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Loris
  * @package  Main
