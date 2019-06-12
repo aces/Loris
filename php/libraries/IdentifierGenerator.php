@@ -84,7 +84,7 @@ abstract class IdentifierGenerator
     {
         // If this is the first ID ever created, return the minimum value.
         if (count($this->getExistingIDs()) < 1) {
-            if (!is_int($this-length)) {
+            if (!is_int($this->length)) {
                 throw new Exception(
                     "minimum ID length not configured in project/config.xml"
                 );
