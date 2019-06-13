@@ -75,6 +75,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                'number_of_mincCreated',
                                'number_of_mincInserted',
                                'ta.PatientName',
+                               's.ID AS SessionID',
                               );
         $this->validFilters = array(
                                's.CandID',

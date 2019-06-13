@@ -10,7 +10,7 @@ import UploadForm from './UploadForm';
 class ImagingUploader extends Component {
   constructor(props) {
     super(props);
-    loris.hiddenHeaders = ['PatientName'];
+    loris.hiddenHeaders = ['PatientName', 'SessionID'];
 
     this.state = {
       isLoaded: false,
@@ -140,13 +140,24 @@ class ImagingUploader extends Component {
       if (!cell || cell === '0') {
         return (<td></td>);
       }
+      const url = loris.BaseURL
+                  + '/dicom_archive/viewDetails/?tarchiveID='
+                  + cell;
+      return (
+        <td style={cellStyle}>
+          <a href={url}>View details</a>
+        </td>
+      );
     }
 
     if (column === 'Number Of MincInserted') {
       if (cell > 0) {
+        const url = loris.BaseURL
+                    + '/imaging_browser/viewSession/?sessionID='
+                    + row.SessionID;
         return (
           <td style={cellStyle}>
-            <a onClick={this.handleClick.bind(null, row.CandID)}>{cell}</a>
+            <a href={url}>{cell}</a>
           </td>
         );
       }
@@ -159,6 +170,7 @@ class ImagingUploader extends Component {
              row['Number Of MincCreated'] - row['Number Of MincInserted'];
 
         let patientName = row.PatientName;
+        console.log('patient name' + patientName);
         violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
            ({numViolatedScans} violated scans)
          </a>;
@@ -174,18 +186,6 @@ class ImagingUploader extends Component {
     }
 
     return (<td style={cellStyle}>{cell}</td>);
-  }
-
-  /**
-   * Handles clicks on 'Number Of MincInserted' cells
-   *
-   * @param {string} dccid - dccid
-   * @param {object} e - event info
-   */
-  handleClick(dccid, e) {
-    loris.loadFilteredMenuClickHandler('imaging_browser/', {
-      DCCID: dccid,
-    })(e);
   }
 
   /**
