@@ -12,8 +12,8 @@
  */
 
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
-//use \LORIS\Utility;
 use PHPUnit\Framework\TestCase;
+
 /**
  * Unit test for Utility class
  * @category Tests
@@ -24,12 +24,6 @@ use PHPUnit\Framework\TestCase;
  */
 class UtilityTest extends TestCase
 {
-    /** Utility object used for testing
-     *
-     * @var Utility object
-     */
-    private $utility;
-
     /**
      * This method is called before each test
      *
@@ -38,7 +32,6 @@ class UtilityTest extends TestCase
     protected function setUp(): void
     {	
         parent::setUp();
-	$this->utility = new Utility();
     }
 
     /**
@@ -49,7 +42,7 @@ class UtilityTest extends TestCase
      */
     public function testCalculateAge()
     {
-        $array = $this->utility->calculateAge("1998-08-25", "2019-06-11");
+        $array = Utility::calculateAge("1998-08-25", "2019-06-11");
         $this->assertEquals($array['year'], 20);
         $this->assertEquals($array['mon'], 9);
         $this->assertEquals($array['day'], 16);
@@ -65,7 +58,7 @@ class UtilityTest extends TestCase
     public function testCalculateAgeFormat()
     {
         $this->expectException('\LorisException');
-	$this->utility->calculateAge("1998\\08\\25", "2019\\07\\23");
+	Utility::calculateAge("1998\\08\\25", "2019\\07\\23");
     }
 
     public function ageIncorrectFormatProvider()
