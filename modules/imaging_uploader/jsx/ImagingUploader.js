@@ -10,11 +10,11 @@ import UploadForm from './UploadForm';
 class ImagingUploader extends Component {
   constructor(props) {
     super(props);
+    loris.hiddenHeaders = ['PatientName'];
 
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['PatientName'],
     };
 
     /**
@@ -88,7 +88,7 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
@@ -96,7 +96,7 @@ class ImagingUploader extends Component {
     let row = {};
     rowHeaders.forEach((header, index) => {
       row[header] = rowData[index];
-    });
+    }, this);
 
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
