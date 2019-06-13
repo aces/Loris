@@ -147,7 +147,7 @@ class ServerProcessLauncher
         sleep(1);
 
         if ($process->getExitCode() == self::CANNOT_EXECUTE_EXIT_CODE) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Cannot run command " . $process->getShellCommand()
             );
         }

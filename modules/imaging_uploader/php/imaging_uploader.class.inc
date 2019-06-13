@@ -164,7 +164,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
             );
-            if ($ImagingUploaderAutoLaunch == 'true') {
+            if ($ImagingUploaderAutoLaunch == '1') {
                 try {
                     // Instanciate the server process module to autoload
                     // its namespace classes
@@ -416,7 +416,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////// Make sure there's no existing identical entry ////////////////
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $updateFile = $args['values']['overwrite'] ? true : false;
+        $updateFile = isset($args['values']['overwrite'])
+            ? (boolean) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
             "SELECT 
                 IF (InsertionComplete=0 AND 
@@ -489,11 +490,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $db         = \Database::singleton();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
-        $updateFile = $args['values']['overwrite'] ? true : false;
+        $updateFile = isset($args['values']['overwrite'])
+            ? (boolean) $args['values']['overwrite'] : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $user_name = $args['user_id'];
+        $user_name = $args['user_id'] ?? null;
         if (($user_name==null) || (!(isset($user_name)))) {
             $user      = \User::singleton();
             $user_name = $user->getUsername();
@@ -634,7 +636,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     */
     function getTargetDirectory($file, $args)
     {
-        $output ="{$args["user_id"]}/";
+        $user_name = $args['user_id'] ?? null;
+        if (($user_name==null) || (!(isset($user_name)))) {
+            $user      = \User::singleton();
+            $user_name = $user->getUsername();
+        }
+
+        $output ="$user_name/";
+
         return $output;
     }
     /**
