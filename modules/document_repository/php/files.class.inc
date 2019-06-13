@@ -126,8 +126,8 @@ class Files extends \NDB_Page
                       'attachment; filename=' . basename($file)
                   )->withHeader('Content-Length', filesize($file))
                                 ->withBody(
-                  new \LORIS\Http\FileStream($file)
-              );
+                                    new \LORIS\Http\FileStream($file)
+                                );
 
             }
             return (new \LORIS\Http\Response())
