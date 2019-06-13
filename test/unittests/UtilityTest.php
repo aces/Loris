@@ -25,6 +25,43 @@ use PHPUnit\Framework\TestCase;
 class UtilityTest extends TestCase
 {
     /**
+     * Consent information
+     *
+     * @var array contains consent info retrieved by the getConsentList method
+     */
+    private $_consentInfo = array(
+        array('ConsentID' => '1',
+              'Name' => 'Bob', 
+              'Label' => '2'),
+        array('ConsentID' => '2',
+              'Name' => 'Anne',
+              'Label' => '3'),
+        array('ConsentID' => '3',
+              'Name' => 'Luke',
+              'Label' => '4')
+        ); 
+             
+    /**
+     * NDB_Factory used in tests.
+     * Test doubles are injected to the factory object.
+     *
+     * @var NDB_Factory
+     */
+    private $_factory;
+    /**
+     * Test double for NDB_Config object
+     *
+     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_configMock;
+    /**
+     * Test double for Database object
+     *
+     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_dbMock;
+
+    /**
      * This method is called before each test
      *
      * @return void
@@ -32,6 +69,14 @@ class UtilityTest extends TestCase
     protected function setUp(): void
     {	
         parent::setUp();
+
+        
+        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+
+        $this->factory = NDB_Factory::singleton();
+        $this->factory->setConfig($this->_configMock);
+        $this->factory->setDatabase($this->_dbMock);
     }
 
     /**
@@ -70,6 +115,19 @@ class UtilityTest extends TestCase
             ["1990_07_05", "2019_09_65"],
             [" ", " "]
         ];
+    }
+
+    public function testGetConsentList()
+    {
+        $this->_setUpTestDoublesForConsentList();
+        $this->assertEquals($this->_consentInfo, Utility::getConsentList());
+    }
+
+    private function _setUpTestDoublesForConsentList()
+    {
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselectWithIndexKey')
+            ->willReturn($this->_consentInfo); 
     }
 
 }
