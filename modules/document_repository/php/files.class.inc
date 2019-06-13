@@ -124,10 +124,9 @@ class Files extends \NDB_Page
                   ->withHeader(
                       'Content-Disposition',
                       'attachment; filename=' . basename($file)
-                  )->withHeader('Content-Length', filesize($file))
-                                ->withBody(
-                                    new \LORIS\Http\FileStream($file)
-                                );
+                  )
+                  ->withStatus(200)
+                  ->withBody(new \LORIS\Http\FileStream($file));
 
             }
             return (new \LORIS\Http\Response())

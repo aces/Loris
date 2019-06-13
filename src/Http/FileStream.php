@@ -13,10 +13,6 @@
  * @see https://www.php-fig.org/psr/psr-7/
  */
 namespace LORIS\Http;
-use \Psr\Http\Server\RequestHandlerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-
 
 /**
  * A FileStream provides a simple wrapper over a file to convert
@@ -41,23 +37,18 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     /**
      * @param string|resource $stream
      * @param string $mode Mode with which to open stream
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct($stream, $mode = 'r')
     {
+        $error = null; 
         $this->stream = $stream;
         if (is_resource($stream)) {
             $this->resource = $stream;
         } elseif (is_string($stream)) {
-            set_error_handler(function ($errno, $errstr) {
-                throw new Exception(
-                    'Invalid file provided for stream;'
-                );
-            }, E_WARNING);
             $this->resource = fopen($stream, $mode);
-            restore_error_handler();
         } else {
-            throw new Exception(
+            throw new \Exception(
                 'Invalid stream provided; must be a string stream identifier or resource'
             );
         }
@@ -73,7 +64,7 @@ class FileStream implements \Psr\Http\Message\StreamInterface
         try {
             $this->rewind();
             return $this->getContents();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return '';
         }
     }
@@ -102,25 +93,17 @@ class FileStream implements \Psr\Http\Message\StreamInterface
      *
      * @param string|resource $resource
      * @param string $mode
-     * @throws Exception for stream identifier that cannot be
+     * @throws \Exception for stream identifier that cannot be
      *     cast to a resource
-     * @throws Exception for non-resource stream
+     * @throws \Exception for non-resource stream
      */
     public function attach($resource, $mode = 'r')
     {
-        $error = null;
         if (! is_resource($resource) && is_string($resource)) {
-            set_error_handler(function ($e) use (&$error) {
-                $error = $e;
-            }, E_WARNING);
             $resource = fopen($resource, $mode);
-            restore_error_handler();
-        }
-        if ($error) {
-            throw new Exception('Invalid stream reference provided');
         }
         if (! is_resource($resource)) {
-            throw new Exception(
+            throw new \Exception(
                 'Invalid stream provided; must be a string stream identifier or resource'
             );
         }
@@ -132,10 +115,13 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     public function getSize()
     {
         if (null === $this->resource) {
-            return null;
+            return 0;
         }
         $stats = fstat($this->resource);
-        return $stats['size'];
+        if ($stats !== false) {
+            return (int)$stats['size'];
+        }
+        return 0;
     }
     /**
      * {@inheritdoc}
@@ -143,11 +129,11 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     public function tell()
     {
         if (! $this->resource) {
-            throw new Exception('No resource available; cannot tell position');
+            throw new \Exception('No resource available; cannot tell position');
         }
         $result = ftell($this->resource);
         if (! is_int($result)) {
-            throw new Exception('Error occurred during tell operation');
+            throw new \Exception('Error occurred during tell operation');
         }
         return $result;
     }
@@ -178,15 +164,15 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     public function seek($offset, $whence = SEEK_SET)
     {
         if (! $this->resource) {
-            throw new Exception('No resource available; cannot seek position');
+            throw new \Exception('No resource available; cannot seek position');
         }
         
         if (! $this->isSeekable()) {
-            throw new Exception('Stream is not seekable');
+            throw new \Exception('Stream is not seekable');
         }
         $result = fseek($this->resource, $offset, $whence);
         if (0 !== $result) {
-            throw new Exception('Error seeking within stream');
+            throw new \Exception('Error seeking within stream');
         }
         return true;
     }
@@ -214,11 +200,11 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     public function write($string)
     {
         if (! $this->resource) {
-            throw new Exception('No resource available; cannot write');
+            throw new \Exception('No resource available; cannot write');
         }
         $result = fwrite($this->resource, $string);
         if (false === $result) {
-            throw new Exception('Error writing to stream');
+            throw new \Exception('Error writing to stream');
         }
         return $result;
     }
@@ -240,14 +226,14 @@ class FileStream implements \Psr\Http\Message\StreamInterface
     public function read($length)
     {
         if (! $this->resource) {
-            throw new Exception('No resource available; cannot read');
+            throw new \Exception('No resource available; cannot read');
         }
         if (! $this->isReadable()) {
-            throw new Exception('Stream is not readable');
+            throw new \Exception('Stream is not readable');
         }
         $result = fread($this->resource, $length);
         if (false === $result) {
-            throw new Exception('Error reading stream');
+            throw new \Exception('Error reading stream');
         }
         return $result;
     }
@@ -261,7 +247,7 @@ class FileStream implements \Psr\Http\Message\StreamInterface
         }
         $result = stream_get_contents($this->resource);
         if (false === $result) {
-            throw new Exception('Error reading from stream');
+            throw new \Exception('Error reading from stream');
         }
         return $result;
     }
