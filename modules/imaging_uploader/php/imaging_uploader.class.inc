@@ -168,7 +168,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
-                    // Instanciate the server process module to autoload
+                    // Instantiate the server process module to autoload
                     // its namespace classes
                     $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
