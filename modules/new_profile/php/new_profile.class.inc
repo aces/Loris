@@ -226,10 +226,10 @@ class New_Profile extends \NDB_Form
 
         // Validate DOB fields
         if (empty($values['dobDate'])) {
-            $errors['dobDate'] = 'Date of Birth field is required';
+            $errors['dobDate'] = 'Date of Birth field is required.';
         }
         if (empty($values['dobDateConfirm'])) {
-            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required';
+            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
         }
         if ($values['dobDate'] != $values['dobDateConfirm']) {
             $errors['dobDate'] = 'Date of Birth fields must match.';
@@ -239,16 +239,26 @@ class New_Profile extends \NDB_Form
         if ($config->getSetting('useEDC') == "true") {
             if (empty($values['edcDate'])) {
                 $errors['edcDate'] = 'Expected Date of Confinement field is
-                                      required';
+                                      required.';
             }
 
             if (empty($values['edcDateConfirm'])) {
-                $errors['edcDateConfirm'] = 'Confirm EDC field is required';
+                $errors['edcDateConfirm'] = 'Confirm EDC field is required.';
             }
 
             if ($values['edcDate'] != $values['edcDateConfirm']) {
                 $errors['edDate'] = 'Expected Date of Confinement fields must
                                      match.';
+            }
+        }
+
+        // Validate date format
+        $dobFormat = $config->getSetting('dobFormat')
+        if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
+            // Dates still need to be submitted into the database in format YYYY-DD-MM
+            // This is a last check before _process is called
+            if (strlen($values['dobDate']) < 10 || strlen($values['edcDate'] < 10) {
+                $errors['dobFormat'] = 'Dates have an invalid date format.';
             }
         }
 
