@@ -33,7 +33,7 @@ class QualityControlIntegrationTest extends LorisIntegrationTest
         parent::setUp();
     }
     /**
-     * delete test data 
+     * Delete test data
      *
      * @return void
      */
@@ -55,6 +55,6 @@ class QualityControlIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertNotContains("An error occurred", $bodyText);
-        
+
     }
 }
