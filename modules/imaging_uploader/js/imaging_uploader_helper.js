@@ -62,7 +62,7 @@ function UploadProgress() {
             pscid      = $.trim($(columns).eq(4).text()),
             visitLabel = $.trim($(columns).eq(5).text())
 
-        var progressType = $('select[name=LogType] option:selected').text() == 'Summary' ? 'Summary' : 'Details';
+        var progressType = $('select[name=LogType] option:selected').text() == 'Summary' ? 'summary' : 'details';
 
         // All the messages in the notification_spool table
         var notificationText = '';
@@ -73,7 +73,17 @@ function UploadProgress() {
         }
 
         // Display pSCID, CandID and VisitLabel for the selected upload
-        var progressHeader = progressType + ' of upload ' + uploadId + ' for ' + pscid + ' (CandID ' + candid + ') at ' + visitLabel + "\n";
+        var progressHeader = 'Processing ' + progressType + ' for upload ' + uploadId;
+        if(pscid) {
+            progressHeader += ' of ' + pscid;
+        }
+        if(candid) {
+            progressHeader += ' (CandID ' + candid + ')';
+        }
+        if(visitLabel) {
+            progressHeader += ' at ' + visitLabel;
+        }
+        progressHeader += ":\n";
 
         // If pipeline is still running
         if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING) {
@@ -87,7 +97,7 @@ function UploadProgress() {
         // could not be established and so the status of the pipeline is unknown
         var statusText;
         if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_FINISHED) {
-            statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
+            statusText = 'Upload processing is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
         } else if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_NOT_STARTED) {
             statusText = 'MRI pipeline not yet executed for this upload.';
         } else if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_UNKNOWN) {

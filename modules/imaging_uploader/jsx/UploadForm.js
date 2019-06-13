@@ -293,8 +293,16 @@ class UploadForm extends Component {
           }
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
+        let text = '';
+        if (this.props.imagingUploaderAutoLaunch === 'true' ||
+            this.props.imagingUploaderAutoLaunch === '1'
+        ) {
+          text = 'Processing of this file by the MRI pipeline has started\n' +
+            'Select this upload in the result table to view the processing progress';
+        }
         swal({
           title: 'Upload Successful!',
+          text: text,
           type: 'success',
         }, function() {
           window.location.assign(loris.BaseURL + '/imaging_uploader/');

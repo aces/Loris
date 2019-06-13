@@ -120,12 +120,19 @@ class ImagingUploader extends Component {
         );
       }
 
-      const created = row['Number Of MincCreated'];
-      const inserted = row['Number Of MincInserted'];
-      return (
-        <td style={cellStyle}>
+      if (cell === 'Success') {
+        const created = row['Number Of MincCreated'];
+        const inserted = row['Number Of MincInserted'];
+        return (
+          <td style={cellStyle}>
           {cell} ({inserted} out of {created})
-        </td>
+          </td>
+        );
+      }
+
+      // cell == 'Not started'
+      return (
+          <td style={cellStyle}>{cell}</td>
       );
     }
 
@@ -241,6 +248,7 @@ class ImagingUploader extends Component {
             form={this.state.data.form}
             mriList={this.state.data.mriList}
             maxUploadSize={this.state.data.maxUploadSize}
+            imagingUploaderAutoLaunch={this.state.data.imagingUploaderAutoLaunch}
           />
         </TabPane>
       </Tabs>
