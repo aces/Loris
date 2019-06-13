@@ -121,8 +121,8 @@ class ImagingUploader extends Component {
       }
 
       if (cell === 'Success') {
-        const created = row['Number Of MincCreated'];
-        const inserted = row['Number Of MincInserted'];
+        const created = row['Number Of MINC Created'];
+        const inserted = row['Number Of MINC Inserted'];
         return (
           <td style={cellStyle}>
           {cell} ({inserted} out of {created})
@@ -150,7 +150,7 @@ class ImagingUploader extends Component {
       );
     }
 
-    if (column === 'Number Of MincInserted') {
+    if (column === 'Number Of MINC Inserted') {
       if (cell > 0) {
         const url = loris.BaseURL
                     + '/imaging_browser/viewSession/?sessionID='
@@ -163,14 +163,13 @@ class ImagingUploader extends Component {
       }
     }
 
-    if (column === 'Number Of MincCreated') {
+    if (column === 'Number Of MINC Created') {
       let violatedScans;
-      if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+      if (row['Number Of MINC Created'] - row['Number Of MINC Inserted'] > 0) {
         let numViolatedScans =
-             row['Number Of MincCreated'] - row['Number Of MincInserted'];
+             row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
 
         let patientName = row.PatientName;
-        console.log('patient name' + patientName);
         violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
            ({numViolatedScans} violated scans)
          </a>;

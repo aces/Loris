@@ -63,17 +63,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
-                               'UploadID',
+                               'UploadID AS Upload_ID',
                                $progressSelectPart,
                                's.CandID',
                                'c.PSCID',
                                's.Visit_label',
-                               'UploadLocation',
-                               'UploadDate',
-                               'UploadedBy',
+                               'UploadLocation AS Upload_Location',
+                               'UploadDate AS Upload_Date',
+                               'UploadedBy AS Uploaded_By',
                                'mu.TarchiveID AS Tarchive_Info',
-                               'number_of_mincCreated',
-                               'number_of_mincInserted',
+                               'number_of_mincCreated AS Number_of_MINC_Created',
+                               'number_of_mincInserted AS Number_of_MINC_Inserted',
                                'ta.PatientName',
                                's.ID AS SessionID',
                               );
