@@ -65,6 +65,12 @@ class NDB_Page implements RequestHandlerInterface
     var $skipTemplate = false;
 
     /**
+     * A list of arrays to be used as field options on
+     * front-end forms and menu filters.
+     */
+    var $fieldOptions = array();
+
+    /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
      * either 'json' or empty (for the default return value of HTML format).
@@ -677,6 +683,10 @@ class NDB_Page implements RequestHandlerInterface
      */
     function display()
     {
+        switch($this->format) {
+        case 'json':
+            return $this->toJSON();
+        }
         if ($this->skipTemplate) {
             return "";
         }
