@@ -164,7 +164,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
             );
-            if ($ImagingUploaderAutoLaunch == '1') {
+            if ($ImagingUploaderAutoLaunch == '1'
+                || $ImagingUploaderAutoLaunch == 'true'
+            ) {
                 try {
                     // Instanciate the server process module to autoload
                     // its namespace classes
