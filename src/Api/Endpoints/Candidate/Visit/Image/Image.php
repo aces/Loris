@@ -168,18 +168,22 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return new \LORIS\Http\Response\NotFound();
             }
 
-            $file        = $info->openFile('r');
+            $file = $info->openFile('r');
+
+            ob_start();
+            $file->fpassthru();
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $body = new \LORIS\Http\StringStream($content);
+
             $this->cache = (new \LORIS\Http\Response())
                 ->withHeader('Content-Type', $mimetype)
                 ->withHeader(
                     'Content-Disposition',
                     'attachment; filename=' . $this->filename
                 )
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        $file->fpassthru()
-                    )
-                );
+                ->withBody($body);
         }
         return $this->cache;
     }
