@@ -61,6 +61,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
               'status'   => 'new',
               'priority' => 'low',
               'reporter' => 'TestUser',
+              'centerID' => '55',
              )
          );
     }
