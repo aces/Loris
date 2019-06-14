@@ -40,7 +40,7 @@
     Check that you are taken to that page (with the Selection Filter correctly set) when you
     click on the task.
     [Automate Test on Travis_CI]
-13. Verify that if a user has 'Data entry' permission, the reports menu is displayed works and the number of incomplete
+13. Verify that if a user has 'Data entry' permission, the reports menu is displayed and the number of incomplete
     forms show in the tasks list.
     [Automate Test]
 14. Verify that if a user has 'issue_tracker_reporter / issue_tracker_developer' permission,
