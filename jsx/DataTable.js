@@ -331,7 +331,7 @@ class DataTable extends Component {
   }
 
   render() {
-    if ((this.props.data === null || this.props.data.length === 0) && this.props.nullTableShow !== 'show' ) {
+    if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
       return (
         <div>
           <div className="row">
@@ -601,6 +601,7 @@ DataTable.propTypes = {
   onSort: PropTypes.func,
   actions: PropTypes.object,
   hide: PropTypes.object,
+  nullTableShow: PropTypes.bool,
 };
 DataTable.defaultProps = {
   headers: [],
@@ -612,6 +613,7 @@ DataTable.defaultProps = {
     downloadCSV: false,
     defaultColumn: false,
   },
+  nullTableShow: false,
 };
 
 export default DataTable;

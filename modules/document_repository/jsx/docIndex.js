@@ -195,7 +195,8 @@ class DocIndex extends React.Component {
       {id: 'upload', label: 'Upload'},
       {id: 'category', label: 'Category'},
     ];
-    const treeTable = (this.state.tableData.length === 0) ? (
+    const treeTable = (Object.keys(this.state.tableData.length).length === 0
+                        && Object.keys(this.state.childrenNode).length === 0) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement
@@ -211,7 +212,6 @@ class DocIndex extends React.Component {
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
-            nullTableShow="show"
             folder={
               <ChildTree
                 action={this.handle}
@@ -243,6 +243,7 @@ class DocIndex extends React.Component {
           data={this.state.tableData}
           fields={fields}
           getFormattedCell={this.formatColumn}
+          nullTableShow={true}
           folder={
           <ChildTree
             action={this.handle}
@@ -258,6 +259,7 @@ class DocIndex extends React.Component {
         </FilterableDataTable>
       </div>
     );
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
