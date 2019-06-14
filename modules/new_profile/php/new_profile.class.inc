@@ -259,7 +259,6 @@ class New_Profile extends \NDB_Form
             // YYYY-DD-MM. This is a last check before _process is called.
             if ($config->getSetting('useEDC') == "true" && strlen($values['edcDate']) < 10) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
-
             }
             if (strlen($values['dobDate']) < 10) {
                 $errors['dobFormat'] = 'DOB is not in valid date format.';
