@@ -162,8 +162,8 @@ class New_Profile extends \NDB_Form
                       'female' => 'Female',
                      );
         $pscidSet  = "false";
-        $minYear   = $startYear - $ageMax;
-        $maxYear   = $endYear - $ageMin;
+        $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
+        $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
@@ -257,7 +257,9 @@ class New_Profile extends \NDB_Form
         if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
             // Dates still need to be submitted into the database in format
             // YYYY-DD-MM. This is a last check before _process is called.
-            if ($config->getSetting('useEDC') == "true" && strlen($values['edcDate']) < 10) {
+            if ($config->getSetting('useEDC') == "true"
+                && strlen($values['edcDate']) < 10
+            ) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
             }
             if (strlen($values['dobDate']) < 10) {

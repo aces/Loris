@@ -1011,15 +1011,25 @@ class DateElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
     // Handle date format
     let format = this.props.dateFormat;
     let inputType = 'date';
-    let minFullDate = this.props.minYear + '-01-01';
-    let maxFullDate = this.props.maxYear + '-12-31';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-12-31';
     if (!format.match(/d/i)) {
       inputType = 'month';
-      minFullDate = this.props.minYear + '-01';
-      maxFullDate = this.props.maxYear + '-12';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-12';
     }
 
     return (
