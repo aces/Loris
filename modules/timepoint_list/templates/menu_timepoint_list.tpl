@@ -60,7 +60,7 @@
     <!-- </div> -->
     <!-- <div class="col-xs-4"> -->
         {$actions}
-           <button class="btn btn-primary timepoint_imaging_datasets" onclick="self.location.href=('{$baseurl}/imaging_browser/?DCCID={$candID}')">
+           <button class="btn btn-primary" onclick="location.href=('{$baseurl}/imaging_browser/?DCCID={$candID}')">
               View Imaging datasets</button>
 
     <!-- </div> -->
