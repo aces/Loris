@@ -228,7 +228,7 @@ class Image
     }
 
     /**
-     * Return a SPLFileINfo object based on this images's properties.
+     * Return a SPLFileInfo object based on this images's properties.
      *
      * @return \SplFileInfo
      */
@@ -239,6 +239,24 @@ class Image
             ->getSetting('mincPath');
 
         $fullpath = $imagepath . $this->_filelocation;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this images's thumbnail properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getThumbnailFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . '/pic/'. $this->getHeader('check_pic_filename');
 
         $info = new \SplFileInfo($fullpath);
 

@@ -99,7 +99,7 @@ class Format extends Endpoint
             $handler = new Format\Brainbrowser($this->image);
             break;
         case 'thumbnail':
-            $handler = new Format\Thumbnail($this->visit, $this->image);
+            $handler = new Format\Thumbnail($this->image);
             break;
         default:
             return new \LORIS\Http\Response\UnsupportedMediaType();
