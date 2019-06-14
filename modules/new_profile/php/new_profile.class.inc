@@ -257,7 +257,7 @@ class New_Profile extends \NDB_Form
         if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
             // Dates still need to be submitted into the database in format
             // YYYY-DD-MM. This is a last check before _process is called.
-            if (strlen($values['dobDate']) < 10 || strlen($values['edcDate'] < 10)) {
+            if (strlen($values['dobDate']) < 10 || strlen($values['edcDate']) < 10) {
                 $errors['dobFormat'] = 'Dates have an invalid date format.';
             }
         }
