@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
 /**
  * Document Upload Form
  *
@@ -17,6 +16,7 @@ const spanStyle = {
   fontFamily: 'verdana, sans-serif',
   color: '#034785',
   border: '0px',
+  opacity: '1'
 };
 
 const trStyle = {
@@ -49,8 +49,9 @@ class ChildTree extends Component {
               style={spanStyle}
             >
               <i className="fa fa-folder"></i>
-              <span style={spanStyle}>
+              <span style={spanStyle} className="tooltip">
                 {Object.values(node)[1]}
+                <span className="right">{Object.values(node)[2]}</span>
               </span>
             </span>
           </td>
