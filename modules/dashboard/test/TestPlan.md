@@ -34,10 +34,10 @@
     Clicking on this task should take you to the BVL statistics page, with the stats filtered according to the user's
     site (or without any filter if the user has 'Across all sites access candidates profiles' permission).
     [Automate Test on Travis_CI]
-12. Verify that if a user has 'Across all sites create and edit users' permission, the number of pending
+12. Verify that if a user has 'Across all sites create and edit users' and 'User management' permissions, the number of pending
     account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
-    page with the following Selection Filter: Site set to 'All' and Pending Approval set to 'Yes'. The Site displayed
-    will always be 'All'.Check that you are taken to that page (with the Selection Filter correctly set) when you
+    page with the following Selection Filter: Site not set and Pending Approval set to 'Yes'. 
+    Check that you are taken to that page (with the Selection Filter correctly set) when you
     click on the task.
     [Automate Test on Travis_CI]
 13. Verify that if a user has 'Data entry' permission, the reports menu is displayed works and the number of incomplete
