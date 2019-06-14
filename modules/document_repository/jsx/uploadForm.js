@@ -147,7 +147,6 @@ class DocUploadForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-      this.props.refreshPage();
   }
 
   uploadFile() {
@@ -171,6 +170,7 @@ class DocUploadForm extends React.Component {
       if (data == 'uploaded successfully') {
       swal('Upload Successful!', '', 'success');
       this.fetchData();
+      this.props.refreshPage();
       } else {
       swal('Duplicate File Name!', '', 'error');
       }
