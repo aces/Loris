@@ -15,9 +15,7 @@ screen and then clicking the button "Open Profile". In a narrow
 browser window or mobile device the PSCID and DCCID fields are found
 below the selection filter.
 
-
 ## Option 2: Basic Filter Options
-
 
 Users may search for particular candidates by selecting from the
 "Basic" filter options. Users may select from drop-down select
