@@ -273,11 +273,21 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        let newIssue = !data.issueData.issueID;
+        let formData = data.issueData;
+        // ensure that if the user is at multiple sites and
+        // its a new issue, the centerID (which is a dropdown)
+        // is set to the empty option instead of an array of
+        // the user's sites.
+        if (newIssue) {
+            formData.centerID = null;
+        }
+
         this.setState({
           Data: data,
           isLoaded: true,
           issueData: data.issueData,
-          formData: data.issueData,
+          formData: formData,
           isNewIssue: !data.issueData.issueID,
         });
       }.bind(this),
