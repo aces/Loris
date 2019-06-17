@@ -39,27 +39,15 @@ class IssueForm extends Component {
   }
 
   render() {
-    // Data loading error
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return (
-        <div className='alert alert-danger text-center'>
-          <strong>
-            {this.state.error}
-          </strong>
-        </div>
-      );
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
     const hasEditPermission = (
