@@ -183,7 +183,7 @@ class Candidates extends APIBase
         }
 
         $candidateinfo = array(
-                          'CandID'  => $candidate->getCandID,
+                          'CandID'  => $candidate->getCandID(),
                           'Project' => $candidate->getProjectTitle(),
                           'PSCID'   => $candidate->getPSCID(),
                           'Site'    => $candidate->getCandidateSite(),
