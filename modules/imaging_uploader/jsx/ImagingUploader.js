@@ -10,11 +10,11 @@ import UploadForm from './UploadForm';
 class ImagingUploader extends Component {
   constructor(props) {
     super(props);
+    loris.hiddenHeaders = ['PatientName', 'SessionID'];
 
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['PatientName'],
     };
 
     /**
@@ -88,7 +88,7 @@ class ImagingUploader extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 
@@ -96,7 +96,7 @@ class ImagingUploader extends Component {
     let row = {};
     rowHeaders.forEach((header, index) => {
       row[header] = rowData[index];
-    });
+    }, this);
 
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
@@ -121,8 +121,8 @@ class ImagingUploader extends Component {
       }
 
       if (cell === 'Success') {
-        const created = row['Number Of MincCreated'];
-        const inserted = row['Number Of MincInserted'];
+        const created = row['Number Of MINC Created'];
+        const inserted = row['Number Of MINC Inserted'];
         return (
           <td style={cellStyle}>
           {cell} ({inserted} out of {created})
@@ -140,23 +140,34 @@ class ImagingUploader extends Component {
       if (!cell || cell === '0') {
         return (<td></td>);
       }
+      const url = loris.BaseURL
+                  + '/dicom_archive/viewDetails/?tarchiveID='
+                  + cell;
+      return (
+        <td style={cellStyle}>
+          <a href={url}>View details</a>
+        </td>
+      );
     }
 
-    if (column === 'Number Of MincInserted') {
+    if (column === 'Number Of MINC Inserted') {
       if (cell > 0) {
+        const url = loris.BaseURL
+                    + '/imaging_browser/viewSession/?sessionID='
+                    + row.SessionID;
         return (
           <td style={cellStyle}>
-            <a onClick={this.handleClick.bind(null, row.CandID)}>{cell}</a>
+            <a href={url}>{cell}</a>
           </td>
         );
       }
     }
 
-    if (column === 'Number Of MincCreated') {
+    if (column === 'Number Of MINC Created') {
       let violatedScans;
-      if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+      if (row['Number Of MINC Created'] - row['Number Of MINC Inserted'] > 0) {
         let numViolatedScans =
-             row['Number Of MincCreated'] - row['Number Of MincInserted'];
+             row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
 
         let patientName = row.PatientName;
         violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
@@ -174,18 +185,6 @@ class ImagingUploader extends Component {
     }
 
     return (<td style={cellStyle}>{cell}</td>);
-  }
-
-  /**
-   * Handles clicks on 'Number Of MincInserted' cells
-   *
-   * @param {string} dccid - dccid
-   * @param {object} e - event info
-   */
-  handleClick(dccid, e) {
-    loris.loadFilteredMenuClickHandler('imaging_browser/', {
-      DCCID: dccid,
-    })(e);
   }
 
   /**
