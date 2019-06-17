@@ -1,3 +1,4 @@
+import Loader from 'Loader';
 import CommentList from './CommentList';
 
 /**
