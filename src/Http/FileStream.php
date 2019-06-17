@@ -24,7 +24,7 @@ namespace LORIS\Http;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class FileStream implements \Psr\Http\Message\StreamInterface
+class FileStream extends \Zend\Diactoros\Stream
 {
     /**
      * @var resource
