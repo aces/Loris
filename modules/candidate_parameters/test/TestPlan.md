@@ -47,25 +47,27 @@
 
 ### Consent Status Tab
 25. Check that the consent status tab only shows up if _useConsent_ is set to true in the configuration module.
-26. Tab should render with only one consent type.
-27. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this tab when you refresh the page?
-28. Does the consent info shown in this tab match what is stored in the `consent` table?
-29. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
-30. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
-31. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
-32. Enter the following combinations:
-    * Consent to Study = No
-    * Consent to Study = Yes (error: must enter Date of Consent)
-    * Consent to Study = Yes; Date of Consent = random date
+26. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this tab when you refresh the page?
+27. Does the consent info shown in this tab match what is stored in the `consent` table?
+28. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
+29. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
+30. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+31. Enter the following combinations:
+    * Consent to Study = No  (error: must enter Date of 'No' Consent)
+    * Consent to Study = Yes (error: must enter Date of 'Yes' Consent)
+    * Consent to Study = Yes/No; Date of Consent = random date 
         * Error: must enter Confirmation Date of Consent
-    * Consent to Study = Yes; Date (Withdrawal) of Consent = random date; Confirmation Date (Withdrawal) of Consent = a different random date
-        * Error: dates do not match
-    * Consent to Study = Yes; Date (Withdrawal) of Consent = random date after today; Confirmation (Withdrawal) Date of Consent = same random date
-        Error: date cannot be later than today
-    * Consent to Study = Yes; Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
+        * Date (Withdrawal) of Consent & Confirmation Date (Withdrawal) of Consent is disabled.
+    * Consent to Study = Yes/No; Date of Consent = random date after today; Confirmation Date of Consent = same random date
+        * Error: date cannot be later than today 
+    * Consent to Study = No (changing/updating an already given 'Yes' consent); 
+        * Error: must enter Date (Withdrawal) of Consent and Confirmation Date (Withdrawal) of Consent
+    * Consent to Study = No (changing/updating an already given 'Yes' consent);  Date (Withdrawal) of Consent = random date after today; Confirmation (Withdrawal) Date of Consent = same random date
+        * Error: date cannot be later than today 
+    * Consent to Study = No (changing/updating an already existing 'Yes' consent); Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
         * No error
-        * Make sure they update properly in the front-end and backend 
-    * Consent_status = No; Date of Consent = valid random date; Confirmation Date of Consent = same random date
-        * No error
-        * Make sure they update properly in the front-end and backend (dates should not save)
+        * Make sure they update properly in the front-end and backend       
+   
+    
+
     
