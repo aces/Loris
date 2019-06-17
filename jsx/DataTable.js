@@ -16,7 +16,7 @@ class DataTable extends Component {
         rows: 20,
       },
       sort: {
-       column: 0,
+       column: -1,
        ascending: true,
       },
     };
