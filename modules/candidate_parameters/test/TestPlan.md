@@ -66,8 +66,4 @@
         * Error: date cannot be later than today 
     * Consent to Study = No (changing/updating an already existing 'Yes' consent); Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
         * No error
-        * Make sure they update properly in the front-end and backend       
-   
-    
-
-    
+        * Make sure they update properly in the front-end and backend
