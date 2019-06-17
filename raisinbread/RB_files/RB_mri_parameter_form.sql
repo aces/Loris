@@ -1,4 +1,4 @@
-ET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `mri_parameter_form`;
 LOCK TABLES `mri_parameter_form` WRITE;
 INSERT INTO `mri_parameter_form` (`CommentID`, `UserID`, `Examiner`, `Testdate`, `Data_entry_completion_status`, `Date_taken`, `Candidate_Age`, `Window_Difference`, `Scanner_Type`, `t1_Scan_done`, `t1_Scan_done_date`, `t1_Scan_done_date_status`, `t1_Comments`,`t2_Scan_done`, `t2_Scan_done_date`, `t2_Scan_done_date_status`, `t2_Comments`) VALUES ('300001MTL0011241522092423',NULL,'4','2018-03-26 19:39:29','Complete','2018-03-01','72','0','research','not_answered','2018-03-06',NULL,NULL,'Partial','2018-03-06',NULL,NULL);
