@@ -978,16 +978,28 @@ class DateElement extends Component {
 
   componentDidMount() {
     if (!Modernizr.inputtypes.month) {
-      let monthInputs = $('input[type=month]');
+      // Check if props minYear and maxYear are valid values if supplied
+      let minYear = this.props.minYear;
+      let maxYear = this.props.maxYear;
+      if (this.props.minYear === '' || this.props.minYear === null) {
+        minYear = '1000';
+      }
+      if (this.props.maxYear === '' || this.props.maxYear === null) {
+        maxYear = '9999';
+      }
+      let monthInputs = $('input[name=' + this.props.name+']');
       monthInputs.datepicker({
         dateFormat: 'yy-mm',
         changeMonth: true,
         changeYear: true,
-        yearRange: '1900:' + new Date().getFullYear(),
+        yearRange: minYear + ':' + maxYear,
         constrainInput: true,
         onChangeMonthYear: (y, m, d) => {
           // Update date in the input field
           $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+        },
+        onSelect: (dateText, picker) => {
+          this.props.onUserInput(this.props.name, dateText);
         },
       });
       monthInputs.attr('placeholder', 'yyyy-mm');
