@@ -45,6 +45,7 @@ const trStyle = {
 };
 
 const headerRow = {
+  margin: '5px',
   display: 'inline-block',
   width: '100%',
   textAlign: 'justify',
@@ -78,7 +79,11 @@ class ChildTree extends Component {
               <div style={spanStyle} id="tooltip">
                 {Object.values(node)[1]}
               </div>
-               <div style={commentStyle} id="tip">{Object.values(node)[2]}</div>
+                {
+                  Object.values(node)[2] !== null &&
+                    <div style={commentStyle} id="tip">{Object.values(node)[2]}</div>
+
+                }
             </div>
           </td>
         </tr>
