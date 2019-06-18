@@ -111,7 +111,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     /**
      * Handler of parsing category
      *
-     * @param array $value the value
+     * @param string $value the value
      *
      * @return array
      */
