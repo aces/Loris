@@ -76,12 +76,12 @@ class ChildTree extends Component {
               className="pointer"
             >
               <i className="fa fa-folder" style={iconStyle}></i>
-              <div style={spanStyle} id="tooltip">
+              <div style={spanStyle} className="tool">
                 {Object.values(node)[1]}
               </div>
                 {
                   Object.values(node)[2] !== null &&
-                    <div style={commentStyle} id="tip">{Object.values(node)[2]}</div>
+                    <div style={commentStyle} className="tip">{Object.values(node)[2]}</div>
 
                 }
             </div>
