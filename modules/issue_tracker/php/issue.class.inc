@@ -64,17 +64,6 @@ class Issue extends \NDB_Form
     }
 
     /**
-    * Gets control panel
-    *
-    * @return string ($controlPanel)
-    */
-    function getControlPanel()
-    {
-        $controlPanel = new issue_tracker_ControlPanel($this->issueID);
-        return $controlPanel->display();
-    }
-
-    /**
      * Include issueIndex.js
      *
      * @return array of javascript to be inserted
