@@ -142,6 +142,8 @@ class NewProfileIndex extends React.Component {
     let site = null;
     let minYear = this.state.configData.minYear;
     let maxYear = this.state.configData.maxYear;
+    let dateFormat = this.state.configData.dobFormat;
+
     if (this.state.configData['edc'] === 'true') {
       edc =
         <div>
@@ -150,6 +152,7 @@ class NewProfileIndex extends React.Component {
             label = "Expected Date of Confinement"
             minYear = {minYear}
             maxYear = {maxYear}
+            dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.edcDate}
             required = {true}
@@ -159,6 +162,7 @@ class NewProfileIndex extends React.Component {
             label = "Confirm EDC"
             minYear = {minYear}
             maxYear = {maxYear}
+            dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.edcDateConfirm}
             required = {true}
@@ -197,6 +201,7 @@ class NewProfileIndex extends React.Component {
             label = "Date of Birth"
             minYear = {minYear}
             maxYear = {maxYear}
+            dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDate}
             required = {true}
@@ -206,6 +211,7 @@ class NewProfileIndex extends React.Component {
             label = "Date of Birth Confirm"
             minYear = {minYear}
             maxYear = {maxYear}
+            dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
             required = {true}
