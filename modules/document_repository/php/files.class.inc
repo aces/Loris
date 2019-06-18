@@ -120,12 +120,13 @@ class Files extends \NDB_Page
             if (!is_numeric($record)) {
                 $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
-                ->withHeader(
-                    'Content-Disposition',
-                    'attachment; filename=' . basename($file)
-                )
-                ->withHeader('Content-Transfer-Encoding', 'Binary')
-                ->withBody(new \LORIS\Http\StringStream(readfile($file)));
+                  ->withHeader('Content-Type', 'application/octet-stream')
+                  ->withHeader(
+                      'Content-Disposition',
+                      'attachment; filename=' . basename($file)
+                  )
+                  ->withStatus(200)
+                  ->withBody(new \LORIS\Http\FileStream($file));
 
             }
             return (new \LORIS\Http\Response())
