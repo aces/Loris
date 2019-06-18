@@ -41,7 +41,12 @@ class Issue extends \NDB_Form
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
-            && !$user->hasPermission('issue_tracker_reporter')
+            && !$user->hasAnyPermission(
+                array(
+                 'issue_tracker_reporter',
+                 'issue_tracker_developer',
+                )
+            )
         ) {
             header("HTTP/1.1 403 Forbidden");
         }

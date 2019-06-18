@@ -489,7 +489,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
-            "- Issue Tracker"
+            "Issue Tracker"
         );
         $this->resetPermissions();
     }

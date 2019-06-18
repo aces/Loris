@@ -31,6 +31,23 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     public $skipTemplate = true;
 
     /**
+     * Returns true if user has access to this page.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return $user->hasAnyPermission(
+            array(
+             'issue_tracker_reporter',
+             'issue_tracker_developer',
+            )
+        );
+    }
+
+    /**
      * Gets the data source for this menu filter.
      *
      * @return \LORIS\Data\Provisioner
