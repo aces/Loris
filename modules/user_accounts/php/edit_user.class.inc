@@ -978,11 +978,11 @@ class Edit_User extends \NDB_Form
 
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
-                    // Note: email adresses can contain comments which themselves can
-                    // contain spaces
+                    // Note: email addresses can contain comments which themselves
+                    // can contain spaces
                     if ($values['NA_UserID'] == 'on') {
                         $errors['UserID_Group']
-                            = 'You cannot have the user name match an email adress'
+                            = 'You cannot have the user name match an email address'
                             . ' that contains a whitespace character';
                     } else {
                         $errors['UserID_Group']
