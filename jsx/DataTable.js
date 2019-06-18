@@ -77,8 +77,9 @@ class DataTable extends Component {
    * @param {object} e event from which to abstract value
    */
   updatePageRows(e) {
-    const page = this.state.page;
+    const page = Object.assign({}, this.state.page);
     page.rows = e.target.value;
+    page.number = 1;
     this.setState({page});
   }
 
