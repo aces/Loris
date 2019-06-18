@@ -40,7 +40,40 @@ class UtilityTest extends TestCase
               'Name' => 'Luke',
               'Label' => '4')
         ); 
-             
+    /**
+     * Project information
+     * @var array contains project information retrieved by getProjectList method
+     */
+    private $_projectInfo = array(
+        array('ProjectID' => '12',
+              'Name' => 'project1',
+              'recruitmentTarget' => '123456'),
+        array('ProjectID' => '23',
+              'Name' => 'project2',
+              'recruitmentTarget' => '234567')
+        );
+    /**
+     * test_name table information
+     * @var array contains test_name information retrieved by getAllInstruments method
+     */
+    private $_testNameInfo = array(
+        array('ID' => '1234567890',
+              'Test_name' => 'test1',
+              'Full_name' => 'description1'),
+        array('ProjectID' => '1122334455',
+              'Test_name' => 'test2',
+              'Full_name' => 'description2')
+        );
+    /**
+     * psc table information
+     * @var array contains psc information retrieved by getSiteList method
+     */
+    private $_siteInfo = array(
+        array('CenterID' => '1234567890',
+              'Name' => 'site1'),
+        array('CenterID' => '1122334455',
+              'Name' => 'site2')
+        );
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -69,16 +102,27 @@ class UtilityTest extends TestCase
     protected function setUp(): void
     {	
         parent::setUp();
-
         
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
-        $this->factory = NDB_Factory::singleton();
-        $this->factory->setConfig($this->_configMock);
-        $this->factory->setDatabase($this->_dbMock);
+        $this->_factory = NDB_Factory::singleton();
+        $this->_factory->setConfig($this->_configMock);
+        $this->_factory->setDatabase($this->_dbMock); 
     }
 
+    /** 
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     *
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->_factory->reset();
+    }
+    
     /**
      * Test that calculateAge returns the proper age
      *
@@ -117,17 +161,90 @@ class UtilityTest extends TestCase
         ];
     }
 
+    /**
+     * Test that getConsentList() returns a list from the database
+     *
+     * @covers Utility::getConsentList()
+     * @return void
+     */
     public function testGetConsentList()
     {
-        $this->_setUpTestDoublesForConsentList();
+        $this->_setUpTestDoublesForUtilityTests();
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
     }
 
-    private function _setUpTestDoublesForConsentList()
+    /**
+     * Test that getProjectList() returns a list from the database
+     *
+     * @covers Utility::getProjectList()
+     * @return void
+     */
+    public function testGetProjectList()
     {
+        $this->_setUpTestDoublesForUtilityTests();
+        $this->assertEquals(
+            Utility::getProjectList(),
+            array(
+                '12' => 'project1',
+                '23' => 'project2')
+            );
+    }
+
+    /**
+     * Test that getAllInstruments() returns the proper information
+     * 
+     * @covers Utility::getAllInstruments()
+     * @return void
+     */
+    public function testGetAllInstruments()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_testNameInfo);
+
+        $this->assertEquals(
+            Utility::getAllInstruments(),
+            array(
+                'test1' => 'description1',
+                'test2' => 'description2'));
+   
+    }
+
+    /**
+     * Test that getDirectInstruments() returns the correct information
+     * TODO Figure out how to mock \Database::singleton() correctly
+     *
+     */
+    public function testGetDirectInstruments()
+    {
+        $this->markTestIncomplete("Test not implemented!");
+    }
+   
+    /**
+     * Test that getSiteList() returns the correct list from the database
+     * TODO Figure out how to mock \Database::singleton() correctly.
+     * 
+     */
+    public function testGetSiteList()
+    {
+        $this->markTestIncomplete("Test not implemented!");
+    }
+
+    /**
+     * Set up test doubles for Utility methods
+     *
+     * @return void
+     */
+    private function _setUpTestDoublesForUtilityTests()
+    {
+ 
         $this->_dbMock->expects($this->at(0))
             ->method('pselectWithIndexKey')
             ->willReturn($this->_consentInfo); 
+
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->willReturn($this->_projectInfo);
     }
 
 }
