@@ -69,6 +69,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     public function __construct(\SplFileInfo $uploadDirectory)
     {
         $this->uploadDirectory = $uploadDirectory;
+        $this->overwrite       = false;
 
         if (! $this->uploadDirectory->isDir()) {
             throw new \LorisException(
@@ -172,8 +173,8 @@ class FilesUploadHandler implements RequestHandlerInterface
             /* If file exists, set response code to 'Conflict' unless the
              * calling code wants to overwrite the file.
              */
-            if (file_exists($targetPath) && $this->overwrite === false) {
-                (new \LORIS\Http\Response())
+            if (file_exists($targetPath) && $this->overwrite !== true) {
+                return (new \LORIS\Http\Response())
                 ->withStatus(409, 'Conflict')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -197,7 +198,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                         ->withBody(
                             new \LORIS\Http\StringStream(
                                 json_encode(
-                                    array('error' => 'Unacceptable MIME type')
+                                    array('error' => 'File type not allowed')
                                 )
                             )
                         );

@@ -178,7 +178,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         $response = $uploader->handle($request);
 
-        if ($response->getStatusCode() !== 200) {
+        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
             return $response;
         }
 
@@ -188,9 +188,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // Use tools/ script to generate an SQL patch file based on the
         //
         // structure of the uploaded .linst file.
+        error_log("Full path is `$fullpath`");
         exec(
             'php generate_tables_sql_and_testNames.php < '
-            . escapeshellarg($fullpath)
+            . escapeshellarg($fullpath),
         );
 
         if (!$this->isQuatUserConfigured()) {
