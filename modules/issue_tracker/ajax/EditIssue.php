@@ -147,7 +147,7 @@ function editIssue()
         // Clear the list of current watchers
         $db->delete(
             'issues_watching',
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
 
         // Add new watchers (if any)
@@ -156,10 +156,10 @@ function editIssue()
             if ($usersWatching) {
                 $db->insert(
                     'issues_watching',
-                    [
+                    array(
                      'userID'  => $usersWatching,
                      'issueID' => $issueID,
-                    ]
+                    )
                 );
             }
         }
