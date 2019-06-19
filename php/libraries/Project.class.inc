@@ -25,6 +25,11 @@ class Project
 {
     private static $_instances = array();
 
+    /**
+     * The id of the project in database.
+     *
+     * @var int
+     */
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
@@ -53,11 +58,9 @@ class Project
     {
         if (!isset(self::$_instances[$projectName])) {
             $factory = \NDB_Factory::singleton();
-            $config  = $factory->config();
 
-            if ($config->getSetting("useProjects") == 'true') {
-                $projectData = $factory->database()->pSelectRow(
-                    "
+            $projectData = $factory->database()->pSelectRow(
+                "
                     SELECT
                       projectId,
                       name,
@@ -66,24 +69,18 @@ class Project
                       Project
                     WHERE name = :v_project_name
                     ",
-                    array('v_project_name' => $projectName)
-                );
+                array('v_project_name' => $projectName)
+            );
 
-                if (empty($projectData)) {
-                    throw new \NotFound("No project named: $projectName");
-                }
-
-                $project = new Project();
-
-                $project->_projectId         = $projectData['projectId'];
-                $project->_projectName       = $projectData['name'];
-                $project->_recruitmentTarget = (integer) $projectData['recTarget'];
-            } else {
-                if ($projectName != 'loris') {
-                    throw new \LorisException("This study is not using projects");
-                }
-                $project =& ProjectDefault::singleton('loris');
+            if (empty($projectData)) {
+                throw new \NotFound("No project named: $projectName");
             }
+
+            $project = new Project();
+
+            $project->_projectId         = (int) $projectData['projectId'];
+            $project->_projectName       = $projectData['name'];
+            $project->_recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -264,9 +261,6 @@ class Project
         $factory = \NDB_Factory::singleton();
 
         $p = array($this->_projectId);
-        if ($factory->config()->getSetting('useProjects') !== 'true') {
-            array_push($p, '-1');
-        }
         $candidatesData = $factory->database()->pselect(
             "
             SELECT

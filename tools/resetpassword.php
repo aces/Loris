@@ -15,11 +15,12 @@
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
+const MIN_NUMBER_OF_ARGS = 2;
 $args = $argv;
 if ($args[0] == 'php') {
 	$args = array_slice($argv, 1);
 }
-if (count($args) < 2) {
+if (count($args) < MIN_NUMBER_OF_ARGS) {
 	fwrite(STDERR, "Usage: resetpassword.php username\n");
 	fwrite(STDERR, "\nresetpassword.php will prompt for password on stdin\n");
 	exit(2);

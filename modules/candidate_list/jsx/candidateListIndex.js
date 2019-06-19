@@ -273,9 +273,7 @@ class CandidateListIndex extends Component {
       },
 
     ];
-
-    if (options.useprojects === 'true') {
-      fields.push(
+     fields.push(
         {
           'label': 'Project',
           'show': true,
@@ -286,7 +284,6 @@ class CandidateListIndex extends Component {
           },
         },
       );
-    }
 
     if (options.useedc === 'true') {
       fields.push(

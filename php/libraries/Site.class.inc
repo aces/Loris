@@ -42,7 +42,7 @@ class Site
             } catch(Exception $e) {
                 $message = $e->getMessage();
                 unset($siteList[$centerID]);
-                throw new Exception("Could not select site ($message)", null, $e);
+                throw new Exception("Could not select site ($message)", 0, $e);
 
             }
         }

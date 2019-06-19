@@ -65,7 +65,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Statistics', 'statistics/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),
-    ('Data Query Tool', 'dataquery/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 2);
+    ('Data Query Tool', 'dataquery/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 2),
+    ('Publications', 'publication/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 3);
 
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
@@ -221,5 +222,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
 
 
-
-
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='publication_view' AND m.Label='Publications';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='publication_propose' AND m.Label='Publications';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='publication_approve' AND m.Label='Publications';
