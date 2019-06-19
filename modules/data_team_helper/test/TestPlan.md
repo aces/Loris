@@ -6,9 +6,8 @@
 
 ## Must be manually tested:
 1. Access data_team_helper module
-2. Upon first loading, Site filter should be set to all sites that are study sites if the user has the permission 'access_all_profiles'.
-3. Make sure that all site data is populated with the step 2 condition.
-4. Remove the 'access all profiles' permission and test whether the site filter is now populated only with sites that are study sites and to which the user has access.
+2. Upon first loading, Site filter should be set to 'All Sites' if the user has 'access_all_profiles' permission or 'All User Sites' otherwise.
+3. Remove the 'access all profiles' permission and test whether the site filter is now populated only with sites that are study sites and to which the user has access.
 5. Make sure that the user accessible site data is only populated with the  step 4 condition.
 6. Ensure that Conflict/Incomplete Candidate/Link to BVL Feedback links point to the correct place.
 7. Ensure that feedback status is correct.
