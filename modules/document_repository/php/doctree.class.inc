@@ -155,7 +155,7 @@ class DocTree extends \NDB_Page
         $pids = $this->getAllNodesID($tree, $id);
 
         $currentcategory    = $db->pselect(
-            "SELECT id,category_name
+            "SELECT id,category_name,comments
              FROM document_repository_categories WHERE id=$id",
             array()
         );
@@ -169,7 +169,7 @@ class DocTree extends \NDB_Page
         }
 
         $subcategories    = $db->pselect(
-            "SELECT id,category_name 
+            "SELECT id,category_name,comments 
              FROM document_repository_categories WHERE parent_id=$id",
             array()
         );

@@ -13,14 +13,42 @@ import PropTypes from 'prop-types';
  **/
 const spanStyle = {
   marginLeft: '15px',
+  marginRight: '15px',
   fontSize: '110%',
-  fontFamily: 'verdana, sans-serif',
+  fontWeight: 'bold',
+  fontFamily: 'verdana, sans-serif, bold',
   color: '#034785',
   border: '0px',
+  display: 'inline-block',
+};
+
+const iconStyle = {
+  fontSize: '110%',
+  color: '#034785',
+};
+
+const commentStyle = {
+  paddingLeft: '10px',
+  paddingRight: '10px',
+  borderRadius: '5px',
+  fontFamily: 'verdana, sans-serif',
+  fontStyle: 'italic',
+  color: '#034785',
+  backgroundColor: '#E4EBF2',
+  border: '1px',
+  textAlign: 'right',
+  display: 'inline-block',
 };
 
 const trStyle = {
   cursor: 'pointer',
+};
+
+const headerRow = {
+  margin: '5px',
+  display: 'inline-block',
+  width: '100%',
+  textAlign: 'justify',
 };
 
 class ChildTree extends Component {
@@ -42,17 +70,21 @@ class ChildTree extends Component {
           style={trStyle}
         >
           <td colSpan="10">
-            <span
-              style={spanStyle}
+            <div
+              style={headerRow}
               key={index}
               className="pointer"
-              style={spanStyle}
             >
-              <i className="fa fa-folder"></i>
-              <span style={spanStyle}>
+              <i className="fa fa-folder" style={iconStyle}></i>
+              <div style={spanStyle} className="tool">
                 {Object.values(node)[1]}
-              </span>
-            </span>
+              </div>
+                {
+                  Object.values(node)[2] !== null &&
+                    <div style={commentStyle} className="tip">{Object.values(node)[2]}</div>
+
+                }
+            </div>
           </td>
         </tr>
       ));
