@@ -63,10 +63,10 @@ class NDB_BVL_Feedback
      * can be passed but not necessarily all of them, depending on which
      * page is receiving feedback.
      *
-     * @param string  $username  The currently logged in user (why?)
-     * @param ?CandID $candID    The 6 digit CandID
-     * @param integer $sessionID The session ID with feedback
-     * @param string  $commentID The commentID receiving feedback.
+     * @param string   $username  The currently logged in user (why?)
+     * @param ?CandID  $candID    The 6 digit CandID
+     * @param ?integer $sessionID The session ID with feedback
+     * @param ?string  $commentID The commentID receiving feedback.
      *
      * @return NDB_BVL_Feedback object
      */
@@ -86,7 +86,14 @@ class NDB_BVL_Feedback
 
         static $feedbackList = array();
 
-        $objectName = md5(sprintf("c%ss%si%s", $candID, $sessionID, $commentID));
+        $objectName = md5(
+            sprintf(
+                "c%ss%si%s",
+                $candID,
+                $sessionID ?? '',
+                $commentID ?? ''
+            )
+        );
 
         if (!isset($feedbackList[$objectName])) {
             try {
