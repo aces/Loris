@@ -1,13 +1,13 @@
 # Candidate Parameters Test Plan
 
 1. Check Permissions:
-    * _candidate_parameter_view_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
-	* _candidate_parameter_edit_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
+    * _candidate_parameter_view_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
+	* _candidate_parameter_edit_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
 	* You need to belong to the same site as the candidate you are accessing, unless...
 	* If you have _access_all_profiles_ you should be able to access all candidate profiles (even without candidate_parameters permissions)
 2. Make sure that the candidate date of birth and sex in the table at the top of the page, match what is stored in the candidate table for this given candidate.
 3. Click on the *Return to Timepoint List* button and ensure it goes to the correct timepoint list page.
-4. Make sure all tabs render. 
+4. Make sure all tabs render.
 5. Ensure you stay on the same tab when you refresh.
 
 ### Candidate Information Tab
@@ -55,15 +55,15 @@
 31. Enter the following combinations:
     * Consent to Study = No  (error: must enter Date of 'No' Consent)
     * Consent to Study = Yes (error: must enter Date of 'Yes' Consent)
-    * Consent to Study = Yes/No; Date of Consent = random date 
+    * Consent to Study = Yes/No; Date of Consent = random date
         * Error: must enter Confirmation Date of Consent
         * Date (Withdrawal) of Consent & Confirmation Date (Withdrawal) of Consent is disabled.
     * Consent to Study = Yes/No; Date of Consent = random date after today; Confirmation Date of Consent = same random date
-        * Error: date cannot be later than today 
-    * Consent to Study = No (changing/updating an already given 'Yes' consent); 
+        * Error: date cannot be later than today
+    * Consent to Study = No (changing/updating an already given 'Yes' consent);
         * Error: must enter Date (Withdrawal) of Consent and Confirmation Date (Withdrawal) of Consent
     * Consent to Study = No (changing/updating an already given 'Yes' consent);  Date (Withdrawal) of Consent = random date after today; Confirmation (Withdrawal) Date of Consent = same random date
-        * Error: date cannot be later than today 
+        * Error: date cannot be later than today
     * Consent to Study = No (changing/updating an already existing 'Yes' consent); Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
         * No error
         * Make sure they update properly in the front-end and backend
