@@ -164,11 +164,15 @@ class ViewDataTabPane extends Component {
     this.state = {
       sessions: []
     };
-    this.runQuery = this.props.runQuery.bind(this);
+    this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.getOrCreateProgressElement = this.getOrCreateProgressElement.bind(this);
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
+  }
+
+  runQuery() {
+    this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
   changeDataDisplay(displayID) {
