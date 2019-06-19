@@ -2608,6 +2608,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $timepoint  = \TimePoint::singleton($sessionid);
         $candid     = $timepoint->getCandID();
         $pscid      = $this->getPSCID();
+        $instrument = $this->testName;
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -2624,8 +2625,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ),
             new \LORIS\Breadcrumb(
                 $this->getFullName(),
-                ''
+                "/instruments/$instrument/?commentID=$this->commentID"
             )
+
         );
     }
 
