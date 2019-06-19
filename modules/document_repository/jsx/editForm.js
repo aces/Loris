@@ -75,7 +75,6 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               hasError={false}
               required={true}
-              disabled={true}
               value={this.state.docData.category}
             />
             <SelectElement
@@ -84,7 +83,6 @@ class DocEditForm extends React.Component {
               options={this.state.data.sites}
               onUserInput={this.setFormData}
               required={true}
-              disabled={true}
               value={this.state.docData.forSite}
             />
             <SelectElement

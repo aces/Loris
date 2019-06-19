@@ -157,11 +157,13 @@ class Files extends \NDB_Page
         $db           = \Database::singleton();
         $user         = \User::singleton();
         $updateValues = [
-                         'instrument' => $req['instrument'] ?? null,
-                         'comments'   => $req['comments'] ?? null,
-                         'version'    => $req['version'] ?? null,
-                         'visitLabel' => $req['visitLabel'] ?? null,
-                         'pscid'      => $req['pscid'] ?? null,
+                         'File_category' => $req['category'] ?? null,
+                         'For_site'      => $req['forSite'] ?? null,
+                         'instrument'    => $req['instrument'] ?? null,
+                         'comments'      => $req['comments'] ?? null,
+                         'version'       => $req['version'] ?? null,
+                         'visitLabel'    => $req['visitLabel'] ?? null,
+                         'pscid'         => $req['pscid'] ?? null,
                         ];
         try {
             $db->update(
