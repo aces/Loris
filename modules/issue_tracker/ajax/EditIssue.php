@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
  */
 function editIssue()
 {
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db   = \Database::singleton();
+    $user = \User::singleton();
 
     $issueValues    = array();
     $validateValues = array();
@@ -324,8 +324,8 @@ function getChangedValues($issueValues, $issueID)
  */
 function updateHistory($values, $issueID)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $user = \User::singleton();
+    $db   = \Database::singleton();
 
     foreach ($values as $key => $value) {
         if (!empty($value)) {
@@ -352,8 +352,8 @@ function updateHistory($values, $issueID)
  */
 function updateComments($comment, $issueID)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $user = \User::singleton();
+    $db   = \Database::singleton();
 
     if (isset($comment) && $comment != "null") {
         $commentValues = array(
@@ -377,8 +377,8 @@ function updateComments($comment, $issueID)
  */
 function updateCommentHistory($issueCommentID, $newCommentValue)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $user = \User::singleton();
+    $db   = \Database::singleton();
 
     $changedValue = array(
                      'issueCommentID' => $issueCommentID,
@@ -400,7 +400,7 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
  */
 function getWatching($issueID)
 {
-    $db =& Database::singleton();
+    $db = \Database::singleton();
 
     $watching = $db->pselect(
         "SELECT userID from issues_watching WHERE issueID=:issueID",
@@ -425,7 +425,7 @@ function getWatching($issueID)
  */
 function getComments($issueID)
 {
-    $db =& Database::singleton();
+    $db = \Database::singleton();
     $unformattedComments = $db->pselect(
         "SELECT newValue, fieldChanged, dateAdded, addedBy " .
         "FROM issues_history where issueID=:issueID " .
@@ -484,8 +484,8 @@ function getComments($issueID)
  */
 function emailUser($issueID, $changed_assignee)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $user = \User::singleton();
+    $db   = \Database::singleton();
     //not sure if this is necessary
     $factory = NDB_Factory::singleton();
     $baseurl = $factory->settings()->getBaseURL();
@@ -557,8 +557,8 @@ function emailUser($issueID, $changed_assignee)
 function getIssueFields()
 {
 
-    $db    =& Database::singleton();
-    $user  =& User::singleton();
+    $db    = \Database::singleton();
+    $user  = \User::singleton();
     $sites = array();
 
     //get field options
