@@ -24,24 +24,6 @@
 class QualityControlIntegrationTest extends LorisIntegrationTest
 {
     /**
-     * Insert testing data into the database
-     *
-     * @return void
-     */
-    function setUp()
-    {
-        parent::setUp();
-    }
-    /**
-     * Delete test data
-     *
-     * @return void
-     */
-    function tearDown()
-    {
-        parent::tearDown();
-    }
-    /**
      * Tests that, the homepage should have "Quality Control" on the page.
      *
      * @return void
