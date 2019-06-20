@@ -682,7 +682,7 @@ class StatsVisualizationTabPane extends Component {
         </table>
       );
 
-      let content = (
+      content = (
         <div>
           <h2>Basic Statistics</h2>
           {statsTable}
