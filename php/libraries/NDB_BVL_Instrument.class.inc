@@ -2627,7 +2627,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $this->getFullName(),
                 "/instruments/$instrument/?commentID=$this->commentID"
             )
-
         );
     }
 
