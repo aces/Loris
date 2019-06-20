@@ -899,6 +899,7 @@ class DataQueryApp extends Component {
       TabId='Info'
       UpdatedTime={this.props.UpdatedTime}
       Loading={this.state.loading}
+      Active={this.state.ActiveTab == 'Info'}
     />);
 
     // Add the field select tab
@@ -911,6 +912,7 @@ class DataQueryApp extends Component {
       Visits={this.props.Visits}
       fieldVisitSelect={this.fieldVisitSelect}
       Loading={this.state.loading}
+      Active={this.state.ActiveTab == 'DefineFields'}
     />);
 
     // Add the filter builder tab
@@ -922,6 +924,7 @@ class DataQueryApp extends Component {
         updateFilter={this.updateFilter}
         Visits={this.props.Visits}
         Loading={this.state.loading}
+        Active={this.state.ActiveTab == 'DefineFilters'}
       />
     );
 
@@ -930,6 +933,7 @@ class DataQueryApp extends Component {
     tabs.push(<ViewDataTabPane
       key='ViewData'
       TabId='ViewData'
+      Active={this.state.ActiveTab == 'ViewData'}
       Fields={this.state.fields}
       Criteria={this.state.criteria}
       Sessions={this.getSessions()}
@@ -948,6 +952,7 @@ class DataQueryApp extends Component {
     tabs.push(<StatsVisualizationTabPane
       key='Statistics'
       TabId='Statistics'
+      Active={this.state.ActiveTab == 'Statistics'}
       Fields={this.state.rowData.RowHeaders}
       Data={this.state.rowData.rowdata}
       Loading={this.state.loading}
