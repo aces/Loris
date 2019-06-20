@@ -22,6 +22,68 @@ use PHPUnit\Framework\TestCase;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
+class FakeUtility extends Utility 
+{
+    static function getSiteList(Database $DB ,bool $study_site = true): array
+    {
+        // get the list of study sites - to be replaced by the Site object
+        $query = "SELECT CenterID, Name FROM psc ";
+        if ($study_site) {
+            $query .= "WHERE Study_site='Y'";
+        }
+        $result = $DB->pselect($query, array());
+        // fix the array
+        $list = array();
+        foreach ($result as $row) {
+            $list[$row["CenterID"]] = $row["Name"];
+        }
+        natcasesort($list);
+        return $list;
+    }
+
+    static function getVisitList(\Database $DB) : array
+    {
+        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
+        $result = $DB->pselect($query, array());
+        $list = array();
+        foreach ($result as $row) {
+            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
+        }
+        return $list;
+    }
+
+    static function getTestNameByCommentID(\Database $db, string $commentID): string
+    {
+        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
+        $testName = $db->pselectOne($query, array('CID' => $commentID));
+        return $testName;
+    }
+
+    static function getDirectInstruments(\Database $DB): array
+    {
+        $instruments   = array();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+             ORDER BY Full_name",
+            array()
+        );
+        foreach ($instruments_q as $key) {
+            $instruments[$key['Test_name']] =$key['Full_name'];
+        }
+        return $instruments;
+    }
+
+    static function getStageUsingCandID(\Database $db, string $Cand_id): string
+    {
+        $query = "select DISTINCT Current_stage from session where ".
+            "CandID = :Cand_id";
+        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        return $stage[0]['Current_stage'];
+    }
+
+}
+
 class UtilityTest extends TestCase
 {
     /**
@@ -59,10 +121,20 @@ class UtilityTest extends TestCase
     private $_testNameInfo = array(
         array('ID' => '1234567890',
               'Test_name' => 'test1',
-              'Full_name' => 'description1'),
-        array('ProjectID' => '1122334455',
+              'Full_name' => 'description1',
+              'IsDirectEntry' => '1'),
+        array('ID' => '1122334455',
               'Test_name' => 'test2',
-              'Full_name' => 'description2')
+              'Full_name' => 'description2',
+              'IsDirectEntry' => '0')
+        );
+    /**
+     * Visit_Windows table information
+     * @var array contains information retrieved by the getVisitList() method
+     */
+    private $_visitInfo = array(
+        array('Visit_label' => 'visitLabel'),
+        array('Visit_label' => 'label')
         );
     /**
      * psc table information
@@ -73,6 +145,23 @@ class UtilityTest extends TestCase
               'Name' => 'site1'),
         array('CenterID' => '1122334455',
               'Name' => 'site2')
+        );
+    /**
+     * flag table information
+     * @var array contains flag information retreived by getTestNameByCommentID method
+     */
+    private $_flagInfo = 
+        array('Test_name' => 'test_flag1',
+              'CommentID' => 'ID123');
+    /**
+     * session table information
+     * @var array contains session information retrieved by getStageUsingCandID method
+     */
+    private $_sessionInfo = array(
+        array('CandID' => '123456',
+              'Current_stage' => 'Not Started'),
+        array('CandID' => '234567',
+              'Current_stage' => 'Approval')
         );
     /**
      * NDB_Factory used in tests.
@@ -108,7 +197,7 @@ class UtilityTest extends TestCase
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
-        $this->_factory->setDatabase($this->_dbMock); 
+        $this->_factory->setDatabase($this->_dbMock);
     }
 
     /** 
@@ -120,7 +209,7 @@ class UtilityTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        $this->_factory->reset();
+        $this->_factory->reset();   
     }
     
     /**
@@ -196,7 +285,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getAllInstruments()
      * @return void
      */
-    public function testGetAllInstruments()
+    public function testGetInstruments()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -207,27 +296,82 @@ class UtilityTest extends TestCase
             array(
                 'test1' => 'description1',
                 'test2' => 'description2'));
-   
     }
 
     /**
-     * Test that getDirectInstruments() returns the correct information
-     * TODO Figure out how to mock \Database::singleton() correctly
-     *
+     * Test that getVisitList() returns the correct information
+     * 
+     * @covers Utility::getVisitList()
+     * @return void
      */
-    public function testGetDirectInstruments()
+    public function testGetVisitList()
     {
-        $this->markTestIncomplete("Test not implemented!");
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_visitInfo);
+
+        /**
+         * The output is in the form 'Vist_label' => 'Visit_label'(with uppercase)
+         */
+        $this->assertEquals(
+            array(
+                'visitLabel' => 'VisitLabel',
+                'label' => 'Label'),
+            FakeUtility::getVisitList($this->_dbMock));
     }
    
     /**
      * Test that getSiteList() returns the correct list from the database
-     * TODO Figure out how to mock \Database::singleton() correctly.
      * 
+     * @covers Utility::getSiteList()
+     * @return void
      */
     public function testGetSiteList()
+    {       
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->willReturn($this->_siteInfo);
+
+        $this->assertEquals(
+            FakeUtility::getSiteList($this->_dbMock),
+            array(
+                '1234567890' => 'site1',
+                '1122334455' => 'site2'));
+    }
+
+    /**
+     * Test that getTestNameByCommentID returns the correct test name for the given CommentID
+     * TODO getTestNameByCommentID() is returning an array instead of a string. 
+     * TODO I have yet to determine whether this is a strange error or something wrong with the method. 
+     *
+     * @covers Utility::getTestNameByCommentID
+     * @return void 
+     */
+    public function testGetTestNameByCommentID()
     {
-        $this->markTestIncomplete("Test not implemented!");
+        $this->markTestIncomplete("This test is incomplete!");
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselectOne')
+            ->willReturn($this->_flagInfo);
+
+        $this->assertEquals('test_flag1', FakeUtility::getTestNameByCommentID($this->_dbMock, 'ID123'));
+        $this->assertEquals('test_flag2', FakeUtility::getTestNameByCommentID($this->_dbMock, 'ID234'));
+    }
+
+    /**
+     * Test that getStageUsingCandID returns the proper current stage for the given CandID
+     * TODO Check that this works for any part of the array, not just the first entry
+     *
+     * @covers Utility::getStageUsingCandID
+     * @return void
+     */
+    public function testGetStageUsingCandID()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_sessionInfo);
+
+        $this->assertEquals('Not Started', FakeUtility::getStageUsingCandID($this->_dbMock, '123456'));
     }
 
     /**
@@ -246,5 +390,4 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_projectInfo);
     }
-
 }
