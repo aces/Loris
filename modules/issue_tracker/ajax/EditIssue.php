@@ -149,13 +149,13 @@ function editIssue()
     }
 
     // Add editor to the watching table unless they don't want to be added.
-    if ($_POST['watching'] == 'Yes') {
+    if (isset($_POST['watching']) &&  $_POST['watching'] == 'Yes') {
         $nowWatching = array(
                         'userID'  => $user->getData('UserID'),
                         'issueID' => $issueID,
                        );
         $db->replace('issues_watching', $nowWatching);
-    } else if ($_POST['watching'] == 'No') {
+    } else if (isset($_POST['watching']) && $_POST['watching'] == 'No') {
         $db->delete(
             'issues_watching',
             array(
