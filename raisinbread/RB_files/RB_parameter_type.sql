@@ -605,6 +605,5 @@ INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, 
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1122,'bmi_bmi_category','varchar(255)','Your BMI Classification',NULL,NULL,'bmi_category','bmi',NULL,1,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1123,'bmi_Validity','enum(\'Questionable\', \'Invalid\', \'Valid\')','Validity of bmi',NULL,NULL,'Validity','bmi',NULL,1,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1124,'bmi_Administration','enum(\'None\', \'Partial\', \'All\')','Administration for bmi',NULL,NULL,'Administration','bmi',NULL,1,0);
-
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
