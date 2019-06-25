@@ -59,8 +59,10 @@ class Dataquery extends \NDB_Form
             $couchConfig['adminpass']
         );
         if (!$couchConfigValid) {
-            echo 'Missing CouchDB configuration settings. Cannot load ' .
-                'Data Query Tool.';
+            throw new \ConfigException(
+                'Missing CouchDB configuration settings. Cannot load ' .
+                'Data Query Tool.'
+            );
             error_log(
                 'Data Query Tool cannot be loaded due to missing ' .
                 'configuration settings. Ensure that `dbName`, `hostname`, ' .
