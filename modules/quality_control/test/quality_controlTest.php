@@ -1,6 +1,6 @@
 <?php
 /**
- * AcknowledgementsIntegrationTest automated integration tests
+ * QualityControlIntegrationTest automated integration tests
  *
  * PHP Version 5
  *
@@ -13,7 +13,7 @@
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * AcknowledgementsIntegrationTest
+ * QualityControlIntegrationTest
  *
  * @category Test
  * @package  Loris
