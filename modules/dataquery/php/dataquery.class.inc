@@ -59,17 +59,16 @@ class Dataquery extends \NDB_Form
             $couchConfig['adminpass']
         );
         if (!$couchConfigValid) {
-            throw new \ConfigException(
-                'Missing CouchDB configuration settings. Cannot load ' .
-                'Data Query Tool.'
-            );
             error_log(
                 'Data Query Tool cannot be loaded due to missing ' .
                 'configuration settings. Ensure that `dbName`, `hostname`, ' .
                 '`port`, `admin` and `adminpass` values are properly ' .
                 'configured in project/config.xml'
             );
-            return;
+            throw new \ConfigException(
+                'Missing CouchDB configuration settings. Cannot load ' .
+                'Data Query Tool.'
+            );
         }
         $couch = \NDB_Factory::singleton()->couchDB(
             $couchConfig['dbName'],
