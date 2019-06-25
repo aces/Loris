@@ -81,7 +81,7 @@ class InfoTabPane extends Component {
       <TabPane
         Title='Welcome to the Data Query Tool'
         TabId={this.props.TabId}
-        Active={true}
+        Active={this.props.Active}
         Loading={this.props.Loading}
       >
         <p>Data was last updated on {this.props.UpdatedTime}.</p>
@@ -119,6 +119,7 @@ class FieldSelectTabPane extends Component {
       <TabPane
         TabId={this.props.TabId}
         Loading={this.props.Loading}
+        Active={this.props.Active}
       >
         <FieldSelector
           title='Fields'
@@ -149,6 +150,7 @@ class FilterSelectTabPane extends Component {
                        updateFilter={this.props.updateFilter}
                        filter={this.props.filter}
                        Visits={this.props.Visits}
+                       Active={this.props.Active}
         />
       </TabPane>
     );
@@ -356,6 +358,7 @@ class ViewDataTabPane extends Component {
       <TabPane
         TabId={this.props.TabId}
         Loading={this.props.Loading}
+        Active={this.props.Active}
       >
         <h2>Query Criteria</h2>
         {criteria}
@@ -643,7 +646,7 @@ class StatsVisualizationTabPane extends Component {
 
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
-        rows.push(<tr>
+        rows.push(<tr key={'fields_'.concat(i)}>
           <td>{this.props.Fields[i]}</td>
           <td>{min[i]}</td>
           <td>{max[i]}</td>
@@ -679,7 +682,7 @@ class StatsVisualizationTabPane extends Component {
         </table>
       );
 
-      let content = (
+      content = (
         <div>
           <h2>Basic Statistics</h2>
           {statsTable}
@@ -692,7 +695,7 @@ class StatsVisualizationTabPane extends Component {
       );
     }
     return (
-      <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
+      <TabPane TabId={this.props.TabId} Loading={this.props.Loading} Active={this.props.Active}>
         {content}
       </TabPane>
     );
