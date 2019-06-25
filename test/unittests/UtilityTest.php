@@ -25,6 +25,15 @@ use PHPUnit\Framework\TestCase;
 
 class FakeUtility extends Utility 
 {
+    /**
+     * Returns a list of sites in the database
+     *
+     * @param bool $study_site If true only return sites that are
+     *                         study sites according to the psc
+     *                         table
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
     static function getSiteList(Database $DB ,bool $study_site = true): array
     {
         // get the list of study sites - to be replaced by the Site object
@@ -42,6 +51,12 @@ class FakeUtility extends Utility
         return $list;
     }
 
+    /**
+     * Gets a list of visits used by the database as specified from
+     * the Visit_Windows table
+     *
+     * @return array<string, string> of the form VisitLabel => Visit_label
+     */
     static function getVisitList(\Database $DB) : array
     {
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
@@ -52,14 +67,14 @@ class FakeUtility extends Utility
         }
         return $list;
     }
-
-    static function getTestNameByCommentID(\Database $db, string $commentID): string
-    {
-        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, array('CID' => $commentID));
-        return $testName;
-    }
-
+    /**
+     * Gets a list of all instruments where are administered as direct data
+     * entry from subjects.
+     * This should return an array in a format suitable for addSelect() from
+     * NDB_Page
+     *
+     * @return array of test_names in a Test_Name => "Full Name"
+     */
     static function getDirectInstruments(\Database $DB): array
     {
         $instruments   = array();
@@ -74,6 +89,14 @@ class FakeUtility extends Utility
         return $instruments;
     }
 
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return string
+     * @throws DatabaseException
+     */
     static function getStageUsingCandID(\Database $db, string $Cand_id): string
     {
         $query = "select DISTINCT Current_stage from session where ".
@@ -82,6 +105,59 @@ class FakeUtility extends Utility
         return $stage[0]['Current_stage'];
     }
 
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return int
+     * @throws DatabaseException
+     */
+    static function getSubprojectIDUsingCandID(\Database $db, string $Cand_id): int
+    {
+        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        return intval($stage[0]['SubprojectID']);
+    }
+    
+    /**
+     * Looks up the test_name for the current full name
+     *
+     * @param string $fullname Descriptive name to be looked up
+     *
+     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
+     */
+    static function getTestNameUsingFullName(\Database $db, string $fullname): string
+    {
+        $test_name  = '';
+        $instrument = $db->pselect(
+            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
+            array('fname' => $fullname)
+        );
+        if (is_array($instrument) && count($instrument)) {
+            list(,$test_name) = each($instrument[0]);
+        }
+        return $test_name;
+    }
+    /**
+     * Get the list of language available in the database
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_id => $language_label)
+     */
+    static function getLanguageList(\Database $DB): array
+    {
+        $languagesDB = $DB->pselect(
+            "SELECT language_id, language_label
+             FROM language",
+            array()
+        );
+        foreach ($languagesDB as $language) {
+            $languages[$language['language_id']] = $language['language_label'];
+        }
+        return $languages;
+    }
 }
 
 class UtilityTest extends TestCase
@@ -159,10 +235,24 @@ class UtilityTest extends TestCase
      */
     private $_sessionInfo = array(
         array('CandID' => '123456',
+              'SubprojectID' => '12345678901',
               'Current_stage' => 'Not Started'),
         array('CandID' => '234567',
+              'SubprojectID' => '11223344556',
               'Current_stage' => 'Approval')
         );
+
+    /**
+     * language table information
+     * @var array contains language information retrieved by getLanguageList method
+     */
+    private $_languageInfo = array(
+        array('language_id' => '123456',
+              'language_label' => 'LA1'),
+        array('language_id' => '234567',
+              'language_label' => 'LA2')
+        );
+    
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -246,7 +336,8 @@ class UtilityTest extends TestCase
             ["1990\\07\\05", "2018\\05\\23"],
             ["1990", "2018"],
             ["1990_07_05", "2019_09_65"],
-            [" ", " "]
+            [" ", " "],
+            [null, null]
         ];
     }
 
@@ -342,7 +433,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getTestNameByCommentID returns the correct test name for the given CommentID
      * TODO getTestNameByCommentID() is returning an array instead of a string. 
-     * TODO I have yet to determine whether this is a strange error or something wrong with the method. 
+     * @note In the Utility class there is a note saying this method should be moved to a different module. 
      *
      * @covers Utility::getTestNameByCommentID
      * @return void 
@@ -375,6 +466,109 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that getSubprojectIDUsingCandID() returns the correct SubprojectID given the CandID
+     * 
+     * @covers Utility::getSubprojectIDUsingCandID
+     * @return void
+     */
+    public function testGetSubprojectIDUsingCandID()
+    { 
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_sessionInfo);
+
+        $this->assertEquals('12345678901', FakeUtility::getSubprojectIDUsingCandID($this->_dbMock, '123456'));
+    }
+
+    /**
+     * Test that getTestNameUsingFullName returns the correct Test_name for the given Full_name
+     *
+     * @covers Utility::getTestNameUsingFullName
+     * @return void
+     */
+    public function testGetTestNameUsingFullName()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Test_name' => 'test1',
+                                   'Full_name' => 'description1'),
+                             array('Test_name' => 'test2',
+                                   'Full_name' => 'description2')));
+
+        $this->assertEquals('test1', FakeUtility::getTestNameUsingFullName($this->_dbMock, 'description1'));
+    }
+
+    /**
+     * Test that getExistingVisitLabels returns a list of visit labels
+     * This is the simplest case of this function
+     * TODO Potential edge cases: Set 'Active' to 'N'
+     *
+     * @covers Utility::getExistingVisitLabels
+     * @return void
+     */
+    public function testGetExistingVisitLabels()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Visit_label' => 'VL1',
+                                   'CandID' => '123456',
+                                   'CenterID' => '1234567890',
+                                   'Active' => 'Y'),
+                             array('Visit_label' => 'VL2',
+                                   'CandID' => '112233',
+                                   'CenterID' => '1122334455',
+                                   'Active' => 'Y')));
+
+        $this->assertEquals(
+            array('VL1' => 'VL1',
+                  'VL2' => 'VL2'),
+            Utility::getExistingVisitLabels());
+    }
+
+    /**
+     * Test that getExistingVisitLabels returns only visit labels related to the given project ID
+     * TODO For this test, I need to be able to mock multiple tables. I will do some research and ask around. 
+     *
+     * @covers Utility::getExistingVisitLabels
+     * @return void
+     */
+    public function testGetExistingVisitLabelsWithProjectID()
+    {
+        $this->markTestIncomplete("This test is incomplete!");
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Visit_label' => 'VL1',
+                                   'CandID' => '123456',
+                                   'CenterID' => '1234567890',
+                                   'Active' => 'Y'),
+                             array('Visit_label' => 'VL2',
+                                   'CandID' => '112233',
+                                   'CenterID' => '1122334455',
+                                   'Active' => 'Y')));
+    }
+
+    /**
+     * Test that getLanguageList returns the proper information from the language table
+     *
+     * @covers Utility::getLanguageList
+     * @return void
+     */
+    public function testGetLanguageList()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_languageInfo);
+
+        $this->assertEquals(
+            array('123456' => 'LA1',
+                  '234567' => 'LA2'),
+            FakeUtility::getLanguageList($this->_dbMock));
+    }
+
+    /**
      * Set up test doubles for Utility methods
      *
      * @return void
@@ -391,3 +585,4 @@ class UtilityTest extends TestCase
             ->willReturn($this->_projectInfo);
     }
 }
+
