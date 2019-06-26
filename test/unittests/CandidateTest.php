@@ -483,7 +483,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    private function _setUpTestDoublesForSelectCandidate()
+    private function _setUpTestDoublesForSelectCandidate(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
