@@ -71,6 +71,9 @@ if (count($missingPackages) > 0) {
 }
 
 // Print results
+if (empty($report)) {
+    $report[] = "All requirements satisfied.";
+}
 echo implode(PHP_EOL, $report) . PHP_EOL;
 
 /* END SCRIPT */
