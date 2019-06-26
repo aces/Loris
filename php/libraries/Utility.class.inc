@@ -904,8 +904,8 @@ class Utility
      */
     static function getLanguageList(): array
     {
-        $DB = \Database::singleton();
-        $languages   = null; 
+        $DB          = \Database::singleton();
+        $languages   = null;
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
              FROM language",
