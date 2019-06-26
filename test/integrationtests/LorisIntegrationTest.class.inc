@@ -45,7 +45,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
@@ -126,7 +126,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void but side-effect logs in active webDriver
      */
-    protected function login($username, $password)
+    protected function login($username, $password): void
     {
         $this->safeGet($this->url);
         /*
@@ -162,7 +162,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();

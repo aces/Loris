@@ -911,8 +911,10 @@ class Utility
              FROM language",
             array()
         );
-        foreach ($languagesDB as $language) {
-            $languages[$language['language_id']] = $language['language_label'];
+        if ($languagesDB !== null) {
+            foreach ($languagesDB as $language) {
+                $languages[$language['language_id']] = $language['language_label'];
+            }
         }
         return $languages;
     }

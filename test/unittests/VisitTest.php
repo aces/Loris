@@ -33,11 +33,10 @@ class VisitTest extends TestCase
     /**
      * Visit object use in tests
      *
-     * @var Visit
      */
     private $_visit;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -210,7 +209,7 @@ class VisitTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->factory->reset();

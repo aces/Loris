@@ -149,7 +149,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    public static function insert(array $set): bool
+    static function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -168,7 +168,7 @@ class User extends UserPermissions
      * @return bool True
      * @access public
      */
-    public static function update(array $set): bool
+    static function update(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();

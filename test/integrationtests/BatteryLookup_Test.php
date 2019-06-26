@@ -25,7 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
-    function setUp() {
+    function setUp(): void
+    {
         $client = new NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
@@ -36,53 +37,53 @@ class NDB_BVL_Battery_Test extends TestCase
             "test_names",
             array(
              array(
-              'ID'        => 1,
-              'Test_name' => 'ActiveTestByAge',
-              'Full_name' => 'Active Test 1',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 1,
+              'Test_name'     => 'ActiveTestByAge',
+              'Full_name'     => 'Active Test 1',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 2,
-              'Test_name' => 'ActiveTestByAge2',
-              'Full_name' => 'Active Test 2',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 2,
+              'Test_name'     => 'ActiveTestByAge2',
+              'Full_name'     => 'Active Test 2',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 3,
-              'Test_name' => 'InactiveTest',
-              'Full_name' => 'Inactive Test 1',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 3,
+              'Test_name'     => 'InactiveTest',
+              'Full_name'     => 'Inactive Test 1',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 4,
-              'Test_name'    => 'ActiveTestByVisit',
-              'Full_name' => 'Active Test by Visit 1',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 4,
+              'Test_name'     => 'ActiveTestByVisit',
+              'Full_name'     => 'Active Test by Visit 1',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 5,
-              'Test_name'    => 'ActiveTestByVisit2',
-              'Full_name' => 'Active Test by Visit 2',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 5,
+              'Test_name'     => 'ActiveTestByVisit2',
+              'Full_name'     => 'Active Test by Visit 2',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 6,
-              'Test_name'    => 'ActiveTestByFirstVisit',
-              'Full_name' => 'Active Test by First Visit 2',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 6,
+              'Test_name'     => 'ActiveTestByFirstVisit',
+              'Full_name'     => 'Active Test by First Visit 2',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
              array(
-              'ID'        => 7,
-              'Test_name'    => 'ActiveTestByNotFirstVisit',
-              'Full_name' => 'Active Test by Not First Visit 2',
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
+              'ID'            => 7,
+              'Test_name'     => 'ActiveTestByNotFirstVisit',
+              'Full_name'     => 'Active Test by Not First Visit 2',
+              'Sub_group'     => 1,
+              'IsDirectEntry' => 0,
              ),
             )
         );
@@ -178,13 +179,15 @@ class NDB_BVL_Battery_Test extends TestCase
 
     }
 
-    function tearDown() {
+    function tearDown(): void
+    {
         $this->DB->run("DROP TEMPORARY TABLE test_names");
         $this->DB->run("DROP TEMPORARY TABLE test_battery");
 
     }
 
-    function testLookupBatteryByAge() {
+    function testLookupBatteryByAge()
+    {
         $battery = new NDB_BVL_Battery();
 
         $instruments = $battery->lookupBattery(50, 1, 'Visit', 'V01', '1', null);
@@ -196,11 +199,12 @@ class NDB_BVL_Battery_Test extends TestCase
              'ActiveTestByAge2',
              'ActiveTestByFirstVisit',
              'ActiveTestByNotFirstVisit',
-         )
-     );
+            )
+        );
     }
 
-    function testLookupBatteryByVisit() {
+    function testLookupBatteryByVisit()
+    {
         $battery = new NDB_BVL_Battery();
 
         $instruments = $battery->lookupBattery(50, 2, 'Visit', 'V01', '1', true);
@@ -214,7 +218,8 @@ class NDB_BVL_Battery_Test extends TestCase
         );
     }
 
-    function testLookupBatteryWithoutCenterID() {
+    function testLookupBatteryWithoutCenterID()
+    {
         $battery = new NDB_BVL_Battery();
 
         $instrumentsByAge   = $battery->lookupBattery(50, 1, 'Visit', 'V01', '2', true);
@@ -224,19 +229,18 @@ class NDB_BVL_Battery_Test extends TestCase
             $instrumentsByAge,
             array(
              'ActiveTestByAge',
-              'ActiveTestByFirstVisit',
-             )
+             'ActiveTestByFirstVisit',
+            )
         );
 
         $this->assertEquals(
             $instrumentsByVisit,
-            array(
-             'ActiveTestByVisit',
-            )
+            array('ActiveTestByVisit')
         );
     }
 
-    function testLookupBatteryByFirstVisit() {
+    function testLookupBatteryByFirstVisit()
+    {
         $battery = new NDB_BVL_Battery();
 
         $firstVisitInstruments = $battery->lookupBattery(50, 1, 'Visit', 'V01', '1', true);
@@ -263,4 +267,4 @@ class NDB_BVL_Battery_Test extends TestCase
     }
 
 }
-?>
+

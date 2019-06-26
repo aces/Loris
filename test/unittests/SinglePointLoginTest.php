@@ -27,12 +27,12 @@ class SinglePointLoginTest extends TestCase
 {
     private $login;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $Factory = NDB_Factory::singleton();
+        $Factory = \NDB_Factory::singleton();
         $Factory->setTesting(true);
-        $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $mockdb = $this->getMockBuilder("Database")->getMock();
+        $mockconfig = $this->getMockBuilder("NDB_Config")->getMock();
 
         $this->_configMap = array(
             array(

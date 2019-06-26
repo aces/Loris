@@ -32,7 +32,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         $this->form = new LorisForm();
     }
@@ -47,7 +47,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void but makes assertions
      */
-    function assertType($el, $type)
+    function assertType($el, $type): void
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
@@ -70,7 +70,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void but makes assertions
      */
-    function assertLabel($el, $label)
+    function assertLabel($el, $label): void
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
@@ -90,7 +90,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddSelect()
+    function testAddSelect(): void
     {
         $this->form->addSelect("abc", "Hello", array());
 
@@ -105,7 +105,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddMultiSelect()
+    function testAddMultiSelect(): void
     {
         $this->form->addSelect("abc", "Hello", array('3' => 'Option 3'), array('multiple' => 'multiple'));
 
@@ -133,7 +133,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddText()
+    function testAddText(): void
     {
         $this->form->addText("abc", "Hello", array());
         $this->assertType("abc", "text");
@@ -146,7 +146,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddDate()
+    function testAddDate(): void
     {
         $this->form->addDate("abc", "Hello", array());
         $this->assertType("abc", "date");
@@ -160,7 +160,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddFile()
+    function testAddFile(): void
     {
         $this->form->addFile("abc", "Hello", array());
         $this->assertType("abc", "file");
@@ -174,7 +174,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddPassword()
+    function testAddPassword(): void
     {
         $this->form->addPassword("abc", "Hello", array());
         $this->assertType("abc", "password");
@@ -188,7 +188,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddElementSelect()
+    function testAddElementSelect(): void
     {
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('addSelect', 'addDate'))
@@ -204,7 +204,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddElementDate()
+    function testAddElementDate(): void
     {
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('addDate'))
@@ -220,7 +220,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddElementText()
+    function testAddElementText(): void
     {
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('addText'))
@@ -236,7 +236,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddElementFile()
+    function testAddElementFile(): void
     {
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('addFile'))
@@ -252,7 +252,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function testAddElementPassword()
+    function testAddElementPassword(): void
     {
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('addPassword'))

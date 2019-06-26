@@ -69,14 +69,14 @@ class CandidateTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var Database | PHPUnit_Framework_MockObject_MockObject
      */
     private $_dbMock;
 
@@ -131,7 +131,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -145,7 +145,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getData
      * @covers Candidate::getListOfTimePoints
      */
-    public function testSelectRetrievesCandidateInfo()
+    public function testSelectRetrievesCandidateInfo(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -172,7 +172,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::select
      * @throws LorisException
      */
-    public function testsSelectFailsWhenInvalidCandidateIdPassed()
+    public function testsSelectFailsWhenInvalidCandidateIdPassed(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -190,7 +190,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::setData
      * @covers Candidate::getData
      */
-    public function testSetDataWithArraySucceeds()
+    public function testSetDataWithArraySucceeds(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -216,7 +216,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::setData
      * @covers Candidate::getData
      */
-    public function testSetDataWithValueSucceeds()
+    public function testSetDataWithValueSucceeds(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -251,7 +251,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getListOfVisitLabels
      * @return void
      */
-    public function testGetListOfVisitLabels()
+    public function testGetListOfVisitLabels(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -292,7 +292,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getValidSubprojects
      * @return void
      */
-    public function testGetValidSubprojectsReturnsAListOfSubprojects()
+    public function testGetValidSubprojectsReturnsAListOfSubprojects(): void
     {
         $subprojects = array(
                         array('SubprojectID' => 1),
@@ -347,7 +347,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getFirstVisit
      * @return void
      */
-    public function testGetFirstVisitReturnsFirstVisitLabel()
+    public function testGetFirstVisitReturnsFirstVisitLabel(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -365,7 +365,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getSessionID
      * @return void
      */
-    public function testGetSessionIDForExistingVisit()
+    public function testGetSessionIDForExistingVisit(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select(969664);
@@ -380,7 +380,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getSessionID
      * @return void
      */
-    public function testGetSessionIDReturnsNullForNoneExistingVisit()
+    public function testGetSessionIDReturnsNullForNoneExistingVisit(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select(969664);
@@ -395,7 +395,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::candidateExists
      * @return void
      */
-    public function testCandidateExistsReturnsTrueWhenCandidateExists()
+    public function testCandidateExistsReturnsTrueWhenCandidateExists(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -411,7 +411,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::candidateExists
      * @return void
      */
-    public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists()
+    public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -426,7 +426,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::validatePSCID
      * @return void
      */
-    public function testValidatePSCID()
+    public function testValidatePSCID(): void
     {
         $seq = array(
                 'seq' => array(
@@ -473,7 +473,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::createNew
      * @return void
      */
-    public function testCreateNew()
+    public function testCreateNew(): void
     {
         $this->markTestIncomplete("Test not implemented!");
     }

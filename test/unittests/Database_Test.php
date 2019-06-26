@@ -18,7 +18,7 @@ class FakePDO extends PDO
     public function __construct () {}
 }
 
-class FakeDatabase extends Database {
+class FakeDatabase extends \Database {
     protected function trackChanges(
         string $table, 
         array $set, 
@@ -48,12 +48,12 @@ class Database_Test extends TestCase
     }
 
     function testSetFakeData() {
-        $client = new NDB_Client();
+        $client = new \NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
 
 
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         $DB->setFakeTableData(
             "Config",
@@ -83,7 +83,7 @@ class Database_Test extends TestCase
 
 
     function testUpdateEscapesHTML() {
-        $this->_factory   = NDB_Factory::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -103,7 +103,7 @@ class Database_Test extends TestCase
     }
 
     function testUnsafeUpdateDoesntEscapeHTML() {
-        $this->_factory   = NDB_Factory::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -122,7 +122,7 @@ class Database_Test extends TestCase
 
     }
     function testInsertEscapesHTML() {
-        $this->_factory   = NDB_Factory::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -142,7 +142,7 @@ class Database_Test extends TestCase
     }
 
     function testUnsafeInsertDoesntEscapeHTML() {
-        $this->_factory   = NDB_Factory::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -162,8 +162,8 @@ class Database_Test extends TestCase
     }
 
     function testDeleteWithIsNull() {
-        $this->_factory   = NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -200,8 +200,8 @@ class Database_Test extends TestCase
     } 
 
     function testUpdateWithIsNull() {
-        $this->_factory   = NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -242,8 +242,8 @@ class Database_Test extends TestCase
     }
 
     function testInsertWithIsNull() {
-        $this->_factory   = NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -278,8 +278,8 @@ class Database_Test extends TestCase
     }
 
     function testReplaceWithIsNull() {
-        $this->_factory   = NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $this->_factory   = \NDB_Factory::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
