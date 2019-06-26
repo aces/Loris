@@ -191,7 +191,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         error_log("Full path is `$fullpath`");
         exec(
             'php generate_tables_sql_and_testNames.php < '
-            . escapeshellarg($fullpath),
+            . escapeshellarg($fullpath)
         );
 
         if (!$this->isQuatUserConfigured()) {
