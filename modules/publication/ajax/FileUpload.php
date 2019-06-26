@@ -432,6 +432,13 @@ function notify($pubID, $type) : void
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
+    if (is_null($data)) {
+        error_log(
+            'No data found for publication with ID $pudID. Cannot send '
+            . 'email.'
+        );
+        throw new \LorisException('Invalid publication ID specified.');
+    }
     $url  = $config->getSetting('url');
 
     $emailData['Title']       = $data['Title'];

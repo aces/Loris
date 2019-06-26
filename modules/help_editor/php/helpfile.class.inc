@@ -89,7 +89,7 @@ class HelpFile
         // insert a help file
         $DB->insert('help', $set);
         // return the help ID
-        return $DB->lastInsertID;
+        return intval($DB->lastInsertID);
     }
 
 
@@ -281,7 +281,7 @@ class HelpFile
             $parentData = $result;
 
             // check if we're done recursing
-            if ($level != $stopat) {
+            if (is_array($parentData) && $level != $stopat) {
                 // make the parent
                 $parent =& HelpFile::factory($this->data['parentID']);
 

@@ -40,7 +40,7 @@ class User extends UserPermissions
      *
      * @param string|null $username Identifies the user
      *
-     * @return User
+     * @return \User A User object if the User specified by $username exists
      * @access public
      */
     public static function &factory(?string $username = null): \User
@@ -69,6 +69,11 @@ class User extends UserPermissions
             GROUP BY users.ID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
+
+        if (is_null($row)) {
+            $obj = new \LORIS\AnonymousUser();
+            return $obj;
+        }
 
         // get user sites
         $user_centerID_query =  $DB->pselect(

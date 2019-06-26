@@ -285,7 +285,7 @@ class Files extends \NDB_Page
     * @return array An array containing the category name and ID for file
     *               categories in the document repository.
     */
-    function parseCategory($value): array
+    function parseCategory(array $value): array
     {
         $id           = $value['id'];
         $depth        = 0;

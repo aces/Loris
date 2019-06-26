@@ -111,12 +111,9 @@ class NDB_Factory
         if (self::$config !== null) {
             return self::$config;
         }
+        $config = NDB_Config::singleton($configfile);
         if ($this->Testing) {
-            //Mock::generate("NDB_Config");
             $config = new MockNDB_Config();
-        } else {
-            $config = NDB_Config::singleton($configfile);
-            return $config;
         }
 
         self::$config = $config;
