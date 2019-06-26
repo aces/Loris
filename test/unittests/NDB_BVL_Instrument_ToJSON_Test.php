@@ -1,5 +1,4 @@
 <?php
-namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../vendor/autoload.php';
