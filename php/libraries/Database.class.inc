@@ -72,8 +72,8 @@ class Database
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return object Database
-     * @throws DatabaseException
+     * @return \Database
+     * @throws \DatabaseException
      * @access public
      */
     static function &singleton(
@@ -82,7 +82,7 @@ class Database
         string $password     = '',
         string $host         = '',
         bool   $trackChanges = true
-    ) {
+    ): \Database {
 
         static $connections = array();
 

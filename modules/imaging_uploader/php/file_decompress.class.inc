@@ -60,12 +60,11 @@ class File_Decompress
      *  This function will automatically detect the file-type
      * and will decompress the file by calling the appropriate function
      *
-     * @return boolean returns false if the decompressiong fails
-     *  and true otherwise
+     * @return boolean|string returns false if the decompressiong fails
+     *  and true otherwise. Returns the file name when unzipping.
      */
     function decompressFile()
     {
-
         if ((preg_match("/.tgz/i", $this->file_name))
             || (preg_match("/.tar.gz/i", $this->file_name))
         ) {
@@ -137,7 +136,7 @@ class File_Decompress
      * extracting it to the destination folder and
      * then closing the zip-archive handler
      *
-     * @return int
+     * @return string
      */
     function unzip()
     {

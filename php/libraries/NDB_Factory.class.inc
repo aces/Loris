@@ -104,7 +104,7 @@ class NDB_Factory
      *
      * @param string|null $configfile Location of XML file to parse config from
      *
-     * @return NDB_Config A config singleton
+     * @return \NDB_Config A config singleton
      */
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
@@ -130,20 +130,19 @@ class NDB_Factory
      * Set config
      * (Can used for injecting test doubles)
      *
-     * @param NDB_Config $config config object
+     * @param \NDB_Config $config config object
      *
-     * @return NDB_Config config object which was passed in
+     * @return void
      */
-    public function setConfig(\NDB_Config $config): \NDB_Config
+    public function setConfig(\NDB_Config $config): void
     {
         self::$config = $config;
-        return $config;
     }
 
     /**
      * Return either a real or mock Loris User object.
      *
-     * @return User A user singleton
+     * @return \User A user singleton
      */
     function user(): \User
     {
@@ -194,7 +193,7 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            self::$db = Database::singleton();
+            self::$db = \Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');

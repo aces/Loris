@@ -87,7 +87,7 @@ class HelpFile
         $DB =& \Database::singleton();
 
         // insert a help file
-        $success = $DB->insert('help', $set);
+        $DB->insert('help', $set);
         // return the help ID
         return $DB->lastInsertID;
     }
@@ -103,12 +103,10 @@ class HelpFile
     function update($set)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
 
         // update the help file
-        $success = $DB->update('help', $set, array('helpID' => $this->helpID));
-
-        return true;
+        $DB->update('help', $set, array('helpID' => $this->helpID));
     }
 
     /**

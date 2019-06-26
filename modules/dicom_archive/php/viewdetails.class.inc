@@ -89,6 +89,7 @@ class ViewDetails extends \NDB_Form
     */
     function _getTarchiveData($tarchiveID, $table, $order)
     {
+        $array = array();
         switch ($table) {
         case "tarchive":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID";

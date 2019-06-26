@@ -43,7 +43,7 @@ trait MiddlewareChainerMixin
      *
      * @param MiddlewareChainer $next The middleware to append
      *
-     * @return MiddlewareChainer A new middleware queue with $next appended
+     * @return MiddlewareChainerMixin A new middleware queue with $next appended
      */
     public function withMiddleware(MiddlewareChainer $next) :MiddlewareChainer
     {

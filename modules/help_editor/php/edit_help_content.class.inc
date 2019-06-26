@@ -40,7 +40,8 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return array
+      * @return ?array An associative array containing the title and content
+      *         for the default help information.
       */
     function _getDefaults()
     {
