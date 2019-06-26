@@ -27,21 +27,18 @@ class SettingsTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
      */
     private $_configMock;
 
     /**
      * Setting object used for testing
      *
-     * @var Settings object
      */
     private $_settings;
 
     /**
      * Database config values returned by NDB_Config::getSetting()
      *
-     * @var array database config values
      */
     private $_databaseConfigValues = array();
 
@@ -54,7 +51,7 @@ class SettingsTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -76,7 +73,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to true
      */
-    public function getTrueValue()
+    public function getTrueValue(): array
     {
         return array(
                 array(true),
@@ -101,7 +98,7 @@ class SettingsTest extends TestCase
      * @covers Settings::isSandbox
      * @return void
      */
-    public function testIsSandboxReturnsTrue($sandboxVal)
+    public function testIsSandboxReturnsTrue($sandboxVal): void
     {
         $this->_configMock->method('getSetting')
             ->willReturn($sandboxVal);
@@ -115,7 +112,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to false
      */
-    public function getFalseValue()
+    public function getFalseValue(): array
     {
         return array(
                 array(false),
@@ -143,7 +140,7 @@ class SettingsTest extends TestCase
      * @covers Settings::isSandbox
      * @return void
      */
-    public function testIsSandboxReturnsFalse($sandboxVal)
+    public function testIsSandboxReturnsFalse($sandboxVal): void
     {
         $this->_configMock->method('getSetting')
             ->willReturn($sandboxVal);
@@ -157,7 +154,7 @@ class SettingsTest extends TestCase
      * @covers Settings::dbName
      * @return void
      */
-    public function testDbNameReturnCorrectName()
+    public function testDbNameReturnCorrectName(): void
     {
         $this->_setUpConfigDatabaseTestDouble();
         $this->assertEquals(
@@ -172,7 +169,7 @@ class SettingsTest extends TestCase
      * @covers Settings::dbHost
      * @return void
      */
-    public function testDbHostReturnCorrectHost()
+    public function testDbHostReturnCorrectHost(): void
     {
         $this->_setUpConfigDatabaseTestDouble();
         $this->assertEquals(
@@ -187,7 +184,7 @@ class SettingsTest extends TestCase
      * @covers Settings::dbUserName
      * @return void
      */
-    public function testDbUserNameReturnCorrectUserName()
+    public function testDbUserNameReturnCorrectUserName(): void
     {
         $this->_setUpConfigDatabaseTestDouble();
         $this->assertEquals(
@@ -202,7 +199,7 @@ class SettingsTest extends TestCase
      * @covers Settings::dbPassword
      * @return void
      */
-    public function testDbPasswordReturnCorrectPassword()
+    public function testDbPasswordReturnCorrectPassword(): void
     {
         $this->_setUpConfigDatabaseTestDouble();
         $this->assertEquals(
@@ -218,7 +215,7 @@ class SettingsTest extends TestCase
      * @covers Settings::dbPassword
      * @return void
      */
-    public function testExceptionThrownWhenNoPasswordInConfig()
+    public function testExceptionThrownWhenNoPasswordInConfig(): void
     {
         unset($this->_databaseConfigValues['password']);
         $this->_setUpConfigDatabaseTestDouble();
@@ -233,7 +230,7 @@ class SettingsTest extends TestCase
      *
      * @return void
      */
-    private function _setUpConfigDatabaseTestDouble()
+    private function _setUpConfigDatabaseTestDouble(): void
     {
         $this->_configMock->expects($this->any())
             ->method('getSetting')
