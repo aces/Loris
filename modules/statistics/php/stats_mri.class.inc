@@ -307,7 +307,7 @@ class Stats_MRI extends \NDB_Form
 
         $Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
-        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
+        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected ?? array());
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;

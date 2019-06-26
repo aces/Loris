@@ -139,7 +139,7 @@ class ConflictDetector
      *
      * @return boolean True if there are conflicts that exist, false otherwise
      */
-    function isInstrumentInstanceInConflictState(string $commentId): bool
+    static function isInstrumentInstanceInConflictState(string $commentId): bool
     {
         $conflictCount = \Database::singleton()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",

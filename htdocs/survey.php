@@ -113,7 +113,7 @@ class DirectDataEntryMainPage
                 )
             );
         }
-        if ($this->Subtest === array()) {
+        if ($this->Subtest === Null) {
             $this->Subtest = "";
         }
 

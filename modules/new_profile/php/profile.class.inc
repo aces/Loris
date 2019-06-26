@@ -147,6 +147,7 @@ class Profile extends \NDB_Page
         //get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
+        $psc_labelOptions   = array();
         if ($num_sites >=1) {
             foreach ($user_list_of_sites as $key => $siteID) {
                 $center = $DB->pselectRow(
@@ -161,6 +162,7 @@ class Profile extends \NDB_Page
          $result['site'] = $psc_labelOptions;
          //get projects for the select dropdown
         $projects = \Utility::getProjectList();
+        $list_of_projects = array();
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
         }

@@ -13,7 +13,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
 /**
  * Class Loris_PHPUnit_Databse_TestCase
  *
@@ -25,7 +24,6 @@ use PHPUnit\DbUnit\TestCaseTrait;
  */
 abstract class Loris_PHPUnit_Database_TestCase extends TestCase
 {
-    use TestCaseTrait;
 
     /**
      * PDO connection
