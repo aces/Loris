@@ -121,15 +121,18 @@ class SinglePointLogin
         ) {
             $this->_lastError = 'The password is weak, or'
                . ' the passwords do not match';
+            return false;
         }
 
         if (password_verify($_POST['password'], $data['Password_hash'])) {
             $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
             return false;
+        }
+        // Check if password is present in existing data breaches.
+        if ($user->pwnedPassword($_POST['password'])) {
+            $this->_lastError = 'The password you chose is too common. Please '
+                . 'choose a more unique password.';
+                return false;
         }
 
         // Reset passwordExpired flag
@@ -198,7 +201,8 @@ class SinglePointLogin
         $this->_username
             = isset($decodedArray['user'])
                 ? $decodedArray['user'] : 'Unknown';
-        return isset($decodedArray['user']);
+        return isset($decodedArray['user'])
+            && !$this->accountLocked($decodedArray['user']);
     }
 
     /**
@@ -288,6 +292,15 @@ class SinglePointLogin
             $this->_lastError = "Incorrect username or password.";
             return false;
         }
+        /* Check whether a user's account is locked due to too many bad login
+         * attempts before actually trying to authenticate their credentials.
+         */
+        if ($this->accountLocked($username)) {
+            $this->_lastError = 'This account is currently suspended due '
+                . 'to too many bad login attempts.';
+            $this->insertFailedDetail('Account locked', $setArray);
+            return false;
+        }
         // Validate passsword
         $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
@@ -295,6 +308,34 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 $user = \User::factory($username);
                 $user->updatePassword($password);
+            }
+
+            if ($row['Active'] == 'N'
+                || $this->disabledDueToInactivity($username, 365)
+            ) {
+                $this->_lastError = "Your account has been deactivated."
+                    . " Please contact your project administrator to"
+                    . " reactivate this account.";
+                $this->insertFailedDetail(
+                    "user account not active",
+                    $setArray
+                );
+
+                return false;
+            }
+
+            // check if the account is no longer active
+            $date       = new DateTime();
+            $currentDay = $date->getTimestamp();
+
+            if (($row['active_to'] != null)
+                && ($currentDay > strtotime($row['active_to']))
+            ) {
+                $this->_lastError = "Your account has expired."
+                    . " Please contact your project administrator to re-activate"
+                    . " this account.";
+                return false;
+
             }
 
             // Check whether the account is expired.
@@ -371,6 +412,74 @@ class SinglePointLogin
         // Fail by default with a generic error message
         $this->_lastError = "Incorrect username or password.";
         return false;
+    }
+
+    /**
+     * Determines whether a user's account is locked due to too many failed
+     * attempts.
+     *
+     * @param string $username The user account to check.
+     *
+     * @return bool
+     */
+    function accountLocked(string $username): bool
+    {
+        /* A user is locked out if they have made X attempts in the last Y
+         * minutes or X' attempts in the last Y' minutes.
+         * The reason for using two time windows is to provide some flexibility:
+         * legitimate locked-out users to try again in a short time while also
+         * preventing attackers from simply trying another X login attempts
+         * after Y minutes.
+         */
+
+        /* These represent X and X' above, but with more helpful names.
+         * These values represent the maximum number of attempts a user may make
+         * to login before being locked out.
+         */
+        $shortLockoutThreshold = 10;
+        $longLockoutThreshold  = 15;
+        // These represent Y and Y' above, but with more helpful names.
+        $shortWindowInMinutes = 15;
+        $longWindowInMinutes  = 60;
+
+        // SQL code to run.
+        $query  = "SELECT COUNT(loginhistoryID) as loginattempts " .
+            "FROM user_login_history " .
+            "WHERE userID = :username " .
+            "AND IP_address = :ip " .
+            "AND Success = 'N' " .
+            "AND Login_timestamp > ( " .
+            "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(), ".
+            "INTERVAL :timeWindowInMinutes MINUTE), " .
+                "MAX(Login_timestamp), DATE_SUB(NOW(), " .
+                "INTERVAL :timeWindowInMinutes MINUTE) " .
+            ") " .
+            "FROM user_login_history " .
+            "WHERE userID = :username " .
+            "AND Success = 'Y'" .
+        ");";
+        $params = array(
+                   'username'            => $username,
+                   'timeWindowInMinutes' => $shortWindowInMinutes,
+                   'ip'                  => $_SERVER['REMOTE_ADDR'],
+                  );
+
+        // Query DB for login attempts.
+        $database  = \NDB_Factory::singleton()->database();
+        $statement = $database->prepare($query);
+
+        $shortFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
+
+        $params['timeWindowInMinutes'] = $longWindowInMinutes;
+
+        $longFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
+
+        return $shortFailCount > $shortLockoutThreshold
+            || $longFailCount > $longLockoutThreshold;
     }
 
     /**

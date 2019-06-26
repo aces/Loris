@@ -11,10 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-ini_set('default_charset', 'utf-8');
-require_once "Utility.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "MincEnv.php.inc";
 
 if (strpos($_REQUEST['file_id'], 'l') !== false) {
     list($l, $id) = explode('l', $_REQUEST['file_id']);
@@ -37,17 +33,7 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
 
     if (!empty($query)) {
         $image_file = $DB->pselectOne($query, array('LogID' => $id));
-        $file       = implode('/', array_slice(explode('/', $image_file), -2));
-
-        if (strpos($image_file, 'assembly') !== false) {
-            if (strpos($image_file, 'assembly') === 0) {
-                $image_path = getFileLocation() . $image_file;
-            } else {
-                $image_path = $image_file;
-            }
-        } else {
-            $image_path = getFileLocation() . "trashbin/" . $file;
-        }
+        $image_path = getFileLocation() . $image_file;
     }
 } else {
     $query      = "select File from files where FileID = :FileID";
@@ -60,7 +46,7 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
     $image_path = getFileLocation() . $image_file;
 }
 
-if (!empty($image_file)) {
+if (!empty($image_file) && !empty($image_path)) {
     if (preg_match('/nii(\.gz)?/i', $image_file)) {
         header('Content-Type: application/x-nii');
     } elseif (preg_match('/mnc/', $image_file)) {
@@ -80,7 +66,7 @@ if (!empty($image_file)) {
  *
  * @return string Path which contains MINC or NIfTI files
  */
-function getFileLocation()
+function getFileLocation(): string
 {
     $config     = & NDB_Config::singleton();
     $paths      = $config->getSetting('paths');

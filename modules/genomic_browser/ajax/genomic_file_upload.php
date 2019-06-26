@@ -34,7 +34,7 @@ if (empty($base_dir)) {
 }
 
 set_time_limit(0);
-ob_implicit_flush(true);
+ob_implicit_flush(1);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
 $bytes = $_FILES["fileData"]['size'];

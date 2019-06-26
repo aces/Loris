@@ -278,11 +278,9 @@ class Instrument_List_ControlPanel extends \TimePoint
                         $instrument['DDECommentID']
                     );
                     \ConflictDetector::recordUnresolvedConflicts($diff);
-
                 }
             }
-
-                return;
+            return;
         }
 
         // set the BVLQC flag

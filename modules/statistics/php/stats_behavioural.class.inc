@@ -63,11 +63,7 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        $this->tpl_data['useProjects'] = $useProjects;
-        $subprojList ="";
+        $DB =& \Database::singleton();
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,

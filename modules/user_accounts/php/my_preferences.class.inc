@@ -421,6 +421,7 @@ class My_Preferences extends \NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
+
             // check password strength
             $isPasswordStrong = \User::isPasswordStrong(
                 $values['Password_hash'],
@@ -444,6 +445,10 @@ class My_Preferences extends \NDB_Form
                     $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
+            }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_hash'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
             }
         }
 

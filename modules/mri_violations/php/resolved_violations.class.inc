@@ -149,17 +149,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        // set the class variables
-        $config      =& \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-        } else {
-            $useProjects = true;
-        }
-
         $this->columns = array(
                           'v.Resolved as Resolution_status',
+                          'pjct.Name as Project',
+                          'subpjct.title as Subproject',
                           'v.PatientName as PatientName',
                           'site.Name as Site',
                           'v.TimeRun as TimeRun',
@@ -173,6 +166,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                          );
         $this->headers = array(
                           'Resolution_status',
+                          'Project',
+                          'Subproject',
                           'PatientName',
                           'Site',
                           'TimeRun',
@@ -184,17 +179,6 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                           'JoinID',
                           'SiteID',
                          );
-        if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
-            array_splice(
-                $this->columns,
-                2,
-                0,
-                'subpjct.title as Subproject'
-            );
-            array_splice($this->headers, 1, 0, 'Project');
-            array_splice($this->headers, 2, 0, 'Subproject');
-        }
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [

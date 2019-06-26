@@ -40,8 +40,7 @@ class MediaTest extends LorisIntegrationTest
                               " > div:nth-child(6) > div > div > select";
     static $Site        = "#media_filter > div > div > fieldset".
                               " > div:nth-child(7) > div > div > select";
-    static $clearFilter = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(11) > div > div > button";
+    static $clearFilter = ".col-sm-4 .btn";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
@@ -90,8 +89,8 @@ class MediaTest extends LorisIntegrationTest
         $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "26", "2");
-        $this->_testFilter(self::$Instrument, self::$table, "3 rows", "2");
+        $this->_testFilter(self::$Language, self::$table, "27", "2");
+        $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
         $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
 
     }
