@@ -161,7 +161,7 @@ class Profile extends \NDB_Page
         }
          $result['site'] = $psc_labelOptions;
          //get projects for the select dropdown
-        $projects = \Utility::getProjectList();
+        $projects         = \Utility::getProjectList();
         $list_of_projects = array();
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
