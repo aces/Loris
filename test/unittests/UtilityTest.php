@@ -28,13 +28,14 @@ class FakeUtility extends Utility
     /**
      * Returns a list of sites in the database
      *
+     * @param \Database $DB The mock database used by the test methods
      * @param bool $study_site If true only return sites that are
      *                         study sites according to the psc
      *                         table
      *
      * @return array an associative array("center ID" => "site name")
      */
-    static function getSiteList(Database $DB ,bool $study_site = true): array
+    static function fakeGetSiteList(Database $DB ,bool $study_site = true): array
     {
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -55,9 +56,11 @@ class FakeUtility extends Utility
      * Gets a list of visits used by the database as specified from
      * the Visit_Windows table
      *
+     * @param \Database $DB The mock database used by the test methods
+     *
      * @return array<string, string> of the form VisitLabel => Visit_label
      */
-    static function getVisitList(\Database $DB) : array
+    static function fakeGetVisitList(\Database $DB) : array
     {
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
         $result = $DB->pselect($query, array());
@@ -73,9 +76,11 @@ class FakeUtility extends Utility
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
+     * @param \Database $DB The mock database used by the test methods
+     *
      * @return array of test_names in a Test_Name => "Full Name"
      */
-    static function getDirectInstruments(\Database $DB): array
+    static function fakeGetDirectInstruments(\Database $DB): array
     {
         $instruments   = array();
         $instruments_q = $DB->pselect(
@@ -92,12 +97,13 @@ class FakeUtility extends Utility
     /**
      * Looks up visit stage using candidate ID.
      *
+     * @param \Database $db The mock database used by the test methods
      * @param string $Cand_id candidate ID
      *
      * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID(\Database $db, string $Cand_id): string
+    static function fakeGetStageUsingCandID(\Database $db, string $Cand_id): string
     {
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
@@ -108,12 +114,13 @@ class FakeUtility extends Utility
     /**
      * Looks up visit stage using candidate ID.
      *
+     * @param \Database $db The mock database used by the test methods
      * @param string $Cand_id candidate ID
      *
      * @return int
      * @throws DatabaseException
      */
-    static function getSubprojectIDUsingCandID(\Database $db, string $Cand_id): int
+    static function fakeGetSubprojectIDUsingCandID(\Database $db, string $Cand_id): int
     {
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
@@ -123,11 +130,12 @@ class FakeUtility extends Utility
     /**
      * Looks up the test_name for the current full name
      *
+     * @param \Database $db The mock database used by the test methods
      * @param string $fullname Descriptive name to be looked up
      *
      * @return  string (Non-associative array of the form array(Test1, Test2, ..))
      */
-    static function getTestNameUsingFullName(\Database $db, string $fullname): string
+    static function fakeGetTestNameUsingFullName(\Database $db, string $fullname): string
     {
         $test_name  = '';
         $instrument = $db->pselect(
@@ -142,11 +150,13 @@ class FakeUtility extends Utility
     /**
      * Get the list of language available in the database
      *
+     * @param \Database $DB The mock database used by the test methods
+     *
      * @return array Array of language which exist in the database table 'language'
      *               array is of the form
      *               array($language_id => $language_label)
      */
-    static function getLanguageList(\Database $DB): array
+    static function fakeGetLanguageList(\Database $DB): array
     {
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
@@ -371,6 +381,52 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that getSubprojectList() returns a list of subprojects from the database
+     *
+     * @covers Utility::getProjectList()
+     * @return void
+     */
+    public function testGetSubprojectList()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(
+                array(
+                    array('SubprojectID' => '1',
+                          'title' => 'subproject1'),
+                    array('SubprojectID' => '2',
+                          'title' => 'subproject2')
+                ));
+
+        $this->assertEquals(
+            array('1' => 'subproject1',
+                  '2' => 'subproject2'),
+            Utility::getSubprojectList()
+            );
+    }
+
+    /**
+     * Test that getSubprojectList() returns the correct subproject when a ProjectID is specified
+     *
+     * @covers Utility::getProjectList()
+     * @return void
+     */
+    public function testGetSubprojectListWithProjectID()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(
+                array(
+                    array('SubprojectID' => '123',
+                          'title' => 'DemoProject')
+                ));
+   
+        $this->assertEquals(
+            array('123' => 'DemoProject'),
+            Utility::getSubprojectList('123'));
+    }
+
+    /**
      * Test that getAllInstruments() returns the proper information
      * 
      * @covers Utility::getAllInstruments()
@@ -408,7 +464,7 @@ class UtilityTest extends TestCase
             array(
                 'visitLabel' => 'VisitLabel',
                 'label' => 'Label'),
-            FakeUtility::getVisitList($this->_dbMock));
+            FakeUtility::fakeGetVisitList($this->_dbMock));
     }
    
     /**
@@ -424,7 +480,7 @@ class UtilityTest extends TestCase
             ->willReturn($this->_siteInfo);
 
         $this->assertEquals(
-            FakeUtility::getSiteList($this->_dbMock),
+            FakeUtility::fakeGetSiteList($this->_dbMock),
             array(
                 '1234567890' => 'site1',
                 '1122334455' => 'site2'));
@@ -441,12 +497,6 @@ class UtilityTest extends TestCase
     public function testGetTestNameByCommentID()
     {
         $this->markTestIncomplete("This test is incomplete!");
-        $this->_dbMock->expects($this->at(0))
-            ->method('pselectOne')
-            ->willReturn($this->_flagInfo);
-
-        $this->assertEquals('test_flag1', FakeUtility::getTestNameByCommentID($this->_dbMock, 'ID123'));
-        $this->assertEquals('test_flag2', FakeUtility::getTestNameByCommentID($this->_dbMock, 'ID234'));
     }
 
     /**
@@ -462,7 +512,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('Not Started', FakeUtility::getStageUsingCandID($this->_dbMock, '123456'));
+        $this->assertEquals('Not Started', FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '123456'));
     }
 
     /**
@@ -477,7 +527,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('12345678901', FakeUtility::getSubprojectIDUsingCandID($this->_dbMock, '123456'));
+        $this->assertEquals('12345678901', FakeUtility::fakeGetSubprojectIDUsingCandID($this->_dbMock, '123456'));
     }
 
     /**
@@ -496,7 +546,7 @@ class UtilityTest extends TestCase
                              array('Test_name' => 'test2',
                                    'Full_name' => 'description2')));
 
-        $this->assertEquals('test1', FakeUtility::getTestNameUsingFullName($this->_dbMock, 'description1'));
+        $this->assertEquals('test1', FakeUtility::fakeGetTestNameUsingFullName($this->_dbMock, 'description1'));
     }
 
     /**
@@ -565,7 +615,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array('123456' => 'LA1',
                   '234567' => 'LA2'),
-            FakeUtility::getLanguageList($this->_dbMock));
+            FakeUtility::fakeGetLanguageList($this->_dbMock));
     }
 
     /**
