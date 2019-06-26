@@ -268,29 +268,29 @@ class Dashboard extends \NDB_Form
                  ORDER BY Testdate DESC LIMIT 4",
                 array()
             );
-            for ($i=0; $i < sizeof($bvl_feedback); $i++) {
-                if ($bvl_feedback[$i]['Testdate'] > $last_login) {
-                    $bvl_feedback[$i]['new'] = 1;
+            foreach ($bvl_feedback as $row) {
+                if ($row['Testdate'] > $last_login) {
+                    $row['new'] = 1;
                 } else {
-                    $bvl_feedback[$i]['new'] = 0;
+                    $row['new'] = 0;
                 }
-                if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
-                    $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
-                } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
-                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID='
-                        . $bvl_feedback[$i]['CandID'] . '&sessionID='
-                        . $bvl_feedback[$i]['SessionID'];
-                } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
+                if ($row['Feedback_level'] === 'profile') {
+                    $row['URL'] = '/' . $row['CandID'];
+                } else if ($row['Feedback_level'] === 'visit') {
+                    $row['URL'] = '/instrument_list/?candID='
+                        . $row['CandID'] . '&sessionID='
+                        . $row['SessionID'];
+                } else if ($row['Feedback_level'] === 'instrument') {
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
-                        array('cid' => $bvl_feedback[$i]['CommentID'])
+                        array('cid' => $row['CommentID'])
                     );
                     if (!empty($instrument)) {
-                        $bvl_feedback[$i]['URL'] = '/instruments/'
+                        $row['URL'] = '/instruments/'
                             . $instrument . '/?candID='
-                            . $bvl_feedback[$i]['CandID'] . '&sessionID='
-                            . $bvl_feedback[$i]['SessionID'] . '&commentID='
-                            . $bvl_feedback[$i]['CommentID'];
+                            . $row['CandID'] . '&sessionID='
+                            . $row['SessionID'] . '&commentID='
+                            . $row['CommentID'];
                     }
                 }
             }
