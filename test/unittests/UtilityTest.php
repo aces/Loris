@@ -204,6 +204,146 @@ class FakeUtility extends Utility
         }
         return $languages;
     }
+
+    /**
+     * Get all the instruments which currently exist for a given visit label
+     * in the database.
+     *
+     * @param \Database $DB The mock database used for testing
+     * @param string $visit_label The visit label for which you would like
+     *                            to know the existing visit labels
+     *
+     * @return array Array of instruments which exist for the given visit label
+     *               array is of the form
+     *               array(0 => array('Test_name_display' => $TestName))?
+     */
+    static function fakeGetVisitInstruments(\Database $DB, string $visit_label): array
+    {
+
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
+            $test_names = $DB->pselect(
+                "SELECT DISTINCT Test_name_display FROM test_battery
+                WHERE Visit_label=:vl",
+                array('vl' => $visit_label)
+            );
+        } else {
+            $test_names = $DB->pselect(
+                "SELECT DISTINCT t.Full_name as Test_name_display FROM session s
+                JOIN candidate c ON (c.candid=s.candid)
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                JOIN flag f ON (f.sessionid=s.id)
+                JOIN test_names t ON (f.test_name=t.Test_name)
+                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
+                AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+                ORDER BY t.Full_name",
+                array('vl' => $visit_label)
+            );
+        }
+
+        return $test_names;
+    }
+    
+    /**
+     * Returns a list of bvl instruments
+     *
+     * Returns a list of instruments for a timepoint's stage ($stage).
+     * If no stage arg is passed, return the full list for all stages
+     *
+     * @param \Database $DB The mock database used for testing
+     * @param integer     $age   age in days
+     * @param string|null $stage study stage (screening or visit)
+     *
+     * @return array list of instruments
+     */
+    static function fakeLookupBattery(\Database $DB, int $age, ?string $stage = null): array
+    {
+        
+        // craft the select query
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
+            AND b.Active='Y'";
+        $params = array('CandAge' => $age);
+
+        if (!is_null($stage)) {
+            $query .= " AND b.Stage=:BatStage";
+            $params['BatStage'] = $stage;
+        }
+
+        $query .= " GROUP BY Test_name ORDER BY Test_name";
+
+        // get the list of instruments
+        $rows  = array();
+        $tests = array();
+        $rows  = $DB->pselect($query, $params);
+
+        // repackage the array
+        foreach ($rows AS $row) {
+            $tests[] = $row['Test_name'];
+        }
+
+        // return an array of test names
+        return $tests;
+    }
+
+    /**
+     * Returns all the sourcefrom instruments from parameter_type
+     *
+     * @param \Database $DB The mock database used for testing
+     * @param string|null $instrument If specified, return fields from this
+     *                           test_name
+     * @param string|null $commentID  If specified, return fields for this
+     *                           commentid
+     * @param string|null $name       If specified, return fields for this
+     *                           parameter_type name
+     *
+     * @return  Array of the form array(
+     *              0 => array(
+     *                   'SourceField' => value
+     *                   'Name'        => name
+     *
+     *              )
+     *         )
+     * @note    This should be moved out of the Utility class into whatever
+     *       module uses it. (Data team helper, BVL_Feedback_panel)
+     * @note    Function comment written by Dave, not the author of this function.
+     * @cleanup
+     */
+    static function fakeGetSourcefields(
+        \Database $DB,
+        ?string $instrument = null,
+        ?string $commentID = null,
+        ?string $name = null
+    ): array {
+
+        //get sourcefield using instrument
+        $sourcefields = array();
+        if (!is_null($instrument)) {
+            $sourcefields = $DB->pselect(
+                "SELECT SourceField, Name FROM parameter_type
+                WHERE queryable='1' AND sourcefrom = :sf
+                ORDER BY Name",
+                array('sf' => $instrument)
+            );
+        } elseif (!is_null($commentID)) { //get sourcefield using commentid
+            $instrument   = $DB->pselectOne(
+                "SELECT Test_name FROM flag WHERE CommentID = :cid",
+                array('cid' => $commentID)
+            );
+            $sourcefields = $DB->pselect(
+                "SELECT SourceField, Name FROM parameter_type
+                WHERE queryable = '1' AND sourcefrom = :instrument
+                ORDER BY Name",
+                array('instrument' => $instrument)
+            );
+        } elseif (!is_null($name)) { //get all source fields
+            $sourcefields = $DB->pselectRow(
+                "SELECT * FROM parameter_type WHERE Name = :pn",
+                array('pn' => $name)
+            );
+        }
+        return $sourcefields;
+    }
 }
 
 class UtilityTest extends TestCase
@@ -710,5 +850,193 @@ class UtilityTest extends TestCase
             FakeUtility::fakeGetLanguageList($this->_dbMock));
     }
 
+    /**
+     * Test that getVisitInstruments() returns the correct information for the given visit label
+     *
+     * @covers Utility::getVisitInstruments()
+     * @return void
+     */
+    public function testGetVisitInstruments()
+    {
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Test_name_display' => 'display1',
+                                   'TestName' => 'name1',
+                                   'Visit_label' => 'V1')));
+
+        $this->assertEquals(
+            array(0 => array('Test_name_display' => 'display1',
+                             'TestName' => 'name1',
+                             'Visit_label' => 'V1')),
+            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1'));
+    }
+    
+    /**
+     * Test an edge case of getVisitInstruments() where there is no 
+     * 'Test_name_display' column in the given table
+     *
+     * @covers Utility::getVisitInstruments()
+     * @return void
+     */
+    public function testGetVisitInstrumentsWithoutTestNameDisplay()
+    {
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Full_name' => 'display1',
+                                   'TestName' => 'name1',
+                                   'Visit_label' => 'V1')));
+
+        $this->assertEquals(
+            array(0 => array('Full_name' => 'display1',
+                             'TestName' => 'name1',
+                             'Visit_label' => 'V1')),
+            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1'));
+    }
+
+    /**
+     * Test that lookupBattery returns the correct information without the stage specified
+     * 
+     * @covers Utility::lookupBattery()
+     * @return void
+     */
+    public function testLookupBattery()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(array(
+                             array('Test_name' => 'test1'),
+                             array('Test_name' => 'test2')));
+
+        $this->assertEquals(
+            array('test1', 'test2'),
+            FakeUtility::fakeLookupBattery($this->_dbMock, 25));
+                                   
+    }
+
+    /**
+     * Test that lookupBattery returns the correct information with the stage specified
+     *
+     * @covers Utility::lookupBattery()
+     * @return void
+     */
+    public function testLookupBatteryWithStage()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains(" AND b.Stage=:BatStage"))
+            ->willReturn(array(
+                             array('Test_name' => 'test1',
+                                   'Stage' => 'stage1')));
+
+        $this->assertEquals(
+            array('test1'),
+            FakeUtility::fakeLookupBattery($this->_dbMock, 25, 'stage1'));
+
+    }
+
+    /**
+     * Tests that getSourcefields will return an empty array if no parameters are specified
+     *
+     * @covers Utility::getSourcefields()
+     * @return void
+     */
+    public function testGetSourcefieldsReturnsNothingWithNoParameters()
+    {
+    	$this->assertEquals(array(), FakeUtility::fakeGetSourcefields($this->_dbMock));
+    }
+
+    /* 
+     * Test that getSourcefields returns the correct information and uses the correct query 
+     * when the instrument parameter is specified
+     *
+     * @covers Utility::getSourcefields()
+     * @return void
+     */
+    public function testGetSourcefieldsWithInstrumentSpecified()
+    {
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->willReturn(array(
+                             array('SourceField' => 'instrument_field',
+                                   'Name' => 'instrument_name')));
+        
+        $this->assertEquals(
+            array(0 => array('SourceField' => 'instrument_field',
+                             'Name' => 'instrument_name')),
+            FakeUtility::fakeGetSourcefields($this->_dbMock, 'instrument1', null, null));
+    }
+
+    /*
+     * Test that getSourcefields returns the correct information and uses the correct query
+     * when the commentID parameter is specified
+     * TODO This is returning null rather than an array
+     *
+     * @covers Utility::getSourcefields()
+     * @return void
+     */
+    public function testGetSourcefieldsWithCommentIDSpecified()
+    {
+        $this->markTestIncomplete("This test is incomplete!");
+
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->willReturn(array(
+                             array('SourceField' => 'commentID_field',
+                                   'Name' => 'commentID_name')));
+
+        $this->assertEquals(
+            array(0 => array('SourceField' => 'commentID_field',
+                             'Name' => 'commentID_name')),
+            FakeUtility::fakeGetSourcefields($this->_dbMock, null, '1', null));
+    }
+
+    /*
+     * Test that getSourcefields returns the correct information and uses the correct query
+     * when the name parameter is specified
+     *
+     * @covers Utility::getSourcefields()
+     * @return void
+     */
+    public function testGetSourcefieldsWithNameSpecified()
+    {
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselectRow')
+            ->willReturn(array(
+                             array('SourceField' => 'name_field',
+                                   'Name' => 'name_name')));
+
+        $this->assertEquals(
+            array(0 => array('SourceField' => 'name_field',
+                             'Name' => 'name_name')),
+            FakeUtility::fakeGetSourcefields($this->_dbMock, null, null, 'name_name'));
+    }
+
+    /**
+     * Test an edge case of getSourcefields where all three parameters are specified
+     * In this case, it should only use the instrument parameter
+     *
+     * @covers Utility::getSourcefields()
+     * @return void
+     */
+    public function testGetSourcefieldsWithAllThreeParameters()
+    {
+        //$this->markTestIncomplete("Incomplete");
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->willReturn(array(
+                             array('SourceField' => 'instrument_field',
+                                   'Name' => 'instrument_name')));
+
+        $this->assertEquals(
+            array(0 => array('SourceField' => 'instrument_field',
+                             'Name' => 'instrument_name')),
+            FakeUtility::fakeGetSourcefields($this->_dbMock, 'instrument1', '1', 'name'));
+    }
 }
 
