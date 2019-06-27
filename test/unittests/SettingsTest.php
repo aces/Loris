@@ -55,7 +55,7 @@ class SettingsTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_configMock = $this->getMockBuilder('\NDB_Config')->getMock();
 
         $this->_settings = new Settings($this->_configMock);
 

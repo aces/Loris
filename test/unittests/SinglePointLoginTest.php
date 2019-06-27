@@ -32,7 +32,7 @@ class SinglePointLoginTest extends TestCase
         $Factory = \NDB_Factory::singleton();
         $Factory->setTesting(true);
         $mockdb = $this->getMockBuilder("Database")->getMock();
-        $mockconfig = $this->getMockBuilder("NDB_Config")->getMock();
+        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
         $this->_configMap = array(
             array(
