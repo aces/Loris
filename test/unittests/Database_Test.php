@@ -12,13 +12,14 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
+use \LORIS\Database;
 
 class FakePDO extends PDO
 {
     public function __construct () {}
 }
 
-class FakeDatabase extends \Database {
+class FakeDatabase extends Database {
     protected function trackChanges(
         string $table, 
         array $set, 
