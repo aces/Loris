@@ -18,7 +18,7 @@ class FakePDO extends PDO
     public function __construct () {}
 }
 
-class FakeDatabase extends Database {
+class FakeDatabase extends \Database {
     protected function trackChanges(
         string $table, 
         array $set, 
@@ -42,7 +42,7 @@ use PHPUnit\Framework\TestCase;
 class Database_Test extends TestCase
 {
     function _getAllMethodsExcept($methods) {
-        $AllMethods = get_class_methods('Database');
+        $AllMethods = get_class_methods('\Database');
 
         return array_diff($AllMethods, $methods);
     }
@@ -53,7 +53,7 @@ class Database_Test extends TestCase
         $client->initialize();
 
 
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         $DB->setFakeTableData(
             "Config",
@@ -163,7 +163,7 @@ class Database_Test extends TestCase
 
     function testDeleteWithIsNull() {
         $this->_factory   = \NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -201,7 +201,7 @@ class Database_Test extends TestCase
 
     function testUpdateWithIsNull() {
         $this->_factory   = \NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -243,7 +243,7 @@ class Database_Test extends TestCase
 
     function testInsertWithIsNull() {
         $this->_factory   = \NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
@@ -279,7 +279,7 @@ class Database_Test extends TestCase
 
     function testReplaceWithIsNull() {
         $this->_factory   = \NDB_Factory::singleton();
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $DB->setFakeTableData(
             "ConfigSettings",
             array(
