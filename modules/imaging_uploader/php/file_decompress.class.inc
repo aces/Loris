@@ -149,7 +149,7 @@ class File_Decompress
             $zip->close();
         }
 
-        return $file_name;
+        return $file_name ?? '';
     }
 }
 

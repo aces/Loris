@@ -225,7 +225,7 @@ class NDB_BVL_Battery
             )
         );
 
-        return $commentID;
+        return $commentID ?? '';
     } // end addInstrument()
 
     /**

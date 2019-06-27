@@ -384,7 +384,6 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         }
         $this->addSelect('Site', 'Site', $sites);
 
-        return true;
     }
     /**
      * Gathers JS dependecies and merge them with the parent

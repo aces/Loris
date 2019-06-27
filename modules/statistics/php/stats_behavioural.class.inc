@@ -157,9 +157,9 @@ class Stats_Behavioural extends \NDB_Form
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+                $c[$vl]['total'] += intval($row['val']);
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = intval($row['val']);
             }
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $row['val'];

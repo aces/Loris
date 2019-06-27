@@ -200,6 +200,12 @@ class EditExaminer extends \NDB_Form
                      'TID' => $testID,
                     )
                 );
+                if (is_null($oldVals)) {
+                    throw new \LorisException(
+                        'No old certification values found for specified '
+                        . 'examiner and test IDs.'
+                    );
+                }
 
                 $oldVal  = $oldVals['new'];
                 $oldDate = $oldVals['new_date'];
@@ -213,6 +219,13 @@ class EditExaminer extends \NDB_Form
                      'TID' => $testID,
                     )
                 );
+
+                if (is_null($oldCertification)) {
+                    throw new \LorisException(
+                        'No old data certification found for specified '
+                        . 'examiner and test IDs.'
+                    );
+                }
 
                 // If one of the values was changed
                 if ($oldCertification['pass'] != $certStatus

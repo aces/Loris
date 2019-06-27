@@ -43,9 +43,10 @@ trait MiddlewareChainerMixin
      *
      * @param MiddlewareChainer $next The middleware to append
      *
-     * @return MiddlewareChainerMixin A new middleware queue with $next appended
+     * @return MiddlewareChainer|MiddlewareChainerMixin A new middleware queue 
+     *                                              with $next appended
      */
-    public function withMiddleware(MiddlewareChainer $next) :MiddlewareChainer
+    public function withMiddleware(MiddlewareChainer $next): MiddlewareChainer
     {
         $new = clone $this;
         $cur = $new;

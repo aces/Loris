@@ -292,7 +292,7 @@ class HelpFile
             }
         }
 
-        return $parentData;
+        return $parentData ?? array();
     }
 
     /**

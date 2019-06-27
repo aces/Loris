@@ -362,9 +362,9 @@ class NDB_BVL_Feedback
      *                                        threads, otherwise only returns
      *                                        active threads
      *
-     * @return string the higest-order status of an active thread
+     * @return ?string the higest-order status of an active thread
      */
-    function getMaxThreadStatus($select_inactive_threads)
+    function getMaxThreadStatus($select_inactive_threads): ?string
     {
         // new DB Object
         $db =& Database::singleton();

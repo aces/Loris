@@ -89,7 +89,6 @@ class ViewDetails extends \NDB_Form
     */
     function _getTarchiveData($tarchiveID, $table, $order)
     {
-        $array = array();
         switch ($table) {
         case "tarchive":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
@@ -98,7 +97,7 @@ class ViewDetails extends \NDB_Form
         case "tarchive_series":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $array = $this->DB->pselect(
+            $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
                  'ID'     => $tarchiveID,
@@ -109,7 +108,7 @@ class ViewDetails extends \NDB_Form
             if ($this->_setProtocols()) {
                 $previousSeriesDescription = '';
                 $previousProtocolName      = '';
-                foreach ($array as &$series) {
+                foreach ($tarchiveData as &$series) {
                     $seriesDescription = $series['SeriesDescription'];
                     // if the same series, do not compute the protocol name again,
                     // use the previous one
@@ -127,7 +126,7 @@ class ViewDetails extends \NDB_Form
         case "tarchive_files":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $array = $this->DB->pselect(
+            $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
                  'ID'     => $tarchiveID,
@@ -137,7 +136,7 @@ class ViewDetails extends \NDB_Form
             break;
         }
 
-        return $array;
+        return $tarchiveData ?? array();
     }
     /**
     * Validates PatientName and PatientID,
@@ -322,7 +321,7 @@ class ViewDetails extends \NDB_Form
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
-            return $array['Scan_type'];
+            return $array['Scan_type'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }

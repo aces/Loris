@@ -736,7 +736,7 @@ function getIssueData($issueID=null)
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
             "WHERE issueID=:issueID",
             ['issueID' => $issueID]
-        );
+        ) ?? array();
     }
 
     return [

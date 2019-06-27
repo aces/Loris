@@ -707,6 +707,12 @@ class ViewSession extends \NDB_Form
             FROM session WHERE ID=:SID",
             array('SID' => $_REQUEST['sessionID'])
         );
+        if (is_null($qcstatus)) {
+            throw new \LorisException(
+                'Could not find QC status information for the supplied '
+                . 'session ID'
+            );
+        }
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['mricaveat']    = $qcstatus['MRICaveat'];

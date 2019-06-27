@@ -208,7 +208,7 @@ class Create_Timepoint extends \NDB_Form
                         WHERE CenterID =:cid",
                         array('cid' => $siteID)
                     );
-                    if (!is_null($center['Name'])) {
+                    if (!is_null($center)) {
                         $psc_labelOptions[$siteID] = $center['Name'];
                     }
                 }

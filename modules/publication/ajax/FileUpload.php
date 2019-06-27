@@ -521,6 +521,11 @@ function editProject() : void
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
+    if (empty($pubData)) {
+        throw new \LorisException(
+            'Could not find publication data for specified ID'
+        );
+    }
 
     // build array of changed values
     $toUpdate        = array();
