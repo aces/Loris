@@ -912,8 +912,8 @@ class Utility
             array()
         );
         if ($languagesDB !== null) {
-            foreach ($languagesDB as $language) {
-                $languages[$language['language_id']] = $language['language_label'] ?? null;
+            foreach ($languagesDB as $l) {
+                $languages[$l['language_id']] =$l['language_label'] ?? null;
             }
         }
         return $languages;
