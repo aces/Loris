@@ -199,11 +199,11 @@ class Statistics_Mri_Site extends Statistics_Site
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
         $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
-        if (is_null($center)){
-            throw new \LorisException('Invalid CenterID specified'); 
+        if (is_null($center)) {
+            throw new \LorisException('Invalid CenterID specified');
         }
-        $id     = $center['ID'];
-        $name   = $center['Name'];
+        $id   = $center['ID'];
+        $name = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the

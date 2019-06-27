@@ -321,7 +321,7 @@ class Database
      * @return bool
      */
     public function unsafeInsertOnDuplicateUpdate(
-        string $table, 
+        string $table,
         array $set
     ): bool {
         return $this->_realinsert($table, $set, false, false, true);

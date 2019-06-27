@@ -155,7 +155,8 @@ class Timepoint_List extends \NDB_Menu
                     "SELECT CenterID as ID, Alias FROM psc WHERE CenterID =:cid",
                     array('cid' => $centerID)
                 );
-                $this->tpl_data['timePoints'][$x]['CenterName'] = $center['Alias'] ?? '';
+                $this->tpl_data['timePoints'][$x]['CenterName']
+                    = $center['Alias'] ?? '';
 
                 // create feedback object for the time point
                 $feedback = \NDB_BVL_Feedback::singleton(

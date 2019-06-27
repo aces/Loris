@@ -685,7 +685,7 @@ class Utility
      * @param string|null $name       If specified, return fields for this
      *                           parameter_type name
      *
-     * @return ?array Format: array(
+     * @return  ?array Format: array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name

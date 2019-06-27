@@ -123,11 +123,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth       += 1;
-                $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
+                $depth    += 1;
+                $parent_id = $value['parent_id'];
+                $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";
-                $value        = $DB->pselectRow($query, array());
+                $value     = $DB->pselectRow($query, array());
                 if (is_null($value)) {
                     throw new \LorisException(
                         'Could not find data for specified parent ID. '

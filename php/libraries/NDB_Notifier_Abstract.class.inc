@@ -196,15 +196,15 @@ abstract class NDB_Notifier_Abstract
      */
     private function _getAdminUser(): array
     {
-        $result           = \Database::singleton()->pselectRow(
+        $result = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
             array()
         );
         if (is_null($result)) {
             return array();
         }
-        $info_array       = array();
-        $info_array['ID'] = $result['ID'];
+        $info_array          = array();
+        $info_array['ID']    = $result['ID'];
         $info_array['name']  = $result['Real_name'];
         $info_array['email'] = $result['Email'];
         return $info_array;

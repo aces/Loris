@@ -293,12 +293,12 @@ class Files extends \NDB_Page
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth       += 1;
-                $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
+                $depth    += 1;
+                $parent_id = $value['parent_id'];
+                $query     = "SELECT * FROM document_repository_categories".
                             " WHERE id=:parent_id";
-                $where        = array('parent_id' => $parent_id);
-                $value        = $DB->pselectRow($query, $where);
+                $where     = array('parent_id' => $parent_id);
+                $value     = $DB->pselectRow($query, $where);
                 if (is_null($value)) {
                     throw new \LorisException(
                         'No parent category found for specified parentID. '

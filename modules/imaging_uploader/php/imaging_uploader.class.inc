@@ -635,7 +635,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     */
     function getTargetDirectory($file, $args)
     {
-        return sprintf("%s/", 
+        return sprintf(
+            "%s/",
             $args['user_id'] ?? \User::singleton()->getUsername()
         );
     }
@@ -645,7 +646,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     *
     * @param string $file The full filename including directory
     *
-    * @return bool Whether the file is compressed 
+    * @return bool Whether the file is compressed
     */
     function isCompressed($file)
     {

@@ -96,7 +96,7 @@ class UserPermissions
                 }
                 // The line below may not be necessary as the $query already
                 // filters for a userID matching this user...
-                $userMatch = $row['userID'] === $this->userID; 
+                $userMatch = $row['userID'] === $this->userID;
                 $this->permissions[$row['code']] = $userMatch;
             }
         }

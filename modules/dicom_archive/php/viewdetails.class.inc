@@ -95,7 +95,7 @@ class ViewDetails extends \NDB_Form
             $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
             break;
         case "tarchive_series":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
             $tarchiveData = $this->DB->pselect(
                 $query,
@@ -124,7 +124,7 @@ class ViewDetails extends \NDB_Form
             }
             break;
         case "tarchive_files":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
             $tarchiveData = $this->DB->pselect(
                 $query,

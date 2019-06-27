@@ -439,7 +439,7 @@ function notify($pubID, $type) : void
         );
         throw new \LorisException('Invalid publication ID specified.');
     }
-    $url  = $config->getSetting('url');
+    $url = $config->getSetting('url');
 
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
