@@ -86,7 +86,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Acknowledgements", $bodyText);
+        $this->assertStringContainsString("Acknowledgements", $bodyText);
     }
     /**
      * Tests that, the homepage should have "You do not have access to this page."
@@ -100,7 +100,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -155,7 +155,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/?format=json");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
     }
     /**
      * Tests that, adding a new record, then this record appears on the page.
