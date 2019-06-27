@@ -51,7 +51,43 @@ class FakeUtility extends Utility
         natcasesort($list);
         return $list;
     }
+    /**
+     * Get the list of sites as an associative array
+     *
+     * @param \Database $DB The mock database used for testing
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array of the form CenterID => Site Name.
+     *         Note that even though CenterID is numeric, the array
+     *         should be interpreted as an associative array since the keys
+     *         refer to the centerID, not the array index.
+     */
+    static function fakeGetAssociativeSiteList(
+        \Database $DB,
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        
+        // get the list of study sites - to be replaced by the Site object
+        $query = "SELECT CenterID, Name FROM psc ";
+        if ($study_site) {
+            $query .= "WHERE Study_site='Y'";
+        }
+        if (!$DCC) {
+            $query .= " AND CenterID <> 1";
+        }
 
+        $result = $DB->pselect($query, array());
+
+        // fix the array
+        $list = array();
+        foreach ($result as $row) {
+            $list[$row["CenterID"]] = $row["Name"];
+        }
+        return $list;
+    }
     /**
      * Gets a list of visits used by the database as specified from
      * the Visit_Windows table
@@ -205,14 +241,14 @@ class UtilityTest extends TestCase
      * @var array contains test_name information retrieved by getAllInstruments method
      */
     private $_testNameInfo = array(
-        array('ID' => '1234567890',
+        array('ID' => '1',
               'Test_name' => 'test1',
               'Full_name' => 'description1',
-              'IsDirectEntry' => '1'),
-        array('ID' => '1122334455',
+              'IsDirectEntry' => 1),
+        array('ID' => '2',
               'Test_name' => 'test2',
               'Full_name' => 'description2',
-              'IsDirectEntry' => '0')
+              'IsDirectEntry' => 0)
         );
     /**
      * Visit_Windows table information
@@ -227,9 +263,9 @@ class UtilityTest extends TestCase
      * @var array contains psc information retrieved by getSiteList method
      */
     private $_siteInfo = array(
-        array('CenterID' => '1234567890',
+        array('CenterID' => '1',
               'Name' => 'site1'),
-        array('CenterID' => '1122334455',
+        array('CenterID' => '2',
               'Name' => 'site2')
         );
     /**
@@ -244,11 +280,11 @@ class UtilityTest extends TestCase
      * @var array contains session information retrieved by getStageUsingCandID method
      */
     private $_sessionInfo = array(
-        array('CandID' => '123456',
-              'SubprojectID' => '12345678901',
+        array('CandID' => '1',
+              'SubprojectID' => '2',
               'Current_stage' => 'Not Started'),
-        array('CandID' => '234567',
-              'SubprojectID' => '11223344556',
+        array('CandID' => '3',
+              'SubprojectID' => '4',
               'Current_stage' => 'Approval')
         );
 
@@ -257,9 +293,9 @@ class UtilityTest extends TestCase
      * @var array contains language information retrieved by getLanguageList method
      */
     private $_languageInfo = array(
-        array('language_id' => '123456',
+        array('language_id' => '1',
               'language_label' => 'LA1'),
-        array('language_id' => '234567',
+        array('language_id' => '2',
               'language_label' => 'LA2')
         );
     
@@ -359,7 +395,9 @@ class UtilityTest extends TestCase
      */
     public function testGetConsentList()
     {
-        $this->_setUpTestDoublesForUtilityTests();
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselectWithIndexKey')
+            ->willReturn($this->_consentInfo);
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
     }
 
@@ -371,7 +409,9 @@ class UtilityTest extends TestCase
      */
     public function testGetProjectList()
     {
-        $this->_setUpTestDoublesForUtilityTests();
+        $this->_dbMock->expects($this->at(0))
+            ->method('pselect')
+            ->willReturn($this->_projectInfo);
         $this->assertEquals(
             Utility::getProjectList(),
             array(
@@ -413,8 +453,13 @@ class UtilityTest extends TestCase
      */
     public function testGetSubprojectListWithProjectID()
     {
+        /**
+         * The 'with' assertion is included to check that the mySQL query changes
+         * when a ProjectID is specified
+         */
         $this->_dbMock->expects($this->any())
             ->method('pselect')
+            ->with($this->stringContains("JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID"))
             ->willReturn(
                 array(
                     array('SubprojectID' => '123',
@@ -439,12 +484,45 @@ class UtilityTest extends TestCase
             ->willReturn($this->_testNameInfo);
 
         $this->assertEquals(
-            Utility::getAllInstruments(),
             array(
                 'test1' => 'description1',
-                'test2' => 'description2'));
+                'test2' => 'description2'),
+            Utility::getAllInstruments());
     }
 
+    /**
+     * Test that getAllDDEInstruments() returns the proper information
+     * TODO This method calls the getSetting() method for the NDB_Config singleton.
+     *      I am unclear on how to handle this
+     *
+     * @covers Utility::getAllDDEInstruments()
+     * @return void
+     */
+    public function testGetAllDDEInstruments()
+    {
+        $this->markTestIncomplete("This test is incomplete!");
+    }
+
+    /**
+     * Test that getDirectInstruments() returns tests with isDirectEntry=true
+     *
+     * @covers Utility::getDirectInstruments()
+     * @return void
+     */
+    public function testGetDirectInstruments()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn(
+                array(
+                    array('Test_name' => 'test1',
+                          'Full_name' => 'description1',
+                          'isDirectEntry' => 1)));
+
+        $this->assertEquals(
+            array('test1' => 'description1'),
+            FakeUtility::fakeGetDirectInstruments($this->_dbMock));
+    }
     /**
      * Test that getVisitList() returns the correct information
      * 
@@ -469,21 +547,33 @@ class UtilityTest extends TestCase
    
     /**
      * Test that getSiteList() returns the correct list from the database
-     * 
+     * @note I am testing both methods in the same test because 
+     *       unless the study_site or DCC parameters are specified 
+     *       they have the same fuctionality
+     * TODO Potential edge cases: test with the study_site and DCC booleans as false
+     *
      * @covers Utility::getSiteList()
+     * @covers Utility::getAssociativeSiteList
      * @return void
      */
-    public function testGetSiteList()
+    public function testGetSiteListAndGetAssociativeSiteList()
     {       
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn($this->_siteInfo);
 
+
         $this->assertEquals(
-            FakeUtility::fakeGetSiteList($this->_dbMock),
             array(
-                '1234567890' => 'site1',
-                '1122334455' => 'site2'));
+                '1' => 'site1',
+                '2' => 'site2'),
+            FakeUtility::fakeGetSiteList($this->_dbMock));
+        
+        $this->assertEquals(
+            array(
+                '1' => 'site1',
+                '2' => 'site2'),
+            FakeUtility::fakeGetAssociativeSiteList($this->_dbMock));
     }
 
     /**
@@ -501,8 +591,7 @@ class UtilityTest extends TestCase
 
     /**
      * Test that getStageUsingCandID returns the proper current stage for the given CandID
-     * TODO Check that this works for any part of the array, not just the first entry
-     *
+     * 
      * @covers Utility::getStageUsingCandID
      * @return void
      */
@@ -512,7 +601,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('Not Started', FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '123456'));
+        $this->assertEquals('Not Started', FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '1'));
     }
 
     /**
@@ -527,7 +616,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('12345678901', FakeUtility::fakeGetSubprojectIDUsingCandID($this->_dbMock, '123456'));
+        $this->assertEquals('2', FakeUtility::fakeGetSubprojectIDUsingCandID($this->_dbMock, '1'));
     }
 
     /**
@@ -563,12 +652,12 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn(array(
                              array('Visit_label' => 'VL1',
-                                   'CandID' => '123456',
-                                   'CenterID' => '1234567890',
+                                   'CandID' => '1',
+                                   'CenterID' => '2',
                                    'Active' => 'Y'),
                              array('Visit_label' => 'VL2',
-                                   'CandID' => '112233',
-                                   'CenterID' => '1122334455',
+                                   'CandID' => '3',
+                                   'CenterID' => '4',
                                    'Active' => 'Y')));
 
         $this->assertEquals(
@@ -579,25 +668,28 @@ class UtilityTest extends TestCase
 
     /**
      * Test that getExistingVisitLabels returns only visit labels related to the given project ID
-     * TODO For this test, I need to be able to mock multiple tables. I will do some research and ask around. 
      *
      * @covers Utility::getExistingVisitLabels
      * @return void
      */
     public function testGetExistingVisitLabelsWithProjectID()
     {
-        $this->markTestIncomplete("This test is incomplete!");
+        /**
+         * The 'with' assertion is included to ensure that the mySQL query changes
+         * to include the ProjectID parameter if the ProjectID is specified
+         */
         $this->_dbMock->expects($this->any())
             ->method('pselect')
+            ->with($this->stringContains("AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)"))  
             ->willReturn(array(
                              array('Visit_label' => 'VL1',
                                    'CandID' => '123456',
                                    'CenterID' => '1234567890',
-                                   'Active' => 'Y'),
-                             array('Visit_label' => 'VL2',
-                                   'CandID' => '112233',
-                                   'CenterID' => '1122334455',
                                    'Active' => 'Y')));
+
+        $this->assertEquals(
+            array('VL1' => 'VL1'),
+            Utility::getExistingVisitLabels('1'));
     }
 
     /**
@@ -613,26 +705,10 @@ class UtilityTest extends TestCase
             ->willReturn($this->_languageInfo);
 
         $this->assertEquals(
-            array('123456' => 'LA1',
-                  '234567' => 'LA2'),
+            array('1' => 'LA1',
+                  '2' => 'LA2'),
             FakeUtility::fakeGetLanguageList($this->_dbMock));
     }
 
-    /**
-     * Set up test doubles for Utility methods
-     *
-     * @return void
-     */
-    private function _setUpTestDoublesForUtilityTests()
-    {
- 
-        $this->_dbMock->expects($this->at(0))
-            ->method('pselectWithIndexKey')
-            ->willReturn($this->_consentInfo); 
-
-        $this->_dbMock->expects($this->at(0))
-            ->method('pselect')
-            ->willReturn($this->_projectInfo);
-    }
 }
 
