@@ -149,7 +149,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function insert(array $set): bool
+    public function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -168,7 +168,7 @@ class User extends UserPermissions
      * @return bool True
      * @access public
      */
-    static function update(array $set): bool
+    public function update(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -231,7 +231,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->userInfo['ID'];
+        return intval($this->userInfo['ID']);
     }
 
     /**
@@ -516,6 +516,7 @@ class User extends UserPermissions
      */
     function updatePassword(string $password, string $expiry = ''): void
     {
+        $password = htmlspecialchars_decode($password);
         if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
@@ -541,7 +542,7 @@ class User extends UserPermissions
      *
      * @return bool Whether the password is known to be pwned.
      */
-    public static function pwnedPassword(string $password): bool
+    static function pwnedPassword(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
@@ -649,3 +650,4 @@ class User extends UserPermissions
         return $count > 0;
     }
 }
+
