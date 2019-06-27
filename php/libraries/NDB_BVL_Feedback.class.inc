@@ -292,7 +292,7 @@ class NDB_BVL_Feedback
                    'Description' => $description,
                   );
         $db->insert("feedback_bvl_type", $values);
-        return $db->getLastInsertId();
+        return intval($db->getLastInsertId());
     }
 
     /**
@@ -827,7 +827,7 @@ class NDB_BVL_Feedback
 
         if (is_array($setArray) && count($setArray)>0) {
             // update the thread only if the form data was changed
-            $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+            $db->update('feedback_bvl_thread', $setArray, $whereArray);
         }
 
     }
@@ -842,16 +842,16 @@ class NDB_BVL_Feedback
     function deleteThread($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         // DELETE the thread's entries
-        $success = $db->delete(
+        $db->delete(
             'feedback_bvl_entry',
             array("FeedbackID" => $feedbackID)
         );
 
         // DELETE the thread
-        $success = $db->delete(
+        $db->delete(
             'feedback_bvl_thread',
             array("FeedbackID" => '$feedbackID')
         );

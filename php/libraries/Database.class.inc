@@ -300,9 +300,9 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function insertOnDuplicateUpdate($table, $set)
+    public function insertOnDuplicateUpdate(string $table, array $set): bool
     {
         return $this->_realinsert($table, $set, true, false, true);
     }
@@ -318,10 +318,12 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function unsafeInsertOnDuplicateUpdate($table, $set)
-    {
+    public function unsafeInsertOnDuplicateUpdate(
+        string $table, 
+        array $set
+    ): bool {
         return $this->_realinsert($table, $set, false, false, true);
     }
 

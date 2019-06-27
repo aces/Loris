@@ -685,7 +685,7 @@ class Utility
      * @param string|null $name       If specified, return fields for this
      *                           parameter_type name
      *
-     * @return  Array of the form array(
+     * @return ?array Format: array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name
@@ -701,9 +701,9 @@ class Utility
         ?string $instrument = null,
         ?string $commentID = null,
         ?string $name = null
-    ): array {
+    ): ?array {
 
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
         //get sourcefield using instrument
         $sourcefields = array();
         if (!is_null($instrument)) {

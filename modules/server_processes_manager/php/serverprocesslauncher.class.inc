@@ -70,7 +70,7 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process the process that was just started
      *
-     * @return void
+     * @return string
      * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
      */
@@ -128,7 +128,7 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process process to launch.
      *
-     * @return int ID of the process saved in the database.
+     * @return ?int ID of the process saved in the database.
      *
      * @throws \LorisException if the process cannot be launched successfully.
      */
@@ -152,7 +152,7 @@ class ServerProcessLauncher
             );
         }
 
-        return $this->_saveProcess($process);
+        return intval($this->_saveProcess($process));
     }
 
     /**

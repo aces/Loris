@@ -536,7 +536,7 @@ class NDB_BVL_Battery
      *
      * @param string $testName The test name that we want a commentID for
      *
-     * @return string the commentID generated
+     * @return ?string the commentID generated
      */
     function _createCommentID($testName)
     {
@@ -616,6 +616,6 @@ class NDB_BVL_Battery
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, array('TN' => $testName));
 
-        return $row['counter'] >= 1;
+        return ($row['counter'] ?? 0) >= 1;
     } // end _assertValidInstrument()
 }

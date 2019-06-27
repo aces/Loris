@@ -75,7 +75,7 @@ class UserPermissions
     function setPermissions(): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
@@ -87,16 +87,17 @@ class UserPermissions
         // reset the array
         $this->permissions = array();
 
-        // fill the array
+        // Fill the permissions array of this UserPermissions object with the
+        // values extracted for this user from the database.
         if (is_array($results) and !empty($results)) {
             foreach ($results AS $row) {
-                if (!empty($row['userID'])
-                    && $row['userID'] === $this->userID
-                ) {
-                    $this->permissions[$row['code']] = true;
-                } else {
-                    $this->permissions[$row['code']] = false;
+                if (empty($row['userID']) || empty($row['code'])) {
+                    continue;
                 }
+                // The line below may not be necessary as the $query already
+                // filters for a userID matching this user...
+                $userMatch = $row['userID'] === $this->userID; 
+                $this->permissions[$row['code']] = $userMatch;
             }
         }
     }

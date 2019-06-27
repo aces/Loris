@@ -299,6 +299,12 @@ class Files extends \NDB_Page
                             " WHERE id=:parent_id";
                 $where        = array('parent_id' => $parent_id);
                 $value        = $DB->pselectRow($query, $where);
+                if (is_null($value)) {
+                    throw new \LorisException(
+                        'No parent category found for specified parentID. '
+                        . 'Cannot parse categories.'
+                    );
+                }
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
@@ -403,7 +409,7 @@ class Files extends \NDB_Page
         ) {
                 $uploadedFile->moveTo($uploadPath.$fileName);
 
-                $success = $DB->insert(
+                $DB->insert(
                     'document_repository',
                     array(
                      'File_category' => $category,
