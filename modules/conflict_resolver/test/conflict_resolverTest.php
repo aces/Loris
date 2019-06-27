@@ -100,7 +100,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::id("onLoad")
         )->getText();
-        $this->assertContains("Unresolved Conflicts", $bodyText);
+        $this->assertStringContainsString("Unresolved Conflicts", $bodyText);
     }
 
      /**
@@ -118,7 +118,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Resolved Conflicts", $bodyText);
+        $this->assertStringContainsString("Resolved Conflicts", $bodyText);
     }
 
      /**
@@ -133,7 +133,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::id("onLoad")
          )->getText();
-         $this->assertContains("Unresolved Conflicts", $bodyText);
+         $this->assertStringContainsString("Unresolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
 
@@ -152,7 +152,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("Resolved Conflicts", $bodyText);
+         $this->assertStringContainsString("Resolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
 
@@ -168,7 +168,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
      /**
@@ -194,7 +194,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              "/conflict_resolver/?submenu=resolved_conflicts&format=json"
          );
          $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("TestTestTest", $bodyText);
+         $this->assertStringContainsString("TestTestTest", $bodyText);
     }
      /**
      * Tests research function in unresolved conflicts
@@ -216,7 +216,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
          $this->safeGet($this->url . "/conflict_resolver/?format=json");
          $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("TestTestTest", $bodyText);
+         $this->assertStringContainsString("TestTestTest", $bodyText);
     }
      /**
      * Tests Clear Form function in unresolved conflicts
@@ -236,7 +236,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText =$this->webDriver->findElement(
              WebDriverBy::Name("Question")
          )->getText();
-         $this->assertNotContains("TestTestTest", $bodyText);
+         $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
      /**
      * Tests Clear Form function in resolved conflicts
@@ -256,7 +256,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::Name("Question")
          )->getText();
-         $this->assertNotContains("TestTestTest", $bodyText);
+         $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 
 

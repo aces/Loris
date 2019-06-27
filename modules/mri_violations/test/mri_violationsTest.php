@@ -307,7 +307,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertNotContains(
+         $this->assertStringNotContainsString(
              "You do not have access to this page.",
              $bodyText
          );
@@ -325,7 +325,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains(
+         $this->assertStringContainsString(
              "You do not have access to this page.",
              $bodyText
          );
@@ -347,7 +347,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
         )->getText();
-        $this->assertContains("Resolved", $bodyText);
+        $this->assertStringContainsString("Resolved", $bodyText);
     }
     /**
      * Tests clear button in the filter section, input some data,
@@ -477,7 +477,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/mri_violations/resolved_violations/");
         sleep(1);
         $body = $this->webDriver->getPageSource();
-        $this->assertContains("[name]test", $body);
+        $this->assertStringContainsString("[name]test", $body);
     }
     /**
      * Tests that, input some data and click search button, check the results.
@@ -541,7 +541,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                  .textContent"
         );
 
-        $this->assertContains("1 rows displayed of 1", $bodyText);
+        $this->assertStringContainsString("1 rows displayed of 1", $bodyText);
         $this->webDriver->findElement(
             WebDriverBy::Name("reset")
         )->click();
@@ -558,7 +558,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
 }

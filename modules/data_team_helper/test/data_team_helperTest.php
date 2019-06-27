@@ -37,7 +37,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Data Team Helper", $bodyText);
+        $this->assertStringContainsString("Data Team Helper", $bodyText);
     }
      /**
       * Tests that data_team_helper does not load with the permission
@@ -51,7 +51,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains(
+         $this->assertStringContainsString(
              "You do not have access to this page.",
              $bodyText
          );
@@ -69,7 +69,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-          $this->assertNotContains(
+          $this->assertStringNotContainsString(
               "You do not have access to this page.",
               $bodyText
           );

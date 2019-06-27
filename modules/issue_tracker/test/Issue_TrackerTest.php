@@ -93,7 +93,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertStringContainsString("Issues", $bodyText);
     }
 
     /**
@@ -108,7 +108,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertStringContainsString("Issues", $bodyText);
         $this->resetPermissions();
     }
 
@@ -144,7 +144,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         )->click();
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
 
     }
     /**
@@ -164,7 +164,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
          $bodyText =$this->webDriver->findElement(
              WebDriverBy::Name("keyword")
          )->getText();
-         $this->assertNotContains("TestTestTest", $bodyText);
+         $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 
     /**
@@ -179,7 +179,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
             WebDriverBy::Id('sidebar-wrapper')
         );
         $text     = $side_bar->getText();
-        $this->assertContains("Back to list", $text);
+        $this->assertStringContainsString("Back to list", $text);
     }
 }
 

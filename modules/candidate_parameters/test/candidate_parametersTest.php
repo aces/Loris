@@ -41,7 +41,7 @@ class CandidateParametersTestIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Candidate Parameters", $bodyText);
+        $this->assertStringContainsString("Candidate Parameters", $bodyText);
     }
 
 }

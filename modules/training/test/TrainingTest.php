@@ -39,7 +39,7 @@ class TrainingTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/training/");
         $breadcrumbText = $this->webDriver
             ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
-        $this->assertContains("Training", $breadcrumbText);
+        $this->assertStringContainsString("Training", $breadcrumbText);
     }
 
     /**
@@ -55,7 +55,7 @@ class TrainingTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::id("training-options")
         )->getText();
-        $this->assertContains("training", $bodyText);
+        $this->assertStringContainsString("training", $bodyText);
         $this->resetPermissions();
     }
 
@@ -72,7 +72,7 @@ class TrainingTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 

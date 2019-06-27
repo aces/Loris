@@ -80,7 +80,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Data Integrity Flag", $bodyText);
+        $this->assertStringContainsString("Data Integrity Flag", $bodyText);
     }
 
     /**
@@ -96,7 +96,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("test_user", $bodyText);
+        $this->assertStringContainsString("test_user", $bodyText);
     }
 
 
@@ -113,7 +113,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")
           )->getText();
-          $this->assertContains(
+          $this->assertStringContainsString(
               "You do not have access to this page.",
               $bodyText
           );
@@ -132,7 +132,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("test_instrument", $bodyText);
+        $this->assertStringContainsString("test_instrument", $bodyText);
     }
 
     /**
@@ -148,7 +148,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")
           )->getText();
-          $this->assertNotContains(
+          $this->assertStringNotContainsString(
               "You do not have access to this page.",
               $bodyText
           );
@@ -167,7 +167,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("test_user", $bodyText);
+        $this->assertStringContainsString("test_user", $bodyText);
     }
 }
 

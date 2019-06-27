@@ -69,7 +69,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains('Cannot continue', $bodyText);
+        $this->assertStringContainsString('Cannot continue', $bodyText);
         $this->resetPermissions();
     }
 
@@ -88,7 +88,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -104,7 +104,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 
@@ -122,7 +122,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
     /**
@@ -176,7 +176,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             " > div > div:nth-child(2) > input').click()"
         );
 
-        $this->assertContains($expectDataRows, $text);
+        $this->assertStringContainsString($expectDataRows, $text);
     }
 }
 

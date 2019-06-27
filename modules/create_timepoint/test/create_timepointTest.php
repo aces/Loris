@@ -61,7 +61,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Time Point", $bodyText);
     }
 
     /**
@@ -76,7 +76,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("New time point successfully registered", $bodyText);
+        $this->assertStringContainsString("New time point successfully registered", $bodyText);
 
     }
 
@@ -121,7 +121,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "New time point successfully registered.",
             $bodyText
         );
@@ -142,7 +142,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 }

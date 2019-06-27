@@ -61,7 +61,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Edit User", $bodyText);
+        $this->assertStringContainsString("Edit User", $bodyText);
         $this->assertEquals(
             "password",
             $this->safeFindElement(
@@ -93,7 +93,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("My Preferences", $bodyText);
+        $this->assertStringContainsString("My Preferences", $bodyText);
     }
     /**
      * Tests that searching for users using thei user IDs works
@@ -133,7 +133,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
@@ -148,7 +148,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                         " div:nth-child(1)').textContent"
                     );
                     // 4 means there are 4 records under this site.
-                    $this->assertContains($records, $bodyText);
+                    $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = $this->_clearFilter;

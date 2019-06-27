@@ -59,7 +59,7 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -75,7 +75,7 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -113,7 +113,7 @@ class MediaTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("TimePoint", $text);
+        $this->assertStringContainsString("TimePoint", $text);
 
         $this->safeGet($this->url . "/media/");
         // click the Edit link
@@ -124,7 +124,7 @@ class MediaTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("Edit Media File", $text);
+        $this->assertStringContainsString("Edit Media File", $text);
 
     }
     /**
@@ -153,7 +153,7 @@ class MediaTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
@@ -167,7 +167,7 @@ class MediaTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = self::$clearFilter;

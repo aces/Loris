@@ -48,7 +48,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
             "return document.querySelector".
             "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
         );
-        $this->assertContains("Feedback for PSCID: ", $text);
+        $this->assertStringContainsString("Feedback for PSCID: ", $text);
         // Instrument List
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
         $this->webDriver->executescript(
@@ -59,7 +59,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
             "return document.querySelector".
             "('#bvl_feedback_menu').textContent"
         );
-        $this->assertContains("Feedback for PSCID: ", $text);
+        $this->assertStringContainsString("Feedback for PSCID: ", $text);
         //Todo: Any instrument
 
     }

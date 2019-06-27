@@ -88,9 +88,9 @@ class ExaminerTest extends LorisIntegrationTest
         $tableText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Examiner", $tableText);
-        $this->assertContains("Site", $tableText);
-        $this->assertContains("Radiologist", $tableText);
+        $this->assertStringContainsString("Examiner", $tableText);
+        $this->assertStringContainsString("Site", $tableText);
+        $this->assertStringContainsString("Radiologist", $tableText);
 
         $this->resetPermissions();
     }
@@ -107,7 +107,7 @@ class ExaminerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -123,7 +123,7 @@ class ExaminerTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -187,7 +187,7 @@ class ExaminerTest extends LorisIntegrationTest
                 "('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a')".
                 ".textContent"
         );
-        $this->assertContains("Test_Examiner", $text);
+        $this->assertStringContainsString("Test_Examiner", $text);
     }
     /**
       * Testing UI elements when page loads
@@ -207,7 +207,7 @@ class ExaminerTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
 

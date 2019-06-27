@@ -52,19 +52,19 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("New Profile", $bodyText);
+        $this->assertStringContainsString("New Profile", $bodyText);
         // check EDC shows on the page
         $value = "div:nth-child(1) > .row:nth-child(1) > .col-sm-3";
         $EDC   = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-        $this->assertContains("Expected Date of Confinement", $EDC);
+        $this->assertStringContainsString("Expected Date of Confinement", $EDC);
         // check Project shows on the page
         $value   = ".col-xs-12:nth-child(8) .col-sm-3";
         $project = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-        $this->assertContains("Project", $project);
+        $this->assertStringContainsString("Project", $project);
 
         $this->restoreConfigSetting("useEDC");
     }
@@ -132,7 +132,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('#default-panel').textContent"
         );
 
-        $this->assertContains("New candidate created.", $bodyText);
+        $this->assertStringContainsString("New candidate created.", $bodyText);
         $this->restoreConfigSetting("useEDC");
     }
 
