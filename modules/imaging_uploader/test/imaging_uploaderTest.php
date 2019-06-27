@@ -148,7 +148,10 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the Imaging_uploader module with permission,
@@ -163,7 +166,10 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**

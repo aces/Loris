@@ -116,7 +116,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
         );
-            $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335", $name);
+            $this->assertStringContainsString(
+                "TestParameterNotRealMAGICNUMBER335",
+                $name
+            );
     }
     /**
      * Testing keyword filter with testing data not case-sensitive
@@ -137,7 +140,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
         );
-            $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335", $name);
+            $this->assertStringContainsString(
+                "TestParameterNotRealMAGICNUMBER335",
+                $name
+            );
     }
     /**
      * Testing keyword filter without testing data

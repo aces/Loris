@@ -109,7 +109,10 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+         $this->assertStringNotContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**

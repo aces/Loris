@@ -76,7 +76,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("New time point successfully registered", $bodyText);
+        $this->assertStringContainsString(
+            "New time point successfully registered",
+            $bodyText
+        );
 
     }
 
@@ -142,7 +145,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 }
