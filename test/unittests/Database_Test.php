@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../php/libraries/Database.class.inc';
 
 class FakePDO extends PDO
 {
@@ -88,7 +87,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -108,7 +107,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -127,7 +126,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -147,7 +146,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
