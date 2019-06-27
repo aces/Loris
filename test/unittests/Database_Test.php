@@ -86,7 +86,7 @@ class Database_Test extends TestCase
         $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->setMethods(['prepare'])->getMock();
         $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
@@ -106,7 +106,7 @@ class Database_Test extends TestCase
         $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->setMethods(['prepare'])->getMock();
         $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
@@ -125,7 +125,7 @@ class Database_Test extends TestCase
         $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->setMethods(['prepare'])->getMock();
         $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
@@ -145,7 +145,7 @@ class Database_Test extends TestCase
         $this->_factory   = \NDB_Factory::singleton();
         $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->setMethods(['prepare'])->getMock();
         $stmt = $this->getMockBuilder('\PDOStatement')->setMethods(['execute'])->getMock();
 
 
