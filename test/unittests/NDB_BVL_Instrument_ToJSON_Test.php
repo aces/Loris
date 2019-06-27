@@ -12,7 +12,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      */
-    function setUp() {
+    function setUp(): void {
         global $_SESSION;
         if(!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
