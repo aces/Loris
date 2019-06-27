@@ -39,7 +39,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -63,7 +63,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
         // Set up database wrapper and config
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         $this->DB->delete("session", array('CandID' => '900000'));
         $this->DB->delete("candidate", array('CandID' => '900000'));
         parent::tearDown();

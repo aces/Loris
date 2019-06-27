@@ -26,7 +26,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert("candidate", array(
@@ -64,7 +64,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown() {
+    public function tearDown(): void {
         $this->DB->delete("session", array('CandID' => '900000'));
         $this->DB->delete("candidate", array('CandID' => '900000'));
         $this->DB->delete("flag", array('ID' => '999999'));

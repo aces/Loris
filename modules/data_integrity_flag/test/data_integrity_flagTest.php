@@ -33,7 +33,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -60,7 +60,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete(
@@ -74,7 +74,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagDoespageLoad()
+    function testDataIntegrityFlagDoespageLoad(): void
     {
         $this->safeGet($this->url . "/data_integrity_flag/");
         $bodyText = $this->webDriver->findElement(
@@ -88,7 +88,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagFilterInstrument()
+    function testDataIntegrityFlagFilterInstrument(): void
     {
         $this->safeGet(
             $this->url . "/data_integrity_flag/?format=json"
@@ -105,7 +105,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagWithoutPermissions()
+    function testDataIntegrityFlagWithoutPermissions(): void
     {
 
          $this->setupPermissions(array());
@@ -124,7 +124,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagFilterUser()
+    function testDataIntegrityFlagFilterUser(): void
     {
         $this->safeGet(
             $this->url . "/data_integrity_flag/?format=json"
@@ -140,7 +140,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagWithPermissions()
+    function testDataIntegrityFlagWithPermissions(): void
     {
 
          $this->setupPermissions(array("data_integrity_flag"));
@@ -159,7 +159,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataIntegrityFlagFilterVisitlabel()
+    function testDataIntegrityFlagFilterVisitlabel(): void
     {
         $this->safeGet(
             $this->url . "/data_integrity_flag/?format=json"

@@ -51,7 +51,7 @@ class ExaminerTest extends LorisIntegrationTest
     *
     * @return void
     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -60,7 +60,7 @@ class ExaminerTest extends LorisIntegrationTest
     *
     * @return void
     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "examiners",
@@ -79,7 +79,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResultTableLoadsWithPermission()
+    function testResultTableLoadsWithPermission(): void
     {
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/?format=json");
@@ -100,7 +100,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerDoesNotLoadWithoutPermission()
+    function testExaminerDoesNotLoadWithoutPermission(): void
     {
         $this->setupPermissions(array());
         $this->safeGet($this->url . "/examiner/");
@@ -116,7 +116,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerDoesLoadWithoutSuperuser()
+    function testExaminerDoesLoadWithoutSuperuser(): void
     {
         $this->setupPermissions(array('superuser'));
         $this->safeGet($this->url . "/examiner/");
@@ -132,7 +132,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerFilterClearForm()
+    function testExaminerFilterClearForm(): void
     {
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
@@ -154,7 +154,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerAddExaminer()
+    function testExaminerAddExaminer(): void
     {
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
@@ -194,7 +194,7 @@ class ExaminerTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testPageUIs()
+    function testPageUIs(): void
     {
         $this->markTestSkipped(
             'Skipped tests until Travis and React get along better'

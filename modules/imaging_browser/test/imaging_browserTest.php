@@ -35,7 +35,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
 
         parent::setUp();
@@ -320,7 +320,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         // tear down test-specific dataset

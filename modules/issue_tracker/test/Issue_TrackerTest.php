@@ -34,7 +34,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
@@ -73,7 +73,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete("issues", array('issueID' => '999999'));

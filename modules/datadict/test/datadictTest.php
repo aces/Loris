@@ -46,7 +46,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -68,7 +68,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete(
@@ -82,7 +82,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDatadictDoespageLoad()
+    function testDatadictDoespageLoad(): void
     {
         $this->webDriver->get($this->url . "/datadict/");
 
@@ -102,7 +102,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataDictSearchKeywordFilters()
+    function testDataDictSearchKeywordFilters(): void
     {
         $this->safeGet($this->url . "/datadict/");
 
@@ -123,7 +123,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataDictSearchKeywordFiltersnotCaseSensitvie()
+    function testDataDictSearchKeywordFiltersnotCaseSensitvie(): void
     {
         $this->safeGet($this->url . "/datadict/");
 
@@ -144,7 +144,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataDictSearchKeywordFiltersWithoutData()
+    function testDataDictSearchKeywordFiltersWithoutData(): void
     {
         $this->safeGet($this->url . "/datadict/");
 
@@ -167,7 +167,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testPageUIs()
+    function testPageUIs(): void
     {
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {

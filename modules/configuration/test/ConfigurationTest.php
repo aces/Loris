@@ -33,7 +33,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
@@ -46,7 +46,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "subproject",
@@ -61,7 +61,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testConfigurationPageLoads()
+    public function testConfigurationPageLoads(): void
     {
         $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
@@ -77,7 +77,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testConfigPermission()
+    public function testConfigPermission(): void
     {
          $this->setupPermissions(array("config"));
          $this->safeGet($this->url . "/configuration/");
@@ -92,7 +92,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testConfigWithoutPermission()
+    public function testConfigWithoutPermission(): void
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/configuration/");
@@ -107,7 +107,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testSubproject()
+    public function testSubproject(): void
     {
          $this->safeGet($this->url . "/configuration/subproject/");
          $bodyText = $this->webDriver->findElement(
@@ -120,7 +120,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testSubprojectBreadcrumbs()
+    private function _testSubprojectBreadcrumbs(): void
     {
          $this->safeGet($this->url . "/configuration/subproject/");
          $webElement = $this->safeFindElement(
@@ -140,7 +140,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testAllLinks()
+    public function testAllLinks(): void
     {
 
         $this->safeGet($this->url . "/configuration/");
@@ -164,7 +164,7 @@ class ConfigurationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    private function _linkTest($text)
+    private function _linkTest($text): void
     {
         $this->safeClick(WebDriverBy::linkText($text));
         $webActives = $this->webDriver->findElements(
@@ -179,7 +179,7 @@ class ConfigurationTest extends LorisIntegrationTest
       *
       *  @return void
       */
-    public function testLocal()
+    public function testLocal(): void
     {
         $config  =& NDB_Config::singleton();
         $dev     = $config->getSetting("dev");
@@ -197,7 +197,7 @@ class ConfigurationTest extends LorisIntegrationTest
       *
       *  @return void
       */
-    private function _testProjectsLink()
+    private function _testProjectsLink(): void
     {
         $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(

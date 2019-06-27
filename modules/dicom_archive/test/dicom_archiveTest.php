@@ -45,7 +45,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
     }
@@ -54,7 +54,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
     }
@@ -64,7 +64,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testdicomArchiveViewDetailsDoespageLoad()
+    function testdicomArchiveViewDetailsDoespageLoad(): void
     {
         $this->safeGet($this->url . "/dicom_archive/viewDetails/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
@@ -76,7 +76,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDicomArchivePermission()
+    function testDicomArchivePermission(): void
     {
         $this->setupPermissions(array("dicom_archive_view_allsites"));
         $this->safeGet($this->url . "/dicom_archive/");
@@ -95,7 +95,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testdicomArchiveFilterClearBtn()
+    function testdicomArchiveFilterClearBtn(): void
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
@@ -120,7 +120,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _testFilter($element,$table,$records,$value)
+    function _testFilter($element,$table,$records,$value): void
     {
         // get element from the page
         if (strpos($element, "select") == false) {
@@ -168,7 +168,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLinksViewDetails()
+    function testLinksViewDetails(): void
     {
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "#dynamictable>tbody>tr:nth-child(1)>td:nth-child(8)>a";
@@ -187,7 +187,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLinksViewImages()
+    function testLinksViewImages(): void
     {
         $this->markTestSkipped(
             'Imaging is not set'

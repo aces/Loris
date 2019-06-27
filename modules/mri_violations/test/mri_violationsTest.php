@@ -35,7 +35,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -185,7 +185,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
 
         $this->DB->delete(
@@ -259,7 +259,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMriProtocolViolationsDoesPageLoad()
+    function testMriProtocolViolationsDoesPageLoad(): void
     {
         $this->safeGet(
             $this->url .
@@ -280,7 +280,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMriProtocolCheckViolationsDoesPageLoad()
+    function testMriProtocolCheckViolationsDoesPageLoad(): void
     {
         $this->safeGet(
             $this->url .
@@ -300,7 +300,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLoginWithPermission()
+    function testLoginWithPermission(): void
     {
          $this->setupPermissions(array("violated_scans_view_allsites"));
          $this->safeGet($this->url . "/mri_violations/");
@@ -318,7 +318,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLoginWithoutPermission()
+    function testLoginWithoutPermission(): void
     {
          $this->setupPermissions(array(""));
          $this->safeGet($this->url . "/mri_violations/");
@@ -338,7 +338,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResolvedsubmenu()
+    function testResolvedsubmenu(): void
     {
         $this->safeGet(
             $this->url .
@@ -356,7 +356,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResolvedClearButton()
+    function testResolvedClearButton(): void
     {
         //testing the Patient Name
         $this->safeGet(
@@ -420,7 +420,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testNotResolvedSearchButton()
+    function testNotResolvedSearchButton(): void
     {
         $this->safeGet($this->url . "/mri_violations/");
         //testing search by PatientName
@@ -456,7 +456,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testNotResolvedSaveButton()
+    function testNotResolvedSaveButton(): void
     {
         $this->safeGet($this->url . "/mri_violations/");
         $this->webDriver->findElement(
@@ -484,7 +484,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResolvedSearchButton()
+    function testResolvedSearchButton(): void
     {
         //testing search by PatientName
         $this->safeGet($this->url . "/mri_violations/resolved_violations/");
@@ -525,7 +525,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _searchTest($searchBy,$testValue)
+    function _searchTest($searchBy,$testValue): void
     {
         //$this->safeGet($this->url . "/mri_violations/");
         $this->webDriver->findElement(
@@ -551,7 +551,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPageUIs()
+    function testPageUIs(): void
     {
         $this->safeGet($this->url . "/mri_violations/");
         foreach ($this->_loadingUI as $key => $value) {

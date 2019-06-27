@@ -33,7 +33,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
@@ -78,7 +78,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
         $this->DB->delete(
@@ -94,7 +94,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverDoespageLoad()
+    function testConflictResolverDoespageLoad(): void
     {
         $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver->findElement(
@@ -109,7 +109,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverResolvedCoflictsDoespageLoad()
+    function testConflictResolverResolvedCoflictsDoespageLoad(): void
     {
         $this->safeGet(
             $this->url
@@ -126,7 +126,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverPermission()
+    function testConflictResolverPermission(): void
     {
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
@@ -142,7 +142,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverResolvedConflictsPermission()
+    function testConflictResolverResolvedConflictsPermission(): void
     {
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet(
@@ -161,7 +161,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverWithoutPermission()
+    function testConflictResolverWithoutPermission(): void
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/conflict_resolver/");
@@ -177,7 +177,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSearchConflictResolved()
+    function testSearchConflictResolved(): void
     {
         $this->markTestSkipped(
             'Rewrite this part later'
@@ -202,7 +202,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSearchUnresolvedConflicts()
+    function testSearchUnresolvedConflicts(): void
     {
         $this->markTestSkipped(
             'Rewrite this part later'
@@ -224,7 +224,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testClearFormUnresolvedConflicts()
+    function testClearFormUnresolvedConflicts(): void
     {
          $this->safeGet($this->url . "/conflict_resolver/");
          $keywordElement = $this->webDriver->findElement(
@@ -244,7 +244,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     *
      * @return void
      */
-    function testClearFormResolvedConflicts()
+    function testClearFormResolvedConflicts(): void
     {
          $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
          $keywordElement = $this->webDriver->findElement(

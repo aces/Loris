@@ -35,7 +35,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
@@ -74,7 +74,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "document_repository_categories",
@@ -99,7 +99,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    public function testSuperUserPermission()
+    public function testSuperUserPermission(): void
     {
          $this->setupPermissions(array("superuser"));
          $this->safeGet($this->url . "/document_repository/");
@@ -121,7 +121,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDocumentRepositoryDoespageLoad()
+    function testDocumentRepositoryDoespageLoad(): void
     {
         $this->safeGet($this->url . "/document_repository/");
         $bodyText = $this->webDriver->findElement(
@@ -134,7 +134,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDocumentRepositoryCreateCategory()
+    function testDocumentRepositoryCreateCategory(): void
     {
         //insert a category TestTestTest
         $this->markTestSkipped("This method isn't working properly on travis.");
@@ -182,7 +182,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDocumentRepositoryUploadFile()
+    function testDocumentRepositoryUploadFile(): void
     {
         //check a upload file under TestTestTest category
         $this->markTestSkipped("This method isn't working properly on travis.");
@@ -202,7 +202,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDocumentRepositoryUploadFileEditDeleteComment()
+    function testDocumentRepositoryUploadFileEditDeleteComment(): void
     {
         $this->markTestSkipped("This method isn't working properly on travis.");
          $this->safeGet($this->url . "/document_repository/");

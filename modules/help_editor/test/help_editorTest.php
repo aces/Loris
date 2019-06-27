@@ -31,7 +31,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
@@ -54,7 +54,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete("help", array('helpID' => '999999'));
@@ -72,7 +72,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpPageLoad()
+    function testHelpPageLoad(): void
     {
         $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
@@ -85,7 +85,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPageLoad()
+    function testPageLoad(): void
     {
         $this->safeGet($this->url."/help_editor/edit_help_content/");
         $assertText = $this->safeFindElement(
@@ -102,7 +102,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorPermission()
+    function testHelpEditorPermission(): void
     {
          $this->setupPermissions(array("context_help"));
          $this->safeGet($this->url . "/help_editor/");
@@ -117,7 +117,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorWithoutPermission()
+    function testHelpEditorWithoutPermission(): void
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/help_editor/");
@@ -132,7 +132,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorSearchByTopic()
+    function testHelpEditorSearchByTopic(): void
     {
          $this->markTestSkipped(
              'Modifications needed to adapt to layout changes'
@@ -154,7 +154,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorSearchByKeyword()
+    function testHelpEditorSearchByKeyword(): void
     {
          $this->markTestSkipped(
              'Modifications needed to adapt to layout changes'

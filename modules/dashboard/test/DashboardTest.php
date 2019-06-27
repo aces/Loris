@@ -34,7 +34,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         //Insert a pending user
@@ -257,7 +257,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->delete(
@@ -372,7 +372,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testDashboardPageLoads()
+    public function testDashboardPageLoads(): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $welcomeText = $this->webDriver
@@ -388,7 +388,7 @@ class DashboardTest extends LorisIntegrationTest
       *
       * @return void
       */
-    public function testDashboardRecruitmentView()
+    public function testDashboardRecruitmentView(): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
@@ -428,7 +428,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testNewScans()
+    public function testNewScans(): void
     {
 
         $this->setupPermissions(
@@ -456,7 +456,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testConflictResolver()
+    public function testConflictResolver(): void
     {
 
         $this->setupPermissions(
@@ -480,7 +480,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testIssues()
+    public function testIssues(): void
     {
         $this->setupPermissions(
             array("issue_tracker_developer")
@@ -508,7 +508,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testIncompleteForm()
+    public function testIncompleteForm(): void
     {
         $this->setupPermissions(
             array(
@@ -533,7 +533,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testPendingUser()
+    public function testPendingUser(): void
     {
 
         $this->setupPermissions(
@@ -561,7 +561,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testDocumentRepository()
+    public function testDocumentRepository(): void
     {
 
         $this->setupPermissions(
@@ -585,7 +585,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testMytaskPanelAndLink($className,$value,$dataSeed)
+    private function _testMytaskPanelAndLink($className,$value,$dataSeed): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
@@ -606,7 +606,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testLocal()
+    public function testLocal(): void
     {
         $config  =& NDB_Config::singleton();
         $dev     = $config->getSetting("dev");
@@ -630,7 +630,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan1()
+    private function _testPlan1(): void
     {
         $this->safeGet($this->url . '/main.php?logout=true');
          $this->login("UnitTester", "4test4");
@@ -645,7 +645,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan2()
+    private function _testPlan2(): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->webDriver
@@ -661,7 +661,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan3()
+    private function _testPlan3(): void
     {
         $this->safeGet($this->url . '/configuration/');
         $this->webDriver->findElement(
@@ -701,7 +701,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan5And6()
+    private function _testPlan5And6(): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->webDriver
@@ -723,7 +723,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan7And8()
+    private function _testPlan7And8(): void
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->webDriver
