@@ -19,7 +19,7 @@ class FakePDO extends PDO
     public function __construct () {}
 }
 
-class FakeDatabase extends Database {
+class FakeDatabase extends \Database {
     protected function trackChanges(
         string $table, 
         array $set, 
@@ -43,7 +43,7 @@ use PHPUnit\Framework\TestCase;
 class Database_Test extends TestCase
 {
     function _getAllMethodsExcept($methods) {
-        $AllMethods = get_class_methods('Database');
+        $AllMethods = get_class_methods('\Database');
 
         return array_diff($AllMethods, $methods);
     }
