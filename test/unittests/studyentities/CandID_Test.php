@@ -49,7 +49,6 @@ class CandID_Test extends TestCase
      */
     public function testContructorInvalidValues($invalidValue): void
     {
-        $this->expectExceptionMessage('DomainException');
         $candid = new CandID($invalidValue);
     }
 
