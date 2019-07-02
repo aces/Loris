@@ -519,6 +519,62 @@ class LorisForms_Test extends TestCase
     }
 
     /**
+     * Test that groupHTML returns the correct HTML format
+     * TODO Unsure of how to format the 'elements' array
+     *
+     * @covers LorisForm::groupHTML
+     * @return void
+     */
+    function testGroupHTML()
+    {
+        $this->markTestIncomplete("This test is incomplete!");    
+        $testAttributes = array('elements' => array($this->form->createText("def", "Test")));  
+        
+        $testOptions = array('prefix_wrapper' => 'prefix1',
+                             'postfix_wrapper' => 'postfix1');
+        
+        $this->form->addSelect("abc", "Hello", $testOptions, $testAttributes);
+        $this->assertEquals(null, $this->form->groupHTML($this->form->form["abc"]));
+    }
+
+    /**
+     * Test that textHTML returns the correctly formatted HTML when no attributes or options are specified
+     *
+     * @covers LorisForm::textHTML
+     * @return void
+     */
+    function testTextHTMLWithNoOptions()
+    {
+        $this->form->addText("abc", "Hello");
+        $this->assertEquals("<input name=\"abc\" type=\"text\"  >", $this->form->textHTML($this->form->form["abc"]));
+    }
+
+    /**
+     * Test that textHTML returns the proper HTML string when the options array is set
+     * TODO This method uses getValue() which is returning null. I'm not sure if this is correct or an issue
+     *
+     * @covers Utility::textHTML
+     * @return void
+     */
+    function testTextHTMLWithOptionsSet()
+    {
+        $testOptions = array('class' => 'class1',
+                             'disabled' => 'disabled',
+                             'readonly' => 'readonly',
+                             'onchange' => 'onchange1',
+                             'oninvalid' => 'oninvalid1',
+                             'pattern' => 'pattern1',
+                             'required' => 'required1', 
+                             'placeholder' => 'holder',
+                             'value' => 'value1');
+
+        $this->form->addText("abc", "Hello", $testOptions);
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"text\" class=\"class1\" onchange=\"onchange1\" oninvalid=\"oninvalid1\" pattern=\"pattern1\" placeholder=\"holder\"disabled readonly>",
+            $this->form->textHTML($this->form->form["abc"]));
+    }
+ 
+    /**
      * Test that createText creates an element of type text
      *
      * @covers LorisForm::createText
