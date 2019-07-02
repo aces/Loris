@@ -170,4 +170,4 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("test_user", $bodyText);
     }
 }
-?>
+

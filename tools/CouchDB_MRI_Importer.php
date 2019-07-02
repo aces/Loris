@@ -35,7 +35,7 @@ class CouchDBMRIImporter
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
-            $couchConfig['port'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );
@@ -110,7 +110,7 @@ class CouchDBMRIImporter
             LEFT JOIN feedback_mri_comments fmric
             ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
             WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
-                  AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
+                  AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
         return $Query;
     }
 
@@ -216,7 +216,7 @@ class CouchDBMRIImporter
      * @return scannerID
      */
      function _getScannerID($FileID){
- 
+
          $scannerID = $this->SQLDB->pselectOne("SELECT ScannerID FROM files ".
              "WHERE FileID =:FileID",
              array(
@@ -225,7 +225,7 @@ class CouchDBMRIImporter
          );
          return $scannerID;
      }
- 
+
     /**
      * Gets a rejected parameter according to its type
      *

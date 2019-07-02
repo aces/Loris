@@ -25,7 +25,7 @@ $(document).ready(function() {
 
         form.appendTo('body').submit();
     });
-    
+
     $(".dicom_archive_datasets").click(function(e) {
         e.preventDefault();
         var form = $('<form />', {
@@ -49,5 +49,5 @@ $(document).ready(function() {
         form.appendTo('body').submit();
     });
 
-});  
+});
 

@@ -32,7 +32,7 @@ if (!empty($_POST['helpID'])
     $helpID    = $_POST['helpID'];
     $help_file = HelpFile::factory($helpID);
     // update the help file
-    $success = $help_file->update(
+    $help_file->update(
         array(
          'topic'   => $_POST['title'],
          'content' => $_POST['content'],
@@ -98,4 +98,4 @@ if (!empty($_POST['helpID'])
         );
     }
 }
-?>
+

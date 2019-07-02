@@ -35,11 +35,12 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * All users have access to the login endpoint to try and login.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return !($user instanceof \LORIS\AnonymousUser);
     }
 

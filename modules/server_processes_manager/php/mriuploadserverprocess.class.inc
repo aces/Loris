@@ -58,6 +58,20 @@ class MriUploadServerProcess extends AbstractServerProcess
     private $_mriCodePath;
 
     /**
+     * Path of the environment file (relative to $_mriCodePath).
+     *
+     * @var string
+     */
+    private $_environmentFile;
+
+    /**
+     * Path of the prod file (relative to $_mriCodePath/dicom-archive/.loris-mri).
+     *
+     * @var string
+     */
+    private $_prodFile;
+
+    /**
      * Builds a new MriUploadServerProcess
      *
      * @param int    $mriUploadId    MRI upload ID
@@ -96,7 +110,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
-                "Value for MRI code path is not a directory!"
+                "Value for config setting 'MRICodePath' is not an existing directory"
             );
         }
 
@@ -126,16 +140,17 @@ class MriUploadServerProcess extends AbstractServerProcess
     public function getShellCommand()
     {
         // Sanitize variables before using in exec statement.
-        $env            = $this->_mriCodePath . '/' . self::ENVIRONMENT_BASENAME;
+        $env            = $this->_mriCodePath . '/' . $this->_environmentFile;
         $env            = escapeshellarg($env);
         $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
         $uploadScript   = escapeshellarg($uploadScript);
-        $uploadId       = escapeshellarg($this->_mriUploadId);
+        $uploadId       = escapeshellarg((string) $this->_mriUploadId);
         $sourceLocation = escapeshellarg($this->_sourceLocation);
+        $prodFile       = escapeshellarg($this->_prodFile);
         return "source $env ;"
                . " $uploadScript"
                . " -upload_id $uploadId"
-               . " -profile prod $sourceLocation";
+               . " -profile $prodFile $sourceLocation";
     }
 
     /**
@@ -155,7 +170,7 @@ class MriUploadServerProcess extends AbstractServerProcess
      * @param int    $exitCode process exit code.
      * @param string $endTime  time at which the process ended.
      *
-     * @return string process exit text.
+     * @return string|null process exit text.
      */
     public function computeExitText($exitCode, $endTime)
     {
@@ -195,4 +210,4 @@ class MriUploadServerProcess extends AbstractServerProcess
     }
 }
 
-?>
+

@@ -2,7 +2,7 @@
 /**
  * This file implements a class used for detecting conflicts for an instrument.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -35,10 +35,10 @@ class ConflictDetector
      *               points.
      */
     static function detectConflictsForCommentIds(
-        $instrumentName,
-        $commentId1,
-        $commentId2
-    ) {
+        string $instrumentName,
+        string $commentId1,
+        string $commentId2
+    ): array {
         $diffResult = array();
 
         // Get data entry status for $commentId1
@@ -59,14 +59,14 @@ class ConflictDetector
         $instance1 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId1,
-            null
+            ''
         );
 
         // Create the instrument instance for $commentId2
         $instance2 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId2,
-            null
+            ''
         );
 
         // Run the diff
@@ -81,14 +81,12 @@ class ConflictDetector
      *
      * @param array $diffResult The output of detectConflictsForCommentIds
      *
-     * @return null As a side-effect inserts into database.
+     * @return void As a side-effect inserts into database.
      */
-    static function recordUnresolvedConflicts($diffResult)
+    static function recordUnresolvedConflicts(array $diffResult): void
     {
-        $db =& Database::singleton();
-
-        foreach ($diffResult AS $diffLine) {
-            $db->replace('conflicts_unresolved', $diffLine);
+        foreach ($diffResult as $diffLine) {
+            \Database::singleton()->replace('conflicts_unresolved', $diffLine);
         }
 
     }
@@ -101,9 +99,9 @@ class ConflictDetector
      * @param array $diffLine The row to be removed from conflicts_unresolved
      *                        table
      *
-     * @return null As a side-effect deletes from database
+     * @return void As a side-effect deletes from database
      */
-    function clearConflictsForField($diffLine)
+    function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = array(
                         'TableName'      => $diffLine['TableName'],
@@ -115,8 +113,7 @@ class ConflictDetector
                         'CommentId2'     => $diffLine['CommentId2'],
                        );
 
-        $db =& Database::singleton();
-        $db->delete('conflicts_unresolved', $deleteWhere);
+        \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
     }
 
     /**
@@ -125,14 +122,14 @@ class ConflictDetector
      *
      * @param string $commentId The commentID to remove conflicts for
      *
-     * @return null As a side-effect deletes from database
+     * @return void As a side-effect deletes from database
      */
-    static function clearConflictsForInstance($commentId)
+    static function clearConflictsForInstance(string $commentId): void
     {
-        $deleteWhere = array('CommentId1' => $commentId);
-
-        $db =& Database::singleton();
-        $db->delete('conflicts_unresolved', $deleteWhere);
+        \Database::singleton()->delete(
+            'conflicts_unresolved',
+            array('CommentId1' => $commentId)
+        );
     }
 
     /**
@@ -142,10 +139,9 @@ class ConflictDetector
      *
      * @return boolean True if there are conflicts that exist, false otherwise
      */
-    function isInstrumentInstanceInConflictState($commentId)
+    function isInstrumentInstanceInConflictState(string $commentId): bool
     {
-        $db            =& Database::singleton();
-        $conflictCount = $db->pselectOne(
+        $conflictCount = \Database::singleton()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
             array('CID' => $commentId)
         );
@@ -154,4 +150,3 @@ class ConflictDetector
 
 }
 
-?>

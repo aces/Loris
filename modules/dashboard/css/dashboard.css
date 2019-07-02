@@ -5,25 +5,32 @@
 .alert-chevron {
     margin-top: 15px;
 }
+
 .clickable {
     cursor: pointer;
 }
+
 .document-repository-item {
     word-wrap: break-word;
 }
+
 .bvl-feedback-item {
     word-wrap: break-word;
 }
+
 .huge {
     font-size: 30px;
 }
+
 .medium {
     font-size: 20px;
 }
+
 .new-flag {
     color: red;
     font-size: 80%;
 }
+
 .panel-title {
     display: inline;
     margin-top: 0;
@@ -31,34 +38,43 @@
     font-size: 16px;
     color: inherit
 }
+
 .progress {
     height: 40px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 .progress-bar-male {
     background-color: #1C70B6;
 }
+
 .progress-bar-female {
     background-color: #2FA4E7;
 }
+
 .project-description {
     clear: left;
 }
+
 .target {
     padding-top: 13px;
     padding-right: 3px;
 }
+
 .tasks {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 .task-site {
     margin-top: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 .views {
     margin-right: 10px;
-    margin-top: -2px;
+    margin-top: -10px;
 }
+
 .welcome {
     margin-top: 10px;
     float: left;

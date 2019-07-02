@@ -24,7 +24,7 @@ $couchConfig    = $config->getSetting('CouchDB');
 $cdb            = \NDB_Factory::singleton()->couchDB(
     $couchConfig['dbName'],
     $couchConfig['hostname'],
-    $couchConfig['port'],
+    intval($couchConfig['port']),
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
@@ -73,4 +73,4 @@ $sessionResults = array_values(
     )
 );
 print json_encode($sessionResults);
-?>
+

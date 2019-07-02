@@ -5,7 +5,8 @@
  * @version 1.1.0
  *
  */
-
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Panel from 'Panel';
 
 /**
@@ -22,8 +23,7 @@ import Panel from 'Panel';
  * all `candID` fields to `candidateID` automatically before appending them to URL.
  *
  */
-class FilterForm extends React.Component {
-
+class FilterForm extends Component {
   constructor(props) {
     super(props);
 
@@ -47,7 +47,7 @@ class FilterForm extends React.Component {
       let filterKey = (key === 'candidateID') ? 'candID' : key;
       filter[filterKey] = {
         value: queryString[key],
-        exactMatch: false
+        exactMatch: false,
       };
     });
 
@@ -74,7 +74,7 @@ class FilterForm extends React.Component {
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) &&
-        typeof child.type === "function" &&
+        typeof child.type === 'function' &&
         child.props.onUserInput
       ) {
         let callbackFunc = child.props.onUserInput;
@@ -84,8 +84,8 @@ class FilterForm extends React.Component {
         let filterValue = this.queryString[queryFieldName];
         // If callback function was not set, set it to onElementUpdate() for form
         // elements and to clearFilter() for <ButtonElement type='reset'/>.
-        if (callbackName === "onUserInput") {
-          if (elementName === "ButtonElement" && child.props.type === "reset") {
+        if (callbackName === 'onUserInput') {
+          if (elementName === 'ButtonElement' && child.props.type === 'reset') {
             callbackFunc = this.clearFilter;
           } else {
             callbackFunc = this.onElementUpdate.bind(null, elementName);
@@ -95,7 +95,7 @@ class FilterForm extends React.Component {
         formChildren.push(React.cloneElement(child, {
           onUserInput: callbackFunc,
           value: filterValue ? filterValue : '',
-          key: key
+          key: key,
         }));
         // Initialize filter for StaticDataTable
         this.setFilter(elementName, child.props.name, filterValue);
@@ -127,12 +127,12 @@ class FilterForm extends React.Component {
     }
     if (key) {
       filter[key] = {};
-      if (value) {     // all defined/non-null values must have some length, else empty string
+      if (value) { // all defined/non-null values must have some length, else empty string
         filter[key].value = Object.keys(value).length > 0 ? value : '';
-      } else {         // null and undefined handled here
+      } else { // null and undefined handled here
         filter[key].value = '';
       }
-      filter[key].exactMatch = (type === "SelectElement" || type === "select");
+      filter[key].exactMatch = (type === 'SelectElement' || type === 'select');
     }
     if (filter && key && value === '') {
       delete filter[key];
@@ -197,15 +197,15 @@ FilterForm.defaultProps = {
   title: 'Selection Filter',
   onUpdate: function() {
     console.warn('onUpdate() callback is not set!');
-  }
+  },
 };
 FilterForm.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.object.isRequired,
-  id: React.PropTypes.string,
-  height: React.PropTypes.string,
-  title: React.PropTypes.string,
-  onUpdate: React.PropTypes.func
+  Module: PropTypes.string.isRequired,
+  filter: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  height: PropTypes.string,
+  title: PropTypes.string,
+  onUpdate: PropTypes.func,
 };
 
 export default FilterForm;

@@ -81,4 +81,4 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
     }
 }
 exit(0);
-?>
+

@@ -145,4 +145,4 @@ if (isset($_REQUEST['PrintHeadersSummary'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

@@ -26,16 +26,6 @@ namespace LORIS\login;
 class RequestAccount extends \NDB_Form
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * Sets up the form elements on the page.
      *
      * @return void
@@ -48,17 +38,26 @@ class RequestAccount extends \NDB_Form
         $this->addBasicText(
             "firstname",
             "First name",
-            array("placeholder" => "First Name")
+            array(
+             "placeholder" => "First Name",
+             "required"    => true,
+            )
         );
         $this->addBasicText(
             "lastname",
             "Last name",
-            array("placeholder" => "Last Name")
+            array(
+             "placeholder" => "Last Name",
+             "required"    => true,
+            )
         );
         $this->addBasicText(
             "from",
             "Email address",
-            array("placeholder" => "Email address")
+            array(
+             "placeholder" => "Email address",
+             "required"    => true,
+            )
         );
 
         //merging array using + sign to avoid reindexing of keys which
@@ -66,7 +65,8 @@ class RequestAccount extends \NDB_Form
         $this->addSelect(
             "site",
             "Site",
-            array("" => "Choose your site:") + \Utility::getSiteList()
+            array("" => "Choose your site:") + \Utility::getSiteList(),
+            array("required" => true)
         );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
@@ -87,9 +87,9 @@ class RequestAccount extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return a (possibly empty) array of errors
+     * @return array a (possibly empty) array of errors
      */
-    function _validate($values)
+    function _validate($values): array
     {
         $errors = array();
         // FIXME: These error checks are direct ports from when the request
@@ -160,7 +160,7 @@ class RequestAccount extends \NDB_Form
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+            "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             array('VEmail' => $from)
         );
 
@@ -180,9 +180,12 @@ class RequestAccount extends \NDB_Form
                 )
             );
 
-            if ($_REQUEST['examiner'] == 'on') {
+            $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
+            $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
+
+            if ($examinerCheck == 'on') {
                 $rad = 0;
-                if ($_REQUEST['radiologist'] == 'on') {
+                if ($radiologistCheck == 'on') {
                     $rad = 1;
                 }
                 //insert in DB as inactive until account approved

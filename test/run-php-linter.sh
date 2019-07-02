@@ -5,7 +5,7 @@ set -e
 # errors.
 for i in `ls php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* htdocs/*.php htdocs/*/*.php`;
 do
-  php -l $i || exit $?;
+  php -l $i >/dev/null || exit $?;
 done
 
 # Run PHPCS on the entire libraries directory.

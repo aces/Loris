@@ -1,194 +1,190 @@
 html {
-  overflow: scroll;
-  overflow: auto;
-  min-height: 100%;
-  margin-bottom: 1px;
+    overflow: auto;
+    min-height: 100%;
+    margin-bottom: 1px;
 }
 
 body {
-  background: white;
+    background: white;
 }
 
 .brainbrowser-wrapper {
-  margin-top: 0px;
-  display: inline-block;
+    margin-top: 0;
+    display: inline-block;
 }
 
 .brainbrowser {
-  display: block;
-  margin: 20px auto;
+    display: block;
+    margin: 20px auto;
 }
 
 /* Namespace selectors using .brainbrowser class */
 .brainbrowser .tooltip-inner {
-  max-width: 400px;
-  width: 400px;
+    max-width: 400px;
+    width: 400px;
 }
 
 .brainbrowser .panel-default {
-  width: auto;
-  min-width: 300px;
-  border: 1px solid #ccc;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+    width: auto;
+    min-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
 }
 
 .volume-container {
-  display: block;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 15px;
+    display: block;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
 }
 
 .volume-controls {
-  max-height: 660px;
-  min-width: 300px;
+    max-height: 660px;
+    min-width: 300px;
 }
 
-
 .control-heading {
-  font-weight: normal !important;
-  font-size: 14px;
-  margin-bottom: 2px;
-  color: black;
-  display: inline-block;
-  width: auto;
+    font-weight: normal !important;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: black;
+    display: inline-block;
+    width: auto;
 }
 
 .control-inputs {
-  margin-right: 20px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: #c1c1c1;
-  text-align: center;
+    margin-right: 20px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: #c1c1c1;
+    text-align: center;
 }
 
 .thresh-input-left {
-  margin-right: 270px;
+    margin-right: 270px;
 }
 
 .thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs {
-  width: 30px;
+    width: 30px;
 }
 
 .ui-slider {
-  margin: auto;
+    margin: auto;
 }
 
 .slice-series-button {
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 .filename {
-  font-weight: 500;
-  color: #064785;
-  font-size: 16px;
-  margin: 0.35em 0;
-  padding-right: 0px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 90%;
+    font-weight: 500;
+    color: #064785;
+    font-size: 16px;
+    margin: 0.35em 0;
+    padding-right: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 90%;
 }
 
 .intensity-value {
-  padding: 1px;
-  float: right;
-  text-align: center;
-  display: inline;
+    padding: 1px;
+    float: right;
+    text-align: center;
+    display: inline;
 }
 
 .intensity-heading {
-  padding: 1px;
-  display: inline;
+    padding: 1px;
+    display: inline;
 }
 
 #color-map-select {
-  float: right;
-  margin-right: 20px;
-  width: 30%;
-  height: 28%;
+    float: right;
+    margin-right: 20px;
+    width: 30%;
+    height: 28%;
 }
 
 .filename-additional-info {
-  display: none;
+    display: none;
 }
 
 .filename-overlay-additional-info {
-  display: none;
+    display: none;
 }
 
 .arrow {
-  padding: 1px;
-  float: right;
-  top: -25px;
-  right: 2px;
+    padding: 1px;
+    float: right;
+    top: -25px;
+    right: 2px;
 }
 
 .filename-overlay {
-  font-weight: bold;
-  color: #064785;
-  font-size: 14px;
-  display: block;
-  margin: auto;
+    font-weight: bold;
+    color: #064785;
+    font-size: 14px;
+    display: block;
+    margin: auto;
 }
 
 .play-btn {
-  float: right;
-  font-size: 11px;
+    float: right;
+    font-size: 11px;
 }
 
-.play-btn:focus { outline: 0; }
+.play-btn:focus {
+    outline: 0;
+}
 
 .overlay-viewer-display {
-  float: right;
+    float: right;
 }
 
 .volume-viewer-display {
-  text-align: right;
-  width: 100%;
+    text-align: right;
+    width: 100%;
 }
 
 .volume-viewer-controls .coords {
-  max-width: 270px;
+    max-width: 270px;
 }
 
 .loading-message {
-  display: block;
-  color: #064785;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  margin: auto;
-  text-transform: uppercase;
+    display: block;
+    color: #064785;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin: auto;
+    text-transform: uppercase;
 }
 
 .brainbrowser-wrapper .global-controls .control {
-  color: #fff;
-  background-color: #064785;
-  border: 1px solid #053a6d;
-  font-weight: 500;
-  height: 35px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-right: 10px;
-  outline: 0 !important;
+    color: #fff;
+    background-color: #064785;
+    border: 1px solid #053a6d;
+    font-weight: 500;
+    height: 35px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    outline: 0 !important;
 }
 
 .brainbrowser-wrapper .global-controls .control:active,
 .brainbrowser-wrapper .global-controls .control.isChecked {
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
-@media(min-width: 768px) {
-  .brainbrowser-template .control-panel {
-    max-width: 300px;
-    float: left;
-    margin: 0 10px 0 0;
-  }
+@media (min-width: 768px) {
+    .brainbrowser-template .control-panel {
+        max-width: 300px;
+        float: left;
+        margin: 0 10px 0 0;
+    }
 }

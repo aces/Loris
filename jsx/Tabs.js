@@ -6,6 +6,9 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Tabs Component.
  * React wrapper for Bootstrap tabs. Allows to dynamically render tabs
@@ -29,13 +32,12 @@
  * =================================================
  *
  */
-class Tabs extends React.Component {
-
+class Tabs extends Component {
   constructor(props) {
     super(props);
 
     const hash = window.location.hash;
-    let activeTab = "";
+    let activeTab = '';
 
     /**
      * Determine the initial active tab in this order
@@ -52,7 +54,7 @@ class Tabs extends React.Component {
     }
 
     this.state = {
-      activeTab: activeTab
+      activeTab: activeTab,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -75,8 +77,8 @@ class Tabs extends React.Component {
   getTabs() {
     let tabs = (this.props.tabs).map(function(tab) {
       let tabClass = this.state.activeTab === tab.id ? 'active' : null;
-      let href = "#" + tab.id;
-      let tabID = "tab-" + tab.id;
+      let href = '#' + tab.id;
+      let tabID = 'tab-' + tab.id;
       return (
         <li
           role="presentation"
@@ -103,7 +105,7 @@ class Tabs extends React.Component {
       if (child) {
         return React.cloneElement(child, {
           activeTab: this.state.activeTab,
-          key: key
+          key: key,
         });
       }
     }.bind(this));
@@ -116,7 +118,7 @@ class Tabs extends React.Component {
     let tabPanes = this.getTabPanes();
     let tabStyle = {
       marginLeft: 0,
-      marginBottom: '5px'
+      marginBottom: '5px',
     };
 
     return (
@@ -132,27 +134,27 @@ class Tabs extends React.Component {
   }
 }
 Tabs.propTypes = {
-  tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string,
-  updateURL: React.PropTypes.bool
+  tabs: PropTypes.array.isRequired,
+  defaultTab: PropTypes.string,
+  updateURL: PropTypes.bool,
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
   // Set updateURL to default to true but allow for change
   // Nested tabs should set this variable to false
-  updateURL: true
+  updateURL: true,
 };
 
 /**
  * Allows to dynamically render vertical tabs corresponding to tab panes.
  */
 
-class VerticalTabs extends React.Component {
+class VerticalTabs extends Component {
   constructor(props) {
     super(props);
 
     const hash = window.location.hash;
-    let activeTab = "";
+    let activeTab = '';
 
     /**
      * Determine the initial active tab in this order
@@ -169,7 +171,7 @@ class VerticalTabs extends React.Component {
     }
 
     this.state = {
-      activeTab: activeTab
+      activeTab: activeTab,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -192,8 +194,8 @@ class VerticalTabs extends React.Component {
   getTabs() {
     let tabs = (this.props.tabs).map(function(tab) {
       let tabClass = this.state.activeTab === tab.id ? 'active' : null;
-      let href = "#" + tab.id;
-      let tabID = "tab-" + tab.id;
+      let href = '#' + tab.id;
+      let tabID = 'tab-' + tab.id;
       return (
         <li
           role="presentation"
@@ -220,7 +222,7 @@ class VerticalTabs extends React.Component {
       if (child) {
         return React.cloneElement(child, {
           activeTab: this.state.activeTab,
-          key: key
+          key: key,
         });
       }
     }.bind(this));
@@ -233,7 +235,7 @@ class VerticalTabs extends React.Component {
     let tabPanes = this.getTabPanes();
     let tabStyle = {
       marginLeft: 0,
-      marginBottom: '5px'
+      marginBottom: '5px',
     };
 
     return (
@@ -251,28 +253,28 @@ class VerticalTabs extends React.Component {
   }
 }
 VerticalTabs.propTypes = {
-  tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string,
-  updateURL: React.PropTypes.bool
+  tabs: PropTypes.array.isRequired,
+  defaultTab: PropTypes.string,
+  updateURL: PropTypes.bool,
 };
 VerticalTabs.defaultProps = {
   onTabChange: function() {},
   // Set updateURL to default to true but allow for change
   // Nested tabs should set this variable to false
-  updateURL: true
+  updateURL: true,
 };
 
 /*
  * TabPane component.
  * Used to wrap content for every tab.
  */
-class TabPane extends React.Component {
+class TabPane extends Component {
   render() {
-    let classList = "tab-pane";
+    let classList = 'tab-pane';
     let title;
 
     if (this.props.TabId === this.props.activeTab) {
-      classList += " active";
+      classList += ' active';
     }
     if (this.props.Title) {
       title = <h1>{this.props.Title}</h1>;
@@ -287,13 +289,13 @@ class TabPane extends React.Component {
   }
 }
 TabPane.propTypes = {
-  TabId: React.PropTypes.string.isRequired,
-  Title: React.PropTypes.string,
-  activeTab: React.PropTypes.string
+  TabId: PropTypes.string.isRequired,
+  Title: PropTypes.string,
+  activeTab: PropTypes.string,
 };
 
 export {
   Tabs,
   VerticalTabs,
-  TabPane
+  TabPane,
 };

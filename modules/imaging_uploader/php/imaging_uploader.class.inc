@@ -39,15 +39,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     var $uploaded_file_path;
     /**
-     * The _has_access returns true
-     * if the user has the specific permission
+     * The hasAccess function ensures that the user has the imaging_uploader
+     * permission.
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return $user->hasPermission('imaging_uploader');
     }
     /**
@@ -63,18 +63,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
-                               'UploadID',
+                               'UploadID AS Upload_ID',
                                $progressSelectPart,
                                's.CandID',
                                'c.PSCID',
                                's.Visit_label',
-                               'UploadLocation',
-                               'UploadDate',
-                               'UploadedBy',
+                               'UploadLocation AS Upload_Location',
+                               'UploadDate AS Upload_Date',
+                               'UploadedBy AS Uploaded_By',
                                'mu.TarchiveID AS Tarchive_Info',
-                               'number_of_mincCreated',
-                               'number_of_mincInserted',
+                               'number_of_mincCreated AS Number_of_MINC_Created',
+                               'number_of_mincInserted AS Number_of_MINC_Inserted',
                                'ta.PatientName',
+                               's.ID AS SessionID',
                               );
         $this->validFilters = array(
                                's.CandID',
@@ -121,7 +122,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            $upload_max_size = ini_get('upload_max_filesize');
+            $upload_max_size = \Utility::getMaxUploadSize();
             $error_message   = "Please make sure files are not larger than " .
                                 $upload_max_size;
             http_response_code(400);
@@ -148,27 +149,72 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function _process($values)
     {
         if ($this->_saveFile($values)) {
+            // MRI archive is now in the mri_upload table. If there are existing
+            // records in table notification_spool for that upload (i.e a re-upload
+            // of a scan that the MRI pipeline failed to process), inactivate them
+            $db = \Database::singleton();
+            $db->update(
+                'notification_spool',
+                array('Active' => 'N'),
+                array('ProcessID' => $this->mri_upload_id)
+            );
+
             // Save file succeeded. All that's left to do is launch the MRI
             // pipeline if the auto-launch switch is on
             $config = \NDB_Config::singleton();
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
             );
-            if ($ImagingUploaderAutoLaunch) {
-                // Instanciate the server process module to autoload
-                // its namespace classes
-                $spm_module = \Module::factory('server_processes_manager');
-                // Perform the real upload on the server
-                $serverProcessLauncher = new SP\ServerProcessLauncher();
-                $serverProcessLauncher->mriUpload(
-                    $this->mri_upload_id,
-                    $this->uploaded_file_path
-                );
+            if ($ImagingUploaderAutoLaunch == '1'
+                || $ImagingUploaderAutoLaunch == 'true'
+            ) {
+                try {
+                    // Instantiate the server process module to autoload
+                    // its namespace classes
+                    $spm_module = \Module::factory('server_processes_manager');
+                    // Perform the real upload on the server
+                    $serverProcessLauncher = new SP\ServerProcessLauncher();
+                    $serverProcessLauncher->mriUpload(
+                        $this->mri_upload_id,
+                        $this->uploaded_file_path
+                    );
+                    $db->update(
+                        'mri_upload',
+                        array('Inserting' => 1),
+                        array('UploadID' => $this->mri_upload_id)
+                    );
+                } catch (\Exception $e) {
+                    $notificationTypeID = $db->pselectOne(
+                        "SELECT NotificationTypeID
+                         FROM notification_types
+                         WHERE Type = :type",
+                        array('type' => 'mri upload handler emergency')
+                    );
+                    $values = array(
+                               'NotificationTypeID' => $notificationTypeID,
+                               'Message'            => 'MRI pipeline could not be '
+                                              . 'started: ' . $e->getMessage() . "\n"
+                                              . 'This indicates an incorrect or non-'
+                                              . "existent MRI pipeline setup\n",
+                               'Origin'             => 'Launch of the MRI pipeline',
+                               'ProcessID'          => $this->mri_upload_id,
+                               'Error'              => 'Y',
+                               'Verbose'            => 'N',
+                              );
+                    $db->insert('notification_spool', $values);
+                    $db->update(
+                        'mri_upload',
+                        array('Inserting' => 0),
+                        array('UploadID' => $this->mri_upload_id)
+                    );
+                    return false;
+                }
             }
             return true;
         }
         return false;
     }
+
     // methods available to all children
     /**
        * Save the file to the DataBase by:
@@ -227,8 +273,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *       .gz, .zip or .tgz
      *  - The uploaded file is copied to a newly created temporary folder
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return true on success, throws error otherwise
      */
@@ -373,7 +419,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////// Make sure there's no existing identical entry ////////////////
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $updateFile = $args['values']['overwrite'] ? true : false;
+        $updateFile = isset($args['values']['overwrite'])
+            ? (boolean) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
             "SELECT 
                 IF (InsertionComplete=0 AND 
@@ -386,7 +433,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
-                $errors['mri_file'],
+                $errors['mriFile'],
                 "This file has already been uploaded."
             );
         }
@@ -418,10 +465,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         if (!copy($temp_file, $new_temp_file)) {
-            throw new \LorisException(
-                "failed to copy $temp_file to $new_temp_file \n"
-            );
+            $msg = "An internal server error prevented this file from being "
+                 . "uploaded. Please contact the system administrator: "
+                 . "failed to copy $temp_file to $new_temp_file";
+            array_push($errors["mriFile"], $msg);
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
+
         $this->setTempPath($new_temp_file);
         return true;
     }
@@ -430,8 +482,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
      *     PatientName
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return boolean
      */
@@ -441,11 +493,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $db         = \Database::singleton();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
-        $updateFile = $args['values']['overwrite'] ? true : false;
+        $updateFile = isset($args['values']['overwrite'])
+            ? (boolean) $args['values']['overwrite'] : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $user_name = $args['user_id'];
+        $user_name = $args['user_id'] ?? null;
         if (($user_name==null) || (!(isset($user_name)))) {
             $user      = \User::singleton();
             $user_name = $user->getUsername();
@@ -499,12 +552,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $this->uploaded_file_path = $this->getTempPath();
         }
         $values = array(
-                   'UploadedBy'     => $user_name,
-                   'UploadDate'     => $date,
-                   'UploadLocation' => $this->uploaded_file_path,
-                   'SessionID'      => $sessionid,
-                   'PatientName'    => $pname,
-                   'IsPhantom'      => $IsPhantom,
+                   'UploadedBy'               => $user_name,
+                   'UploadDate'               => $date,
+                   'UploadLocation'           => $this->uploaded_file_path,
+                   'SessionID'                => $sessionid,
+                   'PatientName'              => $pname,
+                   'IsPhantom'                => $IsPhantom,
+                   'TarchiveID'               => null,
+                   'Inserting'                => null,
+                   'InsertionComplete'        => 0,
+                   'IsCandidateInfoValidated' => null,
+                   'IsTarchiveValidated'      => 0,
+                   'number_of_mincInserted'   => null,
+                   'number_of_mincCreated'    => null,
                   );
         if ($updateFile) {
             // Only overwrite file if it failed MRI pipeline. Need to use
@@ -579,7 +639,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     */
     function getTargetDirectory($file, $args)
     {
-        $output ="{$args["user_id"]}/";
+        $user_name = $args['user_id'] ?? null;
+        if (($user_name==null) || (!(isset($user_name)))) {
+            $user      = \User::singleton();
+            $user_name = $user->getUsername();
+        }
+
+        $output ="$user_name/";
+
         return $output;
     }
     /**
@@ -717,8 +784,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
         $result['mriList'] = $this->_getFileList($result['Data']);
+        $config            = \NDB_Config::singleton();
+        $result['imagingUploaderAutoLaunch'] = $config->getSetting(
+            'ImagingUploaderAutoLaunch'
+        );
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }
 }
-?>
+

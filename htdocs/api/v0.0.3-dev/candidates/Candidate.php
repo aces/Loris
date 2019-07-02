@@ -15,6 +15,8 @@ namespace Loris\API\Candidates;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
+use \LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * Class to handle HTTP requests to the Candidate portion of the
  * Loris REST API.
@@ -40,23 +42,17 @@ class Candidate extends \Loris\API\APIBase
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
         $this->AutoHandleRequestDelegation = false;
-        $this->CandID = $CandID;
 
         parent::__construct($method);
 
-        if (!is_numeric($CandID)
-            || $CandID < 100000
-            || $CandID > 999999
-        ) {
+        try {
+            $this->CandID    = new CandID($CandID);
+            $this->Candidate = $this->Factory->Candidate($CandID);
+        } catch (\DomainException $e) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Invalid CandID format");
             $this->safeExit(0);
-
-        }
-
-        try {
-            $this->Candidate = $this->Factory->Candidate($CandID);
-        } catch(\Exception $e) {
+        } catch (\LorisException $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Unknown CandID");
             $this->safeExit(0);
@@ -74,8 +70,8 @@ class Candidate extends \Loris\API\APIBase
      */
     public function handleGET()
     {
-        $Site   = $this->Candidate->getCandidateSite();
-        $Gender = $this->Candidate->getCandidateGender();
+        $Site = $this->Candidate->getCandidateSite();
+        $Sex  = $this->Candidate->getCandidateSex();
 
         $this->JSON = [
                        "Meta"   => [
@@ -85,7 +81,7 @@ class Candidate extends \Loris\API\APIBase
                                     'Site'    => $Site,
                                     'EDC'     => $this->Candidate->getCandidateEDC(),
                                     'DoB'     => $this->Candidate->getCandidateDoB(),
-                                    'Gender'  => $Gender,
+                                    'Sex'     => $Sex,
                                    ],
                        "Visits" => array_values(
                            $this->Candidate->getListOfVisitLabels()
@@ -127,4 +123,4 @@ if (isset($_REQUEST['PrintCandidate'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

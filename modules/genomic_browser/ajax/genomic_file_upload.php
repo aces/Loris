@@ -34,7 +34,7 @@ if (empty($base_dir)) {
 }
 
 set_time_limit(0);
-ob_implicit_flush(true);
+ob_implicit_flush(1);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
 $bytes = $_FILES["fileData"]['size'];
@@ -188,7 +188,8 @@ function moveFileToFS(&$fileToUpload)
         if (move_uploaded_file(
             $fileToUpload->tmp_name,
             $fileToUpload->full_path
-        )) {
+        )
+        ) {
             reportProgress(99, "File successfully copied!");
         }
     } catch (Exception $ex){
@@ -618,4 +619,4 @@ function endWithSuccess()
     $DB = Database::singleton();
     $DB->commit();
 }
-?>
+

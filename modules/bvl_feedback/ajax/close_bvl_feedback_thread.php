@@ -24,4 +24,4 @@ if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
 
 exit();
 
-?>
+

@@ -91,7 +91,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
          * Constructor creates a closure over the PDO statement and outer class
          * in order to have access to getInstance()
          *
-         * @param PDOStatement     $rows The PDOStatement being traversed.
+         * @param \PDOStatement     $rows The PDOStatement being traversed.
          * @param DBRowProvisioner $self The outer class being closed over.
          */
         public function __construct($rows, &$self)

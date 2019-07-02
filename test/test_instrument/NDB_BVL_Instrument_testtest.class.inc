@@ -17,16 +17,17 @@
  */
 class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
 {
+    use \LegacyInstrumentTrait;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
-     * @param  string $commentID the CommentID identifying the data to load
-     * @param  string $page if a multipage form, the page to show
+     * @param  string|null $commentID the CommentID identifying the data to load
+     * @param  string|null $page if a multipage form, the page to show
      * @return void
      * @access public
      */
-    function setup($commentID = NULL, $page = NULL)
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm();
@@ -49,7 +50,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _setupForm()
+    function _setupForm(): void
     {
         //determine page to display
         if (preg_match("/testtest(_page[0-9]+)/", $this->page, $matches)) {
@@ -68,13 +69,14 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _main(){
+    function _main(): void
+    {
 
       $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
       $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
       $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
-      $group[] =& $this->form->createElement("select","consent", "", $yesNo);
+      $group[] = $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
       $this->form->addGroup($group, "consent_group", "Test selecting 'Yes' from the dropdown menu.", null, false);
       unset($group);
@@ -89,8 +91,8 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return string The HTML to be inserted into the review section of
      *                the final page of the survey module for this instrument.
      */
-    function getReview()
+    function getReview(): string
     {
-        return;
+        return '';
     }
 }

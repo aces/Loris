@@ -25,4 +25,4 @@
 class LorisModuleMissingException extends LorisException
 {
 }
-?>
+

@@ -26,7 +26,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
         $userid          = $_POST['userid'];
         $data_release_id = $_POST['data_release_id'];
-        $success         = $DB->insertIgnore(
+        $DB->insertIgnore(
             'data_release_permissions',
             array(
              'userid'          => $userid,
@@ -38,9 +38,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         && !empty($_POST['data_release_version'])
     ) {
         $userid = $_POST['userid'];
-        $data_release_version = $_POST['data_release_version'];
-
-        $data_release_version = 'Unversioned' ? '' : $data_release_version;
+        $data_release_version = $_POST['data_release_version'] == 'Unversioned'
+                                ? '' : $_POST['data_release_version'];
 
         $IDs = $DB->pselectCol(
             "SELECT id 
@@ -49,8 +48,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
             array('drv' => $data_release_version)
         );
         foreach ($IDs as $ID) {
-
-            $success = $DB->insertIgnore(
+            $DB->insertIgnore(
                 'data_release_permissions',
                 array(
                  'userid'          => $userid,
@@ -190,4 +188,4 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     echo "There was an error adding permissions";
 }
 
-?>
+
