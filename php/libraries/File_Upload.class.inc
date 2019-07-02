@@ -480,6 +480,7 @@ class File_Upload
       */
     function getSplitFilename($name)
     {
+        $file = array();
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
             $file['name'] =substr($name, 0, $extpos);

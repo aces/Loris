@@ -157,6 +157,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
             $candids = $this->project->getCandidateIds();
 
+            $responsebody = array();
             $responsebody['Meta']        = $meta;
             $responsebody['Visits']      = $visits;
             $responsebody['Instruments'] = $instruments;

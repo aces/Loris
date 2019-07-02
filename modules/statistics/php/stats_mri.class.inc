@@ -216,7 +216,7 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -224,6 +224,7 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
+        $projects = array();
         $projects[null] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
@@ -273,6 +274,7 @@ class Stats_MRI extends \NDB_Form
                 AND Study_site = 'Y'",
             array()
         );
+        $sites = array();
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
@@ -294,6 +296,7 @@ class Stats_MRI extends \NDB_Form
             array()
         );
 
+        $scan_types = array();
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }

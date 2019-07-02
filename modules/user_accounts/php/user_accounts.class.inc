@@ -117,6 +117,7 @@ class User_Accounts extends \NDB_Menu_Filter
         } else {
             // allow only to view own site data
             $list_of_sites = array();
+            $site = array();
             $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = \Site::singleton($val);

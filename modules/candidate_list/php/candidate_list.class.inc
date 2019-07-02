@@ -72,6 +72,7 @@ class Candidate_List extends \DataFrameworkMenu
         } else {
             $list_of_sites = $user->getStudySites();
         }
+        $site_options = array();
         foreach ($list_of_sites as $id => $name) {
             $site_options[$name] = $name;
         }

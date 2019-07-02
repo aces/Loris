@@ -426,6 +426,7 @@ class Edit_User extends \NDB_Form
         //END EXAMINER UPDATE
 
         // make the set
+        $set = array();
         foreach ($values as $key => $value) {
             // Password updates are handled separately
             if (!empty($value) && $key != 'Password_hash') {
@@ -499,6 +500,7 @@ class Edit_User extends \NDB_Form
                 foreach ($supervisorEmails as $email => $checkValue) {
                     if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
                         if ($checkValue == 'on') {
+                            $msg_data = array();
                             $msg_data['current_user'] = $editor->getFullname();
                             $msg_data['study']        = $config->getSetting('title');
                             $msg_data['realname']     = $values['Real_name'];
@@ -510,6 +512,7 @@ class Edit_User extends \NDB_Form
                                 'permissions_change_notify_supervisor.tpl',
                                 $msg_data
                             );
+                            unset($msg_data);
                         }
                     }
                 }
@@ -524,6 +527,7 @@ class Edit_User extends \NDB_Form
             // create an instance of the config object
             $config = \NDB_Config::singleton();
             // send the user an email
+            $msd_data = array();
             $msg_data['study']    = $config->getSetting('title');
             $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
@@ -532,6 +536,7 @@ class Edit_User extends \NDB_Form
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
+            unset($msg_data);
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
@@ -585,6 +590,7 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // it is a new user
+        $group = array();
         if ($this->identifier == '') {
             // user name
             $group[] = $this->createText('UserID', 'User name');
@@ -608,6 +614,7 @@ class Edit_User extends \NDB_Form
         }
 
         // password
+        $group = array();
         $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup(
@@ -673,6 +680,7 @@ class Edit_User extends \NDB_Form
         }
 
         // email address
+        $group = array();
         $group[] = $this->createText('Email', 'Email address');
         $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup(
@@ -694,6 +702,8 @@ class Edit_User extends \NDB_Form
 
         // get user permissions
         $editor = \User::singleton();
+        $siteOptions = array();
+        $site = array();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
@@ -716,8 +726,11 @@ class Edit_User extends \NDB_Form
         );
 
         if ($editor->hasPermission('examiner_multisite')) {
+            $groupA = array();
+            $groupB = array();
+
             //get site aliases
-            $DB      =& \Database::singleton();
+            $DB      = \Database::singleton();
             $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
 
             foreach ($aliases as $row) {
@@ -820,6 +833,7 @@ class Edit_User extends \NDB_Form
 
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
+        $group = array();
         foreach ($perms as $row) {
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
@@ -855,16 +869,15 @@ class Edit_User extends \NDB_Form
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
-        $DB_factory = \NDB_Factory::singleton();
-        $DB         = $DB_factory->database();
 
         $query = "SELECT u.Real_Name, u.email FROM permissions p
                   JOIN user_perm_rel up ON (p.permID = up.PermID)
                   JOIN users u ON (u.ID = up.userID)
                   WHERE p.code = 'send_to_dcc'";
 
-        $results = $DB->pselect($query, array());
+        $results = \Database::singleton()->pselect($query, array());
 
+        $group = array();
         $group[] = $this->form->createElement(
             'static',
             null,

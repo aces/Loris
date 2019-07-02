@@ -711,10 +711,13 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function getCSVData()
     {
-        $list['data']    = $this->_getFullList();
-        $list['headers'] = $this->headers;
+        return $this->arrayToCSV(
+            array(
+                'data' => $this->_getFullList(),
+                'headers' => $this->headers
+            )
+        );
 
-        return $this->arrayToCSV($list);
     }
 
     /**

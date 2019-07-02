@@ -188,6 +188,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
                 }
+                $rules_array = array();
                 foreach ($registered_rules as $registered) {
                     $rules = $registered['rules'];
 
@@ -336,14 +337,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return bool true
+     * @return void
      */
     function XINRegisterRule(
         string $elname,
         array $rules,
         string $message="",
         string $group=""
-    ): bool {
+    ): void {
         // I'm not sure if these are logically the same. I think they should be, but
         // there was a bug introduced by the LINST changes to XINRules to old
         // instruments so I'm making sure that the old code is followed exactly
@@ -352,22 +353,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         // the if statement and use the same logic for "old" instruments and "new"
         // instruments
         //  -- Dave
-        if (!is_array($rules)) {
-            $rules_array[] = $rules;
-        } else {
-            $rules_array = $rules;
-        }
         $rule = array(
                  'message' => $message,
                  'group'   => $group,
                  'rules'   => array(),
                 );
 
-        foreach ($rules_array AS $rule_cmd) {
+        foreach ($rules AS $rule_cmd) {
             $rule['rules'][] = $rule_cmd;
         }
         $this->XINRules[$elname][] = $rule;
-        return true;
     }
 
     /**
