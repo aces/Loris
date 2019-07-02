@@ -122,8 +122,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
                               );
         $this->tpl_data['mri_protocol_data'] = $this->getMRIProtocolData();
 
-        // Number of rows in the mri_protocol table
-        $mriProtocolCount = count($this->tpl_data['mri_protocol_data']);
+        $protocolGroups = array_keys($this->tpl_data['mri_protocol_data']);
+        $this->tpl_data['mri_protocol_header'] = count($protocolGroups)
+            ? array_keys($this->tpl_data['mri_protocol_data'][$protocolGroups[0]][0])
+            : array();
 
         // Array that contains the last protocol ID of each protocol group, for each
         // group
@@ -136,6 +138,8 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
 
         $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
+
+        return true;
     }
 
     /**
@@ -171,7 +175,9 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     /**
      * Get the current MRI protocol to display to the user
      *
-     * @return array of current mri_protocol, one row per scan type
+     * @return array containing the data in the mri_protocol table. Each key
+     *         is an MRI protocol group name and each value is the array of
+     *         lines in the mri_protocol table for that protocol group.
      */
     function getMRIProtocolData()
     {
@@ -179,49 +185,31 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         // select all except Objective from mri_protocol
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
-        $mri_protocols = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID, 
-                    CONCAT(p.Scan_type,
-                           IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
-                          ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-                    TI_max, slice_thickness_min, slice_thickness_max,
-                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-                    zstep_min, zstep_max, time_min, time_max,series_description_regex
+        $rows = $db->pselect(
+            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
+             CONCAT(
+                p.Scan_type,
+                IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
+             ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+             TI_max, slice_thickness_min, slice_thickness_max,
+             xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+             zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+             zstep_min, zstep_max, time_min, time_max,series_description_regex
              FROM mri_protocol as p
-             LEFT JOIN mri_protocol_group_rel mpgr 
-             ON (mpgr.MriProtocolID=p.ID)
              LEFT JOIN mri_protocol_group mpg 
-             ON (mpg.MriProtocolGroupID=mpgr.MriProtocolGroupID)
-             LEFT JOIN mri_scan_type as s 
+             ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
+             LEFT JOIN mri_scan_type as s
              ON p.Scan_type=s.ID
-             ORDER BY mpg.MriProtocolGroupID DESC",
+             ORDER BY mpg.MriProtocolGroupID ASC",
             array()
         );
-        return $mri_protocols;
-    }
 
-    /**
-     * For each MRI protocol group, gets the last protocol ID in the result
-     * set that belongs to the given group.
-     *
-     * @param array $mp lines in the mri_protocol table, ordered
-     *                  by MRI protocol group ID.
-     *
-     * @return array list of the last MRI protocol IDs for each group.
-     */
-    function getLastProtocolIDInGroup(array $mp) : array
-    {
-        $lastProtocolIDInGroup = array();
-        for ($i=0; $i < count($mp); $i++) {
-            if ($i == (count($mp)-1)
-                || ($mp[$i]['Protocol Group'] != $mp[$i+1]['Protocol Group'])
-            ) {
-                $lastProtocolIDInGroup[] = $mp[$i]['ID'];
-            }
+        $mri_protocols = array();
+        foreach ($rows as $protocol) {
+            $mri_protocols[$protocol['Protocol Group']][] = $protocol;
         }
 
-        return $lastProtocolIDInGroup;
+        return $mri_protocols;
     }
 
     /**

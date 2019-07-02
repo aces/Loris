@@ -88,43 +88,36 @@
             <table id="mri-protocol" class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                 <thead>
                 <tr class="info">
-                    {assign var=count value=0}
-                    {assign var=protocolGroupColIndex value=-1}
                     {foreach from=$mri_protocol_header item=mp}
-                        <th id="header_{$count}">
-                            {$mp}
-                        </th>
-                        {if $mp == 'Protocol Group'}
-                            {assign var=protocolGroupColIndex value=$count}
-                        {/if}
-                        {assign var=count value=$count+1}
+                    <th id="header_{$mp}">
+                        {$mp}
+                    </th>
                     {/foreach}
                 </tr>
                 </thead>
                 <tbody>
-                {foreach from=$mri_protocol_data item=mp}
-                    {assign var=ccount value=0}
-
-                    <tr>
-                        {foreach from=$mp item=row}
-                            {if in_array($mp.ID, $last_protocol_id_in_group) && $mp.ID != $last_protocol_id}
-                                {assign var=rowBorder value='style="border-bottom: 1px solid #000;"'}
+			    {assign var=firstProtocol value=1}
+                {foreach from=$mri_protocol_data item=mpgroup}
+                    {if $firstProtocol != 1}
+                        {assign var=rowBorder value='style="border-bottom: 1px solid #000;"'}
+                    {else}
+                        {assign var=rowBorder value=''}
+                    {/if}
+                    
+                    {foreach from=$mpgroup item=protocol}
+                        <tr>
+                        {foreach from=$protocol key=k item=v}   
+                            {if $violated_scans_modifications && $k != 'Protocol Group'}
+                            <td id="row_{$protocol.ID}_td_{$k}" class='description' contenteditable = "true" nowrap {$rowBorder}>
                             {else}
-                                {assign var=rowBorder value=''}
-                            {/if}
-                            
-                            {if $violated_scans_modifications && $ccount != $protocolGroupColIndex}
-                              <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true" nowrap {$rowBorder}>
-                            {else}
-                              <td id="row_{$mp.ID}_td_{$ccount}" class='description' nowrap {$rowBorder}>
-                            {/if}
-                            
-                            {$row}
-                            {$k}
+                            <td id="row_{$protocol.ID}_td_{$k}" class='description' nowrap {$rowBorder}>
+                            {/if}                              
+                                {$v}
                             </td>
-                            {assign var=ccount value=$ccount+1}
                         {/foreach}
-                    </tr>
+                        </tr>
+                        {assign var=rowBorder value=''}
+                    {/foreach}
                 {/foreach}
                 </tbody>
             </table>

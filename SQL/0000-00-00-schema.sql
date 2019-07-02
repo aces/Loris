@@ -100,13 +100,11 @@ DROP TABLE IF EXISTS `MRICandidateErrors`;
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 
 DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
-DROP TABLE IF EXISTS `mri_protocol_checks_group_rel`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group`;
 
 DROP TABLE IF EXISTS `mri_protocol_group_target`;
-DROP TABLE IF EXISTS `mri_protocol_group_rel`;
-DROP TABLE IF EXISTS `mri_protocol_group`;
 DROP TABLE IF EXISTS `mri_protocol`;
+DROP TABLE IF EXISTS `mri_protocol_group`;
 DROP TABLE IF EXISTS `mri_acquisition_dates`;
 DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `files_intermediary`;
@@ -718,6 +716,14 @@ CREATE TABLE `files_qcstatus` (
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_protocol_group` (
+    `MriProtocolGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                 VARCHAR(255)    NOT NULL UNIQUE,
+    PRIMARY KEY (`MriProtocolGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
+
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
@@ -747,39 +753,23 @@ CREATE TABLE `mri_protocol` (
   `time_max` int(4) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
+  `MriProtocolGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
-  CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
+  CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
 INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
- TE_max,time_min,time_max) VALUES
-   ('ZZZZ',48,8000,14000,80,130,0,200),
-   ('ZZZZ',40,1900,2700,10,30,0,500),
-   ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
-   ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
-
-CREATE TABLE `mri_protocol_group` (
-    `MriProtocolGroupID`   INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `Name`                 VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (`MriProtocolGroupID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `mri_protocol_group` VALUES(1, "Default MRI protocol group");
-
-CREATE TABLE `mri_protocol_group_rel` (
-    `MriProtocolGroupID` INT(2) UNSIGNED  NOT NULL,
-    `MriProtocolID`      INT(11) UNSIGNED NOT NULL,
-    CONSTRAINT `FK_mri_protocol_group_rel_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
-    CONSTRAINT `FK_mri_protocol_group_rel_2` FOREIGN KEY (`MriProtocolID`)      REFERENCES `mri_protocol` (`ID`),
-    CONSTRAINT `UK_mri_protocol_group_rel`   UNIQUE (`MriProtocolID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `mri_protocol_group_rel` SELECT 1, ID FROM `mri_protocol`;
+ TE_max,time_min,time_max, MriProtocolGroupID) VALUES
+   ('ZZZZ',48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
 
 CREATE TABLE `mri_protocol_group_target` (
-     `MriProtocolGroupID` INT(2) UNSIGNED  NOT NULL,
+     `MriProtocolGroupID` INT(4) UNSIGNED  NOT NULL,
      `ProjectID`          INT(2)           DEFAULT NULL,
      `SubprojectID`       INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`        VARCHAR(255)     DEFAULT NULL,
@@ -788,7 +778,8 @@ CREATE TABLE `mri_protocol_group_target` (
      CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `mri_protocol_group_target` VALUES(1, NULL, NULL, NULL);
+INSERT INTO `mri_protocol_group_target` VALUES
+    ((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
 
 
 
@@ -817,6 +808,14 @@ CREATE TABLE `mri_upload` (
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_protocol_checks_group` (
+    `MriProtocolChecksGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                       VARCHAR(255)    NOT NULL UNIQUE,
+    PRIMARY KEY (`MriProtocolChecksGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol checks group');
+
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Scan_type` int(11) unsigned DEFAULT NULL,
@@ -825,29 +824,17 @@ CREATE TABLE `mri_protocol_checks` (
   `ValidMin` decimal(10,4) DEFAULT NULL,
   `ValidMax` decimal(10,4) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
+  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
   CONSTRAINT `FK_mriProtocolChecks_ScanType`
-    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`)
+    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
+  CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`);
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_protocol_checks_group` (
-    `MriProtocolChecksGroupID`   INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `Name`                       VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (`MriProtocolChecksGroupID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `mri_protocol_checks_group` VALUES(1, 'Default MRI protocol checks group');
-
-CREATE TABLE `mri_protocol_checks_group_rel` (
-    `MriProtocolChecksGroupID` INT(2) UNSIGNED  NOT NULL,
-    `MriProtocolChecksID`      INT(11)          NOT NULL,
-    CONSTRAINT `FK_mri_protocol_checks_group_rel_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
-    CONSTRAINT `FK_mri_protocol_checks_group_rel_2` FOREIGN KEY (`MriProtocolChecksID`)      REFERENCES `mri_protocol_checks` (`ID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE `mri_protocol_checks_group_target` (
-     `MriProtocolChecksGroupID` INT(2) UNSIGNED  NOT NULL,
+     `MriProtocolChecksGroupID` INT(4) UNSIGNED  NOT NULL,
      `ProjectID`                INT(2)           DEFAULT NULL,
      `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`              VARCHAR(255)     DEFAULT NULL,
@@ -856,7 +843,8 @@ CREATE TABLE `mri_protocol_checks_group_target` (
      CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `mri_protocol_checks_group_target` VALUES(1, NULL, NULL, NULL);
+INSERT INTO `mri_protocol_checks_group_target` VALUES
+    ((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
 
 
 -- ********************************
