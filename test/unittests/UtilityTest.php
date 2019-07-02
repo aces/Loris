@@ -51,6 +51,7 @@ class FakeUtility extends Utility
         natcasesort($list);
         return $list;
     }
+
     /**
      * Get the list of sites as an associative array
      *
@@ -88,8 +89,9 @@ class FakeUtility extends Utility
         }
         return $list;
     }
+
     /**
-     * Gets a list of visits used by the database as specified from
+     * Gets a list of visits used by the database as specified in
      * the Visit_Windows table
      *
      * @param \Database $DB The mock database used by the test methods
@@ -106,9 +108,10 @@ class FakeUtility extends Utility
         }
         return $list;
     }
+
     /**
-     * Gets a list of all instruments where are administered as direct data
-     * entry from subjects.
+     * Gets a list of all instruments that are administered as direct data
+     * entry from subjects
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
@@ -304,10 +307,6 @@ class FakeUtility extends Utility
      *
      *              )
      *         )
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper, BVL_Feedback_panel)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
      */
     static function fakeGetSourcefields(
         \Database $DB,
@@ -350,8 +349,7 @@ class UtilityTest extends TestCase
 {
     /**
      * Consent information
-     *
-     * @var array contains consent info retrieved by the getConsentList method
+     * @var array contains consent information retrieved by the getConsentList method
      */
     private $_consentInfo = array(
         array('ConsentID' => '1',
@@ -427,7 +425,6 @@ class UtilityTest extends TestCase
               'SubprojectID' => '4',
               'Current_stage' => 'Approval')
         );
-
     /**
      * language table information
      * @var array contains language information retrieved by getLanguageList method
@@ -438,7 +435,6 @@ class UtilityTest extends TestCase
         array('language_id' => '2',
               'language_label' => 'LA2')
         );
-    
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -477,8 +473,8 @@ class UtilityTest extends TestCase
     }
 
     /** 
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
+     * Tears down the fixture, for example, close a network connection
+     * This method is called after a test is executed
      *
      * @return void
      */
@@ -503,7 +499,7 @@ class UtilityTest extends TestCase
     }
 
     /*
-     * Test that calculateAge() method fails when the dates have the incorrect format
+     * Test that the calculateAge() method fails when the dates have the incorrect format
      * 
      * @dataProvider ageIncorrectFormatProvider
      * @covers Utility:calculateAge
@@ -663,6 +659,7 @@ class UtilityTest extends TestCase
             array('test1' => 'description1'),
             FakeUtility::fakeGetDirectInstruments($this->_dbMock));
     }
+
     /**
      * Test that getVisitList() returns the correct information
      * 
