@@ -5,6 +5,7 @@ import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
 import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
+import CandidateDOB from './CandidateDOB';
 import {Tabs, TabPane} from 'Tabs';
 
 class CandidateParameters extends Component {
@@ -35,6 +36,7 @@ class CandidateParameters extends Component {
     let tabList = [
       {id: 'candidateInfo', label: 'Candidate Information', component: CandidateInfo},
       {id: 'participantStatus', label: 'Participant Status', component: ParticipantStatus},
+      {id: 'candidateDOB', label: 'Date of Birth', component: CandidateDOB},
     ];
 
     if (loris.config('useProband') === 'true') {
