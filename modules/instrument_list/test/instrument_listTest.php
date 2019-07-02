@@ -54,7 +54,10 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Behavioral Battery of Instruments", $bodyText);
+        $this->assertStringContainsString(
+            "Behavioral Battery of Instruments",
+            $bodyText
+        );
     }
 
     /**
