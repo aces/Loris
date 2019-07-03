@@ -830,7 +830,7 @@ CREATE TABLE `mri_protocol_checks` (
   CONSTRAINT `FK_mriProtocolChecks_ScanType`
     FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
-    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`);
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_checks_group_target` (
