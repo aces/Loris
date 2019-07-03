@@ -27,6 +27,7 @@ $db          = $factory->database();
 $ProjectList = Utility::getProjectList();
 $recTarget   = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
+$projectID   = null;
 // if a new project is created add the new project.php
 // Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new') {
@@ -38,6 +39,7 @@ if ($_POST['ProjectID'] === 'new') {
              "recruitmentTarget" => $recTarget,
             )
         );
+        $projectID = $db->getLastInsertId();
     } else {
         header("HTTP/1.1 409 Conflict");
         print '{ "error" : "Conflict" }';
@@ -51,6 +53,18 @@ if ($_POST['ProjectID'] === 'new') {
          "recruitmentTarget" => $recTarget,
         ),
         array("ProjectID" => $_POST['ProjectID'])
+    );
+    $projectID = $_POST['ProjectID'];
+}
+
+$db->delete('project_subproject_rel', array('ProjectID' => $projectID));
+foreach ($_POST['SubprojectIDs'] as $sid) {
+    $db->insertIgnore(
+        'project_subproject_rel',
+        array(
+         'ProjectID'    => $projectID,
+         'SubprojectID' => $sid,
+        )
     );
 }
 header("HTTP/1.1 200 OK");
