@@ -26,9 +26,11 @@ try {
     $m = '';
 }
 if (!empty($m)) {
-    $page            = !empty($_REQUEST['subtest']) ? $_REQUEST['subtest'] : $mname;
-    $help['content'] = $m->getHelp($page);
-    $help['format']  = 'markdown';
+    $page = !empty($_REQUEST['subtest']) ? $_REQUEST['subtest'] : $mname;
+    $help = array(
+             'content' => $m->getHelp($page),
+             'format'  => 'markdown',
+            );
     print json_encode($help);
     ob_end_flush();
     exit(0);

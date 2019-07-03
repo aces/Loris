@@ -527,9 +527,9 @@ class Edit_User extends \NDB_Form
             // create an instance of the config object
             $config = \NDB_Config::singleton();
             // send the user an email
-            $msd_data = array();
-            $msg_data['study']    = $config->getSetting('title');
-            $msg_data['url']      = $config->getSetting('url');
+            $msg_data          = array();
+            $msg_data['study'] = $config->getSetting('title');
+            $msg_data['url']   = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -614,7 +614,7 @@ class Edit_User extends \NDB_Form
         }
 
         // password
-        $group = array();
+        $group   = array();
         $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup(
@@ -680,7 +680,7 @@ class Edit_User extends \NDB_Form
         }
 
         // email address
-        $group = array();
+        $group   = array();
         $group[] = $this->createText('Email', 'Email address');
         $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup(
@@ -701,9 +701,9 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor = \User::singleton();
+        $editor      = \User::singleton();
         $siteOptions = array();
-        $site = array();
+        $site        = array();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
@@ -833,7 +833,7 @@ class Edit_User extends \NDB_Form
 
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
-        $group = array();
+        $group    = array();
         foreach ($perms as $row) {
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
@@ -877,7 +877,7 @@ class Edit_User extends \NDB_Form
 
         $results = \Database::singleton()->pselect($query, array());
 
-        $group = array();
+        $group   = array();
         $group[] = $this->form->createElement(
             'static',
             null,

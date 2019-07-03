@@ -64,10 +64,12 @@ class Imaging_Session_ControlPanel
     {
         $DB        = \Database::singleton();
         $config    = \NDB_Config::singleton();
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
-        $subjectData['sessionID'] = $_REQUEST['sessionID'];
-        $subjectData['candid']    = $timePoint->getCandID();
+        $subjectData = array(
+                        'sessionID' => $_REQUEST['sessionID'],
+                        'candid'    => $timePoint->getCandID(),
+                       );
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
@@ -96,7 +98,7 @@ class Imaging_Session_ControlPanel
         $subjectData['links']
             = (empty($links)) ? "" : $links;
 
-        $candidate =& \Candidate::singleton($timePoint->getCandID());
+        $candidate = \Candidate::singleton($timePoint->getCandID());
 
         /* Note: the if statement below prepares parameters to use in an SQL
         * query. The $ID variable is appended directly to a SQL query string;

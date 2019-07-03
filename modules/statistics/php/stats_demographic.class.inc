@@ -170,8 +170,8 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects = array();
-        $projects[null] = 'All Projects';
+        $projects     = array();
+        $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -226,8 +226,8 @@ class Stats_Demographic extends \NDB_Form
             array()
         );
 
-        $sites = array();
-        $sites[null] ='All sites';
+        $sites     = array();
+        $sites[''] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {

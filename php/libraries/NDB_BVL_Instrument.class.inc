@@ -438,7 +438,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // because that's part of the DirectEntry template
         // and has Save/Continue and go back buttons
         if (!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
-            $buttons = array();
+            $buttons   = array();
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
@@ -1280,7 +1280,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $errors = array();
         //Conditions for the rule to be true, thus the element to be required.
         $rule_outcomes = array();
-        $rules_array = array();
+        $rules_array   = array();
 
         foreach ($rules['rules'] AS $rule) {
             //Loop through the assigned rules (which is the array of formatted
@@ -1593,7 +1593,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                            'not_answered' => 'Not Answered',
                           )
     ): void {
-        $group = array();
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
@@ -1627,7 +1627,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules=array(),
         string $rule_message='You must specify or select from the drop-down'
     ): void {
-        $group = array();
+        $group   = array();
         $group[] = $this->form->createElement(
             "textarea",
             $field,
@@ -1671,7 +1671,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules=array(),
         string $rule_message='This field is required.'
     ): void {
-        $group = array();
+        $group   = array();
         $group[] = $this->form->createElement(
             "textarea",
             $field,
@@ -1727,7 +1727,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "if you want to leave this time blank.";
         }
 
-        $group = array();
+        $group   = array();
         $group[] = $this->form->createElement(
             "time",
             $field,
@@ -1777,7 +1777,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $options = $this->dateOptions;
         }
 
-        $group = array();
+        $group   = array();
         $group[] = $this->createDate(
             $name . "_date",
             $label,
@@ -1858,7 +1858,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $label,
         array $dateArray
     ): void {
-        $group = array();
+        $group   = array();
         $group[] = $this->createDate($name . "_date", null, $dateArray);
         //add to array of dates and times.
         $this->dateTimeFields[] = $name . "_date";
@@ -1911,7 +1911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label
     ): void {
-        $group = array();
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
@@ -1948,7 +1948,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function addNumericElementRD(string $field, string $label): void
     {
-        $group = array();
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",

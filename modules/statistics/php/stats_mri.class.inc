@@ -224,8 +224,8 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects = array();
-        $projects[null] = 'All Projects';
+        $projects     = array();
+        $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -264,7 +264,7 @@ class Stats_MRI extends \NDB_Form
         } else {
             $Param_Site = '';
         }
-        $centers     = $DB->pselect(
+        $centers   = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
@@ -274,8 +274,8 @@ class Stats_MRI extends \NDB_Form
                 AND Study_site = 'Y'",
             array()
         );
-        $sites = array();
-        $sites[null] ="All sites";
+        $sites     = array();
+        $sites[''] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if (isset($_REQUEST['MRIsite'])

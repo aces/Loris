@@ -78,10 +78,9 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        $projects[null] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key=>$value) {
-            $projects[$key] = $value;
-        }
+        $projects     = \Utility::getProjectList();
+        $projects[''] = 'All Projects';
+
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];

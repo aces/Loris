@@ -71,6 +71,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             array()
         );
 
+        $all_scan_types = array();
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -124,6 +125,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             ELSE ''
             END";
 
+        $pass = $qc = $coalesce_desc = $case_desc = array();
         foreach ($scan_id_types as $id => $type) {
             $pass[$id]          = $type . 'pass';
             $qc[$id]            = $type . 'QC';
@@ -213,6 +215,7 @@ END";
         // Initialize the arrays that go into this->columns and
         // $this->headers so that array_merge works even if no
         // $scan_types are set in the configuration module
+        $modalities_subquery    = array();
         $modalities_subquery_as = array();
         $as = array();
 
@@ -300,6 +303,7 @@ END";
             array()
         );
 
+        $all_scan_types = array();
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -321,6 +325,7 @@ END";
         $as = array();
         $list_of_projects = array();
 
+        $modalities_subquery = array();
         foreach ($scan_id_types as $key => $value) {
             $modalities_subquery[$key] = $value;
             $as[$key] = $scan_id_types[$key] . '_QC_Status';

@@ -411,13 +411,14 @@ class ViewSession extends \NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists  = $this->DB->pselectOne(
+                $QCExists    = $this->DB->pselectOne(
                     "SELECT 'x' 
                     FROM files_qcstatus 
                     WHERE FileID=:FID",
                     $params
                 );
-                $updateSet = \Utility::nullifyEmpty($updateSet, 'QCStatus');
+                $updateSet   = \Utility::nullifyEmpty($updateSet, 'QCStatus');
+                $updateWhere = array();
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update(
@@ -453,7 +454,8 @@ class ViewSession extends \NDB_Form
                 );
 
                 if ($curCaveat == true) {
-                    $file = new \MRIFile($curFileID);
+                    $insertSet = array();
+                    $file      = new \MRIFile($curFileID);
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
                     );
@@ -473,6 +475,7 @@ class ViewSession extends \NDB_Form
                         . $user->getUsername();
 
                     $this->DB->insert("mri_violations_log", $insertSet);
+                    unset($insertSet);
                 }
             }
         }
@@ -694,8 +697,9 @@ class ViewSession extends \NDB_Form
      */
     function getSubjectData()
     {
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
+        $subjectData = array();
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
         $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
         $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');

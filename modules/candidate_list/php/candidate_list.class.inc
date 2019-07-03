@@ -86,6 +86,7 @@ class Candidate_List extends \DataFrameworkMenu
 
         // get the list of subprojects
         $list_of_subprojects = \Utility::getSubprojectList();
+        $subproject_options  = array();
         foreach ($list_of_subprojects as $id => $name) {
             $subproject_options[$name] = $name;
         }
@@ -93,6 +94,7 @@ class Candidate_List extends \DataFrameworkMenu
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
+        $participant_status_options = array();
         foreach ($list_of_participant_status as $id => $name) {
             $participant_status_options[$name] = $name;
         }
