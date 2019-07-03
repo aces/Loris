@@ -49,8 +49,8 @@ class CandID_Test extends TestCase
      */
     public function testContructorInvalidValues($invalidValue): void
     {
-        $candid = new CandID($invalidValue);
         $this->expectExceptionMessage('The value is not valid');
+        $candid = new CandID($invalidValue);
     }
 
     public function testGetType(): void
