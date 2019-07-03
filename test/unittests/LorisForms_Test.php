@@ -428,30 +428,56 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that getValue returns the correct default value for the form element
-     * TODO This should ideally not return null
-     *
+     * Test that getValue returns null if no default value is set for the element
+     * 
      * @covers LorisForm::getValue
      * @return void
      */
-    function testGetValue()
+    function testGetValueReturnsNullWithNoDefaultSet()
     {
         $this->form->addSelect("abc", "Hello", array());
         $this->assertEquals(null, $this->form->getValue("abc"));
     }
 
     /**
-     * Test that staticHTML returns the correctly formatted HTML
-     * TODO This returns null as of now because it uses the getValue method
-     *      Should return an actual value
+     * Test that getValue returns the correct default value for the form element
+     * and that setDefaults sets the default value for the form element
+     *
+     * @covers LorisForm::getValue
+     * @covers LorisForm::setDefaults
+     * @return void
+     */
+    function testGetValue()
+    {
+        $this->form->addSelect("abc", "Hello", array());
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->assertEquals('abc_default', $this->form->getValue("abc"));
+    }
+
+    /**
+     * Test that staticHTML returns null if there is no default value for the element
      *     
      * @covers LorisForm::staticHTML
      * @return void
      */
-    function testStaticHTML()
+    function testStaticHTMLReturnsNullWithNoDefault()
     {
 	$this->form->addStatic("abc", "Hello");
 	$this->assertEquals(null, $this->form->staticHTML($this->form->form["abc"]));
+    }
+
+    /**
+     * Test that staticHTML returns the default value of the element if the default is set
+     *
+     * @covers LorisForm::staticHTML
+     * @covers LorisForm::setDefaults
+     * @return void
+     */
+    function testStaticHTMLReturnsDefaultValue()
+    {
+        $this->form->addStatic("abc", "Hello");
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->assertEquals("abc_default", $this->form->staticHTML($this->form->form["abc"]));
     }
 
     /**
@@ -487,8 +513,9 @@ class LorisForms_Test extends TestCase
                              'format' => 'ym');
         
         $this->form->addDate("abc", "Hello", $testOptions, $testAttributes);
+        $this->form->setDefaults(array('abc' => 'abc_default'));
         $this->assertEquals(
-            "<input name=\"abc\" type=\"month\" class=\"class1\" min=\"2010-01\" max=\"2019-12\" onChange=\"this.setCustomValidity('')\" disabled >", 
+            "<input name=\"abc\" type=\"month\" class=\"class1\" min=\"2010-01\" max=\"2019-12\" onChange=\"this.setCustomValidity('')\" disabled  value=\"abc_default-\" >",
             $this->form->dateHTML($this->form->form["abc"])
         );
     }
@@ -508,7 +535,6 @@ class LorisForms_Test extends TestCase
         $testOptions = array('minYear' => '2010',
                              'maxYear' => '2019',
                              'format' => 'y');
-
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('yearHTML'))
             ->getMock();
@@ -551,7 +577,6 @@ class LorisForms_Test extends TestCase
 
     /**
      * Test that textHTML returns the proper HTML string when the options array is set
-     * TODO This method uses getValue() which is returning null. I'm not sure if this is correct or an issue
      *
      * @covers Utility::textHTML
      * @return void
@@ -565,15 +590,222 @@ class LorisForms_Test extends TestCase
                              'oninvalid' => 'oninvalid1',
                              'pattern' => 'pattern1',
                              'required' => 'required1', 
-                             'placeholder' => 'holder',
-                             'value' => 'value1');
-
+                             'placeholder' => 'holder');
+        $this->form->setDefaults(array('abc' => 'abc_default'));
         $this->form->addText("abc", "Hello", $testOptions);
         $this->assertEquals(
-            "<input name=\"abc\" type=\"text\" class=\"class1\" onchange=\"onchange1\" oninvalid=\"oninvalid1\" pattern=\"pattern1\" placeholder=\"holder\"disabled readonly>",
+            "<input name=\"abc\" type=\"text\" class=\"class1\" onchange=\"onchange1\" oninvalid=\"oninvalid1\" pattern=\"pattern1\" placeholder=\"holder\" value=\"abc_default\"disabled readonly>",
             $this->form->textHTML($this->form->form["abc"]));
     }
+
+    /**
+     * Test that submitHTML returns the correctly formatted HTML when no attributes or options are specified
+     *
+     * @covers LorisForm::submitHTML
+     * @return void
+     */
+    function testSubmitHTMLWithNoOptions()
+    {
+        $submit = $this->form->createSubmit("abc", "value1", array());
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"submit\"  value=\"value1\">", 
+            $this->form->submitHTML($submit));
+    }
+
+    /**
+     * Test that submitHTML returns the correctly formatted HTML when the 'class' attribute is specified
+     *
+     * @covers LorisForm::submitHTML
+     * @return void
+     */
+    function testSubmitHTMLWithOptionsSet()
+    {
+        $submit = $this->form->createSubmit("abc", "value1", array('class' => 'class1'));
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"submit\" class=\"class1\" value=\"value1\">",
+            $this->form->submitHTML($submit));
+    }
  
+    /**
+     * Test that submitHTML returns the correctly formatted HTML when the type is
+     * specified to be something other than 'submit'
+     *
+     * @covers LorisForm::textHTML
+     * @return void
+     */
+    function testSubmitHTMLWithDifferentTypeSpecified()
+    {
+        $submit = $this->form->createSubmit("abc", "value1", array('class' => 'class1'));
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"text\" class=\"class1\" value=\"value1\">",
+            $this->form->submitHTML($submit, 'text'));
+    }
+
+    /**
+     * Test that hiddenHTML returns the correct HTML when no attributes are set
+     *
+     * @covers LorisForm::hiddenHTML
+     * @return void
+     */
+    function testHiddenHTMLWithNoAttributes()
+    {
+        $this->form->addHidden("abc", "value1", array());
+   
+        $this->assertEquals(
+            "<input  name=\"abc\" value=\"value1\" type=\"hidden\">", 
+            $this->form->hiddenHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that hiddenHTML returns the correct HTML when attributes are set
+     *
+     * @covers LorisForm::hiddenHTML
+     * @return void
+     */
+    function testHiddenHTMLWithAttributesSet()
+    {
+        $testAttributes = array('class' => 'class1',
+                                'pattern' => 'pattern1');                  
+        $this->form->addHidden("abc", "value1", $testAttributes);
+        $this->assertEquals(
+            "<input  name=\"abc\" class=\"class1\" value=\"value1\" pattern=\"pattern1\" type=\"hidden\">", 
+            $this->form->hiddenHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that linkHTML returns the correct HTML 
+     *
+     * @covers LorisForm::linkHTML
+     * @return void
+     */
+    function testLinkHTML()
+    {
+        $this->form->addLink("abc", "Hello", "test_url.com", "test_link");
+        $this->assertEquals(
+            "<a href=\"test_url.com\">test_link</a>", 
+            $this->form->linkHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that fileHTML returns the correct HTML when no attributes are set
+     *
+     * @covers LorisForm::fileHTML
+     * @return void
+     */
+    function testFileHTMLWithNoAttributes()
+    {
+        $this->form->addFile("abc", "Hello", array());
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"file\" >", 
+            $this->form->fileHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that fileHTML returns the correct HTML when attributes are set
+     *
+     * @covers LorisForm::fileHTML
+     * @return void
+     */
+    function testFileHTMLWithAttributesSet()
+    {
+        $testAttributes = array('class' => 'class1', 
+                                'disabled' => 'yes');
+        $this->form->addFile("abc", "Hello", $testAttributes);
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"file\" class=\"class1\" value=\"abc_default\"disabled>",
+            $this->form->fileHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that textareaHTML returns the correct HTML when no attributes are set
+     *
+     * @covers LorisForm::textareaHTML
+     * @return void
+     */
+    function testTextAreaHTMLWithNoAttributes()
+    {
+        $this->form->addTextArea("abc", "Hello", array());
+        $this->assertEquals(
+            "<textarea name=\"abc\"   ></textarea>",
+            $this->form->textareaHTML($this->form->form['abc']));
+    }
+
+    /** 
+     * Test that textareaHTML returns the correct HTML when attributes are set
+     *
+     * @covers LorisForm::textareaHTML
+     * @return void
+     */
+    function testTextAreaHTMLWithAttributesSet()
+    {
+        $testAttributes = array('class' => 'class1',
+                                'disabled' => 'yes',
+                                'rows' => '2',
+                                'cols' => '5'); 
+        $this->form->addTextArea("abc", "Hello", $testAttributes);
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->assertEquals(
+            "<textarea name=\"abc\" class=\"class1\"  rows=\"2\" cols=\"5\" disabled>abc_default</textarea>",
+            $this->form->textareaHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that checkboxHTML returns the correct HTML when no attributes are specified
+     *
+     * @covers LorisForm::checkboxHTML
+     * @return void
+     */
+    function testCheckboxHTMLWithNoAttributes()
+    {
+        $this->form->addCheckbox("abc", "Hello", array());
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"checkbox\"   /> Hello",
+            $this->form->checkboxHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that checkboxHTML returns the correctly formatted HTML when 
+     * attributes are specified
+     * 
+     * @covers LorisForm::checkboxHTML
+     * @return void
+     */
+    function testCheckboxHTMLWithAttributesSet()
+    {
+        $testAttributes = array('value' => 'value1',
+                                'disabled' => 'yes');
+        $this->form->addCheckbox("abc", "Hello", $testAttributes);
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"checkbox\" checked=\"checked\" value=\"value1\" disabled/> Hello",
+            $this->form->checkboxHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that checkboxHTML calls the advCheckboxHTML function
+     * if the element is an advcheckbox type element
+     *
+     * @covers LorisForm::checkboxHTML
+     * @return void
+     */
+    function testCheckboxHTMLCallsAdvCheckboxHTML()
+    {
+        $testAttributes = array('value' => 'value1',
+                                'disabled' => 'yes');
+        $testCheckStates = array('on' => '0',
+                                 'off' => '1');
+        
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('advCheckboxHTML'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('advCheckboxHTML');
+        $this->form->addElement('advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates);
+        $this->form->setDefaults(array('abc' => 'abc_default'));
+        $this->form->checkboxHTML($this->form->form['abc']);
+    }
+
     /**
      * Test that createText creates an element of type text
      *
@@ -615,5 +847,11 @@ class LorisForms_Test extends TestCase
         $this->assertEquals("Hello", $testText['label']);
     }
 
+    function testIsSubmitted()
+    {
+        $this->markTestIncomplete("This test is incomplete!");
+        $this->form->addElement("select", "abc", "Hello", array(), array());
+        $this->assertTrue($this->form->isSubmitted());
+    }
 }
 ?>
