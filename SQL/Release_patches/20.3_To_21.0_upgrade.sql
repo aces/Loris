@@ -223,7 +223,7 @@ INSERT INTO ConfigSettings
   WHERE
     Name="study";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'true' FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
 
 SELECT 'Running: SQL/New_patches/2019-02-08_cleanup_duplicated_data_path_in_Config.sql';
 
