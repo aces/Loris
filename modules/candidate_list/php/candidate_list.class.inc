@@ -20,17 +20,8 @@ namespace LORIS\candidate_list;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Candidate_List extends \DataFrameworkMenu {
-    public function __construct(
-        \Module $module,
-        string $page,
-        string $identifier,
-        string $commentID,
-        string $formname
-    ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
-    }
-
+class Candidate_List extends \DataFrameworkMenu
+{
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
@@ -54,7 +45,8 @@ class Candidate_List extends \DataFrameworkMenu {
      *
      * @return bool always true
      */
-    public function useSiteFilter() : bool {
+    public function useSiteFilter() : bool
+    {
         return true;
     }
 
@@ -105,12 +97,12 @@ class Candidate_List extends \DataFrameworkMenu {
         }
 
         return [
-            'site'              => $site_options,
-            'project'           => $project_options,
-            'subproject'        => $subproject_options,
-            'participantstatus' => $participant_status_options,
-            'useedc'            => $config->getSetting("useEDC"),
-        ];
+                'site'              => $site_options,
+                'project'           => $project_options,
+                'subproject'        => $subproject_options,
+                'participantstatus' => $participant_status_options,
+                'useedc'            => $config->getSetting("useEDC"),
+               ];
     }
 
     /**

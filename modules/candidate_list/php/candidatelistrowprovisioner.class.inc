@@ -31,12 +31,12 @@ namespace LORIS\candidate_list;
 clASs CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a CandidateListRowProvisioner, which gets rows for 
+     * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
      */
     function __construct()
     {
-        $config = \NDB_Config::singleton();
+        $config   = \NDB_Config::singleton();
         $maybeEDC = '';
 
         if ($config->getSetting("useEDC") === "true") {
