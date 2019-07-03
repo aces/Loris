@@ -498,29 +498,27 @@ class UtilityTest extends TestCase
         $this->assertEquals($array['day'], 16);
     }
 
-    /*
+    /**
      * Test that the calculateAge() method fails when the dates have the incorrect format
      * 
      * @dataProvider ageIncorrectFormatProvider
      * @covers Utility:calculateAge
      * @return void
      */
-    public function testCalculateAgeFormat()
+    public function testCalculateAgeFormat($first, $second)
     {
         $this->expectException('\LorisException');
-	Utility::calculateAge("1998\\08\\25", "2019\\07\\23");
+        $array = Utility::calculateAge($first, $second);
     }
 
     public function ageIncorrectFormatProvider()
     {
-        return [
-            ["19980825", "20190611"],
-            ["1990\\07\\05", "2018\\05\\23"],
-            ["1990", "2018"],
-            ["1990_07_05", "2019_09_65"],
-            [" ", " "],
-            [null, null]
-        ];
+        return array(
+            array("1990\\07\\05", "2018\\05\\23"),
+            array("1990", "2018"),
+            array("1990_07_05", "2019_09_65"),
+            array(" ", " "),
+        );
     }
 
     /**
