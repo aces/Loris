@@ -236,7 +236,7 @@ class Stats_MRI extends \NDB_Form
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
-            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
             $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
             $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);

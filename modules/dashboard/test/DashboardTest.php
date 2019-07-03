@@ -78,13 +78,13 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => '999888',
-             'RegistrationCenterID' => '55',
-             'UserID'               => '1',
-             'PSCID'                => '8888',
-             'ProjectID'            => '7777',
-             'Entity_type'          => 'Human',
-             'Active'               => 'Y',
+             'CandID'                => '999888',
+             'RegistrationCenterID'  => '55',
+             'UserID'                => '1',
+             'PSCID'                 => '8888',
+             'RegistrationProjectID' => '7777',
+             'Entity_type'           => 'Human',
+             'Active'                => 'Y',
             )
         );
         $this->DB->insert(
@@ -93,6 +93,7 @@ class DashboardTest extends LorisIntegrationTest
              'ID'           => '222222',
              'CandID'       => '999888',
              'CenterID'     => '55',
+             'ProjectID'    => '7777',
              'UserID'       => '1',
              'MRIQCStatus'  => '',
              'SubprojectID' => '55',

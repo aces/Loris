@@ -145,7 +145,7 @@ class Dashboard extends \NDB_Form
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
-		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
+		             LEFT JOIN Project p ON (s.ProjectID=p.ProjectID ) 
                      WHERE FIND_IN_SET(s.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
@@ -329,8 +329,10 @@ class Dashboard extends \NDB_Form
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*)
              FROM candidate c
-             WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
-             AND c.RegistrationCenterID <> 1",
+             WHERE c.Active='Y' 
+              AND c.RegistrationProjectID=:PID 
+              AND c.Entity_type='Human'
+              AND c.RegistrationCenterID <> 1",
             array('PID' => $projectID)
         );
         return $totalRecruitment;
@@ -371,7 +373,7 @@ class Dashboard extends \NDB_Form
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
-             WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
+             WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
              AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
              'sex' => $sex,

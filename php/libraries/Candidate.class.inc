@@ -84,7 +84,7 @@ class Candidate
         $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -182,16 +182,17 @@ class Candidate
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID    centerID of the site to which the
-     *                                  candidate will belong
-     * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
-     * @param string|null $edc         estimated date of confinement written as
-     *                                      YYYY-MM-DD. Value should be null
-     *                                      unless the useEDC setting is
-     *                                      configured to be true.
-     * @param string      $sex         sex, either 'Male' or 'Female'
-     * @param string|null $PSCID       PSCID specified by the user, if available
-     * @param int|null    $projectID   The project ID, if available
+     * @param int         $centerID              centerID of the site to which the
+     *                                           candidate will belong
+     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
+     * @param string|null $edc                   estimated date of confinement
+     *                                           written as YYYY-MM-DD. Value should
+     *                                           be null unless the useEDC setting
+     *                                           is configured to be true.
+     * @param string      $sex                   sex, either 'Male' or 'Female'
+     * @param string|null $PSCID                 PSCID specified by the user,
+     *                                           if available
+     * @param int|null    $registrationProjectID The project ID, if available
      *
      * @return int   $candID      candidate id of the new candidate
      * @throws Exception
@@ -203,7 +204,7 @@ class Candidate
         ?string $edc,
         string $sex,
         ?string $PSCID = null,
-        int $projectID = null
+        int $registrationProjectID = null
     ): int {
         $factory = NDB_Factory::singleton();
 
@@ -246,17 +247,17 @@ class Candidate
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'RegistrationCenterID' => $centerID,
-                     'PSCID'                => $PSCID,
-                     'DoB'                  => $dateOfBirth,
-                     'EDC'                  => $edc,
-                     'Sex'                  => $sex,
-                     'ProjectID'            => $projectID,
-                     'Date_active'          => date('Y-m-d'),
-                     'Date_registered'      => date('Y-m-d'),
-                     'Entity_type'          => 'Human',
-                     'RegisteredBy'         => $user->getUsername(),
-                     'UserID'               => $user->getUsername(),
+                     'RegistrationCenterID'  => $centerID,
+                     'PSCID'                 => $PSCID,
+                     'DoB'                   => $dateOfBirth,
+                     'EDC'                   => $edc,
+                     'Sex'                   => $sex,
+                     'RegistrationProjectID' => $registrationProjectID,
+                     'Date_active'           => date('Y-m-d'),
+                     'Date_registered'       => date('Y-m-d'),
+                     'Entity_type'           => 'Human',
+                     'RegisteredBy'          => $user->getUsername(),
+                     'UserID'                => $user->getUsername(),
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
@@ -411,7 +412,7 @@ class Candidate
      */
     function getProjectID(): int
     {
-        return intval($this->candidateInfo["ProjectID"]);
+        return intval($this->candidateInfo["RegistrationProjectID"]);
     }
 
     /**

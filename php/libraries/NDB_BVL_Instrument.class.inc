@@ -944,10 +944,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         //get examiner certifications for profiles part of IBIS2
-        $candID  = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID    = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $sessionID = $this->getSessionID();
+
         $project = $db->pselectOne(
-            "SELECT ProjectID from candidate where CandID =:cnd_id",
-            array('cnd_id' => $candID)
+            "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
+            array(
+             'cnd_id' => $candID,
+             'sid'    => $sessionID,
+            )
         );
 
         list(

@@ -269,7 +269,7 @@ class Project
               candidate
             WHERE
               active = 'Y' AND
-              FIND_IN_SET(IFNULL(projectId, '-1'), :v_project_id)
+              FIND_IN_SET(IFNULL(RegistrationProjectID, '-1'), :v_project_id)
             ",
             array('v_project_id' => implode(',', $p))
         );

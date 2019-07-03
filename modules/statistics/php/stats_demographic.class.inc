@@ -185,7 +185,7 @@ class Stats_Demographic extends \NDB_Form
                    'ID'   => $demographicProject,
                    'Name' => $projects[$demographicProject] ?? '',
                   );
-            $paramProject        ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
 

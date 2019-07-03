@@ -49,7 +49,6 @@ class Candidate_List extends \DataFrameworkMenu
     {
         return true;
     }
-
     /**
      * Return the list of field options required to be serialized to JSON
      * in order to render the frontend.
