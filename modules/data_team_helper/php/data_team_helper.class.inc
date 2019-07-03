@@ -250,7 +250,7 @@ class Data_Team_Helper extends \NDB_Form
         }
 
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND pr.ProjectID = :PID";
+            $where         .= " AND psr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
