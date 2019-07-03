@@ -791,10 +791,9 @@ class LorisForms_Test extends TestCase
      */
     function testCheckboxHTMLCallsAdvCheckboxHTML()
     {
-        $testAttributes = array('value' => 'value1',
-                                'disabled' => 'yes');
-        $testCheckStates = array('on' => '0',
-                                 'off' => '1');
+        $testAttributes = array('disabled' => 'yes');
+        $testCheckStates = array('on' => 'default_off',
+                                 'off' => 'default_on');
         
         $this->form = $this->getMockBuilder('LorisForm')
             ->setMethods(array('advCheckboxHTML'))
@@ -802,8 +801,74 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('advCheckboxHTML');
         $this->form->addElement('advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates);
+        $this->form->setDefaults(array('abc' => 'default_on'));
+        $this->assertEquals(
+            null, 
+            $this->form->checkboxHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that radioHTML returns the correct HTML when no attributes specified
+     *
+     * @covers LorisForm::radioHTML
+     * @return void
+     */
+    function testRadioHTMLWithNoAttributes()
+    {
+        $this->form->addRadio("abc", "Hello", array(), array());
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"radio\" checked=\"checked\"  /> Hello", 
+            $this->form->radioHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that radioHTML returns the correct HTML when attributes are specified
+     *
+     * @covers LorisForm::radioHTML
+     * @return void
+     */
+    function testRadioHTMLWithAttributesSet()
+    {
+        $testAttributes = array('value' => 'abc_default',
+                                'disabled' => 'yes');
+        $this->form->addRadio("abc", "Hello", array(), $testAttributes);
         $this->form->setDefaults(array('abc' => 'abc_default'));
-        $this->form->checkboxHTML($this->form->form['abc']);
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"radio\" checked=\"checked\" value=\"abc_default\" disabled/> Hello", 
+            $this->form->radioHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that headerHTML returns the correct HTML
+     *
+     * @covers LorisForm::headerHTML
+     * @return void
+     */
+    function testHeaderHTML()
+    {
+        $testAttributes = array('class' => 'class1',
+                                'align' => 'left');
+        $this->form->addHeader("abc", "Hello", $testAttributes);
+        $this->assertEquals(
+            "<h2 class=\"class1\" align=\"left\">Hello</h2>", 
+            $this->form->headerHTML($this->form->form['abc']));
+    }
+
+    /**
+     * Test that advCheckboxHTML returns the correct HTML
+     *
+     * @covers LorisForm::advCheckboxHTML
+     * @return void
+     */
+    function testAdvCheckboxHTML()
+    {
+        $testAttributes = array('disabled' => 'yes');
+        $testCheckStates = array('default_off', 'default_on');
+        $this->form->addElement('advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates);
+        $this->form->setDefaults(array('abc' => 'default_on'));
+        $this->assertEquals(
+            "<input name=\"abc\" type=\"hidden\" value=\"default_off\"><input name=\"abc\" type=\"checkbox\" checked=\"checked\" value=\"default_on\" disabled/> text",
+            $this->form->advCheckboxHTML($this->form->form['abc']));
     }
 
     /**
@@ -847,11 +912,258 @@ class LorisForms_Test extends TestCase
         $this->assertEquals("Hello", $testText['label']);
     }
 
+    /**
+     * Test that isSubmitted returns true/false depending on the element
+     * TODO I am unsure of how submission can be accomplished in the backend
+     *      It might be something only specified in the frontend
+     * 
+     * @covers LorisForm::isSubmitted
+     * @return void
+     */
     function testIsSubmitted()
     {
         $this->markTestIncomplete("This test is incomplete!");
         $this->form->addElement("select", "abc", "Hello", array(), array());
         $this->assertTrue($this->form->isSubmitted());
+    }
+   
+    /**
+     * Test that toArray returns the correctly formatted array for the element in the form
+     *
+     * @covers LorisForm::toArray
+     * @return void
+     */
+    function testToArray()
+    {
+        $testAttributes = array('value' => 'radio_default',
+                                'disabled' => 'yes');
+        $this->form->addRadio("radio_el", "Hello", array(), $testAttributes);
+
+        $testAttributes = array('class' => 'class1',
+                                'disabled' => 'yes',
+                                'rows' => '2',
+                                'cols' => '5');
+        $this->form->addTextArea("textarea_el", "Hello", $testAttributes);
+        $this->form->setDefaults(array('radio_el' => 'radio_default',
+                                       'textarea_el' => 'textarea_default'));
+
+        $result = array('radio_el' => array('value' => 'radio_default',
+                                            'type' => 'radio',
+                                            'disabled' => true,
+                                            'label' => 'Hello',
+                                            'options' => array(),
+                                            'html' => '<input name="radio_el" type="radio" checked="checked" value="radio_default" disabled/> Hello',
+                                            'name' => 'radio_el'),
+                        'textarea_el' => array('class' => 'class1',
+                                               'disabled' => true,
+                                               'rows' => '2',
+                                               'cols' => '5',
+                                               'type' => 'textarea',
+                                               'label' => 'Hello',
+                                               'html' => '<textarea name="textarea_el" class="class1"  rows="2" cols="5" disabled>textarea_default</textarea>',
+                                               'name' => 'textarea_el'),
+                        'errors' => array());
+        $this->assertEquals(
+            $result, 
+            $this->form->toArray());
+    }
+
+    /**
+     * Test that toElementArray returns the correctly formatted array for the element in the form
+     *
+     * @covers LorisForm::toElementArray
+     * @return void
+     */
+    function testToElementArray()
+    {
+        $testAttributes = array('value' => 'radio_default',
+                                'disabled' => 'yes');
+        $this->form->addRadio("radio_el", "Hello", array(), $testAttributes);
+
+        $testAttributes = array('class' => 'class1',
+                                'disabled' => 'yes',
+                                'rows' => '2',
+                                'cols' => '5');
+        $this->form->addTextArea("textarea_el", "Hello", $testAttributes);
+        $this->form->setDefaults(array('radio_el' => 'radio_default',
+                                       'textarea_el' => 'textarea_default'));
+
+        $result = array('elements' => array(
+                                          array('value' => 'radio_default',
+                                                'type' => 'radio',
+                                                'disabled' => true,
+                                                'label' => 'Hello',
+                                                'options' => array(),
+                                                'html' => '<input name="radio_el" type="radio" checked="checked" value="radio_default" disabled/> Hello',
+                                                'name' => 'radio_el'),
+                                          array('class' => 'class1',
+                                               'disabled' => true,
+                                               'rows' => '2',
+                                               'cols' => '5',
+                                               'type' => 'textarea',
+                                               'label' => 'Hello',
+                                               'html' => '<textarea name="textarea_el" class="class1"  rows="2" cols="5" disabled>textarea_default</textarea>',
+                                               'name' => 'textarea_el')),
+                        'type' => 'page',
+                        'errors' => array(),
+                        'enctype' => '');
+        $this->assertEquals(
+            $result,
+            $this->form->toElementArray());
+    }
+
+    /**
+     * Test that addRule throws a LorisException if the rule type is not one of the allowed rules
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleIfIncorrectType()
+    {
+        $this->expectException('\LorisException');
+        $this->form->addText("abc", "Hello", array());
+        $this->form->addRule($this->form->form['abc'], "message", "not_a_type");
+    }
+
+    /**
+     * Test that when a 'compare' rule is added, it adds the 'compare' attribute to
+     * both elements with the other element's name as its value
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleIfCompareType()
+    {
+        $this->form->addText("abc", "Hello", array());
+        $this->form->addText("xyz", "Bye", array());
+        $this->form->addRule(array("abc", "xyz"), "Compare them!", "compare");
+    
+        $this->assertAttribute('abc', 'compare', 'xyz');
+        $this->assertAttribute('xyz', 'compare', 'abc');
+    }
+
+    /**
+     * Test that when a 'requiredIf' rule is added, it adds the correct rule information 
+     * to the formRules array of the form object
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleIfRequiredIfType()
+    {
+        $this->form->addText("abc", "Hello", array());
+        $this->form->addText("xyz", "Bye", array());
+        $this->form->addRule(array("abc", "xyz"), "Required if!", "requiredIf", "format");
+
+        $this->assertEquals(
+            array("elements" => array("abc", "xyz"),
+                  "format" => "format",
+                  "message" => "Required if!"),
+            $this->form->formRules[0]['requiredIf']);
+    }
+
+    /** 
+     * Test that addRule throws a LorisException if the element name is not a string
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleIfElementNameNotString()
+    {
+        $this->expectException('\LorisException');
+        $this->form->addRule(0, "Message", "required");
+    }
+  
+    /**
+     * Test that addRule throws a LorisException if the element is not set in the form
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleIfElementNotSet()
+    {
+       $this->expectException('\LorisException');
+       $this->form->addRule("abc", "Message", "required");
+    }
+ 
+    /**
+     * Test that when a 'required' rule is added, the correct information is added
+     * to the 'required' and 'requiredMsg' attributes of the element
+     * 
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleForRequiredType()
+    {
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addRule("abc", "Required!", "required");
+       $this->assertAttribute("abc", "required", true);
+       $this->assertAttribute("abc", "requireMsg", "Required!");
+    }
+
+    /**
+     * Test that when a 'numeric' rule is added, the correct information is added
+     * to the 'numeric' and 'numericMsg' attributes of the element
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleForNumericType()
+    {
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addRule("abc", "Numeric!", "numeric");
+       $this->assertAttribute("abc", "numeric", true);
+       $this->assertAttribute("abc", "numericMsg", "Numeric!");
+    }
+
+    /** 
+     * Test that when a 'regex' rule is added, the correct information is added
+     * to the 'regex' attribute of the element
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleForRegexType()
+    {
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addRule("abc", "Regex!", "regex", "match_regex");
+       $this->assertEquals(
+           array('regexMsg' => 'Regex!',
+                 'match' => 'match_regex'),
+           $this->form->form['abc']['regex'][0]);
+    }
+
+    /**
+     * Test that when a 'email' rule is added, the correct information is added
+     * to the 'email' and 'emailMsg' attributes of the element
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleForEmailType()
+    {
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addRule("abc", "Email!", "email");
+       $this->assertAttribute("abc", "email", true);
+       $this->assertAttribute("abc", "emailMsg", "Email!");
+    }
+
+    /**
+     * Test that when a 'maxlength' rule is added, the correct information is added
+     * to the 'maxlength' attribute of the element
+     *
+     * @covers LorisForm::addRule
+     * @return void
+     */
+    function testAddRuleForMaxLengthType()
+    {
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addText("abc", "Hello", array());
+       $this->form->addRule("abc", "Max Length!", "maxlength", 20);
+       $this->assertEquals(
+           array('message' => "Max Length!",
+                 'maxlength' => 20),
+           $this->form->form['abc']['maxlength']);
     }
 }
 ?>
