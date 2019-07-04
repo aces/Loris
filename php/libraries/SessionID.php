@@ -50,9 +50,9 @@ class SessionID extends ValidatableIdentifier
      */
     protected function validate(string $value): bool
     {
-        return (intval($value) > 0)
-            && (strlen($value) <= self::SESSIONID_MAX_LENGTH)
-            && (is_integer($value));
+        return intval($value) > 0
+            && strlen($value) <= self::SESSIONID_MAX_LENGTH
+            && ctype_digit($value);
     }
 
     /**
