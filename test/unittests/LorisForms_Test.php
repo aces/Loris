@@ -343,6 +343,40 @@ class LorisForms_Test extends TestCase
     }
 
     /**
+     * Test that the addGroup wrapper adds a group element to the form 
+     * with the correct 'elements' array
+     *
+     * @covers LorisForm::addGroup
+     * @return void
+     */    
+    function testAddGroup()
+    {
+        $testOptions = array('prefix_wrapper' => 'abc_prefix',
+                             'postfix_wrapper' => 'abc_postfix');
+        $textEl = $this->form->createText("abc_text", "Hello_text", array());
+        $textareaEl = $this->form->createTextArea("abc_textarea", "Hello_textarea");
+        $this->form->addGroup(array($textEl, $textareaEl), "abc_group", "Hello", ", ", $testOptions);
+        
+        $this->assertType('abc_group', 'group');
+        $this->assertLabel('abc_group', 'Hello');
+        $this->assertAttribute('abc_group', 'elements', array($textEl, $textareaEl));
+        $this->assertAttribute('abc_group', 'delimiter', ', ');
+        $this->assertAttribute('abc_group', 'options', $testOptions);       
+    }
+
+    /**
+     * Test that addPageBreak wrappers adds a page break element to the form
+     *
+     * @covers LorisForm::addPageBreak
+     * @return void
+     */
+    function testAddPageBreak()
+    {
+        $this->form->addPageBreak("abc", "Hello", array());
+        $this->assertType("abc", "page");
+        $this->assertLabel("abc", "Hello");
+    }
+    /**
      * Test that the addElement wrapper with type "select" adds an element of
      * the appropriate type to the page
      *
@@ -428,6 +462,292 @@ class LorisForms_Test extends TestCase
     }
 
     /**
+     * Test that the addElement wrapper with type "static" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementStatic()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addStatic'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addStatic');
+        $this->form->addElement("static", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "textarea" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementTextArea()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addTextArea'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addTextArea');
+        $this->form->addElement("textarea", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "header" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementHeader()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addHeader'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addHeader');
+        $this->form->addElement("header", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "radio" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementRadio()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addRadio'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addRadio');
+        $this->form->addElement("radio", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "hidden" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementHidden()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addHidden'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addHidden');
+        $this->form->addElement("hidden", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "link" adds an element of
+     * the appropriate type to the page
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementLink()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addLink'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addLink');
+        $this->form->addElement("link", "abc", "Hello");
+    }
+
+    /**
+     * Test that the addElement wrapper with type "advcheckbox" adds an element of
+     * the appropriate type and with the checkStates and text attributes if specified
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementAdvCheckboxWithStatesAndText()
+    {
+        $testAttributes = array('disabled' => 'yes');
+        $testCheckStates = array('on' => 'default_off',
+                                 'off' => 'default_on');
+        $this->form->addElement("advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates);
+        $this->assertType("abc", "advcheckbox");
+        $this->assertEquals($testCheckStates, $this->form->form['abc']['checkStates']);
+        $this->assertEquals("text", $this->form->form['abc']['_text']);
+    }
+
+    /**
+     * Test that the addElement wrapper with type "advcheckbox" adds an element of
+     * the appropriate type 
+     *
+     * @covers LorisForm::addElement
+     * @return void
+     */
+    function testAddElementAdvCheckboxWithoutExtra()
+    {
+        $testAttributes = array('disabled' => 'yes');
+        $this->form->addElement("advcheckbox", "abc", "Hello", $testAttributes);
+        $this->assertType("abc", "advcheckbox");
+        $this->assertTrue(!isset($this->form->form['abc']['checkStates']));
+        $this->assertTrue(!isset($this->form->form['abc']['checkStates']));
+    }
+
+    /** 
+     * Test that createElement wrapper with type "text" creates an element 
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementText()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('createText'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('createText');
+        $this->form->createElement("text", "abc", "Hello", array(), array());
+    }
+
+    /**
+     * Test that createElement wrapper with type "select" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementSelect()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('createSelect'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('createSelect');
+        $this->form->createElement("select", "abc", "Hello", array(), array());
+    }
+
+    /**
+     * Test that createElement wrapper with type "submit" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementSubmit()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('createSubmit'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('createSubmit');
+        $this->form->createElement("submit", "abc", "Hello", array(), array());
+    }
+
+    /**
+     * Test that createElement wrapper with type "static" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementStatic()
+    {
+        $testStatic = $this->form->createElement("static", "abc");
+        $this->assertEquals("static", $testStatic['type']);
+    }
+
+    /**
+     * Test that createElement wrapper with type "advcheckbox" creates an element
+     * of the appropriate type with the checkStates and text attributes set
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementAdvCheckboxWithStatesAndText()
+    {
+        $testAttributes = array('disabled' => 'yes');
+        $testCheckStates = array('on' => 'default_off',
+                                 'off' => 'default_on');
+        $testAdv = $this->form->createElement("advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates);
+        $this->assertEquals("advcheckbox", $testAdv['type']);
+        $this->assertEquals($testCheckStates, $testAdv['checkStates']);
+        $this->assertEquals("text", $testAdv['_text']);
+    }
+
+    /**
+     * Test that createElement wrapper with type "advcheckbox" creates an element
+     * of the appropriate type without the checkStates and text attributes set
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementAdvCheckboxWithoutExtra()
+    {
+        $testAttributes = array('disabled' => 'yes');
+        $testAdv = $this->form->createElement("advcheckbox", "abc", "Hello", $testAttributes);
+        $this->assertEquals("advcheckbox", $testAdv['type']);
+        $this->assertTrue(!isset($testAdv['checkStates']));
+        $this->assertTrue(!isset($testAdv['_text']));
+    }
+
+    /**
+     * Test that createElement wrapper with type "date" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementDate()
+    {
+        $testDate = $this->form->createElement("date", "abc");
+        $this->assertEquals("date", $testDate['type']);
+        $this->assertTrue(isset($testDate['options']));
+    }
+
+    /**
+     * Test that createElement wrapper with type "radio" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementRadio()
+    {
+        $testRadio = $this->form->createElement("radio", "abc");
+        $this->assertEquals("radio", $testRadio['type']);
+    }
+
+    /**
+     * Test that createElement wrapper with type "password" creates an element
+     * of the appropriate type
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementPassword()
+    {
+        $testPassword = $this->form->createElement("password", "abc");
+        $this->assertEquals("password", $testPassword['type']);
+    }
+
+    /**
+     * Test that createElement wrapper throws an exception if an invalid element type is given
+     *
+     * @covers LorisForm::createElement
+     * @return void
+     */
+    function testCreateElementThrowsException()
+    {
+        $this->expectException('\LorisException');
+        $this->form->createElement("invalid_type", "abc");
+    }
+
+    /**
      * Test that getValue returns null if no default value is set for the element
      * 
      * @covers LorisForm::getValue
@@ -452,6 +772,73 @@ class LorisForms_Test extends TestCase
         $this->form->addSelect("abc", "Hello", array());
         $this->form->setDefaults(array('abc' => 'abc_default'));
         $this->assertEquals('abc_default', $this->form->getValue("abc"));
+    }
+
+    /**
+     * Test that getGroupValues returns an array with null values when
+     * no defaults are set for the elements given
+     *
+     * @covers LorisForm::getGroupValues
+     * @return void
+     */
+    function testGetGroupValuesReturnsNullWithNoDefaults()
+    {
+        $this->form->addElement("select", "abc", "Hello");
+        $this->form->addElement("text", "xyz", "Bye");
+        $result = array();
+        $this->form->getGroupValues(array("abc", "xyz"), $result);
+        $this->assertEquals(
+            array('abc' => null,
+                  'xyz' => null),
+            $result);
+    } 
+
+    /**
+     * Test that getGroupValues returns an array with the default values
+     * of the array of elements given
+     *
+     * @covers LorisForm::getGroupValues
+     * @return void
+     */
+    function testGetGroupValues()
+    {
+        $this->form->addElement("select", "abc", "Hello");
+        $this->form->addElement("text", "xyz", "Bye");
+        $this->form->setDefaults(array('abc' => 'abc_default',
+                                       'xyz' => 'xyz_default'));
+        $result = array();
+        $this->form->getGroupValues(array("abc", "xyz"), $result);
+        $this->assertEquals(
+            array('abc' => 'abc_default', 
+                  'xyz' => 'xyz_default'),
+            $result);
+    }
+
+    /**
+     * Test that getGroupValues iterates through the elements of a group element
+     * 
+     * @covers LorisForm::getGroupValues
+     * @return void
+     */
+    function testGetGroupValuesWithGroupElement()
+    {
+        $this->form->addElement("select", "abc", "Hello");
+        
+        $testOptions = array('prefix_wrapper' => 'abc_prefix',
+                             'postfix_wrapper' => 'abc_postfix');
+        $textEl = $this->form->createText("abc_text", "Hello_text", array());
+        $textareaEl = $this->form->createTextArea("abc_textarea", "Hello_textarea");
+        $this->form->addGroup(array($textEl, $textareaEl), "abc_group", "Hello", ", ", $testOptions);
+        
+        $this->form->setDefaults(array('abc' => 'abc_default',
+                                       'abc_group' => 'group_default'));
+        $result = array();
+        $this->form->getGroupValues(array("abc", "abc_group"), $result);
+        $this->assertEquals(
+            array('abc' => 'abc_default',
+                  0 => null,
+                  1 => null),
+            $result);
     }
 
     /**
@@ -546,21 +933,20 @@ class LorisForms_Test extends TestCase
 
     /**
      * Test that groupHTML returns the correct HTML format
-     * TODO Unsure of how to format the 'elements' array
-     *
+     * 
      * @covers LorisForm::groupHTML
      * @return void
      */
     function testGroupHTML()
     {
-        $this->markTestIncomplete("This test is incomplete!");    
-        $testAttributes = array('elements' => array($this->form->createText("def", "Test")));  
-        
-        $testOptions = array('prefix_wrapper' => 'prefix1',
-                             'postfix_wrapper' => 'postfix1');
-        
-        $this->form->addSelect("abc", "Hello", $testOptions, $testAttributes);
-        $this->assertEquals(null, $this->form->groupHTML($this->form->form["abc"]));
+        $testOptions = array('prefix_wrapper' => 'abc_prefix',
+                             'postfix_wrapper' => 'abc_postfix');
+        $textEl = $this->form->createText("abc_text", "Hello_text", array());
+        $textareaEl = $this->form->createTextArea("abc_textarea", "Hello_textarea");
+        $this->form->addGroup(array($textEl, $textareaEl), "abc_group", "Hello", ", ", $testOptions);
+        $this->assertEquals(
+            "abc_prefix<input name=\"abc_text\" type=\"text\"  >abc_postfix, abc_prefix<textarea name=\"abc_textarea\"   ></textarea>abc_postfix, ", 
+            $this->form->groupHTML($this->form->form['abc_group']));
     }
 
     /**
@@ -912,6 +1298,38 @@ class LorisForms_Test extends TestCase
         $this->assertEquals("Hello", $testText['label']);
     }
 
+    /** 
+     * Test that createSelect creates an element of type 'select'
+     * and that the options attribute is properly set
+     *
+     * @covers LorisForm::createSelect
+     * @return void
+     */
+    function testCreateSelect()
+    {
+        $testSelect = $this->form->createSelect("abc", "Hello", array(), array());
+        $this->assertEquals("select", $testSelect['type']);
+        $this->assertEquals("Hello", $testSelect['label']);
+        $this->assertTrue(isset($testSelect['options']));
+        $this->assertTrue(!isset($testSelect['multiple']));
+    }
+
+    /**
+     * Test that createSelect creates an element of type 'select
+     * and that the 'multiple' attribute is set if specified
+     * 
+     * @covers LorisForm::createSelect
+     * @return void
+     */
+    function testCreateMultiSelect()
+    {
+        $testSelect = $this->form->createSelect("abc", "Hello", array(), array('multiple' => 'multiple'));
+        $this->assertEquals("select", $testSelect['type']);
+        $this->assertEquals("Hello", $testSelect['label']);
+        $this->assertTrue(isset($testSelect['options']));
+        $this->assertTrue(isset($testSelect['multiple']));
+    }
+
     /**
      * Test that isSubmitted returns true/false depending on the element
      * TODO I am unsure of how submission can be accomplished in the backend
@@ -1165,5 +1583,117 @@ class LorisForms_Test extends TestCase
                  'maxlength' => 20),
            $this->form->form['abc']['maxlength']);
     }
+
+    /**
+     * Test that addFormRule adds the given function to the formRules array 
+     *
+     * @covers LorisForm::addFormRule
+     * @return void
+     */
+    function testAddFormRule()
+    {
+        $this->form->addFormRule($this->form->validate());
+        $this->assertEquals(
+            $this->form->validate(),
+            $this->form->formRules[0]);
+    }
+
+    /**
+     * Test that getElement returns a new LorisFormElement() when
+     * the type of the element is not 'file'
+     *
+     * @covers LorisForm::getElement
+     * @return void
+     */
+    function testGetElement()
+    {
+        $this->form->addSelect("abc", "Hello", array(), array());
+        $this->assertEquals(
+            new LorisFormElement(), 
+            $this->form->getElement("abc"));
+    } 
+
+    /**
+     * Test that getElement returns a LorisFormFileElement() when
+     * the type of the element is 'file'
+     * @covers LorisForm::getElement
+     * @return void
+     */
+    function testGetElementFile()
+    {
+        $this->form->addFile("abc", "Hello", array());
+        $this->assertEquals(
+            new LorisFormFileElement($this->form->form['abc']),
+            $this->form->getElement("abc"));
+    }
+
+    /**
+     * Test that setElementError correctly sets the 'error' attribute of the element
+     * and adds to the errors array of the form
+     *
+     * @covers LorisForm::setElementError
+     * @return void
+     */
+    function testSetElementError()
+    {
+        $this->form->addText("abc", "Hello", array());
+        $this->form->setElementError("abc", "abc has an error!");
+        $this->assertAttribute("abc", "error", "abc has an error!");
+        $this->assertEquals("abc has an error!", $this->form->errors['abc']);
+    }
+
+    /**
+     * Test that getElementError returns the correct error message for the given element
+     * 
+     * @covers LorisForm::getElementError
+     * @return void
+     */
+    function testGetElementError()
+    {
+        $this->form->addText("abc", "Hello", array());
+        $this->form->setElementError("abc", "abc has an error!");
+        $this->assertEquals("abc has an error!", $this->form->getElementError("abc"));
+    }
+
+    /** 
+     * Test that getElementError returns null if the element does not have an error message
+     *
+     * @covers LorisForm::getElementError
+     * @return void
+     */
+    function testGetElementErrorReturnsNull()
+    {
+        $this->form->addText("abc", "Hello", array());
+        $this->assertEquals(null, $this->form->getElementError("abc"));
+    }
+
+    /**
+     * Test that updateAttributes properly updates the 'action' and 'encrypt' attributes of the form
+     *
+     * @covers LorisForm::updateAttributes
+     * @return void
+     */
+    function testUpdateAttributes()
+    {
+        $testAttributes = array('action' => 'new_action',
+                                'encrypt' => 'new_encrypt');
+        $this->form->updateAttributes($testAttributes);
+        $this->assertEquals("action='new_action'", $this->form->action);
+        $this->assertEquals("encrypt='new_encrypt'", $this->form->encrypt);
+    }
+
+    /**
+     * Test that updateAttributes throws a LorisException if the attribute is not of type 'action' or 'encrypt'
+     *
+     * @covers LorisForm::updateAttributes
+     * @return void 
+     */
+    function testUpdateAttributesThrowsException()
+    {
+        $this->expectException('\LorisException');
+        $testAttributes = array('invalid_attrib' => 'value');
+        $this->form->updateAttributes($testAttributes);
+    }
+
 }
 ?>
