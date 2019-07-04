@@ -1,7 +1,7 @@
 # Timepoint List - Test Plan:
 
 1.  **Module access permissions**
-    - For a candidate of the same site as your user, accessing the timepoint_list module via the url (https://test.loris.ca/\<candidateID\>) should not require any permission. With data entry permisson, click on the "Open Profile" button can also lead to the page.
+    - For a candidate of the same site as your user, accessing the timepoint_list module via the url (https://\<yourInstance>\.loris.ca/\<candidateID\>) should not require any permission (With data entry permisson, click on the "Open Profile" button can also lead to the page).
     - For a candidate of a different site than your user, ensure that either 
         - `access_all_profiles` permission is required 
         - or that the candidate's registration site is the same as the user's site
