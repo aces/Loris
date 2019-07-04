@@ -9,7 +9,7 @@ ALTER TABLE session ADD COLUMN ProjectID int(10) unsigned NOT NULL;
 
 -- Re-add necessary FOREIGN KEY constraints
 ALTER TABLE project_subproject_rel ADD CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE;
-ALTER TABLE candidate ADD CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`);
+ALTER TABLE candidate ADD CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE;
 ALTER TABLE session ADD CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`);
 
 -- Populate new session field with pre recorded candidate project

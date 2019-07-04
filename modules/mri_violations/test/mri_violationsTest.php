@@ -39,6 +39,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $this->DB->insert(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
+            )
+        );
+        $this->DB->insert(
             "psc",
             array(
              'CenterID'  => '55',
@@ -71,7 +78,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'RegistrationCenterID'  => '55',
              'UserID'                => '2',
              'PSCID'                 => '6666',
-             'RegistrationProjectID' => '5555',
+             'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
@@ -262,6 +269,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
              'CenterID' => '55',
              'Name'     => 'TESTinPSC',
+            )
+        );
+        $this->DB->delete(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
             )
         );
         parent::tearDown();

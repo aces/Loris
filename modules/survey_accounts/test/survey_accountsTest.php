@@ -11,7 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ .
-              "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Survey accounts automated integration tests
  *
@@ -27,20 +27,20 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 {
     // UI location on the page
     static $pscid      = "#surveyAccounts_filter > div > div > fieldset >".
-                         " div:nth-child(2) > div > div > input";
+    " div:nth-child(2) > div > div > input";
     static $visit      = "#surveyAccounts_filter > div > div > fieldset >".
-                         " div:nth-child(3) > div > div > select";
+    " div:nth-child(3) > div > div > select";
     static $email      = "#surveyAccounts_filter > div > div > fieldset >".
-                         " div:nth-child(4) > div > div > input";
+    " div:nth-child(4) > div > div > input";
     static $instrument = "#surveyAccounts_filter > div > div > fieldset >".
-                         " div:nth-child(5) > div > div > select";
+    " div:nth-child(5) > div > div > select";
     // clear filter button
     static $clearFilter = ".col-sm-9 > .btn";
     static $add         = "#default-panel > div > div > div.table-header >".
-                          " div > div > div:nth-child(2) > button:nth-child(1)";
+    " div > div > div:nth-child(2) > button:nth-child(1)";
     // header of the table
     static $table = "#default-panel > div > div > div.table-header".
-                    " > div > div > div:nth-child(1)";
+    " > div > div > div:nth-child(1)";
     /**
      * Insert testing data
      *
@@ -49,20 +49,28 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $this->DB->insert(
-             "psc",
-             array(
-              'CenterID'  => '55',
-              'Name'      => 'TESTinPSC',
-              'Alias'     => 'tst',
-              'MRI_alias' => 'test',
-             )
-         );
+
         $this->DB->insert(
             "subproject",
             array(
              'SubprojectID' => '55',
              'title'        => 'TESTinSubproject',
+            )
+        );
+        $this->DB->insert(
+            "psc",
+            array(
+             'CenterID'  => '55',
+             'Name'      => 'TESTinPSC',
+             'Alias'     => 'tst',
+             'MRI_alias' => 'test',
+            )
+        );
+        $this->DB->insert(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
             )
         );
           $this->DB->insert(
@@ -157,6 +165,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "psc",
             array('CenterID' => '55')
         );
+        $this->DB->delete(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
+            )
+        );
         parent::tearDown();
     }
     /**
@@ -173,7 +188,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
                 ->getText();
         $this->assertContains("Survey Accounts", $bodyText);
-         $this->resetPermissions();
+        $this->resetPermissions();
     }
     /**
      * Tests that, when loading the Survey without right permission, some
@@ -183,13 +198,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsWithoutPermission()
     {
-          $this->setupPermissions(array(""));
-          $this->safeGet($this->url . "/survey_accounts/");
-          $bodyText = $this->safeFindElement(
-              WebDriverBy::cssSelector("body")
-          )->getText();
-           $this->assertContains("You do not have access to this page.", $bodyText);
-           $this->resetPermissions();
+        $this->setupPermissions(array(""));
+        $this->safeGet($this->url . "/survey_accounts/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
     }
     /**
      * Tests that, when add a survey without visit tag
@@ -199,45 +214,45 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsAddSurvey()
     {
-          //Visit does not exist for given candidate.
-          $this->safeGet($this->url . "/survey_accounts/");
+        //Visit does not exist for given candidate.
+        $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
         $this->webDriver->executescript(
             "document.querySelector('$btn').click()"
         );
-          $this->safeFindElement(
-              WebDriverBy::Name("CandID")
-          )->sendKeys("999999");
-          $this->safeFindElement(
-              WebDriverBy::Name("PSCID")
-          )->sendKeys("8889");
-          $this->safeFindElement(
-              WebDriverBy::Name("fire_away")
-          )->click();
-           $bodyText =  $this->safeFindElement(
-               WebDriverBy::cssSelector(".error")
-           )->getText();
-           $this->assertContains(
-               "Visit V1 does not exist for given candidate",
-               $bodyText
-           );
-           //PSCID and DCC ID do not match or candidate does not exist.
-           $this->safeFindElement(
-               WebDriverBy::Name("CandID")
-           )->sendKeys("888888");
-           $this->safeFindElement(
-               WebDriverBy::Name("PSCID")
-           )->sendKeys("8889");
-           $this->safeFindElement(
-               WebDriverBy::Name("fire_away")
-           )->click();
-           $bodyText =  $this->safeFindElement(
-               WebDriverBy::cssSelector(".error")
-           )->getText();
-           $this->assertContains(
-               "PSCID and DCC ID do not match or candidate does not exist",
-               $bodyText
-           );
+        $this->safeFindElement(
+            WebDriverBy::Name("CandID")
+        )->sendKeys("999999");
+        $this->safeFindElement(
+            WebDriverBy::Name("PSCID")
+        )->sendKeys("8889");
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $bodyText =  $this->safeFindElement(
+            WebDriverBy::cssSelector(".error")
+        )->getText();
+        $this->assertContains(
+            "Visit V1 does not exist for given candidate",
+            $bodyText
+        );
+        //PSCID and DCC ID do not match or candidate does not exist.
+        $this->safeFindElement(
+            WebDriverBy::Name("CandID")
+        )->sendKeys("888888");
+        $this->safeFindElement(
+            WebDriverBy::Name("PSCID")
+        )->sendKeys("8889");
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $bodyText =  $this->safeFindElement(
+            WebDriverBy::cssSelector(".error")
+        )->getText();
+        $this->assertContains(
+            "PSCID and DCC ID do not match or candidate does not exist",
+            $bodyText
+        );
     }
     // todo add a survey successful.
     /**

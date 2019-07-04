@@ -29,6 +29,12 @@
 		    <div class="col-sm-2">{$form.psc.html}</div>
 	    </div>
     {/if}
+    {if $projectAdded}
+      <div class="form-group col-sm-12">
+        <label class="col-sm-2">{$form.project.label}</label>
+        <div class="col-sm-2">{$form.project.html}</div>
+      </div>
+    {/if}
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.visitLabel.label}</label>
 		<div class="col-sm-2">{$form.visitLabel.html}</div>
