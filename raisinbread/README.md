@@ -46,7 +46,6 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/medical_history.sql \
     raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
-    test/test_instrument/testtest.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
 
@@ -64,7 +63,7 @@ correct `host`, `url` and `base` values
 > The password of the `admin` user on the RB database is `demo20!7`
 
 
-#### Getting the imaging files
+##### Getting the imaging files
 MCIN members have automatic access to the imaging files on their dev VM
 where the raisinbread dataset is automatically mounted in the `/data-raisinbread` directory.
 
@@ -111,6 +110,19 @@ RB_parameter_file.sql can become too big due to the complete header being dumped
 in the parameter_file using ParameterTypeID=238. To decrease the size of the 
 RB_parameter_file.sql file, run the following query on your mysql and recreate
 the RB_parameter_file.sql file.
+
 ```
 DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
+```
+
+### Troubleshooting
+
+If you are having issues sourcing RB using the single command above, you can try to 
+use the following comands sequentially. These commands echo the name of the SQL 
+script before running it which helps to identify exactly what SQL statement is failing.
+
+```
+for n in /var/www/loris/SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
+for n in /var/www/loris/raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
+for n in /var/www/loris/raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
 ```
