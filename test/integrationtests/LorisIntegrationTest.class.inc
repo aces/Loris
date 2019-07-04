@@ -649,4 +649,4 @@ abstract class LorisIntegrationTest extends TestCase
         }
     }
 }
-
+?>
