@@ -36,6 +36,8 @@ class NDB_BVL_Battery
      */
     var $sessionID = null;
 
+    var $age;
+
     /**
      * Constructor - merely asserts that the environment is suitable
      */

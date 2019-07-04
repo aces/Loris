@@ -26,25 +26,23 @@
  */
 class File_Upload
 {
+    var $renameMode        = "incremental";
+    var $overwriteMode     = "rename";
+    var $fileMove          = true;
+    var $fileVerify        = true;
+    var $fileImport        = true;
+    var $filenamePrefix    = "";
+    var $createDirectories = true;
+    var $errorLog          = array();
+    var $moveOrCopy        = "move";
+    var $isCLImport        = false;
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
      */
     function __construct()
     {
-        //Set Defaults
-        $this->renameMode        = "incremental";
-        $this->overwriteMode     = "rename";
-        $this->fileMove          = true;
-        $this->fileVerify        = true;
-        $this->fileImport        = true;
-        $this->filenamePrefix    = "";
-        $this->createDirectories = true;
-        $this->errorLog          = array();
-        $this->moveOrCopy        = "move";
-        $this->isCLImport        = false;
     }
-
 
     /**
      * Loops through the uploaded files running the full suit of functions against

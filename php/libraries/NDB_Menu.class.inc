@@ -52,10 +52,9 @@ class NDB_Menu extends NDB_Page
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
-        string $formname
+        string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct($module, $page, $identifier, $commentID);
         $this->menu = $module->getName();
     }
     /**
@@ -115,7 +114,7 @@ class NDB_Menu extends NDB_Page
             return "";
         }
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module->getName());
+        $smarty = new Smarty_NeuroDB($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign($this->getTemplateData());
         $html = $smarty->fetch("menu_$this->menu.tpl");

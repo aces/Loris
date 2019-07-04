@@ -133,7 +133,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
         }
 
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrumentstatus_controlpanel.tpl");
         return $html;

@@ -25,6 +25,8 @@ class MRIFile
     var $fileData   = array();
     var $parameters = array();
     var $QCData     = array();
+    var $intermFiles = array();
+    var $protFiles = array();
 
     /**
      * Construct an MRIFile

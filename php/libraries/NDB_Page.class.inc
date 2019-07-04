@@ -70,6 +70,9 @@ class NDB_Page implements RequestHandlerInterface
      */
     var $fieldOptions = array();
 
+    var $Module;
+    var $template;
+
     /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
@@ -103,8 +106,7 @@ class NDB_Page implements RequestHandlerInterface
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
-        string $formname
+        string $commentID
     ) {
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
@@ -664,7 +666,7 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess($user ?? new AnonymousUser()) !== true) {
+        if ($this->_hasAccess($user ?? new \AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -721,6 +723,7 @@ class NDB_Page implements RequestHandlerInterface
     {
         switch($this->format) {
         case 'json':
+            // NOTE this function doesn't actually exist but seems to work?!
             return $this->toJSON();
         }
         if ($this->skipTemplate) {
@@ -749,7 +752,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty = new Smarty_neurodb($this->name);
+        $smarty = new Smarty_NeuroDB($this->name);
 
         $smarty->ModuleName = $this->name;
 

@@ -38,6 +38,13 @@ class BVL_Feedback_Panel
     var $_feedbackThread;
 
     /**
+     * An array containing data that will be passed to the Smarty template.
+     *
+     * @var array
+     */
+    var $tpl_data;
+
+    /**
      * Creates the feedback thread for the given combination of candID,
      * sessionID and commentID.
      *
@@ -101,7 +108,7 @@ class BVL_Feedback_Panel
 
         $this->tpl_data['FieldNames'] = json_encode($fields);
 
-        $smarty = new Smarty_neurodb("bvl_feedback_panel");
+        $smarty = new Smarty_NeuroDB("bvl_feedback_panel");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("bvl_feedback_panel.tpl");
         return $html;

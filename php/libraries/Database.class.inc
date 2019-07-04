@@ -59,6 +59,13 @@ class Database
     var $_preparedStoreHistory;
 
     /**
+     * The name of the database.
+     *
+     * @access public
+     */
+    var $_databaseName = '';
+
+    /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
      * NOTE There is no return type declaration for this function as it returns

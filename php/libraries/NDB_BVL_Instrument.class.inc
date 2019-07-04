@@ -44,6 +44,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     var $form;
 
+    var $formType;
+
+    var $dateOptions;
+    var $DataEntryType;
+    var $XINRules;
+    var $XINDebug;
+    var $_setupForm;
+
     /**
      * Test name (short name), equivalent to test_names.Test_name
      *
@@ -216,8 +224,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 Module::factory("instruments"),
                 $page,
                 $commentID,
-                $commentID,
-                'test_form'
+                $commentID
             );
         } else {
             if (!class_exists($class)
@@ -472,7 +479,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $smarty = new Smarty_neurodb;
+            $smarty = new Smarty_NeuroDB;
 
             $formArray = $this->form->toElementArray();
             if (isset($this->testName)) {
@@ -489,7 +496,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // not the display function.
             return $this->toJSON();
         } else {
-            $smarty    = new Smarty_neurodb;
+            $smarty    = new Smarty_NeuroDB;
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
@@ -1491,8 +1498,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSubprojectID(): ?int
     {
         $sessionID = $this->getSessionID();
-        if ($sessionID !== -1) {
-            $timepoint    = \Timepoint::singleton($sessionID);
+        if (!empty($sessionID)) {
+            $timepoint    = \TimePoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;
         }
@@ -2343,7 +2350,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
-        $smarty   = new Smarty_neurodb();
+        $smarty   = new Smarty_NeuroDB();
         $tpl_data = array();
 
         $tpl_data['questions'] = $DB->pselect(
@@ -2544,17 +2551,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _toJSONParsePage(): array
     {
-
-        if (get_class($this->form) === 'LorisForm') {
-            $formArray = $this->form->toElementArray();
-        } else {
-            $smarty   = new Smarty_neurodb;
-            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
-
-            $this->form->accept($renderer);
-
-            $formArray = $renderer->toArray();
-        }
+        $formArray = $this->form->toElementArray();
 
         if (isset($formArray['elements'])) {
             foreach ($formArray['elements'] as &$element) {
@@ -2587,7 +2584,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function toJSON(): string
     {
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
@@ -2600,7 +2597,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 );
             }
             $this->page = $subtest['Name'];
-            $this->_setupForm();
         }
         $formArray = $this->_toJSONParsePage();
 

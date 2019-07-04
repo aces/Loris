@@ -32,6 +32,10 @@ class NDB_Caller
      */
     var $type;
 
+    var $page;
+    var $controlPanel;
+    var $feedbackPanel;
+
     /**
      * Determines how data entry is being performed (directly from a study
      * participant, or by a data entry staff.)

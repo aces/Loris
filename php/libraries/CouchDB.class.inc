@@ -23,6 +23,9 @@
  */
 class SocketWrapper
 {
+    var $host;
+    var $port;
+    var $socket;
     /**
      * Constructor for SocketWrapper
      */
@@ -193,6 +196,12 @@ class CouchDB
      * ends.
      */
     var $bulkDocuments = array();
+
+    /**
+     * An instance of SocketWrapper used in network interaction with a CouchDB
+     * database.
+     */
+    var $SocketHandler;
 
     /**
      * Private Constructor for CouchDB
