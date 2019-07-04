@@ -160,18 +160,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $inputqcstatus = $data['QCStatus'] ?? null;
-        if (!in_array($inputqcstatus, ['Pass', 'Fail'], true)) {
-            return new \LORIS\Http\Response\BadRequest(
-                'Invalid value for QCStatus . Must be Pass or Fail.'
-            );
-        }
-
         $inputselected = $data['Selected'] ?? null;
-        if (!is_bool($inputselected)) {
-            return new \LORIS\Http\Response\BadRequest(
-                'Invalid value for Selected. Must be true or false.'
-            );
-        }
 
         // TODO :: This is (and was) not checking or handling Caveats
         try {
@@ -185,6 +174,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             error_log($e->getMessage());
             return new \LORIS\Http\Response\InternalServerError(
                 'QC status not updated.'
+            );
+        } catch (\DomainException $e) {
+            return new \LORIS\Http\Response\BadRequest(
+                $e->getMessage()
             );
         } catch (\Throwable $e) {
             return  new \LORIS\Http\Response\BadRequest();
