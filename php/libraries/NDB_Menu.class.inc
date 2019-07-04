@@ -120,5 +120,14 @@ class NDB_Menu extends NDB_Page
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }
+
+    /**
+     * {@inheritDoc}
+     * TODO
+     */
+    function toJSON(): string
+    {
+        return json_encode(array('error' => 'Not implemented'));
+    }
 }
 

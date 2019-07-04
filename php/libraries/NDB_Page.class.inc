@@ -26,7 +26,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface
+abstract class NDB_Page implements RequestHandlerInterface
 {
     /**
      * The name of the test_name being accessed
@@ -666,7 +666,7 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess($user ?? new \AnonymousUser()) !== true) {
+        if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -907,5 +907,13 @@ class NDB_Page implements RequestHandlerInterface
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
         );
     }
+
+    /**
+     * Converts the results of this form to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the options to send to the form
+     */
+    abstract function toJSON(): string;
 }
 

@@ -206,10 +206,7 @@ class NDB_Form extends NDB_Page
     }
 
     /**
-     * Converts the results of this form to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the options to send to the form
+     * {@inheritDoc}
      */
     function toJSON(): string
     {

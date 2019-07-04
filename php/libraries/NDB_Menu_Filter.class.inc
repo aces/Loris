@@ -804,7 +804,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         return json_encode($this->toArray());
     }

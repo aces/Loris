@@ -36,6 +36,18 @@ class File_Upload
     var $errorLog          = array();
     var $moveOrCopy        = "move";
     var $isCLImport        = false;
+    var $handlerArgs;
+    var $file;
+    var $fileInfo;
+    var $fileHandlers;
+    var $destinationDirectory;
+    var $destinationFilename;
+    var $fieldName;
+    var $fieldNames;
+    var $CLFiles;
+    var $form;
+    var $baseUploadDirectory;
+    var $_seeded;
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods

@@ -228,7 +228,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @param string $page The name of the page within the module to load.
      *
-     * @return a NDB_Page subclass representing this page.
+     * @return NDB_Page|NDB_Form|NDB_Menu|NDB_Menu_Filter|NDB_Menu_Filter_Form 
+     *         Returns NDB_Page (or subclass) representing this page.
      */
     public function loadPage(string $page)
     {
