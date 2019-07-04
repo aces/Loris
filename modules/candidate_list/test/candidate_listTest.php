@@ -204,7 +204,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $btn = self::$clearFilter;
             $this->clickReactElement($btn);
             $inputText = $this->getReactElementContent($element);
-            );
             $this->assertEquals("", $inputText);
     }
     /**
