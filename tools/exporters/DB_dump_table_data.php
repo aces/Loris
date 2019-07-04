@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This script generates data-only dumps for all tables in the currently active database.
  * Each table in the database gets dumped into a single file in the following location :
@@ -15,7 +15,7 @@
  * allowing to dump data using only the database name. The functionality to input
  * credentials interactively should be added.
  *
- * PHP Version
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -56,7 +56,8 @@ $tableNames = $DB->pselectCol("
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $filename = __DIR__ . "/../../raisinbread/RB_files/RB_$tableName.sql";
+    $filename = \NDB_Factory::singleton()->settings()->getBaseURL()
+        . "/raisinbread/RB_files/RB_$tableName.sql";
     exec('mysqldump '.$databaseInfo['database'].' '.
         '--complete-insert '.
         '--no-create-db '.
