@@ -89,14 +89,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
-         $btn           = self::$advancedFilter;
-            $buttonText = $this->webDriver->executescript(
-                "return document.querySelector('$btn').textContent"
-            );
-            $this->assertContains("Advanced", $buttonText);
+         $btn        = self::$advancedFilter;
+         $buttonText = $this->getReactElementContent($btn);
+         $this->assertStringContainsString("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -109,12 +107,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+         $this->clickReactElement($btn);
            // Go through each element and ensure it's on the page after clicking
            // advanced
            $scanDoneOptions = $this->webDriver->findElement(
@@ -176,9 +172,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // test advanced filter - sex
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+         $this->clickReactElement($btn);
            //female
            $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1');
            // male
@@ -198,37 +192,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         // get element from the page
         if (strpos($element, "select") === false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
+            $this->reactTextSendKey($element, $value);
         } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
+            $this->reactDropdownSendKey($element, $value);
         }
             $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
+            $bodyText = $this->getReactElementContent($row);
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
-            $this->webDriver->executescript(
-                "document.querySelector('$btn').click();"
-            );
-            $inputText = $this->webDriver->executescript(
-                "return document.querySelector('$element').value"
+            $this->clickReactElement($btn);
+            $inputText = $this->getReactElementContent($element);
             );
             $this->assertEquals("", $inputText);
     }
@@ -244,38 +219,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
         $btn = self::$openProfile;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->clickReactElement($btn);
         // input PSCID and DCCID
         $dccid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(1)>div>div>input";
         $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
-        $this->webDriver->executescript(
-            "input = document.querySelector('$dccid');
-                 lastValue = input.value;
-                 input.value = '300001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
-        );
-        $this->webDriver->executescript(
-            "input = document.querySelector('$pscid');
-                 lastValue = input.value;
-                 input.value = 'MTL001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
+        $this->reactTextSendKey($dccid, "300001");
+        $this->reactTextSendKey($pscid, "MTL001");
         );
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );sleep(2);
+        $this->clickReactElement($btn);
+        sleep(2);
         $URL =  $this->webDriver->executescript("return window.location.href;");
-        $this->assertContains("300001", $URL);
+        $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
     }
     /**
@@ -287,12 +246,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
-        $this->webDriver->executescript(
-            "document.querySelector('$link').click();"
-        );
+        $this->clickReactElement($link);
                 $bodyText = $this->webDriver
                     ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Candidate Profile",
             $bodyText
         );

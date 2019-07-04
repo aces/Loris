@@ -86,8 +86,8 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->insert(
             "user_psc_rel",
             array(
-                'UserID'    => 999990,
-                'CenterID'  => 1,
+             'UserID'   => 999990,
+             'CenterID' => 1,
             )
         );
 
@@ -96,7 +96,7 @@ abstract class LorisIntegrationTest extends TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
 
-        $dev = $this->config->getSettingFromXML('dev');
+        $dev          = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
         $capabilities = array(
@@ -194,7 +194,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-      /*  if (isset($this->_oldConfig[$configName])) {
+        /*  if (isset($this->_oldConfig[$configName])) {
             throw new LorisException(
                 "Attempted to change already changed config setting"
             );
@@ -535,70 +535,118 @@ abstract class LorisIntegrationTest extends TestCase
             );
         }
     }
-   /**
+    /**
      * Get the content of a React Element
      *
-     * @param string $ui  the location of this ui (css selector)
+     * @param  string $ui the location of this ui (css selector)
      * @return string
-     *
      */
     function getReactElementContent($ui)
     {
-      while (true) {
-         try {
-       return $this->webDriver->executescript(
-                "return document.querySelector('$ui').textContent"
-            );
-           break;
-         } catch (Exception $e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
-         }
-         sleep(2);
-       }
+        while (true) {
+            try {
+                return $this->webDriver->executescript(
+                    "return document.querySelector('$ui').textContent"
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
     }
     /**
      * Click a React Element
      *
-     * @param string $ui  the location of this ui (css selector)
+     * @param  string $ui the location of this ui (css selector)
      * @return void
-     *
      */
-     function clickReactElement($ui)
-    {      
-      while (true) {
-         try {
-       $this->webDriver->executescript(
-                "return document.querySelector('$ui').click"
-            );
-           break;
-         } catch (Exception $e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
-         }
-         sleep(2);
-       }
+    function clickReactElement($ui)
+    {
+        while (true) {
+            try {
+                $this->webDriver->executescript(
+                    "return document.querySelector('$ui').click"
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
     }
     /**
      * Get rows of the React table, ? rows displayed of ?
      *
-     * @param string $ui  the result of React table (css selector)
+     * @param  string $ui the result of React table (css selector)
      * @return string
-     *
      */
     function getReactTableRows($ui)
     {
-      while (true) {
-         try {
-            $res = $this->webDriver->executescript(
-                "return document.querySelector('$ui').textContent"
-            );
-            break;
-         } catch (Exception $e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
-         }
-         sleep(2);
-       }
-       $array=explode('rows', $res);
-       return trim($array[0]);
+        while (true) {
+            try {
+                $res = $this->webDriver->executescript(
+                    "return document.querySelector('$ui').textContent"
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
+        $array =explode('rows', $res);
+        return trim($array[0]);
+    }
+    /**
+     * Input a value into a text react element
+     *
+     * @param  string $ui    the result of React element (css selector)
+     * @param  string $value input a value
+     * @return void
+     */
+    function reactTextSendKey($ui,$value)
+    {
+        while (true) {
+            try {
+                $this->webDriver->executescript(
+                    "input = document.querySelector('$ui');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);"
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
+    }
+    /**
+     * Select a value in a react dropdown list
+     *
+     * @param  string $ui    the result of React element (css selector)
+     * @param  string $value input a value
+     * @return void
+     */
+    function reactDropdownSendKey($ui,$value)
+    {
+        while (true) {
+            try {
+                $this->webDriver->executescript(
+                    "input = document.querySelector('$element');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
     }
 }
-?>
+
