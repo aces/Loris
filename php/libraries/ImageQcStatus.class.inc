@@ -13,7 +13,7 @@
 namespace LORIS;
 
 /**
- * This class defines an Image QC Stagtus to allow one to type hint function's
+ * This class defines an Image QC Status to allow one to type hint function's
  * parameters
  *
  *  @category Imaging
