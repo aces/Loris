@@ -165,8 +165,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "mri_protocol_group",
             array(
-              'MriProtocolGroupID' => 11,
-              'Name'               => 'test',
+             'MriProtocolGroupID' => 11,
+             'Name'               => 'test',
             )
         );
 
