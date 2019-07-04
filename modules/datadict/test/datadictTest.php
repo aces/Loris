@@ -113,10 +113,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
 
         $name = $this->getReactElementContent(
-                 "#dynamictable > tbody > tr > td:nth-child(3)"
-                );
-            $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335",
-                                              $name);
+            "#dynamictable > tbody > tr > td:nth-child(3)"
+        );
+            $this->assertStringContainsString(
+                "TestParameterNotRealMAGICNUMBER335",
+                $name
+            );
     }
     /**
      * Testing keyword filter with testing data not case-sensitive
@@ -134,9 +136,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
 
         $name = $this->getReactElementContent(
-                   "#dynamictable > tbody > tr > td:nth-child(3)"
-                );
-        $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335", $name);
+            "#dynamictable > tbody > tr > td:nth-child(3)"
+        );
+        $this->assertStringContainsString(
+            "TestParameterNotRealMAGICNUMBER335",
+            $name
+        );
     }
     /**
      * Testing keyword filter without testing data
