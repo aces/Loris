@@ -535,5 +535,70 @@ abstract class LorisIntegrationTest extends TestCase
             );
         }
     }
+   /**
+     * Get the content of a React Element
+     *
+     * @param string $ui  the location of this ui (css selector)
+     * @return string
+     *
+     */
+    function getReactElementContent($ui)
+    {
+      while (true) {
+         try {
+       return $this->webDriver->executescript(
+                "return document.querySelector('$ui').textContent"
+            );
+           break;
+         } catch (Exception $e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+         }
+         sleep(2);
+       }
+    }
+    /**
+     * Click a React Element
+     *
+     * @param string $ui  the location of this ui (css selector)
+     * @return void
+     *
+     */
+     function clickReactElement($ui)
+    {      
+      while (true) {
+         try {
+       $this->webDriver->executescript(
+                "return document.querySelector('$ui').click"
+            );
+           break;
+         } catch (Exception $e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+         }
+         sleep(2);
+       }
+    }
+    /**
+     * Get rows of the React table, ? rows displayed of ?
+     *
+     * @param string $ui  the result of React table (css selector)
+     * @return string
+     *
+     */
+    function getReactTableRows($ui)
+    {
+      while (true) {
+         try {
+            $res = $this->webDriver->executescript(
+                "return document.querySelector('$ui').textContent"
+            );
+            break;
+         } catch (Exception $e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+         }
+         sleep(2);
+       }
+       $array=explode('rows', $res);
+       return trim($array[0]);
+    }
 }
 ?>

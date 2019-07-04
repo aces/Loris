@@ -95,7 +95,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 $bodyText = $this->webDriver->findElement(
                     WebDriverBy::cssSelector("body")
                 )->getText();
-                $this->assertContains("Data Dictionary", $bodyText);
+                $this->assertStringContainsString("Data Dictionary", $bodyText);
     }
     /**
      * Testing keyword filter with testing data
@@ -112,11 +112,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
 
         $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
 
-        $name = $this->webDriver->executescript(
-            "return document.querySelector".
-                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-        );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+        $name = $this->getReactElementContent(
+                 "#dynamictable > tbody > tr > td:nth-child(3)"
+                );
+            $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335",
+                                              $name);
     }
     /**
      * Testing keyword filter with testing data not case-sensitive
@@ -133,11 +133,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
 
         $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
 
-        $name = $this->webDriver->executescript(
-            "return document.querySelector".
-                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-        );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+        $name = $this->getReactElementContent(
+                   "#dynamictable > tbody > tr > td:nth-child(3)"
+                );
+        $this->assertStringContainsString("TestParameterNotRealMAGICNUMBER335", $name);
     }
     /**
      * Testing keyword filter without testing data
@@ -153,13 +152,8 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("noExist");
-
-        $res = $this->webDriver->executescript(
-            "return document.querySelector".
-            "('#lorisworkspace > div > div > div.panel.panel-default >".
-            "div.table-header.panel-heading > div > div').textContent"
-        );
-        $this->assertContains("0 rows displayed", $res);
+        $res = $this->getReactTableRows(".table-header .col-xs-12");
+        $this->assertEquals("0", $res);
     }
 
     /**
@@ -171,10 +165,8 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains($key, $text);
+            $text = $this->getReactTableRows($value);
+            $this->assertStringContainsString($key, $text);
         }
     }
 }
