@@ -79,10 +79,25 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            $this->addScoreColumn(
-                'Candidate_Age',
-                'Candidate Age (Months)'
-            );
+            $dates = array(
+                      'Date_taken' => $this->getFieldValue('Date_taken'),
+                      'DoD'        => $this->getDoD(),
+                     );
+
+            if (empty($dates['DoD'])
+                || empty($dates['Date_taken'])
+                || $dates['DoD'] > $dates['Date_taken']
+            ) {
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate Age (Months)'
+                );
+            } else {
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate_Age_at_Death'
+                );
+            }
             $this->addScoreColumn(
                 'Window_Difference',
                 'Window Difference (+/- Days)'

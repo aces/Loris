@@ -863,10 +863,25 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            $this->addScoreColumn(
-                'Candidate_Age',
-                'Candidate Age (Months)'
-            );
+            $dates = array(
+                      'Date_taken' => $this->getFieldValue('Date_taken'),
+                      'DoD'        => $this->getDoD(),
+                     );
+
+            if (empty($dates['DoD'])
+                || empty($dates['Date_taken'])
+                || $dates['DoD'] > $dates['Date_taken']
+            ) {
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate Age (Months)'
+                );
+            } else {
+                 $this->addScoreColumn(
+                     'Candidate_Age',
+                     'Candidate Age at Death (Months)'
+                 );
+            }
             $this->addScoreColumn(
                 'Window_Difference',
                 'Window Difference (+/- Days)'
@@ -2131,16 +2146,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge(?string $date = null): array
     {
-        $dates = array(
-            'Date_taken' => $this->getFieldValue('Date_taken'),
-            'DoB'        => $this->getDoB(),
-        );
+        $dates     = array(
+                      'Date_taken' => $this->getFieldValue('Date_taken'),
+                      'DoB'        => $this->getDoB(),
+                      'DoD'        => $this->getDoD(),
+                     );
+        $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
         $age = array();
-        if (empty($date)) {
-            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
+        if (empty($dates['DoD']) || $dates['DoD'] > $dateTaken) {
+            $age = Utility::calculateAge($dates['DoB'], $dateTaken);
         } else {
-            $age = Utility::calculateAge($dates['DoB'], $date);
+            $age = Utility::calculateAge($dates['DoB'], $dates['DoD']);
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
@@ -2164,6 +2181,55 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $CommentID)
         );
         return $dob;
+    }
+
+    /**
+     * Get the candidates DOD.
+     *
+     * @return string The candidate's DOD.
+     */
+    function getDoD(): string
+    {
+        $db        = \Database::singleton();
+        $CommentID = $this->getCommentID();
+        $dod       = $db->pselectOne(
+            "SELECT c.DoD FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $dod;
+    }
+
+    /**
+     * Calculates the time since candidate's death.
+     * If $date is passed, this function  will calculate the age as of
+     * the value of that argument. Otherwise the date will be calculated
+     * based on the value of the Date_taken field in the database.
+     *
+     * @param string $date (optional) The date that the age is to
+     *                     be calculated based on.
+     *
+     * @return array The time since candidate's death in an array containing
+     *         years, months and days.
+     */
+    function getTimeSinceDeath(string $date) : array
+    {
+        $dates          = array(
+                           'Date_taken' => $this->getFieldValue('Date_taken'),
+                           'DoD'        => $this->getDoD(),
+                          );
+        $timeSinceDeath = array();
+        if (empty($date)) {
+            $timeSinceDeath = Utility::calculateAge(
+                $dates['DoD'],
+                $dates['Date_taken']
+            );
+        } else {
+            $timeSinceDeath = Utility::calculateAge($dates['DoD'], $date);
+        }
+        return $timeSinceDeath;
     }
 
     /**

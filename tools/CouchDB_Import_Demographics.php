@@ -16,6 +16,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Date of Birth',
             'Type' => 'varchar(255)'
         ),
+        'DoD' => array(
+            'Description' => 'Date of Death',
+            'Type' => 'varchar(255)'
+        ),
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
             'Type' => 'varchar(255)'
@@ -127,6 +131,7 @@ class CouchDBDemographicsImporter {
         $config = \NDB_Config::singleton();
 
         $fieldsInQuery = "SELECT c.DoB,
+                                c.DoD,
                                 c.CandID, 
                                 c.PSCID, 
                                 s.Visit_label, 
