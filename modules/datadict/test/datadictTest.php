@@ -95,7 +95,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 $bodyText = $this->webDriver->findElement(
                     WebDriverBy::cssSelector("body")
                 )->getText();
-                $this->assertStringContainsString("Data Dictionary", $bodyText);
+                $this->assertContains("Data Dictionary", $bodyText);
     }
     /**
      * Testing keyword filter with testing data
@@ -115,7 +115,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $name = $this->getReactElementContent(
             "#dynamictable > tbody > tr > td:nth-child(3)"
         );
-            $this->assertStringContainsString(
+            $this->assertContains(
                 "TestParameterNotRealMAGICNUMBER335",
                 $name
             );
@@ -138,7 +138,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $name = $this->getReactElementContent(
             "#dynamictable > tbody > tr > td:nth-child(3)"
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             "TestParameterNotRealMAGICNUMBER335",
             $name
         );
@@ -171,7 +171,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->getReactTableRows($value);
-            $this->assertStringContainsString($key, $text);
+            $this->assertContains($key, $text);
         }
     }
 }

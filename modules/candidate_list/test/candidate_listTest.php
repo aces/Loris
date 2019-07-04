@@ -89,12 +89,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertStringContainsString("Access Profile", $bodyText);
+        $this->assertContains("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
          $btn        = self::$advancedFilter;
          $buttonText = $this->getReactElementContent($btn);
-         $this->assertStringContainsString("Advanced", $buttonText);
+         $this->assertContains("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -107,7 +107,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertStringContainsString("Access Profile", $bodyText);
+        $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
          $this->clickReactElement($btn);
@@ -199,7 +199,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $row      = self::$display;
             $bodyText = $this->getReactElementContent($row);
             // 4 means there are 4 records under this site.
-            $this->assertStringContainsString($records, $bodyText);
+            $this->assertContains($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->clickReactElement($btn);
@@ -234,7 +234,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->clickReactElement($btn);
         sleep(2);
         $URL =  $this->webDriver->executescript("return window.location.href;");
-        $this->assertStringContainsString("300001", $URL);
+        $this->assertContains("300001", $URL);
         $this->resetPermissions();
     }
     /**
@@ -249,7 +249,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->clickReactElement($link);
                 $bodyText = $this->webDriver
                     ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertStringContainsString(
+        $this->assertContains(
             "Candidate Profile",
             $bodyText
         );
