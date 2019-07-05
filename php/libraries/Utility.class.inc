@@ -514,8 +514,12 @@ class Utility
     {
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
+        // Assumption that all instruments have an english version...
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
+            "SELECT Test_name,Full_name FROM test_names tn
+            JOIN test_names_language_rel tl ON (tn.ID=tl.Test_name_ID)
+            WHERE language_code='en-CA'
+            ORDER BY Full_name",
             array()
         );
         $instruments   = array();
@@ -538,8 +542,12 @@ class Utility
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $config        = $Factory->config();
+        // Assumption that all instruments have an english version...
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+            "SELECT Test_name,Full_name FROM test_names tn
+            JOIN test_names_language_rel tl ON (tn.ID=tl.Test_name_ID)
+            WHERE language_code='en-CA'
+            ORDER BY Full_name",
             array()
         );
         $doubleDataEntryInstruments = $config->getSetting(
@@ -571,9 +579,12 @@ class Utility
         $DB      = $factory->database();
 
         $instruments   = array();
+        // Assumption that all instruments have an english version...
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
-             ORDER BY Full_name",
+            "SELECT Test_name,Full_name FROM test_names tn
+            JOIN test_names_language_rel tl ON (tn.ID=tl.Test_name_ID)
+            WHERE language_code='en-CA' AND IsDirectEntry=true
+            ORDER BY Full_name",
             array()
         );
         foreach ($instruments_q as $key) {
@@ -664,7 +675,9 @@ class Utility
         $factory    = NDB_Factory::singleton();
         $db         = $factory->database();
         $instrument = $db->pselect(
-            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
+            "SELECT Test_name FROM test_names tn
+            JOIN test_names_language_rel tl ON (tn.ID=tl.Test_name_ID)
+            WHERE Full_name =:fname",
             array('fname' => $fullname)
         );
         if (is_array($instrument) && count($instrument)) {
@@ -811,13 +824,15 @@ class Utility
             );
         } else {
             $test_names = $DB->pselect(
-                "SELECT DISTINCT t.Full_name as Test_name_display FROM session s
+                "SELECT DISTINCT tl.Full_name as Test_name_display FROM session s
                 JOIN candidate c ON (c.candid=s.candid)
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
+                JOIN test_names_langauge_rel tl ON (t.ID=tl.Test_name_ID)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+                AND tl.langauge_code=s.language_code
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
             );

@@ -153,6 +153,7 @@ DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
 DROP TABLE IF EXISTS `flag`;
 DROP TABLE IF EXISTS `instrument_subtests`;
+DROP TABLE IF EXISTS `test_names_dictionary`;
 DROP TABLE IF EXISTS `test_names`;
 DROP TABLE IF EXISTS `test_subgroups`;
 DROP TABLE IF EXISTS `session_status`;

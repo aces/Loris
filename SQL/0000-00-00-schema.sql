@@ -67,7 +67,9 @@ CREATE TABLE `language` (
   UNIQUE KEY (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+INSERT INTO language (language_code, language_label) VALUES
+    ('en-CA', 'English'),
+    ('fr-CA', 'French');
 
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -209,6 +211,7 @@ CREATE TABLE `session` (
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
   `MRIQCLastChangeTime` datetime DEFAULT NULL,
   `MRICaveat` enum('true','false') NOT NULL DEFAULT 'false',
+  `language_code` varchar(255) NOT NULL DEFAULT 'en-CA',
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
@@ -217,6 +220,7 @@ CREATE TABLE `session` (
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_4` FOREIGN KEY (`language_code`) REFERENCES `language` (`language_code`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
@@ -243,13 +247,23 @@ INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments'),('Imaging');
 CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
-  `Full_name` varchar(255) default NULL,
   `Sub_group` int(11) unsigned default NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
   KEY `FK_test_names_1` (`Sub_group`),
   CONSTRAINT `FK_test_names_1` FOREIGN KEY (`Sub_group`) REFERENCES `test_subgroups` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `test_names_language_rel` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Test_name_ID` int(10) unsigned DEFAULT NULL,
+  `Full_name` varchar(255) NOT NULL,
+  `language_code` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `UK_test_names_langauge_rel_1` UNIQUE (`Test_name_ID`, `language_code`),
+  CONSTRAINT `FK_test_name_langauge_rel_1` FOREIGN KEY (`Test_name_ID`) REFERENCES `test_names` (`ID`),
+  CONSTRAINT `FK_test_name_language_rel_2` FOREIGN KEY (`language_code`) REFERENCES `language` (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `instrument_subtests` (

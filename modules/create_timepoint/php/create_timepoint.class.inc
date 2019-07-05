@@ -97,7 +97,8 @@ class Create_Timepoint extends \NDB_Form
             $values['subprojectID'],
             $values['visitLabel'] ?? null,
             $site,
-            $project
+            $project,
+            $values['language_code']
         );
 
         $this->tpl_data['success'] = true;
@@ -182,18 +183,18 @@ class Create_Timepoint extends \NDB_Form
             $visitLabel = \Utility::asArray($visitLabel);
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
                 $user = \User::singleton();
-                $DB   = \Database::singleton();
+                $DB = \Database::singleton();
                 $subprojectHasVisits = true;
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
                 ) {
                     throw new \DeprecatedException(
-                        "User generated Visit Labels are no ".
+                        "User generated Visit Labels are no " .
                         "longer supported in Loris."
                     );
                 }
                 $labelOptions = array('' => null);
-                $items        = \Utility::associativeToNumericArray(
+                $items = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -204,8 +205,8 @@ class Create_Timepoint extends \NDB_Form
 
                 // List of sites for the user
                 $user_list_of_sites = $user->getCenterIDs();
-                $num_sites          = count($user_list_of_sites);
-                if ($num_sites >1) {
+                $num_sites = count($user_list_of_sites);
+                if ($num_sites > 1) {
                     $this->tpl_data['pscLabelAdded'] = true;
                     $psc_labelOptions = [null => ''];
                     foreach ($user_list_of_sites as $key => $siteID) {
@@ -224,11 +225,23 @@ class Create_Timepoint extends \NDB_Form
                         'Site selection is required',
                         'required'
                     );
+
+                    $languages = array(
+                        null => '',
+                        'en-CA' => 'EN',
+                        'fr-CA' => 'FR'
+                    );
+                    $this->addSelect(
+                        'language_code',
+                        'Language',
+                        $languages
+                    );
+                    $this->addRule('language_code', 'Language is required', 'required');
                 }
 
                 // List projects
                 $user_list_of_projects = $user->getProjectIDs();
-                if (count($user_list_of_projects) >1) {
+                if (count($user_list_of_projects) > 1) {
                     $this->tpl_data['projectAdded'] = true;
                     $projectOptions = array(null => '');
                     foreach ($user_list_of_projects as $key => $projectID) {
@@ -252,6 +265,7 @@ class Create_Timepoint extends \NDB_Form
             If you are an administrator, please assign visits to this subproject in
             the config.xml file.";
         }
+
         $this->form->addFormRule(array(&$this, '_validate'));
 
     }

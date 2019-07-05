@@ -328,7 +328,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // craft the select query
         $query = "SELECT DISTINCT f.Test_name,
-                    t.Full_name,
+                    tl.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
@@ -339,6 +339,7 @@ class Instrument_List extends \NDB_Menu_Filter
         }
         $query  .= " FROM flag f
             	JOIN test_names t ON (f.Test_name=t.Test_name)
+            	JOIN test_names_language_rel tl ON (t.ID=tl.test_name_ID)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
         $qparams = array('SID' => $this->timePoint->getSessionID());
@@ -352,6 +353,7 @@ class Instrument_List extends \NDB_Menu_Filter
        	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
         }
         $query .= " WHERE f.SessionID=:SID
+            AND tl.language_code=s.language_code
             AND LEFT(f.CommentID, 3) != 'DDE'";
 
         if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
