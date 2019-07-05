@@ -33,16 +33,18 @@ INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 --
 -- -----------------------------------------------------------------------------------
 CREATE TABLE `mri_protocol_group_target` (
-     `MriProtocolGroupID` INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`          INT(2)           DEFAULT NULL,
-     `SubprojectID`       INT(10) UNSIGNED DEFAULT NULL,
-     `Visit_label`        VARCHAR(255)     DEFAULT NULL,
+     `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
+     `ProjectID`                INT(2)           DEFAULT NULL,
+     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+     PRIMARY KEY (`MriProtocolGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
      CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
      CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-INSERT INTO `mri_protocol_group_target` VALUES
-    ((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
+INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+    VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
 
 
 
@@ -73,16 +75,19 @@ INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol ch
 --
 -- -----------------------------------------------------------------------------------
 CREATE TABLE `mri_protocol_checks_group_target` (
-     `MriProtocolChecksGroupID` INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(2)           DEFAULT NULL,
-     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
-     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+     `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+     `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
+     `ProjectID`                      INT(2)           DEFAULT NULL,
+     `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
+     PRIMARY KEY(`MriProtocolChecksGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-INSERT INTO `mri_protocol_checks_group_target` VALUES
-    ((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
+
+INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+    VALUES((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
 
 -- -----------------------------------------------------------------
 -- Addition of a new column in table mri_protocol to identify the
