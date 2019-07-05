@@ -363,9 +363,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "mri_protocol_group",
-            array(
-             'Name'     => 'test',
-            )
+            array('Name' => 'test')
         );
         $this->DB->delete(
             "psc",
