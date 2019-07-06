@@ -173,7 +173,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     }
 
     /**
-     * Get the current MRI protocol to display to the user
+     * Get the current MRI protocol to display to the user.
      *
      * @return array containing the data in the mri_protocol table. Each key
      *         is an MRI protocol group name and each value is the array of
