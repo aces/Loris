@@ -635,7 +635,7 @@ abstract class LorisIntegrationTest extends TestCase
         while (true) {
             try {
                 $this->webDriver->executescript(
-                    "input = document.querySelector('$element');
+                    "input = document.querySelector('$ui');
                  input.selectedIndex = '$value';
                  event = new Event('change', { bubbles: true });
                  input.dispatchEvent(event);
