@@ -70,7 +70,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $this->factory      = \NDB_Factory::singleton();
         $this->path         = $this->factory->config()->getSetting("base");
 
-        parent::__construct($module, $page, $id, $commentID, $formname);
+        parent::__construct($module, $page, $id, $commentID);
     }
 
     /**

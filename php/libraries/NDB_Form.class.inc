@@ -207,6 +207,8 @@ class NDB_Form extends NDB_Page
 
     /**
      * {@inheritDoc}
+     *
+     * @return string
      */
     function toJSON(): string
     {
