@@ -566,7 +566,7 @@ abstract class LorisIntegrationTest extends TestCase
         while (true) {
             try {
                 $this->webDriver->executescript(
-                    "return document.querySelector('$ui').click"
+                    "document.querySelector('$ui').click"
                 );
                 break;
             } catch (Exception $e) {
