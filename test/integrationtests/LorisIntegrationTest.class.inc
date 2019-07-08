@@ -535,5 +535,26 @@ abstract class LorisIntegrationTest extends TestCase
             );
         }
     }
+    /**
+     * Click a React Element
+     *
+     * @param  string $ui the location of this ui (css selector)
+     * @return void
+     */
+    function clickReactElement($ui)
+    {
+        while (true) {
+            try {
+                $this->webDriver->executescript(
+                    "return document.querySelector('$ui').click"
+                );
+                break;
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+             sleep(1);
+        }
+    }
+
 }
 ?>

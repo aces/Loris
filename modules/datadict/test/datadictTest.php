@@ -40,7 +40,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
             'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
            );
-
+    private $btn  => '.col-sm-9 > .btn',
     /**
      * Inserting testing data
      *
@@ -85,16 +85,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDatadictDoespageLoad()
     {
         $this->webDriver->get($this->url . "/datadict/");
-
-                $this->webDriver->wait(120, 1000)->until(
-                    WebDriverExpectedCondition::presenceOfElementLocated(
-                        WebDriverBy::Name("keyword")
-                    )
-                );
-
-                $bodyText = $this->webDriver->findElement(
-                    WebDriverBy::cssSelector("body")
-                )->getText();
+        $this->clickReactElement($this->btn);
                 $this->assertContains("Data Dictionary", $bodyText);
     }
     /**
