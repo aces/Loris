@@ -227,7 +227,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // to do react input value
         $this->reactTextSendKey($dccid, "300001");
         $this->reactTextSendKey($pscid, "MTL001");
-        );
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->clickReactElement($btn);
