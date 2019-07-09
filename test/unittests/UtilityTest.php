@@ -15,7 +15,9 @@ require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit test for Utility class
+ * Fake Utility class that has exact copies of methods in the
+ * Utility class to test certain SQL queries easily
+ *
  * @category Tests
  * @package  Main
  * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
@@ -23,19 +25,19 @@ use PHPUnit\Framework\TestCase;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class FakeUtility extends Utility 
+class FakeUtility extends Utility
 {
     /**
      * Returns a list of sites in the database
      *
-     * @param \Database $DB The mock database used by the test methods
-     * @param bool $study_site If true only return sites that are
-     *                         study sites according to the psc
-     *                         table
+     * @param \Database $DB         The mock database used by the test methods
+     * @param bool      $study_site If true only return sites that are
+     *                              study sites according to the psc
+     *                              table
      *
      * @return array an associative array("center ID" => "site name")
      */
-    static function fakeGetSiteList(Database $DB ,bool $study_site = true): array
+    static function fakeGetSiteList(\Database $DB ,bool $study_site = true): array
     {
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -55,10 +57,10 @@ class FakeUtility extends Utility
     /**
      * Get the list of sites as an associative array
      *
-     * @param \Database $DB The mock database used for testing
-     * @param boolean $study_site if true only return study sites from psc
-     *                            table
-     * @param boolean $DCC        Whether the DCC should be included or not
+     * @param \Database $DB         The mock database used for testing
+     * @param boolean   $study_site If true only return study sites from psc
+     *                              table
+     * @param boolean   $DCC        Whether the DCC should be included or not
      *
      * @return array of the form CenterID => Site Name.
      *         Note that even though CenterID is numeric, the array
@@ -136,8 +138,8 @@ class FakeUtility extends Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param \Database $db The mock database used by the test methods
-     * @param string $Cand_id candidate ID
+     * @param \Database $db      The mock database used by the test methods
+     * @param string    $Cand_id Candidate ID
      *
      * @return string
      * @throws DatabaseException
@@ -153,14 +155,15 @@ class FakeUtility extends Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param \Database $db The mock database used by the test methods
-     * @param string $Cand_id candidate ID
+     * @param Database $db      The mock database used by the test methods
+     * @param string   $Cand_id Candidate ID
      *
      * @return int
      * @throws DatabaseException
      */
-    static function fakeGetSubprojectIDUsingCandID(\Database $db, string $Cand_id): int
-    {
+    static function fakeGetSubprojectIDUsingCandID(
+        \Database $db, string $Cand_id
+    ) {
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return intval($stage[0]['SubprojectID']);
@@ -169,13 +172,14 @@ class FakeUtility extends Utility
     /**
      * Looks up the test_name for the current full name
      *
-     * @param \Database $db The mock database used by the test methods
-     * @param string $fullname Descriptive name to be looked up
+     * @param \Database $db       The mock database used by the test methods
+     * @param string    $fullname Descriptive name to be looked up
      *
-     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
+     * @return string (Non-associative array of the form array(Test1, Test2, ..))
      */
-    static function fakeGetTestNameUsingFullName(\Database $db, string $fullname): string
-    {
+    static function fakeGetTestNameUsingFullName(
+        \Database $db, string $fullname
+    ) {
         $test_name  = '';
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
@@ -212,17 +216,17 @@ class FakeUtility extends Utility
      * Get all the instruments which currently exist for a given visit label
      * in the database.
      *
-     * @param \Database $DB The mock database used for testing
-     * @param string $visit_label The visit label for which you would like
-     *                            to know the existing visit labels
+     * @param \Database $DB          The mock database used for testing
+     * @param string    $visit_label The visit label for which you would like
+     *                               to know the existing visit labels
      *
      * @return array Array of instruments which exist for the given visit label
      *               array is of the form
      *               array(0 => array('Test_name_display' => $TestName))?
      */
-    static function fakeGetVisitInstruments(\Database $DB, string $visit_label): array
-    {
-
+    static function fakeGetVisitInstruments(
+        \Database $DB, string $visit_label
+    ) {
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery
@@ -252,14 +256,15 @@ class FakeUtility extends Utility
      * Returns a list of instruments for a timepoint's stage ($stage).
      * If no stage arg is passed, return the full list for all stages
      *
-     * @param \Database $DB The mock database used for testing
+     * @param \Database   $DB    The mock database used for testing
      * @param integer     $age   age in days
      * @param string|null $stage study stage (screening or visit)
      *
      * @return array list of instruments
      */
-    static function fakeLookupBattery(\Database $DB, int $age, ?string $stage = null): array
-    {
+    static function fakeLookupBattery(
+        \Database $DB, int $age, ?string $stage = null
+    ) {
         
         // craft the select query
         $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
@@ -292,20 +297,19 @@ class FakeUtility extends Utility
     /**
      * Returns all the sourcefrom instruments from parameter_type
      *
-     * @param \Database $DB The mock database used for testing
+     * @param \Database   $DB         The mock database used for testing
      * @param string|null $instrument If specified, return fields from this
-     *                           test_name
+     *                                test_name
      * @param string|null $commentID  If specified, return fields for this
-     *                           commentid
+     *                                commentid
      * @param string|null $name       If specified, return fields for this
-     *                           parameter_type name
+     *                                parameter_type name
      *
-     * @return  Array of the form array(
-     *              0 => array(
-     *                   'SourceField' => value
-     *                   'Name'        => name
-     *
-     *              )
+     * @return Array of the form array(
+     *             0 => array(
+     *                 'SourceField' => value
+     *                  'Name'        => name
+     *             )
      *         )
      */
     static function fakeGetSourcefields(
@@ -345,11 +349,22 @@ class FakeUtility extends Utility
     }
 }
 
+/**
+ * Unit test for Utility class
+ *
+ * @category Tests
+ * @package  Main
+ * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class UtilityTest extends TestCase
 {
     /**
      * Consent information
-     * @var array contains consent information retrieved by the getConsentList method
+     *
+     * @var array contains consent information retrieved 
+     *      by the getConsentList method
      */
     private $_consentInfo = array(
         array('ConsentID' => '1',
@@ -364,6 +379,7 @@ class UtilityTest extends TestCase
         ); 
     /**
      * Project information
+     * 
      * @var array contains project information retrieved by getProjectList method
      */
     private $_projectInfo = array(
@@ -375,8 +391,10 @@ class UtilityTest extends TestCase
               'recruitmentTarget' => '234567')
         );
     /**
-     * test_name table information
-     * @var array contains test_name information retrieved by getAllInstruments method
+     * Test_name table information
+     * 
+     * @var array contains test_name information 
+     *      retrieved by getAllInstruments method
      */
     private $_testNameInfo = array(
         array('ID' => '1',
@@ -390,6 +408,7 @@ class UtilityTest extends TestCase
         );
     /**
      * Visit_Windows table information
+     * 
      * @var array contains information retrieved by the getVisitList() method
      */
     private $_visitInfo = array(
@@ -397,7 +416,8 @@ class UtilityTest extends TestCase
         array('Visit_label' => 'label')
         );
     /**
-     * psc table information
+     * Psc table information
+     * 
      * @var array contains psc information retrieved by getSiteList method
      */
     private $_siteInfo = array(
@@ -407,15 +427,18 @@ class UtilityTest extends TestCase
               'Name' => 'site2')
         );
     /**
-     * flag table information
-     * @var array contains flag information retreived by getTestNameByCommentID method
+     * Flag table information
+     * 
+     * @var array contains flag information retreived 
+     *      by getTestNameByCommentID method
      */
-    private $_flagInfo = 
-        array('Test_name' => 'test_flag1',
-              'CommentID' => 'ID123');
+    private $_flagInfo = array('Test_name' => 'test_flag1',
+                               'CommentID' => 'ID123');
     /**
-     * session table information
-     * @var array contains session information retrieved by getStageUsingCandID method
+     * Session table information
+     * 
+     * @var array contains session information retrieved 
+     *      by getStageUsingCandID method
      */
     private $_sessionInfo = array(
         array('CandID' => '1',
@@ -426,7 +449,8 @@ class UtilityTest extends TestCase
               'Current_stage' => 'Approval')
         );
     /**
-     * language table information
+     * Language table information
+     * 
      * @var array contains language information retrieved by getLanguageList method
      */
     private $_languageInfo = array(
@@ -461,9 +485,9 @@ class UtilityTest extends TestCase
      * @return void
      */
     protected function setUp(): void
-    {	
+    {
         parent::setUp();
-        
+
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
@@ -499,10 +523,15 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that the calculateAge() method fails when the dates have the incorrect format
+     * Test that the calculateAge() method fails 
+     * when the dates have the incorrect format
+     * 
+     * @param string $first  string with the badly formatted date of birth
+     * @param string $second string with the badly formatted current date
      * 
      * @dataProvider ageIncorrectFormatProvider
-     * @covers Utility:calculateAge
+     * @covers       Utility::calculateAge
+     *
      * @return void
      */
     public function testCalculateAgeFormat($first, $second)
@@ -511,6 +540,11 @@ class UtilityTest extends TestCase
         $array = Utility::calculateAge($first, $second);
     }
 
+    /**
+     * Data provider for testCalculateAgeFormat
+     * 
+     * @return void
+     */
     public function ageIncorrectFormatProvider()
     {
         return array(
@@ -551,7 +585,7 @@ class UtilityTest extends TestCase
             array(
                 '12' => 'project1',
                 '23' => 'project2')
-            );
+        );
     }
 
     /**
@@ -570,17 +604,19 @@ class UtilityTest extends TestCase
                           'title' => 'subproject1'),
                     array('SubprojectID' => '2',
                           'title' => 'subproject2')
-                ));
+                )
+            );
 
         $this->assertEquals(
             array('1' => 'subproject1',
                   '2' => 'subproject2'),
             Utility::getSubprojectList()
-            );
+        );
     }
 
     /**
-     * Test that getSubprojectList() returns the correct subproject when a ProjectID is specified
+     * Test that getSubprojectList() returns the correct subproject 
+     * when a ProjectID is specified
      *
      * @covers Utility::getProjectList()
      * @return void
@@ -593,16 +629,22 @@ class UtilityTest extends TestCase
          */
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->with($this->stringContains("JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID"))
+            ->with(
+                $this->stringContains(
+                    "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID"
+                )
+            )
             ->willReturn(
                 array(
                     array('SubprojectID' => '123',
                           'title' => 'DemoProject')
-                ));
+                )
+            );
    
         $this->assertEquals(
             array('123' => 'DemoProject'),
-            Utility::getSubprojectList('123'));
+            Utility::getSubprojectList('123')
+        );
     }
 
     /**
@@ -621,7 +663,8 @@ class UtilityTest extends TestCase
             array(
                 'test1' => 'description1',
                 'test2' => 'description2'),
-            Utility::getAllInstruments());
+            Utility::getAllInstruments()
+        );
     }
 
     /**
@@ -651,11 +694,13 @@ class UtilityTest extends TestCase
                 array(
                     array('Test_name' => 'test1',
                           'Full_name' => 'description1',
-                          'isDirectEntry' => 1)));
+                          'isDirectEntry' => 1))
+            );
 
         $this->assertEquals(
             array('test1' => 'description1'),
-            FakeUtility::fakeGetDirectInstruments($this->_dbMock));
+            FakeUtility::fakeGetDirectInstruments($this->_dbMock)
+        );
     }
 
     /**
@@ -677,11 +722,13 @@ class UtilityTest extends TestCase
             array(
                 'visitLabel' => 'VisitLabel',
                 'label' => 'Label'),
-            FakeUtility::fakeGetVisitList($this->_dbMock));
+            FakeUtility::fakeGetVisitList($this->_dbMock)
+        );
     }
    
     /**
      * Test that getSiteList() returns the correct list from the database
+     * 
      * @note I am testing both methods in the same test because 
      *       unless the study_site or DCC parameters are specified 
      *       they have the same fuctionality
@@ -702,19 +749,24 @@ class UtilityTest extends TestCase
             array(
                 '1' => 'site1',
                 '2' => 'site2'),
-            FakeUtility::fakeGetSiteList($this->_dbMock));
+            FakeUtility::fakeGetSiteList($this->_dbMock)
+        );
         
         $this->assertEquals(
             array(
                 '1' => 'site1',
                 '2' => 'site2'),
-            FakeUtility::fakeGetAssociativeSiteList($this->_dbMock));
+            FakeUtility::fakeGetAssociativeSiteList($this->_dbMock)
+        );
     }
 
     /**
-     * Test that getTestNameByCommentID returns the correct test name for the given CommentID
+     * Test that getTestNameByCommentID returns 
+     * the correct test name for the given CommentID
      * TODO getTestNameByCommentID() is returning an array instead of a string. 
-     * @note In the Utility class there is a note saying this method should be moved to a different module. 
+     * 
+     * @note In the Utility class there is a note saying this method 
+     *       should be moved to a different module. 
      *
      * @covers Utility::getTestNameByCommentID
      * @return void 
@@ -725,7 +777,8 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getStageUsingCandID returns the proper current stage for the given CandID
+     * Test that getStageUsingCandID returns the proper 
+     * current stage for the given CandID
      * 
      * @covers Utility::getStageUsingCandID
      * @return void
@@ -736,11 +789,15 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('Not Started', FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '1'));
+        $this->assertEquals(
+            'Not Started', 
+            FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '1')
+        );
     }
 
     /**
-     * Test that getSubprojectIDUsingCandID() returns the correct SubprojectID given the CandID
+     * Test that getSubprojectIDUsingCandID() returns 
+     * the correct SubprojectID given the CandID
      * 
      * @covers Utility::getSubprojectIDUsingCandID
      * @return void
@@ -751,11 +808,15 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
-        $this->assertEquals('2', FakeUtility::fakeGetSubprojectIDUsingCandID($this->_dbMock, '1'));
+        $this->assertEquals(
+            '2', 
+            FakeUtility::fakeGetSubprojectIDUsingCandID($this->_dbMock, '1')
+        );
     }
 
     /**
-     * Test that getTestNameUsingFullName returns the correct Test_name for the given Full_name
+     * Test that getTestNameUsingFullName returns the correct 
+     * Test_name for the given Full_name
      *
      * @covers Utility::getTestNameUsingFullName
      * @return void
@@ -764,13 +825,18 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(
-                             array('Test_name' => 'test1',
-                                   'Full_name' => 'description1'),
-                             array('Test_name' => 'test2',
-                                   'Full_name' => 'description2')));
+            ->willReturn(
+                array(
+                    array('Test_name' => 'test1',
+                          'Full_name' => 'description1'),
+                    array('Test_name' => 'test2',
+                          'Full_name' => 'description2'))
+            );
 
-        $this->assertEquals('test1', FakeUtility::fakeGetTestNameUsingFullName($this->_dbMock, 'description1'));
+        $this->assertEquals(
+            'test1', 
+            FakeUtility::fakeGetTestNameUsingFullName($this->_dbMock, 'description1')
+        );
     }
 
     /**
@@ -785,24 +851,28 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(
-                             array('Visit_label' => 'VL1',
-                                   'CandID' => '1',
-                                   'CenterID' => '2',
-                                   'Active' => 'Y'),
-                             array('Visit_label' => 'VL2',
-                                   'CandID' => '3',
-                                   'CenterID' => '4',
-                                   'Active' => 'Y')));
+            ->willReturn(
+                array(
+                    array('Visit_label' => 'VL1',
+                          'CandID' => '1',
+                          'CenterID' => '2',
+                          'Active' => 'Y'),
+                    array('Visit_label' => 'VL2',
+                          'CandID' => '3',
+                          'CenterID' => '4',
+                          'Active' => 'Y'))
+            );
 
         $this->assertEquals(
             array('VL1' => 'VL1',
                   'VL2' => 'VL2'),
-            Utility::getExistingVisitLabels());
+            Utility::getExistingVisitLabels()
+        );
     }
 
     /**
-     * Test that getExistingVisitLabels returns only visit labels related to the given project ID
+     * Test that getExistingVisitLabels returns only 
+     * visit labels related to the given project ID
      *
      * @covers Utility::getExistingVisitLabels
      * @return void
@@ -815,20 +885,28 @@ class UtilityTest extends TestCase
          */
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->with($this->stringContains("AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)"))  
-            ->willReturn(array(
-                             array('Visit_label' => 'VL1',
-                                   'CandID' => '123456',
-                                   'CenterID' => '1234567890',
-                                   'Active' => 'Y')));
+            ->with(
+                $this->stringContains(
+                    "AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)"
+                )
+            )  
+            ->willReturn(
+                array(
+                    array('Visit_label' => 'VL1',
+                          'CandID' => '123456',
+                          'CenterID' => '1234567890',
+                          'Active' => 'Y'))
+            );
 
         $this->assertEquals(
             array('VL1' => 'VL1'),
-            Utility::getExistingVisitLabels('1'));
+            Utility::getExistingVisitLabels('1')
+        );
     }
 
     /**
-     * Test that getLanguageList returns the proper information from the language table
+     * Test that getLanguageList returns the proper information 
+     * from the language table
      *
      * @covers Utility::getLanguageList
      * @return void
@@ -842,11 +920,13 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array('1' => 'LA1',
                   '2' => 'LA2'),
-            FakeUtility::fakeGetLanguageList($this->_dbMock));
+            FakeUtility::fakeGetLanguageList($this->_dbMock)
+        );
     }
 
     /**
-     * Test that getVisitInstruments() returns the correct information for the given visit label
+     * Test that getVisitInstruments() returns the correct 
+     * information for the given visit label
      *
      * @covers Utility::getVisitInstruments()
      * @return void
@@ -856,16 +936,19 @@ class UtilityTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(
-                             array('Test_name_display' => 'display1',
-                                   'TestName' => 'name1',
-                                   'Visit_label' => 'V1')));
+            ->willReturn(
+                array(
+                    array('Test_name_display' => 'display1',
+                          'TestName' => 'name1',
+                          'Visit_label' => 'V1'))
+            );
 
         $this->assertEquals(
             array(0 => array('Test_name_display' => 'display1',
                              'TestName' => 'name1',
                              'Visit_label' => 'V1')),
-            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1'));
+            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1')
+        );
     }
     
     /**
@@ -880,20 +963,24 @@ class UtilityTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(
-                             array('Full_name' => 'display1',
-                                   'TestName' => 'name1',
-                                   'Visit_label' => 'V1')));
+            ->willReturn(
+                array(
+                    array('Full_name' => 'display1',
+                          'TestName' => 'name1',
+                          'Visit_label' => 'V1'))
+            );
 
         $this->assertEquals(
             array(0 => array('Full_name' => 'display1',
                              'TestName' => 'name1',
                              'Visit_label' => 'V1')),
-            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1'));
+            FakeUtility::fakeGetVisitInstruments($this->_dbMock, 'V1')
+        );
     }
 
     /**
-     * Test that lookupBattery returns the correct information without the stage specified
+     * Test that lookupBattery returns the correct information 
+     * without the stage specified
      * 
      * @covers Utility::lookupBattery()
      * @return void
@@ -902,18 +989,22 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(
-                             array('Test_name' => 'test1'),
-                             array('Test_name' => 'test2')));
+            ->willReturn(
+                array(
+                    array('Test_name' => 'test1'),
+                    array('Test_name' => 'test2'))
+            );
 
         $this->assertEquals(
             array('test1', 'test2'),
-            FakeUtility::fakeLookupBattery($this->_dbMock, 25));
+            FakeUtility::fakeLookupBattery($this->_dbMock, 25)
+        );
                                    
     }
 
     /**
-     * Test that lookupBattery returns the correct information with the stage specified
+     * Test that lookupBattery returns the correct information 
+     * with the stage specified
      *
      * @covers Utility::lookupBattery()
      * @return void
@@ -923,30 +1014,37 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains(" AND b.Stage=:BatStage"))
-            ->willReturn(array(
-                             array('Test_name' => 'test1',
-                                   'Stage' => 'stage1')));
+            ->willReturn(
+                array(
+                    array('Test_name' => 'test1',
+                          'Stage' => 'stage1'))
+            );
 
         $this->assertEquals(
             array('test1'),
-            FakeUtility::fakeLookupBattery($this->_dbMock, 25, 'stage1'));
+            FakeUtility::fakeLookupBattery($this->_dbMock, 25, 'stage1')
+        );
 
     }
 
     /**
-     * Tests that getSourcefields will return an empty array if no parameters are specified
+     * Tests that getSourcefields will return an empty array 
+     * if no parameters are specified
      *
      * @covers Utility::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsReturnsNothingWithNoParameters()
     {
-    	$this->assertEquals(array(), FakeUtility::fakeGetSourcefields($this->_dbMock));
+        $this->assertEquals(
+            array(), 
+            FakeUtility::fakeGetSourcefields($this->_dbMock)
+        );
     }
 
-    /* 
-     * Test that getSourcefields returns the correct information and uses the correct query 
-     * when the instrument parameter is specified
+    /**
+     * Test that getSourcefields returns the correct information 
+     * and uses the correct query when the instrument parameter is specified
      *
      * @covers Utility::getSourcefields()
      * @return void
@@ -956,19 +1054,24 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
-            ->willReturn(array(
-                             array('SourceField' => 'instrument_field',
-                                   'Name' => 'instrument_name')));
+            ->willReturn(
+                array(
+                    array('SourceField' => 'instrument_field',
+                          'Name' => 'instrument_name'))
+            );
         
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            FakeUtility::fakeGetSourcefields($this->_dbMock, 'instrument1', null, null));
+            FakeUtility::fakeGetSourcefields(
+                $this->_dbMock, 'instrument1', null, null
+            )
+        );
     }
 
-    /*
-     * Test that getSourcefields returns the correct information and uses the correct query
-     * when the commentID parameter is specified
+    /**
+     * Test that getSourcefields returns the correct information 
+     * and uses the correct query when the commentID parameter is specified
      * TODO This is returning null rather than an array
      *
      * @covers Utility::getSourcefields()
@@ -980,19 +1083,22 @@ class UtilityTest extends TestCase
 
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->willReturn(array(
-                             array('SourceField' => 'commentID_field',
-                                   'Name' => 'commentID_name')));
+            ->willReturn(
+                array(
+                    array('SourceField' => 'commentID_field',
+                          'Name' => 'commentID_name'))
+            );
 
         $this->assertEquals(
             array(0 => array('SourceField' => 'commentID_field',
                              'Name' => 'commentID_name')),
-            FakeUtility::fakeGetSourcefields($this->_dbMock, null, '1', null));
+            FakeUtility::fakeGetSourcefields($this->_dbMock, null, '1', null)
+        );
     }
 
-    /*
-     * Test that getSourcefields returns the correct information and uses the correct query
-     * when the name parameter is specified
+    /**
+     * Test that getSourcefields returns the correct information 
+     * and uses the correct query when the name parameter is specified
      *
      * @covers Utility::getSourcefields()
      * @return void
@@ -1001,14 +1107,19 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
-            ->willReturn(array(
-                             array('SourceField' => 'name_field',
-                                   'Name' => 'name_name')));
+            ->willReturn(
+                array(
+                    array('SourceField' => 'name_field',
+                          'Name' => 'name_name'))
+            );
 
         $this->assertEquals(
             array(0 => array('SourceField' => 'name_field',
                              'Name' => 'name_name')),
-            FakeUtility::fakeGetSourcefields($this->_dbMock, null, null, 'name_name'));
+            FakeUtility::fakeGetSourcefields(
+                $this->_dbMock, null, null, 'name_name'
+            )
+        );
     }
 
     /**
@@ -1024,14 +1135,19 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
-            ->willReturn(array(
-                             array('SourceField' => 'instrument_field',
-                                   'Name' => 'instrument_name')));
+            ->willReturn(
+                array(
+                    array('SourceField' => 'instrument_field',
+                          'Name' => 'instrument_name'))
+            );
 
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            FakeUtility::fakeGetSourcefields($this->_dbMock, 'instrument1', '1', 'name'));
+            FakeUtility::fakeGetSourcefields(
+                $this->_dbMock, 'instrument1', '1', 'name'
+            )
+        );
     }
 }
 
