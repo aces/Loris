@@ -40,7 +40,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
             'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
            );
-    private $btn  = '.col-sm-9 > .btn',
+    private $btn  = '.col-sm-9 > .btn';
     /**
      * Inserting testing data
      *
