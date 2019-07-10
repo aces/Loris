@@ -543,16 +543,13 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function getReactElementContent($ui)
     {
-        while (true) {
             try {
                 return $this->webDriver->executescript(
                     "return document.querySelector('$ui').textContent"
                 );
-                break;
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-             sleep(1);
         }
     }
     /**
@@ -563,17 +560,13 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function clickReactElement($ui)
     {
-        while (true) {
             try {
                 $this->webDriver->executescript(
                     "document.querySelector('$ui').click"
                 );
-                break;
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-             sleep(1);
-        }
     }
     /**
      * Get rows of the React table, ? rows displayed of ?
@@ -583,17 +576,13 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function getReactTableRows($ui)
     {
-        while (true) {
             try {
                 $res = $this->webDriver->executescript(
                     "return document.querySelector('$ui').textContent"
                 );
-                break;
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-             sleep(1);
-        }
         $array =explode('rows', $res);
         return trim($array[0]);
     }
@@ -606,7 +595,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function reactTextSendKey($ui,$value)
     {
-        while (true) {
             try {
                 $this->webDriver->executescript(
                     "input = document.querySelector('$ui');
@@ -616,12 +604,9 @@ abstract class LorisIntegrationTest extends TestCase
                  input._valueTracker.setValue(lastValue);
                  input.dispatchEvent(event);"
                 );
-                break;
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-             sleep(1);
-        }
     }
     /**
      * Select a value in a react dropdown list
@@ -632,7 +617,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function reactDropdownSendKey($ui,$value)
     {
-        while (true) {
             try {
                 $this->webDriver->executescript(
                     "input = document.querySelector('$ui');
@@ -641,12 +625,9 @@ abstract class LorisIntegrationTest extends TestCase
                  input.dispatchEvent(event);
                 "
                 );
-                break;
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-             sleep(1);
-        }
     }
 }
 ?>
