@@ -3,7 +3,11 @@
  * This file is used by the Configuration module to update
  * or insert values into the Config table.
  *
- * PHP version 5
+ * FIXME This code should be refactored away from using the separate 'ajax'
+ * file model toward using a more robust Loris Module-based approached.
+ * This is dependent on the Reactifying of the Configuration module generally.
+ *
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
@@ -18,10 +22,9 @@ require_once "Database.class.inc";
 require_once 'NDB_Client.class.inc';
 require_once "Utility.class.inc";
 
-$user =& User::singleton();
-if (!$user->hasPermission('config')) {
+if (!\User::singleton()->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    return;
 }
 
 $client = new NDB_Client();
@@ -29,21 +32,32 @@ $client->makeCommandLine();
 $client->initialize();
 $factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
+$pathIDs = getPathIDs();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
-            $DB->delete('Config', array('ID' => $key));
+            $DB->update('Config', array('Value' => null), array('ID' => $key));
         } else {
             // if no duplicate value then do updating
             if (noDuplicateInDropdown($key, $value)) {
+                error_log("About to check pathIDs for $key => $value");
+                if (in_array(intval($key), $pathIDs, true)) {
+                    error_log("$value is in pathIDs");
+                    if (!validPath($value)) {
+                        error_log("$value is invalid!");
+                        $err = 'Directory `'
+                            . htmlspecialchars($value, ENT_QUOTES)
+                            . '` is invalid';
+                        // Set response code and display error message.
+                        displayError(400, $err);
+                        return;
+                    }
+                }
                 $DB->update(
                     'Config',
                     array('Value' => $value),
                     array('ID' => $key)
                 );
-            } else {
-                   header("HTTP/1.1 400 Bad Request");
-                   exit();
             }
         }
     } else { //add new or remove
@@ -52,20 +66,42 @@ foreach ($_POST as $key => $value) {
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
                 if (countDuplicate($keySplit[1], $value) == '0') {
-                    $DB->insert(
+                    $DB->update(
                         'Config',
                         array(
-                         'ConfigID' => $keySplit[1],
-                         'Value'    => $value,
+                            'Value'    => $value
+                        ),
+                        array(
+                         'ConfigID' => $keySplit[1]
                         )
                     );
                 } else {
                         header("HTTP/1.1 303 Duplicate value");
                         exit();
                 }
+                if (in_array(intval($keySplit[1]), $pathIDs, true)) {
+                    if (!validPath($value)) {
+                        $err = 'Directory `' . htmlspecialchars($value, ENT_QUOTES)
+                            . '` is invalid';
+                        // Set response code and display error message.
+                        displayError(400, $err);
+                        return;
+                    }
+                }
+                $DB->insert(
+                    'Config',
+                    array(
+                     'ConfigID' => $keySplit[1],
+                     'Value'    => $value,
+                    )
+                );
             }
         } elseif ($valueSplit[0] == 'remove') {
-            $DB->delete('Config', array('ID' => $valueSplit[1]));
+            $DB->update(
+                'Config', 
+                array('Value' => null), 
+                array('ID' => $valueSplit[1])
+            );
         }
     }
 }
@@ -124,6 +160,62 @@ function noDuplicateInDropdown($id,$value)
        // it means Dropdown menu has already had the same configID and value pair.
        return ($id == $IDBefore || $IDBefore == null);
 }
-exit();
+/**
+ * Query DB for config settings that correspond to filepaths.
+ *
+ * @return array IDs corresponding to path settings.
+ */
+function getPathIDs()
+{
+    $ids = array();
+    /* Query adapated from:
+     * https://github.com/aces/Loris/wiki/Project-Customization
+     */
+    $query  = "SELECT c.ConfigID,c.ID FROM Config c "
+        . "LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) "
+        . "JOIN ConfigSettings csp ON (cs.Parent = csp.ID) "
+        . "WHERE cs.DataType = 'web_path';";
+    $result = \Database::singleton()->pselect($query, array());
+    foreach ($result as $key => $value) {
+        // The configuration module uses both the ID and ConfigID in different
+        // contexts when updating or adding paths via the front-end.
+        // At some point in the future this should be reworked for consistency
+        // in the main module code. Either "ID" or "ConfigID" should be used,
+        // but not both.
+        // Until then, both IDs will also be used here.
+        $ids[] = intval($value['ID']);
+        $ids[] = intval($value['ConfigID']);
+    }
+    return $ids;
+}
 
+/**
+ * Return a json-encoded error message and response code when an error occurs
+ *
+ * @param int    $code A valid HTTP Response Code.
+ * @param string $msg  Error text to display.
+ *
+ * @return void
+ */
+function displayError(int $code, string $msg): void
+{
+    // Display error message and return
+    http_response_code($code);
+    echo "ERROR: $msg";
+}
+
+/**
+ * Ensures that the passed value is a readable directory.
+ *
+ * @param string $value The value to test.
+ *
+ * @return bool Whether the value is a readable directory.
+ */
+function validPath($value)
+{
+    if (! (is_dir($value) && is_readable($value))) {
+        return false;
+    }
+    return true;
+}
 
