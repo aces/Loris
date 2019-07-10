@@ -170,7 +170,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
          * they are just special text files, they are marked as
          * application/octet-stream upon upload.
          */
-
         $uploader = (new \LORIS\FilesUploadHandler($targetdir))
             ->withPermittedMIMETypes(
                 'application/octet-stream'
@@ -179,6 +178,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $response = $uploader->handle($request);
 
         if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+            if ($response->getStatusCode() == 409) {
+                return new \Loris\Http\Conflict(self::FILE_ALREADY_EXISTS);
+            }
             return $response;
         }
 
@@ -186,7 +188,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // our effective directory in order to use them.
         chdir($this->path . "/tools");
         // Use tools/ script to generate an SQL patch file based on the
-        //
         // structure of the uploaded .linst file.
         error_log("Full path is `$fullpath`");
         exec(
@@ -411,7 +412,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Checks the test_names table for the existence of  the instrument
+     * Checks the test_names table for the existence of the instrument
      *
      * @param string $instrument The instrument name
      *
