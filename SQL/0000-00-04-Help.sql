@@ -2,9 +2,6 @@
 -- Table structure for table `help`
 --
 
-DROP TABLE IF EXISTS `help`;
-
-
 CREATE TABLE `help` (
     `helpID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
     `parentID` int(11) NOT NULL DEFAULT '-1',

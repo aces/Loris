@@ -18,8 +18,6 @@ if ($client->initialize() == false) {
     return;
 }
 
-require_once "FeedbackMRI.class.inc";
-
 // create DB object
 $DB = \Database::singleton();
 
@@ -27,19 +25,22 @@ $DB = \Database::singleton();
 $user = \User::singleton($_SESSION['State']->getUsername());
 
 // check permissions
-if (!$user->hasPermission('imaging_browser_qc')) {
+if (!$user->hasPermission('imaging_browser_qc')
+    && $_SERVER['REQUEST_METHOD'] !== 'GET'
+) {
     http_response_code(403);
     return;
 }
 
-$tpl_data['has_permission'] = true;
+$tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
+
 // instantiate feedback mri object
-$comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID'] ?? '');
+$comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
 
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away']) {
+if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     // clear all predefined comments
     $comments->clearAllComments();
 
@@ -123,7 +124,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         }
         $CommentTpl['selected'] = $comments
             ->getMRIValue(
-                intval($comment_array['field'])
+                $comment_array['field']
             );
     }
 
@@ -145,8 +146,8 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        $Saved = $saved_comments[$comment_type_id];
-        if ($Saved['predefined'][$predefined_comment_id]) {
+        $Saved = $saved_comments[$comment_type_id] ?? array();
+        if ($Saved['predefined'][$predefined_comment_id] ?? false) {
             $CommentTpl['predefined'][$j]['checked'] = true;
         }
         $j++;
@@ -154,7 +155,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // print a form element for a free-form comment
     $CommentTpl['type']       = $comment_type_id;
-    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
+    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'] ?? '';
     $i++;
 }
 

@@ -64,12 +64,12 @@ class HelpEditor extends React.Component {
     switch (column) {
     case 'Topic':
       url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row.HelpID + '&parentID=' + row.ParentID;
+             row['Help ID'] + '&parentID=' + row['Parent ID'];
       result = <td><a href ={url}>{cell}</a></td>;
       break;
     case 'Parent Topic':
       url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row.ParentID + '&parentID=' + row.ParentTopicID;
+             row['Parent ID'] + '&parentID=' + row['Parent Topic ID'];
       result = <td><a href ={url}>{cell}</a></td>;
     }
 

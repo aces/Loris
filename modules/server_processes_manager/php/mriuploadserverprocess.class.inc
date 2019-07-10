@@ -110,7 +110,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
-                "Value for MRI code path is not a directory!"
+                "Value for config setting 'MRICodePath' is not an existing directory"
             );
         }
 

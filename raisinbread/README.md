@@ -54,12 +54,21 @@ cat SQL/0000-00-00-schema.sql \
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
 some configurations are necessary.
 
-1. Copy the `raisinbread/config.config.xml` file into `project/config.xml`
+1. Copy the `raisinbread/config/config.xml` file into `project/config.xml`
 2. Input the correct `<database>` information in the `project/config.xml` file 
-3. Change the values the the `Config` table of the SQL database to reflect the 
-correct `host` and `base` values
+3. Change the values of the `Config` table of the SQL database to reflect the 
+correct `host`, `url` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
 `projects/instruments/` directory
+
+> The password of the `admin` user on the RB database is `demo20!7`
+
+
+#### Getting the imaging files
+MCIN members have automatic access to the imaging files on their dev VM
+where the raisinbread dataset is automatically mounted in the `/data-raisinbread` directory.
+
+External users should email the loris-dev mailing list to request a copy of the data.
 
 ### Modifying RB
 The RaisinBread database should be handled like any other project. The data should 
@@ -96,3 +105,12 @@ to avoid data corruption during sourcing. If the data has been modified between
 sourcing these files and exporting them, the modification will be reported as git 
 uncommitted changes and thus they can be verified and submitted to the LORIS repo 
 in the same pull request as the code.
+
+Note: when contributing back new imaging files in raisinbread, the file 
+RB_parameter_file.sql can become too big due to the complete header being dumped 
+in the parameter_file using ParameterTypeID=238. To decrease the size of the 
+RB_parameter_file.sql file, run the following query on your mysql and recreate
+the RB_parameter_file.sql file.
+```
+DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
+```
