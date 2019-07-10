@@ -12,4 +12,4 @@ FROM Project JOIN subproject
 WHERE Project.Name='loris';
 
 -- if the loris project was added, set all candidates to that default project
-UPDATE candidate SET ProjectID=(SELECT ProjectID FROM Project WHERE Name='loris') WHERE ProjectID IS NULL AND Entity_type='Human';
+UPDATE candidate SET ProjectID=(SELECT ProjectID FROM Project WHERE Name='loris') WHERE ProjectID IS NULL;

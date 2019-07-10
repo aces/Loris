@@ -9,6 +9,8 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
+INSERT INTO `Project` (Name) VALUES ('loris');
+
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
