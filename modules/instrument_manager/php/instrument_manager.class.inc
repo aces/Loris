@@ -119,7 +119,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         // Ensure the user is allowed to upload.
         if (! \User::singleton()->hasPermission('instrument_manager_write')) {
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -131,7 +131,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
         // Ensure the server is properly configured.
         if (! $this->canWriteFiles()) {
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -146,15 +146,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $instrument    = pathinfo($filename)['filename'];
 
         if ($this->instrumentExists($instrument)) {
-            return (new \Loris\Http\Response())
-                ->withStatus(409, 'Conflict')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::ALREADY_INSTALLED)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\Conflict(
+                self::ALREADY_INSTALLED
+            );
         }
 
         $fullpath = $this->path . "project/instruments/" . $filename;
@@ -168,15 +162,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
              * installation is disabled (ie. has no quatUser), as the above
              * error will return before this one.
             */
-            return (new \Loris\Http\Response())
-                ->withStatus(409, 'Conflict')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::FILE_ALREADY_EXISTS)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\Conflict(
+                self::FILE_ALREADY_EXISTS
+            );
         }
 
         $uploaded_file->moveTo($fullpath);
@@ -195,7 +183,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$this->isQuatUserConfigured()) {
             // If no quatUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(200, 'OK')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -213,7 +201,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
         $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
-        $db_config  = $this->factory->config()->getSetting('database');
+
+        $db_config = $this->factory->config()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
@@ -234,7 +223,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "LORIS could not connect to the database using the "
                 . "credentials supplied in the config file."
             );
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -245,7 +234,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
 
-        return (new \Loris\Http\Response())
+        return (new \LORIS\Http\Response())
             ->withStatus(201, 'Created')
             ->withBody(new EmptyStream());
     }

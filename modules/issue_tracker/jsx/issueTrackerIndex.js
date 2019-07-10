@@ -56,7 +56,7 @@ class IssueTrackerIndex extends Component {
     case 'Title':
       link = (
         <a
-          href={loris.BaseURL+'/issue_tracker/issue/?issueID='+row['Issue ID']}
+          href={loris.BaseURL+'/issue_tracker/issue/'+row['Issue ID']}
         >
           {row.Title}
         </a>
@@ -66,7 +66,7 @@ class IssueTrackerIndex extends Component {
     case 'Issue ID':
       link = (
         <a
-          href={loris.BaseURL+'/issue_tracker/issue/?issueID='+row['Issue ID']}
+          href={loris.BaseURL+'/issue_tracker/issue/'+row['Issue ID']}
         >
           {cell}
         </a>
@@ -214,7 +214,7 @@ class IssueTrackerIndex extends Component {
 
     const addIssue = () => {
       window.location.replace(
-        loris.BaseURL+'/issue_tracker/issue/?issueID=0'
+        loris.BaseURL+'/issue_tracker/issue/new'
       );
     };
     const actions = [

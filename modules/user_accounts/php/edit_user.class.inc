@@ -454,7 +454,7 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
-        
+
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
@@ -973,7 +973,21 @@ class Edit_User extends \NDB_Form
 
                 if (strlen($effectiveUID) > 255) {
                     $errors['UserID_Group']
-                        = 'The user name must not exsceed 255 characters';
+                        = 'The user name must not exceed 255 characters';
+                }
+
+                // Check that user name does not contain a whitespace character
+                if (preg_match('/\s/', $effectiveUID)) {
+                    // Note: email addresses can contain comments which themselves
+                    // can contain spaces
+                    if ($values['NA_UserID'] == 'on') {
+                        $errors['UserID_Group']
+                            = 'You cannot have the user name match an email address'
+                            . ' that contains a whitespace character';
+                    } else {
+                        $errors['UserID_Group']
+                            = 'Whitespace characters are not allowed in user names';
+                    }
                 }
             }
         }

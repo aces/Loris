@@ -141,7 +141,6 @@ class AcknowledgementsIndex extends Component {
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
         swal('Success!', 'Acknowledgement added.', 'success').then((result) => {
-          this.setState({formData: {}});
           if (result.value) {
             this.closeModalForm();
             this.fetchData();
@@ -215,7 +214,10 @@ class AcknowledgementsIndex extends Component {
   }
 
   closeModalForm() {
-    this.setState({showModal: false});
+    this.setState({
+      formData: {},
+      showModal: false,
+    });
   }
 
   renderCitationPolicy() {
@@ -239,7 +241,7 @@ class AcknowledgementsIndex extends Component {
         title='Add Acknowledgement'
         onClose={this.closeModalForm}
         show={this.state.showModal}
-        throwWarning={true}
+        throwWarning={(Object.keys(this.state.formData).length !== 0)}
       >
         <FormElement
           Module='acknowledgements'
@@ -300,7 +302,7 @@ class AcknowledgementsIndex extends Component {
             name='addStartDate'
             label='Start date'
             value={this.state.formData.addStartDate}
-            maxYear={this.state.data.maxYear}
+            maxYear={this.state.formData.addEndDate || this.state.data.maxYear}
             minYear={this.state.data.minYear}
             required={true}
             onUserInput={this.setFormData}
@@ -310,7 +312,7 @@ class AcknowledgementsIndex extends Component {
             label='End date'
             value={this.state.formData.addEndDate}
             maxYear={this.state.data.maxYear}
-            minYear={this.state.data.minYear}
+            minYear={this.state.formData.addStartDate || this.state.data.minYear}
             disabled={disableEndDate}
             required={requireEndDate}
             onUserInput={this.setFormData}
@@ -372,7 +374,7 @@ class AcknowledgementsIndex extends Component {
         type: 'date',
       }},
       {label: 'End Date', show: true, filter: {
-        name: 'startDate',
+        name: 'endDate',
         type: 'date',
       }},
       {label: 'Present', show: true, filter: {

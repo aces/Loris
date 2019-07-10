@@ -16,7 +16,7 @@ class DataTable extends Component {
         rows: 20,
       },
       sort: {
-       column: 0,
+       column: -1,
        ascending: true,
       },
     };
@@ -42,7 +42,7 @@ class DataTable extends Component {
 
   setSortColumn(column) {
     if (this.state.sort.column === column) {
-      this.props.toggleSortOrder();
+      this.toggleSortOrder();
     } else {
       this.updateSortColumn(column);
     }
@@ -77,8 +77,9 @@ class DataTable extends Component {
    * @param {object} e event from which to abstract value
    */
   updatePageRows(e) {
-    const page = this.state.page;
+    const page = Object.assign({}, this.state.page);
     page.rows = e.target.value;
+    page.number = 1;
     this.setState({page});
   }
 
@@ -290,7 +291,7 @@ class DataTable extends Component {
 
     // Handle boolean inputs
     if (typeof filterData === 'boolean') {
-      result = filterData;
+      result = (filterData === data);
     }
 
     // Handle array inputs for multiselects
@@ -298,7 +299,7 @@ class DataTable extends Component {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data.toLowerCase();
+        searchString = data.toString().toLowerCase();
 
         match = (searchString.indexOf(searchKey) > -1);
         if (match) {
@@ -308,6 +309,10 @@ class DataTable extends Component {
     }
 
     return result;
+  }
+
+  componentDidMount() {
+    $('.dynamictable').DynamicTable();
   }
 
   renderActions() {
@@ -327,7 +332,7 @@ class DataTable extends Component {
   }
 
   render() {
-    if (this.props.data === null || this.props.data.length === 0) {
+    if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
       return (
         <div>
           <div className="row">
@@ -574,10 +579,11 @@ class DataTable extends Component {
     return (
       <div style={{margin: '14px'}}>
         {header}
-        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+        <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
+            {this.props.folder}
           <tbody>
             {rows}
           </tbody>
@@ -596,6 +602,7 @@ DataTable.propTypes = {
   onSort: PropTypes.func,
   actions: PropTypes.object,
   hide: PropTypes.object,
+  nullTableShow: PropTypes.bool,
 };
 DataTable.defaultProps = {
   headers: [],
@@ -607,6 +614,8 @@ DataTable.defaultProps = {
     downloadCSV: false,
     defaultColumn: false,
   },
+  nullTableShow: false,
 };
 
 export default DataTable;
+

@@ -39,8 +39,8 @@ class Filter extends Component {
   onFieldUpdate(name, value, id, type) {
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
-    const exactMatch = type === 'textbox' ? false : true;
-    if (value === null || value === '') {
+    const exactMatch = (!(type === 'textbox' || type === 'date'));
+    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
       delete filter[name];
       searchParams.delete(name);
     } else {
@@ -52,7 +52,6 @@ class Filter extends Component {
       }
       filter[name] = {value, exactMatch};
     }
-
     this.props.updateFilter(filter);
     history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
@@ -70,7 +69,7 @@ class Filter extends Component {
           element = <SelectElement key={filter.name} options={filter.options}/>;
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;
@@ -82,12 +81,15 @@ class Filter extends Component {
           element = <TextboxElement key={filter.name}/>;
         }
 
+        // The value prop has to default to false if the first two options
+        // are undefined so that the checkbox component is a controlled input
+        // element with a starting default value
         result.push(React.cloneElement(
           element,
           {
             name: filter.name,
             label: field.label,
-            value: (this.props.filter[filter.name] || {}).value,
+            value: (this.props.filter[filter.name] || {}).value || false,
             onUserInput: this.onFieldUpdate,
           }
         ));

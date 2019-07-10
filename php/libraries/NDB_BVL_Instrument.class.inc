@@ -68,7 +68,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     var $dateOfAdministration;
 
     /**
-     * Additional form defaults - should only be used for quickform
+     * Additional form defaults - should only be used for lorisform
      * static elements!
      *
      * @access private
@@ -143,7 +143,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * True if the instrument page is being loaded by a script
-     * such as the quickform_parser where all elements should be added to form,
+     * such as the lorisform_parser where all elements should be added to form,
      * ignoring age-dependent or other conditional display logic in the form.
      * To be called from within individual instrument forms.
      */
@@ -152,6 +152,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     var $WrapperTextElements           = array();
     var $WrapperNumericElements        = array();
     var $WrapperDateWithStatusElements = array();
+
+    /**
+     * True if the page is being previewed from the instrument builder,
+     * and not really loaded. only applies to LINST instrument.
+     */
+    public $preview = false;
 
     /**
      * Factory generates a new instrument instance of type
@@ -234,6 +240,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
+        if (!empty($commentID)) {
+            $obj->setupCandidateInfoTables();
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -337,6 +346,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $this->commentID = $commentID;
         $this->page      = $page;
+    }
+
+    /**
+     * Gets data for candidate and timepoint to display the tables at the top of the
+     * page. This info is then set in the tpl_data array.
+     *
+     * @return void
+     */
+    function setupCandidateInfoTables(): void
+    {
+        try {
+            $timePoint = \TimePoint::singleton($this->getSessionID());
+        } catch (Exception $e) {
+            throw new LorisException($e->getMessage());
+        }
+
+        try {
+            $candidate = \Candidate::singleton($timePoint->getCandID());
+        } catch(Exception $e) {
+            throw new LorisException($e->getMessage());
+        }
+
+        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['timePoint'] = $timePoint->getData();
     }
 
     /**
@@ -448,6 +481,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
+            $smarty->assign($this->tpl_data);
             $html = $smarty->fetch("instrument_html.tpl");
         }
 
@@ -466,7 +500,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _setDefaultsArray(array $defaults): array
     {
-        //Convert date/time fields into quickform date/timestamps
+        //Convert date/time fields into lorisform date/timestamps
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
         }
@@ -477,7 +511,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $defaults['Candidate_Age']
                 = $defaults['Candidate_Age'] . " (Age out of range)";
         }
-        //Convert select multiple elements into a quickform array
+        //Convert select multiple elements into a lorisform array
         if (!empty($this->_selectMultipleElements)) {
             foreach ($this->_selectMultipleElements AS $elname) {
                 if (isset($defaults[$elname])
@@ -1031,7 +1065,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     abstract function getSubtestList(): array;
 
     /**
-     * Marks an element in the quickform object as being required (for
+     * Marks an element in the lorisform object as being required (for
      * use with the requiredIf rule)
      *
      * @param string $elementName the element to add to the required list
@@ -1047,10 +1081,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * Convert a quickform date or timestamp into a database acceptable
+     * Convert a lorisform date or timestamp into a database acceptable
      * (and storable) date or time
      *
-     * @param array $formDateValue the quickform date/timestamp array
+     * @param array $formDateValue the lorisform date/timestamp array
      *
      * @return string the date or timestamp from the database
      * @access private
@@ -1113,7 +1147,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $databaseValue the date or timestamp from the database
      *
-     * @return array the quickform date/timestamp array
+     * @return array the lorisform date/timestamp array
      */
     function _getQuickformDate(string $databaseValue)
     {
@@ -2574,6 +2608,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $timepoint  = \TimePoint::singleton($sessionid);
         $candid     = $timepoint->getCandID();
         $pscid      = $this->getPSCID();
+        $instrument = $this->testName;
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -2589,8 +2624,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
-                $this->name,
-                ''
+                $this->getFullName(),
+                "/instruments/$instrument/?commentID=$this->commentID"
             )
         );
     }

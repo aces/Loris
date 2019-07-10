@@ -578,6 +578,7 @@ CREATE TABLE `mri_protocol` (
   `zstep_max` DECIMAL(9,4) DEFAULT NULL,
   `time_min` int(4) DEFAULT NULL,
   `time_max` int(4) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -796,6 +797,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -880,6 +882,7 @@ CREATE TABLE `notification_spool` (
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
+  `Active` enum('Y', 'N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),

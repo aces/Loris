@@ -2070,7 +2070,14 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $arr[$key] = $_REQUEST[$key];
+                    $value = $_REQUEST[$key];
+                    // If the value is coming from a React DateElement with input
+                    // type='month' and is missing the dd part, convert month-year
+                    // format to a valid SQL format (i.e. yyyy-mm-dd)
+                    if (strlen($value) === 7 && strpos(strtolower($key), 'date')) {
+                        $value = sprintf("%s-01", $value);
+                    }
+                    $arr[$key] = $value;
                     continue;
                 }
             } else {

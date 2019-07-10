@@ -18,6 +18,7 @@ class BrainBrowser extends Component {
     this.state = {
       defaultPanelSize: 300,
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {

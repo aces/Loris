@@ -175,7 +175,7 @@
                                 {/if}
                             {/if}
                                 {if $new_scans neq "" and $new_scans neq 0}
-                                    <a href="{$baseURL}/imaging_browser/" class="list-group-item new-scans">
+                                    <a href="{$baseURL}/imaging_browser/?pendingNew=N&pendingNew=P" class="list-group-item new-scans">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$new_scans}</div>
@@ -203,7 +203,7 @@
                                     </a>
                                 {/if}
                                 {if $pending_users neq "" and $pending_users neq 0}
-                                    <a href="{$baseURL}/user_accounts/" class="list-group-item pending-accounts">
+                                    <a href="{$baseURL}/user_accounts/?pendingApproval=Y" class="list-group-item pending-accounts">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$pending_users}</div>
@@ -218,7 +218,7 @@
                                 {/if}
                                 {if $issues_assigned neq "" and $issues_assigned neq 0}
                                     {*submit a post request here so its already filtered?*}
-                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item issue_tracker">
+                                    <a href="{$baseURL}/issue_tracker/?#My%20Issues" class="list-group-item issue_tracker">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$issues_assigned}</div>
@@ -250,7 +250,7 @@
                     <div class="panel-body">
                         <div class="list-group document-repository-item">
                             {foreach from=$document_repository_notifications item=link}
-                                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}"
+                                <a href="/document_repository/Files/{$link.Data_dir}"
                                    download="{$link.File_name}" class="list-group-item">
                                     {if $link.new eq 1}
                                         <span class="pull-left new-flag">NEW</span>

@@ -288,13 +288,25 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCStatus' is set and not empty,
+            // update the value of 'BVLQCStatus' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCStatus'])
+            && empty($_REQUEST['setBVLQCStatus'])
+        ) {
+            // In order to set the 'BVLQCStatus' value as null, the
+            // front-end appends 'setBVLQCStatus' to the request with
+            // an empty string as value.
+            //
+            // If 'setBVLQCStatus' is set and empty,
+            // update the value of 'BVLQCStatus' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCStatus' => null)
             );
@@ -303,13 +315,25 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCType' is set and not empty,
+            // update the value of 'BVLQCType' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCType' => $_REQUEST['setBVLQCType'],
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCType'])
+            && empty($_REQUEST['setBVLQCType'])
+        ) {
+            // In order to set the 'BVLQCType' value as null, the
+            // front-end appends 'setBVLQCType' to the request with
+            // an empty string as value.
+            //
+            // If 'setBVLQCType' is set and empty,
+            // update the value of 'BVLQVType' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCType' => null)
             );
@@ -377,7 +401,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
-        $ddeConflictDetected =false;
+        $ddeConflictDetected = false;
+        $dataEntry           = '';
         foreach ($batteryList as $instrument) {
             $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);

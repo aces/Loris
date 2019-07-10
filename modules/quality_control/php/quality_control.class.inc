@@ -209,7 +209,8 @@ class Quality_Control extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList = \Utility::getProjectList();
+        $projectList  = \Utility::getProjectList();
+        $projectList2 = array();
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
