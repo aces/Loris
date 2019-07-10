@@ -56,8 +56,8 @@ $tableNames = $DB->pselectCol("
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $filename = \NDB_Factory::singleton()->settings()->getBaseURL()
-        . "/raisinbread/RB_files/RB_$tableName.sql";
+    $paths = \NDB_Config::singleton()->getSetting('paths');
+    $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
     exec('mysqldump '.$databaseInfo['database'].' '.
         '--complete-insert '.
         '--no-create-db '.
