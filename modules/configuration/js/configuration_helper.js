@@ -85,7 +85,6 @@ $(function () {
                 $('input[type="reset"]').attr('disabled','disabled');
             },
             error: function(xhr, desc, err) {
-                console.log('Test');
                 var html = "<label>" + xhr.responseText + "</label>";
                 $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000)
                 $('input[type="reset"]').attr('disabled','disabled')

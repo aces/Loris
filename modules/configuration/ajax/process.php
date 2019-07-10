@@ -40,11 +40,8 @@ foreach ($_POST as $key => $value) {
         } else {
             // if no duplicate value then do updating
             if (noDuplicateInDropdown($key, $value)) {
-                error_log("About to check pathIDs for $key => $value");
                 if (in_array(intval($key), $pathIDs, true)) {
-                    error_log("$value is in pathIDs");
                     if (!validPath($value)) {
-                        error_log("$value is invalid!");
                         $err = 'Directory `'
                             . htmlspecialchars($value, ENT_QUOTES)
                             . '` is invalid';
@@ -68,16 +65,14 @@ foreach ($_POST as $key => $value) {
                 if (countDuplicate($keySplit[1], $value) == '0') {
                     $DB->update(
                         'Config',
+                        array('Value' => $value),
                         array(
-                            'Value'    => $value
-                        ),
-                        array(
-                         'ConfigID' => $keySplit[1]
+                         'ConfigID' => $keySplit[1],
                         )
                     );
                 } else {
-                        header("HTTP/1.1 303 Duplicate value");
-                        exit();
+                    header("HTTP/1.1 303 Duplicate value");
+                    exit();
                 }
                 if (in_array(intval($keySplit[1]), $pathIDs, true)) {
                     if (!validPath($value)) {
@@ -98,8 +93,8 @@ foreach ($_POST as $key => $value) {
             }
         } elseif ($valueSplit[0] == 'remove') {
             $DB->update(
-                'Config', 
-                array('Value' => null), 
+                'Config',
+                array('Value' => null),
                 array('ID' => $valueSplit[1])
             );
         }
