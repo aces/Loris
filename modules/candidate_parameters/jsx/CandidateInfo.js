@@ -1,163 +1,95 @@
-import Loader from 'Loader';
-/**
- * Candidate Info Component.
- *
- * Renders the contents of the CandidateInfo tab, consisting of the FormElement component
- */
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-class CandidateInfo extends React.Component {
-
+class CandidateInfo extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       caveatOptions: {
-        true: "True",
-        false: "False"
+        true: 'True',
+        false: 'False',
       },
-      Data: {},
+      Data: [],
       formData: {},
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
     };
-
-    /**
-     * Bind component instance to custom methods
-     */
-    this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
-  }
+    let that = this;
+    $.ajax(
+      this.props.dataURL,
+      {
+        dataType: 'json',
+        success: function(data) {
+          let formData = {
+            flaggedCaveatemptor: data.flagged_caveatemptor,
+            flaggedOther: data.flagged_other,
+            flaggedReason: data.flagged_reason,
+          };
 
-  /**
-   * Retrieve data from the provided URL and save it in state
-   */
-  fetchData() {
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: data => {
-        let formData = {
-          flaggedCaveatemptor: data.flagged_caveatemptor,
-          flaggedOther: data.flagged_other,
-          flaggedReason: data.flagged_reason
-        };
-        // Add parameter values to formData
-        Object.assign(formData, data.parameter_values);
-        this.setState({
-          Data: data,
-          isLoaded: true,
-          formData: formData
-        });
-      },
-      error: error => {
-        console.error(error);
-        this.setState({
-          error: 'An error occurred when loading the form!'
-        });
+          // Add parameter values to formData
+          Object.assign(formData, data.parameter_values);
+
+          that.setState({
+            Data: data,
+            isLoaded: true,
+            formData: formData,
+          });
+        },
+        error: function(data, errorCode, errorMsg) {
+          that.setState({
+            error: 'An error occurred when loading the form!',
+          });
+        },
       }
-    });
+    );
   }
 
-  /**
-   * Store the value of the element in this.state.formData
-   *
-   * @param {string} formElement - name of the form element
-   * @param {string} value - value of the form element
-   */
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
 
     // Reset 'reason' and 'other' fields
-    if (formElement === "flaggedCaveatemptor" && value === "false") {
+    if (formElement === 'flaggedCaveatemptor' && value === 'false') {
       formData.flaggedReason = '';
       formData.flaggedOther = '';
     }
+
     // Reset 'other' field
-    if (formElement === "flaggedReason" &&
-      this.state.Data.caveatReasonOptions[value] !== "Other") {
+    if (formElement === 'flaggedReason' &&
+      this.state.Data.caveatReasonOptions[value] !== 'Other') {
       formData.flaggedOther = '';
     }
+
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
-  /**
-   * Handles form submission
-   *
-   * @param {event} e - Form submission event
-   */
-  handleSubmit(e) {
+  onSubmit(e) {
     e.preventDefault();
-    const myFormData = this.state.formData;
-    // Set form data and upload the media file
-    let formData = new FormData();
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key)) {
-        if (myFormData[key] !== "") {
-          formData.append(key, myFormData[key]);
-        }
-      }
-    }
-    formData.append('tab', this.props.tabName);
-    formData.append('candID', this.state.Data.candID);
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: data => {
-        this.setState({
-          updateResult: "success"
-        });
-        this.showAlertMessage();
-      },
-      error: error => {
-        if (error.responseText !== "") {
-          let errorMessage = JSON.parse(error.responseText).message;
-          this.setState({
-            updateResult: "error",
-            errorMessage: errorMessage
-          });
-          this.showAlertMessage();
-        }
-      }
-    });
-  }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    if (this.refs["alert-message"] === null) {
-      return;
-    }
-    let alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      () => {
-        this.setState({
-          updateResult: null
-        });
-      }
-    );
   }
 
   render() {
     if (!this.state.isLoaded) {
-      return <Loader />;
-    }
+      if (this.state.error !== undefined) {
+        return (
+          <div className="alert alert-danger text-center">
+            <strong>
+              {this.state.error}
+            </strong>
+          </div>
+        );
+      }
+    };
 
     let disabled = true;
     let updateButton = null;
@@ -167,7 +99,7 @@ class CandidateInfo extends React.Component {
     }
     let reasonDisabled = true;
     let reasonRequired = false;
-    if (this.state.formData.flaggedCaveatemptor === "true") {
+    if (this.state.formData.flaggedCaveatemptor === 'true') {
       reasonDisabled = false;
       reasonRequired = true;
     }
@@ -178,7 +110,7 @@ class CandidateInfo extends React.Component {
     let otherRequired = false;
     for (let key in this.state.Data.caveatReasonOptions) {
       if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
-        if (this.state.Data.caveatReasonOptions[key] === "Other") {
+        if (this.state.Data.caveatReasonOptions[key] === 'Other') {
           reasonKey = key;
           break;
         }
@@ -190,7 +122,7 @@ class CandidateInfo extends React.Component {
       otherDisabled = false;
     }
 
-    if (this.state.formData.flaggedCaveatemptor === "false") {
+    if (this.state.formData.flaggedCaveatemptor === 'false') {
       reasonDisabled = true;
       reasonRequired = false;
       otherDisabled = true;
@@ -217,7 +149,7 @@ class CandidateInfo extends React.Component {
         let value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
-          case "enu": {
+          case 'enu':
             let types = extraParameters[key2].Type.substring(5);
             types = types.slice(0, -1);
             types = types.replace(/'/g, '');
@@ -242,8 +174,7 @@ class CandidateInfo extends React.Component {
               />
             );
             break;
-          }
-          case "dat":
+          case 'dat':
             extraParameterFields.push(
               <DateElement
                 label={extraParameters[key2].Description}
@@ -272,16 +203,16 @@ class CandidateInfo extends React.Component {
       }
     }
 
-    let alertMessage = "";
-    let alertClass = "alert text-center hide";
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
     if (this.state.updateResult) {
-      if (this.state.updateResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.updateResult === "error") {
+      if (this.state.updateResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = 'Update Successful!';
+      } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Failed to update!";
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
       }
     }
 
@@ -330,12 +261,88 @@ class CandidateInfo extends React.Component {
       </div>
     );
   }
-}
 
+  /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
+  handleSubmit(e) {
+    e.preventDefault();
+    let myFormData = this.state.formData;
+    // Set form data and upload the media file
+    let self = this;
+    let formData = new FormData();
+    for (let key in myFormData) {
+      if (myFormData.hasOwnProperty(key)) {
+        if (myFormData[key] !== '') {
+          formData.append(key, myFormData[key]);
+        }
+      }
+    }
+
+    formData.append('tab', this.props.tabName);
+    formData.append('candID', this.state.Data.candID);
+    $.ajax(
+      {
+        type: 'POST',
+        url: self.props.action,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+          self.setState(
+            {
+              updateResult: 'success',
+            }
+          );
+          self.showAlertMessage();
+        },
+        error: function(err) {
+          if (err.responseText !== '') {
+            let errorMessage = JSON.parse(err.responseText).message;
+            self.setState(
+              {
+                updateResult: 'error',
+                errorMessage: errorMessage,
+              }
+            );
+            self.showAlertMessage();
+          }
+        },
+
+      }
+    );
+  }
+
+  /**
+   * Display a success/error alert message after form submission
+   */
+  showAlertMessage() {
+    let self = this;
+    if (this.refs['alert-message'] === null) {
+      return;
+    }
+
+    let alertMsg = this.refs['alert-message'];
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
+      500,
+      function() {
+        self.setState(
+          {
+            updateResult: null,
+          }
+        );
+      }
+    );
+  }
+}
 CandidateInfo.propTypes = {
-  dataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired,
-  tabName: React.PropTypes.string
+  dataURL: PropTypes.string,
+  tabName: PropTypes.string,
+  action: PropTypes.string,
 };
+
 
 export default CandidateInfo;

@@ -81,7 +81,7 @@ function editCandInfoFields($db, $user)
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
-    foreach (array_keys($_POST) as $field) {
+    foreach (array_keys($_POST ?? array()) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
@@ -141,12 +141,12 @@ function editProbandInfoFields($db, $user)
     $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = $sanitize['ProbandGender'] ?? null;
-    $dob    = $sanitize['ProbandDoB'] ?? null;
+    $sex = $sanitize['ProbandSex'] ?? null;
+    $dob = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
-                     'ProbandGender' => $gender,
-                     'ProbandDoB'    => $dob,
+                     'ProbandSex' => $sex,
+                     'ProbandDoB' => $dob,
                     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);

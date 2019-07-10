@@ -12,16 +12,22 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-// Get LORIS user issuing the request
-$user =& User::singleton();
-if (!($user->hasPermission('imaging_browser_view_allsites')
-    || ($user->hasStudySite()
-    && $user->hasPermission('imaging_browser_view_site'))
-    || $user->hasPermission('imaging_browser_phantom_allsites')
-    || $user->hasPermission('imaging_browser_phantom_ownsite'))
-) {
+/* User has access if they have an 'all site' permission or if they are
+ * part of a study site and are permitted to view their own site.
+ */
+$canAccess = \User::singleton()->hasAnyPermission(
+    array(
+     'imaging_browser_view_allsites',
+     'imaging_browser_phantom_allsites',
+     'imaging_browser_phantom_ownsite',
+    )
+)
+|| ($user->hasStudySite()
+&& $user->hasPermission('imaging_browser_view_site'));
+
+if (!$canAccess) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    return;
 }
 
 if (!empty($_POST['sortedIDs'])) {
@@ -34,4 +40,4 @@ if (!empty($_POST['sortedIDs'])) {
         );
 }
 
-exit;
+return;

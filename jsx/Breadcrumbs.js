@@ -10,17 +10,19 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Breadcrumbs Component.
  * Used for navigation on all Loris pages.
  */
-class Breadcrumbs extends React.Component {
-
+class Breadcrumbs extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      displayCount: 0
+      displayCount: 0,
     };
 
     this.checkScreenSize = this.checkScreenSize.bind(this);
@@ -28,13 +30,15 @@ class Breadcrumbs extends React.Component {
 
   componentWillMount() {
     this.checkScreenSize();
-    if (typeof window !== 'undefined')
+    if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.checkScreenSize);
+    }
   }
 
   componentWillUnmount() {
-    if (typeof window !== 'undefined')
+    if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.checkScreenSize);
+    }
   }
 
   checkScreenSize() {
@@ -56,7 +60,7 @@ class Breadcrumbs extends React.Component {
     }
 
     this.setState({
-      displayCount: displayCount
+      displayCount: displayCount,
     });
   }
 
@@ -73,7 +77,7 @@ class Breadcrumbs extends React.Component {
       const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
-          <li>
+          <li key={'drop_' + i}>
             <a href={url}>
               {element.text}
             </a>
@@ -81,7 +85,7 @@ class Breadcrumbs extends React.Component {
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className="btn btn-primary">
+          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
             <div>
               {element.text}
             </div>
@@ -92,16 +96,16 @@ class Breadcrumbs extends React.Component {
 
     if (dropdown.length !== 0) {
       breadcrumbDropdown = (
-        <div className="btn-group ellipsis btn btn-primary">
-          <button type="button"
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+        <div className='btn-group ellipsis btn btn-primary'>
+          <button type='button'
+                  className='dropdown-toggle'
+                  data-toggle='dropdown'
+                  aria-haspopup='true'
+                  aria-expanded='false'
           >
             ...
           </button>
-          <ul className="dropdown-menu">
+          <ul className='dropdown-menu'>
             {dropdown}
           </ul>
         </div>
@@ -109,19 +113,22 @@ class Breadcrumbs extends React.Component {
     }
 
     return (
-      <div id="bc2" className="btn-group btn-breadcrumb">
-        <a href={baseURL} className="btn btn-primary">
-          <span className="glyphicon glyphicon-home" aria-hidden="true"></span>
+      <div id='bc2' className='btn-group btn-breadcrumb'>
+        <a href={baseURL} className='btn btn-primary'>
+          <span className='glyphicon glyphicon-home' aria-hidden='true'/>
         </a>
         {breadcrumbDropdown}
         {breadcrumbs}
       </div>
     );
   }
-
 }
+Breadcrumbs.propTypes = {
+  baseURL: PropTypes.string,
+  breadcrumbs: PropTypes.array,
+};
 
-var RBreadcrumbs = React.createFactory(Breadcrumbs);
+let RBreadcrumbs = React.createFactory(Breadcrumbs);
 
 window.Breadcrumbs = Breadcrumbs;
 window.RBreadcrumbs = RBreadcrumbs;

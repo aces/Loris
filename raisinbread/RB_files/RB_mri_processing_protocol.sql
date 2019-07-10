@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `mri_processing_protocol`;
+LOCK TABLES `mri_processing_protocol` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

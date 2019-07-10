@@ -40,4 +40,4 @@ if ($user->hasPermission('violated_scans_edit')) {
          array('ID' => $row_id)
      );
 }
-?>
+

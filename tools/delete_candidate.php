@@ -40,12 +40,16 @@ require_once "generic_includes.php";
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+const MIN_NUMBER_OF_ARGS = 4;
 
 // Possible script actions
 $actions = array('delete_candidate');
 
 //define the command line parameters
-if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
+if (count($argv) < MIN_NUMBER_OF_ARGS 
+    || $argv[1] == 'help' 
+    || !in_array($argv[1], $actions, true)
+) {
     showHelp();
 }
 

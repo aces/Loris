@@ -6,16 +6,16 @@
 $(document).ready(function bindInvalidFormListeners() {
     // This will make sure that the flag indicating whether we scrolled
     // to an invalid element when the form is submitted is reset
-  document.getElementsByName('fire_away')[0].addEventListener("click", function() {
+  document.getElementsByName('fire_away')[0].addEventListener('click', function() {
     bindInvalidFormListeners.scrollingDone = false;
   });
 
     // Override default event handler for invalid input elements
     // This will make sure that the invalid element appears at the top
     // of the page.
-  var elements = document.querySelectorAll('input,select,textarea');
-  var navbarHeader = document.getElementsByClassName("navbar-header");
-  for (var i = elements.length; i--;) {
+  let elements = document.querySelectorAll('input,select,textarea');
+  let navbarHeader = document.getElementsByClassName('navbar-header');
+  for (let i = elements.length; i--;) {
     elements[i].addEventListener('invalid', function() {
             // Only make the uppermost invalid element visible when the
             // form is submitted

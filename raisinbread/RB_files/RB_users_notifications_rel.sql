@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `users_notifications_rel`;
+LOCK TABLES `users_notifications_rel` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -15,21 +15,20 @@ import Loader from 'Loader';
  *
  * */
 class DataDictIndex extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: []
+      hiddenHeaders: [],
     };
 
     /**
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 
@@ -55,13 +54,13 @@ class DataDictIndex extends React.Component {
     $.ajax(this.props.DataURL, {
       method: 'GET',
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         this.setState({
           data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
-      error: error => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -98,14 +97,14 @@ class DataDictIndex extends React.Component {
     }
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === 'Description' && hasEditPermission) {
-      let updateDict = name => {
-        return e => {
+      let updateDict = (name) => {
+        return (e) => {
           e.stopPropagation();
 
           let value = e.target.valueOf().innerText;
           $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
-            fieldname: name, description: value
-          }, data => {});
+            fieldname: name, description: value,
+          }, (data) => {});
         };
       };
       return (

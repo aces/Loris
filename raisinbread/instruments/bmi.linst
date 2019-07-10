@@ -1,0 +1,22 @@
+table{@}bmi
+title{@}BMI Calculator
+date{@}Date_taken{@}Date of Administration{@}2006{@}2012
+static{@}Candidate_Age{@}Candidate Age (Months)
+static{@}Window_Difference{@}Window Difference (+/- Days)
+select{@}Examiner{@}Examiner{@}NULL=>''
+static{@}{@}Note: Please enter measurements in Standard OR Metric units
+select{@}unit_classification{@}Choose unit of measurement{@}NULL=>''{-}'metric'=>'Metric'{-}'standard'=>'Standard'
+static{@}{@}Standard units
+numeric{@}height_feet{@}Your height (feet) :
+select{@}height_feet_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+numeric{@}height_inches{@}Your height (inches) :
+select{@}height_inches_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+numeric{@}weight_lbs{@}Your weight (lbs) :
+select{@}weight_lbs_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+static{@}{@}Metric units
+numeric{@}height_cms{@}Your height (cms) :
+select{@}height_cms_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+numeric{@}weight_kgs{@}Your weight (kgs) :
+select{@}weight_kgs_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+static{@}bmi{@}Your BMI
+static{@}bmi_category{@}Your BMI Classification

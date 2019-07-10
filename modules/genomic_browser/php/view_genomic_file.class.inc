@@ -35,12 +35,12 @@ class View_Genomic_File extends \NDB_Form
     /**
     * Determine whether the user has permission to view this page
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool whether the user has access
     */
-    function _hasAccess()
+    function _hasAccess(\User $user): bool
     {
-        $user =& \User::singleton();
-
         // Add site control? See Imaging Browser example
         return ($user->hasPermission('genomic_browser_view_allsites') ||
                 $user->hasPermission('genomic_browser_view_site'));
@@ -57,28 +57,27 @@ class View_Genomic_File extends \NDB_Form
     {
         parent::setup();
 
-        $this->DB = \Database::singleton();
-
-        $this->genomic_file_id = $_REQUEST['GenomicFileID'];
-        $this->candID          = $_REQUEST['candID'];
+        $this->genomic_file_id = $_REQUEST['GenomicFileID'] ?? null;
+        $this->candID          = $_REQUEST['candID'] ?? null;
 
         if (!empty($this->candID) || !empty($this->genomic_file_id) ) {
             $this->_setFileData();
-            $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
+            $user = \User::singleton();
+            $this->tpl_data['has_permission'] = $this->_hasAccess($user);
         }
     }
 
     /**
-    * Sets values for Genomic data files
+    * Populates tpl form data using values from a Genomic_File object.
     *
-    * @param string $category type of data: raw,cleaned,gwas
+    * @param ?string $category type of data: raw,cleaned,gwas
     *
-    * @return NULL
+    * @return void
     */
-    function _setFileData($category = null)
+    private function _setFileData(?string $category = null): void
     {
         if (empty($this->genomic_file_id)) {
-            $files = $this->DB->pselect(
+            $files = \Database::singleton()->pselect(
                 "SELECT g.GenomicFileID
                 FROM genomic_candidate_files_rel g WHERE g.CandID=:cid ",
                 array('cid' => $this->candID)
@@ -90,10 +89,11 @@ class View_Genomic_File extends \NDB_Form
         }
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
-            $FileObj = new Genomic_File($fileRow['GenomicFileID']);
+            $FileObj = new Genomic_File(intval($fileRow['GenomicFileID']));
 
-            // Get a few parameters
-            $paramFilename         = basename($FileObj->getParameter('FileName'));
+            $paramFilename         = basename(
+                $FileObj->getParameter('FileName') ?? ''
+            );
             $paramNormalization    = $FileObj->getParameter('Normalization');
             $paramAnalysisProtocol = $FileObj->getParameter('AnalysisProtocol');
             $paramFileInsertDate   = $FileObj->getParameter('Date_inserted');
@@ -102,7 +102,7 @@ class View_Genomic_File extends \NDB_Form
             // load $file array
             $file = array(
                      'FileID'           => $fileRow['GenomicFileID'],
-                     'Filename'         => $paramFileName,
+                     'Filename'         => $paramFilename,
                      'FullFilename'     => $FileObj->getParameter('FileName'),
                      'FilePackage'      => $FileObj->getParameter('FilePackage'),
                      'FileType'         => $FileObj->getParameter('FileType'),
@@ -119,16 +119,7 @@ class View_Genomic_File extends \NDB_Form
                      'AnalysisModality' => $FileObj->getParameter(
                          'AnalysisModality'
                      ),
-                     'AnalysisDate'     => $this->_getDate(
-                         $FileObj,
-                         'Date_taken',
-                         $analysisDate
-                     ),
-                     'SampleDate'       => $this->_getDate(
-                         $FileObj,
-                         'Date_sample',
-                         $sampleDate
-                     ),
+                     'AnalysisDate'     => $FileObj->getParameter('Date_taken'),
                      'FileInsertDate'   => $paramFileInsertDate,
                      'Selected'         => $FileObj->getParameter('Selected'),
                      'QCStatus'         => $FileObj->getParameter('QCStatus'),
@@ -138,25 +129,5 @@ class View_Genomic_File extends \NDB_Form
             $this->tpl_data['files'][] = $file;
         }
     }
-    /**
-    * Gets the date according to the type
-    *
-    * @param GenomicFile $file  file object
-    * @param string      $type  type of the date
-    * @param array       $array array containing the date
-    *
-    * @return date if exists, if not an empty string
-    */
-    function _getDate($file, $type, $array)
-    {
-        $pattern  = "/(\d{4})-?(\d{2})-?(\d{2})/";
-        $fileType = $file->getParameter($type);
-        if (preg_match($pattern, $fileType, $array)) {
-            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
-        } else {
-            return "";
-        }
-    }
-
 }
-?>
+

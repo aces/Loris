@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the Loris user class
  *
@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use \LORIS\Http\Client;
+use \LORIS\Http\Request;
 /**
  * User class. This deals with any User management except permissions,
  * which is contained in the UserPermissions base class.
@@ -29,19 +31,19 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    var $userInfo = array();
+    protected $userInfo = array();
 
     /**
      * Constructor
      *
      * Selects a user and its permissions
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return User
      * @access public
      */
-    static function &factory($username) : User
+    public static function &factory(?string $username = null): \User
     {
         $obj = new User;
 
@@ -76,7 +78,8 @@ class User extends UserPermissions
         );
         $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
-            $user_cid[$key] =$val['CenterID'];
+            // Convert string representation of ID to int
+            $user_cid[$key] = intval($val['CenterID']);
         }
 
         // Get examiner information
@@ -121,13 +124,13 @@ class User extends UserPermissions
      * Singleton method. Retrieve the user passed as parameter, but only
      * 1 instance.
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return User
      * @access public
      * @static
      */
-    static function &singleton($username = null)
+    public static function &singleton(?string $username = null): \User
     {
         static $instance;
         if (is_null($instance)) {
@@ -142,11 +145,11 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return void
+     * @return bool True
      * @access public
      * @static
      */
-    function insert($set)
+    public function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -162,10 +165,10 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return void
+     * @return bool True
      * @access public
      */
-    function update($set)
+    public function update(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -180,17 +183,19 @@ class User extends UserPermissions
     }
 
     /**
-     * Gets user data
+     * Returns data from the userInfo array according to the key provided
+     * as argument.
      *
      * @param string $var Name of variable to get
      *
-     * @note   Call without any parameters to get the entire user data array
+     * @note   Call without any arguments to get the entire user data array
      * @return mixed
      * @access public
+     * @throws LorisException
      */
-    function getData($var = null)
+    public function getData(string $var = '')
     {
-        if (is_null($var)) {
+        if ($var === '') {
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
@@ -214,7 +219,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getFullname()
+    function getFullname(): string
     {
         return $this->userInfo['Real_name'];
     }
@@ -224,9 +229,9 @@ class User extends UserPermissions
      *
      * @return int
      */
-    function getId()
+    function getId(): int
     {
-        return $this->userInfo['ID'];
+        return intval($this->userInfo['ID']);
     }
 
     /**
@@ -234,7 +239,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getUsername()
+    function getUsername(): string
     {
         return $this->userInfo['UserID'];
     }
@@ -244,7 +249,7 @@ class User extends UserPermissions
      *
      * @return string
      */
-    function getSiteName()
+    function getSiteName(): string
     {
         throw new \LorisException(
             "The function getSiteName
@@ -254,17 +259,20 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's sites' names, concatenated with
-     * a semi-colon if the User is at more than one site
+     * Returns an array of sites a user belongs to.
      *
-     * @return string
+     * @return array
      */
-    function getSiteNames()
+    function getSiteNames(): array
     {
-        return $this->userInfo['Sites'];
+        /* The original query to fetch userInfo in the factory() function CONCAT
+         * CONCATs the site names together in a string using semi-colons.
+         * Therefore this string must be split and returned as an array.
+         */
+        return explode(';', $this->userInfo['Sites']);
     }
 
-    /**
+     /**
      * Get the user's site's ID number
      *
      * @return array
@@ -283,7 +291,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getCenterIDs()
+    function getCenterIDs(): array
     {
         return $this->userInfo['CenterIDs'];
     }
@@ -293,7 +301,7 @@ class User extends UserPermissions
      *
      * @return int
      */
-    function getLanguagePreference()
+    function getLanguagePreference(): int
     {
         return $this->userInfo['language_preference'];
     }
@@ -304,7 +312,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getExaminerSites()
+    function getExaminerSites(): array
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
@@ -317,7 +325,7 @@ class User extends UserPermissions
      *
      * @return array
      */
-    function getStudySites()
+    function getStudySites(): array
     {
         $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
@@ -336,7 +344,7 @@ class User extends UserPermissions
      *
      * @return boolean
      */
-    function hasStudySite()
+    function hasStudySite(): bool
     {
         $site_arr = $this->getCenterIDs();
         foreach ($site_arr as $sitename) {
@@ -354,7 +362,7 @@ class User extends UserPermissions
      * @return boolean
      * @access public
      */
-    function isEmailValid()
+    public function isEmailValid(): bool
     {
         if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
             return false;
@@ -371,7 +379,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function newPassword($length = 8)
+    public static function newPassword($length = 8): string
     {
         // start with a blank password
         $password = '';
@@ -425,11 +433,11 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function isPasswordStrong(
+    public static function isPasswordStrong(
         $password,
         $values = array(),
         $operators = array()
-    ) {
+    ): bool {
         // FIXME: This should be cleaned up to more cleanly separate
         // concerns. The "values" and "operators" are the same at
         // every call site, and some of them are only required because
@@ -490,10 +498,10 @@ class User extends UserPermissions
      *
      * @return boolean
      */
-    function isUserDCC()
+    function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID']== 1);
+        return ($this->userInfo['CenterID'] == 1);
     }
 
     /**
@@ -506,13 +514,13 @@ class User extends UserPermissions
      *
      * @return void
      */
-    function updatePassword($password, $expiry = null)
+    function updatePassword(string $password, string $expiry = ''): void
     {
         $password = htmlspecialchars_decode($password);
-        if (is_null($expiry)) {
+        if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+                strtotime('+6 months')
             );
         }
 
@@ -527,13 +535,75 @@ class User extends UserPermissions
     }
 
     /**
+     * Use the Pwned Passwords API to determine whether a user is trying
+     * to use a password that has been revealed in public data breaches.
+     *
+     * @param string $password The password to check for pwnage.
+     *
+     * @return bool Whether the password is known to be pwned.
+     */
+    static function pwnedPassword(string $password): bool
+    {
+
+        // If the project is configured to disable the Pwned Password check,
+        // always return false (meanning that the password has not been pwned).
+        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
+            'usePwnedPasswordsAPI'
+        )
+        ) {
+            return false;
+        }
+
+        /* The pwned passwords API searches a range of password hashes to
+         * protect the actual SHA1 hash from being revealed.
+         * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
+         *
+         * NOTE your webserver will need to be configured to allow going
+         * connections to the link below. If you encounter errors please
+         * verify your firewall settings.
+         */
+        $hash       = sha1($password);
+        $hashPrefix = substr(sha1($password), 0, 5);
+        // $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
+
+        $client   = new Client('https://api.pwnedpasswords.com');
+        $response = $client->sendRequest(
+            new Request('GET', "/range/$hashPrefix")
+        );
+
+        /* We don't want password changes to fail in case there is a
+         * networking issue while making the request. If the API can't be
+         * reached for any reason, we will skip the pwned password check.
+         */
+        if (!$response->getStatusCode() === 200) {
+            return false;
+        }
+        $hashSuffixes = explode("\n", $response->getBody()->getContents());
+        /* The response will be one long string consisting of suffixes matching
+         * our hash prefix, followed by a colon and the number of times the
+         * password has occurred in data breaches.
+         * Here we iterate over all of the suffixes and check whether the prefix
+         * and the whole suffix line together contain $hash as a substring at
+         * the beginning of the line.
+         * Check the API documentation linked above if you want more info.
+         */
+        foreach ($hashSuffixes as $suffix) {
+            $line = strtolower($hashPrefix . $suffix);
+            if ($hash == substr($line, 0, strlen($hash))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Determines if the user has a center
      *
      * @param int $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter($center_id)
+    public function hasCenter(int $center_id) : bool
     {
         return in_array(
             $center_id,
@@ -541,6 +611,7 @@ class User extends UserPermissions
             true
         );
     }
+
     /**
      * Determines if the user has a permission
      * for a center
@@ -550,7 +621,7 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenterPermission($code, $center_id)
+    public function hasCenterPermission(string $code, int $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
@@ -579,4 +650,4 @@ class User extends UserPermissions
         return $count > 0;
     }
 }
-?>
+

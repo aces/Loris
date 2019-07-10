@@ -42,8 +42,9 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
+        $this->i->method('getSubtestList')->willReturn(array());
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
     }
@@ -364,7 +365,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
     }
 
     function testPageGroup() {
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
+        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSubtestList')->willReturn(
             array(

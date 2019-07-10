@@ -79,4 +79,4 @@ file_put_contents('../project/config.xml', $file_contents);
 
 header("Location: /");
 
-?>
+

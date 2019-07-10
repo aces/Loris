@@ -4,7 +4,7 @@ import IssueForm from './IssueForm';
  * Render IssueForm on page load
  */
 $(function() {
-  var id = location.href.split("/issue/")[1];
+  const id = location.href.split('/issue/')[1];
   const issueTracker = (
     <div className="page-issue-tracker">
       <IssueForm
@@ -15,5 +15,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(issueTracker, document.getElementById("lorisworkspace"));
+  ReactDOM.render(issueTracker, document.getElementById('lorisworkspace'));
 });

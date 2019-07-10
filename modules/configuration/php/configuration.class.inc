@@ -30,12 +30,12 @@ class Configuration extends \NDB_Form
      * _has_access returns true
      * if the user has the specific permission
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 
@@ -64,7 +64,6 @@ class Configuration extends \NDB_Form
         $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
 
-        $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
         $this->tpl_data['instruments']     = $instruments;

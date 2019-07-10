@@ -1,4 +1,5 @@
 import ProgressBar from 'ProgressBar';
+import React, {Component} from 'react';
 
 /**
  * Imaging Upload Form
@@ -11,8 +12,7 @@ import ProgressBar from 'ProgressBar';
  * @since 2017/04/01
  *
  */
-class UploadForm extends React.Component {
-
+class UploadForm extends Component {
   constructor(props) {
     super(props);
 
@@ -23,7 +23,7 @@ class UploadForm extends React.Component {
       form: form,
       hasError: {},
       errorMessage: {},
-      uploadProgress: -1
+      uploadProgress: -1,
     };
 
     this.onFormChange = this.onFormChange.bind(this);
@@ -59,7 +59,7 @@ class UploadForm extends React.Component {
 
     this.setState({
       form: form,
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -89,33 +89,32 @@ class UploadForm extends React.Component {
       }
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
-      const pcvu = pcv + '_';
-      const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
-      const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
-      if (!fileName.match(properName) && !fileName.match(properNameExt)) {
+      const properName = new RegExp('^' + pcv + '(_|.)');
+      const properExt = new RegExp('.(zip|tgz|tar.gz)$');
+      if (!fileName.match(properName)) {
         swal({
-          title: "Filename does not match other fields!",
-          text: "Filename and values in the PSCID, CandID " +
-          "and Visit Label fields of the form do not match. Please " +
-          "verify that the information entered in the " +
-          "fields or the filename are correct.",
-          type: "error",
-          confirmButtonText: "OK"
+          title: 'Filename does not match other fields!',
+          text: 'Filename and values in the PSCID, CandID ' +
+          'and Visit Label fields of the form do not match. Please ' +
+          'verify that the information entered in the ' +
+          'fields or the filename are correct.',
+          type: 'error',
+          confirmButtonText: 'OK',
         });
-        let fieldMsg = "Field does not match the filename!";
+        let fieldMsg = 'Field does not match the filename!';
 
         let errorMessage = {
-          mriFile: "Filename does not match other fields!",
+          mriFile: 'Filename does not match other fields!',
           candID: undefined,
           pSCID: undefined,
-          visitLabel: undefined
+          visitLabel: undefined,
         };
 
         let hasError = {
           mriFile: true,
           candID: false,
           pSCID: false,
-          visitLabel: false
+          visitLabel: false,
         };
 
         // check filename fields individually to decide
@@ -146,11 +145,36 @@ class UploadForm extends React.Component {
         this.setState({errorMessage, hasError});
         return;
       }
+      if (!fileName.match(properExt)) {
+        swal({
+          title: 'Invalid extension for the uploaded file!',
+          text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+          type: 'error',
+          confirmButtonText: 'OK',
+        });
+
+        let errorMessage = {
+          mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
+          candID: undefined,
+          pSCID: undefined,
+          visitLabel: undefined,
+        };
+
+        let hasError = {
+          mriFile: true,
+          candID: false,
+          pSCID: false,
+          visitLabel: false,
+        };
+
+        this.setState({errorMessage, hasError});
+        return;
+      }
     }
 
     // Checks if a file with a given fileName has already been uploaded
     const mriFile = this.props.mriList.find(
-      mriFile => mriFile.fileName.indexOf(fileName) > -1
+      (mriFile) => mriFile.fileName.indexOf(fileName) > -1
     );
 
     // New File
@@ -160,60 +184,60 @@ class UploadForm extends React.Component {
     }
 
     // File uploaded and completed mri pipeline
-    if (mriFile.status === "Success") {
+    if (mriFile.status === 'Success') {
       swal({
-        title: "File already exists!",
-        text: "A file with this name has already successfully passed the MRI pipeline!\n",
-        type: "error",
-        confirmButtonText: 'OK'
+        title: 'File already exists!',
+        text: 'A file with this name has already successfully passed the MRI pipeline!\n',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
       return;
     }
 
     // File in the middle of insertion pipeline
-    if (mriFile.status === "In Progress...") {
+    if (mriFile.status === 'In Progress...') {
       swal({
-        title: "File is currently processing!",
-        text: "A file with this name is currently going through the MRI pipeline!\n",
-        type: "error",
-        confirmButtonText: 'OK'
+        title: 'File is currently processing!',
+        text: 'A file with this name is currently going through the MRI pipeline!\n',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
       return;
     }
 
     // File uploaded but failed during mri pipeline
-    if (mriFile.status === "Failure") {
+    if (mriFile.status === 'Failure') {
       swal({
-        title: "Are you sure?",
-        text: "A file with this name already exists!\n Would you like to override existing file?",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: "No, cancel it!"
+        cancelButtonText: 'No, cancel it!',
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal("Cancelled", "Your imaginary file is safe :)", "error");
+          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
         }
       }.bind(this));
     }
 
     // Pipeline has not been triggered yet
-    if (mriFile.status === "Not Started") {
+    if (mriFile.status === 'Not Started') {
       swal({
-        title: "Are you sure?",
-        text: "A file with this name has been uploaded but has not yet started the MRI pipeline." +
-          "\n Would you like to override the existing file?",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
+          '\n Would you like to override the existing file?',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!'
+        cancelButtonText: 'No, cancel it!',
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal("Cancelled", "Your upload has been cancelled.", "error");
+          swal('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
@@ -229,25 +253,25 @@ class UploadForm extends React.Component {
     const formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData[key] !== '') {
         formObj.append(key, formData[key]);
       }
     }
-    formObj.append("fire_away", "Upload");
+    formObj.append('fire_away', 'Upload');
     if (overwriteFile) {
-      formObj.append("overwrite", true);
+      formObj.append('overwrite', true);
     }
 
     $.ajax({
       type: 'POST',
-      url: loris.BaseURL + "/imaging_uploader/",
+      url: loris.BaseURL + '/imaging_uploader/',
       data: formObj,
       cache: false,
       contentType: false,
       processData: false,
       xhr: function() {
         const xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
+        xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
             const percentage = Math.round((evt.loaded / evt.total) * 100);
             this.setState({uploadProgress: percentage});
@@ -259,21 +283,29 @@ class UploadForm extends React.Component {
       // - Resets errorMessage and hasError so no errors are displayed on form
       // - Displays pop up window with success message
       // - Returns to Browse tab
-      success: data => {
+      success: (data) => {
         let errorMessage = this.state.errorMessage;
         let hasError = this.state.hasError;
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = "";
+            errorMessage[i] = '';
             hasError[i] = false;
           }
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
+        let text = '';
+        if (this.props.imagingUploaderAutoLaunch === 'true' ||
+            this.props.imagingUploaderAutoLaunch === '1'
+        ) {
+          text = 'Processing of this file by the MRI pipeline has started\n' +
+            'Select this upload in the result table to view the processing progress';
+        }
         swal({
-          title: "Upload Successful!",
-          type: "success"
+          title: 'Upload Successful!',
+          text: text,
+          type: 'success',
         }, function() {
-          window.location.assign(loris.BaseURL + "/imaging_uploader/");
+          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
       },
       // Upon errors in upload:
@@ -281,25 +313,28 @@ class UploadForm extends React.Component {
       // - Updates errorMessage and hasError so relevant errors are displayed on form
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
-        swal({
-          title: "Submission error!",
-          type: "error"
-        });
-        let errorMessage = this.state.errorMessage;
+        let errorMessage = Object.assign({}, this.state.errorMessage);
         let hasError = this.state.hasError;
+        let messageToPrint = '';
         errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = errorMessage[i].toString();
             if (errorMessage[i].length) {
               hasError[i] = true;
+              messageToPrint += errorMessage[i] + '\n';
             } else {
               hasError[i] = false;
             }
           }
         }
+        swal({
+          title: 'Submission error!',
+          text: messageToPrint,
+          type: 'error',
+        });
         this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
-      }
+      },
     });
   }
 
@@ -314,7 +349,7 @@ class UploadForm extends React.Component {
 
     // Hide button when progress bar is shown
     const btnClass = (
-      (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
+      (this.state.uploadProgress > -1) ? 'btn btn-primary hide' : undefined
     );
 
     const notes = (
@@ -335,17 +370,17 @@ class UploadForm extends React.Component {
     // For all elements, hasError and errorMessage
     // are updated depending on what values are submitted
     return (
-      <div className="row">
-        <div className="col-md-7">
+      <div className='row'>
+        <div className='col-md-7'>
           <h3>Upload an imaging scan</h3>
           <br/>
           <FormElement
-            name="upload_form"
+            name='upload_form'
             fileUpload={true}
           >
             <SelectElement
-              name="IsPhantom"
-              label="Phantom Scans"
+              name='IsPhantom'
+              label='Phantom Scans'
               options={this.props.form.IsPhantom.options}
               onUserInput={this.onFormChange}
               required={true}
@@ -354,8 +389,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.IsPhantom}
             />
             <TextboxElement
-              name="candID"
-              label="CandID"
+              name='candID'
+              label='CandID'
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
               required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -364,8 +399,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.candID}
             />
             <TextboxElement
-              name="pSCID"
-              label="PSCID"
+              name='pSCID'
+              label='PSCID'
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
               required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -374,8 +409,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.pSCID}
             />
             <SelectElement
-              name="visitLabel"
-              label="Visit Label"
+              name='visitLabel'
+              label='Visit Label'
               options={this.props.form.visitLabel.options}
               onUserInput={this.onFormChange}
               disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
@@ -385,8 +420,8 @@ class UploadForm extends React.Component {
               value={this.state.formData.visitLabel}
             />
             <FileElement
-              name="mriFile"
-              label="File to Upload"
+              name='mriFile'
+              label='File to Upload'
               onUserInput={this.onFormChange}
               required={true}
               hasError={this.state.hasError.mriFile}
@@ -394,11 +429,11 @@ class UploadForm extends React.Component {
               value={this.state.formData.mriFile}
             />
             <StaticElement
-              label="Notes"
+              label='Notes'
               text={notes}
             />
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
+            <div className='row'>
+              <div className='col-sm-9 col-sm-offset-3'>
                 <ProgressBar value={this.state.uploadProgress}/>
               </div>
             </div>

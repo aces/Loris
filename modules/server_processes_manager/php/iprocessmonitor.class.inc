@@ -36,4 +36,4 @@ interface IProcessMonitor
     function getRunningProcesses(array $pids);
 }
 
-?>
+

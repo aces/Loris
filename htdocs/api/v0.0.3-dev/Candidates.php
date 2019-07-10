@@ -73,8 +73,8 @@ class Candidates extends APIBase
     {
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
-                    EDC, DoB, Gender
-                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
+                    EDC, DoB, Sex
+                FROM candidate c JOIN psc s on (s.CenterID=c.RegistrationCenterID)
              WHERE Active='Y'
                 ",
             []
@@ -103,7 +103,8 @@ class Candidates extends APIBase
      */
     public function handlePOST()
     {
-        $data = $this->RequestData;
+        $candid = null;
+        $data   = $this->RequestData;
         if ($data === null) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Can't parse data");
@@ -140,7 +141,7 @@ class Candidates extends APIBase
             $siteName = $data['Candidate']['Site'];
             // This will check that the SiteName provided is a valid one
             $this->verifyField($data, 'Site', $allSiteNames);
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'Sex', ['Male', 'Female']);
             $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             // Get the CenterID from the provided SiteName, and check if the
@@ -159,13 +160,9 @@ class Candidates extends APIBase
                     $centerID,
                     $data['Candidate']['DoB'],
                     $data['Candidate']['EDC'],
-                    $data['Candidate']['Gender'],
+                    $data['Candidate']['Sex'],
                     $data['Candidate']['PSCID']
                 );
-                $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => $candid],
-                              ];
             } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
@@ -173,20 +170,30 @@ class Candidates extends APIBase
 
         }
 
+        $candidate = \Candidate::singleton($candid);
+
         if (isset($data['Candidate']['Project'])) {
             $projectName = $data['Candidate']['Project'];
             $project     = \Project::singleton($projectName);
             if (!empty($project)) {
-                \Candidate::singleton($candid)->setData(
+                $candidate->setData(
                     array('ProjectID' => $project->getId())
                 );
             }
         }
 
+        $candidateinfo = array(
+                          'CandID'  => $candidate->getCandID(),
+                          'Project' => $candidate->getProjectTitle(),
+                          'PSCID'   => $candidate->getPSCID(),
+                          'Site'    => $candidate->getCandidateSite(),
+                          'EDC'     => $candidate->getCandidateEDC(),
+                          'DoB'     => $candidate->getCandidateDoB(),
+                          'Sex'     => $candidate->getCandidateSex(),
+                         );
+
         $this->header("HTTP/1.1 201 Created");
-        $this->JSON = [
-                       'Meta' => ["CandID" => $candid],
-                      ];
+        $this->JSON = $candidateinfo;
     }
 
     /**
@@ -227,18 +234,18 @@ class Candidates extends APIBase
      * @param string $centerID The center id of the candidate
      * @param string $DoB      Date of birth of the candidate
      * @param string $edc      EDC of the candidate
-     * @param string $gender   Gender of the candidate to be created
+     * @param string $sex      Biological sex of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
-     * @return none
+     * @return int $candID      candidate id of the new candidate
      */
-    public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
+    public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
     {
         return \Candidate::createNew(
             $centerID,
             $DoB,
             $edc,
-            $gender,
+            $sex,
             $PSCID
         );
     }
@@ -259,4 +266,4 @@ if (isset($_REQUEST['PrintCandidates'])) {
     }
     print $obj->toJSONString();
 }
-?>
+

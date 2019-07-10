@@ -128,7 +128,7 @@ class NDB_BVL_Battery
             throw new Exception(
                 "Could not get the current list of instruments, "
                 . "thus unable to assert that the battery is empty",
-                null,
+                0,
                 $e
             );
         }

@@ -27,15 +27,16 @@ namespace LORIS\mri_violations;
 class Mri_Violations extends \NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
+
     /**
      * Check if user should be allowed to see this page.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -159,19 +160,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        // create user object
-        $user        =& \User::singleton();
-        $DB          =& \Database::singleton();
-        $config      =& \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-        } else {
-            $useProjects = true;
-        }
-        $dir_path      = $config->getSetting("imagePath");
         $this->columns = array(
                           'v.PatientName',
+                          'pjct.Name as Project',
+                          'subpjct.title as Subproject',
                           'site.Name as Site',
                           'v.TimeRun',
                           'v.MincFile',
@@ -185,6 +177,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
 
         $this->headers = array(
                           'PatientName',
+                          'Project',
+                          'Subproject',
                           'Site',
                           'TimeRun',
                           'MincFile',
@@ -196,12 +190,6 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                           'Resolution_status',
                          );
 
-        if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
-            array_splice($this->columns, 2, 0, 'subpjct.title as Subproject');
-            array_splice($this->headers, 1, 0, 'Project');
-            array_splice($this->headers, 2, 0, 'Subproject');
-        }
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
              'SeriesUID',
@@ -245,7 +233,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 AND mpvs.CandID = s.CandID
             )
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
@@ -277,7 +265,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)
+            ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
@@ -454,4 +442,4 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
     }
 }
-?>
+

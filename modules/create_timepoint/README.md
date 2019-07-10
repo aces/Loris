@@ -25,10 +25,6 @@ as well as at least 1 study site.
 
 ## Configurations
 
-The "useProjects" configuration affects whether or not the available
-subprojects are restricted to the candidate's project related
-subprojects.
-
 The "visitLabel" setting in config.xml determines how the visit
 label for the timepoint is selected. However, this functionality
 is deprecated as text entry is unreliable.

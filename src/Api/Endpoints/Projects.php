@@ -34,11 +34,12 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * All users have access to the login endpoint to try and login.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return !($user instanceof \LORIS\AnonymousUser);
     }
 
@@ -125,7 +126,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
         $config = \NDB_Factory::singleton()->config();
 
-        $useProjects = $config->getSetting("useProjects");
         $useEDC      = $config->getSetting("useEDC");
 
         if ($useEDC === '1' || $useEDC === 'true') {
@@ -139,25 +139,20 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = [
-                     "useEDC" => $useEDC,
-                     "PSCID"  => [
-                                  "Type"  => $type,
-                                  "Regex" => $PSCIDFormat,
-                                 ],
-                    ];
+            "useEDC" => $useEDC,
+            "PSCID"  => [
+                "Type"  => $type,
+                "Regex" => $PSCIDFormat,
+            ],
+        ];
 
-        if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
-            $projects  = \Utility::getProjectList();
-            $projArray = [];
-            foreach ($projects as $project) {
-                $projArray[$project] = $settings;
-            }
-            $this->projectsCache = ["Projects" => $projArray];
-        } else {
-            $this->projectsCache = [
-                                    "Projects" => array("loris" => $settings),
-                                   ];
+        $projects  = \Utility::getProjectList();
+        $projArray = [];
+        foreach ($projects as $project) {
+            $projArray[$project] = $settings;
         }
+        $this->projectsCache = ["Projects" => $projArray];
+
         return $this->projectsCache;
     }
 

@@ -137,7 +137,7 @@ class File_Decompress
      * extracting it to the destination folder and
      * then closing the zip-archive handler
      *
-     * @return booean
+     * @return int
      */
     function unzip()
     {
@@ -153,4 +153,4 @@ class File_Decompress
         return $file_name;
     }
 }
-?>
+
