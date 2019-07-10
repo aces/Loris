@@ -11,6 +11,71 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+
+/**
+ * Fake Candidate class that has exact copies of methods in the
+ * Candidate class to test certain SQL queries easily
+ *
+ * @category Tests
+ * @package  Main
+ * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class FakeCandidate extends Candidate
+{
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @param \Database $DB The mock database used by test functions
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function fakeGetParticipantStatusOptions(\Database $DB): array
+    {
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param \Database $DB       The mock database used by test functions
+     * @param int       $parentID parent ID of the participant status option
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function fakeGetParticipantStatusSubOptions(
+        \Database $DB, int $parentID
+    ): array {
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+}
+
+
+
+
 /**
  * Unit test for Candidate class
  *
@@ -793,6 +858,101 @@ class CandidateTest extends TestCase
         );
     }
 
+    /**
+     * Test getConsents returns correct array of information
+     * 
+     * @covers Candidate::getConsents
+     * @return void
+     */
+    public function testGetConsents()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select(969664);
+ 
+        $result = array(
+                      array('ConsentID' => 1,
+                            'Name' => 'name1',
+                            'Status' => 'done',
+                            'DateGiven' => 'today',
+                            'DateWithdrawn' => 'tomorrow'));
+
+        $this->_dbMock->expects($this->once())
+            ->method('pselectWithIndexKey')
+            ->with(
+                $this->stringContains(
+                    "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn"
+                )
+            )
+            ->willReturn($result);
+
+        $this->assertEquals(
+            $result,
+            $this->_candidate->getConsents()
+        );
+    }
+
+    /**
+     * Test getParticipantStatusOptions returns correct array of information
+     *
+     * @covers Candidate::getParticipantStatusOptions
+     * @return void
+     */
+    public function testGetParticipantStatusOptions()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select(969664);
+
+        $result = array(
+                      array('ID' => 1,
+                            'Description' => 'description1'));
+
+        $this->_dbMock->expects($this->once())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "WHERE parentID IS NULL"
+                )
+            )
+            ->willReturn($result);
+
+        $this->assertEquals(
+            array(1 => 'description1'),
+            FakeCandidate::fakeGetParticipantStatusOptions($this->_dbMock)
+        );
+    }
+
+    /**
+     * Test getParticipantStatusSubOptions returns correct array of information
+     *
+     * @covers Candidate::getParticipantStatusSubOptions
+     * @return void
+     */
+    public function testGetParticipantStatusSubOptions()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select(969664);
+
+        $result = array(
+                      array('ID' => 1,
+                            'Description' => 'description1'));
+
+        // This method contains a different query than the 
+        // getParticipantStatusOptions method. 
+        // This is checked using stringContains()
+        $this->_dbMock->expects($this->once())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "WHERE parentID=:pid"
+                )
+            )
+            ->willReturn($result);
+
+        $this->assertEquals(
+            array(1 => 'description1'),
+            FakeCandidate::fakeGetParticipantStatusSubOptions($this->_dbMock, 2)
+        );
+    }
     /**
      * Test Candidate::createNew
      *
