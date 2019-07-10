@@ -550,7 +550,6 @@ abstract class LorisIntegrationTest extends TestCase
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-        }
     }
     /**
      * Click a React Element
