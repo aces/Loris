@@ -29,14 +29,14 @@ class CandidateTest extends TestCase
      */
     private $_candidateInfo
         = array(
-           'RegistrationCenterID'     => '2',
+           'RegistrationCenterID'     => 2,
            'CandID'       => '969664',
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
            'Sex'          => 'Male',
            'PSC'          => 'AAA',
-           'Ethnicity'    => null,
+           'Ethnicity'    => 'White',
            'Active'       => 'Y',
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
@@ -104,25 +104,27 @@ class CandidateTest extends TestCase
         parent::setUp();
 
         $this->_configMap = array(
-                             array('HeaderTable', null),
+                                array('HeaderTable', null)
                             );
 
         $this->_listOfTimePoints = array(
-                                    array('ID' => '97'),
-                                    array('ID' => '98'),
+                                       array('ID' => '97'),
+                                       array('ID' => '98')
                                    );
 
         $this->_listOfProjects = array(
-            array('ProjectID' => 1, 'Name' => 'testProject'));
+                                     array('ProjectID' => 1, 
+                                           'Name' => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
         $this->_factory   = NDB_Factory::singleton();
-        $this->_candidate = new Candidate();
-
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
+
+        $this->_candidate = new Candidate();
+
     }
 
     /**
@@ -150,7 +152,6 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
 
         $this->_candidate->select(969664);
-
         //validate _candidate Info
         $this->assertEquals($this->_candidateInfo, $this->_candidate->getData());
 
@@ -211,7 +212,8 @@ class CandidateTest extends TestCase
 
     /**
      * Test setData method sets data when passing variable name and value
-     *
+     * TODO Same test as above? 
+     * 
      * @return void
      * @covers Candidate::setData
      * @covers Candidate::getData
@@ -245,6 +247,271 @@ class CandidateTest extends TestCase
     }
 
     /**
+     * Test setData throws a LorisException when called with an empty array
+     *
+     * @covers Candidate::setData
+     * @return void
+     */
+    public function testSetDataThrowsLorisException()
+    {
+        $this->expectException('\LorisException');
+
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+    
+        $this->_candidate->setData(array());
+    }
+
+    /**
+     * Test getData returns the entire array of candidate information if no
+     * variable is specified
+     *
+     * @covers Candidate::getData
+     * @return void
+     */
+    public function testGetDataReturnsAllInformationIfGivenNull()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo,
+            $this->_candidate->getData()
+        );
+    }
+
+    /** 
+     * Test getProjectID returns the correct ProjectID for the candidate
+     *
+     * @covers Candidate::getProjectID
+     * @return void
+     */
+    public function testGetProjectID()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['ProjectID'],
+            $this->_candidate->getProjectID()
+        );
+    }
+
+    /**
+     * Test getProjectTitle returns the correct ProjectTitle for the candidate
+     *
+     * @covers Candidate::getProjectTitle
+     * @return void
+     */
+    public function testGetProjectTitle()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($this->_listOfProjects);
+       
+        $this->assertEquals("testProject", $this->_candidate->getProjectTitle());
+    }
+
+    /**
+     * Test getCandID returns the correct CandID for the candidate
+     *
+     * @covers Candidate::getCandID
+     * @return void
+     */
+    public function testGetCandID()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['CandID'],
+            $this->_candidate->getCandID()
+        );
+    }
+
+    /**
+     * Test getPSCID returns the correct PSCID for the candidate
+     *
+     * @covers Candidate::getPSCID
+     * @return void
+     */
+    public function testGetPSCID()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['PSCID'],
+            $this->_candidate->getPSCID()
+        );
+    }
+
+    /**
+     * Test getCandidateSite returns the correct PSC information for the candidate
+     *
+     * @covers Candidate::getCandidateSite
+     * @return void
+     */
+    public function testGetCandidateSite()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['PSC'],
+            $this->_candidate->getCandidateSite()
+        );
+    }
+
+    /**
+     * Test getCenterID returns the correct RegistrationCenterID for the candidate
+     *
+     * @covers Candidate::getCenterID
+     * @return void
+     */
+    public function testGetCenterID()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['RegistrationCenterID'],
+            $this->_candidate->getCenterID()
+        );
+    }
+
+    /**
+     * Test getCandidateDoB returns the correct DoB for the candidate
+     *
+     * @covers Candidate::getCandidateDoB
+     * @return void
+     */
+    public function testGetCandidateDoB()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['DoB'],
+            $this->_candidate->getCandidateDoB()
+        );
+    }
+
+    /**
+     * Test getCandidateEDC returns the correct 
+     * expected date of confinement for the candidate
+     *
+     * @covers Candidate::getCandidateEDC
+     * @return void
+     */
+    public function testGetCandidateEDC()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['EDC'],
+            $this->_candidate->getCandidateEDC()
+        );
+    }
+
+    /**
+     * Test getCandidateSex returns the correct sex of the candidate
+     *
+     * @covers Candidate::getCandidateSex
+     * @return void
+     */
+    public function testGetCandidateSex()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['Sex'],
+            $this->_candidate->getCandidateSex()
+        );
+    }
+
+    /**
+     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
+     *
+     * @note   This function is deprecated so it was causing a PHAN error. 
+               It is marked test incomplete for this reason
+     *         however it is fully implemented and functional
+     * @covers Candidate::getCandidateEthnicity
+     * @return void
+     */
+    public function testGetCandidateEthnicity()
+    {
+        $this->markTestIncomplete(
+            "This test is marked as incomplete because the function is deprecated"
+        );
+        /**
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['Ethnicity'],
+            $this->_candidate->getCandidateEthnicity()
+        );
+        */
+    }
+
+    /** 
+     * Test isActive returns the correct string for the candidate
+     *
+     * @covers Candidate::isActive
+     * @return void
+     */
+    public function testIsActive()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['Active'],
+            $this->_candidate->isActive()
+        );
+    }
+
+    /** 
+     * Test registeredBy returns the correct string for the candidate
+     *
+     * @covers Candidate::registeredBy
+     * @return void
+     */
+    public function testRegisteredBy()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['RegisteredBy'],
+            $this->_candidate->registeredBy()
+        );
+    }
+
+    /**
+     * Test lastRecordChangeBy returns the correct UserID for the candidate
+     *
+     * @covers Candidate::lastRecordChangeBy
+     * @return void
+     */
+    public function testLastRecordChangeBy()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['UserID'],
+            $this->_candidate->lastRecordChangeBy()
+        );
+    }
+
+    /**
      * Test getListOfVisitLabels returns array
      * of visit labels with corresponding SessionID as key
      *
@@ -256,14 +523,10 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
 
         $selectReturns = array(
-                          array(
-                           'ID'          => '97',
-                           'Visit_label' => 'V01',
-                          ),
-                          array(
-                           'ID'          => '98',
-                           'Visit_label' => 'V02',
-                          ),
+                             array('ID'          => '97',
+                                   'Visit_label' => 'V01'),
+                             array('ID'          => '98',
+                                   'Visit_label' => 'V02')
                          );
 
         //mock pselect from getListOfVisitLabels
@@ -295,23 +558,29 @@ class CandidateTest extends TestCase
     public function testGetValidSubprojectsReturnsAListOfSubprojects()
     {
         $subprojects = array(
-                        array('SubprojectID' => 1),
-                        array('SubprojectID' => 2),
+                           array('SubprojectID' => 1),
+                           array('SubprojectID' => 2)
                        );
         $this->_setUpTestDoublesForSelectCandidate();
 
         $this->_dbMock->expects($this->at(3))
             ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "SELECT SubprojectID from project_rel where ProjectID = :prj"
+                )
+            )
             ->willReturn(
                 $subprojects
             );
 
+        $expectedSubprojects = array(
+                                   1 => 1,
+                                   2 => 2
+                               );
+        
         $this->_candidate->select(969664);
 
-        $expectedSubprojects = array(
-                                1 => 1,
-                                2 => 2,
-                               );
         $this->assertEquals(
             $expectedSubprojects,
             $this->_candidate->getValidSubprojects()
@@ -353,12 +622,69 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
+            ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('V01');
 
         $this->_candidate->select(969664);
         $this->assertEquals('V01', $this->_candidate->getFirstVisit());
     }
 
+    /**
+     * Test getFirstVisit returns an empty string if there is no first visit
+     *
+     * @covers Candidate::getFirstVisit
+     * @return void
+     */
+    public function testGetFirstVisitReturnsEmptyString()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->with($this->stringContains("AND VisitNo = 1"))
+            ->willReturn('');
+        
+        $this->_candidate->select(969664);
+        $this->assertEquals('', $this->_candidate->getFirstVisit());
+    }
+
+    /**
+     * Test getNextVisitNo returns the next visit label
+     *
+     * @covers Candidate::getNextVisitNo
+     * @return void
+     */
+    public function testGetNextVisitNoReturnsNextVisitNumber()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
+            ->willReturn(2);
+
+        $this->_candidate->select(969664);
+        $this->assertEquals(2, $this->_candidate->getNextVisitNo());
+    }
+ 
+    /**
+     * Test getNextVisitNo returns 1 if the query result is null 
+     *
+     * @covers Candidate::getNextVisitNo
+     * @return void
+     */
+    public function testGetNextVisitNoReturnsOneWhenNextVisitDoesNotExist()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
+            ->willReturn(null);
+
+        $this->_candidate->select(969664);
+        $this->assertEquals(1, $this->_candidate->getNextVisitNo());
+    }
     /**
      * Test getSessionID returns session ID for a given existing visit
      *
@@ -491,21 +817,19 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->willReturn(
-                array(array("projectID" => "1" , "Name" =>"test_project"))
-            );
+            ->willReturn($this->_listOfProjects);
 
         $this->_dbMock->expects($this->at(1))
-             ->method('pselect')
-             ->willReturn(
+            ->method('pselect')
+            ->willReturn(
                 array(array("ID" => 97),array("ID"=>98))
             );
 
         $this->_dbMock->expects($this->at(2))
             ->method('pselect')
             ->willReturn(
-                 $this->_listOfTimePoints
-             );
+                $this->_listOfTimePoints
+            );
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
