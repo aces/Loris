@@ -561,7 +561,7 @@ abstract class LorisIntegrationTest extends TestCase
     {
             try {
                 $this->webDriver->executescript(
-                    "document.querySelector('$ui').click"
+                    "document.querySelector('$ui').click()"
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
