@@ -23,9 +23,9 @@
  */
 class SocketWrapper
 {
-    var $host;
-    var $port;
-    var $socket;
+    public $host;
+    public $port;
+    public $socket;
     /**
      * Constructor for SocketWrapper
      */
