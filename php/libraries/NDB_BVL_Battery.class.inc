@@ -379,12 +379,12 @@ class NDB_BVL_Battery
      *
      * @return string A test name
      */
-    static function getInstrumentNameForCommentId($commentId)
+    public static function getInstrumentNameForCommentId($commentId)
     {
-        $db    =& Database::singleton();
-        $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
-        return $instrumentName;
+        return \Database::singleton()->pselectOne(
+            "SELECT Test_name FROM flag WHERE CommentID=:CID",
+            array('CID' => $commentId)
+        );
     }
 
     /**

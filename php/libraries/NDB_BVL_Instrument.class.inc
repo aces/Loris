@@ -292,6 +292,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //get config
         $config = \NDB_Config::singleton();
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
+        $instrumentPerms       = array();
 
         //check if instrumentPermissions are being used.
         if (!is_array($instrumentPermissions)) {

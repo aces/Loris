@@ -146,22 +146,17 @@ class User extends UserPermissions
 
 
     /**
-     * Inserts a user
+     * Inserts data into the `users` table.
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return bool True
+     * @return void
      * @access public
      * @static
      */
-    public static function insert(array $set): bool
+    public static function insert(array $set): void
     {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $DB->insert('users', $set);
-
-        return true;
+        \Database::singleton()->insert('users', $set);
     }
 
 
@@ -170,21 +165,16 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return bool True
+     * @return void
      * @access public
      */
-    public function update(array $set): bool
+    public function update(array $set): void
     {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $DB->update(
+        \Database::singleton()->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
         );
-
-        return true;
     }
 
     /**

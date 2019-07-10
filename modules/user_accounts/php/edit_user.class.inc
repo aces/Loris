@@ -437,9 +437,9 @@ class Edit_User extends \NDB_Form
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
-            $success = \User::insert($set);
-            $user    = \User::factory($set['UserID']);
-            $uid     = $user->getData('ID');
+            \User::insert($set);
+            $user = \User::factory($set['UserID']);
+            $uid  = $user->getData('ID');
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
@@ -451,8 +451,8 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // update the user
-            $user    = \User::factory($this->identifier);
-            $success = $user->update($set);
+            $user = \User::factory($this->identifier);
+            $user->update($set);
         }
 
         // Now set the password. Note that this field is named incorrectly

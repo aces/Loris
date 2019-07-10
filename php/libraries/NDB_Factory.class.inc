@@ -108,18 +108,14 @@ class NDB_Factory
      */
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
-        if (self::$config !== null) {
-            return self::$config;
-        }
-        $config = NDB_Config::singleton($configfile);
-        if ($this->Testing) {
-            $config = new MockNDB_Config();
+        $config = self::$config;
+        if ($config === null) {
+            $config = $this->Testing ?
+                new MockNDB_Config()
+                : NDB_Config::singleton($configfile);
+            $this->setConfig($config);
         }
 
-        self::$config = $config;
-        // NDB_Config::singleton() is already loading the config file
-        // in a better way. this needs to be modified
-        $config->load($configfile);
         return $config;
     }
 
@@ -143,16 +139,16 @@ class NDB_Factory
      */
     function user(): \User
     {
-        if (self::$_user !== null) {
-            return self::$_user;
+        $user = self::$_user;
+        if ($user === null) {
+            // Set user to a new MockUser if testing. Otherwise set to the
+            // User singleton.
+            $user = $this->setUser(
+                $this->Testing ?
+                new MockUser()
+                : \User::singleton()
+            );
         }
-        if ($this->Testing) {
-            Mock::generate("User");
-            $user = new MockUser();
-        } else {
-            $user = \User::singleton();
-        }
-        self::$_user = $user;
         return $user;
     }
 
@@ -177,20 +173,10 @@ class NDB_Factory
      */
     function database(): \Database
     {
-        $db_ref = null;
         if ($this->Testing) {
-            $db_ref = &self::$testdb;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            //Mock::generate("Database");
-            self::$testdb = new MockDatabase();
+            $db_ref = &self::$testdb ?? new MockDatabase();
         } else {
-            $db_ref = &self::$db;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            self::$db = \Database::singleton();
+            $db_ref = &self::$db ?? \Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
@@ -202,6 +188,8 @@ class NDB_Factory
                 'Could not configure database for LORIS'
             );
         }
+
+        $dbc = $this->config()->getSetting('database');
         $db_ref->connect(
             $dbc['database'],
             $dbc['username'],

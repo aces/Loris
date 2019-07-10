@@ -153,7 +153,7 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = intval($row['VLabel']);
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
@@ -219,7 +219,7 @@ class Stats_Behavioural extends \NDB_Form
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = intval($row['VLabel']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
