@@ -4,7 +4,7 @@
 1. User can load Imaging Browser module front page IFF has permission imaging_browser_view_site, imaging_browser_view_allsites, imaging_browser_phantom_allsites or imaging_browser_phantom_ownsite [Partial Automation Testing; To ADD phantom permissions automated tests]
 2. User can see other sites Imaging datasets IFF has permission imaging_browser_view_allsites. User can see only own site Imaging datasets IFF has permission imaging_browser_view_site. User can see phantom data only from across all sites with the imaging_browser_phantom_allsites, and from own sites with imaging_browser_phantom_ownsite [Partial Automation Testing; TO ADD phantom permissions automated tests]
 3. Test that all Filters work.  Upon first loading, Site filter should be set to 'All User Sites' (with the dropdown menu populated with the sites the logged on user is affiliated with) IFF user does not have permission imaging_browser_view_allsites nor imaging_browser_phantom_allsites, and is set to 'All' otherwise.
-4. Test Selection Filter buttons: Show Data and Clear Forms
+4. Test Clear Filters button
 5. Test column table is sortable by headers
 6. Test that Links work, to correct dataset (selected/native)
 7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Modules/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table    

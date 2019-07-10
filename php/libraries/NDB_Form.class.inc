@@ -54,7 +54,7 @@ class NDB_Form extends NDB_Page
      * @param string $page       Identifies the page to show
      * @param string $identifier Variables passed to form
      *
-     * @return void
+     * @return \NDB_Form
      */
     static function &factory($name, $page, $identifier)
     {
@@ -193,5 +193,30 @@ class NDB_Form extends NDB_Page
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
+
+    /**
+     * Converts this form to an array with field options for the form
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return array
+     */
+    function toArray(): array
+    {
+        return array(
+                'fieldOptions' => $this->fieldOptions,
+               );
+    }
+
+    /**
+     * Converts the results of this form to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the options to send to the form
+     */
+    function toJSON(): string
+    {
+        return json_encode($this->toArray());
+    }
 }
-?>
+

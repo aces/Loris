@@ -40,20 +40,17 @@ function uploadPublication() : void
         return;
     }
 
-    $titleRaw = $_POST['title'] ?? null;
-    if (!$titleRaw) {
+    $title = $_POST['title'] ?? null;
+    if (!$title) {
         showPublicationError('Title is empty', 400);
     }
-    // title that gets inserted is run through htmlspecialchars()
-    // so need to query based on Processed title
-    $titleProc = htmlspecialchars($titleRaw);
 
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
         "SELECT PublicationID " .
         "FROM publication " .
         "WHERE Title=:t",
-        array('t' => $titleProc)
+        array('t' => $title)
     );
 
     if ($exists) {
@@ -91,10 +88,10 @@ function uploadPublication() : void
     // INSERT INTO publication ...
     $uid   = $user->getId();
     $today = date('Y-m-d');
-    // insert the titleRaw to avoid double escaping
+    // insert the title to avoid double escaping
     $fields = array(
                'UserID'             => $uid,
-               'Title'              => $titleRaw,
+               'Title'              => $title,
                'Description'        => $desc,
                'LeadInvestigatorID' => $leadInvID,
                'DateProposed'       => $today,

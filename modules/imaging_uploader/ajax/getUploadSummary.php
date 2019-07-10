@@ -44,12 +44,13 @@ $row       = $DB->pselectRow(
 $inserting = $row['Inserting'];
 $insertionComplete = $row['InsertionComplete'];
 
-/* Get notifications from table notification_spool. Only get those with
- * Verbose == 'N' if summary is set to true
+/* Get the active notifications from table notification_spool. Only get the ones
+ *  with Verbose == 'N' if summary is set to true.
  */
-$query = "SELECT NotificationID, TimeSpooled, Error, Verbose, Message 
+$query = "SELECT NotificationID, TimeSpooled, Error, Verbose, Message
           FROM notification_spool
-          WHERE ProcessID = :processId";
+          WHERE ProcessID = :processId
+          AND Active='Y'";
 if ($summary) {
     $query .= " AND Verbose = 'N'";
 }

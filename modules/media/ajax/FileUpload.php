@@ -36,7 +36,7 @@ function editFile()
     $db   =& Database::singleton();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
-        header("HTTP/1.1 403 Forbidden");
+        showMediaError("Permission Denied", 403);
         exit;
     }
 
@@ -46,11 +46,14 @@ function editFile()
     $idMediaFile = $req['idMediaFile'];
 
     if (!$idMediaFile) {
-        showMediaError("Error! Invalid media file ID!");
+        showMediaError("Media ID $idMediaFile not found", 404);
     }
 
+    $dateTaken = $req['dateTaken'];
+    checkDateTaken($dateTaken);
+
     $updateValues = [
-                     'date_taken' => $req['dateTaken'],
+                     'date_taken' => $dateTaken,
                      'comments'   => $req['comments'],
                      'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
@@ -58,7 +61,7 @@ function editFile()
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
     } catch (DatabaseException $e) {
-        showMediaError("Could not update the file. Please try again!");
+        showMediaError("Could not update the file. Please try again!", 500);
     }
 
 }
@@ -82,7 +85,7 @@ function uploadFile()
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
-        header("HTTP/1.1 403 Forbidden");
+        showMediaError("Permission Denied", 403);
         exit;
     }
 
@@ -90,13 +93,15 @@ function uploadFile()
     $mediaPath = $config->getSetting('mediaPath');
 
     if (!isset($mediaPath)) {
-        showMediaError("Error! Media path is not set in Loris Settings!");
-        exit;
+        showMediaError(
+            "Media path not set in LORIS settings! "
+            . "Please contact your LORIS administrator",
+            500
+        );
     }
 
     if (!file_exists($mediaPath)) {
-        showMediaError("Error! The upload folder '$mediaPath' does not exist!");
-        exit;
+        showMediaError("Error! The upload folder '$mediaPath' does not exist!", 404);
     }
 
     // Process posted data
@@ -110,15 +115,18 @@ function uploadFile()
 
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
-        showMediaError("Please fill in all required fields!");
+        showMediaError("Please fill in all required fields!", 400);
         return;
     }
+
+    checkDateTaken($dateTaken);
+
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
     if (!isset($extension)) {
-        showMediaError("Please make sure your file has a valid extension!");
+        showMediaError("Please make sure your file has a valid extension!", 400);
         return;
     }
 
@@ -138,7 +146,8 @@ function uploadFile()
     if (!isset($sessionID) || strlen($sessionID) < 1) {
         showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
-            "and visit label '$visit'."
+            "and visit label '$visit'.",
+            404
         );
 
         return;
@@ -165,10 +174,10 @@ function uploadFile()
             $db->insertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
-            showMediaError("Could not upload the file. Please try again!");
+            showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        showMediaError("Could not upload the file. Please try again!");
+        showMediaError("Could not upload the file. Please try again!", 500);
     }
 }
 
@@ -181,7 +190,7 @@ function viewData()
 {
     $user =& User::singleton();
     if (!$user->hasPermission('media_read')) {
-        header("HTTP/1.1 403 Forbidden");
+        showMediaError("Permission denied", 403);
         exit;
     }
     echo json_encode(getUploadFields());
@@ -328,15 +337,17 @@ function getUploadFields()
  * Utility function to return errors from the server
  *
  * @param string $message error message to display
+ * @param int    $code    The HTTP response code to
+ *                        use with the message
  *
  * @return void
  */
-function showMediaError($message)
+function showMediaError($message, $code)
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
-    header('HTTP/1.1 500 Internal Server Error');
+    http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(['message' => $message]));
 }
@@ -384,4 +395,28 @@ function getFilesList()
     }
 
     return $mediaFiles;
+}
+
+/**
+ * Checks that a date is not in the future.
+ *
+ * @param string $dateTaken The date (in YYYY-MM-DD
+ *                          format) to check)
+ *
+ * @return void (but may terminate as a side-effect)
+ */
+function checkDateTaken($dateTaken)
+{
+    if (!empty($dateTaken)) {
+        $date = date_create_from_format("Y-m-d", $dateTaken);
+        if ($date === false) {
+            showMediaError("Invalid date: $dateTaken", 400);
+        }
+
+        $now  = new DateTime();
+        $diff = date_diff($date, $now)->format("%a");
+        if ($diff > 0) {
+            showMediaError("Date of administration can not be in the future", 400);
+        }
+    }
 }

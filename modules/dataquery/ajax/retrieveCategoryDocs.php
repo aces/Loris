@@ -10,7 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-ini_set("max_input_vars", 10000);
+
+
+ini_set("max_input_vars", '10000');
 $user =& User::singleton();
 if (!$user->hasPermission('dataquery_view')) {
     header("HTTP/1.1 403 Forbidden");
@@ -25,7 +27,7 @@ $couchConfig = $config->getSetting('CouchDB');
 $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['dbName'],
     $couchConfig['hostname'],
-    $couchConfig['port'],
+    intval($couchConfig['port']),
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
@@ -58,4 +60,4 @@ $justTheDocs = array_map(function($row) {
 $results);
 print json_encode($justTheDocs);
  */
-?>
+

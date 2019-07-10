@@ -43,7 +43,7 @@ class EmailElement extends React.Component {
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -80,7 +80,7 @@ EmailElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
   onUserBlur: function() {
-  }
+  },
 };
 
 // This class combines the common form elements between
@@ -100,12 +100,12 @@ class ProjectFormFields extends React.Component {
   deleteUpload(uploadID) {
     let self = this;
     swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to delete this file?",
-      type: "warning",
+      title: 'Are you sure?',
+      text: 'Are you sure you want to delete this file?',
+      type: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
-      cancelButtonText: "No, cancel it!"
+      cancelButtonText: 'No, cancel it!',
     },
       function(willDelete) {
         if (willDelete) {
@@ -116,7 +116,7 @@ class ProjectFormFields extends React.Component {
               method: 'DELETE',
               success: function() {
                 self.props.fetchData();
-              }
+              },
             });
         }
       });
@@ -168,20 +168,20 @@ class ProjectFormFields extends React.Component {
     }
     // create fields for new files
     for (let i = 0; i <= this.props.numFiles; i++) {
-      let fileName = "file_" + i;
+      let fileName = 'file_' + i;
       fileFields.push(
         <FileElement
           name={fileName}
-          id={"publicationUploadEl_" + i}
+          id={'publicationUploadEl_' + i}
           onUserInput={this.props.setFileData}
           label="File to upload"
           value={this.props.formData[fileName]}
         />
       );
       if (this.props.formData[fileName]) {
-        let publicationType = "publicationType_" + i;
-        let publicationCitation = "publicationCitation_" + i;
-        let publicationVersion = "publicationVersion_" + i;
+        let publicationType = 'publicationType_' + i;
+        let publicationCitation = 'publicationCitation_' + i;
+        let publicationVersion = 'publicationVersion_' + i;
         fileFields.push(
           <div>
             <SelectElement
@@ -221,7 +221,7 @@ class ProjectFormFields extends React.Component {
           collabEmails.push(
             <EmailElement
               name={name}
-              label={c.name + (c.name.slice(-1) === 's' ? "'" : "'s") + " Email"}
+              label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
               onUserInput={this.setCollaboratorEmail}
               onUserBlur={this.props.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
@@ -242,7 +242,7 @@ class ProjectFormFields extends React.Component {
       {
         name: value,
         email: null,
-        notify: false
+        notify: false,
       }
     );
 
@@ -252,14 +252,14 @@ class ProjectFormFields extends React.Component {
 
   removeCollaborator(formElement, value) {
     let collaborators = this.props.formData.collaborators || [];
-    collaborators = collaborators.filter(c => c.name !== value);
+    collaborators = collaborators.filter((c) => c.name !== value);
     this.props.setFormData('collaborators', collaborators);
   }
 
   setCollaboratorEmail(formElement, value) {
     let collabName = formElement.split('_')[1];
     let collaborators = this.props.formData.collaborators;
-    let i = collaborators.findIndex(c => c.name === collabName);
+    let i = collaborators.findIndex((c) => c.name === collabName);
     collaborators[i].email = value;
     this.props.setFormData('collaborators', collaborators);
   }
@@ -268,7 +268,7 @@ class ProjectFormFields extends React.Component {
     if (e.target.name.indexOf('collabEmail') > -1) {
       let collaborators = this.props.formData.collaborators;
       let collabName = e.target.value;
-      let i = collaborators.findIndex(c => c.name === collabName);
+      let i = collaborators.findIndex((c) => c.name === collabName);
       collaborators[i].notify = !collaborators[i].notify;
       this.props.setFormData('collaborators', collaborators);
     } else if (e.target.name === 'leadInvestigatorEmail_notify') {
@@ -286,13 +286,13 @@ class ProjectFormFields extends React.Component {
       </div>);
     let collabNames = [];
     if (this.props.formData.collaborators) {
-      collabNames = this.props.formData.collaborators.map(c => c.name);
+      collabNames = this.props.formData.collaborators.map((c) => c.name);
     }
 
     let voiTypeOptions = {
       All: 'All',
       Behavioral: 'Behavioral',
-      Imaging: 'Imaging'
+      Imaging: 'Imaging',
     };
 
     const allVOIs = this.props.allVOIs;
@@ -407,7 +407,7 @@ class ProjectFormFields extends React.Component {
           text={voiHelp}
         />
         {fileFields}
-        <ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>
+        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}/>
       </div>
     );
   }

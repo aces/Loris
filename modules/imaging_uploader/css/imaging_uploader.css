@@ -1,70 +1,70 @@
 #log_box {
-  width: 600px;
-  height: 200px;
-  border: 2px solid #064785;
-  overflow: auto;
-  padding: 5px;
+    width: 600px;
+    height: 200px;
+    border: 2px solid #064785;
+    overflow: auto;
+    padding: 5px;
 }
 
 #mri_upload_table tr {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 progress {
-  /*position: relative;*/
-  width: 400px;
-  height: 20px;
-  color: #1C70B6;
-  border-style: none;
-  border-radius: 10px;
+    /*position: relative;*/
+    width: 400px;
+    height: 20px;
+    color: #1C70B6;
+    border-style: none;
+    border-radius: 10px;
 }
 
 /* Firefox */
 progress::-moz-progress-bar {
-  background: #1C70B6;
-  border-radius: 10px;
+    background: #1C70B6;
+    border-radius: 10px;
 }
 
 /* Chrome */
 progress::-webkit-progress-value {
-  background: #1C70B6;
-  border-radius: 10px;
+    background: #1C70B6;
+    border-radius: 10px;
 }
 
 /* Polyfill */
-progress[aria-valuenow]:before  {
-  background: #1C70B6;
-  border-radius: 10px;
+progress[aria-valuenow]:before {
+    background: #1C70B6;
+    border-radius: 10px;
 }
 
-.progress{
-  background-color: lightgrey;
-  height: 30px;
+.progress {
+    background-color: lightgrey;
+    height: 30px;
 }
 
 #progresslabel {
-  width: 95%;
-  position: absolute;
-  z-index: 1000;
-  color: white;
-  text-align: center;
-  padding-top: 4px;
+    width: 95%;
+    position: absolute;
+    z-index: 1000;
+    color: white;
+    text-align: center;
+    padding-top: 4px;
 }
 
 .upload-logs-table-summary {
-  width: 95%;
-  height:130px;
-  background: #E8E8E8;
-  resize: vertical;
-  margin-left:30px;
-  padding: 5px;
+    width: 95%;
+    height: 130px;
+    background: #E8E8E8;
+    resize: vertical;
+    margin-left: 30px;
+    padding: 5px;
 }
 
 .upload-logs-table-detailed {
-  width: 95%;
-  height:400px;
-  background: #E8E8E8;
-  resize: vertical;
-  margin-left:30px;
-  padding: 5px;
+    width: 95%;
+    height: 400px;
+    background: #E8E8E8;
+    resize: vertical;
+    margin-left: 30px;
+    padding: 5px;
 }

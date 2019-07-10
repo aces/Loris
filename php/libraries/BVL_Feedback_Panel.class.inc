@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * General behavioural feedback panel class.
  *
  * This class provides the behavioural feedback gui for the timepoint list,
  * instrument list and individual instruments.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Behavioural
  * @package  Main
@@ -40,17 +40,19 @@ class BVL_Feedback_Panel
      * Creates the feedback thread for the given combination of candID,
      * sessionID and commentID.
      *
-     * @param int  $candID    The candidate ID.
-     * @param null $sessionID The session ID for a given visit. Optional.
-     * @param null $commentID The comment ID for a given instrument. Optional.
+     * @param int         $candID    The candidate ID.
+     * @param int|null    $sessionID The session ID for a given visit.
+     * @param string|null $commentID The comment ID for a given instrument.
      */
-    function __construct($candID, $sessionID=null, $commentID=null)
-    {
-        $user     =& User::singleton();
-        $username = $user->getUsername();
+    function __construct(
+        int $candID,
+        ?int $sessionID=null,
+        ?string $commentID=null
+    ) {
+
         $this->_feedbackThread
-            =& NDB_BVL_Feedback::Singleton(
-                $username,
+            = \NDB_BVL_Feedback::singleton(
+                \User::singleton()->getUsername(),
                 $candID,
                 $sessionID,
                 $commentID
@@ -65,14 +67,14 @@ class BVL_Feedback_Panel
      * @throws Exception
      * @throws SmartyException
      */
-    function display()
+    function display(): string
     {
         $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
         $candidateID     = $feedbackProfile["CandID"];
 
         $this->tpl_data['candID'] = $candidateID;
 
-        $candidateObject         = Candidate::singleton($candidateID);
+        $candidateObject         = Candidate::singleton(intval($candidateID));
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
         $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;

@@ -29,18 +29,19 @@ class CandidateTest extends TestCase
      */
     private $_candidateInfo
         = array(
-           'CenterID'     => '2',
+           'RegistrationCenterID'     => '2',
            'CandID'       => '969664',
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
-           'Gender'       => 'Male',
+           'Sex'          => 'Male',
            'PSC'          => 'AAA',
            'Ethnicity'    => null,
            'Active'       => 'Y',
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
            'ProjectID'    => 1,
+           'ProjectTitle' => '',
           );
 
     /**
@@ -68,14 +69,14 @@ class CandidateTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit_Framework_MockObject_MockObject
      */
     private $_dbMock;
 
@@ -103,20 +104,16 @@ class CandidateTest extends TestCase
         parent::setUp();
 
         $this->_configMap = array(
-                             array(
-                              'useProjects',
-                              false,
-                             ),
-                             array(
-                              'HeaderTable',
-                              null,
-                             ),
+                             array('HeaderTable', null),
                             );
 
         $this->_listOfTimePoints = array(
                                     array('ID' => '97'),
                                     array('ID' => '98'),
                                    );
+
+        $this->_listOfProjects = array(
+            array('ProjectID' => 1, 'Name' => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
@@ -177,13 +174,12 @@ class CandidateTest extends TestCase
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
-        $this->markTestSkipped("setExpectedException has been deprecated! ");
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
         
-        $this->setExpectedException('LorisException');
-        $this->_candidate->select('invalid value');
+        $this->expectException('LorisException');
+        $this->_candidate->select(88888);
 
     }
 
@@ -235,7 +231,13 @@ class CandidateTest extends TestCase
                 array('CandID' => $this->_candidateInfo['CandID'])
             );
 
-        $this->assertTrue($this->_candidate->setData('RegisteredBy', 'TestUser'));
+        $this->assertTrue(
+            $this->_candidate->setData(
+                array(
+                    'RegisteredBy' => 'TestUser'
+                )
+            )
+        );
         $this->assertEquals(
             $data['RegisteredBy'],
             $this->_candidate->getData('RegisteredBy')
@@ -265,7 +267,7 @@ class CandidateTest extends TestCase
                          );
 
         //mock pselect from getListOfVisitLabels
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->with(
                 $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
@@ -298,7 +300,7 @@ class CandidateTest extends TestCase
                        );
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -317,17 +319,18 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getValidSubprojects returns NULL when there are no subprojects in DB
+     * Test getValidSubprojects returns array() when there are no subprojects 
+     * in DB.
      *
      * @covers Candidate::getValidSubprojects
      * @return void
      */
-    public function testGetValidSubprojectsReturnsNull()
+    public function testGetValidSubprojectsReturnsEmptyArray(): void
     {
         $subprojects = array();
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -335,7 +338,7 @@ class CandidateTest extends TestCase
 
         $this->_candidate->select(969664);
 
-        $this->assertNull($this->_candidate->getValidSubprojects());
+        $this->assertEquals($this->_candidate->getValidSubprojects(), array());
     }
 
     /**
@@ -348,7 +351,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->at(2))
+        $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('V01');
 
@@ -412,145 +415,9 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(false);
+            ->willReturn(null);
 
         $this->assertFalse(Candidate::candidateExists(123, 'Test'));
-    }
-
-    /**
-     * Test static function Candidate::_generateCandID
-     * returns first generated _candidate ID
-     * (i.e. 1st generated ID does not exist in DB)
-     *
-     * @covers Candidate::_generateCandID
-     * @return void
-     */
-    public function testGenerateCandIDReturnsFirstGeneratedID()
-    {
-        $this->_dbMock->expects($this->once())
-            ->method('pselectOne')
-            ->willReturn(0);
-
-        $candidateID = Candidate::_generateCandID();
-        $this->assertGreaterThanOrEqual(CANDIDATE_MIN_CANDID, $candidateID);
-        $this->assertLessThanOrEqual(CANDIDATE_MAX_CANDID, $candidateID);
-    }
-
-    /**
-     * Test static function Candidate::_generateCandID
-     * returns second generated _candidate ID
-     * when 1st one exists in DB
-     *
-     * @covers Candidate::_generateCandID
-     * @return void
-     */
-    public function testGenerateCandIDReturnsSecondGeneratedID()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->will($this->onConsecutiveCalls(CANDIDATE_MIN_CANDID, 0));
-
-        $candidateID = Candidate::_generateCandID();
-        $this->assertGreaterThanOrEqual(CANDIDATE_MIN_CANDID, $candidateID);
-        $this->assertLessThanOrEqual(CANDIDATE_MAX_CANDID, $candidateID);
-    }
-
-    /**
-     * Test Candidate::_generateCandID for config setting
-     * generation = random, & type=numeric
-     *
-     * @covers Candidate::_generatePSCID
-     * @return void
-     */
-    public function testGeneratePSCIDForRandomNumericGeneration()
-    {
-
-        $seq = array(
-                'seq' => array(
-                          0 => array(
-                                '#' => '',
-                                '@' => array('type' => 'siteAbbrev'),
-                               ),
-                          1 => array(
-                                '#' => '',
-                                '@' => array(
-                                        'type'      => 'numeric',
-                                        'minLength' => '4',
-                                       ),
-                               ),
-                         ),
-               );
-
-        $this->_configMap = array(
-                             array(
-                              'PSCID',
-                              array(
-                               'generation' => 'random',
-                               'structure'  => $seq,
-                              ),
-                             ),
-                            );
-
-        $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
-
-        //mock Database::pselectOne(), returns count 0
-        //case when generated PSCID is not used, therefore not found in DB
-        $this->_dbMock->expects($this->once())
-            ->method('pselectOne')
-            ->willReturn(0);
-
-        $this->assertRegExp('/AAA[0-9]{4}$/', Candidate::_generatePSCID('AAA'));
-    }
-
-    /**
-     * Test static function Candidate::_generatePSCID for config setting
-     * generation=sequential & type=numeric
-     * For this test _generatePSCID should return 3rd generated PSCID,
-     * since 2 other ones already exist in DB
-     *
-     * @covers Candidate::_generatePSCID
-     * @return void
-     */
-    public function testGeneratePSCIDForSequentialNumericGeneration()
-    {
-
-        $seq = array(
-                'seq' => array(
-                          0 => array(
-                                '#' => '',
-                                '@' => array('type' => 'siteAbbrev'),
-                               ),
-                          1 => array(
-                                '#' => '',
-                                '@' => array(
-                                        'type'      => 'numeric',
-                                        'minLength' => '4',
-                                       ),
-                               ),
-                         ),
-               );
-        $this->_configMap = array(
-                             array(
-                              'PSCID',
-                              array(
-                               'generation' => 'sequential',
-                               'structure'  => $seq,
-                              ),
-                             ),
-                            );
-
-        $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
-
-        //mock pselectOne
-        // First 2 calls to select one return count = 1
-        //case when first 2 generated PSCIDs already exist in DB
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->will($this->onConsecutiveCalls(1, 1, 0));
-
-        $this->assertEquals('AB0002', Candidate::_generatePSCID('AB'));
     }
 
     /**
@@ -588,7 +455,6 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
-
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA'),
@@ -623,12 +489,23 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
-        $this->_dbMock->expects($this->at(1))
+        $this->_dbMock->expects($this->at(0))
             ->method('pselect')
             ->willReturn(
-                $this->_listOfTimePoints
+                array(array("projectID" => "1" , "Name" =>"test_project"))
             );
 
+        $this->_dbMock->expects($this->at(1))
+             ->method('pselect')
+             ->willReturn(
+                array(array("ID" => 97),array("ID"=>98))
+            );
+
+        $this->_dbMock->expects($this->at(2))
+            ->method('pselect')
+            ->willReturn(
+                 $this->_listOfTimePoints
+             );
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }

@@ -15,7 +15,6 @@
  */
 
 namespace LORIS\Installer;
-use \PDO;
 
 /**
  * The Installer Database class is like the LORIS database class, except it
@@ -62,7 +61,7 @@ class Database
     public function hasPrivilege($database, $table, $privilege)
     {
         $stmt    = $this->PDO->query("SHOW GRANTS");
-        $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $results = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         $stmt->closeCursor();
         if ($database == '*') {
             $database = '\*';
@@ -114,13 +113,13 @@ class Database
     public static function canLogIn($host, $database, $username, $password)
     {
         try {
-            $test = new PDO(
+            $test = new \PDO(
                 "mysql:host={$host};dbname={$database};charset=UTF8",
                 $username,
                 $password
             );
             return true;
-        } catch (PDOException $ex) {
+        } catch (\PDOException $ex) {
             return false;
         } catch (\Exception $e) {
             return false;
@@ -153,13 +152,13 @@ class Database
         $host
     ) {
         try {
-            $this->PDO = new PDO(
+            $this->PDO = new \PDO(
                 "mysql:host=$host;charset=UTF8",
                 $username,
                 $password
             );
 
-            $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            $this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
 
             if (!$this->hasPrivilege("*", "*", "CREATE")) {
                 if ($this->databaseExists($database)) {
@@ -175,7 +174,7 @@ class Database
             $this->PDO->exec("CREATE DATABASE $database");
             $this->PDO->exec("USE $database");
             return true;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
     }
@@ -211,12 +210,12 @@ class Database
             return true;
         }
         try {
-            $this->PDO = new PDO(
+            $this->PDO = new \PDO(
                 "mysql:host=$host;charset=UTF8",
                 $username,
                 $password
             );
-            $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            $this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
             if (!$this->databaseExists($database)) {
                 $this->lastErr = "Database `{$database}` does not exist; ".
                     "consider creating it first";
@@ -224,7 +223,7 @@ class Database
             }
             $this->PDO->exec("USE $database");
             return true;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             error_log($e->getMessage());
             $this->lastErr = "Exceptional error connecting to the database "
             . $database . ".";
@@ -248,7 +247,7 @@ class Database
             }
             $this->PDO->query("SELECT 'x'");
             return true;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
     }
@@ -258,21 +257,10 @@ class Database
      *
      * @param string $query The SQL query to be prepared
      *
-     * @return PDOStatement of prepared statement
+     * @return \PDOStatement of prepared statement
      */
     public function prepare($query)
     {
         return $this->PDO->prepare($query);
-    }
-
-    /**
-     * Stub to prevent PHP from crashing if something autloads and tries
-     * to call pselect
-     *
-     * @return the empty array
-     */
-    public function pselect()
-    {
-        return array();
     }
 }

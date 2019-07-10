@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the NDB_Menu_Filter_media class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media
@@ -19,7 +19,7 @@ namespace LORIS\media;
  * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media
@@ -29,41 +29,35 @@ namespace LORIS\media;
  */
 class Media extends \NDB_Menu_Filter
 {
-    public $hasWritePermission = false;
-    public $hasHidePermission  = false;
-    public $AjaxModule         = true;
-    public $skipTemplate       = true;
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
 
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
+        return $user->hasAnyPermission(
+            array(
+             'media_read',
+             'media_write',
+            )
+        );
 
-        // Set global permission to control access to different modules of media page
-        $this->hasWritePermission = $user->hasPermission('media_write');
-
-        // Set permission to access user-hidden files, currently based on superuser
-        $this->hasHidePermission = $user->hasPermission("superuser");
-
-        return $user->hasPermission('media_read') || $this->hasWritePermission;
     }
 
     /**
      * Create a form to filter media by various criteria
      *
-     * @return void
+     * @return array
      */
-    function setup()
+    function getOptions() : array
     {
-        parent::setup();
-
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $db   = \Database::singleton();
 
         $siteList  = array();
@@ -72,18 +66,13 @@ class Media extends \NDB_Menu_Filter
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
         } else {
             // allow only to view own site data
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site =& \Site::singleton($val);
+                $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                    $siteList[$val] = $site->getCenterName();
                 }
             }
         }
@@ -110,107 +99,47 @@ class Media extends \NDB_Menu_Filter
             $languageList[$language] = $language;
         }
 
-        // Form Elements
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('fileName', 'File Name');
-        $this->addSelect('fileType', 'File type', $fileTypeList);
-        $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('site', 'For Site', $siteList);
-        $this->addBasicText('uploadedBy', 'Uploaded By');
-        $this->addSelect('instrument', 'Instrument', $instrumentList);
-        $this->addSelect('language', 'Language', $languageList);
-
-        // Add hidden files filter is user is admin
-        if ($this->hasHidePermission) {
-            // Unable to create checkbox using addCheckbox(), using addSelect for
-            // the time being
-            // select options
+        $hiddenOptions = array();
+        if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = array(
-                              ""  => 'Both',
-                              "0" => 'Visible only',
-                              "1" => 'Hidden only',
+                              0 => 'Visible only',
+                              1 => 'Hidden only',
                              );
-            $this->addSelect('hideFile', 'File Visibility', $hiddenOptions);
         }
 
-        $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
-        $this->tpl_data["hasHidePermission"]  = $this->hasHidePermission;
-
-        return true;
+        return array(
+                'fileTypes'     => $fileTypeList,
+                'visits'        => $visitList,
+                'sites'         => $siteList,
+                'instruments'   => $instrumentList,
+                'languages'     => $languageList,
+                'hidden'        => $hiddenOptions,
+                'maxUploadSize' => \Utility::getMaxUploadSize(),
+               );
     }
 
     /**
-     * Build a list of media to display in Data Table
+     * Gets the data source for this menu filter.
      *
-     * @return void
-     * @throws \DatabaseException
+     * @return \LORIS\Data\Provisioner
      */
-    function _setupVariables()
+    function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $user =& \User::singleton();
-        // the base query
-        $query  = " FROM media m 
-                    LEFT JOIN session s ON m.session_id = s.ID 
-                    LEFT JOIN candidate c ON c.CandID=s.CandID 
-                    LEFT JOIN language l USING (language_id) ";
-        $query .= " WHERE 1=1 ";
+        $provisioner = new MediaFileProvisioner();
 
-        // set the class variables
-        $this->columns
-            = [
-               'm.file_name',
-               '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
-               's.Visit_label as visit_label',
-               'l.language_label',
-               '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
-               '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
-               'm.uploaded_by',
-               'm.date_taken',
-               'substring(m.comments, 1, 50) as comments',
-               'm.date_uploaded',
-               'm.file_type',
-               's.CandID as cand_id',
-               's.ID as session_id',
-               'm.hide_file',
-               'm.id',
-              ];
+        $user = \User::singleton();
 
-        $this->query = $query;
-
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+        if ($user->hasPermission("access_all_profiles") == false) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
         }
-
         if (!$user->hasPermission("superuser")) {
-            $this->query .= " AND m.hide_file = FALSE";
+            $provisioner = $provisioner->filter(
+                new HideFileFilter()
+            );
         }
-
-        $this->group_by = '';
-        $this->order_by = 'm.instrument';
-        $this->headers  = [
-                           'File Name',
-                           'PSCID',
-                           'Visit Label',
-                           'Language',
-                           'Instrument',
-                           'Site',
-                           'Uploaded By',
-                           'Date Taken',
-                           'Comments',
-                           'Date Uploaded',
-                           'File Type',
-                           'Cand ID',
-                           'Session ID',
-                           'Hide File',
-                          ];
-
-        // Add Edit field if user has permissions
-        if ($this->hasWritePermission) {
-            array_push($this->headers, 'Edit Metadata');
-        }
-
-        return true;
+        return $provisioner;
     }
 
     /**
@@ -219,12 +148,22 @@ class Media extends \NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON() : string
     {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
-        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
-        return json_encode($result);
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        return json_encode(
+            array(
+             'data'         => $arr,
+             'fieldOptions' => $this->getOptions(),
+            )
+        );
     }
 
     /**
@@ -233,7 +172,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -249,7 +188,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

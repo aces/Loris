@@ -3,172 +3,257 @@
  *	to overwrite bootstraps css file
  */
 
-
 /*******************************
 Loris color palette v.0.1
 
-@accent-color: #064785 (blue)
-@accent-color-hover: #042d54 (dark blue)
+@accent-color: #064785 (blue), #246EB6 (lighter blue)
+@accent-color-hover: #E89A0C (orange)
 
 Note: other colors are currenly inherited from Bootstrap default color palette
       See: http://getbootstrap.com/css/#less-variables-colors
 
 ****************************************/
 
-
 /*
  *	Styling for the navbar dropdowns
  */
-.navbar-nav>li>.dropdown-menu {
-    margin-top: 0;
+.navbar-nav > li > .dropdown-menu {
+    margin-top: -1px;
+    margin-left: -1px;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
-    background-color: #064785;
-}
-.navbar-nav>li>.dropdown-menu>li>a {
-    color: white;
+    background-color: white;
 }
 
+.navbar-nav > li > .dropdown-menu > li > a,
+.navbar-nav > li > .dropdown-menu > li > a:focus {
+    color: #064785;
+    padding: 3px 19px;
+}
+
+.navbar-nav > li > .dropdown-menu > li > a:hover {
+    color: #E89A0C;
+}
+
+.navbar-brand {
+    padding: 16px 15px;
+}
+
+.navbar-default {
+    background-color: #064785;
+    border: none !important;
+    box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
+}
 
 .navbar-default a {
-  -webkit-transition: background-color 0.2s ease-in;
-  transition: background-color 0.2s ease-in;
+    /*
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
+    */
 }
 
 /* Show submenu when hovering on menu item */
 .dropdown:hover .dropdown-menu {
-  display: block;
+    display: block;
+    border: 1px solid #064785;
 }
 
 /* Loris logo */
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
-  background-color: #042d54;
+    color: white;
+    background-color: #246EB6;
 }
 
 /* Menu items */
-.navbar-default .navbar-nav>li:hover,
-.navbar-default .navbar-nav>li>a:hover,
-.navbar-default .navbar-nav>li>a:focus,
-.navbar-default .navbar-nav>li>a:active{
-  background-color: #042d54;
+.navbar-default .navbar-nav > li > a {
+    margin-top: 4px;
+    padding-top: 13px;
+    padding-bottom: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.navbar-default .navbar-nav > li:hover > a,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:active {
+    color: #064785;
+    background-color: white;
+}
+
+.navbar-default .navbar-right > li.dropdown:hover > a,
+.navbar-default .navbar-right > li.dropdown > a:hover,
+.navbar-default .navbar-right > li.dropdown > a:focus,
+.navbar-default .navbar-right > li.dropdown > a:active {
+    color: #064785;
+    background-color: white;
 }
 
 /* Submenu items*/
-.navbar-nav>li>.dropdown-menu>li>a:hover,
-.navbar-nav>li>.dropdown-menu>li>a:focus{
-  background-color: #042d54;
+.dropdown-menu {
+    padding: 5px 1px;
+    border-top-color: transparent !important;
+    box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
 }
 
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover {
+    color: #246EB6;
+    text-decoration: none;
+    outline: 0;
+    background-color: white;
+}
 
+.dropdown-menu > li > a:hover {
+    text-decoration: none;
+    color: #246EB6;
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Question mark */
+.nav > li > a > img {
+    padding-bottom: 3px;
+}
+
+/* Site Affiliations Tooltip */
+.tooltip-inner {
+    padding: 5px 8px;
+}
+
+.navbar-default .navbar-right > li:hover > a,
+.navbar-default .navbar-right > li > a:hover,
+.navbar-default .navbar-right > li > a:focus,
+.navbar-default .navbar-right > li > a:active{
+    color: white;
+    background-color: #246EB6;
+}
 
 /*
  *	Making the table header font colour white
  */
-table th{
-    color: white;
+table th {
+    color: #064785;
+    background-color: #E4EBF2;
 }
-.table>thead>tr>th>a {
-    color: #ffffff;
+
+.table > thead > tr > th > a {
+    color: #064785;
+}
+
+.table > thead:first-child > tr:first-child > th {
+    border-top: 1px solid #C3D5DB;
 }
 
 /*
  *	CSS for the tables
  */
-.static-col.pis{
+.static-col.pis {
     padding-bottom: 71px;
 }
+
 .pis {
     height: 80px;
 }
+
 .table-scroll {
-    overflow-x:auto;
-    padding-bottom:1px;
+    overflow-x: auto;
+    padding-bottom: 1px;
 }
+
 .table-scroll-static {
-    overflow-x:auto;
-    margin-left:7em;
-    padding-bottom:1px;
+    overflow-x: auto;
+    margin-left: 7em;
+    padding-bottom: 1px;
 }
+
 .scrollable {
     margin-right: 50px;
-    margin-left:50px;
+    margin-left: 50px;
 }
+
 .scrollableStat {
     margin-right: 50px;
-    margin-left:10em;
+    margin-left: 10em;
 }
+
 .static-col {
-    position:absolute;
-    width:7em;
-    left:0;
-    top:auto;
+    position: absolute;
+    width: 7em;
+    left: 0;
+    top: auto;
     word-wrap: break-word;
-    border-right: 0px none black;
-    border-top-width:3px; /*only relevant for first row*/
+    border-right: 0 none black;
+    border-top-width: 3px; /*only relevant for first row*/
 }
-.colm-static{
+
+.colm-static {
     left: 3em;
     background: white;
 }
-.frozenHeader{
-  position   : absolute;
-  overflow-x : hidden;
+
+.frozenHeader {
+    position: absolute;
+    overflow-x: auto;
 }
+
 .headerColm {
-  background: #1c70b6;
-  padding: 8px;
-  border-bottom-width: 2px;
-  border: 1px solid #ddd;
-  text-align: left;
-  color: white;
-  font-weight: bold;
+    background: #246EB6;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: white;
+    font-weight: bold;
 }
 
 /*
  *	CSS for the footer
  */
 #footer {
-	position: relative;
+    position: relative;
     margin-top: -100px; /* negative value of footer height */
     height: 100px;
-    clear:both;
+    clear: both;
 }
+
 html, body {
-	height: 100%;
+    height: 100%;
 }
+
 #wrap {
-	min-height: 100%;
+    min-height: 100%;
 }
 
 #page {
-	overflow:auto;
+    overflow: auto;
     padding-bottom: 100px; /* must be same height as the footer */
- }
+}
 
 /*
- *	CSS for intrument forms
+ *	CSS for instrument forms
  */
 .has-error .form-control {
-    border: 3px solid;
-    border-color: #b94a48;
+    border: 3px solid #b94a48;
 }
+
 .has-error, .form-error {
-color: #b94a48;
+    color: #b94a48;
 }
+
 .has-warning .form-control {
-	border: 3px solid;
-	border-color: #c09853;
+    border: 3px solid #c09853;
 }
+
 .warning {
-	color: #c09853;
+    color: #c09853;
 }
 
 /*
  *  CSS for Loris footer
  */
 .LorisFooter {
-    bottom:0;
+    bottom: 0;
     clear: both;
     width: 100%;
     font-size: 0.9em;
@@ -176,14 +261,17 @@ color: #b94a48;
     text-align: center;
     vertical-align: bottom;
 }
+
 ul#navlist {
     margin-left: 0;
     padding-left: 0;
 }
+
 #navlist li {
-	display: inline;
-	list-style-type: none;
+    display: inline;
+    list-style-type: none;
 }
+
 /*
  *  Styling for modals
  */
@@ -193,10 +281,12 @@ ul#navlist {
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
 }
+
 .close {
     color: white;
     opacity: 1;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -226,20 +316,31 @@ div.navbar div.container div.navbar-brand {
 }
 
 @-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
+
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
 
 /*
  *      CSS for alert div
  */
 .no-result-found-panel {
-    color: #FFFFFF;
-    background-color: #1c70b6;
+    color: #064785;
+    background-color: #E4EBF2;
+    border-color: #E4EBF2;
+    margin: 0 14px;
 }
 
 /*
@@ -247,64 +348,75 @@ div.navbar div.container div.navbar-brand {
  */
 
 .btn-breadcrumb {
-  width: 100%;
-  background-color: #064785;
-  border-radius: 4px;
-  margin-bottom: 20px;
+    width: 100%;
+    background-color: white;
+    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
 /*
  * Breadcrumbs from http://bootsnipp.com/snippets/featured/triangle-breadcrumbs-arrows
  */
 .btn-breadcrumb .btn:not(:last-child):after {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid white;
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    left: 100%;
+    z-index: 3;
 }
+
 .btn-breadcrumb .btn:not(:last-child):before {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid rgb(173, 173, 173);
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  margin-left: 2px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid rgb(173, 173, 173);
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    margin-left: 2px;
+    left: 100%;
+    z-index: 3;
+}
+
+/** Open dropdown toggle styling **/
+.open > .dropdown-toggle.btn-default {
+    color: #064785;
+    background-color: white;
+    border-color: #064785;
 }
 
 /** Ellipsis styling **/
 .ellipsis > .dropdown-toggle {
-  border: none;
-  padding: 0px;
-  background: inherit;
+    border: none;
+    padding: 0;
+    background: inherit;
 }
+
 .ellipsis:hover .dropdown-menu {
-display: block;
+    display: block;
 }
 
 /** The Spacing **/
 .btn-breadcrumb .btn {
-  padding:6px 12px 6px 24px;
+    padding: 6px 12px 6px 24px;
 }
+
 .btn-breadcrumb .btn:first-child {
-  padding:6px 6px 6px 10px;
+    padding: 6px 6px 6px 10px;
 }
+
 .btn-breadcrumb .btn:last-child {
-  padding:6px 18px 6px 24px;
+    padding: 6px 18px 6px 24px;
 }
 .btn-inline {
     margin-right: 3px;
@@ -316,27 +428,93 @@ display: block;
 
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
-  border-left: 10px solid #064785;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #064785;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
+
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
-  border-left: 10px solid #042d54;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #042d54;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
-.btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
-  border-left: 10px solid #042d54;
+
+.btn-breadcrumb .btn.btn-primary:not(:last-child):after {
+    border-left: 10px solid white;
 }
+
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
-  border-left: 10px solid #042d54;
+    border-left: 10px solid #042d54;
+}
+
+.btn {
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.btn-default {
+    border-color: #246EB6;
+    color: #246EB6;
+    background-color: white;
+}
+.btn-default:hover {
+    background-color: #246EB6;
+    color: white;
+    border-color: #246EB6;
+}
+.btn-primary {
+    color: #246EB6;
+    background-color: white;
+    border-color: #246EB6;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    color: white;
+    background-color: #246EB6;
+    border-color: #246EB6;
+}
+.btn-primary[disabled] {
+    background-color: #E4EBF2;
+    border-color: #ccc;
+}
+.btn-primary.btn-file {
+    color: #246EB6;
+    background-color: #fff;
+    border-color: #246EB6;
+}
+.btn-primary.btn-file:hover {
+    color: #fff;
+    background-color: #246EB6;
+    border-color: #246EB6;
 }
 
 a.btn.btn-primary {
-  color: #fff;
+    color: #064785;
+    border-color: transparent;
+    background-color: white;
+    -webkit-transition: background-color 0.2s ease-in; /* Safari */
+    transition: background-color 0.2s ease-in;
+}
+
+a.btn.btn-primary:hover {
+  color: #E89A0C;
   border-color: transparent;
+  background-color: white;
   -webkit-transition: background-color 0.2s ease-in; /* Safari */
   transition: background-color 0.2s ease-in;
+}
+
+.btn-success {
+    color: #4cae4c;
+    border-color: #4cae4c;
+    background-color: #fff;
+}
+
+.btn-success:hover {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
 }
 
 /* The responsive part */
@@ -353,16 +531,18 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 60px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
 }
 
 /* For tablets */
-@media (min-width: 768px) and (max-width:991px) {
+@media (min-width: 768px) and (max-width: 991px) {
     .btn-breadcrumb > * div {
         max-width: 100px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -373,6 +553,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 170px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -383,6 +564,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div:not(:last-child) {
         max-width: 170px;
     }
+
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
@@ -392,28 +574,41 @@ a.btn.btn-primary {
  *  CSS for static table
  *  Styling for the staticTable component
  */
-.panel>.table-header {
-    background-color: #DCDCDC;
+.table-bordered > thead > tr > th {
+    border: 1px solid #C3D5DB;
 }
 
-.downloadCSV {
-    margin: 20px 0px;
+.table-bordered > tbody > tr > td {
+    border: 1px solid #C3D5DB;
 }
+
+.table-hover > tbody > tr:hover {
+    background-color: #F9F9F9;
+}
+
+.panel > .table-header {
+    background-color: #F2F2F2;
+}
+
 .perPage {
     width: 75px;
     color: black;
 }
+
 .table-footer {
-    background-color: #DCDCDC;
+    background-color: #E4EBF2;
 }
+
 #dynamictable {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 .rowsPerPage {
     color: black;
 }
+
 .pagination-table {
-  margin: 0px;
+    margin: 0;
 }
 
 .left.carousel-control {
@@ -424,34 +619,185 @@ a.btn.btn-primary {
     margin-right: 15px;
 }
 
+.table > thead > tr > td.info,
+.table > tbody > tr > td.info,
+.table > tfoot > tr > td.info,
+.table > thead > tr > th.info,
+.table > tbody > tr > th.info,
+.table > tfoot > tr > th.info,
+.table > thead > tr.info > td,
+.table > tbody > tr.info > td,
+.table > tfoot > tr.info > td,
+.table > thead > tr.info > th,
+.table > tbody > tr.info > th,
+.table > tfoot > tr.info > th {
+    color: #064785;
+    background-color: #E4EBF2;
+    border: 1px solid #C3D5DB;
+}
+.table-hover > tbody > tr.info:hover > th {
+    background-color: #E4EBF2;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+    background-color: #246EB6;
+    border-color: #246EB6;
+}
+
+/*
+ * Styling for dropdown headers
+ */
+.dropdown-header {
+    color: #064785;
+}
+
 /*
  *  CSS for Select Dropdown
  */
 .dropdownSearch {
-  padding: 10px;
+    padding: 10px;
 }
-
 
 /* Style login navbar and logo */
 .navbar {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .navbar-brand {
-  height: auto;
+    height: auto;
 }
 
 .navbar-brand .study-logo {
-  width: 64px;
-  height: 57px;
-  margin-bottom: 10px;
+    width: 64px;
+    height: 57px;
+    margin-bottom: 10px;
 }
 
 /* Sweetalert customizations */
 
 /* Break long strings to fit them in the popup */
 .sweet-alert p {
-  word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Loader customizations */
+
+.loader {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
+    border: 8px solid #FFFFFF; /* White */
+    border-top: 8px solid #A6D3F5; /* Blue */
+    border-left: 8px solid #A6D3F5; /* Blue */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/*
+ *  Styling for panels
+ */
+.panel {
+    margin-bottom: 20px;
+    background-color: white;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 2px 3px 4px 1px rgba(0,0,0,0.175);
+    box-shadow: 2px 3px 4px 1px rgba(0,0,0,0.175);
+}
+
+.panel-default {
+    border-color: #C3D5DB;
+}
+
+.panel-default > .panel-heading {
+    color: #064785;
+    background-color: #E4EBF2;
+    border-color: #C3D5DB;
+    font-size: 16px;
+}
+
+.panel-primary {
+    border-color: #C3D5DB;
+}
+
+.panel-primary > .panel-heading {
+    color: #064785;
+    background-color: #E4EBF2;
+    border-color: #C3D5DB;
+}
+
+.panel-title > a:hover {
+    color: inherit;
+}
+
+.panel-footer {
+    background-color: #E4EBF2;
+    border-top: 1px solid #C3D5DB;
+}
+
+/*
+ *  Styling for text
+ */
+h3 {
+    font-size: 24px;
+    color: #064785;
+}
+
+a:hover {
+    color: #E89A0C;
+}
+
+/*
+ * Styling for list group
+ */
+.list-group-item.active,
+.list-group-item.active:hover {
+    z-index: 2;
+    color: white;
+    background-color: #246EB6;
+    border-color: #246EB6;
+}
+
+.list-group-item:hover {
+    background-color: #E4EBF2;
+}
+
+a.list-group-item:hover,
+a.list-group-item:focus {
+    text-decoration:none;
+    color:#555;
+    background-color: #E4EBF2;
+}
+
+/*
+ * Styling for tabs
+ */
+.nav > li > a:hover,
+.nav > li > a:focus {
+    text-decoration:none;
+    background-color: #eee;
+    color: #246EB6;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover {
+    color: #246EB6;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+    color: #246EB6;
+    background-color: #E4EBF2;
 }
 
 /* Necessary formatting for swal2 while still with bootstrap v3 */
@@ -483,3 +829,23 @@ a.btn.btn-primary {
     100% { transform: rotate(360deg); }
 }
 
+/* Styling for fieldset */
+fieldset {
+    display: block;
+    margin: 6px 15px 15px 15px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 1px solid #C3D5DB;
+    border-radius: 6px;
+}
+
+legend {
+    padding-inline-start: 6px;
+    padding-inline-end: 6px;
+    width: auto;
+    border-bottom: 0px;
+    font-size: 14px;
+    color: #064785;
+}

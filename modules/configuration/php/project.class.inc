@@ -30,12 +30,12 @@ class Project extends \NDB_Form
      * _has_access returns true
      * if the user has the specific permission
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 
@@ -50,22 +50,14 @@ class Project extends \NDB_Form
         parent::setup();
         $factory     = \NDB_Factory::singleton();
         $config      = $factory->config();
-        $configs     = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "true") {
-            $projectList = \Utility::getProjectList();
-            $projects    = array();
-            foreach ($projectList as $ProjectID => $Name) {
-                $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-                $projects[$ProjectID]['subprojects']
-                    = \Utility::getSubprojectsForProject($ProjectID);
-            }
-            $this->tpl_data['projects'] = $projects;
-        } else {
-            throw new \ConfigurationException(
-                "Projects are not used in this study."
-            );
+        $projectList = \Utility::getProjectList();
+        $projects    = array();
+        foreach ($projectList as $ProjectID => $Name) {
+            $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
+            $projects[$ProjectID]['subprojects']
+                = \Utility::getSubprojectsForProject($ProjectID);
         }
+        $this->tpl_data['projects'] = $projects;
     }
 
     /**

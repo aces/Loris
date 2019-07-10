@@ -18,47 +18,50 @@
  * @version 0.0.1
  *
  */
-class Markdown extends React.Component {
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class Markdown extends Component {
   htmlSpecialCharsDecode(text) {
     return text
-      .replace(/&amp;/g, "&")
-      .replace(/&quot;/g, "\"");
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"');
   }
 
   render() {
     // Fix stupid-style newlines to be just \n.
-    var fixedNewLines = this.props.content.replace(/\r\n/g, "\n");
+    let fixedNewLines = this.props.content.replace(/\r\n/g, '\n');
 
     // Fix excaped html
     fixedNewLines = this.htmlSpecialCharsDecode(fixedNewLines);
 
     // 2 newlines in a row mean it's a paragraph breaker.
-    var paragraphs = fixedNewLines.split("\n\n");
-    var headersRe = /^(#+)\s+(.+)$/;
+    let paragraphs = fixedNewLines.split('\n\n');
+    let headersRe = /^(#+)\s+(.+)$/;
 
     // Do a non-greedy match on text surrounded by ** or __ separately,
     // because we need to be sure that the end tag is the same as the
     // start and want the callback to reference the same index
-    var boldRe1 = /(\*\*)(.+?)(\*\*)/g;
-    var boldRe2 = /(__)(.+?)(__)/g;
+    let boldRe1 = /(\*\*)(.+?)(\*\*)/g;
+    let boldRe2 = /(__)(.+?)(__)/g;
     function boldCallback(match, start, content, end, offset, val) {
-      return "<b>" + content + "</b>";
+      return '<b>' + content + '</b>';
     }
 
-    var italRe1 = /(\*)(.+?)(\*)/g;
-    var italRe2 = /(_)(.+?)(_)/g;
+    let italRe1 = /(\*)(.+?)(\*)/g;
+    let italRe2 = /(_)(.+?)(_)/g;
     function italCallback(match, start, content, end, offset, val) {
-      return "<i>" + content + "</i>";
+      return '<i>' + content + '</i>';
     }
 
-    var linkRe = /\[(.+?)\]\((.+?)\)/g;
+    let linkRe = /\[(.+?)\]\((.+?)\)/g;
     function linkCallback(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
     }
     // This needs to be declared outside of the loop to keep eslint
     // happy. It's just the callback for the regex.
-    var hlevel = 1;
+    let hlevel = 1;
     function headerCallback(match, headerLevel, headerContent, offset, val) {
       hlevel = headerLevel.length;
       return headerContent;
@@ -75,30 +78,30 @@ class Markdown extends React.Component {
 
         switch (hlevel) {
           case 6:
-            paragraphs[i] = <h6>{paragraphs[i]}</h6>;
+            paragraphs[i] = <h6 key={i + '_help_editor_h6'}>{paragraphs[i]}</h6>;
             break;
 
           case 5:
-            paragraphs[i] = <h5>{paragraphs[i]}</h5>;
+            paragraphs[i] = <h5 key={i + '_help_editor_h5'}>{paragraphs[i]}</h5>;
             break;
 
           case 4:
-            paragraphs[i] = <h4>{paragraphs[i]}</h4>;
+            paragraphs[i] = <h4 key={i + '_help_editor_h4'}>{paragraphs[i]}</h4>;
             break;
 
           case 3:
-            paragraphs[i] = <h3>{paragraphs[i]}</h3>;
+            paragraphs[i] = <h3 key={i + '_help_editor_h3'}>{paragraphs[i]}</h3>;
             break;
 
           case 2:
-            paragraphs[i] = <h2>{paragraphs[i]}</h2>;
+            paragraphs[i] = <h2 key={i + '_help_editor_h2'}>{paragraphs[i]}</h2>;
             break;
           case 1:
           default:
-            paragraphs[i] = <h1>{paragraphs[i]}</h1>;
+            paragraphs[i] = <h1 key={i + '_help_editor_h1'}>{paragraphs[i]}</h1>;
         }
       } else {
-        var paramd = paragraphs[i];
+        let paramd = paragraphs[i];
         // Do bold before italics, because otherwise italics will catch
         // the inner * of the bold.
         paramd = paramd.replace(boldRe1, boldCallback);
@@ -108,7 +111,7 @@ class Markdown extends React.Component {
         paramd = paramd.replace(italRe2, italCallback);
 
         paramd = paramd.replace(linkRe, linkCallback);
-        paragraphs[i] = <p dangerouslySetInnerHTML={ {__html: paramd}} />;
+        paragraphs[i] = <p key={i + '_help_editor_p'} dangerouslySetInnerHTML={ {__html: paramd}} />;
       }
     }
     return <div>{paragraphs}</div>;
@@ -116,10 +119,10 @@ class Markdown extends React.Component {
 }
 
 Markdown.propTypes = {
-  content: React.PropTypes.string.isRequired
+  content: PropTypes.string.isRequired,
 };
 
-var RMarkdown = React.createFactory(Markdown);
+let RMarkdown = React.createFactory(Markdown);
 
 window.Markdown = Markdown;
 window.RMarkdown = RMarkdown;

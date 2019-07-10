@@ -168,7 +168,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->Config();
-        return $config->getSetting("mincPath");
+        return $config->getSetting("imagePath");
     }
 
     /**
@@ -206,4 +206,4 @@ if (isset($_REQUEST['PrintImageData'])) {
     );
     print $obj->toJSONString();
 }
-?>
+
