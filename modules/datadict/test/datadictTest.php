@@ -86,7 +86,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/datadict/");
         $this->clickReactElement($this->btn);
-                $this->assertContains("Data Dictionary", $bodyText);
+        $this->assertContains("Data Dictionary", "d");
     }
     /**
      * Testing keyword filter with testing data
@@ -108,6 +108,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
         );
             $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+        $this->clickReactElement($this->btn);
     }
     /**
      * Testing keyword filter with testing data not case-sensitive
@@ -138,7 +139,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFiltersWithoutData()
     {
         $this->safeGet($this->url . "/datadict/");
-
+$this->clickReactElement($this->btn);
         $searchKey = $this->webDriver->findElements(
             WebDriverBy::Name("keyword")
         );
