@@ -157,11 +157,7 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        //FIXME visits is never initialized properly though it is used in
-        //functions below. This declaration was added to satisfy phan but work
-        //should be done to properly populate this value. Until then there is
-        //the possibility of errors arising in the demographic stats.
-        $visits = array();
+        $visits = \Utility::getExistingVisitLabels();
         $db     = \Database::singleton();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table

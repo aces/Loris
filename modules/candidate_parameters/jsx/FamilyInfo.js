@@ -54,7 +54,7 @@ class FamilyInfo extends Component {
   }
 
   componentDidMount() {
-
+    this.fetchData();
   }
 
   setFormData(formElement, value) {

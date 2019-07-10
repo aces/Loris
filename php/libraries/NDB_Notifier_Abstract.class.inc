@@ -258,7 +258,7 @@ abstract class NDB_Notifier_Abstract
         //parse $result and create 2D array
         $n_list = array();
         foreach ($result as $row) {
-            if ($this->_hasNotificationPermission($row['user'])) {
+            if ($this->_hasNotificationPermission((int)$row['user'])) {
                 $n_list[$row['service']][$row['Real_name']] = $row['user'];
             }
 

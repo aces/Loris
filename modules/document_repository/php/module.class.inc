@@ -3,9 +3,9 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category   Behavioural
+ * @category   Document_Repository
  * @package    Main
  * @subpackage Study
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
@@ -17,7 +17,7 @@ namespace LORIS\document_repository;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category   Behavioural
+ * @category   Document_Repository
  * @package    Main
  * @subpackage Study
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>

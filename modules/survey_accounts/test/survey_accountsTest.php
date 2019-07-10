@@ -35,10 +35,9 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     static $instrument = "#surveyAccounts_filter > div > div > fieldset >".
                          " div:nth-child(5) > div > div > select";
     // clear filter button
-    static $clearFilter = "#surveyAccounts_filter > div > div > fieldset > ".
-                          "div:nth-child(6) > div > div > button";
+    static $clearFilter = ".col-sm-9 > .btn";
     static $add         = "#default-panel > div > div > div.table-header >".
-                          " div > div > div.pull-right > button:nth-child(1)";
+                          " div > div > div:nth-child(2) > button:nth-child(1)";
     // header of the table
     static $table = "#default-panel > div > div > div.table-header".
                     " > div > div > div:nth-child(1)";
