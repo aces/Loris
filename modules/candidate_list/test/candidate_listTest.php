@@ -171,8 +171,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // test advanced filter - sex
         // Switch to Advanced mode
-         $btn = self::$advancedFilter;
-         $this->clickReactElement($btn);
+//         $btn = self::$advancedFilter;
+//         $this->clickReactElement($btn);
            //female
            $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1');
            // male
