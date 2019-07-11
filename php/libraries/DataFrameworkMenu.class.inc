@@ -17,7 +17,7 @@
 /**
  * A DataFrameworkMenu is a type of menu (filterable data table)
  * where the data comes from the LORIS data framework, and the
- * formatting comes from React.
+ * formatting is done by React.
  *
  * "Menu" type data tables usually have one column which is clickable
  * on the formatting, and form the entry point of most LORIS modules.
