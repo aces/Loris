@@ -40,7 +40,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                c.CandID as CandID,
                p.Name as ProjectName,
                c.PSCID as PSCID,
-               c.CenterID as CenterID,
+               c.RegistrationCenterID as CenterID,
                s.Name as SiteName,
                c.EDC as EDC,
                c.DoB as DoB,
@@ -48,7 +48,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
              FROM
                candidate c
              JOIN psc s
-               ON (s.CenterID = c.CenterID)
+               ON (s.CenterID = c.RegistrationCenterID)
              LEFT JOIN Project p
                ON (c.ProjectID = p.ProjectID)
              WHERE c.Active="Y"
