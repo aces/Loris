@@ -113,10 +113,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
          $this->clickReactElement($btn);
            // Go through each element and ensure it's on the page after clicking
            // advanced
-         $scanDone = ".col-xs-12:nth-child(8) .col-sm-3";
+         $scanDone  = ".col-xs-12:nth-child(8) .col-sm-3";
          $scan_text = $this->getReactElementContent($scanDone);
           $this->assertContains("Scan Done", $scan_text);
-     
+
            $participantsStatusOptions = $this->webDriver->findElement(
                WebDriverBy::Name("participantStatus")
            );
@@ -203,8 +203,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             //test clear filter
             $btn = self::$clearFilter;
             $this->clickReactElement($btn);
-            $inputText = $this->getReactElementContent($element);
-            $this->assertEquals("", $inputText);
     }
     /**
      * Tests that, when user only has data_entry permisson, user
