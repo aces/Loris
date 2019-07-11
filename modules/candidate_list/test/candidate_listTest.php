@@ -229,6 +229,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->reactTextSendKey($pscid, "MTL001");
         $btn = ".col-sm-12 > .row .btn";
         $this->clickReactElement($btn);
+        sleep(1);
         //to do check the url
         $URL =  $this->webDriver->executescript("return window.location.href;");
         $this->assertContains("300001", $URL);
