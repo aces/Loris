@@ -37,7 +37,7 @@ abstract class LorisIntegrationTest extends TestCase
     protected $factory;
 
     private $_oldConfig = array();
-
+    $NUM_OF_ATTEMPTS    = 5;
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -543,13 +543,20 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function getReactElementContent($ui)
     {
+        $attempts = 0;
+        do {
             try {
                 return $this->webDriver->executescript(
                     "return document.querySelector('$ui').textContent"
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
             }
+              break;
+        } while($attempts < $NUM_OF_ATTEMPTS);
     }
     /**
      * Click a React Element
@@ -559,13 +566,20 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function clickReactElement($ui)
     {
+          $attempts = 0;
+        do {
             try {
                 $this->webDriver->executescript(
                     "document.querySelector('$ui').click()"
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
             }
+            break;
+        } while($attempts < $NUM_OF_ATTEMPTS);
     }
     /**
      * Get rows of the React table, ? rows displayed of ?
@@ -575,13 +589,20 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function getReactTableRows($ui)
     {
+        $attempts = 0;
+        do {
             try {
                 $res = $this->webDriver->executescript(
                     "return document.querySelector('$ui').textContent"
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
             }
+              break;
+        } while($attempts < $NUM_OF_ATTEMPTS);
         $array =explode('rows', $res);
         return trim($array[0]);
     }
@@ -594,6 +615,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function reactTextSendKey($ui,$value)
     {
+         $attempts = 0;
+        do {
             try {
                 $this->webDriver->executescript(
                     "input = document.querySelector('$ui');
@@ -605,7 +628,12 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
             }
+            break;
+        } while($attempts < $NUM_OF_ATTEMPTS);
     }
     /**
      * Select a value in a react dropdown list
@@ -616,6 +644,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function reactDropdownSendKey($ui,$value)
     {
+         $attempts = 0;
+        do {
             try {
                 $this->webDriver->executescript(
                     "input = document.querySelector('$ui');
@@ -626,7 +656,12 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
             }
+            break;
+        } while($attempts < $NUM_OF_ATTEMPTS);
     }
 }
-?>
+
