@@ -122,7 +122,7 @@ use the following comands sequentially. These commands echo the name of the SQL
 script before running it which helps to identify exactly what SQL statement is failing.
 
 ```
-for n in /var/www/loris/SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
-for n in /var/www/loris/raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
-for n in /var/www/loris/raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
+for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
+for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
+for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
 ```
