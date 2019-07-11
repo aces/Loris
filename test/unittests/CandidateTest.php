@@ -11,71 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-
-/**
- * Fake Candidate class that has exact copies of methods in the
- * Candidate class to test certain SQL queries easily
- *
- * @category Tests
- * @package  Main
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-class FakeCandidate extends Candidate
-{
-    /**
-     * Gets the participant_status options from participant_status_options table
-     *
-     * @param \Database $DB The mock database used by test functions
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function fakeGetParticipantStatusOptions(\Database $DB): array
-    {
-        $options      = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
-            WHERE parentID IS NULL",
-            array()
-        );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
-    }
-
-    /**
-     * Gets the participant_status options suboptions from participant_status_options
-     *
-     * @param \Database $DB       The mock database used by test functions
-     * @param int       $parentID parent ID of the participant status option
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function fakeGetParticipantStatusSubOptions(
-        \Database $DB, int $parentID
-    ): array {
-        $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
-            WHERE parentID=:pid",
-            array('pid' => $parentID)
-        );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
-    }
-}
-
-
-
-
 /**
  * Unit test for Candidate class
  *
@@ -124,6 +59,33 @@ class CandidateTest extends TestCase
     private $_candidate;
 
     /**
+     * NDB_Factory used in tests for methods that use
+     * Database::singleton()
+     *
+     * @note This is setup and used in the _setUpMockDB() method
+     * @var  NDB_Factory
+     */
+    private $_factoryForDB;
+
+    /**
+     * NDB_Config used in tests for methods that use 
+     * Database::singleton()
+     *
+     * @note This is setup and used in the _setUpMockDB() method
+     * @var  \NDB_Config
+     */
+    private $_config;
+
+    /**
+     * Database used in tests for methods that use
+     * Database::singleton()
+     *
+     * @note This is setup and used in the _setUpMockDB() method
+     * @var  \Database
+     */
+    private $_DB;
+
+    /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
      *
@@ -153,7 +115,6 @@ class CandidateTest extends TestCase
      */
     private $_configMap = array();
 
-
     /**
      * Sets up fixtures:
      *  - _candidate object
@@ -179,7 +140,7 @@ class CandidateTest extends TestCase
 
         $this->_listOfProjects = array(
                                      array('ProjectID' => 1, 
-                                           'Name' => 'testProject'));
+                                           'Name'      => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
@@ -189,7 +150,7 @@ class CandidateTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
 
         $this->_candidate = new Candidate();
-
+        
     }
 
     /**
@@ -504,7 +465,7 @@ class CandidateTest extends TestCase
      * Test getCandidateEthnicity returns the correct ethnicity of the candidate
      *
      * @note   This function is deprecated so it was causing a PHAN error. 
-               It is marked test incomplete for this reason
+     *         It is marked test incomplete for this reason
      *         however it is fully implemented and functional
      * @covers Candidate::getCandidateEthnicity
      * @return void
@@ -870,10 +831,10 @@ class CandidateTest extends TestCase
         $this->_candidate->select(969664);
  
         $result = array(
-                      array('ConsentID' => 1,
-                            'Name' => 'name1',
-                            'Status' => 'done',
-                            'DateGiven' => 'today',
+                      array('ConsentID'     => 1,
+                            'Name'          => 'name1',
+                            'Status'        => 'done',
+                            'DateGiven'     => 'today',
                             'DateWithdrawn' => 'tomorrow'));
 
         $this->_dbMock->expects($this->once())
@@ -899,25 +860,25 @@ class CandidateTest extends TestCase
      */
     public function testGetParticipantStatusOptions()
     {
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
-
-        $result = array(
-                      array('ID' => 1,
-                            'Description' => 'description1'));
-
-        $this->_dbMock->expects($this->once())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "WHERE parentID IS NULL"
-                )
-            )
-            ->willReturn($result);
-
+        $this->_setUpMockDB();
+        $this->_DB->setFakeTableData(
+            "participant_status_options",
+            array(
+                0 => array(
+                         'ID'          => 1,
+                         'Description' => 'description1',
+                         'parentID'    => null),
+                1 => array(
+                         'ID'          => 2,
+                         'Description' => 'description2',
+                         'parentID'    => null))
+        );
+        $result = Candidate::getParticipantStatusOptions();
+        $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
         $this->assertEquals(
-            array(1 => 'description1'),
-            FakeCandidate::fakeGetParticipantStatusOptions($this->_dbMock)
+            array(1 => 'description1',
+                  2 => 'description2'),
+            $result
         );
     }
 
@@ -929,28 +890,24 @@ class CandidateTest extends TestCase
      */
     public function testGetParticipantStatusSubOptions()
     {
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
-
-        $result = array(
-                      array('ID' => 1,
-                            'Description' => 'description1'));
-
-        // This method contains a different query than the 
-        // getParticipantStatusOptions method. 
-        // This is checked using stringContains()
-        $this->_dbMock->expects($this->once())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "WHERE parentID=:pid"
-                )
-            )
-            ->willReturn($result);
-
+        $this->_setUpMockDB();
+        $this->_DB->setFakeTableData(
+            "participant_status_options",
+            array(
+                0 => array(
+                         'ID'          => 1,
+                         'Description' => 'description1',
+                         'parentID'    => 1),
+                1 => array(
+                         'ID'          => 2,
+                         'Description' => 'description2',
+                         'parentID'    => 2))
+        );
+        $result = Candidate::getParticipantStatusSubOptions(1);
+        $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
         $this->assertEquals(
             array(1 => 'description1'),
-            FakeCandidate::fakeGetParticipantStatusSubOptions($this->_dbMock, 2)
+            $result
         );
     }
     /**
@@ -994,5 +951,26 @@ class CandidateTest extends TestCase
             ->will($this->returnValueMap($this->_configMap));
     }
 
+    /**
+     * Set up mock database and config information
+     * This is only necessary to test the functions that use Database::singleton()
+     *
+     * @return void
+     */
+    private function _setUpMockDB()
+    {
+        $this->_factoryForDB = NDB_Factory::singleton();
+        $this->_factoryForDB->reset();
+        $this->_factoryForDB->setTesting(false);
+        $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
+        $database     = $this->_config->getSetting('database');
+        $this->_DB     = Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            1
+        );
+    }
 
 }
