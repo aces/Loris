@@ -49,7 +49,6 @@
             <directory>../modules/server_processes_manager/test/</directory>
             <directory>../test/test_instrument/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
-            <directory>../modules/quality_control/test/</directory>
         </testsuite>
 
     </testsuites>
