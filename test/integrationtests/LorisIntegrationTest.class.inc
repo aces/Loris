@@ -37,7 +37,7 @@ abstract class LorisIntegrationTest extends TestCase
     protected $factory;
 
     private $_oldConfig = array();
-    $NUM_OF_ATTEMPTS    = 5;
+    private $NUM_OF_ATTEMPTS    = 5;
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -556,7 +556,7 @@ abstract class LorisIntegrationTest extends TestCase
                         continue;
             }
               break;
-        } while($attempts < $NUM_OF_ATTEMPTS);
+        } while($attempts < $this->NUM_OF_ATTEMPTS);
     }
     /**
      * Click a React Element
@@ -579,7 +579,7 @@ abstract class LorisIntegrationTest extends TestCase
                         continue;
             }
             break;
-        } while($attempts < $NUM_OF_ATTEMPTS);
+        } while($attempts < $this->NUM_OF_ATTEMPTS);
     }
     /**
      * Get rows of the React table, ? rows displayed of ?
@@ -602,7 +602,7 @@ abstract class LorisIntegrationTest extends TestCase
                         continue;
             }
               break;
-        } while($attempts < $NUM_OF_ATTEMPTS);
+        } while($attempts < $this->NUM_OF_ATTEMPTS);
         $array =explode('rows', $res);
         return trim($array[0]);
     }
@@ -633,7 +633,7 @@ abstract class LorisIntegrationTest extends TestCase
                         continue;
             }
             break;
-        } while($attempts < $NUM_OF_ATTEMPTS);
+        } while($attempts < $this->NUM_OF_ATTEMPTS);
     }
     /**
      * Select a value in a react dropdown list
@@ -661,7 +661,7 @@ abstract class LorisIntegrationTest extends TestCase
                         continue;
             }
             break;
-        } while($attempts < $NUM_OF_ATTEMPTS);
+        } while($attempts < $this->NUM_OF_ATTEMPTS);
     }
 }
 
