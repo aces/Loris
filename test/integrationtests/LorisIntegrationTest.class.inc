@@ -664,4 +664,5 @@ abstract class LorisIntegrationTest extends TestCase
         } while($attempts < $this->NUM_OF_ATTEMPTS);
     }
 }
+?>
 
