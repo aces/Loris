@@ -106,6 +106,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $visit_label = array_shift($pathparts);
+        $newrequest  = $request
+            ->withAttribute('pathparts', $pathparts);
 
         $sessionid = array_search(
             $visit_label,
@@ -114,12 +116,9 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $visit = \NDB_Factory::singleton()->timepoint($sessionid);
-        } catch (\LorisException $e) {
+        } catch (\LorisException | \TypeError $e) {
             $visit = null;
         }
-
-        $newrequest = $request
-            ->withAttribute('pathparts', $pathparts);
 
         $handler = new Visit\Visit(
             $this->candidate,

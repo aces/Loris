@@ -99,7 +99,6 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 );
             }
         }
-
         return new \LORIS\Http\Response\NotFound();
     }
 
@@ -154,7 +153,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $candid = $data['Meta']['CandID'] ?? null;
-        if ($candid !== $this->visit->getCandID()) {
+        if (intval($candid) !== $this->visit->getCandID()) {
             return new \LORIS\Http\Response\BadRequest(
                 'Candidate from URL does not match metadata'
             );
@@ -171,7 +170,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $ispending = $data['Pending'] ? 'Y' : 'N';
 
         try {
-            $this->visit->setData('MRIQCStatus', $qcstatus);
+            $this->visit->setData(array('MRIQCStatus' => $qcstatus));
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\BadRequest(
                 'MRIQCStatus value not acceptable'
@@ -179,7 +178,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->visit->setData('MRIQCPending', $ispending);
+            $this->visit->setData(array('MRIQCPending' => $ispending));
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\BadRequest(
                 'MRIQCPending value not acceptable'

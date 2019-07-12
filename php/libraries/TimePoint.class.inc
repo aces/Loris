@@ -480,9 +480,9 @@ class TimePoint
     /**
      * Gets the visit status of this timepoint.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getVisitStatus(): string
+    function getVisitStatus(): ?string
     {
         return $this->_timePointInfo["Visit"];
     }

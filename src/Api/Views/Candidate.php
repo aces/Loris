@@ -34,7 +34,7 @@ class Candidate
         $this->meta['Site']    = $candidate->getCandidateSite();
         $this->meta['EDC']     = $candidate->getCandidateEDC();
         $this->meta['DoB']     = $candidate->getCandidateDoB();
-        $this->meta['Gender']  = $candidate->getCandidateGender();
+        $this->meta['Sex']     = $candidate->getCandidateSex();
 
         $this->visits = array_values($candidate->getListOfVisitLabels());
     }

@@ -2185,7 +2185,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
         );
-        $db->execute($prepQ, array('CID' => $this->commentID));
+        $db->execute(
+            $prepQ,
+            array('CID' => $this->commentID),
+            array('nofetch' => true)
+        );
     }
 
     /**
@@ -2600,9 +2604,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the flags of that instrument
      *
-     * @return \Flags
+     * @return \InstrumentFlags
      */
-    public function getFlags(): \Flags
+    public function getFlags(): \InstrumentFlags
     {
         $row = \NDB_Factory::singleton()->database()->pselectRow(
             'SELECT
@@ -2614,7 +2618,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
              WHERE CommentID = :v_commentid',
             array('v_commentid' => $this->getCommentId())
         );
-        return new \Flags(...array_values($row));
+        return new \InstrumentFlags(...array_values($row));
     }
 
     /**

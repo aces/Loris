@@ -94,8 +94,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                if ($this->visit === null) {
-                    return new \LORIS\Http\Response\NotFound();
+                if ($this->visit->getSessionID() === null) {
+                    return new \LORIS\Http\Response\NotFound('Visit not found');
                 }
                 return new \LORIS\Http\Response\JsonResponse(
                     (new \LORIS\Api\Views\Visit($this->visit))
@@ -118,7 +118,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($this->visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\NotFound('Visit not found');
         }
 
         // Delegate to sub-endpoints
@@ -152,14 +152,21 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a PUT request that creates or replace a candidate visit
      *
+     * TODO: There is no way to validate the the visit_label in the url
+     *       fits the json data of the request because it is removed from the
+     *       pathparts in the calling class. The correct way to do it would be
+     *       to pass a "light" timepoint class that contains the visit_label but
+     *       no sessionid in the constructor.
+     *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
-        $user = $request->getAttribute('user');
-        $data = json_decode((string) $request->getBody(), true);
+        $user      = $request->getAttribute('user');
+        $data      = json_decode((string) $request->getBody(), true);
+        $visitinfo = $data ?? array();
 
         $requiredfields = array(
                            'CandID',
@@ -167,25 +174,25 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                            'Site',
                            'Battery',
                           );
-        $diff           = array_diff($requiredfields, array_keys($data));
+        $diff           = array_diff($requiredfields, array_keys($visitinfo));
         if (!empty($diff)) {
             return new \LORIS\Http\Response\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
             );
         }
 
-        if ($data['CandID'] !== $this->candidate->getCandID()) {
+        if ($visitinfo['CandID'] !== $this->candidate->getCandID()) {
             return new \LORIS\Http\Response\BadRequest(
                 'CandID do not match this candidate'
             );
         }
 
         $sessionid = array_search(
-            $data['Visit'],
+            $visitinfo['Visit'],
             $this->candidate->getListOfVisitLabels()
         );
 
-        $centerid = array_search($data['Site'], \Utility::getSiteList());
+        $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\Forbidden(
@@ -194,7 +201,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $subprojectid = array_search(
-            $data['Battery'],
+            $visitinfo['Battery'],
             \Utility::getSubprojectList()
         );
 
@@ -210,15 +217,15 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $username = $user->getUsername();
             $today    = date("Y-m-d");
             // TODO :: Add a replace function in \Timepoint.class.inc
-            $timepoint->setData('CenterID', $centerid);
-            $timepoint->setData('Visit_label', $data['Visit']);
-            $timepoint->setData('SubprojectID', $subprojectid);
-            $timepoint->setData('Active', 'Y');
-            $timepoint->setData('Date_active', $today);
-            $timepoint->setData('RegisteredBy', $username);
-            $timepoint->setData('UserID', $username);
-            $timepoint->setData('Date_registered', $today);
-            $timepoint->setData('Testdate', $today);
+            $timepoint->setData(array('CenterID' => $centerid));
+            $timepoint->setData(array('Visit_label' => $visitinfo['Visit']));
+            $timepoint->setData(array('SubprojectID' => $subprojectid));
+            $timepoint->setData(array('Active' => 'Y'));
+            $timepoint->setData(array('Date_active' => $today));
+            $timepoint->setData(array('RegisteredBy' => $username));
+            $timepoint->setData(array('UserID' => $username));
+            $timepoint->setData(array('Date_registered' => $today));
+            $timepoint->setData(array('Testdate' => $today));
 
             $link = '/' . $request->getUri()->getPath();
             return (new \LORIS\Http\Response())
@@ -228,9 +235,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             \TimePoint::isValidVisitLabel(
-                $data['CandID'],
+                $visitinfo['CandID'],
                 $subprojectid,
-                $data['Visit']
+                $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\BadRequest(
@@ -239,9 +246,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         \TimePoint::createNew(
-            $data['CandID'],
+            $visitinfo['CandID'],
             $subprojectid,
-            $data['Visit'],
+            $visitinfo['Visit'],
             $centerid
         );
 

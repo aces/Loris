@@ -117,9 +117,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // Delegate to candidate specific endpoint.
         try {
             $candidate = \NDB_Factory::singleton()
-                ->candidate($pathparts[1]);
-        } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound();
+                ->candidate(intval($pathparts[1]));
+        } catch (\NotFound | \LorisException $e) {
+            return new \LORIS\Http\Response\NotFound('Candidate not found');
         }
 
         $endpoint = new Candidate\Candidate($candidate);
@@ -174,7 +174,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $usersites = explode(';', $user->getSiteNames());
+        $usersites = $user->getSiteNames();
         if (!in_array($data['Candidate']['Site'], $usersites)) {
             return new \LORIS\Http\Response\Forbidden(
                 'You are not affiliated with the candidate`s site'
@@ -200,7 +200,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $centerid,
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
-                $data['Candidate']['Gender'],
+                $data['Candidate']['Sex'],
                 $pscid
             );
         } catch (\LorisException $e) {
