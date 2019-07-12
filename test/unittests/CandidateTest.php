@@ -144,8 +144,7 @@ class CandidateTest extends TestCase
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
-
-        $this->_factory   = NDB_Factory::singleton();
+        $this->_factory    = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 
@@ -912,6 +911,9 @@ class CandidateTest extends TestCase
     }
     /**
      * Test Candidate::createNew
+     * TODO This function calls Site::singleton() and User::singleton() 
+     *      So these need to be mocked in some way. It also uses the $_SESSION
+     *      array, which requires user interaction, which makes it harder to test.
      *
      * @covers Candidate::createNew
      * @return void
@@ -921,7 +923,7 @@ class CandidateTest extends TestCase
         $this->markTestIncomplete("Test not implemented!");
     }
 
-    /**
+    /** 
      * Set up test doubles behavior for Candidate::select() method
      *
      * @return void
