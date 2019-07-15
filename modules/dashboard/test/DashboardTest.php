@@ -69,6 +69,13 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "subproject",
+            array(
+             'SubprojectID' => '55',
+             'title'        => 'TESTinSubproject',
+            )
+        );
+        $this->DB->insert(
             "candidate",
             array(
              'CandID'               => '999888',
@@ -88,7 +95,7 @@ class DashboardTest extends LorisIntegrationTest
              'CenterID'     => '55',
              'UserID'       => '1',
              'MRIQCStatus'  => '',
-             'SubprojectID' => '6666',
+             'SubprojectID' => '55',
              'Active'       => 'Y',
             )
         );
