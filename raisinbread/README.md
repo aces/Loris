@@ -46,7 +46,6 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/medical_history.sql \
     raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
-    test/test_instrument/testtest.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
 
