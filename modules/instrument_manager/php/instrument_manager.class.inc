@@ -147,23 +147,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
         if ($this->instrumentExists($instrument)) {
-            /**
-             * Don't update the file if it already exists on the back-end.
-             * Instead, inform users that an administrator must install it on
-             * their behalf.
-             * This should only happen for users on a system where automatic
-             * installation is disabled (ie. has no quatUser), as the above
-             * error will return before this one.
-            */
-            return (new \LORIS\Http\Response())
-                ->withStatus(409, 'Conflict')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::ALREADY_INSTALLED)
-                        )
-                    )
-                );
+            // An instrument with this name already exists in the test_names
+            // table. Abort upload.
+            return new \Loris\Http\Conflict(self::ALREADY_INSTALLED);
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -179,7 +165,13 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         if (!in_array($response->getStatusCode(), array(200, 201), true)) {
             if ($response->getStatusCode() == 409) {
-                return new \Loris\Http\Conflict(self::FILE_ALREADY_EXISTS);
+                /* Don't update the file if it already exists on the back-end.
+                 * Instead, inform users that an administrator must install it
+                 * on their behalf.
+                 * This should only happen for users on a system where automatic
+                 * installation is disabled (ie. has no quatUser).
+                 */
+                return new \Loris\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
             }
             return $response;
         }
@@ -189,7 +181,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
         chdir($this->path . "/tools");
         // Use tools/ script to generate an SQL patch file based on the
         // structure of the uploaded .linst file.
-        error_log("Full path is `$fullpath`");
         exec(
             'php generate_tables_sql_and_testNames.php < '
             . escapeshellarg($fullpath)
@@ -205,6 +196,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                         json_encode(
                             array('message' => self::UPLOAD_NO_INSTALL)
                         )
+                    )
+                );
         }
 
         // Install the instrument by directly sourcing the SQL file
