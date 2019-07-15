@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
- * This class is a wrapper that takes a upload error code
- * an adds the approcpriate message to the exception.
+ * This class is a wrapper that takes an upload error code
+ * an adds the appropriate message to the exception.
  *
  * PHP Version 7
  *
