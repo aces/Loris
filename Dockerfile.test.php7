@@ -1,7 +1,6 @@
 FROM php:7.2
 
-RUN apt-get update && \
-    apt-get upgrade
+RUN apt-get update && apt-get upgrade \
     apt-get install -y mysql-client zlib1g-dev libssl1.0.0 
 
 # Install extensions through the scripts the container provides
