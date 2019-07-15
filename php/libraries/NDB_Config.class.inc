@@ -415,6 +415,20 @@ class NDB_Config
     }
 
     /**
+     * Helper function to determine whether a setting with a boolean value is
+     * enabled, i.e. equal to "true".
+     * Since settings are returned as strings, this must be done as a string
+     * comparison.
+     *
+     * @param string $name The name of the setting to retrieve. This setting
+     *                      should have a boolean value in the config file or DB.
+     * @return bool True if the setting is equal to "true".
+     */
+    function settingEnabled(string $name) {
+        return $this->getSetting($name) === 'true';
+    }
+
+    /**
      * Get list of projects for this projects, given a ProjectID.
      *
      * @param integer $ProjectID The ProjectID we want settings for
