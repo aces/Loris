@@ -422,9 +422,11 @@ class NDB_Config
      *
      * @param string $name The name of the setting to retrieve. This setting
      *                      should have a boolean value in the config file or DB.
+     *
      * @return bool True if the setting is equal to "true".
      */
-    function settingEnabled(string $name) {
+    function settingEnabled(string $name): bool
+    {
         return $this->getSetting($name) === 'true';
     }
 
