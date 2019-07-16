@@ -245,8 +245,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
         $this->clickReactElement($link);
-                $bodyText = $this->webDriver
-                    ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->getReactElementContent('.btn:nth-child(3) > div');
         $this->assertContains(
             "Candidate Profile",
             $bodyText
