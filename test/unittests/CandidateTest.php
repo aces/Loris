@@ -460,31 +460,6 @@ class CandidateTest extends TestCase
         );
     }
 
-    /**
-     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
-     *
-     * @note   This function is deprecated so it was causing a PHAN error. 
-     *         It is marked test incomplete for this reason
-     *         however it is fully implemented and functional
-     * @covers Candidate::getCandidateEthnicity
-     * @return void
-     */
-    public function testGetCandidateEthnicity()
-    {
-        $this->markTestIncomplete(
-            "This test is marked as incomplete because the function is deprecated"
-        );
-        /**
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->assertEquals(
-            $this->_candidateInfo['Ethnicity'],
-            $this->_candidate->getCandidateEthnicity()
-        );
-        */
-    }
-
     /** 
      * Test isActive returns the correct string for the candidate
      *
