@@ -37,17 +37,20 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * These properties describe a container entity.
      *
-     * @var int    $id
-     * @var string $barcode
-     * @var int    $typeId
-     * @var int    $dimensionId
-     * @var float  $temperature
-     * @var int    $statusId
-     * @var int    $originId
-     * @var int    $centerId
-     * @var int    $parentContainerId
-     * @var array  $childContainerIds
-     * @var int    $coordinate
+     * @var int       $id
+     * @var string    $barcode
+     * @var int       $typeId
+     * @var int       $dimensionId
+     * @var float     $temperature
+     * @var int       $statusId
+     * @var array     $projectIds
+     * @var int       $originId
+     * @var int       $centerId
+     * @var int       $parentContainerId
+     * @var array     $childContainerIds
+     * @var int       $coordinate
+     * @var string    $lotNumber
+     * @var \DateTime $expirationDate
      *
      * @access private
      */
@@ -57,11 +60,14 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     private $dimensionId;
     private $temperature;
     private $statusId;
+    private $projectIds;
     private $originId;
     private $centerId;
     private $parentContainerId;
     private $childContainerIds;
     private $coordinate;
+    private $lotNumber;
+    private $expirationDate;
 
     /**
      * Initiliazes a new instance of the Container Class
@@ -184,6 +190,28 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     public function getTemperature() : ?float
     {
         return $this->temperature;
+    }
+
+    /**
+     * Sets the ID of the container's current projects
+     *
+     * @param int $projectIds the IDs of the container's current projects
+     *
+     * @return void
+     */
+    public function setProjectIds(array $projectIds) : void
+    {
+        $this->projectIds = $projectIds;
+    }
+
+    /**
+     * Gets the ID of the container's current projects
+     *
+     * @return ?array
+     */
+    public function getProjectIds() : ?array
+    {
+        return $this->projectIds;
     }
 
     /**
@@ -327,6 +355,50 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         return $this->coordinate;
     }
+
+    /**
+     * Sets the container's lot number
+     *
+     * @param string $lotNumber the container's lot number.
+     *
+     * @return void
+     */
+    public function setLotNumber(string $lotNumber = null) : void
+    {
+        $this->lotNumber = $lotNumber;
+    }
+
+    /**
+     * Gets the container's lot number in storage
+     *
+     * @return ?string
+     */
+    public function getLotNumber() : ?string
+    {
+        return $this->lotNumber;
+    }
+
+    /**
+     * Sets the expiration date
+     *
+     * @param \DateTime $date the expiration date
+     *
+     * @return void
+     */
+    public function setExpirationDate(\DateTime $date = null) : void
+    {
+        $this->expirationDate = $date;
+    }
+
+    /**
+     * Gets the expiration date
+     *
+     * @return \DateTime
+     */
+    public function getExpirationDate() : ?\DateTime
+    {
+        return $this->expirationDate;
+    }
                                                                                
     /**                                                                         
      * Instatiates a Container Object using the information from the client-side
@@ -343,11 +415,14 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
         isset($data['dimensionId'])       && $this->setDimensionId((int) $data['dimensionId']);
         isset($data['temperature'])       && $this->setTemperature((float) ($data['temperature']));
         isset($data['statusId'])          && $this->setStatusId((int) $data['statusId']);
-        isset($data['centerId'])          && $this->setCenterId((int) $data['centerId']);
+        isset($data['projectIds'])        && $this->setProjectIds($data['projectIds']);
         isset($data['originId'])          && $this->setOriginId((int) $data['originId']);
+        isset($data['centerId'])          && $this->setCenterId((int) $data['centerId']);
         isset($data['parentContainerId']) && $this->setParentContainerId((int) $data['parentContainerId']);
         isset($data['childContainerIds']) && $this->setChildContainerIds($data['childContainerIds']);
         isset($data['coordinate'])        && $this->setCoordinate((int) $data['coordinate']);
+        isset($data['lotNumber'])         && $this->setLotNumber((string) $data['lotNumber']);
+        isset($data['expirationDate'])    && $this->setExpirationDate(new \DateTime($data['expirationDate']));
                                                                                 
         return $this;
     }                                                                           
@@ -370,6 +445,11 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
+        $expirationDate = $this->expirationDate;
+        if ($expirationDate) {
+            $expirationDate = $this->expirationDate->format('Y-m-d');
+        }
+
         return array(
                 'id'                => $this->id,
                 'barcode'           => $this->barcode,
@@ -377,11 +457,14 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
                 'dimensionId'       => $this->dimensionId,
                 'temperature'       => $this->temperature,
                 'statusId'          => $this->statusId,
+                'projectIds'        => $this->projectIds,
                 'originId'          => $this->originId,
                 'centerId'          => $this->centerId,
                 'parentContainerId' => $this->parentContainerId,
                 'childContainerIds' => $this->childContainerIds,
                 'coordinate'        => $this->coordinate,
+                'lotNumber'         => $this->lotNumber,
+                'expirationDate'    => $expirationDate,
                );
     }
 

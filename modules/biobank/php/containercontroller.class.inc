@@ -30,7 +30,7 @@ namespace LORIS\biobank;
 class ContainerController
 {
 
-    // TODO: These values were decided based on the realm of possibl values.
+    // TODO: These values were decided based on the realm of possible values.
     // These value should instead be queried from the back end so that they
     // are Project configurable.
     const MINTEMP = -273.15;
@@ -96,6 +96,8 @@ class ContainerController
             $this->validateInstance($container);
             $containerList[$i] = $container;
         }
+
+        $this->validateInstances($containerList);
 
         // Save Containers
         $containerIds = array();
@@ -201,9 +203,30 @@ class ContainerController
         $this->validateTypeId($container);
         $this->validateTemperature($container);
         $this->validateStatusId($container);
+        $this->validateProjectIds($container);
         $this->validateCenterId($container);
         $this->validateParentContainerId($container);
         $this->validateCoordinate($container);
+        $this->validateLotNumber($container);
+        $this->validateExpirationDate($container);
+    }
+
+    /**
+     * Validates the container list to ensure that no barcodes are identical
+     *
+     * @param array $containers List of Containers to be validated
+     *
+     * @return void
+     */
+    public function validateInstances(array $containers) : void
+    {
+        $barcode = null;
+        foreach ($containers as $container) {
+            if ($container->getBarcode() === $barcode) {
+                throw new \BadRequest('Barcode must be unique for each entry.');
+            }
+            $barcode = $container->getBarcode();
+        }
     }
 
     /**
@@ -218,7 +241,7 @@ class ContainerController
     private function validateBarcode(Container $container) : void
     {
         if (is_null($container->getBarcode())) {
-            throw new \BadRequest('Barcode value must be set');
+            throw new \BadRequest('Barcode value must be set.');
         }
 
         $id            = $container->getId();
@@ -229,12 +252,19 @@ class ContainerController
             $i = $c->getId();
             // If the barcodes are identical but the ids are not
             if ($b === $barcode && $i !== $id) {
-                throw new \BadRequest('Barcode must be unique');
+                throw new \BadRequest('Barcode must be unique.');
             }
         }
 
-        //TODO: Regex check on Barcode.
-        //i.e.
+        if ($container->getId()) {
+            $prevContainer = $this->dao->getInstanceFromId($container->getId());
+            if ($container->getBarcode() !== $prevContainer->getBarcode()) {
+                throw new \BadRequest('Barcode can not be changed.');
+            }
+        }
+
+        // TODO: Regex check on Barcode. Currently, regex has been removed from
+        // the schema. Once it's reintroduced, this can be implemented.
         //$specimenTypes = $this->dao->getSpecimenTypes();
         //$regex = $specimenTypes[$specimen['typeId']]['regex'];
         //if (isset($regex)) {
@@ -295,11 +325,69 @@ class ContainerController
      */
     private function validateStatusId(Container $container) : void
     {
-        // TODO: Check if previous container was dispensed. If it was, then make
-        // sure no changes are being made to the object that shouldn't be
+        if ($container->getId()) {
+            $prevContainer = $this->dao->getInstanceFromId($container->getId());
+            $statusLabel = $this->dao->getStati()[$prevContainer->getStatusId()]['label'];
+            if ($statusLabel == 'Dispensed') {
+                // TODO: figure out what else should not be changed if the container
+                // is dispensed. This should eventually be blocked in the front-end
+                // as well. These validations can wait until more testing has 
+                // been done on the module.
+
+                if ($prevContainer->getTemperature() != $container->getTemperature()) {
+                    throw new \BadRequest("Temperature cannot be changed if Container
+                                           is Dispensed.");
+                }
+            }
+        }
 
         if (is_null($container->getStatusId())) {
             throw new \BadRequest("Status value must be set.");
+        }
+    }
+
+    /**
+     * Validates Container Object Project ID.
+     *
+     * @param Container $container Container to be checked.
+     *
+     * @throws BadRequest if the provided Container does not meet validation requirements
+     *
+     * @return void
+     */
+    private function validateProjectIds(Container $container) : void
+    {
+        $projectIds = $container->getProjectIds();
+
+        // Check that current container's projects are a subset of the parent 
+        // Container's projects.
+        $parentContainerId = $container->getParentContainerId();
+        if ($parentContainerId) {
+            $parentContainer  = $this->dao->getInstanceFromId($parentContainerId);
+            $parentProjectIds = $parentContainer->getProjectIds();
+            if (array_intersect($projectIds, $parentProjectIds) != $projectIds) {
+                $barcode = $container->getBarcode();
+                throw new \BadRequest("The Projects to which " . $container->getBarcode() .
+                                      " belongs must be a subset of the Projects to 
+                                       which ". $parentContainer->getBarcode()
+                                      ." belongs.");
+            }
+        }
+
+        // Check the current container's projects are a superset of the child
+        // Containers' projects.
+        $childContainerIds = $container->getChildContainerIds();
+        if ($childContainerIds) {
+            forEach ($childContainerIds as $id) {
+                $childContainer = $this->dao->getInstanceFromId((int) $id);
+                $childProjectIds = $childContainer->getProjectIds();
+                if (array_intersect($childProjectIds, $projectIds) != $childProjectIds) {
+                    $barcode = $container->getBarcode();
+                    throw new \BadRequest("The projects to which $barcode
+                                           belongs must be a superset 
+                                           of it's child Containers' Projects");
+                }
+            }
         }
     }
 
@@ -322,8 +410,11 @@ class ContainerController
         if (isset($parentContainerId)) {
             $parentContainer = $this->dao->getInstanceFromId($parentContainerId);
             if ($container->getCenterID() !== $parentContainer->getCenterID()) {
+                $barcode = $container->getBarcode();
                 throw new \BadRequest(
-                        "A container must be at the same location as it's parent."
+                        $container->getBarcode()." must be at the same location 
+                        as ".$parentContainer->getBarcode()." to execute this
+                        action"
                 );
             }
         }
@@ -395,8 +486,40 @@ class ContainerController
                 );
             }
 
-            // TODO: Check that the coordinate value is within the container's
-            // dimension capacity.
+            $parentContainer = $this->dao->getInstanceFromId($parentContainerId); 
+            $dimensions      = $this->dao->getDimensions()[$parentContainer->getDimensionId()];
+            $capacity        = $dimensions['x'] * $dimensions['y'] * $dimensions['z'];
+            if ($container->getCoordinate() > $capacity) {
+               throw new \BadRequest(
+                   'Coordinate value exceeds the capacity of the Parent Container'
+               );
+            }
         }
+    }
+
+    /**
+     * Validates Container Lot Number.
+     *
+     * @param Container $container Container to be checked.
+     *
+     * @throws BadRequest if the provided Container does not meet validation requirements
+     *
+     * @return void
+     */
+    private function validateLotNumber(Container $container)
+    {
+    }
+
+    /**
+     * Validates Container Expiration Date.
+     *
+     * @param Container $container Container to be checked.
+     *
+     * @throws BadRequest if the provided Container does not meet validation requirements
+     *
+     * @return void
+     */
+    private function validateExpirationDate(Container $container)
+    {
     }
 }

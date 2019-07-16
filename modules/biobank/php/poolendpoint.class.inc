@@ -88,6 +88,7 @@ class PoolEndpoint implements RequestHandlerInterface
         $poolCont = new PoolController($db, $user);
 
         try {
+            $db->beginTransaction();
             switch($request->getMethod()) {
             case 'GET':
                 $pools = $poolCont->getInstances();
@@ -101,9 +102,18 @@ class PoolEndpoint implements RequestHandlerInterface
                     ->withHeader('Allow', $this->allowedMethods());
             }
         } catch (\BadRequest $e) {
+            $db->rollBack();
             return new \LORIS\Http\Response\BadRequest($e->getMessage());
         } catch (\Forbidden $e) {
+            $db->rollBack();
             return new \LORIS\Http\Response\Forbidden($e->getMessage());
+        } catch (\DatabaseException $e) {
+            $db->rollBack();
+            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
+        } finally {
+            if ($db->inTransaction()) {
+                $db->commit();
+            }
         }
     }
 }

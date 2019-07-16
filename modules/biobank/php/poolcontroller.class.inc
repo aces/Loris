@@ -206,13 +206,14 @@ class PoolController
         $baseContainer = $containerDAO->getInstanceFromId($baseSpecimen->getContainerId());
 
         foreach ($specimenIds as $specimenId) {
-            //TODO: Make sure to check that containers are available.
             $specimen  = $specimenDAO->getInstanceFromId($specimenId);
             $container = $containerDAO->getInstanceFromId($specimen->getContainerId());
             $barcode   = $container->getBarcode();
 
             if ($baseSpecimen->getCandidateId() !== $specimen->getCandidateId()) {
-                throw new \BadRequest('Pooled specimens must belong to the same Candidate');
+                throw new \BadRequest(
+                    'Pooled specimens must belong to the same Candidate'
+                );
             }
 
             if ($baseSpecimen->getSessionId() !== $specimen->getSessionId()) {
@@ -233,6 +234,10 @@ class PoolController
 
             if ($specimen->getPoolId() !== null) {
                 throw new \BadRequest("Specimen '$barcode' already belongs to a Pool");
+            }
+
+            if ($containerDAO->getStati()[$container->getStatusId()]['label'] !== 'Available') {
+                throw new \BadRequest("Specimen '$barcode' is not 'Available'");
             }
         }
     }

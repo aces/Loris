@@ -165,6 +165,7 @@ class OptionsEndpoint implements RequestHandlerInterface
         return array(
                 'candidates'        => $candidates,
                 'sessions'          => $sessions,
+                'projects'          => \Utility::getProjectList(),
                 'centers'           => $centers,
                 'examiners'         => $examiners,
                 'candidateSessions' => $candidateSessions,

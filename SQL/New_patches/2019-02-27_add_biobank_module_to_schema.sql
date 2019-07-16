@@ -2,6 +2,7 @@
 
 /*Relational*/
 DROP TABLE IF EXISTS `biobank_container_parent`;
+DROP TABLE IF EXISTS `biobank_container_project_rel`;
 DROP TABLE IF EXISTS `biobank_container_psc_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_pool_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_type_parent`;
@@ -112,6 +113,8 @@ CREATE TABLE `biobank_container` (
   `ContainerStatusID` integer unsigned NOT NULL,
   `OriginCenterID` integer unsigned NOT NULL,
   `CurrentCenterID` integer unsigned NOT NULL,
+  `LotNumber` varchar(40),
+  `ExpirationDate` DATE,
   `DateTimeCreate` DATETIME NOT NULL DEFAULT NOW(),
   `DateTimeUpdate` DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),
   CONSTRAINT `PK_biobank_container` PRIMARY KEY (`ContainerID`),
@@ -403,6 +406,18 @@ CREATE TABLE `biobank_specimen_pool_rel` (
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `FK_biobank_specimen_pool_rel_PoolID`
     FOREIGN KEY (`PoolID`) REFERENCES `biobank_pool`(`PoolID`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `biobank_container_project_rel` (
+  `ContainerID` integer unsigned NOT NULL,
+  `ProjectID` int(2) NOT NULL,
+  CONSTRAINT `PK_biobank_container_project_rel` PRIMARY KEY (`ContainerID`, `ProjectID`),
+  CONSTRAINT `FK_biobank_container_project_rel_ContainerID`
+    FOREIGN KEY (`ContainerID`) REFERENCES `biobank_container`(`ContainerID`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT `FK_biobank_container_project_rel_ProjectID`
+    FOREIGN KEY (`ProjectID`) REFERENCES `Project`(`ProjectID`)
     ON UPDATE RESTRICT ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

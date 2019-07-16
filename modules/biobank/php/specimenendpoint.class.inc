@@ -126,6 +126,9 @@ class SpecimenEndpoint implements RequestHandlerInterface
         } catch (\NotFound $e) {
             $db->rollBack();
             return new \LORIS\Http\Response\NotFound($e->getMessage());
+        } catch (\DatabaseException $e) {
+            $db->rollBack();
+            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
         } catch (\Exception $e) {
             $db->rollBack();
             // PUT SOMETHING HERE LATER

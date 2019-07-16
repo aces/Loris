@@ -9,7 +9,9 @@
   "dependencies": {
     "babel-core": "^6.26.3",
     "prop-types": "^15.6.2",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
+    "react-tooltip": "^3.10.0",
     "sweetalert2": "^7.29.2"
   },
   "devDependencies": {
@@ -28,7 +30,7 @@
     "react": "^16.4.2",
     "react-addons-create-fragment": "^15.6.2",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "webpack": "4.16.5",
+    "webpack": "^4.35.2",
     "webpack-cli": "3.1.0"
   },
   "scripts": {

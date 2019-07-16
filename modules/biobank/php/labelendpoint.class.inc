@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Loris/
  */
-class ContainerEndpoint implements RequestHandlerInterface
+class LabelEndpoint implements RequestHandlerInterface
 {
     /**
      * Returns true if user has access to this endpoint.
@@ -51,9 +51,6 @@ class ContainerEndpoint implements RequestHandlerInterface
     {
         return array(
                 'GET',
-                'PUT',
-                'POST',
-                'OPTIONS',
                );
     }
 
@@ -88,37 +85,13 @@ class ContainerEndpoint implements RequestHandlerInterface
         $user     = $request->getAttribute('user');
         $contCont = new ContainerController($db, $user);
 
-        try {
-            $db->beginTransaction();
-            switch($request->getMethod()) {
-            case 'GET':
-                $containers = $contCont->getInstances();
-                return new \LORIS\Http\Response\OK($containers);
-            case 'POST':
-                $containers = json_decode($request->getBody()->getContents(), true);
-                $contCont->createInstances($containers);
-                return new \LORIS\Http\Response\OK();
-            case 'PUT':
-                $container = json_decode($request->getBody()->getContents(), true);
-                $contCont->updateInstance($container);
-                return new \LORIS\Http\Response\OK();
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
-            }
-        } catch (\BadRequest $e) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
-        } catch (\Forbidden $e) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\Forbidden($e->getMessage());
-        } catch (\DatabaseException $e) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
-        } finally {
-            if ($db->inTransaction()) {
-                $db->commit();
-            }
+        switch($request->getMethod()) {
+        case 'GET':
+            $barcode = $request->getBody()->getContents();
+            return new \LORIS\Http\Response\OK($barcode);
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
         }
     }
 }
