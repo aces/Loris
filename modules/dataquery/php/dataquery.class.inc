@@ -126,7 +126,6 @@ class Dataquery extends \NDB_Form
              "group"  => "true",
             )
         );
-        $this->tpl_data['visits'] = \Utility::getExistingVisitLabels();
 
         $sessions = array_map(
             function ($element) {
@@ -134,6 +133,14 @@ class Dataquery extends \NDB_Form
             },
             $sessionResults
         );
+        $visits = array_unique(array_map(
+            function($element) {
+                return $element['1'];
+            },
+            $sessions
+        ));
+
+        $this->tpl_data['visits'] = array_combine($visits, $visits); //array("BAS1"=>"BAS1");//\Utility::getExistingVisitLabels();
 
         $this->tpl_data['sessions'] = $sessions;
     }

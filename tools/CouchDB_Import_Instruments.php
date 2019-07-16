@@ -29,33 +29,10 @@ class CouchDBInstrumentImporter
     {
         foreach ($Instruments as $instrument => $name) {
             $Dict   = array(
-                       'Administration'  => array(
-                                             'Type'        => "enum('None'," .
-                                               " 'Partial', 'All')",
-                                             'Description' => "Administration " .
-                                               "for $name",
-                                            ),
-                       'Data_entry'      => array(
-                                             'Type'        => "enum('In Progress'," .
-                                               " 'Complete')",
-                                             'Description' => "Data entry status " .
-                                               "for $name",
-                                            ),
-                       'Validity'        => array(
-                                             'Type'        => "enum('Questionable'" .
-                                               ", 'Invalid', 'Valid')",
-                                             'Description' => "Validity of data " .
-                                               "for $name",
-                                            ),
-                       'Conflicts_Exist' => array(
-                                             'Type'        => "enum('Yes', 'No')",
-                                             'Description' => 'Conflicts exist for' .
-                                               ' instrument data entry',
-                                            ),
-                       'DDE_Complete'    => array(
-                                             'Type'        => "enum('Yes', 'No')",
-                                             'Description' => 'Double Data Entry ' .
-                                               'was completed for instrument',
+                       'days_since_enrollment'    => array(
+                                             'Type'        => "numeric",
+                                             'Description' => 'Days since  ' .
+                                               'first enrollment',
                                             ),
                       );
             $Fields = $this->SQLDB->pselect(
