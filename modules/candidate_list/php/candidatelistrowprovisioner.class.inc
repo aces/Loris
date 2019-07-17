@@ -93,7 +93,7 @@ clASs CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = $row['RegistrationCenterID'];
+        $cid = (int )$row['RegistrationCenterID'];
         unset($row['RegistrationCenterID']);
         return new CandidateListRow($row, $cid);
     }

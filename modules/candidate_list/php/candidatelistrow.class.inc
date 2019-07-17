@@ -37,7 +37,7 @@ class CandidateListRow implements \LORIS\Data\DataInstance
      *                     returns
      * @param integer $cid The centerID affiliated with this row.
      */
-    public function __construct(array $row, $cid)
+    public function __construct(array $row, int $cid)
     {
         $this->DBRow    = $row;
         $this->CenterID = $cid;
