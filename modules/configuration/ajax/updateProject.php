@@ -57,9 +57,31 @@ if ($_POST['ProjectID'] === 'new') {
     $projectID = $_POST['ProjectID'];
 }
 
-$db->delete('project_subproject_rel', array('ProjectID' => $projectID));
-foreach ($_POST['SubprojectIDs'] as $sid) {
+// get values from the database before change to crossmatch with new submission
+$preValues = $db->pselectCol(
+    'SELECT SubprojectID 
+    FROM project_subproject_rel WHERE ProjectID=:pid',
+    array('pid' => $projectID)
+);
+
+// Compare submitted values with DB values.
+// It's important not to delete and reinsert the values due to delete cascades on
+// tables referencing project_subproject_rel in the database.
+$toAdd    = array_diff($_POST['SubprojectIDs'], $preValues);
+$toRemove = array_diff($preValues, $_POST['SubprojectIDs']);
+
+foreach ($toAdd as $sid) {
     $db->insertIgnore(
+        'project_subproject_rel',
+        array(
+         'ProjectID'    => $projectID,
+         'SubprojectID' => $sid,
+        )
+    );
+}
+// the following can cause some deletions from the visit_project_subproject_rel table
+foreach ($toRemove as $sid) {
+    $db->delete(
         'project_subproject_rel',
         array(
          'ProjectID'    => $projectID,
