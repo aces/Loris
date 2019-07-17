@@ -4,6 +4,9 @@ Modules should be entirely self-contained into a subdirectory with the following
 
     ModuleName/
 
+        README.md     - This file should contain technical specifications for any module in LORIS.
+                        See any module (ie. modules/candidate_list/README.md) for a template.
+
         css/          - Any necessary new CSS classes/files should go here
 
         help/         - Contains a markdown file of help content for each page in this module.
@@ -39,10 +42,9 @@ Modules should be entirely self-contained into a subdirectory with the following
                         cases, simply implementing a class in the module's namespace which
                         extends \Module should provide reasonably defaults.
 
+        tools/        - This contains any helper tools used either manually or by cron for this module
+
         templates/    - Location of any smarty templates for your module. Deprecated. Please use
                         jsx/ instead.
 
-        tools/        - This contains any helper tools used either manually or by cron for this module
-
-        README.md     - This file should contain technical specifications for any module in LORIS.
-                        See any module (ie. modules/candidate_list/README.md) for a template.
+        ajax/         - Deprecated.
