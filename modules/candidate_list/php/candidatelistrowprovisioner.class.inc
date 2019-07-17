@@ -86,7 +86,7 @@ clASs CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance(array $row) : \LORIS\Data\DataInstance
     {
         // XXX This should probably be updated to allow users
         // to access candidates who have any session at one of the

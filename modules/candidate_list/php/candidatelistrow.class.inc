@@ -59,7 +59,7 @@ class CandidateListRow implements \LORIS\Data\DataInstance
      *
      * @return integer The CenterID
      */
-    public function getCenterID()
+    public function getCenterID(): int
     {
         return $this->CenterID;
     }
