@@ -11,6 +11,11 @@ Modules should be entirely self-contained into a subdirectory with the following
 
         help/         - Contains a markdown file of help content for each page in this module.
 
+                        There is also a database "help" table, and if content exists in both
+                        this directory and the database the filesystem help table has precedent.
+                        The database should only be used for instruments, which are a type
+                        of page that exists outside of a module.
+
         js/           - This contains any javascript for the module. (This is often empty in
                         git, as the javascript files are generated from the React JSX
                         when running "make") 
