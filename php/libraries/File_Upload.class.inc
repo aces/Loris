@@ -350,7 +350,7 @@ class File_Upload
         }
         //Test each method
         $methods = $this->fileHandlers[$field]['methods'];
-        if (is_iterable($methods)) {
+        if (!is_iterable($methods)) {
             // Phan thinks methods is a string and fails below without
             // this check, but the class only ever seems to set it to an
             // array, so if somehow it become a string in a non-obvious
