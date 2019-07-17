@@ -546,13 +546,6 @@ CREATE TABLE `files_qcstatus` (
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_acquisition_dates` (
-  `SessionID` int(10) unsigned NOT NULL default '0',
-  `AcquisitionDate` date default NULL,
-  PRIMARY KEY  (`SessionID`),
-  CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',

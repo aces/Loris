@@ -27,11 +27,17 @@ $DB = Database::singleton();
 
 $scanData           = array();
 $scanStartDate      = $DB->pselectOne(
-    "SELECT MIN(AcquisitionDate) FROM mri_acquisition_dates",
+    "SELECT MIN(pf.Value) 
+     FROM parameter_file pf 
+     JOIN parameter_type pt USING (ParameterTypeID) 
+     WHERE pt.Name='acquisition_date'",
     array()
 );
 $scanEndDate        = $DB->pselectOne(
-    "SELECT MAX(AcquisitionDate) FROM mri_acquisition_dates",
+    "SELECT MAX(pf.Value) 
+     FROM parameter_file pf 
+     JOIN parameter_type pt USING (ParameterTypeID) 
+     WHERE pt.Name='acquisition_date'",
     array()
 );
 $scanData['labels']
@@ -92,11 +98,13 @@ function getScanData($siteID, $labels)
         $data[] = $DB->pselectOne(
             "SELECT COUNT(distinct s.ID) 
              FROM files f
-             LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
+             LEFT JOIN parameter_file pf USING (FileID)
              LEFT JOIN session s ON (s.ID=f.SessionID) 
+             JOIN parameter_type pt USING (ParameterTypeID)
              WHERE s.CenterID=:Site
-             AND MONTH(mad.AcquisitionDate)=:Month 
-             AND YEAR(mad.AcquisitionDate)=:Year",
+             AND pt.Name='acquisition_date'
+             AND MONTH(pf.Value)=:Month 
+             AND YEAR(pf.Value)=:Year",
             array(
              'Site'  => $siteID,
              'Month' => $month,

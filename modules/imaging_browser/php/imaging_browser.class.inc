@@ -156,7 +156,8 @@ END";
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            JOIN parameter_file pf ON (f.FileID=pf.FileID)
+            JOIN parameter_type pt USING (ParameterTypeID)
             LEFT JOIN mri_scan_type modality ON 
             (f.AcquisitionProtocolID=modality.ID)";
 
@@ -176,7 +177,8 @@ END";
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.FileType='mnc'";
+            pt.Name = 'acquisition_date' AND
+            f.FileType ='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -231,7 +233,7 @@ END";
                             WHERE ProjectID=c.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
-                          'MIN(md.AcquisitionDate) as First_Acquisition',
+                          'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d") as First_Acquisition',
                           'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
                           'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
                           "$NewDataSubquery as New_Data",
