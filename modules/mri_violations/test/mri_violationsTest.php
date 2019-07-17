@@ -252,6 +252,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array('ExtID' => '1002')
         );
         $this->DB->delete(
+            "subproject",
+            array(
+                'SubprojectID' => '55',
+            )
+        );
+        $this->DB->delete(
             "psc",
             array(
              'CenterID' => '55',
