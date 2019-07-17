@@ -28,6 +28,8 @@ return [
     //
     // When the module is refactored, this line should be deleted.
 	"ignore_undeclared_variables_in_global_scope" => true,
+    // FIXME: We should add this.
+    'dead_code_detection' => false,
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
         "PhanTypePossiblyInvalidDimOffset",
