@@ -11,9 +11,9 @@ return [
     // The default severity level for phan is 5. After removing all the
     // suppressed rules, we should consider reducing this value to detect more
     // suspicious code.
-    'minimum_severity' => 5,
+    "minimum_severity" => 5,
     // TODO: Update this value to the minimum required by LORIS.
-    'target_php_version' => '7.2',
+    "target_php_version" => "7.2",
 	// FIXME: allow_missing_properties should be false, but there's
 	// too many other things to fix first.
 	"allow_missing_properties" => true,
@@ -29,7 +29,7 @@ return [
     // When the module is refactored, this line should be deleted.
 	"ignore_undeclared_variables_in_global_scope" => true,
     // FIXME: We should add this.
-    'dead_code_detection' => false,
+    "dead_code_detection" => false,
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
         "PhanTypePossiblyInvalidDimOffset",
@@ -60,10 +60,10 @@ return [
 	"exclude_analysis_directory_list" => [
 		"vendor"
 	],
-    'autoload_internal_extension_signatures' => [
+    "autoload_internal_extension_signatures" => [
         // Xdebug stubs are bundled with Phan 0.10.1+/0.8.9+ for usage,
         // because Phan disables xdebug by default.
-        'xdebug'     => 'vendor/phan/phan/.phan/internal_stubs/xdebug.phan_php',
+        "xdebug"     => "vendor/phan/phan/.phan/internal_stubs/xdebug.phan_php",
     ],
 
     // The line below is required to prevent PhanUndeclaredVariable problems in
@@ -76,6 +76,6 @@ return [
     // When the module is refactored, this line should be deleted.
     'ignore_undeclared_variables_in_global_scope' => true,
     'plugins' => [
-        'UnreachableCodePlugin'
+        //'UnreachableCodePlugin',
     ]
 ];
