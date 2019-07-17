@@ -170,7 +170,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             } else {
                 return false;
             }
-            return false;
         }
         // get control panel selections from _REQUEST
         $possibleFlags = array(

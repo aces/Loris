@@ -179,7 +179,6 @@ class Database
                 . "username: `$username`, dbname: `$database`, host: `$host` "
                 . "and the supplied password."
             );
-            return false;
         }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

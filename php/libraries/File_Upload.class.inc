@@ -318,7 +318,6 @@ class File_Upload
             case "reject":
                 $this->setError($this->fieldName, "File Exists, rejecting");
                 return false;
-                break;
             }
         }
 

@@ -88,7 +88,6 @@ class Files extends \NDB_Page
                     )
                 );
             }
-            break;
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -101,7 +100,6 @@ class Files extends \NDB_Page
                         json_encode("update a file")
                     )
                 );
-          break;
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
@@ -113,7 +111,6 @@ class Files extends \NDB_Page
                         json_encode("delete a file")
                     )
                 );
-          break;
         case "GET":
             $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
@@ -137,7 +134,6 @@ class Files extends \NDB_Page
                       json_encode($this->getUploadDocFields($record))
                   )
               );
-            break;
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
