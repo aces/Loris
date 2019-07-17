@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 /**
- * This class implements a DataframeWorkMenu, a specific type of
+ * This class implements a DataFrameworkMenu, a specific type of
  * menu filter where the front end is generated from React and the
  * data comes from a \LORIS\Data\Provisioner.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
