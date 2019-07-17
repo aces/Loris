@@ -25,7 +25,7 @@ clean:
 checkstatic: phpdev
 	npm run lint:php
 	npm run lint:javascript
-	vendor/bin/phan
+	vendor/bin/phan --progress-bar
 
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
