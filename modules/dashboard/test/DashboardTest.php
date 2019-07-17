@@ -352,9 +352,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "subproject",
-            array(
-                'SubprojectID' => '55',
-            )
+            array('SubprojectID' => '55')
         );
         $this->DB->delete(
             "flag",
