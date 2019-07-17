@@ -18,8 +18,7 @@
         "phpunit/phpunit" : "6.5.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": "~2.2.5",
-        "microsoft/tolerant-php-parser": "~0.0.18"
+        "phan/phan": "~2.2.5"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
