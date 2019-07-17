@@ -24,7 +24,7 @@ namespace LORIS\StudyEntities\Candidate;
  */
 class CandID extends ValidatableIdentifier
 {
-    /* 
+    /*
      * The minimum allowed value for valid CandIDs. Origin unclear but
      * assists in avoiding issues with leading 0s in string repreentations of
      * integers.

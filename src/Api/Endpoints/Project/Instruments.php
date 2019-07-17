@@ -128,7 +128,6 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $projectname = $this->project->getName();
 
         if (!isset($this->responseCache[$projectname])) {
-
             $meta = array('Project' => $projectname);
 
             $ddeinstruments = \NDB_Factory::singleton()

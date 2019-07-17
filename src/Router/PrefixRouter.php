@@ -79,7 +79,6 @@ class PrefixRouter implements RequestHandlerInterface
         $path    = $uri->getPath();
         $newpath = substr($path, strlen($prefix));
         return $uri->withPath((string) $newpath);
-
     }
 
     /**

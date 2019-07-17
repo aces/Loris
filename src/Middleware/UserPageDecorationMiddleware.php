@@ -22,7 +22,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         array $JS,
         array $CSS
     ) {
-    
+
         $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
         $this->Config   = $config;
@@ -58,7 +58,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );
-
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';

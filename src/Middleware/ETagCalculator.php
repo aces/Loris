@@ -31,7 +31,7 @@ interface ETagCalculator
      * An ETagCalculator provides the ability to calculate an ETag for
      * an incoming HTTP request.
      *
-     * @param ServerRequestInterface  $request The incoming PSR7 request.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
      *
      * @return string The value to use for the ETag header.
      */

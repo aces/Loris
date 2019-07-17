@@ -41,4 +41,3 @@ class InternalServerError extends JsonResponse
         parent::__construct($body, 500);
     }
 }
-

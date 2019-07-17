@@ -53,7 +53,6 @@ trait MiddlewareChainerMixin
         while ($cur->next !== null) {
             $cur->next = clone $cur->next;
             $cur       = $cur->next;
-
         }
 
         // We know next is null from the above loop, so this is safe.

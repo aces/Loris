@@ -133,7 +133,6 @@ abstract class ProvisionerInstance implements Provisioner
                     $callback
                 );
             }
-
         }
 
         if ($this->modifier instanceof Mapper) {

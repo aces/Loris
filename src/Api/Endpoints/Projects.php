@@ -127,7 +127,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
         $config = \NDB_Factory::singleton()->config();
 
-        $useEDC      = $config->getSetting("useEDC");
+        $useEDC = $config->getSetting("useEDC");
 
         if ($useEDC === '1' || $useEDC === 'true') {
             $useEDC = true;
@@ -140,12 +140,12 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = [
-            "useEDC" => $useEDC,
-            "PSCID"  => [
-                "Type"  => $type,
-                "Regex" => $PSCIDFormat,
-            ],
-        ];
+                     "useEDC" => $useEDC,
+                     "PSCID"  => [
+                                  "Type"  => $type,
+                                  "Regex" => $PSCIDFormat,
+                                 ],
+                    ];
 
         $projects  = \Utility::getProjectList();
         $projArray = [];

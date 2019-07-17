@@ -122,7 +122,6 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
     public function eof()
     {
         return feof($this->stream);
-
     }
 
     /**
@@ -284,7 +283,6 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
      * @return ResponseInterface A response whose body consists of this string
-
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
