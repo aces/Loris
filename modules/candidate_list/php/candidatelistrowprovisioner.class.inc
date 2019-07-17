@@ -95,6 +95,6 @@ clASs CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // one of the user's sites.
         $cid = $row['RegistrationCenterID'];
         unset($row['RegistrationCenterID']);
-        return new CandidateLIstRow($row, $cid);
+        return new CandidateListRow($row, $cid);
     }
 }
