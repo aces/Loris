@@ -12,7 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-use LORIS\StudyEntities\Candidate\CandID;
 
 $tpl_data = array();
 
