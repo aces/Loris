@@ -8,6 +8,6 @@ Automate testing the new instrument.
 3. Insert into test_name and test battery.
 4. Run PHP script.
 5. Source SQL file.
-6. Test (addElement-header,addElement-text,addCheckbox,createElement-select).
+6. Test (addElement-header, addElement-text, addCheckbox, createElement-select).
 
 
