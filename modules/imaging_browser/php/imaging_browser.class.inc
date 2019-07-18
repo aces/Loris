@@ -224,6 +224,7 @@ END";
                 $as[$key];
         }
 
+        $firstAcquisitionSubquery = 'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d")';
         $this->columns = array(
                           'p.Name as Site',
                           'c.PSCID as PSCID',
@@ -233,7 +234,7 @@ END";
                             WHERE ProjectID=c.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
-                          'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d") as First_Acquisition',
+                          "$firstAcquisitionSubquery as First_Acquisition",
                           'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
                           'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
                           "$NewDataSubquery as New_Data",
