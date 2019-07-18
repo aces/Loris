@@ -1066,8 +1066,6 @@ class DateElement extends Component {
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            min={minFullDate}
-            max={maxFullDate}
             onChange={this.handleChange}
             value={this.props.value || ''}
             required={required}
