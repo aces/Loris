@@ -1,6 +1,19 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+
+DROP TABLE IF EXISTS `permissions`;
+
+
+DROP TABLE IF EXISTS `permissions_category`;
+
+
+DROP TABLE IF EXISTS `user_perm_rel`;
+
+SET FOREIGN_KEY_CHECKS=1;
 --
 -- Table structure for table `permissions_category`
 --
+
 
 CREATE TABLE `permissions_category` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
@@ -99,9 +112,14 @@ INSERT INTO `permissions` VALUES
     (50,'data_release_edit_file_access', 'Data Release: Grant other users view-file permissions', 2),
     (51,'instrument_manager_read', 'Instrument Manager: View module', 2),
     (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
-    (53,'publication_view', 'Publication - Access to module', 2),
-    (54,'publication_propose', 'Publication - Propose a project', 2),
-    (55,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
+    (53, 'biobank_specimen_view', 'Biobank: View Specimen Data', 2),                
+    (54, 'biobank_specimen_create', 'Biobank: Create Specimen Data', 2),            
+    (55, 'biobank_specimen_update', 'Biobank: Update Specimen Data', 2),            
+    (57, 'biobank_container_view', 'Biobank: View Container Data', 2),              
+    (58, 'biobank_container_create', 'Biobank: Create Container Data', 2),          
+    (59, 'biobank_container_update', 'Biobank: Update Container Data', 2),          
+    (61, 'biobank_pool_view', 'Biobank: View Pool Data', 2),                        
+    (62, 'biobank_pool_create', 'Biobank: Create Pool Data', 2),                    
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -123,4 +141,3 @@ CREATE TABLE `notification_modules_perm_rel` (
 -- populate notification perm table
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
-INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='publication' AND (p.code='publication_view' OR p.code='publication_propose' OR p.code='publication_approve');

@@ -1062,7 +1062,7 @@ class DateElement extends Component {
         </label>
         <div className="col-sm-9">
           <input
-            type={inputType}
+            type='date'
             className="form-control"
             name={this.props.name}
             id={this.props.id}
