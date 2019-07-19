@@ -41,14 +41,14 @@ class ImageQcStatus
     /**
      * Constructor
      *
-     * @param string $qcstatus Either "Pass" or "Fail"
-     * @param bool   $selected If not set to true, will default to false
+     * @param ?string $qcstatus Either "Pass" or "Fail"
+     * @param ?bool   $selected If selected
      *
      * @throws \DomainException When $qcstatus is not one of PASS or FAIL
      */
-    public function __construct(string $qcstatus = null, bool $selected = false)
+    public function __construct(?string $qcstatus, ?bool $selected)
     {
-        if (!in_array($qcstatus, ['Pass', 'Fail'], true)) {
+        if (!in_array($qcstatus, ['Pass', 'Fail', null], true)) {
             throw new \DomainException('Invalid value for QCStatus');
         }
         $this->_qcstatus = $qcstatus;
@@ -60,7 +60,7 @@ class ImageQcStatus
      *
      * @return string
      */
-    public function getQcStatus(): string
+    public function getQcStatus(): ?string
     {
         return $this->_qcstatus;
     }
@@ -68,9 +68,9 @@ class ImageQcStatus
     /**
      * Accessor for selected
      *
-     * @return bool
+     * @return ?bool
      */
-    public function isSelected(): bool
+    public function isSelected(): ?bool
     {
         return $this->_selected;
     }

@@ -236,7 +236,7 @@ class Image
     {
         $imagepath = \NDB_factory::singleton()
             ->config()
-            ->getSetting('mincPath');
+            ->getSetting('imagePath');
 
         $fullpath = $imagepath . $this->_filelocation;
 

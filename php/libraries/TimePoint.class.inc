@@ -1039,7 +1039,7 @@ class TimePoint
             throw new \NotFound($tarname . ' not found.');
         }
 
-        return (new \LORIS\DicomTar($row['tarchiveid']))->asDTO();
+        return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
     }
 
 }
