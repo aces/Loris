@@ -5,7 +5,6 @@
  *
  * FIXME This code should be refactored away from using the separate 'ajax'
  * file model toward using a more robust Loris Module-based approached.
- * This is dependent on the Reactifying of the Configuration module generally.
  *
  * PHP version 7
  *
