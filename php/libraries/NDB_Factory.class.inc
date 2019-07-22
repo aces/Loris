@@ -181,6 +181,7 @@ class NDB_Factory
      */
     function database(): \Database
     {
+        $db_ref = null;
         if ($this->Testing) {
             $db_ref = &self::$testdb;
             if ($db_ref !== null) {
@@ -197,6 +198,9 @@ class NDB_Factory
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
+        // This check was added to satisfy phan, our static analysis tool.
+        // $db_ref should be set to either a new MockDatabase or a Database
+        // singleton above.
         if ($db_ref === null) {
             throw new \ConfigurationException(
                 'Could not configure database for LORIS'
