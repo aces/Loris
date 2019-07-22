@@ -60,7 +60,6 @@ class InstrumentUploadForm extends Component {
     })
     .catch((error) => {
       this.setState({error: true});
-      console.error(error);
     });
   }
 
