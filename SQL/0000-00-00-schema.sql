@@ -25,12 +25,14 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_rel` (
+CREATE TABLE `project_subproject_rel` (
   `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(2) NOT NULL,
-  `SubprojectID` int(2) NOT NULL,
+  `SubprojectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ProjectSubprojectRelID`),
-  CONSTRAINT UK_project_subproject_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID)
+  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
+  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -166,7 +168,7 @@ CREATE TABLE `session` (
   `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(11) DEFAULT NULL,
+  `SubprojectID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
@@ -199,7 +201,8 @@ CREATE TABLE `session` (
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (
@@ -1985,7 +1988,7 @@ CREATE TABLE `visit_project_subproject_rel` (
   CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
-    REFERENCES `project_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status
