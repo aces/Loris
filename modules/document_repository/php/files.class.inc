@@ -78,16 +78,8 @@ class Files extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
-            } else {
-                return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(409)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("duplicate file name")
-                    )
-                );
             }
+            return new \LORIS\Http\Response\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -97,7 +89,7 @@ class Files extends \NDB_Page
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("update a file")
+                        json_encode("file updated")
                     )
                 );
         case "DELETE":
@@ -108,7 +100,7 @@ class Files extends \NDB_Page
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("delete a file")
+                        json_encode("file deleted")
                     )
                 );
         case "GET":
@@ -124,7 +116,6 @@ class Files extends \NDB_Page
                   )
                   ->withStatus(200)
                   ->withBody(new \LORIS\Http\FileStream($file));
-
             }
             return (new \LORIS\Http\Response())
               ->withHeader("Content-Type", "text/plain")
