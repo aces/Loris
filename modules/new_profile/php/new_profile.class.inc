@@ -168,6 +168,7 @@ class New_Profile extends \NDB_Form
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
+        $psc_labelOptions   = array();
         if ($num_sites > 1) {
             foreach ($user_list_of_sites as $key => $siteID) {
                 $center = $DB->pselectRow(
@@ -176,8 +177,6 @@ class New_Profile extends \NDB_Form
                 );
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
-        } else {
-            $psc_labelOptions = null;
         }
         $site = $psc_labelOptions;
 
