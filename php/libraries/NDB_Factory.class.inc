@@ -197,15 +197,18 @@ class NDB_Factory
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
-        if (!is_null($db_ref)) {
-            $db_ref->connect(
-                $dbc['database'],
-                $dbc['username'],
-                $dbc['password'],
-                $dbc['host'],
-                true
+        if ($db_ref === null) {
+            throw new \ConfigurationException(
+                'Could not configure database for LORIS'
             );
         }
+        $db_ref->connect(
+            $dbc['database'],
+            $dbc['username'],
+            $dbc['password'],
+            $dbc['host'],
+            true
+        );
         return $db_ref;
     }
 
