@@ -168,7 +168,7 @@ CREATE TABLE `session` (
   `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(11) DEFAULT NULL,
+  `SubprojectID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
@@ -201,7 +201,8 @@ CREATE TABLE `session` (
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (
