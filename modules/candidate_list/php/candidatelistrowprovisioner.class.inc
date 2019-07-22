@@ -28,7 +28,7 @@ namespace LORIS\candidate_list;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-clASs CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
