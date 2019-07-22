@@ -427,7 +427,8 @@ class NDB_Config
      */
     function settingEnabled(string $name): bool
     {
-        return $this->getSetting($name) === 'true';
+        $val = $this->getSetting($name);
+        return $val === 'true' || $val === '1';
     }
 
     /**
