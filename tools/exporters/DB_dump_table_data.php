@@ -41,7 +41,7 @@ $dbPassword = $databaseInfo["quatPassword"];
 $dbHost = $databaseInfo["host"];
 
 if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
-    echo "\n\n Some database credentials are missing, please make sure administrator 
+    echo "\n\n Some database credentials are missing, please ensure administrator 
     credentials (quatUser, quatPassword) and a host value are available in your 
     configuration file. \n\n";
     die();
