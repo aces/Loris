@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for visit instruments
+ * This class implements a data Instance for visit instruments.
  *
  * PHP Version 7
  *

@@ -12,9 +12,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\Data\Provisioners;
 
-use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
  * This class implements a data provisioner to get all possible rows
  * for the /candidates/$candid/$visit_label/images endpoint.
@@ -27,7 +26,7 @@ use \LORIS\Data\Provisioners\DBRowProvisioner;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class VisitImagesRowProvisioner extends DBRowProvisioner
+class TimepointImagesRowProvisioner extends DBRowProvisioner
 {
     /**
      * Constructor

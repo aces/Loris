@@ -11,7 +11,7 @@
 
 namespace LORIS\Api\Views\Visit;
 
-use \LORIS\ImageDTO;
+use \LORIS\Data\Models\ImageDTO;
 /**
  * Creates a representation of a visit images following the api response
  * specifications.

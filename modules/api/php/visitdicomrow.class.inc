@@ -12,7 +12,7 @@
 namespace LORIS\api;
 
 /**
- * A VisitDicomRow is a single dicom archive
+ * A VisitDicomRow is a single DICOM archive among that visit DICOM archives.
  *
  * @category API
  * @package  Loris
