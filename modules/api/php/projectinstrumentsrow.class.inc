@@ -64,9 +64,9 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     /**
      * Returns this row's shortname.
      *
-     * @return string
+     * @return ?string
      */
-    public function getShortname() : string
+    public function getShortname() : ?string
     {
         return $this->DBRow['shortname'] ?? null;
     }
