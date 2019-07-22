@@ -45,13 +45,6 @@ class Database
     var $_HistoryPDO = null;
 
     /**
-     * Integer number of rows affected by the last replace/update/delete/insert
-     *
-     * @access public
-     */
-    var $affected;
-
-    /**
      * The auto_increment ID value of the last insert statement,
      * as designated by LAST_INSERT_ID
      *
@@ -427,7 +420,6 @@ class Database
             );
         }
 
-        $this->affected     = $prep->rowCount();
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
@@ -476,8 +468,6 @@ class Database
                 $query
             );
         }
-
-        $this->affected = $result;
     }
 
     /**
@@ -589,7 +579,6 @@ class Database
                 $exec_params
             );
         }
-        $this->affected = $prep->rowCount();
         return true;
     }
 
@@ -636,8 +625,6 @@ class Database
                 $where
             );
         }
-
-        $this->affected = $result;
     }
 
     /**
@@ -659,8 +646,6 @@ class Database
                 . print_r($this->_PDO->errorInfo(), true)
             );
         }
-
-        $this->affected = $result;
 
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
@@ -1218,16 +1203,6 @@ class Database
         print "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())
             .": $query<br>\n";
-    }
-
-    /**
-     * Returns the number of rows affected by last statement
-     *
-     * @return integer The number of rows affected
-     */
-    function getAffected(): int
-    {
-        return $this->affected;
     }
 
     /**
