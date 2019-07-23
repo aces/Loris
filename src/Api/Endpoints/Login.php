@@ -146,7 +146,7 @@ class Login extends Endpoint
      *
      * @return \SinglePointLogin Loris Authenticator
      */
-    public function getLoginAuthenticator()
+    private function getLoginAuthenticator()
     {
         return new \SinglePointLogin();
     }
@@ -158,7 +158,7 @@ class Login extends Endpoint
      *
      * @return string JWT encoded token
      */
-    public function getEncodedToken($user)
+    private function getEncodedToken($user)
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -193,7 +193,7 @@ class Login extends Endpoint
      *
      * @return boolean Key passes strength test
      */
-    public static function isKeyStrong($key)
+    private static function isKeyStrong($key)
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;
