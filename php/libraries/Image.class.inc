@@ -148,6 +148,9 @@ class Image
      */
     public function getQcStatus(): \LORIS\ImageQcStatus
     {
+        $qcstatus = null;
+        $selected = null;
+
         $row = \NDB_Factory::singleton()->database()->pselectRow(
             'SELECT
                QCStatus as qcstatus,
@@ -160,8 +163,10 @@ class Image
             array('v_fileid' => $this->_fileid)
         );
 
-        $qcstatus = $row['qcstatus'] ?? null;
-        $selected = is_null($row['selected']) ? null : boolval($row['selected']);
+        if (is_array($row)) {
+            $qcstatus = $row['qcstatus'] ?? null;
+            $selected = is_null($row['selected']) ? null : boolval($row['selected']);
+        }
 
         return new \LORIS\ImageQcStatus($qcstatus, $selected);
     }

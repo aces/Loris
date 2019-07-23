@@ -58,7 +58,7 @@ class ImageQcStatus
     /**
      * Accessor for QcStatus
      *
-     * @return string
+     * @return ?string
      */
     public function getQcStatus(): ?string
     {

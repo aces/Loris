@@ -27,18 +27,18 @@ class ImageCaveats
      * Contructor
      * TODO :: Add more descriptive comments on params
      *
-     * @param string $severity   Severity
-     * @param string $header     Header
-     * @param string $value      value
-     * @param string $validrange validrange
-     * @param string $validregex validregex
+     * @param ?string $severity   Severity
+     * @param ?string $header     Header
+     * @param ?string $value      value
+     * @param ?string $validrange validrange
+     * @param ?string $validregex validregex
      */
     public function __construct(
-        string $severity = null,
-        string $header = null,
-        string $value = null,
-        string $validrange = null,
-        string $validregex = null
+        ?string $severity,
+        ?string $header,
+        ?string $value,
+        ?string $validrange,
+        ?string $validregex
     ) {
         $this->_severity   = $severity;
         $this->_header     = $header;
