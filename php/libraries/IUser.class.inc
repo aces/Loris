@@ -53,12 +53,16 @@ interface IUser
      * Returns true if the user is Active (ie. has been
      * approved and was not explicitly deactivated for
      * other reasons.)
+     *
+     * @return bool
      */
     public function isActive() : bool;
 
     /**
      * Returns true if the user has requested an account
      * which has not yet been reviewed/approved.
+     *
+     * @return bool
      */
     public function pendingApproval() : bool;
 }
