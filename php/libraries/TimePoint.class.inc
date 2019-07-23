@@ -953,7 +953,7 @@ class TimePoint
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\ImageDTO[] A traversable of \LORIS\ImageDTO
+     * @return \LORIS\Data\Models\ImageDTO[] A traversable of ImageDTO
      */
     public function getImages(\User $user): array
     {

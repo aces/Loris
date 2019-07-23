@@ -2631,7 +2631,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
              WHERE CommentID = :v_commentid',
             array('v_commentid' => $this->getCommentId())
         );
-        return new \InstrumentFlags(...array_values($row));
+
+        $dataentry      = $row['dataentry'] ?? null;
+        $administration = $row['administration'] ?? null;
+        $validity       = $row['validity'] ?? null;
+
+        return new \InstrumentFlags(
+            $dataentry,
+            $administration,
+            $validity
+        );
     }
 
     /**
