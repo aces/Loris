@@ -66,8 +66,8 @@ function createLineChartLabels($startDate, $endDate)
 {
     $startDateYear  = substr($startDate, 0, 4);
     $endDateYear    = substr($endDate, 0, 4);
-    $startDateMonth = substr($startDate, 5, 2);
-    $endDateMonth   = substr($endDate, 5, 2);
+    $startDateMonth = substr($startDate, 4, 2);
+    $endDateMonth   = substr($endDate, 4, 2);
     $labels         = array();
     for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
         $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;

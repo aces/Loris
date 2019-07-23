@@ -6,24 +6,24 @@
  *
  * PHP Version 5
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\imaging_browser;
 
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
@@ -225,6 +225,7 @@ END";
         }
 
         $firstAcquisitionSubquery = 'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d")';
+
         $this->columns = array(
                           'p.Name as Site',
                           'c.PSCID as PSCID',
