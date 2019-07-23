@@ -36,12 +36,21 @@ if (count($args) < MIN_NUMBER_OF_ARGS) {
 $setting = $args[1];
 $value   = $args[2];
 
-$id= $DB->pselectOne(
-    "SELECT ID FROM ConfigSettings WHERE Name=:config",
+$config = $DB->pselectRow(
+    "SELECT ID, AllowMultiple FROM ConfigSettings WHERE Name=:config",
     array('config' => $setting)
 );
-if (!is_numeric($id) || $id <= 0) {
+
+if (count($config) === 0) {
     die("Invalid config name");
+}
+
+$multiple = $config['AllowMultiple'];
+if ($multiple == '1') {
+    die(
+        "Script only valid on single value settings. " .
+        "Please use the LORIS frontend to change $setting."
+    );
 }
 
 // Determine whether to insert or update
