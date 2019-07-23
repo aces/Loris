@@ -59,8 +59,9 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        $instruments = \Utility::getAllInstruments();
-        return array('sourceFrom' => $instruments);
+        return array(
+                'sourceFrom' => \Utility::getAllInstruments(),
+               );
     }
 
     /**
