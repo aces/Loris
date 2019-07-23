@@ -189,7 +189,7 @@ class EditExaminer extends \NDB_Form
             } else { // update to a test certification for the examiner
 
                 //select history events
-                $oldVals = $DB->pselectRow(
+                $oldVals = $DB->pselect(
                     "SELECT ch.new, ch.new_date
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
@@ -201,8 +201,9 @@ class EditExaminer extends \NDB_Form
                     )
                 );
 
-                $oldVal  = $oldVals['new'];
-                $oldDate = $oldVals['new_date'];
+                $oldVal = isset($oldVals[0]) ? $oldVals[0]['new'] : null;
+                $oldDate = isset($oldVals[0]) ? $oldVals[0]['new_date'] : null;
+
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
