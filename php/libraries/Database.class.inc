@@ -632,8 +632,7 @@ class Database
      *
      * @param string $query The SQL query to run
      *
-     * @return void (As a side-effect updates affected and lastInsertID
-     *              if applicable.)
+     * @return void (As a side-effect updates lastInsertID if applicable.)
      */
     function run(string $query): void
     {
