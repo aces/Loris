@@ -88,7 +88,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
 
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
-                        WebDriverBy::Name("keyword")
+                        WebDriverBy::Name("Name")
                     )
                 );
 
@@ -98,75 +98,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 $this->assertContains("Data Dictionary", $bodyText);
     }
     /**
-     * Testing keyword filter with testing data
-     *
-     * @return void
-     */
-    function testDataDictSearchKeywordFilters()
-    {
-        $this->safeGet($this->url . "/datadict/");
-
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
-        );
-
-        $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
-
-        $name = $this->webDriver->executescript(
-            "return document.querySelector".
-                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-        );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
-    }
-    /**
-     * Testing keyword filter with testing data not case-sensitive
-     *
-     * @return void
-     */
-    function testDataDictSearchKeywordFiltersnotCaseSensitvie()
-    {
-        $this->safeGet($this->url . "/datadict/");
-
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
-        );
-
-        $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
-
-        $name = $this->webDriver->executescript(
-            "return document.querySelector".
-                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-        );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
-    }
-    /**
-     * Testing keyword filter without testing data
-     *
-     * @return void
-     */
-    function testDataDictSearchKeywordFiltersWithoutData()
-    {
-        $this->safeGet($this->url . "/datadict/");
-
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
-        );
-
-        $searchKey[0]->sendKeys("noExist");
-
-        $res = $this->webDriver->executescript(
-            "return document.querySelector".
-            "('#lorisworkspace > div > div > div.panel.panel-default >".
-            "div.table-header.panel-heading > div > div').textContent"
-        );
-        $this->assertContains("0 rows displayed", $res);
-    }
-
-    /**
-     * Testing UI elements when page loads
-     *
-     * @return void
-     */
+      * Testing UI elements when page loads
+      *
+      * @return void
+      */
     function testPageUIs()
     {
         $this->safeGet($this->url . "/datadict/");
