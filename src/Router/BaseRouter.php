@@ -109,7 +109,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             switch (count($components)) {
                 case 1:
                     $request = $request
-                    ->withAttribute("baseurl", $baseurl->__toString())
+                    ->withAttribute("baseurl", rtrim($baseurl->__toString()))
                     ->withAttribute("CandID", $components[0]);
                     $module  = \Module::factory("timepoint_list");
                     $mr      = new ModuleRouter($module, $this->moduledir);
