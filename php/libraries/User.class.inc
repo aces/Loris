@@ -495,6 +495,9 @@ class User extends UserPermissions
 
     /**
      * Check if user belongs to DCC
+     * FIXME 'CenterID' is no longer used.
+     *       This should check that the 'CenterIDs' array cointains a 1
+     *       - Alexandra Livadas
      *
      * @return boolean
      */
@@ -642,7 +645,7 @@ class User extends UserPermissions
                COUNT(1)
              FROM user_login_history
              WHERE
-               UserID = :v_userid AND
+               userID = :v_userid AND
                Success = 'Y'
             ",
             array('v_userid' => $this->userInfo['UserID'])
