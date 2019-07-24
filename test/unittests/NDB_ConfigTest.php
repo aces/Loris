@@ -82,7 +82,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -94,7 +94,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testconfigFilePath()
+    public function testconfigFilePath(): void
     {
         $text = $this->_config::configFilePath("config.xml");
         $this->assertContains("config.xml", $text);
@@ -106,7 +106,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testXmltoArray()
+    public function testXmltoArray(): void
     {
         $xml  = new SimpleXMLElement("<test><unit>test</unit></test>");
         $text = $this->_config::convertToArray($xml);
@@ -118,7 +118,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testIsNumericArray()
+    public function testIsNumericArray(): void
     {
         $arrayTest = array(
                       '0' => 'zero',
@@ -132,9 +132,9 @@ class NDB_ConfigTest extends TestCase
      * showDatabaseQueries), it will return null.
      * If database class exists and the dabase returns 'AllowMultiple' => '0',
      * 'ParentID' => 'test', this method should return a non-null value.
-     *
+     * @return void
      */
-    public function testGetSettingFromDB()
+    public function testGetSettingFromDB(): void
     {
         $this->assertNull($this->_config->getSettingFromDB("database"));
         $this->assertNull($this->_config->getSettingFromDB("sandbox"));
@@ -157,7 +157,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetSettingFromXML()
+    public function testGetSettingFromXML(): void
     {
         $this->_config->_settings = array('aaa' => array("bbb" => "test"));
         $this->assertEquals("test", $this->_config->getSettingFromXML("bbb"));
@@ -167,7 +167,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetSetting()
+    public function testGetSetting(): void
     {
         $this->_config->_settings = array('aaa' => array("bbb" => "unittest"));
         $this->assertEquals("unittest", $this->_config->getSetting("bbb"));
@@ -179,7 +179,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetProjectSettings()
+    public function testGetProjectSettings(): void
     {
         $info   = array(
                    'ProjectID'         => '999',
@@ -203,7 +203,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetSubprojectSettings()
+    public function testGetSubprojectSettings(): void
     {
         $info1  = array(
                    'SubprojectID'      => '999',
@@ -235,7 +235,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetSubprojectSettingsWithFakeID()
+    public function testGetSubprojectSettingsWithFakeID(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -248,7 +248,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    public function testGetExternalLinks()
+    public function testGetExternalLinks(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')->willReturn(array(array('LinkURL' => 'github/Loris', 'LinkText' => 'GitHub')));
