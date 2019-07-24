@@ -64,7 +64,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
