@@ -212,7 +212,7 @@ class Project
     }
 
     /**
-     * Get that project subprojects as defined in the project_rel table
+     * Get that project subprojects as defined in the project_subproject_rel table
      *
      * @return array A list of object representation of subprojects
      */
@@ -228,11 +228,11 @@ class Project
               sp.windowDifference,
               sp.recruitmentTarget
             FROM
-              project_rel pr
+              project_subproject_rel psr
             JOIN 
               subproject sp USING (subprojectId)
             WHERE
-              pr.projectId = :v_project_id
+              psr.projectId = :v_project_id
             ",
             array('v_project_id' => $this->_projectId)
         );
