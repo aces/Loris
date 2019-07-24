@@ -16,7 +16,6 @@ return [
 	"scalar_implicit_cast" => false,
 	"ignore_undeclared_variables_in_global_scope" => false,
 	"suppress_issue_types" => [
-        "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
 		"PhanUndeclaredVariableDim",

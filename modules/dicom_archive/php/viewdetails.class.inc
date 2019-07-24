@@ -26,6 +26,11 @@ namespace LORIS\dicom_archive;
 class ViewDetails extends \NDB_Form
 {
     /**
+     * ID of the tarchive for which the details should be displayed.
+     */
+    public $tarchiveID;
+
+    /**
      * Keeps array of protocols from mri_protocol
      */
     var $protocols;
@@ -53,19 +58,19 @@ class ViewDetails extends \NDB_Form
 
         $user = \User::singleton();
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
-            $tarchiveID = $_REQUEST['tarchiveID'];
-            $this->tpl_data['archive']        = $this->_getTarchiveData(
-                $tarchiveID,
+            $this->tarchiveID          = $_REQUEST['tarchiveID'];
+            $this->tpl_data['archive'] = $this->_getTarchiveData(
+                $this->tarchiveID,
                 'tarchive',
                 'LastUpdate'
             );
             $this->tpl_data['archive_series'] = $this->_getTarchiveData(
-                $tarchiveID,
+                $this->tarchiveID,
                 'tarchive_series',
                 'TarchiveSeriesID'
             );
             $this->tpl_data['archive_files']  = $this->_getTarchiveData(
-                $tarchiveID,
+                $this->tarchiveID,
                 'tarchive_files',
                 'TarchiveFileID'
             );
@@ -167,9 +172,18 @@ class ViewDetails extends \NDB_Form
             $dicomArchiveSettings['patientIDRegex']
         );
 
+        $query     = "SELECT IsPhantom "
+                   . "FROM mri_upload m "
+                   . "JOIN tarchive t USING(TarchiveID) "
+                   . "WHERE t.TarchiveID =:tid "
+                   . "AND t.archivelocation LIKE CONCAT("
+                   .     "'%', "
+                   .     "substring_index(m.decompressedlocation, '/', -1), "
+                   .     " '.tar'"
+                   . ")";
         $isPhantom = $db->pselectRow(
-            "SELECT IsPhantom FROM mri_upload WHERE SessionID=:sid",
-            array('sid' => $this->tpl_data['archive']['SessionID'])
+            $query,
+            array('tid' => $this->tpl_data['archive']['TarchiveID'])
         )['IsPhantom'] ?? null;
 
         if ($isPhantom === 'Y') {

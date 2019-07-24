@@ -976,8 +976,41 @@ class DateElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    if (!Modernizr.inputtypes.month) {
+      // Check if props minYear and maxYear are valid values if supplied
+      let minYear = this.props.minYear;
+      let maxYear = this.props.maxYear;
+      if (this.props.minYear === '' || this.props.minYear === null) {
+        minYear = '1000';
+      }
+      if (this.props.maxYear === '' || this.props.maxYear === null) {
+        maxYear = '9999';
+      }
+      let monthInputs = $('input[name=' + this.props.name+']');
+      monthInputs.datepicker({
+        dateFormat: 'yy-mm',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: minYear + ':' + maxYear,
+        constrainInput: true,
+        onChangeMonthYear: (y, m, d) => {
+          // Update date in the input field
+          $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+        },
+        onSelect: (dateText, picker) => {
+          this.props.onUserInput(this.props.name, dateText);
+        },
+      });
+      monthInputs.attr('placeholder', 'yyyy-mm');
+      monthInputs.on('keydown paste', (e) => {
+        e.preventDefault();
+      });
+    }
+  }
+
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
   render() {
@@ -990,6 +1023,27 @@ class DateElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    // Handle date format
+    let format = this.props.dateFormat;
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-12-31';
+    if (!format.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-12';
+    }
+
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -998,12 +1052,12 @@ class DateElement extends Component {
         </label>
         <div className="col-sm-9">
           <input
-            type="date"
+            type={inputType}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            min={this.props.minYear}
-            max={this.props.maxYear}
+            min={minFullDate}
+            max={maxFullDate}
             onChange={this.handleChange}
             value={this.props.value || ''}
             required={required}
@@ -1022,6 +1076,7 @@ DateElement.propTypes = {
   id: PropTypes.string,
   maxYear: PropTypes.string,
   minYear: PropTypes.string,
+  dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
@@ -1032,8 +1087,9 @@ DateElement.defaultProps = {
   label: '',
   value: '',
   id: null,
-  maxYear: '9999-12-31',
-  minYear: '1000-01-01',
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
   disabled: false,
   required: false,
   onUserInput: function() {
@@ -1422,7 +1478,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline col-sm-offset-3';
+    let elementClass = this.props.elementClass;
     let label = null;
 
     // Add required asterix
@@ -1433,7 +1489,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
+      elementClass = this.props.elementClass + ' has-error';
     }
 
     return (
@@ -1465,6 +1521,7 @@ CheckboxElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1473,6 +1530,7 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },

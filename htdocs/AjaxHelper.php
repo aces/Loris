@@ -17,7 +17,6 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
-
 // This error log should be uncommented once a reasonable number of
 // modules have been updated to give some urgency to people who are
 // still using ajax/ directories. For now, it would generate too much

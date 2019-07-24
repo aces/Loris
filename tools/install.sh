@@ -84,7 +84,9 @@ else
     echo ""
     echo "PHP Composer does not appear to be installed. Please install it before running this script."
     echo ""
-    echo "(e.g. curl -sS https://getcomposer.org/installer | php)"
+    echo "(e.g. wget https://getcomposer.org/installer"
+    echo "php installer --install-dir=/usr/local/bin --filename=composer)"
+    echo "while having root permission)";
     exit 2;
 fi
 
@@ -139,7 +141,7 @@ if [ -f ../project/config.xml ]; then
 fi
 
 # Create some subdirectories, if needed.
-create-project.sh ../project
+./create-project.sh ../project
 
 mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
@@ -153,6 +155,8 @@ debian=("Debian" "Ubuntu")
 redhat=("Red" "CentOS" "Fedora" "Oracle") 
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
+    mkdir ../modules/document_repository/user_uploads
+    mkdir ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -161,6 +165,8 @@ if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
+    mkdir ../modules/document_repository/user_uploads
+    mkdir ../modules/data_release/user_uploads
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
@@ -197,7 +203,7 @@ echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
     while true; do
-        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
+        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] " yn
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )

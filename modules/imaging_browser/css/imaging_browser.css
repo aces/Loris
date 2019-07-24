@@ -75,7 +75,7 @@ h3 {
 
 .panel-title {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: -3px;
     font-size: 16px;
     color: inherit;
     white-space: nowrap;
@@ -147,4 +147,7 @@ h3 {
 
 .tooltip-inner {
   max-width: none;
+}
+.clearfix {
+  vertical-align: bottom;
 }

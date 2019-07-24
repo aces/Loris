@@ -73,13 +73,15 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
 
         if (!isset($req['instrument'])
             || !isset($req['visitLabel'])
-            || !isset($req['comment'])
             || !isset($req['date'])
             || !isset($req['flagStatus'])
         ) {
             return "Error";
         }
         $req = \Utility::asArray($req);
+        // comment may not be set since it is not a required field
+        $comment = !empty($req['comment']) ?
+            $req['comment'] : null;
 
         $db->update(
             'data_integrity_flag',
@@ -94,7 +96,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             [
              'dataflag_instrument' => $req['instrument'],
              'dataflag_visitlabel' => $req['visitLabel'],
-             'dataflag_comment'    => $req['comment'],
+             'dataflag_comment'    => $comment,
              'dataflag_date'       => $req['date'],
              'dataflag_status'     => $req['flagStatus'],
              'latest_entry'        => 1,
@@ -111,6 +113,8 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $db = \NDB_Factory::singleton()->database();
+
         // set the class variables
         $this->columns = [
                           'dataflag_id',
@@ -127,6 +131,17 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->order_by     = 'dataflag_date desc';
         $this->validFilters = [];
         $this->formToFilter = [];
+
+        $users         = array();
+        $selectedUsers = $db->pselect(
+            "SELECT u.UserID, u.Real_name FROM data_integrity_flag dif " .
+            "INNER JOIN users u ON (dif.dataflag_userid=u.UserID)",
+            array()
+        );
+        foreach ($selectedUsers as $row) {
+            $users[$row['UserID']] = $row['Real_name'];
+        }
+
         $flagStatusList     = [
                                '1' => '1 - Ready For Review',
                                '2' => '2 - Review Completed',
@@ -136,7 +151,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->fieldOptions = [
                                'visits'         => \Utility::getVisitList(),
                                'instruments'    => \Utility::getAllInstruments(),
-                               'users'          => ['admin' => 'admin'],
+                               'users'          => $users,
                                'flagStatusList' => $flagStatusList,
                               ];
     }

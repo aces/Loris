@@ -32,6 +32,7 @@ class EditExaminer extends \NDB_Form
      *
      * @return bool
      * @throws \LorisException
+     * @throws \ConfigurationException
      */
     function _hasAccess(\User $user) : bool
     {
@@ -50,8 +51,8 @@ class EditExaminer extends \NDB_Form
 
         if ($certification['EnableCertification'] ?? false) {
             $cids      = $DB->pselect(
-                "SELECT epr.centerID 
-                 FROM examiners e 
+                "SELECT epr.centerID
+                 FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
                  WHERE e.examinerID=:EID",
                 array('EID' => $this->identifier)
@@ -69,7 +70,9 @@ class EditExaminer extends \NDB_Form
                 = $user->hasPermission('examiner_multisite');
             return $permitted || $permittedAllSites;
         }
-        return false;
+        throw new \ConfigurationException(
+            "Certification Disabled in config.xml"
+        );
     }
 
     /**
@@ -84,7 +87,7 @@ class EditExaminer extends \NDB_Form
 
         // get the certification results for the given examiner
         $result = $DB->pselect(
-            "SELECT testID, pass, date_cert, comment 
+            "SELECT testID, pass, date_cert, comment
              FROM certification
              WHERE examinerID=:EID",
             array('EID' => $this->identifier)
@@ -126,7 +129,7 @@ class EditExaminer extends \NDB_Form
 
             // Get the certificationID if it exists
             $certID = $DB->pselectOne(
-                "SELECT certID 
+                "SELECT certID
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
                 array(
@@ -156,7 +159,7 @@ class EditExaminer extends \NDB_Form
                 );
 
                 $certID = $DB->pselectOne(
-                    "SELECT certID 
+                    "SELECT certID
                      FROM certification
                      WHERE examinerID =:EID and testID=:TID",
                     array(

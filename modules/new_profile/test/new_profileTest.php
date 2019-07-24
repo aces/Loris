@@ -54,13 +54,15 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("New Profile", $bodyText);
         // check EDC shows on the page
-        $value = "div:nth-child(1) > .row:nth-child(1) > .col-sm-3";
+        $value = "#default-panel > div > form > div > div:nth-child(3) >".
+                 " div > div:nth-child(1) > label";
         $EDC   = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertStringContainsString("Expected Date of Confinement", $EDC);
         // check Project shows on the page
-        $value   = ".col-xs-12:nth-child(8) .col-sm-3";
+        $value   = "#default-panel > div > form > div > div:nth-child(7) >".
+                   " div > label";
         $project = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
