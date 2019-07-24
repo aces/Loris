@@ -1,8 +1,8 @@
-<?php
+<?php declare (strict_types=1);
 /**
- * Unit tests for User class
+ * Unit tests for the User class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Main
@@ -13,7 +13,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 /**
- * Unit test for User class
+ * Unit tests for the User class
  *
  * @category Tests
  * @package  Main
@@ -67,51 +67,10 @@ class UserTest extends TestCase
           );
     /**
      * The userInfo table that should result from calling the factory function
-     * TODO There should be a way to write this that takes up less space!
      *
      * @var array
      */
-    private $_userInfoComplete
-        = array('ID'                     => '1',
-                'UserID'                 => '968775',
-                'Password'               => 'pass123',
-                'Real_name'              => 'John Doe',
-                'First_name'             => 'John',
-                'Last_name'              => 'Doe',
-                'Degree'                 => 'Eng.D',
-                'Position_title'         => 'Doctor',
-                'Institution'            => 'MCIN',
-                'Department'             => 'Neuroscience',
-                'Address'                => '123 Main St',
-                'City'                   => 'Montreal',
-                'State'                  => 'Quebec',
-                'Zip_code'               => '123',
-                'Country'                => 'Canada',
-                'Phone'                  => '123-456-7890',
-                'Fax'                    => null,
-                'Email'                  => 'john.doe@mcgill.ca',
-                'Privilege'              => '1',
-                'PSCPI'                  => 'Y',
-                'DBAccess'               => '123',
-                'Active'                 => 'Y',
-                'Password_hash'          => null,
-                'Password_expiry'        => '2020-07-16',
-                'Pending_approval'       => 'Y',
-                'Doc_Repo_Notifications' => 'Y',
-                'language_preference'    => 2,
-                'active_from'            => '2017-07-16',
-                'active_to'              => '2020-07-16',
-                'Sites'                  => 'psc_test;psc_test2',
-                'examiner'               => array('pending' => 'N',
-                                                  '1'       => array('Y',
-                                                                     1
-                                                               ),
-                                                  '4'       => array('Y',
-                                                                     1
-                                                               )
-                                            ),
-                'CenterIDs'              => array('1', '4')
-          );
+    private $_userInfoComplete;
     /**
      * Psc table information
      *
@@ -162,6 +121,12 @@ class UserTest extends TestCase
      */
     private $_user;
     /**
+     * Secondary user object used to test insert and update functions
+     *
+     * @var User object
+     */
+    private $_otherUser;
+    /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
      *
@@ -205,10 +170,24 @@ class UserTest extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true
         );
 
         $this->_username = "968775";
+        $this->_userInfoComplete = $this->_userInfo;
+        $this->_userInfoComplete['ID'] = '1';
+        $this->_userInfoComplete['Privilege'] = '1';
+        $this->_userInfoComplete['language_preference'] = '2';
+        $this->_userInfoComplete['Sites'] = 'psc_test;psc_test2';
+        $this->_userInfoComplete['examiner'] = array('pending' => 'N',
+                                                     '1'       => array('Y',
+                                                                        1
+                                                                  ),
+                                                     '4'       => array('Y',
+                                                                        1
+                                                                  )
+                                               );
+        $this->_userInfoComplete['CenterIDs'] = array('1', '4');
     }
 
     /**
@@ -224,7 +203,9 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test factory() method retrieves all _candidate and related info
+     * Test factory() method retrieves all the information of the user
+     * and correctly populates the user object. Also tests that getData returns
+     * all the user information  as an array when no parameters are given
      *
      * @return void
      * @covers User::singleton
@@ -237,6 +218,22 @@ class UserTest extends TestCase
         $this->_user = \User::factory($this->_username);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
+    }
+
+    /**
+     * Test that getData retrieves the correct information when given a 
+     * specific attribute
+     *
+     * @return void
+     * @covers User::getData
+     */
+    public function testGetDataForLanguagePreferences()
+    {
+        $this->_user = \User::factory($this->_username);
+        $this->assertEquals(
+            $this->_userInfoComplete['language_preference'], 
+            $this->_user->getData('language_preference')
+        );
     }
 
     /**
@@ -437,47 +434,6 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that hasLoggedIn returns false when the user 
-     * has not logged in succesfully
-     * 
-     * @return void
-     * @covers User::hasLoggedIn
-     */
-    public function testHasLoggedInWhenFalse()
-    {
-        $this->_user = \User::factory($this->_username);
-        $this->_dbMock->setFakeTableData(
-            "user_login_history",
-            array(0 => array('userID'  => '968775',
-                             'Success' => 'N'))
-        );
-        $this->assertFalse($this->_user->hasLoggedIn());
-    }
-
-    /**
-     * Test that hasLoggedIn returns true when the user
-     * has logged in succesfully
-     * TODO It is returning false rather than true. This is probably an issue
-     *      with the query or with the fake table data being inputted!
-     *
-     * @return void
-     * @covers User::hasLoggedIn
-     */
-    public function testHasLoggedInWhenTrue()
-    {
-        $this->markTestIncomplete(
-            "This test is incomplete! Check out the TODO cooment"
-        );
-        $this->_user = \User::factory($this->_username);
-        $this->_dbMock->setFakeTableData(
-            "user_login_history",
-            array(0 => array('userID' => '968775',
-                             'Success' => 'Y'))
-        ); 
-        $this->assertFalse($this->_user->hasLoggedIn());
-    }
-
-    /**
      * Test that isUserDCC returns true when the user belongs to DCC
      * TODO The function isUserDCC needs to be changed because it is using the
      *      deprecated 'CenterID' rather than the array 'CenterIDs'
@@ -487,11 +443,42 @@ class UserTest extends TestCase
      */
     public function testIsUserDCC()
     {
-        $this->markTestIncomplete(
-            "This test is incomplete! Check out the TODO comment!"
-        );
         $this->_user = \User::factory($this->_username);
         $this->assertTrue($this->_user->isUserDCC());
+    }
+
+    /**
+     * Test that insert correctly adds a user to the users table
+     * 
+     * @note   The factory method is used here to check that the information has
+     *         been added to the database and can then be correctly populated 
+     *         into a new user object.
+     * @return void
+     * @covers User::insert
+     */
+    public function testInsert()
+    {
+        $newUserInfo = $this->_userInfo;
+        $newUserInfo['ID'] = 2;
+        $newUserInfo['UserID'] = '968776';
+        $this->assertTrue(User::insert($newUserInfo));
+        $this->_otherUser = \User::factory('968776');
+        $this->assertEquals('968776', $this->_otherUser->getUsername());
+    }
+
+    /**
+     * Test that update correctly updates a field of the given user object
+     *
+     * @return void
+     * @covers User::update
+     */
+    public function testUpdate()
+    {
+        $this->_otherUser = \User::factory('968776');
+        $newInfo = array('ID' => '3');
+        $this->assertTrue($this->_otherUser->update($newInfo));
+        $this->_otherUser = \User::factory('968776');
+        $this->assertEquals('3', $this->_otherUser->getData('ID'));
     }
 
     /**

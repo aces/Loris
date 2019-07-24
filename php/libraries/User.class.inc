@@ -495,16 +495,13 @@ class User extends UserPermissions
 
     /**
      * Check if user belongs to DCC
-     * FIXME 'CenterID' is no longer used.
-     *       This should check that the 'CenterIDs' array cointains a 1
-     *       - Alexandra Livadas
      *
      * @return boolean
      */
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID'] == 1);
+        return (in_array(1, $this->userInfo['CenterIDs']));
     }
 
     /**
