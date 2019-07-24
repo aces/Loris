@@ -715,7 +715,7 @@ class CouchDB
         if ($full_json) {
             return $query;
         }
-        $data = json_decode($query, true);
+        $data = json_decode($query ?? '', true);
         if (is_null($data)) {
             throw new \LorisException(
                 'Decoded JSON data returned null. Cannot continue.'

@@ -82,25 +82,21 @@ class Dashboard extends \NDB_Form
             $this->getTotalRecruitment()
         );
 
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
-        if ($useProjects == "true") {
-            $projects = \Utility::getProjectList();
-            foreach ($projects as $projectID => $project) {
-                $projectInfo = $config->getProjectSettings($projectID);
-                if (is_null($projectInfo)) {
-                    throw new \LorisException(
-                        'No project settings exist in the Database for ' .
-                        'project ID ' . intval($projectID)
-                    );
-                }
-                $this->createProjectProgressBar(
-                    $projectID,
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($projectID)
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectInfo = $config->getProjectSettings($projectID);
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval($projectID)
                 );
             }
+            $this->createProjectProgressBar(
+                $projectID,
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject($projectID)
+            );
         }
 
         // Charts
@@ -281,7 +277,7 @@ class Dashboard extends \NDB_Form
                 if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
-                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
+                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID='
                         . $bvl_feedback[$i]['CandID'] . '&sessionID='
                         . $bvl_feedback[$i]['SessionID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {

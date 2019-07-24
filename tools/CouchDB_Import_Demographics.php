@@ -188,19 +188,19 @@ class CouchDBDemographicsImporter {
           $consents = \Utility::getConsentList();
           foreach($consents as $consentID=>$consent) {
             $consentName    = $consent['Name'];
+            $cField = $this->SQLDB->escape("cc$consentID");
             $consentFields  = ",
-                                cc" . $this->SQLDB->escape($consentID) . ".Status AS " . $consentName . ", 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS " . $consentName . "_date, 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS " . $consentName . "_withdrawal";
+                $cField.Status AS " . $consentName . ",
+                $cField.DateGiven AS " . $consentName . "_date,
+                $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
             $fieldsInQuery .= $consentFields;
             $tablesToJoin  .= "
-                                LEFT JOIN candidate_consent_rel cc" . $this->SQLDB->escape($consentID) . " ON 
-                                  (cc" . $this->SQLDB->escape($consentID) . ".CandidateID=c.CandID) AND 
-                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID) 
+                                AND $cField.ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
             $groupBy     .= ",
-                            cc" . $this->SQLDB->escape($consentID) . ".Status,
-                            cc" . $this->SQLDB->escape($consentID) . ".DateGiven,
-                            cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn";
+                            $cField.Status,
+                            $cField.DateGiven,
+                            $cField.DateWithdrawn";
           }
         }
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
@@ -229,16 +229,14 @@ class CouchDBDemographicsImporter {
                 'Type' => "varchar(255)"
             );
         }
-        if ($config->getSetting("useProjects") === "true") {
-            $projects = \Utility::getProjectList();
-            $projectsEnum = "enum('";
-            $projectsEnum .= implode("', '", $projects);
-            $projectsEnum .= "')";
-            $this->Dictionary["Project"] = array(
-                'Description' => 'Project for which the candidate belongs',
-                'Type' => $projectsEnum
-            );
-        }
+        $projects = \Utility::getProjectList();
+        $projectsEnum = "enum('";
+        $projectsEnum .= implode("', '", $projects);
+        $projectsEnum .= "')";
+        $this->Dictionary["Project"] = array(
+            'Description' => 'Project for which the candidate belongs',
+            'Type' => $projectsEnum
+        );
         // If consent is being used, update the data dictionary
         if ($config->getSetting("useConsent") === "true") {
           $consents = \Utility::getConsentList();

@@ -45,12 +45,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private $_site        = "#userAccounts_filter".
                                 " > div > div > fieldset > div:nth-child(2)".
                                 " > div > div > select";
-    private $_clearFilter = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(8)".
-                                " > div > div > button";
+    private $_clearFilter = ".col-sm-9 > .btn";
     private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
     private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
-                                " div > div > div.pull-right > button:nth-child(1)";
+                            " div > div > div:nth-child(2) > button:nth-child(1)";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.

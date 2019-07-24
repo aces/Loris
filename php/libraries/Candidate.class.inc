@@ -104,9 +104,7 @@ class Candidate
             $this->candidateInfo[$key] = $value;
         }
 
-        if ($config->getSetting('useProjects') === 'true') {
-            $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
-        }
+        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
@@ -181,7 +179,7 @@ class Candidate
      *
      * FIXME Ideally the signature of this function should be changed so that
      * $useEDC is the second-to-last parameter. This would add some clarity as
-     * both it and $useProjects are optional parameters based on configuration
+     * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
      * @param int         $centerID    centerID of the site to which the
@@ -205,7 +203,7 @@ class Candidate
         ?string $edc,
         string $sex,
         ?string $PSCID = null,
-        ?int $projectID = null
+        int $projectID = null
     ): int {
         $factory = NDB_Factory::singleton();
 
@@ -467,7 +465,7 @@ class Candidate
      */
     function getCenterID(): int
     {
-        return $this->candidateInfo["RegistrationCenterID"];
+        return intval($this->candidateInfo["RegistrationCenterID"]);
     }
 
     /**
@@ -494,9 +492,10 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string Male|Female String describing the sex
+     * @return string|null Male|Female String describing the sex
+     *                     and null if scanner
      */
-    function getCandidateSex(): string
+    function getCandidateSex(): ?string
     {
         return $this->candidateInfo["Sex"];
     }

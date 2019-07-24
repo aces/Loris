@@ -71,6 +71,9 @@ class Imaging_Session_ControlPanel
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
+        if (!is_array($linkedInstruments)) {
+            $linkedInstruments = array();
+        }
 
         $links = array();
         foreach ($linkedInstruments as $k=>$v) {

@@ -250,6 +250,10 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     function createNew($CandID, $subprojectID, $VL, $CID)
     {
+        // Temporary fix until \TimePoint::isValidVisitLabel
+        // supports StudyEntities.
+        $CandID = intval($CandID->__toString());
+
         try {
             \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL);
         } catch (\LorisException $e) {
@@ -258,7 +262,7 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
         }
 
-        $cand        = \Candidate::singleton($candID);
+        $cand        = \Candidate::singleton($CandID);
         $sessionSite = \Site::singleton($CID);
 
         \TimePoint::createNew($cand, $subprojectID, $VL, $sessionSite);

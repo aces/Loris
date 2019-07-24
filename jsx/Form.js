@@ -218,10 +218,10 @@ FieldsetElement.defaultProps = {
 class SearchableDropdown extends Component {
   constructor(props) {
     super(props);
+    this.state = {currentInput: ''};
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.getTextInputValue = this.getTextInputValue.bind(this);
   }
 
   getKeyFromValue(value) {
@@ -233,11 +233,12 @@ class SearchableDropdown extends Component {
 
   handleChange(e) {
     let value = this.getKeyFromValue(e.target.value);
-    // if not in strict mode and key value is not defined (i.e., not in options)
+    // if not in strict mode and key value is undefined (i.e., not in options prop)
     // set value equal to e.target.value
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
+    this.setState({currentInput: e.target.value});
     this.props.onUserInput(this.props.name, value);
   }
 
@@ -248,14 +249,19 @@ class SearchableDropdown extends Component {
       let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
+        this.setState({currentInput: ''});
         this.props.onUserInput(this.props.name, '');
       }
     }
   }
 
-  getTextInputValue() {
-    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
+  componentDidUpdate(prevProps) {
+    // need to clear out currentInput for when props.value gets wiped
+    // if the previous value prop contained data and the current one doesn't
+    // clear currentInput
+    if (prevProps.value && !this.props.value) {
+      this.setState({currentInput: ''});
+    }
   }
 
   render() {
@@ -288,15 +294,14 @@ class SearchableDropdown extends Component {
     }
 
     // determine value to place into text input
-    let value;
+    let value = '';
     // use value in options if valid
-    if (this.props.value !== undefined) {
-      if (Object.keys(options).indexOf(this.props.value) > -1) {
-        value = options[this.props.value];
-        // else, use input text value
-      } else {
-        value = this.getTextInputValue();
-      }
+    if (this.props.value !== undefined &&
+      Object.keys(options).indexOf(this.props.value) > -1) {
+      value = options[this.props.value];
+      // else, use input text value
+    } else if (this.state.currentInput) {
+      value = this.state.currentInput;
     }
 
     let newOptions = {};
@@ -971,8 +976,41 @@ class DateElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    if (!Modernizr.inputtypes.month) {
+      // Check if props minYear and maxYear are valid values if supplied
+      let minYear = this.props.minYear;
+      let maxYear = this.props.maxYear;
+      if (this.props.minYear === '' || this.props.minYear === null) {
+        minYear = '1000';
+      }
+      if (this.props.maxYear === '' || this.props.maxYear === null) {
+        maxYear = '9999';
+      }
+      let monthInputs = $('input[name=' + this.props.name+']');
+      monthInputs.datepicker({
+        dateFormat: 'yy-mm',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: minYear + ':' + maxYear,
+        constrainInput: true,
+        onChangeMonthYear: (y, m, d) => {
+          // Update date in the input field
+          $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+        },
+        onSelect: (dateText, picker) => {
+          this.props.onUserInput(this.props.name, dateText);
+        },
+      });
+      monthInputs.attr('placeholder', 'yyyy-mm');
+      monthInputs.on('keydown paste', (e) => {
+        e.preventDefault();
+      });
+    }
+  }
+
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
   render() {
@@ -985,6 +1023,27 @@ class DateElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    // Handle date format
+    let format = this.props.dateFormat;
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-12-31';
+    if (!format.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-12';
+    }
+
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -993,12 +1052,12 @@ class DateElement extends Component {
         </label>
         <div className="col-sm-9">
           <input
-            type="date"
+            type={inputType}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            min={this.props.minYear}
-            max={this.props.maxYear}
+            min={minFullDate}
+            max={maxFullDate}
             onChange={this.handleChange}
             value={this.props.value || ''}
             required={required}
@@ -1017,6 +1076,7 @@ DateElement.propTypes = {
   id: PropTypes.string,
   maxYear: PropTypes.string,
   minYear: PropTypes.string,
+  dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
@@ -1027,8 +1087,9 @@ DateElement.defaultProps = {
   label: '',
   value: '',
   id: null,
-  maxYear: '9999-12-31',
-  minYear: '1000-01-01',
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
   disabled: false,
   required: false,
   onUserInput: function() {
@@ -1417,7 +1478,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline col-sm-offset-3';
+    let elementClass = this.props.elementClass;
     let label = null;
 
     // Add required asterix
@@ -1428,7 +1489,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
+      elementClass = this.props.elementClass + ' has-error';
     }
 
     return (
@@ -1460,6 +1521,7 @@ CheckboxElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1468,6 +1530,7 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },

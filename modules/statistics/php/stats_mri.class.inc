@@ -58,34 +58,37 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string $sectionHeader     the value of sectionHeader
-     * @param string $tableHeader       the value of tableHeader
-     * @param string $subcats           the value of subcats
-     * @param string $visits            the value of visits
-     * @param string $dropdown_name     the value of dropdown_name
-     * @param string $dropdown_opt      the value of dropdown_opt
-     * @param string $dropdown_selected the value of dropdown_selected
-     * @param array  $centers           the value of centers
-     * @param array  $data              the value of data
-     * @param string $Subsection        the value of Subsection=''
-     * @param string $disclamer         the value of disclamer=''
-     * @param string $projectID         the value of projectID is null
+     * @param string  $sectionHeader     the value of sectionHeader
+     * @param string  $tableHeader       the value of tableHeader
+     * @param array   $subcats           the value of subcats
+     * @param array   $visits            the value of visits
+     * @param string  $dropdown_name     the value of dropdown_name
+     * @param string  $dropdown_opt      the value of dropdown_opt
+     * @param string  $dropdown_selected the value of dropdown_selected
+     * @param array   $centers           the value of centers
+     * @param array   $data              the value of data
+     * @param string  $Subsection        the value of Subsection=''
+     * @param string  $disclamer         the value of disclamer=''
+     * @param ?string $projectID         the value of projectID is null
+     * @param bool    $scanDoneExists    whether the "Scan done" column exists in
+     *                                   the database
      *
      * @return string
      */
     function renderStatsTable($sectionHeader,
         $tableHeader,
-        $subcats,
-        $visits,
+        array $subcats,
+        array $visits,
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centers,
-        $data,
+        array $centers,
+        array $data,
         $Subsection="",
         $disclamer='',
-        $projectID=null
-    ) {
+        $projectID=null,
+        $scanDoneExists = true
+    ): string {
 
         $tpl_data = array();
         // Sanitize test name if present. Otherwise use empty string.
@@ -197,6 +200,8 @@ class Stats_MRI extends \NDB_Form
                 $tpl_data['data'][$C][$vl]['total'] += $row['val'];
             }
         }
+
+        $tpl_data['scan_done_exists'] = $scanDoneExists;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
@@ -211,10 +216,7 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        $this->tpl_data['useProjects'] = $useProjects;
+        $DB =& \Database::singleton();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -337,18 +339,6 @@ class Stats_MRI extends \NDB_Form
         } else {
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
         }
-        //TODO IBIS
-        if ($MRI_Type==='t1w') {
-            $MRI_Type ='T1';
-        } elseif ($MRI_Type=='t2w') {
-            $MRI_Type ='T2';
-        } elseif ($MRI_Type=='dti') {
-            $MRI_Type ='DTI';
-        } elseif ($MRI_Type=='ep2d_bold') {
-            $MRI_Type ='BOLD';
-        } elseif ($MRI_Type=='DTI65' || $MRI_Type=='DTI65_B1000' ) {
-            $MRI_Type ='Spectroscopy';
-        }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
         $MRIHeader      = "$MRI_Type Breakdown";
@@ -359,17 +349,23 @@ class Stats_MRI extends \NDB_Form
                           ELSE 'Complete'
                           END";
 
-        $result = $DB->pselect(
-            "SELECT s.SubprojectID,
+        // Check if the mri_parameter_form contains the necessary columns before
+        // running the query
+        $result         = array();
+        $scanDoneExists = false;
+        if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
+            $scanDoneExists = true;
+            $result         = $DB->pselect(
+                "SELECT s.SubprojectID,
                     s.CenterID,
                     s.Visit_label as VLabel,
                     $CaseStatement as Subcat,
                     COUNT(*) as val
-              FROM mri_parameter_form m
+                FROM mri_parameter_form m
                     JOIN flag f USING (CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (c.CandID=s.CandID)
-              WHERE s.Current_stage <> 'Recycling Bin'
+                WHERE s.Current_stage <> 'Recycling Bin'
                     AND f.Administration <> 'None'
                     AND s.Active='Y'
                     AND c.Active='Y'
@@ -377,12 +373,13 @@ class Stats_MRI extends \NDB_Form
                     AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
-              GROUP BY Subcat,
+                GROUP BY Subcat,
                     s.SubprojectID,
                     s.CenterID,
                     s.Visit_label",
-            $bigTable_params
-        );
+                $bigTable_params
+            );
+        }
 
         $M_Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
@@ -397,7 +394,8 @@ class Stats_MRI extends \NDB_Form
             $result,
             "mri",
             "",
-            $currentProject
+            $currentProject,
+            $scanDoneExists
         );
         //END BIGTABLE
 

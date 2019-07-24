@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * New_profile
  *
@@ -6,25 +7,34 @@
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\new_profile;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class New_Profile extends \NDB_Form
 {
+    public  $skipTemplate = true;
+    private $_candID;
+    private $_pscid;
+    private $_error;
+
     /**
      * Tie the access to a data_entry permission
      *
@@ -43,7 +53,7 @@ class New_Profile extends \NDB_Form
         return false;
     }
     /**
-     * Processes form data and creates a new candidate.
+     * Processes the values and saves to database
      *
      * @param array $values form values
      *
@@ -53,39 +63,80 @@ class New_Profile extends \NDB_Form
     {
         // Change empty strings to null before passing as arguments.
         foreach ($values as $key => $value) {
-            if ($value === '') {
+            if (empty($value)) {
                 $values[$key] = null;
             }
         }
-        /* When a user has multiple centers, or when a centerID has not been
+        /* When a user has only one site and centerID has not been
          * passed, choose the first one in the User's centerID list.
          */
         $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) > 1 || !isset($values['psc'])) {
-            $values['psc'] = $centerIDs[0];
+        if (count($centerIDs) <= 1 && !isset($values['site'])) {
+            $values['site'] = $centerIDs[0];
         }
 
-        /* Create the candidate and retrive its ID.
+        /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
          */
         $candID = \Candidate::createNew(
-            $values['psc'],
-            $values['dob1'],
-            $values['edc1'] ?? null,
+            (int)$values['site'],
+            $values['dobDate'],
+            $values['edcDate'] ?? null,
             $values['sex'],
-            $values['PSCID'] ?? null,
-            isset($values['ProjectID']) ? intval($values['ProjectID']) : null
+            $values['pscid'] ?? null,
+            isset($values['project']) ? intval($values['project']) : null
         );
+
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
          */
-        $this->tpl_data['candID']  = $candID;
-        $this->tpl_data['PSCID']   = $values['PSCID']
+        $this->_candID = $candID;
+        $this->_pscid  = $values['pscid']
             ?? \Candidate::singleton($candID)->getPSCID();
-        $this->tpl_data['success'] = true;
 
         // freeze it, just in case
         $this->form->freeze();
+    }
+
+    /**
+     * This function will return a json file with DCCID and PSCID
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->setup();
+        if ($request->getMethod() === "POST") {
+            $this->save();
+            if (!empty($this->_error)) {
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "application/json")
+                    ->withStatus(400)
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode($this->_error)
+                        )
+                    );
+            }
+            $result = array(
+                       'candID' => $this->_candID,
+                       'pscid'  => $this->_pscid,
+                      );
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "application/json")
+                ->withStatus(201)
+                ->withHeader("Allow", "POST")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($result)
+                    )
+                );
+        }
+
+        return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
     /**
@@ -95,111 +146,29 @@ class New_Profile extends \NDB_Form
      *
      * @return void
      */
-    function setup()
+    function setup(): void
     {
-        parent::setup();
-
-        $config    =& \NDB_Config::singleton();
+        $DB        = \Database::singleton();
+        $config    = \NDB_Config::singleton();
+        $user      = \User::singleton();
         $startYear = $config->getSetting('startYear');
         $endYear   = $config->getSetting('endYear');
         $ageMax    = $config->getSetting('ageMax');
         $ageMin    = $config->getSetting('ageMin');
         $dobFormat = $config->getSetting('dobFormat');
+        $edc       = $config->getSetting('useEDC');
+        $sex       = array(
+                      'male'   => 'Male',
+                      'female' => 'Female',
+                     );
+        $pscidSet  = "false";
+        $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
+        $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => $dobFormat,
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear - $ageMax,
-                        'maxYear'        => $endYear - $ageMin,
-                       );
-
-        $dateAttributes = ['class' => 'form-control input-sm input-date'];
-
-        // add date of birth
-        $this->addBasicDate(
-            'dob1',
-            'Date of Birth',
-            $dateOptions,
-            $dateAttributes
-        );
-        $this->addBasicDate(
-            'dob2',
-            'Confirm Date of Birth',
-            $dateOptions,
-            $dateAttributes
-        );
-        $this->addRule(
-            array(
-             'dob1',
-             'dob2',
-            ),
-            'Date of birth fields must match',
-            'compare'
-        );
-
-        // date of birth rules
-        $this->addRule('dob1', 'Date of Birth is required', 'required');
-        $this->addRule(
-            'dob2',
-            'Date of Birth confirmation is required',
-            'required'
-        );
-
-        if ($config->getSetting('useEDC') == "true") {
-            // add expected date of confinement
-            $this->addBasicDate(
-                'edc1',
-                'Expected Date of Confinement',
-                $dateOptions,
-                $dateAttributes
-            );
-            $this->addBasicDate(
-                'edc2',
-                'Confirm EDC',
-                $dateOptions,
-                $dateAttributes
-            );
-
-            // expected date of confinement rules
-            $this->addRule(
-                array(
-                 'edc1',
-                 'edc2',
-                ),
-                'EDC fields must match',
-                'compare'
-            );
-        }
-
-        if ($config->getSetting("useProjects") == "true") {
-            $projects = \Utility::getProjectList();
-            $projList = array('' => '');
-            foreach ($projects as $projectID => $projectName) {
-                $projList[$projectID] = $projectName;
-            }
-            $this->addSelect('ProjectID', 'Project', $projList);
-        }
-
-        // add sex
-        $sexOptions = array(
-                       ''       => '',
-                       'Male'   => 'Male',
-                       'Female' => 'Female',
-                      );
-        $this->addSelect('sex', 'Sex', $sexOptions);
-
-        // sex rules
-        $this->addRule('sex', 'Sex is required', 'required');
-
-        // add sites for users with more than one site affiliation
-        $user =& \User::singleton();
-        $DB   = \Database::singleton();
+        // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
-
-        if ($num_sites >1) {
-            $psc_labelOptions = array(null => '');
+        if ($num_sites > 1) {
             foreach ($user_list_of_sites as $key => $siteID) {
                 $center = $DB->pselectRow(
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
@@ -207,97 +176,165 @@ class New_Profile extends \NDB_Form
                 );
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
-            $this->addSelect('psc', 'Site', $psc_labelOptions);
-
-            // site rules
-            $this->addRule('psc', 'Site is required', 'required');
+        } else {
+            $psc_labelOptions = null;
         }
+        $site = $psc_labelOptions;
 
+        // Get projects for the select dropdown
+        $projList = array();
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $projectName) {
+            $projList[$projectID] = $projectName;
+        }
+        $project = $projList ?? null;
+
+        // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $this->addBasicText('PSCID', 'PSCID');
+            $pscidSet = "true";
         }
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->fieldOptions = array(
+                               'minYear'   => $minYear,
+                               'maxYear'   => $maxYear,
+                               'dobFormat' => $dobFormat,
+                               'edc'       => $edc,
+                               'sex'       => $sex,
+                               'pscidSet'  => $pscidSet,
+                               'site'      => $site,
+                               'project'   => $project,
+                              );
+
+        $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
     }
+
     /**
      * Validate function
      *
      * @param array $values the value
      *
-     * @return string
+     * @return array $errors
      */
-    function _validate($values)
+    function _validateNewCandidate($values): array
     {
-        $errors = array();
-        $config =& \NDB_Config::singleton();
-        $user   = \User::singleton();
-        if ($values['dob1'] != $values['dob2']) {
-            $errors['dob1'] = 'Date of Birth fields must match.';
+        $this->_error = null;
+        $errors       = array();
+        $config       = \NDB_Config::singleton();
+        $user         = \User::singleton();
+        $db           = \Database::singleton();
+
+        // Validate DOB fields
+        if (empty($values['dobDate'])) {
+            $errors['dobDate'] = 'Date of Birth field is required.';
+        }
+        if (empty($values['dobDateConfirm'])) {
+            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
+        }
+        if ($values['dobDate'] != $values['dobDateConfirm']) {
+            $errors['dobDate'] = 'Date of Birth fields must match.';
         }
 
+        // Validate EDC fields
         if ($config->getSetting('useEDC') == "true") {
-            if (empty($values['edc1'])) {
-                $errors['edc1'] = 'Expected Date of Confinement field is required';
+            if (empty($values['edcDate'])) {
+                $errors['edcDate'] = 'Expected Date of Confinement field is
+                                      required.';
             }
 
-            if (empty($values['edc2'])) {
-                $errors['edc2'] = 'Confirm EDC field is required';
+            if (empty($values['edcDateConfirm'])) {
+                $errors['edcDateConfirm'] = 'Confirm EDC field is required.';
             }
 
-            if ($values['edc1'] != $values['edc2']) {
-                $errors['edc1'] = 'Estimated due date fields must match.';
+            if ($values['edcDate'] != $values['edcDateConfirm']) {
+                $errors['edDate'] = 'Expected Date of Confinement fields must
+                                     match.';
             }
         }
 
+        // Validate date format
+        $dobFormat = $config->getSetting('dobFormat');
+        if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
+            // Dates still need to be submitted into the database in format
+            // YYYY-DD-MM. This is a last check before _process is called.
+            if ($config->getSetting('useEDC') == "true"
+                && strlen($values['edcDate']) < 10
+            ) {
+                $errors['edcFormat'] = 'EDC is not in valid date format.';
+            }
+            if (strlen($values['dobDate']) < 10) {
+                $errors['dobFormat'] = 'DOB is not in valid date format.';
+            }
+        }
+
+        // Validate sex fields
         if (empty($values['sex'])) {
             $errors['sex'] = 'Sex is required.';
         }
 
+        // Validate pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $db =& \Database::singleton();
-            if (empty($values['psc'])) { // user is in only one site
-                $user      =& \User::singleton();
+            if (empty($values['site'])) { // user is in only one site
                 $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
                 $site      =& \Site::singleton($centerID);
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site =& \Site::singleton($values['psc']);
+                $site =& \Site::singleton($values['site']);
             }
 
-            if (empty($values['PSCID'])) {
-                $errors['PSCID'] = 'PSCID must be specified';
+            if (empty($values['pscid'])) {
+                $errors['pscid'] = 'PSCID must be specified';
             } elseif (!\Candidate::validatePSCID(
-                $values['PSCID'],
+                $values['pscid'],
                 $site->getSiteAlias()
             )
             ) {
-                $errors['PSCID'] = 'PSCID does not match the required structure';
+                $errors['pscid'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values['PSCID'])
+                array('V_PSCID' => $values['pscid'])
             ) > 0
             ) {
-                    $errors['PSCID'] = 'PSCID has already been registered';
+                $errors['pscid'] = 'PSCID has already been registered';
             }
         }
 
-        // validate site entered
-        $psc = $values['psc'] ?? '';
+        // Validate site entered
+        $psc = (int)$values['site'] ?? '';
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
-            $errors['psc'] = "Site must be selected from the available dropdown.";
+            $errors['site'] = "Site must be selected from the available dropdown.";
         }
 
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === "true" && empty($values['ProjectID'])) {
-            $errors['ProjectID'] = "Project is required";
+        // Validate project
+        if (empty($values['project'])) {
+            $errors['project'] = "Project is required";
+        }
+
+        if (!empty($errors)) {
+            $this->_error = reset($errors);
         }
 
         return $errors;
+    }
+
+    /**
+     * Include additional JS files
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/new_profile/js/NewProfileIndex.js']
+        );
     }
 }

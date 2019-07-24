@@ -90,9 +90,9 @@ class Utility
         }
 
         $age = array(
-                'year' => $testdate['year'] - $dob['year'],
-                'mon'  => $testdate['mon'] - $dob['mon'],
-                'day'  => $testdate['day'] - $dob['day'],
+                'year' => (int)$testdate['year'] - (int)$dob['year'],
+                'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
+                'day'  => (int)$testdate['day'] - (int)$dob['day'],
                );
 
         return $age;

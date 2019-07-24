@@ -64,7 +64,6 @@ class Configuration extends \NDB_Form
         $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
 
-        $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
         $this->tpl_data['instruments']     = $instruments;

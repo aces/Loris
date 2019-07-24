@@ -23,18 +23,18 @@ namespace Loris\Behavioural;
  */
 class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 {
+    /**
+     * FIXME: LINST instruments should parse the full name
+     * and the subtest names from the linst file, not select
+     * them from the database.
+     */
+    use \LegacyInstrumentTrait;
 
     var $InstrumentType = 'LINST';
 
     var $LinstQuestions = array();
 
     var $LinstLines = array();
-
-    /**
-     * True if the page is being previewed from the instrument builder,
-     * and not really loaded.
-     */
-    var $preview = false;
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -97,45 +97,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
-
-    /**
-     * Looks up the full name for the current instrument
-     * TODO: Update this to parse from LINST file
-     *
-     * @return string the full name of the instrument
-     */
-    function getFullName(): string
-    {
-        $db =& Database::singleton();
-
-        $success = $db->pselectOne(
-            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
-            array('TN' => $this->testName)
-        );
-        return $success;
-    }
-
-    /**
-     * Gets a list of subtests of the current instrument
-     * TODO: Update this to parse from LINST file
-     *
-     * @return array
-     */
-    function getSubtestList(): array
-    {
-        // get a database connection
-        $db =& \Database::singleton();
-
-        $query = "SELECT Subtest_name AS Name, Description
-            FROM instrument_subtests
-            WHERE Test_name=:TN
-                ORDER BY Order_number";
-
-        $results = $db->pselect($query, array('TN' => $this->testName));
-
-        return $results;
-    }
-
 
     /**
      * This runs the XIN rules on all the elements on the current page to ensure

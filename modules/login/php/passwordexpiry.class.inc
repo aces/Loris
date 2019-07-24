@@ -92,10 +92,10 @@ class PasswordExpiry extends \NDB_Form
             // from SinglePointLogin. As a result, the usual way of displaying errors
             // by returning them in an array with the key of the element with the
             // problem doesn't work.
-            $this->tpl_data['error_message'] = 'Can not use an empty password';
+            $this->tpl_data['error_message'] = 'Cannot use an empty password';
 
             // But we'll pretend it does anyways, so that validation still fails.
-            return array('password' => 'Can not use an empty password');
+            return array('password' => 'Cannot use an empty password');
         }
 
         $this->_user = \User::factory($this->_username);
@@ -123,6 +123,12 @@ class PasswordExpiry extends \NDB_Form
             $this->tpl_data['error_message'] = 'The password is weak, or'
                 . ' the passwords do not match';
             return array('password' => 'Weak password.');
+        }
+        // Check if password is present in existing data breaches.
+        if (\User::pwnedPassword($_POST['password'])) {
+            $this->tpl_data['error_message'] = 'The password you chose is ' .
+                'too common. Please choose a more unique password.';
+            return array('password' => 'Password pwned.');
         }
 
         return true;

@@ -427,7 +427,8 @@ class Edit_User extends \NDB_Form
 
         // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value)) {
+            // Password updates are handled separately
+            if (!empty($value) && $key != 'Password_hash') {
                 $set[$key] = $value;
             } else {
                 $set[$key] = null;
@@ -453,13 +454,11 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $user->updatePassword(
-                $set['Password_hash'],
-                $values['Password_expiry'] ?? ''
-            );
+
+        // Now set the password. Note that this field is named incorrectly
+        // and represents a plaintext password, not a hash.
+        if (isset($values['Password_hash'])) {
+            $user->updatePassword($values['Password_hash']);
         }
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
@@ -974,7 +973,21 @@ class Edit_User extends \NDB_Form
 
                 if (strlen($effectiveUID) > 255) {
                     $errors['UserID_Group']
-                        = 'The user name must not exsceed 255 characters';
+                        = 'The user name must not exceed 255 characters';
+                }
+
+                // Check that user name does not contain a whitespace character
+                if (preg_match('/\s/', $effectiveUID)) {
+                    // Note: email addresses can contain comments which themselves
+                    // can contain spaces
+                    if ($values['NA_UserID'] == 'on') {
+                        $errors['UserID_Group']
+                            = 'You cannot have the user name match an email address'
+                            . ' that contains a whitespace character';
+                    } else {
+                        $errors['UserID_Group']
+                            = 'Whitespace characters are not allowed in user names';
+                    }
                 }
             }
         }
@@ -1030,16 +1043,26 @@ class Edit_User extends \NDB_Form
                         . 'are identical: please choose another one';
                 }
             }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_Group'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
+            }
         }
 
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+        if (isset($values['NA_Password'])
+            && $values['NA_Password'] == "on"
+            && $values['SendEmail'] != "on"
+        ) {
             $errors['Email_Group']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
+        if (isset($values['NA_Password'])
+            && $values['NA_Password'] == 'on'
+            && $values['Password_hash'] != ''
+        ) {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
@@ -1150,13 +1173,8 @@ class Edit_User extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
-        if (is_null($passwords)) {
-            throw new \LorisException(
-                'No existing password found for user!'
-            );
-        }
 
-        if (!is_null($passwords['Password_hash'] ?? null)) {
+        if (!is_null($passwords)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 

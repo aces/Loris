@@ -28,6 +28,8 @@ namespace LORIS\acknowledgements;
 
 class Acknowledgements extends \NDB_Menu_Filter_Form
 {
+    public $skipTemplate = true;
+
     /**
      * Determine whether user should be granted access.
      *
@@ -41,58 +43,78 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Validates the submitted form
+     *
+     * @param array $values Array of submitted values
+     *
+     * @return array An array of errors, possibly empty
+     */
+    function _validate($values): array
+    {
+        $errors = array();
+
+        if ($values['addStartDate'] > $values['addEndDate']) {
+            $errors['dates'] = "Start date cannot be greater than the end date.";
+        }
+
+        return $errors;
+    }
+
+    /**
      * Processes the submitted form
      *
      * @param array $values Array of submitted values
      *
-     * @return boolean
+     * @return boolean true if successful
      */
     function _process($values)
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseurl = $factory->settings()->getBaseURL();
+
         // create user object and check appropriate permission
         $user =& \User::singleton();
         if (!$user->hasPermission('acknowledgements_edit')) {
-            return;
+            return false;
         }
-
         if (!is_array($values) || count($values) == 0) {
+            return false;
+        }
+        if (!isset($_POST['fire_away'])) {
+            return false;
+        } else {
+
+            if ($values['addPresent'] === 'Yes') {
+                $values['addEndDate'] = null;
+            }
+            $affiliations = is_array($values['addAffiliations']) ?
+                implode(', ', $values['addAffiliations']) :
+                $values['addAffiliations'];
+            $degrees      = is_array($values['addDegrees']) ?
+                implode(', ', $values['addDegrees']) :
+                $values['addDegrees'];
+            $roles        = is_array($values['addRoles']) ?
+                implode(', ', $values['addRoles']) :
+                $values['addRoles'];
+            $results      = array(
+                             'ordering'      => $values['addOrdering'],
+                             'full_name'     => $values['addFullName'],
+                             'citation_name' => $values['addCitationName'],
+                             'affiliations'  => $affiliations,
+                             'degrees'       => $degrees,
+                             'roles'         => $roles,
+                             'start_date'    => $values['addStartDate'],
+                             'end_date'      => $values['addEndDate'],
+                             'present'       => $values['addPresent'],
+                            );
+
+            $DB->insert('acknowledgements', $results);
+            unset($values);
+
+            header("Location: {$baseurl}/acknowledgements/", true, 303);
             return true;
         }
-
-        $results = array();
-        foreach ($values as $key => $value) {
-            $results[substr($key, 3)] = $value;
-        }
-        $values = $results;
-
-        $values['affiliations'] = implode(",", $values['affiliations']);
-        $values['degrees']      = implode(",", $values['degrees']);
-        $values['roles']        = implode(",", $values['roles']);
-
-        $DB =& \Database::singleton();
-        if (isset($_POST['fire_away'])) {
-
-            if (empty($values['present'])) {
-                $values['present'] = null;
-            }
-
-            if (empty($values['end_date'])) {
-                $values['end_date'] = null;
-            }
-
-            if (empty($values['start_date'])) {
-                $values['start_date'] = null;
-            }
-
-            if ($values['present'] == 'Yes') {
-                $values['end_date'] = null;
-            }
-
-            $DB->insert('acknowledgements', $values);
-            unset($values);
-        }
-
-        $this->tpl_data['success'] = true;
     }
 
     /**
@@ -103,8 +125,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $config = \NDB_Config::singleton();
-
         $this->columns      = array(
                                'ordering',
                                'full_name',
@@ -144,8 +164,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                                'end_date'      => 'end_date',
                                'present'       => 'present',
                               );
-
-        $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
     }
 
     /**
@@ -159,48 +177,33 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
-        // enums should match with acknowledgements table
         $present = array(
-                    ''    => '',
                     'Yes' => 'Yes',
                     'No'  => 'No',
                    );
 
-        // add filter elements
-        $this->addBasicText('ordering', 'Ordering:');
-        $this->addBasicText('full_name', 'Full Name:');
-        $this->addBasicText('citation_name', 'Citation Name:');
-        $config      =& \NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('end_date', 'End Date:', $dateOptions);
-        $this->addSelect('present', 'Present?', $present);
+        $this->fieldOptions = array('presents' => $present);
+    }
 
-        // add form elements
-        $this->addBasicText('addordering', 'Ordering:');
-        $this->addBasicText('addfull_name', 'Full Name:');
-        $this->addBasicText('addcitation_name', 'Citation Name:');
-        $config      =& \NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
-        $this->addSelect('addpresent', 'Present?', $present);
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string JSON
+     */
+    function toJSON()
+    {
+        $config = \NDB_Config::singleton();
+
+        // enums should match with acknowledgements table
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        $result['citation_policy'] = $config->getSetting('citation_policy');
+        $result['minYear']         = $config->getSetting('startYear');
+        $result['maxYear']         = $config->getSetting('endYear');
+
+        return json_encode($result);
     }
 
     /**
@@ -218,13 +221,10 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
-             $baseurl . '/acknowledgements/js/columnFormatter.js',
+             $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
             )
         );
 
     }
 
 }
-
-

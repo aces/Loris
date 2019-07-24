@@ -553,7 +553,7 @@ class LorisForm
      * @param string $name The form element name to retrieve the value
      *                     for.
      *
-     * @return string The value to use for the form element.
+     * @return array|string|null The value to use for the form element.
      */
     function getValue($name)
     {
@@ -674,9 +674,10 @@ class LorisForm
         }
 
         // Apply filters that should be applied on all fields
+        $count = count($this->filters['__ALL__'] ?? array());
         if (isset($this->filters['__ALL__'])) {
-            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
-                if (in_array('trim', $this->filters['__ALL__'])) {
+            for ($i = 0; $i < $count; $i++) {
+                if (in_array('trim', $this->filters['__ALL__'] ?? array())) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
                     if (is_array($value)) {
@@ -786,7 +787,7 @@ class LorisForm
 
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
-            if ($el['requireMsg']) {
+            if (isset($el['requireMsg']) && $el['requireMsg']) {
                 $retVal .= ' onChange="this.setCustomValidity('
                     . 'this.value === \'\' ? \''
                     . $el['requireMsg']
@@ -1290,7 +1291,7 @@ class LorisForm
                 }
 
                 if (isset($el['maxlength'])
-                    && strlen($value) > $el['maxlength']['maxlength']
+                    && strlen(strval($value)) > $el['maxlength']['maxlength']
                 ) {
                     $this->setElementError(
                         $el['name'],
@@ -2069,7 +2070,14 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $arr[$key] = $_REQUEST[$key];
+                    $value = $_REQUEST[$key];
+                    // If the value is coming from a React DateElement with input
+                    // type='month' and is missing the dd part, convert month-year
+                    // format to a valid SQL format (i.e. yyyy-mm-dd)
+                    if (strlen($value) === 7 && strpos(strtolower($key), 'date')) {
+                        $value = sprintf("%s-01", $value);
+                    }
+                    $arr[$key] = $value;
                     continue;
                 }
             } else {

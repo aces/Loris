@@ -126,12 +126,6 @@ class NDB_Menu_Filter extends NDB_Menu
     var $searchKey = array();
 
     /**
-     * A list of arrays to be used as field options on
-     * front-end forms.
-     */
-    var $fieldOptions = array();
-
-    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void

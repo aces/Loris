@@ -34,7 +34,7 @@ class PasswordReset extends \NDB_Form
     function setup()
     {
         $this->tpl_data['page_title'] = 'Reset Password';
-        $this->addBasicText("username", "");
+        $this->addBasicText("username", "", array("required" => true));
 
     }
 
@@ -55,7 +55,7 @@ class PasswordReset extends \NDB_Form
 
         // create the user object
         $username = $values['username'];
-        $user     =& \User::singleton($username);
+        $user     = \User::factory($username);
 
         $email = $user->getData('Email');
         // check that it is a valid user

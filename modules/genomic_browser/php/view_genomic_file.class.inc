@@ -91,8 +91,9 @@ class View_Genomic_File extends \NDB_Form
         foreach ($files as $fileRow) {
             $FileObj = new Genomic_File(intval($fileRow['GenomicFileID']));
 
-            // Get a few parameters
-            $paramFilename         = basename($FileObj->getParameter('FileName'));
+            $paramFilename         = basename(
+                $FileObj->getParameter('FileName') ?? ''
+            );
             $paramNormalization    = $FileObj->getParameter('Normalization');
             $paramAnalysisProtocol = $FileObj->getParameter('AnalysisProtocol');
             $paramFileInsertDate   = $FileObj->getParameter('Date_inserted');

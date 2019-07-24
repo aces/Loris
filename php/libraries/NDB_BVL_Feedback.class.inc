@@ -100,7 +100,7 @@ class NDB_BVL_Feedback
                 unset($feedbackList[$objectName]);
                 throw new Exception(
                     "Could not instantiate feedback object",
-                    null,
+                    0,
                     $e
                 );
             }

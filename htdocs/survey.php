@@ -149,14 +149,14 @@ class DirectDataEntryMainPage
         if ($currentPage === null) {
             return 1;
         }
+        $nextPage = $currentPage+1;
         return intval(
             \Database::singleton()->pselectOne(
                 "SELECT Order_number FROM instrument_subtests
-                WHERE Test_name=:TN AND Order_number > :PN 
-                ORDER BY Order_number",
+                WHERE Test_name=:TN AND Order_number=:PN",
                 array(
                  'TN' => $this->TestName,
-                 'PN' => $currentPage,
+                 'PN' => $nextPage,
                 )
             )
         );
@@ -191,12 +191,13 @@ class DirectDataEntryMainPage
                 array('TN' => $this->TestName)
             );
         }
+        $prevPage = $currentPage-1;
         return $DB->pselectOne(
             "SELECT Order_number FROM instrument_subtests 
-            WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC",
+            WHERE Test_name=:TN AND Order_number=:PN",
             array(
              'TN' => $this->TestName,
-             'PN' => $currentPage,
+             'PN' => $prevPage,
             )
         );
     }
@@ -340,7 +341,7 @@ class DirectDataEntryMainPage
 
         $workspace = $this->caller->load(
             $this->TestName,
-            $this->Subtest,
+            $this->Subtest ?? '',
             $this->CommentID,
             $nextpage
         );
@@ -348,7 +349,7 @@ class DirectDataEntryMainPage
         // Caller calls instrument's save function and might have errors,
         // so we still need to call it. But if nextpage is 'complete',
         // then after that override with a "Thank you" message
-        if ($_REQUEST['pageNum'] === 'finalpage') {
+        if (isset($_REQUEST['pageNum']) && $_REQUEST['pageNum'] === 'finalpage') {
             if (isset($_POST['FinalPageSubmission'])
                 && $_POST['FinalPageSubmission'] == "Yes"
             ) {
@@ -364,7 +365,9 @@ class DirectDataEntryMainPage
             }
             $this->tpl_data['lastpage']  = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
-        } else if ($_REQUEST['pageNum'] === 'complete') {
+        } else if (isset($_REQUEST['pageNum'])
+            && $_REQUEST['pageNum'] === 'complete'
+        ) {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete']  = true;
 

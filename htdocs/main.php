@@ -118,44 +118,6 @@ if (!$anonymous) {
 
     //--------------------------------------------------
 }
-$paths = $config->getSetting('paths');
-
-if (!empty($TestName)) {
-    $base = $paths['base'];
-
-    if (!empty($_REQUEST['sessionID'])) {
-        try {
-            $timePoint = TimePoint::singleton($_REQUEST['sessionID']);
-        } catch (Exception $e) {
-            $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-        }
-    }
-
-    $paths = $config->getSetting('paths');
-
-    // get candidate data
-    if (!empty($_REQUEST['candID'])) {
-        try {
-            $candidate =& Candidate::singleton($_REQUEST['candID']);
-            $tpl_data['candidate'] = $candidate->getData();
-        } catch(Exception $e) {
-            $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-        }
-    }
-
-    // get time point data
-    if (!empty($_REQUEST['sessionID'])) {
-        try {
-            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-            if ($config->getSetting("SupplementalSessionStatus")) {
-                $tpl_data['SupplementalSessionStatuses'] = true;
-            }
-            $tpl_data['timePoint'] = $timePoint->getData();
-        } catch(Exception $e) {
-            $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-        }
-    }
-}
 
 //--------------------------------------------------
 
@@ -172,7 +134,7 @@ try {
     }
     if (isset($caller->feedbackPanel)) {
         if (!isset($user)) {
-            throw new Exception(401);
+            throw new \LorisException('Unauthorized');
         }
         if ($user->hasPermission('bvl_feedback')) {
             $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(

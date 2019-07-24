@@ -63,6 +63,7 @@ class VisitController
                  v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
+ORDER BY ID
                 ',
                 array()
             )
@@ -92,6 +93,7 @@ class VisitController
                  visit v
                 WHERE
                  v.VisitName = :name
+                ORDER BY ID
                 ',
                 array('name' => $visit)
             )
@@ -103,7 +105,7 @@ class VisitController
      *
      * @return array The list of visits, projectID and subprojectID
      */
-    public function getVisitsAndProject(): array
+    public function getVisitsProjectSubproject(): array
     {
         return array_map(
             function ($row) {
@@ -117,13 +119,17 @@ class VisitController
                 'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
-                  vps.ProjectID as "project",
-                  vps.SubProjectID as "subproject"
+                  pr.ProjectID as "project",
+                  pr.SubprojectID as "subproject"
                  FROM
                   visit v
                  JOIN
                   visit_project_subproject_rel vps
                  ON v.VisitID = vps.VisitID
+                 JOIN 
+                  project_rel pr 
+                 ON vps.ProjectSubprojectRelID = pr.ProjectSubprojectRelID
+                ORDER BY ID, project, subproject
                 ',
                 array()
             )

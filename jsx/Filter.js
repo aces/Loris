@@ -17,6 +17,17 @@ class Filter extends Component {
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  componentDidMount() {
+     const searchParams = new URLSearchParams(location.search);
+     const filter = JSON.parse(JSON.stringify(this.props.filter));
+     searchParams.forEach((value, name) => {
+       if (this.props.fields.find((field) => (field.filter||{}).name == name)) {
+         filter[name] = {value: searchParams.getAll(name)};
+       }
+     });
+     this.props.updateFilter(filter);
+   }
+
   /**
    * Sets filter object to reflect values of input fields.
    *
@@ -26,18 +37,23 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
+    const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
-    const exactMatch = type === 'textbox' ? false : true;
-    if (value === null || value === '') {
+    const exactMatch = (!(type === 'textbox' || type === 'date'));
+    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
       delete filter[name];
+      searchParams.delete(name);
     } else {
-      filter[name] = {
-        value: value,
-        exactMatch: exactMatch,
-      };
+      if (value.constructor === Array) {
+        searchParams.delete(name);
+        value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.set(name, value);
+      }
+      filter[name] = {value, exactMatch};
     }
-
     this.props.updateFilter(filter);
+    history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
   renderFilterFields() {
@@ -53,21 +69,27 @@ class Filter extends Component {
           element = <SelectElement key={filter.name} options={filter.options}/>;
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true}/>;
+          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;
+          break;
+        case 'checkbox':
+          element = <CheckboxElement key={filter.name}/>;
           break;
         default:
           element = <TextboxElement key={filter.name}/>;
         }
 
+        // The value prop has to default to false if the first two options
+        // are undefined so that the checkbox component is a controlled input
+        // element with a starting default value
         result.push(React.cloneElement(
           element,
           {
             name: filter.name,
             label: field.label,
-            value: (this.props.filter[filter.name] || {}).value,
+            value: (this.props.filter[filter.name] || {}).value || false,
             onUserInput: this.onFieldUpdate,
           }
         ));

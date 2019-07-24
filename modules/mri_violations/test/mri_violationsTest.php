@@ -76,6 +76,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Visit_label'  => 'Test1',
             )
         );
         $this->DB->insert(
@@ -87,7 +88,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
-             'Visit_label'  => 'test',
+             'Visit_label'  => 'Test1',
             )
         );
 
@@ -148,7 +149,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
              'ID'                 => '1001',
              'CandID'             => '999888',
-             'PatientName'        => '[Test]PatientName',
+             'PatientName'        => '[Test]PatientName_Test1',
              'time_run'           => '2009-06-29 04:00:44',
              'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
              'series_description' => 'Test Description',
@@ -161,7 +162,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
              'ID'                 => '1002',
              'CandID'             => '999777',
-             'PatientName'        => '[name]test_test',
+             'PatientName'        => '[name]test_Test1',
              'time_run'           => '2008-06-29 04:00:44',
              'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
              'series_description' => 'Test Series Description',
@@ -466,7 +467,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
-        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(8) > select";
+        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(10) > select";
         $savebtn          = "#mri_violations > div.pull-right > input:nth-child(1)";
         $this->webDriver->executescript(
             "document.querySelector('$resolutionStatus').value='other'"
@@ -505,10 +506,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "Test Description"
         );
         //testing search by SeriesUID
-        $this->_searchTest(
-            "SeriesUID",
-            "5555"
-        );
+        // $this->_searchTest(
+        //     "SeriesUID",
+        //     "5555"
+        // );
         //testing search by site
         $this->_searchTest(
             "Site",
