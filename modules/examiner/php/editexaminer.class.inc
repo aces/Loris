@@ -201,8 +201,8 @@ class EditExaminer extends \NDB_Form
                     )
                 );
 
-                $oldVal = isset($oldVals[0]) ? $oldVals[0]['new'] : null;
-                $oldDate = isset($oldVals[0]) ? $oldVals[0]['new_date'] : null;
+                $oldVal = $oldVals[0]['new'] ?? null;
+                $oldDate = $oldVals[0]['new_date'] ?? null;
 
 
                 $oldCertification = $DB->pselectRow(
