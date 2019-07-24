@@ -11,6 +11,10 @@ matrix:
 services:
 - docker
 
+env:
+  - TEST_SUITE=unit-tests
+  - TEST_SUITE=integration-tests
+
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
@@ -25,4 +29,4 @@ script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
 # docker-compose up --build
 - make checkstatic
-- docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
+- docker-compose run -T --rm $TEST_SUITE vendor/bin/phpunit --configuration test/phpunit.xml
