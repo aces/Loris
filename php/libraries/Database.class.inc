@@ -61,9 +61,9 @@ class Database
     /**
      * The name of the database.
      *
-     * @access public
+     * @access private
      */
-    var $_databaseName = '';
+    private $_databaseName = '';
 
     /**
      * Singleton design pattern implementation - creates the object

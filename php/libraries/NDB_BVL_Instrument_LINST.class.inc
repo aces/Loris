@@ -30,13 +30,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     use \LegacyInstrumentTrait;
 
-    var $InstrumentType = 'LINST';
+    public $InstrumentType = 'LINST';
 
-    var $LinstQuestions = array();
+    public $LinstQuestions = array();
 
-    var $LinstLines = array();
+    public $LinstLines = array();
 
-    var $_selectMultipleElements;
+    private $_selectMultipleElements;
 
     /**
      * Sets up the variables required for a LINST instrument to load

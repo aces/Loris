@@ -42,15 +42,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @access private
      */
-    var $form;
+    public $form;
 
-    var $formType;
+    public $formType;
 
-    var $dateOptions;
-    var $DataEntryType;
-    var $XINRules;
-    var $XINDebug;
-    var $_setupForm;
+    public $dateOptions;
+    public $DataEntryType;
+    public $XINRules;
+    public $XINDebug;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name

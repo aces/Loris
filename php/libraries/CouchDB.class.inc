@@ -189,19 +189,19 @@ class CouchDB
     /**
      * Boolean true if we are currently doing a bulk transaction.
      */
-    var $bulk = false;
+    public $bulk = false;
 
     /**
      * Array of documents to be commited when the current bulk transaction
      * ends.
      */
-    var $bulkDocuments = array();
+    public $bulkDocuments = array();
 
     /**
      * An instance of SocketWrapper used in network interaction with a CouchDB
      * database.
      */
-    var $SocketHandler;
+    public $SocketHandler;
 
     /**
      * Private Constructor for CouchDB

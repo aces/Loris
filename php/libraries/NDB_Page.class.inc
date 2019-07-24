@@ -70,8 +70,8 @@ class NDB_Page implements RequestHandlerInterface
      */
     var $fieldOptions = array();
 
-    var $Module;
-    var $template;
+    public $Module;
+    public $template;
 
     /**
      * The format that the page content should be returned in. This is generally

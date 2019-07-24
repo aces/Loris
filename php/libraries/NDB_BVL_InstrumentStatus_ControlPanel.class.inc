@@ -26,10 +26,10 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
-    var $tpl_data;
-    var $_instrument;
-    var $validityEnabled;
-    var $validityRequired;
+    public $tpl_data;
+    public $validityEnabled;
+    public $validityRequired;
+    private $_instrument;
     /**
      * Construct a controller for the instrument status control panel
      *

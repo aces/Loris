@@ -26,28 +26,28 @@
  */
 class File_Upload
 {
-    var $renameMode        = "incremental";
-    var $overwriteMode     = "rename";
-    var $fileMove          = true;
-    var $fileVerify        = true;
-    var $fileImport        = true;
-    var $filenamePrefix    = "";
-    var $createDirectories = true;
-    var $errorLog          = array();
-    var $moveOrCopy        = "move";
-    var $isCLImport        = false;
-    var $handlerArgs;
-    var $file;
-    var $fileInfo;
-    var $fileHandlers;
-    var $destinationDirectory;
-    var $destinationFilename;
-    var $fieldName;
-    var $fieldNames;
-    var $CLFiles;
-    var $form;
-    var $baseUploadDirectory;
-    var $_seeded;
+    public $renameMode        = "incremental";
+    public $overwriteMode     = "rename";
+    public $fileMove          = true;
+    public $fileVerify        = true;
+    public $fileImport        = true;
+    public $filenamePrefix    = "";
+    public $createDirectories = true;
+    public $errorLog          = array();
+    public $moveOrCopy        = "move";
+    public $isCLImport        = false;
+    public $handlerArgs;
+    public $file;
+    public $fileInfo;
+    public $fileHandlers;
+    public $destinationDirectory;
+    public $destinationFilename;
+    public $fieldName;
+    public $fieldNames;
+    public $CLFiles;
+    public $form;
+    public $baseUploadDirectory;
+    private $_seeded;
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods

@@ -49,8 +49,8 @@ class LorisForm
         'email',
         'maxlength',
     );
-    var $validOperators;
-    var $encrypt;
+    public $validOperators;
+    public $encrypt;
 
     /**
      * Creates and returns an element that can be added

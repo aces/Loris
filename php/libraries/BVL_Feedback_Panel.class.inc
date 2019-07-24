@@ -33,16 +33,16 @@ class BVL_Feedback_Panel
     /**
      * The feedback thread that this panel is for
      *
-     * @var NDB_BVL_Feedback
+     * @private NDB_BVL_Feedback
      */
-    var $_feedbackThread;
+    private $_feedbackThread;
 
     /**
      * An array containing data that will be passed to the Smarty template.
      *
      * @var array
      */
-    var $tpl_data;
+    public $tpl_data;
 
     /**
      * Creates the feedback thread for the given combination of candID,
