@@ -151,6 +151,16 @@ class SettingsTest extends TestCase
         $this->assertFalse($this->_settings->isSandbox());
     }
 
+    public function testGetBaseURL()
+    {
+        $this->_configMock->expects($this->any())
+            ->method('getSetting')
+            ->with($this->equalTo('www'))
+            ->willReturn(array('url' => 'test.loris.ca'));
+
+        $this->assertEquals("test.loris.ca", $this->_settings->getBaseURL());
+    }
+
     /**
      * Test dbName() returns correct database name
      *
