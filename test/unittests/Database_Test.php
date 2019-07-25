@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
-
+namespace PHPUNIT
 class FakePDO extends PDO
 {
     public function __construct () {}
