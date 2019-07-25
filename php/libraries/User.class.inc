@@ -70,6 +70,9 @@ class User extends UserPermissions
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
+        //Change 'language_preference' to number rather than a string
+        $row['language_preference'] = (int)$row['language_preference'];
+
         // get user sites
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
@@ -446,6 +449,13 @@ class User extends UserPermissions
         // the user whose password is being checked, the third is their
         // email, and the first is the "Confirm" password which has
         // nothing to do with whether the password is strong or not..)
+        // TODO Ideally, this should be checking whether the values in the array
+        // are IN the password, rather than checking if the password itself
+        // is either equal or not equal to the value. Also, in what case
+        // would there be a need to check whether a value is equal to or
+        // is contained in the password? If we only need to check whether
+        // the values are NOT in the password, then we wouldn't need the
+        // operator array - Alexandra Livadas
         $CharTypes = 0;
         // less than 8 characters
         if (strlen($password) < 8) {

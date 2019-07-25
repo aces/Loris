@@ -314,14 +314,12 @@ class UserTest extends TestCase
 
     /**
      * Test that getLanguagePreference returns the correct integer from the user
-     * TODO getLanguagePreference is returning a string rather than an int. 
      *
      * @return void
      * @covers User::getLanguagePreference
      */
     public function testGetLanguagePreference()
     {
-        $this->markTestIncomplete("This test is incomplete");
         $this->_user = \User::factory($this->_username);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'],
@@ -435,8 +433,6 @@ class UserTest extends TestCase
 
     /**
      * Test that isUserDCC returns true when the user belongs to DCC
-     * TODO The function isUserDCC needs to be changed because it is using the
-     *      deprecated 'CenterID' rather than the array 'CenterIDs'
      *
      * @return void
      * @covers User::isUserDCC
@@ -479,6 +475,58 @@ class UserTest extends TestCase
         $this->assertTrue($this->_otherUser->update($newInfo));
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('3', $this->_otherUser->getData('ID'));
+    }
+
+    /**
+     * Test that updatePassword updates the 'Password_hash' and 'Password_expiry'
+     * fields when both the new password and expiry date are specified
+     *
+     * @return void
+     * @covers User::updatePassword
+     */
+    public function testUpdatePasswordWithExpiryDate()
+    {
+        $this->_user = \User::factory($this->_username);
+        $oldHash = $this->_user->getData('Password_hash');
+        $this->_user->updatePassword('really_great_password', '2021-07-18');
+        $this->_user = \User::factory($this->_username);
+
+        $this->assertEquals("2021-07-18", $this->_user->getData('Password_expiry'));
+        // This checks that the hash has been updated. There is no way to predict
+        // what the new hash will be, so simply check that it changed!
+        $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
+    }
+
+    /**
+     * Test that updatePassword updates the 'Password_hash' and 'Password_expiry'
+     * fields when only the password is specified. The 'Password_expiry' should
+     * be updated to today's date plus 6 months if not specified!
+     *
+     * @return void
+     * @covers User::updatePassword
+     */
+    public function testUpdatePasswordWithoutExpiry()
+    {
+        $this->_user = \User::factory($this->_username);
+        $oldHash = $this->_user->getData('Password_hash');
+        $newDate = date('Y-m-d', strtotime('+6 months'));
+        $this->_user->updatePassword('really_great_password');
+        $this->_user = \User::factory($this->_username);
+
+        $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
+        $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
+    }
+
+    /**
+     * Test that newPassword generates a password of the correct length
+     *
+     * @return void
+     * @covers User::newPassword
+     */
+    public function testNewPassword()
+    {
+        $newPassword = User::newPassword(6);
+        $this->assertEquals(6, strlen($newPassword));
     }
 
     /**
