@@ -12,6 +12,43 @@
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
+
+/**
+ * Fake User class that has an exact copy of the User::hasLoggedIn method
+ * to test the SQL query properly
+ *
+ * @category Tests
+ * @package  Main
+ * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class FakeUser extends User
+{
+    /**
+     * Determines if the user has ever logged in successfully
+     *
+     * @param \User     $user The user object used for testing
+     * @param \Database $db   The mock database used for testing
+     *
+     * @return bool
+     */
+    public function fakeHasLoggedIn(\User $user, \Database $db): bool
+    {
+        $count = $db->pselectOne(
+            "SELECT
+               COUNT(1)
+             FROM user_login_history
+             WHERE
+               UserID = :v_userid AND
+               Success = 'Y'
+            ",
+            array('v_userid' => $user->userInfo['UserID'])
+        );
+        return $count > 0;
+    }
+}
+
 /**
  * Unit tests for the User class
  *
@@ -283,7 +320,6 @@ class UserTest extends TestCase
 
     /**
      * Test that getSiteNames returns the site names in the correct format
-     * TODO Add more sites
      *
      * @return void
      * @covers User::getSiteNames
@@ -530,6 +566,39 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that hasLoggedIn returns true when the user has succesfully logged in 
+     * once, which is specified in the 'user_login_history_table'
+     *
+     * @return void
+     * @covers User::hasLoggedIn
+     */
+    public function testHasLoggedInWhenTrue()
+    {
+        $this->_user = \User::factory($this->_username);
+        $this->assertTrue(FakeUser::fakeHasLoggedIn($this->_user, $this->_dbMock));
+    }
+
+    /**
+     * Test that hasLoggedIn returns false when the user has never succesfully 
+     * logged in once, which is specified in the 'user_login_history_table'
+     *
+     * @return void
+     * @covers User::hasLoggedIn
+     */
+    public function testHasLoggedInWhenFalse()
+    {
+        $this->_dbMock->run("DROP TEMPORARY TABLE user_login_history");
+        $newTableInfo = array(0 => array('UserID' => '968775',
+                                         'Success' => 'N'));
+        $this->_dbMock->setFakeTableData(
+            "user_login_history",
+            $newTableInfo
+        );
+        $this->_user = \User::factory($this->_username);
+        $this->assertFalse(FakeUser::fakeHasLoggedIn($this->_user, $this->_dbMock));
+    }
+
+    /**
      * Set up the fake tables in the database to set up a new user object
      *
      * @return void
@@ -555,6 +624,11 @@ class UserTest extends TestCase
         $this->_dbMock->setFakeTableData(
             "examiners_psc_rel",
             $this->_eprInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "user_login_history",
+            array(0 => array('UserID' => '968775',
+                             'Success' => 'Y'))
         );
     }
 }
