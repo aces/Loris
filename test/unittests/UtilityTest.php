@@ -368,6 +368,34 @@ class FakeUtility extends Utility
         return $testName;
     }
 
+    /**
+     * Get a list of DDE instruments installed in Loris.
+     *
+     * @param \NDB_Config $config The mock config used for testing
+     *
+     * @return array of the form Test_name => Full Description
+     */
+    static function fakeGetAllDDEInstruments(\NDB_Config $config): array
+    {
+        $Factory       = \NDB_Factory::singleton();
+        $DB            = $Factory->Database();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names",
+            array()
+        );
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+        $instruments = array();
+        foreach ($instruments_q as $row) {
+            if (isset($row['Test_name']) && isset($row['Full_name'])) {
+                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
+                    $instruments[$row['Test_name']] = $row['Full_name'];
+                }
+            }
+        }
+        return $instruments;
+    }
 }
 
 /**
@@ -690,15 +718,31 @@ class UtilityTest extends TestCase
 
     /**
      * Test that getAllDDEInstruments() returns the proper information
-     * TODO This method calls the getSetting() method for the NDB_Config singleton.
-     *      I am unclear on how to handle this
      *
      * @covers Utility::getAllDDEInstruments()
      * @return void
      */
     public function testGetAllDDEInstruments()
     {
-        $this->markTestIncomplete("This test is incomplete!");
+        $test_names = array(
+                          array('Test_name' => 'test_name1',
+                                'Full_name' => 'full_name1'),
+                          array('Test_name' => 'test_name2',
+                                'Full_name' => 'full_name2')
+                      );
+        $doubleDataEntryInstruments = array('test_name2');
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($test_names);
+        $this->_configMock->expects($this->any())
+            ->method('getSetting')
+            ->willReturn($doubleDataEntryInstruments);
+        //$this->markTestIncomplete("This test is incomplete!");
+        $this->assertEquals(
+            array('test_name2' => 'full_name2'),
+            FakeUtility::fakeGetAllDDEInstruments($this->_configMock)
+        );
     }
 
     /**
