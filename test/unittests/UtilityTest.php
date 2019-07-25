@@ -347,6 +347,27 @@ class FakeUtility extends Utility
         }
         return $sourcefields;
     }
+
+    /**
+     * Returns the test name associated with a given commentID
+     *
+     * @param \Database $db        The mock database used for testing
+     * @param string    $commentID A CommentID for which you would like
+     *                             to know the test_name
+     *
+     * @return  string The test name this commentID is a part of
+     * @note    This should be moved to whatever module uses it, or perhaps
+     *       NDB_BVL_Instrument
+     * @cleanup
+     */
+    static function fakeGetTestNameByCommentID(
+        \Database $db, string $commentID
+    ): string {
+        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
+        $testName = $db->pselectOne($query, array('CID' => $commentID));
+        return $testName;
+    }
+
 }
 
 /**
@@ -773,7 +794,19 @@ class UtilityTest extends TestCase
      */
     public function testGetTestNameByCommentID()
     {
-        $this->markTestIncomplete("This test is incomplete!");
+        $this->_dbMock->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains(
+                    "SELECT Test_name FROM flag WHERE CommentID=:CID"
+                )
+            )
+            ->willReturn("test_flag1");
+
+        $this->assertEquals(
+            "test_flag1",
+            FakeUtility::fakeGetTestNameByCommentID($this->_dbMock, "ID123")
+        );
     }
 
     /**
@@ -1079,9 +1112,9 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithCommentIDSpecified()
     {
-        $this->markTestIncomplete("This test is incomplete!");
+        //$this->markTestIncomplete("This test is incomplete!");
 
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
                 array(
