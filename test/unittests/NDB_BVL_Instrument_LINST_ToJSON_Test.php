@@ -1,7 +1,8 @@
 <?php
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
-namespace PHPUNIT
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/phpunit/phpunit/src/'.
+                       'Framework/MockObject/Builder/InvocationMocker.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
