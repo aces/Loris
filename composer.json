@@ -24,6 +24,7 @@
       "pre-install-cmd": "mkdir -p project/libraries"
     },
     "autoload" : {
+        "psr-0":{"\\": "vendor/phpunit/phpunit/src/"},
         "psr-4": {
             "LORIS\\": "src/"
         },
