@@ -1,6 +1,6 @@
 <?php
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
-
+namespace PHPUNIT
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';

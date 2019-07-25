@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
+namespace PHPUNIT
 use PHPUnit\Framework\TestCase;
 class NDB_Menu_Filter_Test extends TestCase
 {

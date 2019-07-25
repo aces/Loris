@@ -10,9 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace PHPUNIT
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
-namespace PHPUNIT
 /**
  * Unit test for SinglePointLogin class
  *

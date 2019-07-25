@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
+namespace PHPUNIT
 use PHPUnit\Framework\TestCase;
 /**
  * Unit test for Setting class

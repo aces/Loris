@@ -114,7 +114,7 @@ class NDB_Config
      *
      * @throws LorisException when any config file is missing
      */
-    function configFilePath(string $pathToFile = "config.xml"): string
+    static function configFilePath(string $pathToFile = "config.xml"): string
     {
         // first check for a project/config.xml, then check for the config
         // file in a standard unix filesystem location ->  /etc/loris/config.xml
