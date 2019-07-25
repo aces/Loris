@@ -52,9 +52,11 @@ class LorisElement extends Component {
         if (element.Options.AllowMultiple) {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
+                                       emptyOption={false}
                                        multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
+                                       emptyOption={false}
                                        options={element.Options.Values}/>;
         }
         break;
@@ -608,9 +610,9 @@ class AddElement extends Component {
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
       this.state = {
-        Options: Instrument.clone(this.props.element.Options),
+        Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
         Description: Instrument.clone(this.props.element.Description),
-        Name: Instrument.clone(this.props.element.Name),
+        Name: Instrument.clone(this.props.element.Name === undefined ? '' : this.props.element.Name),
         selected: Instrument.clone(this.props.element.selected),
       };
     } else {

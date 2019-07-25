@@ -34,7 +34,7 @@ class PasswordReset extends \NDB_Form
     function setup()
     {
         $this->tpl_data['page_title'] = 'Reset Password';
-        $this->addBasicText("username", "");
+        $this->addBasicText("username", "", array("required" => true));
 
     }
 

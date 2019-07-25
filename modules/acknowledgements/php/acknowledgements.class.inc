@@ -43,6 +43,24 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Validates the submitted form
+     *
+     * @param array $values Array of submitted values
+     *
+     * @return array An array of errors, possibly empty
+     */
+    function _validate($values): array
+    {
+        $errors = array();
+
+        if ($values['addStartDate'] > $values['addEndDate']) {
+            $errors['dates'] = "Start date cannot be greater than the end date.";
+        }
+
+        return $errors;
+    }
+
+    /**
      * Processes the submitted form
      *
      * @param array $values Array of submitted values
@@ -70,9 +88,15 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             if ($values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
-            $affiliations = implode(", ", $values['addAffiliations']);
-            $degrees      = implode(", ", $values['addDegrees']);
-            $roles        = implode(", ", $values['addRoles']);
+            $affiliations = is_array($values['addAffiliations']) ?
+                implode(', ', $values['addAffiliations']) :
+                $values['addAffiliations'];
+            $degrees      = is_array($values['addDegrees']) ?
+                implode(', ', $values['addDegrees']) :
+                $values['addDegrees'];
+            $roles        = is_array($values['addRoles']) ?
+                implode(', ', $values['addRoles']) :
+                $values['addRoles'];
             $results      = array(
                              'ordering'      => $values['addOrdering'],
                              'full_name'     => $values['addFullName'],

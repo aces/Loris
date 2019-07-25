@@ -139,6 +139,15 @@ class NDB_Client
             $sessionOptions['cookie_samesite'] = true;
         }
 
+        // API Detect
+        if (strpos(
+            $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?? '',
+            '/api/v0.0.3-dev/'
+        ) !== false
+        ) {
+            session_cache_limiter('private');
+        }
+
         session_start($sessionOptions);
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
