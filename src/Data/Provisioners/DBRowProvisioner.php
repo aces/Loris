@@ -13,6 +13,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\Data\Provisioners;
+
 use \LORIS\Data\DataInstance;
 
 /**
@@ -39,7 +40,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string $query  The SQL query to prepare and run
      * @param array  $params The prepared statement bind parameters
      */
-    function __construct(string $query, array $params)
+    public function __construct(string $query, array $params)
     {
         $this->query  = $query;
         $this->params = $params;
@@ -56,7 +57,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return DataInstance The row converted to a DataInstance
      */
-    public abstract function getInstance($row) : DataInstance;
+    abstract public function getInstance($row) : DataInstance;
 
     /**
      * GetAllInstances implements the abstract method from
@@ -73,7 +74,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return \Traversable which returns DataInstance for row when traversed.
      */
-    function getAllInstances() : \Traversable
+    public function getAllInstances() : \Traversable
     {
         $DB      = (\NDB_Factory::singleton())->database();
         $stmt    = $DB->prepare($this->query);
@@ -86,32 +87,31 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
         // Wrap an \IteratorIterator to convert from a PDOStatement row to
         // a DataInstance.
         $iterator = new class($stmt, $this) extends \IteratorIterator {
-        protected $outer;
-        /**
+            protected $outer;
+            /**
          * Constructor creates a closure over the PDO statement and outer class
          * in order to have access to getInstance()
          *
-         * @param \PDOStatement     $rows The PDOStatement being traversed.
+         * @param \PDOStatement    $rows The PDOStatement being traversed.
          * @param DBRowProvisioner $self The outer class being closed over.
          */
-        public function __construct($rows, &$self)
-        {
-            parent::__construct($rows);
-            $this->outer = &$self;
-        }
+            public function __construct($rows, &$self)
+            {
+                parent::__construct($rows);
+                $this->outer = &$self;
+            }
 
-        /**
+            /**
          * Override IteratorIterator to call the closure's getInstance
          *
          * @return DataInstance
          */
-        public function current()
-        {
-            $row = parent::current();
-            return $this->outer->getInstance($row);
-        }
+            public function current()
+            {
+                $row = parent::current();
+                return $this->outer->getInstance($row);
+            }
         };
         return $iterator;
     }
 }
-
