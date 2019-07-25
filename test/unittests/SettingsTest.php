@@ -151,6 +151,12 @@ class SettingsTest extends TestCase
         $this->assertFalse($this->_settings->isSandbox());
     }
 
+    /**
+     * Test that getBaseURL() calls getSetting('www') and returns the correct string
+     *
+     * @return void
+     * @covers Settings::getBaseURL
+     */
     public function testGetBaseURL()
     {
         $this->_configMock->expects($this->any())
