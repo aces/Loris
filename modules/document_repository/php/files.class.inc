@@ -280,9 +280,10 @@ class Files extends \NDB_Page
     /**
     * Handler of parsing category
     *
-    * @param string $value the value
+    * @param array $value the value
     *
-    * @return array
+    * @return array An array containing the category name and ID for file
+    *               categories in the document repository.
     */
     function parseCategory($value): array
     {
