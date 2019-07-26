@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
- * This file implements a data provisioner to get all possible rows
- * for the candidates endpoint.
+ * This file implements a data provisioner to get the candidate information
+ * of all active candidates accessible to a given user.
  *
  * PHP Version 7
  *
@@ -15,8 +15,8 @@
 namespace LORIS\api;
 
 /**
- * This class implements a data provisioner to get all possible rows
- * for the candidates endpoint.
+ * This class implements a data provisioner to get the candidate information
+ * of all active candidates accessible to a given user.
  *
  * PHP Version 7
  *
@@ -76,12 +76,12 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     }
 
     /**
-     * Returns an instance of a ProjectImagesRow object for a given
+     * Returns an instance of a CandidatesRow object for a given
      * table row.
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
+     * @return \LORIS\Data\DataInstance
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {

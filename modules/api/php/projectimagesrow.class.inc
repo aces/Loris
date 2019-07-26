@@ -14,7 +14,7 @@
 namespace LORIS\api;
 
 /**
- * A ProjectImagesRow represents an image for a given project.
+ * A ProjectImagesRow constains values from an image of a project.
  *
  * @category API
  * @package  Loris
@@ -24,7 +24,18 @@ namespace LORIS\api;
  */
 class ProjectImagesRow implements \LORIS\Data\DataInstance
 {
-    protected $DBRow;
+    private $_candid;
+    private $_pscid;
+    private $_entitytype;
+    private $_visitlabel;
+    private $_visitdate;
+    private $_centerid;
+    private $_centername;
+    private $_filename;
+    private $_inserttime;
+    private $_scantype;
+    private $_qcstatus;
+    private $_selected;
 
     /**
      * Create a new ProjectImagesRow
@@ -33,7 +44,18 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->DBRow = $row;
+        $this->_candid => $row['Candidate'] ?? null;
+        $this->_pscid => $row['PSCID'] ?? null;
+        $this->_entitytype => $row['Entity_type'] ?? null;
+        $this->_visitlabel => $row['Visit'] ?? null;
+        $this->_visitdate => $row['Visit_date'] ?? null;
+        $this->_centerid => $row['CenterID'] ?? null;
+        $this->_centername => $row['Site'] ?? null;
+        $this->_filename => $row['File'] ?? null;
+        $this->_inserttime => $row['InsertTime'] ?? null;
+        $this->_scantype => $row['ScanType'] ?? null;
+        $this->_qcstatus => $row['QC_status'] ?? null;
+        $htis->_selected => $row['Selected'] ?? null;
     }
 
     /**
@@ -43,7 +65,18 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj = $this->DBRow;
+        $obj = array(
+                'Candidate'  => $this->_candid;
+                'PSCID'      => $this->_pscid;
+                'Visit'      => $this->_visitlabel;
+                'Visit_date' => $this->_visitdate;
+                'Site'       => $this->_centername;
+                'File'       => $this->_filename;
+                'InsertTime' => $this->_inserttime;
+                'ScanType'   => $this->_scantype;
+                'QC_status'  => $this->_qcstatus;
+                'Selected'   => $this->_selected;,
+               );
 
         $filename = basename($obj['File']);
         $candid   = $obj['Candidate'];
@@ -51,9 +84,6 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
 
         $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
-
-        unset($obj['CenterID']);
-        unset($obj['Entity_type']);
 
         return json_encode($obj);
     }
@@ -66,7 +96,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function getCenterID(): int
     {
-        return intval($this->DBRow['CenterID']);
+        return intval($this->_centerid);
     }
 
     /**
@@ -76,6 +106,6 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function isPhantom(): bool
     {
-        return $this->DBRow['Entity_type'] === 'Scanner';
+        return $this->_entitytype === 'Scanner';
     }
 }

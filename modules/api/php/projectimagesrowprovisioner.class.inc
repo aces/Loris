@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
- * This file implements a data provisioner to get all possible rows
- * for the projects/$projectname/images endpoint
+ * This file implements a data provisioner to get all images of a project
+ * created since a given date.
  *
  * PHP Version 7
  *
@@ -16,8 +16,8 @@ namespace LORIS\api;
 
 use \LORIS\Data\Provisioners\DBRowProvisioner;
 /**
- * This class implements a data provisioner to get all possible rows
- * for the projects/$projectname/images endpoint
+ * This file implements a data provisioner to get all images of a project
+ * created since a given date.
  *
  * PHP Version 7
  *
@@ -30,8 +30,7 @@ use \LORIS\Data\Provisioners\DBRowProvisioner;
 class ProjectImagesRowProvisioner extends DBRowProvisioner
 {
     /**
-     * Create a RowProvisioner, which gets rows for projects/$projectname/images
-     * endpoint.
+     * Create a RowProvisioner
      *
      * @param \Project  $project The project from which images are requested
      * @param \DateTime $since   The project from which images are requested
@@ -82,7 +81,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
     }
 
     /**
-     * Creates a new providionner with user specific filter.
+     * Creates a new provisioner with user specific filter.
      *
      * @param \User $user The requesting user
      *

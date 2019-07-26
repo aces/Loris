@@ -14,8 +14,7 @@
 namespace LORIS\api;
 
 /**
- * A CandidatesRow represents a candidate for the
- * /candidates endpoint.
+ * A CandidatesRow contains the values from a row in the Database.
  *
  * @category API
  * @package  Loris
@@ -25,7 +24,14 @@ namespace LORIS\api;
  */
 class CandidatesRow implements \LORIS\Data\DataInstance
 {
-    protected $DBRow;
+    private $_candid;
+    private $_projectname;
+    private $_pscid;
+    private $_sitename;
+    private $_edc;
+    private $_dob;
+    private $_sex;
+    private $_centerid;
 
     /**
      * Create a new CandidatesRow.
@@ -34,7 +40,13 @@ class CandidatesRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->DBRow = $row;
+        $this->_candid      = $row['CandID'] ?? null;
+        $this->_projectname = $row['ProjectName'] ?? null;
+        $this->_pscid       = $row['PSCID'] ?? null;
+        $this->_sitename    = $row['SiteName'] ?? null;
+        $this->_edc         = $row['EDC'] ?? null;
+        $this->_dob         = $row['DoB'] ?? null;
+        $this->_sex         = $row['Sex'] ?? null;
     }
 
     /**
@@ -45,13 +57,13 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     public function toJSON() : string
     {
         $obj = array(
-                'CandID'  => $this->DBRow['CandID'],
-                'Project' => $this->DBRow['ProjectName'],
-                'PSCID'   => $this->DBRow['PSCID'],
-                'Site'    => $this->DBRow['SiteName'],
-                'EDC'     => $this->DBRow['EDC'],
-                'DoB'     => $this->DBRow['DoB'],
-                'Sex'     => $this->DBRow['Sex'],
+                'CandID'  => $this->_candid,
+                'Project' => $this->_projectname,
+                'PSCID'   => $this->_pscid,
+                'Site'    => $this->_sitename,
+                'EDC'     => $this->_edc,
+                'DoB'     => $this->_dob,
+                'Sex'     => $this->_sex,
                );
 
         return json_encode($obj);
@@ -59,12 +71,12 @@ class CandidatesRow implements \LORIS\Data\DataInstance
 
     /**
      * Returns the CenterID for this row, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
      * @return integer The CenterID
      */
     public function getCenterID(): int
     {
-        return intval($this->DBRow['CenterID']);
+        return intval($this->_centerid);
     }
 }
