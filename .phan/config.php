@@ -38,7 +38,6 @@ return [
 		"htdocs",
 		"modules",
         "src",
-		"vendor",
         "test",
         "vendor/phpunit/phpunit/src",
 	],
