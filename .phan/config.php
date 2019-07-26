@@ -39,7 +39,6 @@ return [
 		"modules",
         "src",
         "test",
-        "vendor/phpunit/phpunit/src",
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
