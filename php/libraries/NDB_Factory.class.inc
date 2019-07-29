@@ -108,12 +108,8 @@ class NDB_Factory
      */
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
-        if (self::$config !== null) {
-            return self::$config;
-        }
         if ($this->Testing) {
-            //Mock::generate("NDB_Config");
-            $config = new MockNDB_Config();
+            $config = Mock::generate("NDB_Config"); 
         } else {
             $config = NDB_Config::singleton($configfile);
             return $config;
@@ -147,12 +143,8 @@ class NDB_Factory
      */
     function user(): \User
     {
-        if (self::$_user !== null) {
-            return self::$_user;
-        }
         if ($this->Testing) {
-            Mock::generate("User");
-            $user = new MockUser();
+            $user = Mock::generate("User");
         } else {
             $user = \User::singleton();
         }
