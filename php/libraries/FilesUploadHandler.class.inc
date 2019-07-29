@@ -135,7 +135,7 @@ class FilesUploadHandler implements RequestHandlerInterface
      * If the overwrite property is set to true, existing files will be
      * overwritten.
      *
-     * If the files need different permissions on need to go in different
+     * If the files need different permissions or need to go in different
      * directories, the file must be split in different request an passed to a
      * FileUploadHandler with the correct variables.
      *
