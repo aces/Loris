@@ -443,6 +443,7 @@ class DataTable extends Component {
             this.props.fields.forEach((field, k) => {
               row[field.label] = this.props.data[index[i].RowIdx][k];
             });
+
             data = this.props.getFormattedCell(
               this.props.fields[j].label,
               data,
@@ -491,10 +492,20 @@ class DataTable extends Component {
       </select>
     );
 
-    // Include only filtered data if filters were applied
-    let csvData = this.props.data;
+    // Include only filtered data if filters were applied.
+    let csvData;
     if (this.props.filter && filteredData.length > 0) {
       csvData = filteredData;
+    } else {
+      csvData = this.props.data;
+    }
+    // Map cell data to proper values if applicable.
+    if (this.props.getMappedCell) {
+      csvData = csvData
+        .map((row, i) => {
+          return this.props.fields
+            .map((field, j) => this.props.getMappedCell(field.label, row[j]));
+        });
     }
 
     let header = this.props.hide.rowsPerPage === true ? '' : (
