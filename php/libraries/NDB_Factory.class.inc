@@ -104,18 +104,25 @@ class NDB_Factory
      *
      * @param string|null $configfile Location of XML file to parse config from
      *
-     * @return \NDB_Config A config singleton
+     * @return NDB_Config A config singleton
      */
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
-        $config = self::$config;
-        if ($config === null) {
-            $config = $this->Testing ?
-                new MockNDB_Config()
-                : NDB_Config::singleton($configfile);
-            $this->setConfig($config);
+        if (self::$config !== null) {
+            return self::$config;
+        }
+        if ($this->Testing) {
+            //Mock::generate("NDB_Config");
+            $config = new MockNDB_Config();
+        } else {
+            $config = NDB_Config::singleton($configfile);
+            return $config;
         }
 
+        self::$config = $config;
+        // NDB_Config::singleton() is already loading the config file
+        // in a better way. this needs to be modified
+        $config->load($configfile);
         return $config;
     }
 
@@ -123,32 +130,33 @@ class NDB_Factory
      * Set config
      * (Can used for injecting test doubles)
      *
-     * @param \NDB_Config $config config object
+     * @param NDB_Config $config config object
      *
-     * @return void
+     * @return NDB_Config config object which was passed in
      */
-    public function setConfig(\NDB_Config $config): void
+    public function setConfig(\NDB_Config $config): \NDB_Config
     {
         self::$config = $config;
+        return $config;
     }
 
     /**
      * Return either a real or mock Loris User object.
      *
-     * @return \User A user singleton
+     * @return User A user singleton
      */
     function user(): \User
     {
-        $user = self::$_user;
-        if ($user === null) {
-            // Set user to a new MockUser if testing. Otherwise set to the
-            // User singleton.
-            $user = $this->setUser(
-                $this->Testing ?
-                new MockUser()
-                : \User::singleton()
-            );
+        if (self::$_user !== null) {
+            return self::$_user;
         }
+        if ($this->Testing) {
+            Mock::generate("User");
+            $user = new MockUser();
+        } else {
+            $user = \User::singleton();
+        }
+        self::$_user = $user;
         return $user;
     }
 
@@ -173,10 +181,20 @@ class NDB_Factory
      */
     function database(): \Database
     {
+        $db_ref = null;
         if ($this->Testing) {
-            $db_ref = &self::$testdb ?? new MockDatabase();
+            $db_ref = &self::$testdb;
+            if ($db_ref !== null) {
+                return $db_ref;
+            }
+            //Mock::generate("Database");
+            self::$testdb = new MockDatabase();
         } else {
-            $db_ref = &self::$db ?? \Database::singleton();
+            $db_ref = &self::$db;
+            if ($db_ref !== null) {
+                return $db_ref;
+            }
+            self::$db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
@@ -188,8 +206,6 @@ class NDB_Factory
                 'Could not configure database for LORIS'
             );
         }
-
-        $dbc = $this->config()->getSetting('database');
         $db_ref->connect(
             $dbc['database'],
             $dbc['username'],
