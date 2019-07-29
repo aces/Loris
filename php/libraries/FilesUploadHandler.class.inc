@@ -132,7 +132,7 @@ class FilesUploadHandler implements RequestHandlerInterface
      *
      * All files uploaded will get the same permissions.
      *
-     * If the $overwrite parameter is set to true, existing files will be
+     * If the overwrite property is set to true, existing files will be
      * overwritten.
      *
      * If the files need different permissions on need to go in different
