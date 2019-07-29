@@ -22,20 +22,28 @@ namespace LORIS\Api\Views;
 
 class Projects
 {
-    protected $projects = array();
+    private $_projects;
 
-    public function __construct()
+    /**
+     * Create an api formated view of an array of projects
+     *
+     * @param \Project[] The projects
+     */
+    public function __construct(array $projects)
     {
-        $this->projects = \Utility::getProjectList();
+        $this->_projects = $projects;
     }
 
     public function toArray(): array
     {
-        $config      = \NDB_Factory::singleton()->config();
-        $useEDC      = $config->getSetting("useEDC");
-        $PSCID       = $config->getSetting("PSCID");
+        $config = \NDB_Factory::singleton()->config();
+
+        $useEDC = $config->getSetting("useEDC");
+        $PSCID  = $config->getSetting("PSCID");
+
         $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
-        $type        = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+
+        $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = array(
                      "useEDC" => $useEDC,
@@ -46,8 +54,10 @@ class Projects
                     );
 
         $projects = array();
-        foreach ($this->projects as $project) {
-            $projects[$project] = $settings;
+        foreach ($this->_projects as $project) {
+            // All projects have the same settings.
+            $project_name            = $project->getName();
+            $projects[$project_name] = $settings;
         }
         return array('Projects' => $projects);
     }

@@ -31,12 +31,12 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * The requested project
      */
-    protected $project;
+    private $_project;
 
     /**
      * Contructor
@@ -45,7 +45,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Project $project)
     {
-        $this->project = $project;
+        $this->_project = $project;
     }
 
     /**
@@ -115,11 +115,11 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             $user = $request->getAttribute('user');
 
             $provisioner = (new \LORIS\api\ProjectImagesRowProvisioner(
-                $this->project,
+                $this->_project,
                 $since
             ))->forUser($user);
 
@@ -127,12 +127,12 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse(
+            $this->_cache = new \LORIS\Http\Response\JsonResponse(
                 array('Images' => $images)
             );
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

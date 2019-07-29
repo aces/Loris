@@ -81,12 +81,17 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $user = $request->getAttribute('user');
+        if (!$this->_hasAccess($user)) {
+            return new \LORIS\Http\Response\Unauthorized();
+        }
 
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 1) {
             switch ($request->getMethod()) {
             case 'GET':
+                return $this->_handleGET($request);
                 return new \LORIS\Http\Response\JsonResponse(
                     $this->_toArray()
                 );
@@ -103,14 +108,16 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to project specific endpoint.
         try {
-            $project = \NDB_Factory::singleton()
-                ->project($pathparts[1]);
+            $project_name = $pathparts[1] ?? '';
+            $project      = \NDB_Factory::singleton()
+                ->project($project_name);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\NotFound();
         }
 
         $endpoint = new Project\Project($project);
 
+        // removing `/projects/<project_name>` from pathparts.
         $pathparts = array_slice($pathparts, 2);
         $request   = $request->withAttribute('pathparts', $pathparts);
 
@@ -122,14 +129,28 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * a format that can be JSON encoded to confirm to the
      * API.
      *
-     * @return array of projects
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
      */
-    private function _toArray() : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $this->cache = (new \LORIS\Api\Views\Projects())->toArray();
+        if (!isset($this->_cache)) {
+            // The projects list should be related to the user in the request
+            // attributes.
+            $projects = array_map(
+                function ($project_name) {
+                    return \Project::singleton($project_name);
+                },
+                \Utility::getProjectList()
+            );
+
+            $this->_cache = (new \LORIS\Api\Views\Projects($projects))
+                ->toArray();
         }
-        return $this->cache;
+        return new \LORIS\Http\Response\JsonResponse(
+            $this->_cache
+        );
     }
 
     /**
@@ -141,6 +162,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray()));
+        return md5(json_encode($this->_handleGet($request)->getBody()));
     }
 }

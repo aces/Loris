@@ -31,12 +31,12 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * The requested project
      */
-    protected $project;
+    private $_project;
 
     /**
      * Contructor
@@ -45,7 +45,7 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Project $project)
     {
-        $this->project = $project;
+        $this->_project = $project;
     }
 
     /**
@@ -74,7 +74,7 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /projects/$projectname/candidates
+     * Handles a request that starts with /projects/$projectname/visits
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -112,13 +112,14 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $array       = (new \LORIS\Api\Views\Project($this->project))
+        if (!isset($this->_cache)) {
+            $array = (new \LORIS\Api\Views\Project($this->_project))
                 ->toVisitArray();
-            $this->cache = new \LORIS\Http\Response\JsonResponse($array);
+
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

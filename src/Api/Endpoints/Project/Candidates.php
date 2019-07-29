@@ -31,12 +31,12 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * The requested project
      */
-    protected $project;
+    private $_project;
 
     /**
      * Contructor
@@ -45,7 +45,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Project $project)
     {
-        $this->project = $project;
+        $this->_project = $project;
     }
 
     /**
@@ -90,7 +90,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         switch ($request->getMethod()) {
         case 'GET':
-            return new \LORIS\Http\Response\JsonResponse($this->_toArray());
+            return $this->_handleGET($request);
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
@@ -105,18 +105,22 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body
+     * Create an array of this project's candidate's CandID
      *
-     * @return array
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
      */
-    private function _toArray() : array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $this->cache = (new \LORIS\Api\Views\Project($this->project))
-                ->toCandidateArray();
+        if (!isset($this->_cache)) {
+            $this->_cache = new \LORIS\Http\Response\JsonResponse(
+                (new \LORIS\Api\Views\Project($this->_project))
+                    ->toCandidateArray()
+            );
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -128,6 +132,6 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray()));
+        return md5(json_encode($this->_handleGet($request)->getBody()));
     }
 }

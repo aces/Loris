@@ -44,18 +44,18 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->_candid => $row['Candidate'] ?? null;
-        $this->_pscid => $row['PSCID'] ?? null;
-        $this->_entitytype => $row['Entity_type'] ?? null;
-        $this->_visitlabel => $row['Visit'] ?? null;
-        $this->_visitdate => $row['Visit_date'] ?? null;
-        $this->_centerid => $row['CenterID'] ?? null;
-        $this->_centername => $row['Site'] ?? null;
-        $this->_filename => $row['File'] ?? null;
-        $this->_inserttime => $row['InsertTime'] ?? null;
-        $this->_scantype => $row['ScanType'] ?? null;
-        $this->_qcstatus => $row['QC_status'] ?? null;
-        $htis->_selected => $row['Selected'] ?? null;
+        $this->_candid     = $row['Candidate'] ?? null;
+        $this->_pscid      = $row['PSCID'] ?? null;
+        $this->_entitytype = $row['Entity_type'] ?? null;
+        $this->_visitlabel = $row['Visit'] ?? null;
+        $this->_visitdate  = $row['Visit_date'] ?? null;
+        $this->_centerid   = $row['CenterID'] ?? null;
+        $this->_centername = $row['Site'] ?? null;
+        $this->_filename   = $row['File'] ?? null;
+        $this->_inserttime = $row['InsertTime'] ?? null;
+        $this->_scantype   = $row['ScanType'] ?? null;
+        $this->_qcstatus   = $row['QC_status'] ?? null;
+        $this->_selected   = $row['Selected'] ?? null;
     }
 
     /**
@@ -66,16 +66,16 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
     public function toJSON() : string
     {
         $obj = array(
-                'Candidate'  => $this->_candid;
-                'PSCID'      => $this->_pscid;
-                'Visit'      => $this->_visitlabel;
-                'Visit_date' => $this->_visitdate;
-                'Site'       => $this->_centername;
-                'File'       => $this->_filename;
-                'InsertTime' => $this->_inserttime;
-                'ScanType'   => $this->_scantype;
-                'QC_status'  => $this->_qcstatus;
-                'Selected'   => $this->_selected;,
+                'Candidate'  => $this->_candid,
+                'PSCID'      => $this->_pscid,
+                'Visit'      => $this->_visitlabel,
+                'Visit_date' => $this->_visitdate,
+                'Site'       => $this->_centername,
+                'File'       => $this->_filename,
+                'InsertTime' => $this->_inserttime,
+                'ScanType'   => $this->_scantype,
+                'QC_status'  => $this->_qcstatus,
+                'Selected'   => $this->_selected,
                );
 
         $filename = basename($obj['File']);

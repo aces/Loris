@@ -31,12 +31,12 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * The requested project
      */
-    protected $project;
+    private $_project;
 
     /**
      * Contructor
@@ -45,7 +45,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Project $project)
     {
-        $this->project = $project;
+        $this->_project = $project;
     }
 
     /**
@@ -111,7 +111,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $endpoint = new Instrument\Instrument($this->project, $instrument);
+        $endpoint = new Instrument\Instrument($this->_project, $instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);
@@ -126,20 +126,22 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             $provisioner = new \LORIS\api\ProjectInstrumentsRowProvisioner();
-            $data        = (new \LORIS\Data\Table())
+            $user        = $request->getAttribute('user');
+
+            $instruments = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
-                ->toArray($request->getAttribute('user'));
+                ->toArray($user);
 
             $array = (new \LORIS\Api\Views\Project\Instruments(
-                $this->project,
-                $data
+                $this->_project,
+                $instruments
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($array);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
