@@ -188,7 +188,7 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @return null
      */
-    public function getMetadata($key=null)
+    public function getMetadata($key = null)
     {
         return null;
     }

@@ -41,4 +41,3 @@ class Conflict extends JsonResponse
         parent::__construct($body, 409);
     }
 }
-
