@@ -45,6 +45,7 @@ return [
         "vendor/psr",   // fix PhanUndeclaredClass for psr 
         "vendor/zendframework", //fix PhanUndeclaredClass zend 
         "vendor/guzzlehttp",  // fix PhanUndeclaredClass guzzlehttp
+        "vendor/smarty", // fix PhanUndeclaredClass Smarty
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",

@@ -23,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Smarty_NeuroDB extends Smarty
+class Smarty_NeuroDB extends \Smarty
 {
     var $loristemplate_dir;
     var $project_template_dir;

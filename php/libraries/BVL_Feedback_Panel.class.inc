@@ -65,7 +65,6 @@ class BVL_Feedback_Panel
      *
      * @return string The HTML for the appropriate feedback panel.
      * @throws Exception
-     * @throws SmartyException
      */
     function display(): string
     {
