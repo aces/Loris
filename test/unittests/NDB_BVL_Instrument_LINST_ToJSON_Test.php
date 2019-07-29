@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc'
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**

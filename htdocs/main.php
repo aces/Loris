@@ -40,7 +40,7 @@ if ($anonymous === false) {
     $subtest  = $_REQUEST['subtest'] ?? '';
 }
 // make local instances of objects
-$config =& NDB_Config::singleton();
+$config = \NDB_Config::singleton();
 
 //--------------------------------------------------
 
@@ -87,11 +87,11 @@ if (!$anonymous) {
     tplFromRequest('dynamictabs');
     // draw the user information table
     try {
-        $user =& User::singleton();
+        $user = \User::singleton();
 
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
-            $site[$key]        = & Site::singleton($val);
+            $site[$key]        =  \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
         $oneIsStudySite = in_array("1", $isStudySite);
@@ -114,7 +114,7 @@ if (!$anonymous) {
     }
 
     // the the list of tabs, their links and perms
-    $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
+    $tpl_data['tabs'] = \NDB_Config::GetMenuTabs();
 
     //--------------------------------------------------
 }
@@ -123,12 +123,9 @@ if (!$anonymous) {
 
 // load the menu or instrument
 try {
-    $caller    =& NDB_Caller::singleton();
+    $caller    = \NDB_Caller::singleton();
     $workspace = $caller->load($TestName, $subtest, '', null, $anonymous);
 
-    if (isset($caller->page->FormAction)) {
-        $tpl_data['FormAction'] = $caller->page->FormAction;
-    }
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }

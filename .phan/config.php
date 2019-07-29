@@ -40,6 +40,8 @@ return [
 		"modules",
         "src",
         "test",
+        "vendor/phpunit/phpunit/src", // fix PhanUndeclaredClass for phpunit
+        "vendor/facebook/webdriver",  // fix PhanUndeclaredClass for webdriver
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
