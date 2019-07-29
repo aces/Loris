@@ -16,7 +16,7 @@
  */
 namespace LORIS\Http\Response;
 
-use \LORIS\Http\Response\JsonResponse;
+use \Zend\Diactoros\Response\JsonResponse;
 
 /**
  * A LORIS Http Response is an implementation of the PSR15 ResponseInterface
