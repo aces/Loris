@@ -15,6 +15,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Implementation of factory class described in this file's file comment
@@ -388,21 +389,21 @@ class NDB_Factory
     /**
      * Retrieve a candidate object representing this candidate
      *
-     * @param integer $CandID The CandID of the candidate
+     * @param CandID $CandID The CandID of the candidate
      *
      * @return Candidate object
      */
-    public function candidate(int $CandID): \Candidate
+    public function candidate(CandID $CandID): \Candidate
     {
-        if (isset(self::$_candidates[$CandID])) {
+        if (isset(self::$_candidates[intval($CandID)])) {
             return self::$_candidates[$CandID];
         }
         if ($this->Testing) {
-            self::$_candidates[$CandID] = new MockCandidate($CandID);
+            self::$_candidates[intval($CandID)] = new MockCandidate($CandID);
         } else {
-            self::$_candidates[$CandID] = Candidate::singleton($CandID);
+            self::$_candidates[intval($CandID)] = Candidate::singleton($CandID);
         }
-        return self::$_candidates[$CandID];
+        return self::$_candidates[intval($CandID)];
 
     }
 

@@ -40,6 +40,7 @@
  *
  * @package behavioural
  */
+use LORIS\StudyEntities\Candidate\CandID;
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
@@ -51,7 +52,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$db =& Database::singleton();
+$db = \Database::singleton();
 
 /**
  * HELP SCREEN
@@ -78,7 +79,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 $action = strtolower($argv[1]);
 
 // CandID
-$candID = $argv[2];
+$candID = new CandID($argv[2]);
 
 // get the rest of the arguments
 switch ($action) {
