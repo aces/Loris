@@ -119,6 +119,13 @@ class NDB_Factory
         // NDB_Config::singleton() is already loading the config file
         // in a better way. this needs to be modified
         $config->load($configfile);
+        // The below suppression is necessary to satisfy phan. It flags an
+        // error here because the function is declared to return
+        // NDB_Config and phan doesn't understand MockNDB_Config (as it is
+        // generated dynamically by PHPUnit).
+        // We know this will always return \NDB_Config since this is guaranteed
+        // by the return type of the function.
+        // @phan-suppress-next-line PhanTypeMismatchReturn
         return $config;
     }
 
