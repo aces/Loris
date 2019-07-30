@@ -109,7 +109,7 @@ class NDB_Factory
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
         if ($this->Testing) {
-            $config = MockNDB_Config();
+            $config = new MockNDB_Config();
         } else {
             $config = NDB_Config::singleton($configfile);
             return $config;
@@ -144,7 +144,7 @@ class NDB_Factory
     function user(): \User
     {
         if ($this->Testing) {
-            $user = MockUser();
+            $user = new MockUser();
         } else {
             $user = \User::singleton();
         }
