@@ -40,12 +40,7 @@ return [
 		"modules",
         "src",
         "test",
-        "vendor/phpunit/", // fix PhanUndeclaredClass for phpunit
-        "vendor/facebook/webdriver",  // fix PhanUndeclaredClass for webdriver
-        "vendor/psr",   // fix PhanUndeclaredClass for psr 
-        "vendor/zendframework", //fix PhanUndeclaredClass zend 
-        "vendor/guzzlehttp",  // fix PhanUndeclaredClass guzzlehttp
-        "vendor/smarty", // fix PhanUndeclaredClass Smarty
+        "vendor", // fix PhanUndeclaredClass
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
