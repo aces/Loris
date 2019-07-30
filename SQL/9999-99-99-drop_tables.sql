@@ -137,7 +137,6 @@ DROP TABLE IF EXISTS `mri_upload`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 DROP TABLE IF EXISTS `mri_protocol`;
-DROP TABLE IF EXISTS `mri_acquisition_dates`;
 DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `files_intermediary`;
 DROP TABLE IF EXISTS `files`;
