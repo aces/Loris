@@ -7,6 +7,8 @@ $(document).ready(function() {
         var ProjectID = $(form.find(".ProjectID")).val();
         var Name = $(form.find(".projectName")).val();
         var recruitmentTarget= $(form.find(".projectrecruitmentTarget")).val();
+        var SubprojectIDs= $(form.find(".projectSubprojectIDs")).val();
+
         e.preventDefault();
         var successClosure = function(i, form) {
             return function() {
@@ -37,6 +39,7 @@ $(document).ready(function() {
                         "ProjectID" : ProjectID,
                         "Name" : Name,
                         "recruitmentTarget" : recruitmentTarget,
+                        "SubprojectIDs" : SubprojectIDs
                     },
                     "success" : successClosure(ProjectID, form),
                     "error" : errorClosure(ProjectID, form)   
