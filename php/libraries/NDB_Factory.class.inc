@@ -109,7 +109,7 @@ class NDB_Factory
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
         if ($this->Testing) {
-            $config = Mock::generate("NDB_Config"); 
+            $config = Mock::generate("NDB_Config");
         } else {
             $config = NDB_Config::singleton($configfile);
             return $config;
@@ -179,8 +179,8 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            //Mock::generate("Database");
-            self::$testdb = new MockDatabase();
+            self::$testdb = Mock::generate("Database");
+            //self::$testdb = new MockDatabase();
         } else {
             $db_ref = &self::$db;
             if ($db_ref !== null) {
