@@ -764,7 +764,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('test1' => 'description1'),
-            FakeUtility::fakeGetDirectInstruments($this->_dbMock)
+            Utility::getDirectInstruments()
         );
     }
 
@@ -787,7 +787,7 @@ class UtilityTest extends TestCase
             array(
                 'visitLabel' => 'VisitLabel',
                 'label' => 'Label'),
-            FakeUtility::fakeGetVisitList($this->_dbMock)
+            Utility::getVisitList()
         );
     }
    
@@ -814,14 +814,14 @@ class UtilityTest extends TestCase
             array(
                 '1' => 'site1',
                 '2' => 'site2'),
-            FakeUtility::fakeGetSiteList($this->_dbMock)
+            Utility::getSiteList()
         );
         
         $this->assertEquals(
             array(
                 '1' => 'site1',
                 '2' => 'site2'),
-            FakeUtility::fakeGetAssociativeSiteList($this->_dbMock)
+            Utility::getAssociativeSiteList()
         );
     }
 
@@ -849,7 +849,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             "test_flag1",
-            FakeUtility::fakeGetTestNameByCommentID($this->_dbMock, "ID123")
+            Utility::getTestNameByCommentID("ID123")
         );
     }
 
@@ -868,7 +868,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'Not Started', 
-            FakeUtility::fakeGetStageUsingCandID($this->_dbMock, '1')
+            Utility::getStageUsingCandID('1')
         );
     }
 
@@ -1074,7 +1074,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('test1', 'test2'),
-            FakeUtility::fakeLookupBattery($this->_dbMock, 25)
+            Utility::lookupBattery(25)
         );
                                    
     }
@@ -1099,7 +1099,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('test1'),
-            FakeUtility::fakeLookupBattery($this->_dbMock, 25, 'stage1')
+            Utility::lookupBattery(25, 'stage1')
         );
 
     }
