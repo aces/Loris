@@ -69,8 +69,8 @@ $preValues = $db->pselectCol(
 // tables referencing project_subproject_rel in the database.
 
 if (isset($_POST['SubprojectIDs'])) {
-$toAdd    = array_diff($_POST['SubprojectIDs'], $preValues);
-$toRemove = array_diff($preValues, $_POST['SubprojectIDs']);
+    $toAdd    = array_diff($_POST['SubprojectIDs'], $preValues);
+    $toRemove = array_diff($preValues, $_POST['SubprojectIDs']);
 }
 
 foreach ($toAdd as $sid) {
