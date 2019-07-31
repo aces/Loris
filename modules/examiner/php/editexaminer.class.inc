@@ -201,8 +201,8 @@ class EditExaminer extends \NDB_Form
                     )
                 );
 
-		        // since there is an ORDER BY in pselect
-		        // $oldVals[0] corresponds to the latest date
+                // since there is an ORDER BY in pselect
+                // $oldVals[0] corresponds to the latest date
                 $oldVal  = $oldVals[0]['new'] ?? null;
                 $oldDate = $oldVals[0]['new_date'] ?? null;
 
