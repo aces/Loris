@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
     protected $JSFiles;
