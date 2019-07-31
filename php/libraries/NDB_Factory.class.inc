@@ -108,6 +108,9 @@ class NDB_Factory
      */
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
+        if (self::$config !== null) {
+            return self::$config;
+        }
         if ($this->Testing) {
             $config = new MockNDB_Config();
         } else {
@@ -150,6 +153,9 @@ class NDB_Factory
      */
     function user(): \User
     {
+        if (self::$_user !== null) {	
+            return self::$_user;	
+        }
         if ($this->Testing) {
             Mock::generate("User");
             $user = new MockUser();
