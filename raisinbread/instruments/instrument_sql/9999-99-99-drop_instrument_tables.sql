@@ -4,4 +4,3 @@ DROP TABLE IF EXISTS `bmi`;
 DROP TABLE IF EXISTS `medical_history`;
 DROP TABLE IF EXISTS `mri_parameter_form`;
 DROP TABLE IF EXISTS `radiology_review`;
-DROP TABLE IF EXISTS `testtest`;
