@@ -268,22 +268,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // @codingStandardsIgnoreStart
 
         $this->DB->insert(
-            'mri_acquisition_dates',
-            array(
-             'SessionID'       => 999998,
-             'AcquisitionDate' => '2014-02-17',
-            )
-        );
-
-        $this->DB->insert(
-            'mri_acquisition_dates',
-            array(
-             'SessionID'       => 999999,
-             'AcquisitionDate' => '2014-02-17',
-            )
-        );
-
-        $this->DB->insert(
             'files_qcstatus',
             array(
              'FileQCID'          => 1111,
@@ -335,8 +319,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "mri_processing_protocol",
             array('ProcessProtocolID' => '2222')
         );
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
         $this->DB->delete("files_qcstatus", array('FileID' => '1111'));
         $this->DB->delete("files_qcstatus", array('FileID' => '2222'));
         $this->DB->delete("tarchive", array('TarchiveID' => '263'));

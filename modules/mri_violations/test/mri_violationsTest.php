@@ -48,6 +48,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "subproject",
+            array(
+             'SubprojectID' => '55',
+             'title'        => 'TESTinSubproject',
+            )
+        );
+        $this->DB->insert(
             "candidate",
             array(
              'CandID'               => '999888',
@@ -75,7 +82,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'CenterID'     => '55',
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '6666',
+             'SubprojectID' => '55',
              'Visit_label'  => 'Test1',
             )
         );
@@ -87,7 +94,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'CenterID'     => '55',
              'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '6666',
+             'SubprojectID' => '55',
              'Visit_label'  => 'Test1',
             )
         );
@@ -243,6 +250,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "violations_resolved",
             array('ExtID' => '1002')
+        );
+        $this->DB->delete(
+            "subproject",
+            array('SubprojectID' => '55')
         );
         $this->DB->delete(
             "psc",

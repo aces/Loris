@@ -35,13 +35,6 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
     static private $_pdo = null;
 
     /**
-     * Note: only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     * once per test
-     *
-     */
-    private $_conn = null;
-
-    /**
      * LORIS config object
      *
      * @var NDB_Config
@@ -78,29 +71,6 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
             );
         }
         parent::setUp();
-    }
-
-    /**
-     * Get database connection which will be used by PHPUnit
-     * for clean-up and fixture loading into the test DB.
-     *
-     */
-    final public function getConnection()
-    {
-        $this->factory = NDB_Factory::singleton();
-
-        if ($this->_conn === null) {
-            if (self::$_pdo == null) {
-                self::$_pdo = new PDO(
-                    'mysql:dbname='.$this->factory->settings()->dbName().';
-                    host='.$this->factory->settings()->dbHost(),
-                    $this->factory->settings()->dbUserName(),
-                    $this->factory->settings()->dbPassword()
-                );
-            }
-            $this->_conn = $this->createDefaultDBConnection(self::$_pdo);
-        }
-        return $this->_conn;
     }
 
     /**

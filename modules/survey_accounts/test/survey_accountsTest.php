@@ -58,6 +58,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
               'MRI_alias' => 'test',
              )
          );
+        $this->DB->insert(
+            "subproject",
+            array(
+             'SubprojectID' => '55',
+             'title'        => 'TESTinSubproject',
+            )
+        );
           $this->DB->insert(
               "candidate",
               array(
@@ -76,7 +83,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                'CenterID'     => '55',
                'UserID'       => '1',
                'MRIQCStatus'  => 'Pass',
-               'SubprojectID' => '6666',
+               'SubprojectID' => '55',
                'Visit'        => 'In Progress',
               )
           );
@@ -98,7 +105,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                'CenterID'     => '55',
                'UserID'       => '1',
                'MRIQCStatus'  => 'Pass',
-               'SubprojectID' => '6666',
+               'SubprojectID' => '55',
                'Visit'        => 'In Progress',
               )
           );
@@ -139,6 +146,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array('CandID' => '999999')
+        );
+        $this->DB->delete(
+            "subproject",
+            array('SubprojectID' => '55')
         );
         $this->DB->delete(
             "psc",
