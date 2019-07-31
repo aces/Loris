@@ -680,7 +680,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID"
+                    "JOIN project_subproject_rel USING (SubprojectID)"
                 )
             )
             ->willReturn(
