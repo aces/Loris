@@ -41,4 +41,3 @@ class Unauthorized extends JsonResponse
         parent::__construct($body, 401);
     }
 }
-

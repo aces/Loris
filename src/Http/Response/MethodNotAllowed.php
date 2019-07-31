@@ -41,11 +41,10 @@ class MethodNotAllowed extends JsonResponse
      */
     public function __construct(
         array $allowedmethods,
-        string $msg='method not allowed'
+        string $msg = 'method not allowed'
     ) {
         $body    = array('error' => $msg);
         $headers = array('Allow' => $allowedmethods);
         parent::__construct($body, 405, $headers);
     }
 }
-

@@ -240,8 +240,9 @@ class Utility
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
-                "SELECT * FROM subproject " .
-                "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
+                "SELECT * FROM subproject
+                JOIN project_subproject_rel USING (SubprojectID) 
+                WHERE ProjectID=:pID",
                 array('pID' => $projectID)
             );
         } else {

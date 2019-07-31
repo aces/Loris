@@ -33,9 +33,9 @@ class MapIterator extends \IteratorIterator
     /**
      * Create a MapIterator
      *
-     * @param \Traversable  $rows   The Iterator being mapped from
-     * @param Mapper $mapper The mapper to apply
-     * @param \User  $user   The user to use when calling the Mapper
+     * @param \Traversable $rows   The Iterator being mapped from
+     * @param Mapper       $mapper The mapper to apply
+     * @param \User        $user   The user to use when calling the Mapper
      */
     public function __construct($rows, Mapper $mapper, \User $user)
     {
