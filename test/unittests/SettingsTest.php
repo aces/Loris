@@ -152,7 +152,8 @@ class SettingsTest extends TestCase
     }
 
     /**
-     * Test that getBaseURL() calls getSetting('www') and returns the correct string
+     * Test that getBaseURL() calls getSetting('www') on the config object 
+     * and returns the correct string if the 'LORIS_BASEURL' is empty
      *
      * @return void
      * @covers Settings::getBaseURL
@@ -162,9 +163,23 @@ class SettingsTest extends TestCase
         $this->_configMock->expects($this->any())
             ->method('getSetting')
             ->with($this->equalTo('www'))
-            ->willReturn(array('url' => 'test.loris.ca'));
+            ->willReturn(array('url' => 'test1.loris.ca'));
 
-        $this->assertEquals("test.loris.ca", $this->_settings->getBaseURL());
+        $this->assertEquals("test1.loris.ca", $this->_settings->getBaseURL());
+    }
+
+    /**
+     * Test that getBaseURL() returns the correct value from the 
+     * 'LORIS_BASEURL' environment variable if it is set
+     *
+     * @return void
+     * @covers Settings::getBaseURL
+     */
+    public function testGetBaseURLWithLorisBaseURL()
+    {
+        //putenv sets the environment variable
+        putenv("LORIS_BASEURL=test2.loris.ca");
+        $this->assertEquals("test2.loris.ca", $this->_settings->getBaseURL());
     }
 
     /**
