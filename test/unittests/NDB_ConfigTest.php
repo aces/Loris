@@ -97,7 +97,7 @@ class NDB_ConfigTest extends TestCase
     public function testconfigFilePath(): void
     {
         $text = $this->_config::configFilePath("config.xml");
-        $this->assertContains("config.xml", $text);
+        $this->assertStringContainsString("config.xml", $text);
 
     }
     /**
@@ -141,7 +141,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
-            ->willReturn('ture');
+            ->willReturn('true');
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(array(array('AllowMultiple' => '0', 'ParentID' => 'test')));

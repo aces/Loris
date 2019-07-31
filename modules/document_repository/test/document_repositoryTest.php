@@ -81,7 +81,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("test", $bodyText);
+        $this->assertStringContainsString("test", $bodyText);
     }
     /**
      * Tests Upload page.
@@ -99,7 +99,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('#upload > div > div > form > div >".
             "div:nth-child(1) > h3').textContent"
         );
-        $this->assertContains("Upload a file", $text);
+        $this->assertStringContainsString("Upload a file", $text);
 
     }
     /**

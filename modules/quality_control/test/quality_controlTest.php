@@ -33,10 +33,10 @@ class QualityControlIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/quality_control/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Quality Control", $bodyText);
+        $this->assertStringContainsString("Quality Control", $bodyText);
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertNotContains("An error occurred", $bodyText);
+        $this->assertStringNotContainsString("An error occurred", $bodyText);
 
     }
 }

@@ -114,11 +114,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Resolved Conflicts",
             $bodyText
         );
@@ -219,7 +219,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -277,7 +277,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              "return document.querySelector('$row').textContent"
          );
             // 4 means there are 4 records under this site.
-         $this->assertContains("of 585", $bodyText);
+         $this->assertStringContainsString("of 585", $bodyText);
 
     }
 }
