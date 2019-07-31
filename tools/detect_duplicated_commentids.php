@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Main
- * @package  Loris 
+ * @package  Loris
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @license  Loris License
@@ -51,12 +51,12 @@ if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) 
 /**
  * parse the options
  */
-$opts = getopt("i:r");
-$change = false;
-$change_all = false;
-$instrument = null;
+$opts        = getopt("i:r");
+$change      = false;
+$change_all  = false;
+$instrument  = null;
 $visit_label = null;
-$to_remove = false;
+$to_remove   = false;
 if (!is_array($opts)) {
     print "There was a problem reading in the options.\n\n";
     exit(1);
@@ -80,24 +80,24 @@ if ($opts['r']!=null) {
 /**
  * Initialization
  */
-$config = NDB_Config::singleton();
+$config         = NDB_Config::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$dataDir = "logs";
-$diff = null;
-$commentids = array();
+$dataDir        = "logs";
+$diff           = null;
+$commentids     = array();
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
 } else {
-    $instruments = array($instrument=>$instrument);
+    $instruments = array($instrument => $instrument);
 }
 
 //get all candidates
-$candidates= $DB->pselect("SELECT CandID, PSCID FROM candidate", array());
+$candidates = $DB->pselect("SELECT CandID, PSCID FROM candidate", array());
 //get all subprojectids
 $subprojectids = $DB->pselect(
-"SELECT DISTINCT subprojectid FROM session",
-array()
+    "SELECT DISTINCT subprojectid FROM session",
+    array()
 );
 
 foreach ($instruments as $instrument=>$full_name) {
@@ -107,26 +107,33 @@ foreach ($instruments as $instrument=>$full_name) {
         $commentids = array();
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
-            $pscid = $candidate['PSCID'];
+            $pscid  = $candidate['PSCID'];
             foreach ($subprojectids as $subprojectid) {
                 $session_info = $DB->pselectRow(
-                "SELECT DISTINCT s.Visit_label,s.ID from session s
+                    "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
                     s.subprojectid = :subid",
-                array('cid'=>$candid,'fname'=>$instrument,
-                'subid'=>$subprojectid['subprojectid'])
+                    array(
+                     'cid'   => $candid,
+                     'fname' => $instrument,
+                     'subid' => $subprojectid['subprojectid'],
+                    )
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
-                    $sessionid = $session_info['ID'];
+                    $sessionid   = $session_info['ID'];
                     $visit_label = $session_info['Visit_label'];
                     if ($sessionid !=null) {
                         $commentid = getCommentIDs(
-                        $instrument, $visit_label, $sessionid, $candid,
-                        $pscid, $subprojectid['subprojectid']
+                            $instrument,
+                            $visit_label,
+                            $sessionid,
+                            $candid,
+                            $pscid,
+                            $subprojectid['subprojectid']
                         );
-                        $size = sizeof($commentid);
+                        $size      = sizeof($commentid);
                         if ($size >= MIN_SIZE_OF_COMMENTID_ARRAY) {
                             $commentids[] = $commentid;
                         }
@@ -154,19 +161,18 @@ foreach ($instruments as $instrument=>$full_name) {
 * @param string $candid       The candid been searched
 * @param string $pscid        The PSCID been searched
 * @param string $subprojectid The subprojecitd been searched
-* 
+*
 * @return array $commentids An array of commentids found
-* 
 */
 
 function getCommentIDs(
-$test_name, $visit_label=null, $sid=null,
-$candid=null,$pscid=null, $subprojectid=null
+    $test_name, $visit_label=null, $sid=null,
+    $candid=null,$pscid=null, $subprojectid=null
 ) {
 
-    $commentID = $candid. $pscid. $sid . $subprojectid;
+    $commentID  = $candid. $pscid. $sid . $subprojectid;
     $commentids = array();
-    $flag_info = array();
+    $flag_info  = array();
 
     if ($commentID !=null && $test_name!=null) {
         $query = " SELECT '$pscid' AS PSCID,'$visit_label' AS VisitLabel,
@@ -176,7 +182,7 @@ $candid=null,$pscid=null, $subprojectid=null
         if ($commentID!=null) {
             $params['cid'] = $commentID;
         }
-        $query .=$where;
+        $query     .=$where;
         $commentids = $GLOBALS['DB']->pselect($query, $params);
     }
 
@@ -185,15 +191,15 @@ $candid=null,$pscid=null, $subprojectid=null
         foreach ($commentids as $key=>$commentid) {
             $flag = array();
             $flag = $GLOBALS['DB']->pselectRow(
-            "SELECT * FROM flag WHERE CommentID = :cid",
-            array('cid'=>$commentid['CommentID'])
+                "SELECT * FROM flag WHERE CommentID = :cid",
+                array('cid' => $commentid['CommentID'])
             );
             $flag_info['flag_data_entry'] = $flag['Data_entry'];
-            $flag_info['in_flag'] = 'No';
+            $flag_info['in_flag']         = 'No';
             if (($flag!=null)&&(!empty($flag))) {
                 $flag_info['in_flag'] = 'Yes';
             }
-            $commentid = $flag_info + $commentid;
+            $commentid        = $flag_info + $commentid;
             $commentids[$key] = $commentid;
         }
     }
@@ -208,7 +214,7 @@ $candid=null,$pscid=null, $subprojectid=null
 * @param String $output     Array of data been written into csv
 * @param String $path       The file path
 * @param String $instrument The name of the instrument
-* 
+*
 * @return NULL
 */
 
@@ -241,15 +247,15 @@ function writeCSV($output,$path,$instrument)
  * checks to see if the table has some data
  *
  * @param String $instrument instrument-name
- * 
+ *
  * @return NULL
  */
 
 function hasData($instrument)
 {
     $commentids = $GLOBALS['DB']->pselect(
-    "SELECT COUNT(*) FROM $instrument",
-    array()
+        "SELECT COUNT(*) FROM $instrument",
+        array()
     );
     if ((count($commentids)) > 0) {
         return true;
@@ -257,4 +263,4 @@ function hasData($instrument)
     return false;
 }
 
-?>
+

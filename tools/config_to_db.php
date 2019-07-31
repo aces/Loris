@@ -33,7 +33,7 @@ function iterate($iterator, $parentKey)
     $db = Database::singleton();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
         $current = $iterator->current();
-        $name  = $iterator->key();
+        $name    = $iterator->key();
         if ($iterator->hasChildren()) {
             iterate($current, $name);
         } else { // Else it is a leaf
@@ -42,7 +42,7 @@ function iterate($iterator, $parentKey)
             $configID = $db->pselectone(
                 "SELECT ID 
                  FROM ConfigSettings 
-                 WHERE Name=:name", 
+                 WHERE Name=:name",
                 array('name' => $name)
             );
 
@@ -51,7 +51,7 @@ function iterate($iterator, $parentKey)
                 $dbParentKey = $db->pselectone(
                     "SELECT Name 
                      FROM ConfigSettings 
-                     WHERE ID=(SELECT Parent FROM ConfigSettings WHERE Name=:name)", 
+                     WHERE ID=(SELECT Parent FROM ConfigSettings WHERE Name=:name)",
                     array('name' => $name)
                 );
                 if ($parentKey==$dbParentKey) {
@@ -75,17 +75,17 @@ function iterate($iterator, $parentKey)
  */
 function processLeaf($name, $value, $configID)
 {
-    $db = Database::singleton();
+    $db            = Database::singleton();
     $allowMultiple = $db->pselectone(
         "SELECT AllowMultiple 
          FROM ConfigSettings 
-         WHERE ID=:configID", 
+         WHERE ID=:configID",
         array('configID' => $configID)
     );
     $currentValue  = $db->pselect(
         "SELECT Value 
          FROM Config 
-         WHERE ConfigID=:configID", 
+         WHERE ConfigID=:configID",
         array('configID' => $configID)
     );
 
@@ -93,22 +93,32 @@ function processLeaf($name, $value, $configID)
     if (empty($currentValue)) {
 
         $db->insert(
-            'Config', array('ConfigID' => $configID, 'Value' => $value)
+            'Config',
+            array(
+             'ConfigID' => $configID,
+             'Value'    => $value,
+            )
         );
 
-    } else if (!empty($currentValue) && $allowMultiple==0) { 
+    } else if (!empty($currentValue) && $allowMultiple==0) {
         // if the configID exists and the field does not allow multiples
 
         $db->update(
-            'Config', array('Value' => $value), array('ConfigID' => $configID)
+            'Config',
+            array('Value' => $value),
+            array('ConfigID' => $configID)
         );
 
     } else { // if the configID exists and the field does allow multiples
-        
+
         // if it is not a copy of an already existing value
         if (!Recursive_In_array($value, $currentValue)) {
             $db->insert(
-                'Config', array('ConfigID' => $configID, 'Value' => $value)
+                'Config',
+                array(
+                 'ConfigID' => $configID,
+                 'Value'    => $value,
+                )
             );
         }
 
@@ -126,7 +136,7 @@ function processLeaf($name, $value, $configID)
 function Recursive_In_array($value, $array)
 {
     foreach ($array as $sub_array) {
-        if ($sub_array == $value 
+        if ($sub_array == $value
             || (is_array($sub_array) && Recursive_In_array($value, $sub_array))
         ) {
             return true;
@@ -134,4 +144,4 @@ function Recursive_In_array($value, $array)
     }
     return false;
 }
-?>
+

@@ -47,7 +47,7 @@ class VisitWindowPopulator
      */
     function __construct()
     {
-        $this->DB = Database::singleton();
+        $this->DB     = Database::singleton();
         $this->Config = NDB_Config::singleton();
     }
 
@@ -82,12 +82,14 @@ class VisitWindowPopulator
         // Can't use Utility::getVisits() because that uses the Visit_Window table..
         $vls = $this->Config->getSetting("visitLabel");
         foreach (Utility::associativeToNumericArray($vls) as $visits) {
-            foreach (Utility::associativeToNumericArray($visits['labelSet']['item']) as $item) {
+            foreach (
+                Utility::associativeToNumericArray($visits['labelSet']['item'])
+                as $item
+            ) {
                 $visit = $item['@']['value'];
                 if (!empty($visit)) {
                     $this->insertIfMissing($visit);
                 }
-
 
             };
         }
@@ -98,4 +100,4 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new VisitWindowPopulator();
     $Runner->run();
 }
-?>
+

@@ -21,7 +21,8 @@ require_once 'Utility.class.inc';
  * Converts an array of arrays of values for different fields into
  * an array of unique combinations of the different values.
  */
-function cartesian($input) {
+function cartesian($input)
+{
     // filter out empty values
     $result = array(array());
     foreach ($input as $key => $values) {
@@ -42,10 +43,11 @@ function cartesian($input) {
     return $result;
 }
 
-function split_commas($table_name) {
+function split_commas($table_name)
+{
     $DB = \Database::singleton();
     // Get the list of unique IDs from the table
-    $rows = $DB->pselect("SELECT * FROM ".$table_name."", array());
+    $rows         = $DB->pselect("SELECT * FROM ".$table_name."", array());
     $total_commas = 0;
     foreach ($rows as $row) {
         $num_commas = 0;
@@ -77,7 +79,10 @@ function split_commas($table_name) {
     }
 }
 
-$tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
+$tables_to_normalize = array(
+                        "mri_protocol",
+                        "mri_protocol_checks",
+                       );
 foreach ($tables_to_normalize as $table) {
     split_commas($table);
 }

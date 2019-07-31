@@ -252,4 +252,4 @@ function getExcludedInstruments()
     return $ex_instruments;
 }
 
-?>
+

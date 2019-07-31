@@ -13,26 +13,26 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize('../project/config.xml');
 
-$db =& Database::singleton();
+$db     =& Database::singleton();
 $config = NDB_Config::singleton();
 
-$date = date("m_d_Y");
+$date        = date("m_d_Y");
 $output_file = "project_statistics_$date.csv";
-$fp = fopen($output_file, 'w');
+$fp          = fopen($output_file, 'w');
 echo "PROJECT STATISTICS SCRIPT - $date\n\n";
 echo "Data can be found in $output_file.\n\n";
 
 $headers = array(
-    'Project',
-    'Number of Scanning - Visits',
-    'Number of Sites',
-    'Variable Count',
-    'Number of instruments',
-    'total number of visits (for all candidates)',
-    'number of candidates',
-    'GB of imaging data (raw and processed)',
-    '# of scans'
-);
+            'Project',
+            'Number of Scanning - Visits',
+            'Number of Sites',
+            'Variable Count',
+            'Number of instruments',
+            'total number of visits (for all candidates)',
+            'number of candidates',
+            'GB of imaging data (raw and processed)',
+            '# of scans',
+           );
 
 $counter = 0;
 
@@ -55,21 +55,22 @@ $number_visits = $db->pselect("select count(*) from session where Active='Y' AND
 $number_candidates = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.RegistrationCenterID <> 1 and c.Entity_type != 'Scanner'", array());
 // GB of imaging data (raw and processed)
 $dir_path = $config->getSetting('imagePath');
-$gb_imaging_data_array = NULL;
-if(file_exists($dir_path)) exec("cd $dir_path;du -h .", $gb_imaging_data_array);
-# of scans
+$gb_imaging_data_array = null;
+if(file_exists($dir_path)) { exec("cd $dir_path;du -h .", $gb_imaging_data_array);
+}
+// of scans
 $number_scans = $db->pselect("select count(*) from files", array());
 
 $queries = array(
-    'number_scanning_visits',
-    'number_sites',
-    'variable_count',
-    'number_instruments',
-    'number_visits',
-    'number_candidates',
-    'gb_imaging_data',
-    'number_scans'
-);
+            'number_scanning_visits',
+            'number_sites',
+            'variable_count',
+            'number_instruments',
+            'number_visits',
+            'number_candidates',
+            'gb_imaging_data',
+            'number_scans',
+           );
 
 // Extracts data from each query and puts into $project_statistics array
 $project_statistics[$headers[0]] = $projectname;
@@ -90,8 +91,13 @@ foreach ($queries as $query) {
         }
 
     } elseif ($i == $numHeaders) {
-        $units_array = array('B' => 0.000000001, 'K' => 0.000001, 'M' => 0.001, 'G' => 1);
-        $sum = 0.0;
+        $units_array = array(
+                        'B' => 0.000000001,
+                        'K' => 0.000001,
+                        'M' => 0.001,
+                        'G' => 1,
+                       );
+        $sum         = 0.0;
 
         foreach ($gb_imaging_data_array as $key => $row) {
 
@@ -113,7 +119,7 @@ foreach ($queries as $query) {
 
 // If query is blank, populate csv with "Unknown"
 foreach($headers as $header) {
-    if($project_statistics[$header] == NULL) {
+    if($project_statistics[$header] == null) {
         $project_statistics[$header] = "Unknown";
     }
 }

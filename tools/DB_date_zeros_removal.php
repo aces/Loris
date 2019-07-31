@@ -20,18 +20,18 @@ $client->makeCommandLine();
 $client->initialize(__DIR__."/../project/config.xml");
 $config = NDB_Config::singleton();
 
-$db =& Database::singleton();
+$db       =& Database::singleton();
 $database = $config->getSetting('database');
 
 $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$filename = __DIR__ . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
-$output= "";
-$alters="";
-$updates="";
-$nonNullUpdates="";
+$filename       = __DIR__ . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
+$output         = "";
+$alters         ="";
+$updates        ="";
+$nonNullUpdates ="";
 
 // Begin Script
 echo "\n#################################################################\n\n".
@@ -41,9 +41,10 @@ echo "\n#################################################################\n\n".
     "checks disabling and re-enabling.\n".
     "\n#################################################################\n\n";
 
-$database_name= $database['database'];
+$database_name = $database['database'];
 
-$field_names = $db->pselect("
+$field_names = $db->pselect(
+    "
                       SELECT
                           TABLE_NAME,
                           COLUMN_NAME,
@@ -55,7 +56,7 @@ $field_names = $db->pselect("
                       FROM INFORMATION_SCHEMA.COLUMNS
                       WHERE DATA_TYPE IN ('date','timestamp','datetime')
                           AND TABLE_SCHEMA=:dbn",
-    array("dbn"=>$database['database'])
+    array("dbn" => $database['database'])
 );
 
 // First pass detecting all 'on update CURRENT_TIMESTAMP' fields.
@@ -63,8 +64,8 @@ $field_names = $db->pselect("
 // avoid them being updated to the time the script was run
 $autoUpdateFields = array();
 foreach ($field_names as $key=>$field) {
-    if (strstr($field['EXTRA'],'on update CURRENT_TIMESTAMP') !== false) {
-        $autoUpdateFields[$field['TABLE_NAME']][]= $field['COLUMN_NAME'];
+    if (strstr($field['EXTRA'], 'on update CURRENT_TIMESTAMP') !== false) {
+        $autoUpdateFields[$field['TABLE_NAME']][] = $field['COLUMN_NAME'];
     }
 }
 
@@ -134,8 +135,8 @@ $output .="SET sql_mode = @OLD_sql_mode; \n";
 $output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 // END building script
 
-$fp=fopen($filename, "w");
+$fp =fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
 
-?>
+

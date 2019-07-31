@@ -2,7 +2,7 @@
 /**
  * This script is the part of the second step for normalizing the mri_protocol table
  * and mri_protocol_checks table.
- * It populates the new min & max columns for each field that can contain ranges. 
+ * It populates the new min & max columns for each field that can contain ranges.
  *   - If the script is run with the option "tosql", the SQL statements to remove the
  *     old "%_range" columns will be written in file
  *     $LORIS/project/tables_sql/DELETE_mri_protocol_range_columns.sql
@@ -30,25 +30,26 @@ require_once 'Utility.class.inc';
 // set default arguments
 $printToSQL = false;
 // SQL output
-$output     = "";
+$output = "";
 
 // check if the 'tosql' option is passed
 if (!empty($argv[1]) && $argv[1] == "tosql") {
-  $printToSQL = true;
+    $printToSQL = true;
 }
 
-function split_ranges($table_name, $printToSQL, $output) {
+function split_ranges($table_name, $printToSQL, $output)
+{
     $DB = \Database::singleton();
 
-// get all "ID" values from the mri_protocol table
+    // get all "ID" values from the mri_protocol table
     $mp_idx = $DB->pselect("SELECT ID FROM $table_name", array());
-    $idx = array();
+    $idx    = array();
     foreach($mp_idx as $num => $value) {
         array_push($idx, $value["ID"]);
     }
 
-// get all column names like "%_range" from mri_protocol table
-    $mp_columns = $DB->pselect("SELECT column_name FROM information_schema.columns WHERE table_name=:table_name", array('table_name' => $table_name));
+    // get all column names like "%_range" from mri_protocol table
+    $mp_columns       = $DB->pselect("SELECT column_name FROM information_schema.columns WHERE table_name=:table_name", array('table_name' => $table_name));
     $mp_range_columns = array();
     foreach($mp_columns as $id => $value) {
         if (ucfirst(substr($value['column_name'], -5)) == 'Range') {
@@ -57,10 +58,10 @@ function split_ranges($table_name, $printToSQL, $output) {
     }
 
     foreach($idx as $id) {
-        $mp_data = $DB->pselect("SELECT * FROM $table_name mp WHERE mp.ID=:id", array('id' => $id));
+        $mp_data        = $DB->pselect("SELECT * FROM $table_name mp WHERE mp.ID=:id", array('id' => $id));
         $data_to_insert = array();
         foreach($mp_range_columns as $range_col) {
-            $to_replace = substr($range_col,0, 5) == "Valid" ? 'Range' : 'range';
+            $to_replace = substr($range_col, 0, 5) == "Valid" ? 'Range' : 'range';
             $col_data   = explode("-", $mp_data[0][$range_col]);
             $col_name   = str_replace($to_replace, '', $range_col);
             $col_min    = $col_name . "min";
@@ -99,7 +100,10 @@ function split_ranges($table_name, $printToSQL, $output) {
     }
 }
 
-$tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
+$tables_to_normalize = array(
+                        "mri_protocol",
+                        "mri_protocol_checks",
+                       );
 foreach ($tables_to_normalize as $table) {
     split_ranges($table, $printToSQL, $output);
 }
@@ -108,7 +112,8 @@ if ($printToSQL) {
     echo("Please run the SQL patch found in: " . $filename . "\n");
 }
 
-function _exportSQL ($output) {
+function _exportSQL($output)
+{
     //export file
     $filename = __DIR__ . "/../../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
     $fp       = fopen($filename, "a");

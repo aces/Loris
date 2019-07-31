@@ -1,5 +1,6 @@
 <?php
-/** Script to clean up orphan entries in the imaging tables.
+/**
+ * Script to clean up orphan entries in the imaging tables.
  *
  * WARNING!!
  *  This script should be run before applying the following SQL patch
@@ -27,62 +28,61 @@
  *         so the patch can create successfully the foreign key TarchiveID
  *         and FileID
  *  3) Congratulations!! You are ready to run the SQL patch!
- *
  */
 
 require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 
 $table_array = array(
-    'MRICandidateErrors' => array(
-        'table1'   => 'MRICandidateErrors',
-        'table2'   => 'tarchive',
-        'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
-    ),
-    'mri_violations_log' => array(
-        'table1'   => 'mri_violations_log',
-        'table2'   => 'tarchive',
-        'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
-    ),
-    'files' => array(
-        'table1'   => 'files',
-        'table2'   => 'tarchive',
-        'FK_name1' => 'TarchiveSource',
-        'FK_name2' => 'TarchiveID'
-    ),
-    'files_qcstatus' => array(
-        'table1'   => 'files_qcstatus',
-        'table2'   => 'files',
-        'FK_name1' => 'FileID',
-        'FK_name2' => 'FileID'
-    ),
-    'mri_upload_tarchive' => array(
-        'table1'   => 'mri_upload',
-        'table2'   => 'tarchive',
-        'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
-    ),
-    'mri_upload_session' => array(
-        'table1'   => 'mri_upload',
-        'table2'   => 'session',
-        'FK_name1' => 'SessionID',
-        'FK_name2' => 'ID'
-    ),
-    'mri_protocol_checks' => array(
-        'table1'   => 'mri_protocol_checks',
-        'table2'   => 'mri_scan_type',
-        'FK_name1' => 'Scan_type',
-        'FK_name2' => 'ID'
-    ),
-    'tarchive' => array(
-        'table1'   => 'tarchive',
-        'table2'   => 'session',
-        'FK_name1' => 'SessionID',
-        'FK_name2' => 'ID'
-    )
-);
+                'MRICandidateErrors'  => array(
+                                          'table1'   => 'MRICandidateErrors',
+                                          'table2'   => 'tarchive',
+                                          'FK_name1' => 'TarchiveID',
+                                          'FK_name2' => 'TarchiveID',
+                                         ),
+                'mri_violations_log'  => array(
+                                          'table1'   => 'mri_violations_log',
+                                          'table2'   => 'tarchive',
+                                          'FK_name1' => 'TarchiveID',
+                                          'FK_name2' => 'TarchiveID',
+                                         ),
+                'files'               => array(
+                                          'table1'   => 'files',
+                                          'table2'   => 'tarchive',
+                                          'FK_name1' => 'TarchiveSource',
+                                          'FK_name2' => 'TarchiveID',
+                                         ),
+                'files_qcstatus'      => array(
+                                          'table1'   => 'files_qcstatus',
+                                          'table2'   => 'files',
+                                          'FK_name1' => 'FileID',
+                                          'FK_name2' => 'FileID',
+                                         ),
+                'mri_upload_tarchive' => array(
+                                          'table1'   => 'mri_upload',
+                                          'table2'   => 'tarchive',
+                                          'FK_name1' => 'TarchiveID',
+                                          'FK_name2' => 'TarchiveID',
+                                         ),
+                'mri_upload_session'  => array(
+                                          'table1'   => 'mri_upload',
+                                          'table2'   => 'session',
+                                          'FK_name1' => 'SessionID',
+                                          'FK_name2' => 'ID',
+                                         ),
+                'mri_protocol_checks' => array(
+                                          'table1'   => 'mri_protocol_checks',
+                                          'table2'   => 'mri_scan_type',
+                                          'FK_name1' => 'Scan_type',
+                                          'FK_name2' => 'ID',
+                                         ),
+                'tarchive'            => array(
+                                          'table1'   => 'tarchive',
+                                          'table2'   => 'session',
+                                          'FK_name1' => 'SessionID',
+                                          'FK_name2' => 'ID',
+                                         ),
+               );
 
 iterate($table_array);
 
@@ -148,7 +148,7 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
     $orphan_list = selectOrphan($select_all_query);
 
     // if no entries found, return to continue to the next table
-    if ( empty($orphan_list) ) {
+    if (empty($orphan_list) ) {
         print "Congratulations! No orphans found in $table_name! \n";
         return;
     }
@@ -176,7 +176,6 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         backupEntries($select_ID_query, $table_name, $FK_field);
     }
 
-
     // clean up the table $table_name based on answer provided by the user
     cleanTable(
         $table_name,
@@ -184,7 +183,7 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         $select_ID_query,
         $delete_answer
     );
-    
+
 }
 
 /**
@@ -193,7 +192,6 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
  * @param string $query query to use to select orphans
  *
  * @return array result of the select query
- *
  */
 function selectOrphan($query)
 {
@@ -260,11 +258,11 @@ function backupEntries($selectID, $table_name, $FK_field)
     // grep the IDs to backup from the database based on query stored in
     // $selectID. This will be given as an argument to mysqldump using
     // --where option
-    $IDs = generateIdList($selectID, $FK_field);
+    $IDs   = generateIdList($selectID, $FK_field);
     $where = $FK_field . " IN (" . $IDs . ")";
 
     // create directory where the back up will go if it does not exist yet
-    if ( !file_exists(__DIR__."/../project/backup") ) {
+    if (!file_exists(__DIR__."/../project/backup") ) {
         mkdir(__DIR__."/../project/backup");
     }
 
@@ -370,4 +368,4 @@ function generateIdList($selectIDs, $FK_field)
     return $IDs; // return sting of IDs
 }
 
-?>
+

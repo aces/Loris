@@ -153,4 +153,4 @@ if ($confirm === false) {
     echo "\n\nRun this tool again with the argument 'confirm' to ".
     "perform the changes\n\n";
 }
-?>
+

@@ -89,8 +89,8 @@ class CouchDBIntegrityChecker
                 LEFT JOIN session s USING (CandID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 array(
-                    "PID" => $pscid,
-                    "VL" => $vl
+                 "PID" => $pscid,
+                 "VL"  => $vl,
                 )
             );
 
@@ -101,9 +101,11 @@ class CouchDBIntegrityChecker
                 $this->CouchDB->deleteDoc($row['id']);
             } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid,
-                    'VL' => $vl)
+                    $activeExists,
+                    array(
+                     'PID' => $pscid,
+                     'VL'  => $vl,
+                    )
                 );
 
                 if (!array_key_exists('count', $numActive[0])
@@ -138,4 +140,4 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBIntegrityChecker();
     $Runner->run();
 }
-?>
+

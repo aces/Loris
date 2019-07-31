@@ -21,4 +21,4 @@ require_once "CouchDB_MRI_Importer.php";
 $Runner = new CouchDBMRIImporter();
 $Runner->run();
 
-?>
+

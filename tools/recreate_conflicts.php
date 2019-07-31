@@ -11,14 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../php/libraries:");
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
-
-$config = NDB_Config::singleton();
-$db     = Database::singleton();
+require_once __DIR__ . "generic_includes.php";
 
 /**
  * HELP SCREEN
@@ -46,7 +39,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
  * Get cmd-line arguments
  */
 // get $action argument
-$action         = $argv[1];
+$action = $argv[1];
 
 if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
@@ -57,7 +50,7 @@ if ($action=='all') {
 }
 // clear the unresolved conflicts for all the instruments
 foreach ($allInstruments as $instrument=>$Full_name) {
-    $clear_conflicts = $db->pselect(
+    $clear_conflicts = $DB->pselect(
         "SELECT CommentID, Test_name,
                                             CONCAT('DDE_', CommentID)
                                             AS DDECommentID
@@ -76,7 +69,7 @@ foreach ($allInstruments as $instrument=>$Full_name) {
 }
 
 foreach ($ddeInstruments as $test) {
-    $instruments = $db->pselect(
+    $instruments = $DB->pselect(
         "SELECT CommentID, Test_name, CONCAT('DDE_',
                                         CommentID) AS DDECommentID
                                  FROM flag sde
@@ -106,4 +99,4 @@ foreach ($ddeInstruments as $test) {
     }
 }
 
-?>
+

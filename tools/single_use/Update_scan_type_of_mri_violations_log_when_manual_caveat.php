@@ -77,8 +77,8 @@ function updateScanType($seriesUID)
         print "Updating scan type to $scan_type for SeriesUID $seriesUID \n";
         $db->update(
             'mri_violations_log',
-            array('Scan_type'=>$scan_type),
-            array('SeriesUID'=>$seriesUID)
+            array('Scan_type' => $scan_type),
+            array('SeriesUID' => $seriesUID)
         );
     } elseif (count($scan_type_list) == 0) {
         print "Could not find any scan type for SeriesUID $seriesUID \n";
@@ -87,4 +87,4 @@ function updateScanType($seriesUID)
     }
 }
 
-?>
+

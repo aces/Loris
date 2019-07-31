@@ -72,7 +72,7 @@ $DB->run(
 );
 
 $DB->delete("parameter_type_category", array("Type" => "Instrument"));
-   
+
 print "Cleared data from BVL instruments\n";
 
 print "Reading instruments\n";
@@ -104,121 +104,121 @@ foreach ($instruments AS $instrument) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
         switch($bits[0]){
-            case "table":
-                $table = $bits[1];
-                print "Instrument: $table\n";
-                break;
+        case "table":
+            $table = $bits[1];
+            print "Instrument: $table\n";
+            break;
 
-            case "title":
-                $title = $bits[1];
-                // Check if there's already an entry with the same name and reuse same ID
-                // insertIgnore does not work here since name is not a Unique key in the database
-                $catId = $DB->pselectOne(
-                    "SELECT ParameterTypeCategoryID 
+        case "title":
+            $title = $bits[1];
+            // Check if there's already an entry with the same name and reuse same ID
+            // insertIgnore does not work here since name is not a Unique key in the database
+            $catId = $DB->pselectOne(
+                "SELECT ParameterTypeCategoryID 
                        FROM parameter_type_category
                        WHERE Name=:name AND Type=:type",
+                array(
+                // htmlspecialchars() is necessary since data is escaped when
+                // inserted in the database but not escaped in the $title variable
+                 "name" => htmlspecialchars($title),
+                 "type" => "Instrument",
+                )
+            );
+            if (empty($catId)) {
+                $DB->insert(
+                    "parameter_type_category",
                     array(
-                        // htmlspecialchars() is necessary since data is escaped when
-                        // inserted in the database but not escaped in the $title variable
-                        "name" => htmlspecialchars($title),
-                        "type" => "Instrument",
+                     "Name" => $title,
+                     "Type" => "Instrument",
                     )
                 );
-                if (empty($catId)) {
-                    $DB->insert(
-                        "parameter_type_category",
-                        array(
-                            "Name" => $title,
-                            "Type" => "Instrument",
-                        )
-                    );
-                    $catId = $DB->lastInsertID;
-                }
+                $catId = $DB->lastInsertID;
+            }
 
-                $tblCount++;
-                break;
+            $tblCount++;
+            break;
 
-            case "header":
-                break;
+        case "header":
+            break;
 
             //for HTML_QuickForm versions of standard HTML Form Elements...
-            default:
-                //continue; // jump straight to validity for debugging
-                if (isset($bits[1]) && preg_match("/^Examiner/", $bits[1])) {
-                    // Treat examiner specially, since it's a select box but we need
-                    // to treat it as a varchar. derive_timepoint_variables will derive
-                    // the name from the examiner id
-                    $bits[0] = "varchar(255)";
-                } else if ($bits[0]=="select") {
-                    $bits[0] = enumizeOptions($bits[3], $table, $bits[1]);
-                } else if ($bits[0]=="textarea") {
-                    $bits[0] ="text";
-                } else if ($bits[0]=="text") {
-                    $bits[0] ="varchar(255)";
-                } else if ($bits[0]=="selectmultiple") {
-                    $bits[0] ="varchar(255)";
-                } else if ($bits[0]=="checkbox") {
-                    $bits[0] ="varchar(255)";
-                } else if ($bits[0]=="static") {
-                    $bits[0] ="varchar(255)";
-                }
+        default:
+            //continue; // jump straight to validity for debugging
+            if (isset($bits[1]) && preg_match("/^Examiner/", $bits[1])) {
+                // Treat examiner specially, since it's a select box but we need
+                // to treat it as a varchar. derive_timepoint_variables will derive
+                // the name from the examiner id
+                $bits[0] = "varchar(255)";
+            } else if ($bits[0]=="select") {
+                $bits[0] = enumizeOptions($bits[3], $table, $bits[1]);
+            } else if ($bits[0]=="textarea") {
+                $bits[0] ="text";
+            } else if ($bits[0]=="text") {
+                $bits[0] ="varchar(255)";
+            } else if ($bits[0]=="selectmultiple") {
+                $bits[0] ="varchar(255)";
+            } else if ($bits[0]=="checkbox") {
+                $bits[0] ="varchar(255)";
+            } else if ($bits[0]=="static") {
+                $bits[0] ="varchar(255)";
+            }
 
-                // Skip lines that contains only label or notes where bit[1] is empty.
-                if (empty($bits[1])) {
-                    continue;
-                }
+            // Skip lines that contains only label or notes where bit[1] is empty.
+            if (empty($bits[1])) {
+                continue;
+            }
 
-                print "\tInserting $table $bits[1]\n";
-                $bits[2] = htmlspecialchars($bits[2]);
-                //find values to insert
-                $Name = $table . "_" . $bits[1];
-                if (in_array($Name, $parameterNames, true)) {
-                    // this specific table_field combination was already inserted, skip.
-                    continue;
-                }
-                $parameterCount++;
-                $query_params = array(
-                    "Name"        => $Name,
-                    "Type"        => $bits[0],
-                    "Description" => $bits[2],
-                    "SourceField" => $bits[1],
-                    "SourceFrom"  => $table,
-                    "Queryable"   => "1",
-                );
+            print "\tInserting $table $bits[1]\n";
+            $bits[2] = htmlspecialchars($bits[2]);
+            //find values to insert
+            $Name = $table . "_" . $bits[1];
+            if (in_array($Name, $parameterNames, true)) {
+                // this specific table_field combination was already inserted, skip.
+                continue;
+            }
+            $parameterCount++;
+            $query_params = array(
+                             "Name"        => $Name,
+                             "Type"        => $bits[0],
+                             "Description" => $bits[2],
+                             "SourceField" => $bits[1],
+                             "SourceFrom"  => $table,
+                             "Queryable"   => "1",
+                            );
 
-                //Check if the same element existed in the parameter_type table
-                //before deleting the data.
-                if (array_key_exists($Name, $parameter_types)) {
-                    //If element existed, reuse the same id
-                    $ParameterTypeID = $parameter_types[$Name];
-                    $query_params["ParameterTypeID"] = $ParameterTypeID;
-                } else {
-                    //If it's new set it to empty string
-                    //and get the value from the insert below
-                    $ParameterTypeID = "";
-                }
+            //Check if the same element existed in the parameter_type table
+            //before deleting the data.
+            if (array_key_exists($Name, $parameter_types)) {
+                //If element existed, reuse the same id
+                $ParameterTypeID = $parameter_types[$Name];
+                $query_params["ParameterTypeID"] = $ParameterTypeID;
+            } else {
+                //If it's new set it to empty string
+                //and get the value from the insert below
+                $ParameterTypeID = "";
+            }
 
-                $DB->insert(
-                    "parameter_type",
-                    $query_params
-                );
+            $DB->insert(
+                "parameter_type",
+                $query_params
+            );
 
-                if ($ParameterTypeID === "") {
-                    // from DB
-                    $paramId = $DB->lastInsertID;
-                } else {
-                    // from above
-                    $paramId = $ParameterTypeID;
-                }
+            if ($ParameterTypeID === "") {
+                // from DB
+                $paramId = $DB->lastInsertID;
+            } else {
+                // from above
+                $paramId = $ParameterTypeID;
+            }
 
-                $parameterNames[$paramId] = $query_params["Name"];
-                $DB->insert(
-                    "parameter_type_category_rel",
-                    array(
-                        "ParameterTypeID"         => $paramId,
-                        "ParameterTypeCategoryID" => $catId,
-                    )
-                );
+            $parameterNames[$paramId] = $query_params["Name"];
+            $DB->insert(
+                "parameter_type_category_rel",
+                array(
+                 "ParameterTypeID"         => $paramId,
+                 "ParameterTypeCategoryID" => $catId,
+                )
+            );
         }
     }
 
@@ -238,13 +238,13 @@ foreach ($instruments AS $instrument) {
     $_type_enum = "enum('Questionable', 'Invalid', 'Valid')";
 
     $query_params = array(
-        "Name"        => $Name,
-        "Type"        => $_type_enum,
-        "Description" => "Validity of $table",
-        "SourceField" => "Validity",
-        "SourceFrom"  => $table,
-        "Queryable"   => "1",
-    );
+                     "Name"        => $Name,
+                     "Type"        => $_type_enum,
+                     "Description" => "Validity of $table",
+                     "SourceField" => "Validity",
+                     "SourceFrom"  => $table,
+                     "Queryable"   => "1",
+                    );
 
     if (array_key_exists($Name, $parameter_types)) {
         $ParameterTypeID = $parameter_types[$Name];
@@ -266,8 +266,8 @@ foreach ($instruments AS $instrument) {
     $DB->insert(
         "parameter_type_category_rel",
         array(
-            "ParameterTypeID"         => $paramId,
-            "ParameterTypeCategoryID" => $catId,
+         "ParameterTypeID"         => $paramId,
+         "ParameterTypeCategoryID" => $catId,
         )
     );
 
@@ -281,13 +281,13 @@ foreach ($instruments AS $instrument) {
 
     $_type_enum   = "enum('None', 'Partial', 'All')";
     $query_params = array(
-        "Name"        => $Name,
-        "Type"        => $_type_enum,
-        "Description" => "Administration for $table",
-        "SourceField" => "Administration",
-        "SourceFrom"  => $table,
-        "Queryable"   => "1",
-    );
+                     "Name"        => $Name,
+                     "Type"        => $_type_enum,
+                     "Description" => "Administration for $table",
+                     "SourceField" => "Administration",
+                     "SourceFrom"  => $table,
+                     "Queryable"   => "1",
+                    );
 
     if (array_key_exists($Name, $parameter_types)) {
         $ParameterTypeID = $parameter_types[$Name];
@@ -311,8 +311,8 @@ foreach ($instruments AS $instrument) {
     $DB->insert(
         "parameter_type_category_rel",
         array(
-            "ParameterTypeID"         => $paramId,
-            "ParameterTypeCategoryID" => $catId,
+         "ParameterTypeID"         => $paramId,
+         "ParameterTypeCategoryID" => $catId,
         )
     );
 }

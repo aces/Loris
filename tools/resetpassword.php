@@ -18,20 +18,23 @@ require_once "generic_includes.php";
 const MIN_NUMBER_OF_ARGS = 2;
 $args = $argv;
 if ($args[0] == 'php') {
-	$args = array_slice($argv, 1);
+    $args = array_slice($argv, 1);
 }
 if (count($args) < MIN_NUMBER_OF_ARGS) {
-	fwrite(STDERR, "Usage: resetpassword.php username\n");
-	fwrite(STDERR, "\nresetpassword.php will prompt for password on stdin\n");
-	exit(2);
+    fwrite(STDERR, "Usage: resetpassword.php username\n");
+    fwrite(STDERR, "\nresetpassword.php will prompt for password on stdin\n");
+    exit(2);
 }
 
 $user = $args[1];
 
-$validate = $DB->pselectOne("SELECT UserID FROM users WHERE UserID=:username", array("username" => $user));
+$validate = $DB->pselectOne(
+    "SELECT UserID FROM users WHERE UserID=:username", 
+    array("username" => $user)
+);
 if (empty($validate)) {
-	fwrite(STDERR, "Invalid username: $user\n");
-	exit(3);
+    fwrite(STDERR, "Invalid username: $user\n");
+    exit(3);
 }
 echo "Resetting password for user: $user\n";
 echo "New password: ";

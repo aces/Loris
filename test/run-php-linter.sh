@@ -16,3 +16,5 @@ done
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php,inc --colors php/ htdocs/ modules/ --ignore=htdocs/api/*|| exit $?;
 
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;
+
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php tools/ || exit $?;

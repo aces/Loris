@@ -96,12 +96,12 @@ class CouchDBInstrumentImporter
                         f.CommentID, 
                         CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, 
                         CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete ";
-        $from = "FROM 
+        $from   = "FROM 
                         flag f 
                         JOIN session s ON (s.ID=f.SessionID) 
                         JOIN candidate c ON (c.CandID=s.CandID) 
                         LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) ";
-        $where = "WHERE 
+        $where  = "WHERE 
                         f.CommentID NOT LIKE 'DDE%' 
                         AND f.Test_name=:inst
                         AND s.Active='Y' AND c.Active='Y'";
@@ -116,7 +116,7 @@ class CouchDBInstrumentImporter
 
         // add the SQL table to the query
         $extraSelect = ", i.* ";
-        $extraJoin = "JOIN " . $this->SQLDB->escape($tablename) . " i ON (i.CommentID=f.CommentID) ";
+        $extraJoin   = "JOIN " . $this->SQLDB->escape($tablename) . " i ON (i.CommentID=f.CommentID) ";
         return $select . $extraSelect . $from . $extraJoin . $where;
     }
     function UpdateCandidateDocs($Instruments)
@@ -135,8 +135,8 @@ class CouchDBInstrumentImporter
                 '',
                 ''
             );
-            $JSONData = $instrumentObj->usesJSONData();
-            $tableName = "";
+            $JSONData      = $instrumentObj->usesJSONData();
+            $tableName     = "";
             if ($JSONData === false) {
                 $tableName = $instrumentObj->table;
             }
@@ -153,7 +153,7 @@ class CouchDBInstrumentImporter
                     unset($row['Data']);
                     $docdata = $row + $instrumentData;
                 } else {
-                    $docdata   = $row;
+                    $docdata = $row;
                 }
 
                 unset($docdata['CommentID']);
@@ -228,4 +228,4 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBInstrumentImporter();
     $Runner->run();
 }
-?>
+

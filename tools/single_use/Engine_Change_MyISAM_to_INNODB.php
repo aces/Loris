@@ -61,12 +61,12 @@ $table_names = $DB->pselectCol(
 );
 
 // possible actions for script are schemaTables, all Tables or any table in the DB
-$actions    = array_merge(array("allTables","schemaTables"),$table_names);
+$actions = array_merge(array("allTables", "schemaTables"), $table_names);
 // END INPUT
 
 
 // get command arguments and validate
-if (in_array($argv[1],$actions,true)) {
+if (in_array($argv[1], $actions, true)) {
     $action = $argv[1];
 } else {
     echo "ERROR: The action you have selected is invalid. Use `schemaTable, `allTables `
@@ -85,13 +85,13 @@ if ($argv[2] === "apply") {
 // If action is `schemaTables` only, parse schema files
 if ($action === "schemaTables") {
     // SETUP INPUT from schema files in SQL loris directory
-    $schemaFiles = [
-        "0000-00-00-schema.sql",
-        "0000-00-01-Permission.sql",
-        "0000-00-02-Menus.sql",
-        "0000-00-03-ConfigTables.sql",
-        "0000-00-04-Help.sql",
-    ];
+    $schemaFiles    = [
+                       "0000-00-00-schema.sql",
+                       "0000-00-01-Permission.sql",
+                       "0000-00-02-Menus.sql",
+                       "0000-00-03-ConfigTables.sql",
+                       "0000-00-04-Help.sql",
+                      ];
     $schemaFileBase = $base . "SQL/";
     $completeSchema = "";
     foreach ($schemaFiles as $file) {
@@ -145,13 +145,13 @@ if ($printToSQL) {
     $dataPre = array();
     foreach ($tablesToChange as $key=>$table)
     {
-        $colNumber = getNumberOfCols($table,$adminDB,$dbConfig);
+        $colNumber  = getNumberOfCols($table, $adminDB, $dbConfig);
         $sortString = "";
         // limit to 20 columns to avoid Memory allocation errors
         for ($i=1; $i < min($colNumber-1, 20); $i++) {
             $sortString .= "$i,";
         }
-        $sortString .= $colNumber-1;
+        $sortString     .= $colNumber-1;
         $dataPre[$table] = $DB->pselect("SELECT * FROM ". $table . " ORDER BY $sortString", array());
     }
     echo "Running database calls.\n";
@@ -160,13 +160,13 @@ if ($printToSQL) {
     $dataPost = array();
     foreach ($tablesToChange as $key=>$table)
     {
-        $colNumber = getNumberOfCols($table,$adminDB,$dbConfig);
+        $colNumber  = getNumberOfCols($table, $adminDB, $dbConfig);
         $sortString = "";
         // limit to 20 columns to avoid Memory allocation errors
         for ($i=1; $i < min($colNumber-1, 20); $i++) {
             $sortString .= "$i,";
         }
-        $sortString .= $colNumber-1;
+        $sortString      .= $colNumber-1;
         $dataPost[$table] = $DB->pselect("SELECT * FROM ". $table . " ORDER BY $sortString", array());
     }
     compareArrays($dataPre, $dataPost);
@@ -189,13 +189,14 @@ function compareArrays($array1, $array2)
 
 function getNumberOfCols($DBTable, $DB, $dbConfig)
 {
-    $number = $DB->pselectOne("
+    $number = $DB->pselectOne(
+        "
           SELECT COUNT(*) 
           FROM `information_schema`.`COLUMNS` 
           WHERE TABLE_NAME=:tbl AND TABLE_SCHEMA=:dbn",
         array(
-            "tbl"=> $DBTable,
-            "dbn"=> $dbConfig["database"]
+         "tbl" => $DBTable,
+         "dbn" => $dbConfig["database"],
         )
     );
     return $number;

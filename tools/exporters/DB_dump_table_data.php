@@ -25,15 +25,16 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$config = NDB_Config::singleton();
+$config       = NDB_Config::singleton();
 $databaseInfo = $config->getSetting('database');
 
 // Get all tables in the database
-$tableNames = $DB->pselectCol("
+$tableNames = $DB->pselectCol(
+    "
                       SELECT TABLE_NAME 
                       FROM INFORMATION_SCHEMA.TABLES
                       WHERE TABLE_SCHEMA =:dbn",
-    array("dbn"=>$databaseInfo['database'])
+    array("dbn" => $databaseInfo['database'])
 );
 /*
  * Definitions of the flags used in the command below (ORDERING is IMPORTANT):
@@ -57,7 +58,8 @@ $tableNames = $DB->pselectCol("
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
     $filename = __DIR__ . "/../../raisinbread/RB_files/RB_$tableName.sql";
-    exec('mysqldump '.$databaseInfo['database'].' '.
+    exec(
+        'mysqldump '.$databaseInfo['database'].' '.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.

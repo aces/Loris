@@ -42,7 +42,7 @@ if (!$logfp) {
  * HELP SCREEN
  * display and stop processing if action=help
  */
-if (isset($argv[1]) && $argv[1] === 'help' || in_array('-h', $argv, true)){
+if (isset($argv[1]) && $argv[1] === 'help' || in_array('-h', $argv, true)) {
     showHelp();
 }
 
