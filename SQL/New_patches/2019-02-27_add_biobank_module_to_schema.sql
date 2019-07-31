@@ -445,11 +445,22 @@ CREATE TABLE `biobank_container_parent` (
 
 /*INSERTS*/
 
-/*XXX: The following 4 lines are for testing. Delete before merging.*/
+
+/*DELETES The following deletes are for testing. Delete before merging.*/
 DELETE FROM LorisMenu WHERE `Label`='Specimens';
 DELETE FROM LorisMenu WHERE `Label`='Containers';
 DELETE FROM LorisMenu WHERE `Label`='Pools';
 DELETE FROM LorisMenu WHERE `Label`='Biobank';
+
+DELETE FROM user_perm_rel WHERE
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_specimen_view') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_specimen_create') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_specimen_update') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_container_view') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_container_create') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_container_update') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_pool_view') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_pool_create') OR
 
 DELETE FROM permissions WHERE 
     `code`='biobank_specimen_view' OR 
@@ -490,6 +501,18 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_pool_view', 'Biobank: View Pool Data', 2),
     ('biobank_pool_create', 'Biobank: Create Pool Data', 2)
 ;
+
+INSERT INTO user_perm_rel (userID, permID) VALUES
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_view')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_create')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_update')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_view')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_create')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_update')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_pool_view')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_pool_create'))
+;
+
 
 /*Config*/
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
