@@ -201,9 +201,8 @@ class EditExaminer extends \NDB_Form
                     )
                 );
 
-                $oldVal = $oldVals[0]['new'] ?? null;
+                $oldVal  = $oldVals[0]['new'] ?? null;
                 $oldDate = $oldVals[0]['new_date'] ?? null;
-
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
