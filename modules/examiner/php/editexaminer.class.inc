@@ -194,13 +194,15 @@ class EditExaminer extends \NDB_Form
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
-                     ORDER BY changeDate DESC",
+                     ORDER BY changeDate DESC LIMIT 1",
                     array(
                      'EID' => $examinerID,
                      'TID' => $testID,
                     )
                 );
 
+		// since there is an ORDER BY in pselect
+		// $oldVals[0] corresponds to the latest date
                 $oldVal  = $oldVals[0]['new'] ?? null;
                 $oldDate = $oldVals[0]['new_date'] ?? null;
 
