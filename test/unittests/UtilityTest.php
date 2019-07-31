@@ -640,7 +640,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getSubprojectList() returns a list of subprojects from the database
      *
-     * @covers Utility::getProjectList()
+     * @covers Utility::getSubprojectList()
      * @return void
      */
     public function testGetSubprojectList()
@@ -667,7 +667,7 @@ class UtilityTest extends TestCase
      * Test that getSubprojectList() returns the correct subproject 
      * when a ProjectID is specified
      *
-     * @covers Utility::getProjectList()
+     * @covers Utility::getSubprojectList()
      * @return void
      */
     public function testGetSubprojectListWithProjectID()
@@ -692,7 +692,7 @@ class UtilityTest extends TestCase
    
         $this->assertEquals(
             array('123' => 'DemoProject'),
-            Utility::getSubprojectList('123')
+            Utility::getSubprojectList(123)
         );
     }
 
