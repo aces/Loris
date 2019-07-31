@@ -277,7 +277,7 @@ class DataTable extends Component {
           }
           break;
         default:
-            searchString = data.toLowerCase();
+            searchString = data ? data.toString().toLowerCase() : '';
             if (exactMatch) {
               result = (searchString === searchKey);
             } else if (opposite) {
@@ -299,7 +299,7 @@ class DataTable extends Component {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data.toString().toLowerCase();
+        searchString = data ? data.toString().toLowerCase() : '';
 
         match = (searchString.indexOf(searchKey) > -1);
         if (match) {
