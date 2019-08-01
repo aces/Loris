@@ -24,7 +24,10 @@ namespace LORIS\api;
  */
 class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
 {
-    protected $DBRow;
+    private $_shortname;
+    private $_fullname;
+    private $_subgroupname;
+    private $_isDDE;
 
     /**
      * Create a new ProjectImagesRow.
@@ -33,7 +36,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->DBRow = $row;
+        $this->_shortname    = $row['shortname'];
+        $this->_fullname     = $row['fullname'];
+        $this->_subgroupname = $row['subgroupname'];
+        $this->_isDDE        = in_array(
+            $row['shortname'],
+            \Utility::getAllDDEInstruments()
+        );
     }
 
     /**
@@ -43,7 +52,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        return json_encode($this->toArray());
+        return json_encode($this->_toArray());
     }
 
     /**
@@ -51,57 +60,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      *
      * @return array
      */
-    public function toArray() : array
+    private function _toArray() : array
     {
         return array(
-                'shortname' => $this->getShortname(),
-                'fullname'  => $this->getFullname(),
-                'subgroup'  => $this->getSubgroupname(),
-                'ddeenable' => $this->getDDEEnable(),
+                'shortname' => $this->_shortname,
+                'fullname'  => $this->_fullname,
+                'subgroup'  => $this->_subgroupname,
+                'ddeenable' => $this->_isDDE,
                );
-    }
-
-    /**
-     * Returns this row's shortname.
-     *
-     * @return ?string
-     */
-    public function getShortname() : ?string
-    {
-        return $this->DBRow['shortname'] ?? null;
-    }
-
-    /**
-     * Returns this row's fullname.
-     *
-     * @return string
-     */
-    public function getFullname() : string
-    {
-        return $this->DBRow['fullname'] ?? null;
-    }
-
-    /**
-     * Retruns this row's subgroupname.
-     *
-     * @return string
-     */
-    public function getSubgroupname() : string
-    {
-        return $this->DBRow['subgroupname'] ?? null;
-    }
-
-    /**
-     * Checks if this instrument is part of the double data entry instruments.
-     * This use \Utility::getAllDDEInstruments() because the information is not
-     * in the database and the instrument class do not provide a isDDE function.
-     *
-     * @return bool
-     */
-    public function getDDEEnable() : bool
-    {
-        // FIXME :: This should come from the database but DDE instruments are
-        // still in config.xml
-        return in_array($this->getShortname(), \Utility::getAllDDEInstruments());
     }
 }
