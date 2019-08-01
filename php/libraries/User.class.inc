@@ -556,11 +556,13 @@ class User extends UserPermissions
     {
 
         // If the project is configured to disable the Pwned Password check,
-        // always return false (meanning that the password has not been pwned).
-        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
-            'usePwnedPasswordsAPI'
-        )
-        ) {
+        // always return false (meaning that the password has not been pwned
+        // and the submitted password is acceptable).
+        $checkPwned = \NDB_Factory::singleton()
+            ->config()
+            ->settingEnabled('usePwnedPasswordsAPI');
+
+        if (!$checkPwned) {
             return false;
         }
 

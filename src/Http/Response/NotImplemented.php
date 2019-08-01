@@ -41,4 +41,3 @@ class NotImplemented extends JsonResponse
         parent::__construct($body, 501);
     }
 }
-

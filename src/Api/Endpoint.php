@@ -17,7 +17,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-
 /**
  * An abstract class for common concerns of different API endpoints.
  *
