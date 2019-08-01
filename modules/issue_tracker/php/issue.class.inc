@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file features the code for the form portion of the Loris issue
  * tracker.
@@ -16,7 +15,6 @@
 namespace LORIS\issue_tracker;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-
 /**
  * Creates the form for NDB_Form_issue_tracker
  *
@@ -26,10 +24,8 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-
 class Issue extends \NDB_Form
 {
-
     protected $issueID;
     public $skipTemplate = true;
 
@@ -43,10 +39,14 @@ class Issue extends \NDB_Form
         parent::setup();
         $user    =& \User::singleton();
         $issueID = $this->issueID;
-
         if ((empty($issueID)
             || !isset($issueID))
-            && !$user->hasPermission('issue_tracker_reporter')
+            && !$user->hasAnyPermission(
+                array(
+                 'issue_tracker_reporter',
+                 'issue_tracker_developer',
+                )
+            )
         ) {
             header("HTTP/1.1 403 Forbidden");
         }
@@ -68,19 +68,6 @@ class Issue extends \NDB_Form
         );
     }
 
-
-    /**
-    * Gets control panel
-    *
-    * @return string ($controlPanel)
-    */
-    function getControlPanel()
-    {
-        $controlPanel = new issue_tracker_ControlPanel($this->issueID);
-        return $controlPanel->display();
-    }
-
-
     /**
      * Include issueIndex.js
      *
@@ -101,33 +88,32 @@ class Issue extends \NDB_Form
      * Checks if the user has the ability to *view* the issue page
      * Does not govern editing abilities; those are controlled by issueIndex.js
      *
-     * @param \User $user The user whose access is being checked
+     * @param \User $user User Instance
      *
      * @return bool
+     *
+     * @throws \ConfigurationException
      */
     function _hasAccess(\User $user) : bool
     {
         $db      = \Database::singleton();
         $issueID = $this->issueID;
-
         if (!$issueID) {
             return true;
         }
-
         $issueData = $db->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
-
         if (in_array($issueData['centerID'], $user->getData('CenterIDs'))
             || ($user->hasPermission('access_all_profiles'))
             || (!empty($issueData['centerID']))
         ) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
-
     /**
      * Handle the incoming request for an issue. This extracts URLs of the form
      * /issue_tracker/issue/3 and extracts the issueID so that it's accessible
@@ -140,9 +126,13 @@ class Issue extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $results = [];
-        preg_match('#/issue/([0-9])+$#', $request->getURI()->getPath(), $results);
+        preg_match(
+            '#/issue/([0-9]+|new)$#',
+            $request->getURI()->getPath(),
+            $results
+        );
         $this->issueID = $results[1] ?? null;
-        if (empty($this->issueID)) {
+        if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
             return new \Loris\Http\Error($request, 404, "Issue not found");

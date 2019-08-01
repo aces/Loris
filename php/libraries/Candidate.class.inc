@@ -465,7 +465,7 @@ class Candidate
      */
     function getCenterID(): int
     {
-        return $this->candidateInfo["RegistrationCenterID"];
+        return intval($this->candidateInfo["RegistrationCenterID"]);
     }
 
     /**
@@ -492,9 +492,10 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string Male|Female String describing the sex
+     * @return string|null Male|Female String describing the sex
+     *                     and null if scanner
      */
-    function getCandidateSex(): string
+    function getCandidateSex(): ?string
     {
         return $this->candidateInfo["Sex"];
     }
@@ -582,7 +583,9 @@ class Candidate
         $subprojList = array();
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $query   = "SELECT SubprojectID 
+                    FROM project_subproject_rel 
+                    WHERE ProjectID = :prj";
         $params  = array('prj' => $projID);
         $subproj = \NDB_Factory::singleton()
             ->database()

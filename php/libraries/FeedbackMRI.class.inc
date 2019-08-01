@@ -76,13 +76,13 @@ class FeedbackMRI
      * Sets (or adds) predefined comments to an object - does NOT clear
      * predefined comments internally
      *
-     * @param array $predefinedCommentIDs an array of integers which are
+     * @param array|null $predefinedCommentIDs an array of integers which are
      *                                    PredefinedCommentID from
      *                                    feedback_mri_predefined_comments table
      *
      * @return bool true if operation succeeded
      */
-    function setPredefinedComments(array $predefinedCommentIDs): bool
+    function setPredefinedComments(array $predefinedCommentIDs=null): bool
     {
         // choke if we are passed an empty array
         if (empty($predefinedCommentIDs)) {
@@ -128,13 +128,13 @@ class FeedbackMRI
     /**
      * Gets the comments stored for the object
      *
-     * @return array tree: $cA[$typeID]['predefined'] is an array with integer
+     * @return array|null tree: $cA[$typeID]['predefined'] is an array with integer
      *               keys (PredefinedCommentID) and boolean values (true) and
      *               $cA[$typeID]['text'] is an array of strings (free-form
      *               comments) where $typeID is always the CommentTypeID from
      *               feedback_mri_comment_types table
      */
-    function getComments(): array
+    function getComments(): ?array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -146,6 +146,7 @@ class FeedbackMRI
 
         $result = $DB->pselect($query, array());
 
+        $comments = array();
         // build the output array
         if (is_array($result)) {
             foreach ($result as $row) {
@@ -203,11 +204,11 @@ class FeedbackMRI
     /**
      * Gets the value of a single field in the MRI table
      *
-     * @param int $fieldName field to select from in mri table
+     * @param string $fieldName field to select from in mri table
      *
      * @return string value of $fieldName in mri table
      */
-    function getMRIValue(int $fieldName): string
+    function getMRIValue(string $fieldName): string
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
@@ -347,8 +348,8 @@ class FeedbackMRI
                     $overallType = $CTID;
                     $overallName = array(
                                     'name'   => stripslashes($CommentName),
-                                    'field'  => $statusField['field'],
-                                    'values' => $statusField['values'],
+                                    'field'  => $statusField['field'] ?? 'overall',
+                                    'values' => $statusField['values'] ?? '',
                                    );
                 } else {
                     // add a row to the output array

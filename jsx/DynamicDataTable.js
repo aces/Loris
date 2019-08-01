@@ -96,6 +96,7 @@ class DynamicDataTable extends Component {
         getFormattedCell={this.props.getFormattedCell}
         freezeColumn={this.props.freezeColumn}
         onSort={this.props.onSort}
+        hiddenHeaders={this.props.hiddenHeaders}
       />
     );
   }
@@ -103,6 +104,7 @@ class DynamicDataTable extends Component {
 
 DynamicDataTable.propTypes = {
   DataURL: PropTypes.string.isRequired,
+  hiddenHeaders: PropTypes.array,
 };
 
 DynamicDataTable.defaultProps = {

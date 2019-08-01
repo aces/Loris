@@ -23,6 +23,7 @@
 
 class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -404,7 +405,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
     {
         $DB     = Database::singleton();
         $gender = $DB->pselectOne(
-            "SELECT Gender from candidate WHERE CandID=:candID",
+            "SELECT Sex from candidate WHERE CandID=:candID",
             array('candID' => $candID)
         );
         if ($gender == 'female') {

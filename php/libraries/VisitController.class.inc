@@ -93,6 +93,7 @@ ORDER BY ID
                  visit v
                 WHERE
                  v.VisitName = :name
+                ORDER BY ID
                 ',
                 array('name' => $visit)
             )
@@ -104,7 +105,7 @@ ORDER BY ID
      *
      * @return array The list of visits, projectID and subprojectID
      */
-    public function getVisitsAndProject(): array
+    public function getVisitsProjectSubproject(): array
     {
         return array_map(
             function ($row) {
@@ -118,14 +119,17 @@ ORDER BY ID
                 'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
-                  vps.ProjectID as "project",
-                  vps.SubProjectID as "subproject"
+                  psr.ProjectID as "project",
+                  psr.SubprojectID as "subproject"
                  FROM
                   visit v
                  JOIN
                   visit_project_subproject_rel vps
                  ON v.VisitID = vps.VisitID
-ORDER BY ID
+                 JOIN 
+                  project_subproject_rel psr 
+                 ON vps.ProjectSubprojectRelID = psr.ProjectSubprojectRelID
+                ORDER BY ID, project, subproject
                 ',
                 array()
             )

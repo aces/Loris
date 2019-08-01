@@ -369,6 +369,8 @@ class TimePoint
              'ID' => $this->getData('SessionID'),
             )
         );
+        // this select updates the timepoint object
+        $this->select(intval($this->getData('SessionID')));
         return true;
     }
 
@@ -488,9 +490,9 @@ class TimePoint
     /**
      * Return the approval status of this timepoint.
      *
-     * @return string 'In Progress', 'Pass' or 'Failure'
+     * @return string|null 'In Progress', 'Pass' or 'Failure'
      */
-    function getApprovalStatus(): string
+    function getApprovalStatus(): ?string
     {
         return $this->_timePointInfo["Approval"];
     }
@@ -638,9 +640,9 @@ class TimePoint
     /**
      * Defines the next study stage
      *
-     * @return string study stage title
+     * @return string|null study stage title
      */
-    function getNextStage(): string
+    function getNextStage(): ?string
     {
         if ($this->getData('Current_stage') == 'Approval'
             && $this->getData('Approval') != 'Pass'

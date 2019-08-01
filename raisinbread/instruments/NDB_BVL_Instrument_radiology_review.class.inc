@@ -1,6 +1,8 @@
 <?php
 class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 

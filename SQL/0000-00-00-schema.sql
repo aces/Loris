@@ -1,149 +1,6 @@
 -- ********************************
--- DROP TABLE (ORDER MATTERS)
--- ********************************
-DROP TABLE IF EXISTS `candidate_consent_rel`;
-DROP TABLE IF EXISTS `consent`;
-DROP TABLE IF EXISTS `candidate_consent_history`;
-
-DROP TABLE IF EXISTS `acknowledgements`;
-
-DROP TABLE IF EXISTS `data_release_permissions`;
-DROP TABLE IF EXISTS `data_release`;
-
-DROP TABLE IF EXISTS `ExternalLinks`;
-DROP TABLE IF EXISTS `ExternalLinkTypes`;
-
-DROP TABLE IF EXISTS `feedback_mri_comments`;
-DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
-DROP TABLE IF EXISTS `feedback_mri_comment_types`;
-DROP TABLE IF EXISTS `feedback_bvl_entry`;
-DROP TABLE IF EXISTS `feedback_bvl_thread`;
-DROP TABLE IF EXISTS `feedback_bvl_type`;
-
-DROP TABLE IF EXISTS `genomic_cpg`;
-DROP TABLE IF EXISTS `genomic_cpg_annotation`;
-DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
-DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
-DROP TABLE IF EXISTS `genomic_files`;
-DROP TABLE IF EXISTS `genomic_analysis_modality_enum`;
-DROP TABLE IF EXISTS `GWAS`;
-DROP TABLE IF EXISTS `CNV`;
-DROP TABLE IF EXISTS `SNP_candidate_rel`;
-DROP TABLE IF EXISTS `SNP`;
-DROP TABLE IF EXISTS `genotyping_platform`;
-DROP TABLE IF EXISTS `gene`;
-DROP TABLE IF EXISTS `genome_loc`;
-
-DROP TABLE IF EXISTS `parameter_session`;
-DROP TABLE IF EXISTS `parameter_file`;
-DROP TABLE IF EXISTS `parameter_candidate`;
-DROP TABLE IF EXISTS `parameter_type_override`;
-DROP TABLE IF EXISTS `parameter_type_category_rel`;
-DROP TABLE IF EXISTS `parameter_type_category`;
-DROP TABLE IF EXISTS `parameter_type`;
-
-DROP TABLE IF EXISTS `issues_watching`;
-DROP TABLE IF EXISTS `issues_comments_history`;
-DROP TABLE IF EXISTS `issues_history`;
-DROP TABLE IF EXISTS `issues_comments`;
-DROP TABLE IF EXISTS `issues`;
-DROP TABLE IF EXISTS `issues_categories`;
-
-DROP TABLE IF EXISTS `media`;
-
-DROP TABLE IF EXISTS `server_processes`;
-
-DROP TABLE IF EXISTS `StatisticsTabs`;
-
-DROP TABLE IF EXISTS `user_login_history`;
-
-DROP TABLE IF EXISTS `user_account_history`;
--- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
-
-DROP TABLE IF EXISTS `data_integrity_flag`;
-
-DROP TABLE IF EXISTS `certification_training_quiz_answers`;
-DROP TABLE IF EXISTS `certification_training_quiz_questions`;
-DROP TABLE IF EXISTS `certification_training`;
-DROP TABLE IF EXISTS `certification_history`;
-DROP TABLE IF EXISTS `certification`;
-DROP TABLE IF EXISTS `examiners_psc_rel`;
-DROP TABLE IF EXISTS `examiners`;
-
-DROP TABLE IF EXISTS `participant_status_history`;
-DROP TABLE IF EXISTS `family`;
-DROP TABLE IF EXISTS `participant_emails`;
-DROP TABLE IF EXISTS `participant_accounts`;
-DROP TABLE IF EXISTS `participant_status`;
-DROP TABLE IF EXISTS `participant_status_options`;
-
-DROP TABLE IF EXISTS `conflicts_resolved`;
-DROP TABLE IF EXISTS `conflicts_unresolved`;
-
-
-DROP TABLE IF EXISTS `notification_spool`;
-DROP TABLE IF EXISTS `notification_types`;
-DROP TABLE IF EXISTS `notification_history`;
-DROP TABLE IF EXISTS `users_notifications_rel`;
-DROP TABLE IF EXISTS `notification_modules_services_rel`;
-DROP TABLE IF EXISTS `notification_services`;
-DROP TABLE IF EXISTS `notification_modules`;
-
-DROP TABLE IF EXISTS `document_repository`;
-DROP TABLE IF EXISTS `document_repository_categories`;
-
-DROP TABLE IF EXISTS `violations_resolved`;
-DROP TABLE IF EXISTS `mri_violations_log`;
-DROP TABLE IF EXISTS `mri_protocol_checks`;
-DROP TABLE IF EXISTS `mri_upload`;
-DROP TABLE IF EXISTS `MRICandidateErrors`;
-DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
-DROP TABLE IF EXISTS `mri_protocol`;
-DROP TABLE IF EXISTS `mri_acquisition_dates`;
-DROP TABLE IF EXISTS `files_qcstatus`;
-DROP TABLE IF EXISTS `files_intermediary`;
-DROP TABLE IF EXISTS `files`;
-DROP TABLE IF EXISTS `mri_scan_type`;
-DROP TABLE IF EXISTS `mri_scanner`;
-DROP TABLE IF EXISTS `mri_processing_protocol`;
-DROP TABLE IF EXISTS `ImagingFileTypes`;
-
-DROP TABLE IF EXISTS `tarchive_files`;
-DROP TABLE IF EXISTS `tarchive_series`;
-DROP TABLE IF EXISTS `tarchive`;
-
-DROP TABLE IF EXISTS bids_mri_scan_type_rel;
-DROP TABLE IF EXISTS bids_category;
-DROP TABLE IF EXISTS bids_scan_type;
-DROP TABLE IF EXISTS bids_scan_type_subcategory;
-
-DROP TABLE IF EXISTS `history`;
-DROP TABLE IF EXISTS `Visit_Windows`;
-DROP TABLE IF EXISTS `test_battery`;
-DROP TABLE IF EXISTS `flag`;
-DROP TABLE IF EXISTS `instrument_subtests`;
-DROP TABLE IF EXISTS `test_names`;
-DROP TABLE IF EXISTS `test_subgroups`;
-DROP TABLE IF EXISTS `session_status`;
-DROP TABLE IF EXISTS `session`;
-DROP TABLE IF EXISTS `user_psc_rel`;
-DROP TABLE IF EXISTS `candidate`;
-DROP TABLE IF EXISTS `caveat_options`;
-SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS `users`;
-SET FOREIGN_KEY_CHECKS=1;
-DROP TABLE IF EXISTS `language`;
-DROP TABLE IF EXISTS `psc`;
-DROP TABLE IF EXISTS `project_rel`;
-DROP TABLE IF EXISTS `subproject`;
-DROP TABLE IF EXISTS `Project`;
-DROP TABLE IF EXISTS `visit_project_subproject_rel`;
-DROP TABLE IF EXISTS `visit`;
-
--- ********************************
 -- Core tables
 -- ********************************
-
 
 CREATE TABLE `Project` (
     `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
@@ -151,6 +8,8 @@ CREATE TABLE `Project` (
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `Project` (Name) VALUES ('loris');
 
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
@@ -166,10 +25,14 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_rel` (
+CREATE TABLE `project_subproject_rel` (
+  `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(2) NOT NULL,
-  `SubprojectID` int(2) NOT NULL,
-  PRIMARY KEY (ProjectID, SubprojectID)
+  `SubprojectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ProjectSubprojectRelID`),
+  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
+  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -305,7 +168,7 @@ CREATE TABLE `session` (
   `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(11) DEFAULT NULL,
+  `SubprojectID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
@@ -338,7 +201,8 @@ CREATE TABLE `session` (
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (
@@ -685,13 +549,6 @@ CREATE TABLE `files_qcstatus` (
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_acquisition_dates` (
-  `SessionID` int(10) unsigned NOT NULL default '0',
-  `AcquisitionDate` date default NULL,
-  PRIMARY KEY  (`SessionID`),
-  CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
@@ -719,6 +576,7 @@ CREATE TABLE `mri_protocol` (
   `zstep_max` DECIMAL(9,4) DEFAULT NULL,
   `time_min` int(4) DEFAULT NULL,
   `time_max` int(4) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -763,8 +621,8 @@ CREATE TABLE `mri_protocol_checks` (
   `Scan_type` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
-  `ValidMin` int(4) DEFAULT NULL,
-  `ValidMax` int(4) DEFAULT NULL,
+  `ValidMin` decimal(10,4) DEFAULT NULL,
+  `ValidMax` decimal(10,4) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
@@ -937,6 +795,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -1021,6 +880,7 @@ CREATE TABLE `notification_spool` (
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
+  `Active` enum('Y', 'N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),
@@ -1301,36 +1161,6 @@ CREATE TABLE `certification_history` (
   `type` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='primaryVals should always contain a valid certID from the certification table';
-
-CREATE TABLE `certification_training` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `TestID` int(10) UNSIGNED NOT NULL,
-    `Title` varchar(255) NOT NULL,
-    `Content` text,
-    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `certification_training_quiz_questions` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `TestID` int(10) unsigned NOT NULL,
-    `Question` varchar(255) NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `certification_training_quiz_answers` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `QuestionID` INTEGER UNSIGNED NOT NULL,
-    `Answer` varchar(255) NOT NULL,
-    `Correct` boolean NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- data_intergrity_flag tables
@@ -2138,21 +1968,20 @@ CREATE TABLE `candidate_consent_history` (
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
-  CONSTRAINT `visit_PK` PRIMARY KEY (`VisitID`),
-  CONSTRAINT `visit_name_UK` UNIQUE KEY (`VisitName`)
+  CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
+  CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `visit_project_subproject_rel` (
- `VisitID` int(10) unsigned NOT NULL,
- `ProjectID` int(2) NOT NULL,
- `SubprojectID` int(10) unsigned NOT NULL,
-  CONSTRAINT `visit_project_subproject_rel_PK` PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
-  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`)
+  `VisitProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `VisitID` int(10) unsigned NOT NULL,
+  `ProjectSubprojectRelID` int(10) unsigned NOT NULL,
+  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectRelID`),
+  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectRelID UNIQUE KEY (`VisitID`, `ProjectSubprojectRelID`),
+  CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `visit_project_subproject_ProjectID_visit_ProjectID_FK` FOREIGN KEY (`ProjectID`)
-    REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `visit_project_subproject_SubprojectID_visit_SubprojectID_FK` FOREIGN KEY (`SubprojectID`)
-    REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
+    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status

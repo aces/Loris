@@ -89,7 +89,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
             $senderEmail = $this->notifier->getData('Email');
             $this->tpl_data['notified_user'] = $name;
             $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
-            $recipientEmail = $this->getEmail($uid);
+            $recipientEmail = $this->getEmail((int)$uid);
 
             if ($notifierID === $uid) {
                 // TODO send confirmation email instead
@@ -99,7 +99,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
                     $this->template,
                     $this->tpl_data
                 );
-                $this->log($notifierID, $uid, 'email_text');
+                $this->log((int)$notifierID, (int)$uid, 'email_text');
             }
         }
     }

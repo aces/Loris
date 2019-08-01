@@ -35,10 +35,9 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     static $instrument = "#surveyAccounts_filter > div > div > fieldset >".
                          " div:nth-child(5) > div > div > select";
     // clear filter button
-    static $clearFilter = "#surveyAccounts_filter > div > div > fieldset > ".
-                          "div:nth-child(6) > div > div > button";
+    static $clearFilter = ".col-sm-9 > .btn";
     static $add         = "#default-panel > div > div > div.table-header >".
-                          " div > div > div.pull-right > button:nth-child(1)";
+                          " div > div > div:nth-child(2) > button:nth-child(1)";
     // header of the table
     static $table = "#default-panel > div > div > div.table-header".
                     " > div > div > div:nth-child(1)";
@@ -59,6 +58,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
               'MRI_alias' => 'test',
              )
          );
+        $this->DB->insert(
+            "subproject",
+            array(
+             'SubprojectID' => '55',
+             'title'        => 'TESTinSubproject',
+            )
+        );
           $this->DB->insert(
               "candidate",
               array(
@@ -77,7 +83,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                'CenterID'     => '55',
                'UserID'       => '1',
                'MRIQCStatus'  => 'Pass',
-               'SubprojectID' => '6666',
+               'SubprojectID' => '55',
                'Visit'        => 'In Progress',
               )
           );
@@ -99,7 +105,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                'CenterID'     => '55',
                'UserID'       => '1',
                'MRIQCStatus'  => 'Pass',
-               'SubprojectID' => '6666',
+               'SubprojectID' => '55',
                'Visit'        => 'In Progress',
               )
           );
@@ -140,6 +146,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array('CandID' => '999999')
+        );
+        $this->DB->delete(
+            "subproject",
+            array('SubprojectID' => '55')
         );
         $this->DB->delete(
             "psc",

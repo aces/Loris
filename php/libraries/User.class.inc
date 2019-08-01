@@ -231,7 +231,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->userInfo['ID'];
+        return intval($this->userInfo['ID']);
     }
 
     /**
@@ -516,6 +516,7 @@ class User extends UserPermissions
      */
     function updatePassword(string $password, string $expiry = ''): void
     {
+        $password = htmlspecialchars_decode($password);
         if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
@@ -541,15 +542,17 @@ class User extends UserPermissions
      *
      * @return bool Whether the password is known to be pwned.
      */
-    function pwnedPassword(string $password): bool
+    static function pwnedPassword(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
-        // always return false (meanning that the password has not been pwned).
-        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
-            'usePwnedPasswordsAPI'
-        )
-        ) {
+        // always return false (meaning that the password has not been pwned
+        // and the submitted password is acceptable).
+        $checkPwned = \NDB_Factory::singleton()
+            ->config()
+            ->settingEnabled('usePwnedPasswordsAPI');
+
+        if (!$checkPwned) {
             return false;
         }
 
