@@ -49,6 +49,14 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
 
+Note: to empty and delete all RaisinBread tables, use the following command in the 
+main LORIS root directory
+```
+cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
+    SQL/9999-99-99-drop_tables.sql | mysql
+```
+
+
 ##### Configuring
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
 some configurations are necessary.
