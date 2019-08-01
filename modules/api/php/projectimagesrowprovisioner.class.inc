@@ -91,6 +91,8 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
     {
         $new = clone($this);
 
+        // If a user can't view images from all sites check if they can view images
+        // from its own sites. If not, limit images to phantoms.
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             if ($user->hasPermission('imaging_browser_view_site')) {
                 $new = $new->filter(
@@ -103,6 +105,8 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
             }
         }
 
+        // If a can't view phantoms from all sites, check if they can view phantoms
+        // from its own sites. If not, filter out phantoms.
         if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
             if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
                 $new = $new->filter(
