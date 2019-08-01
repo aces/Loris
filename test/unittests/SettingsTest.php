@@ -177,9 +177,11 @@ class SettingsTest extends TestCase
      */
     public function testGetBaseURLWithLorisBaseURL()
     {
-        //putenv sets the environment variable
+        //putenv sets the environment variable:
         putenv("LORIS_BASEURL=test2.loris.ca");
         $this->assertEquals("test2.loris.ca", $this->_settings->getBaseURL());
+        //Unset the environment variable:
+        putenv("LORIS_BASEURL");
     }
 
     /**
