@@ -666,5 +666,32 @@ abstract class LorisIntegrationTest extends TestCase
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
     }
+    /**
+     * Testing filter funtion and clear button
+     *
+     * @param string $element The input element loaction
+     * @param string $records The records number in the table
+     * @param string $value   The test value
+     * @param string $row     React Table row number 
+     * @param string $btn     clear filter button
+     *
+     * @return void
+     */
+    function _testFilter($element,$records,$value,$row,$btn)
+    { 
+        // get element from the page
+ 
+            if (strpos($element, "select") === false) {
+                $this->reactTextSendKey($element,$value);
+            } else {
+                $this->reactDropdownSendKey($element,$value);
+            }
+            $bodyText = $this->getReactElementContent($row);
+            // 4 means there are 4 records under this site.
+            $this->assertContains($records, $bodyText);
+            //test clear filter
+            $this->clickReactElement($btn);
+    }
+
 }
 ?>

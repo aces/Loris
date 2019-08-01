@@ -92,6 +92,12 @@ class NDB_Config
      */
     function load(string $configFile = "../project/config.xml"): void
     {
+        // in test mode,load configFile from Docker DB
+        $env = getenv('LORIS_DB_CONFIG');
+        if (!empty($env)) {
+            $configFile = $env;
+        }
+
         // load the configuration data into a global variable $config
         $newroot = simplexml_load_file($configFile);
 
