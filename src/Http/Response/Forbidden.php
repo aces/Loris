@@ -32,10 +32,9 @@ class Forbidden extends JsonResponse
      *
      * @param string $msg The error message
      */
-    public function __construct(string $msg='forbidden')
+    public function __construct(string $msg = 'forbidden')
     {
         $body = array('error' => $msg);
         parent::__construct($body, 403);
     }
 }
-

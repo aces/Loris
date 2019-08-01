@@ -55,7 +55,7 @@ abstract class ValidatableIdentifier implements Identifier
      *
      * @throws \DomainException When the value is not valid
      */
-    public final function __construct(string $value)
+    final public function __construct(string $value)
     {
         if (!$this->validate($value)) {
             throw new \DomainException('The value is not valid');
@@ -63,4 +63,3 @@ abstract class ValidatableIdentifier implements Identifier
         $this->value = $value;
     }
 }
-

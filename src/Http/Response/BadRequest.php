@@ -41,4 +41,3 @@ class BadRequest extends JsonResponse
         parent::__construct($body, 400);
     }
 }
-
