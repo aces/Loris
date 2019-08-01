@@ -99,6 +99,7 @@ class LorisForms_Test extends TestCase
             $this->fail("Element $el does not exist");
             return;
         }
+
         $this->assertEquals(
             $this->form->form[$el][$attribute],
             $attribValue,
