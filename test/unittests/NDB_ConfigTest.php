@@ -132,6 +132,7 @@ class NDB_ConfigTest extends TestCase
      * showDatabaseQueries), it will return null.
      * If database class exists and the dabase returns 'AllowMultiple' => '0',
      * 'ParentID' => 'test', this method should return a non-null value.
+     *
      * @return void
      */
     public function testGetSettingFromDB(): void
@@ -141,7 +142,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
-            ->willReturn('true');
+            ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(array(array('AllowMultiple' => '0', 'ParentID' => 'test')));
