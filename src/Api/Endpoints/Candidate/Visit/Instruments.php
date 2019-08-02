@@ -144,16 +144,8 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\VisitInstrumentsRowProvisioner(
-                $this->visit
-            );
-            $data        = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($request->getAttribute('user'));
-
             $view = (new \LORIS\Api\Views\Visit\Instruments(
-                $this->visit,
-                array_values($data)
+                $this->visit
             ))->toArray();
 
             $this->cache = new \LORIS\Http\Response\JsonResponse($view);

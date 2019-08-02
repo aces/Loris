@@ -1073,5 +1073,30 @@ class TimePoint
             $row['hascaveat'] ?? null
         );
     }
+
+    /**
+     * Gets the instrument names associated to this timepoint
+     *
+     * The DISTINCT keyword is used because DDE instruments would meke
+     * duplicates.
+     *
+     * @return array A list of test_name
+     */
+    public function getInstrumentNames(): array
+    {
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectCol(
+            '
+             SELECT DISTINCT
+               Test_name as shortname
+             FROM
+               flag
+             WHERE
+               SessionID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+        return $result;
+    }
 }
 
