@@ -99,8 +99,8 @@ class DicomTar
                 '
                  SELECT
                    TarchiveSeriesID as id,
-                   SeriesDescription as description,
-                   SeriesNumber as number,
+                   SeriesDescription as seriesdescription,
+                   SeriesNumber as seriesnumber,
                    EchoTime as echotime,
                    RepetitionTime as repetitiontime,
                    InversionTime as inversiontime,
@@ -119,8 +119,8 @@ class DicomTar
             function ($row) {
                 return new DicomSeriesDTO(
                     intval($row['id']),
-                    $row['description'],
-                    intval($row['number']),
+                    $row['seriesdescription'],
+                    intval($row['seriesnumber']),
                     $row['echotime'],
                     $row['repetitiontime'],
                     $row['inversiontime'],
