@@ -1045,5 +1045,33 @@ class TimePoint
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
     }
 
+    /**
+     * Accessor for this timepoint imaging QC status.
+     *
+     * @return \LORIS\TimePointImagingQC
+     */
+    public function getImagingQC(): \LORIS\TimePointImagingQC
+    {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               MRIQCStatus as qcstatus,
+               MRIQCPending as ispending,
+               MRICaveat as hascaveat
+             FROM
+               session
+             WHERE
+               ID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+
+        return new \LORIS\TimePointImagingQC(
+            $row['qcstatus'] ?? null,
+            $row['ispending'] ?? null,
+            $row['hascaveat'] ?? null
+        );
+    }
 }
 

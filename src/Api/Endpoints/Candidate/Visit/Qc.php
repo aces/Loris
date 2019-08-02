@@ -112,15 +112,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->cache)) {
-            $provisioner = new \LORIS\api\VisitImagingQcRowProvisioner(
-                $this->visit
-            );
 
-            $data = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($request->getAttribute('user'));
+            $qcstatus = $this->visit->getImagingQC();
 
-            $view = (new \LORIS\Api\Views\Visit\Qc($this->visit, $data[0]))
+            $view = (new \LORIS\Api\Views\Visit\Qc($this->visit, $qcstatus))
                 ->toArray();
 
             $this->cache = new \LORIS\Http\Response\JsonResponse($view);
@@ -200,7 +195,6 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        // FIXME :: If-None-Match do not work
         return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }

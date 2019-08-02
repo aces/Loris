@@ -11,6 +11,8 @@
 
 namespace LORIS\Api\Views\Visit;
 
+use \LORIS\TimePointImagingQC;
+
 /**
  * Creates a representation of a visit imaging qc following the api response
  * specifications.
@@ -29,21 +31,18 @@ class Qc
     protected $ispending;
 
     /**
-     * Constructor which sets the instance variables based on the provided timepoint
+     * Constructor which sets the instance variables based on the provided timepoint.
      *
-     * @param \Timepoint $timepoint The timepoint to represent
-     * @param array      $mriqc     An associative array containing MRIQCStatus and
-     *                              MRIQCPending keys MRIQCPending keys
+     * @param \Timepoint         $timepoint The timepoint to represent
+     * @param TimePointImagingQC $qc        The imaging qc values
      */
-    public function __construct(\Timepoint $timepoint, array $mriqc)
+    public function __construct(\Timepoint $timepoint, TimePointImagingQC $qc)
     {
         $this->meta['CandID'] = $timepoint->getCandID();
         $this->meta['Visit']  = $timepoint->getVisitLabel();
 
-        // TODO :: $this->sessionqc = $timepoint->getMRIQCStatus();
-        // TODO :: $this->ispending = $timepoint->getMRIQCPending();
-        $this->sessionqc = $mriqc['MRIQCStatus'] ?? null;
-        $this->ispending = $mriqc['MRIQCPending'] ?? null;
+        $this->sessionqc = $qc->getQC();
+        $this->ispending = $qc->getQCPending();
     }
 
     /**
