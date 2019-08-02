@@ -26,29 +26,20 @@ use \LORIS\Api\Endpoint;
 class Format extends Endpoint
 {
     /**
-     * The requested Visit
-     *
-     * @var \Timepoint
-     */
-    protected $visit;
-
-    /**
      * The requested Image
      *
      * @var \LORIS\Image
      */
-    protected $image;
+    private $_image;
 
     /**
      * Contructor
      *
-     * @param \Timepoint   $visit The requested visit
      * @param \LORIS\Image $image The requested image
      */
-    public function __construct(\Timepoint $visit, \LORIS\Image $image)
+    public function __construct(\LORIS\Image $image)
     {
-        $this->visit = $visit;
-        $this->image = $image;
+        $this->_image = $image;
     }
 
     /**
@@ -93,13 +84,13 @@ class Format extends Endpoint
         $format = array_shift($pathparts);
         switch ($format) {
         case 'raw':
-            $handler = new Format\Raw($this->image);
+            $handler = new Format\Raw($this->_image);
             break;
         case 'brainbrowser':
-            $handler = new Format\Brainbrowser($this->image);
+            $handler = new Format\Brainbrowser($this->_image);
             break;
         case 'thumbnail':
-            $handler = new Format\Thumbnail($this->image);
+            $handler = new Format\Thumbnail($this->_image);
             break;
         default:
             return new \LORIS\Http\Response\UnsupportedMediaType();

@@ -40,6 +40,12 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_image;
 
     /**
+     * A cache of the results of the endpoint, so that
+     * it doesn't need to be recalculated for the ETag and handler
+     */
+    private $_cache;
+
+    /**
      * Contructor
      *
      * @param \Timepoint   $visit The requested visit
@@ -76,7 +82,8 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Generate a response using specialized views.
+     * Delegates the request to a private handler appropriate to the request's
+     * method.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -84,12 +91,36 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $pathparts = $request->getAttribute('pathparts');
-            if (count($pathparts) > 1) {
-                return new \LORIS\Http\Response\NotFound();
-            }
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
 
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
+    }
+
+    /**
+     * Generates a response using specialized views.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    {
+        $pathparts = $request->getAttribute('pathparts');
+        if (count($pathparts) > 1) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        if (!isset($this->_cache)) {
             $headername = array_shift($pathparts);
             switch ($headername) {
             case '':
@@ -112,10 +143,10 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 );
             }
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -127,6 +158,6 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->handle($request)->getBody()));
+        return md5(json_encode($this->handleGET($request)->getBody()));
     }
 }

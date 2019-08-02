@@ -30,14 +30,20 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
 
     /**
      * The requested Image
      *
      * @var \LORIS\Image
      */
-    protected $image;
+    private $_image;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -47,8 +53,8 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, \LORIS\Image $image)
     {
-        $this->visit = $visit;
-        $this->image = $image;
+        $this->_visit = $visit;
+        $this->_image = $image;
     }
 
     /**
@@ -115,15 +121,15 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             $view = (new \LORIS\Api\Views\Visit\Image\Qc(
-                $this->visit,
-                $this->image
+                $this->_visit,
+                $this->_image
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -139,21 +145,21 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $data = json_decode((string) $request->getBody(), true);
 
         $inputcandid = $data['Meta']['CandID'] ?? null;
-        if ($inputcandid != $this->visit->getCandID()) {
+        if ($inputcandid != $this->_visit->getCandID()) {
             return new \LORIS\Http\Response\BadRequest(
                 'Candidate from URL does not match JSON metadata.'
             );
         }
 
         $inputvisit = $data['Meta']['Visit'] ?? null;
-        if ($inputvisit != $this->visit->getVisitLabel()) {
+        if ($inputvisit != $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\BadRequest(
                 'Visit from URL does not match JSON metadata.'
             );
         }
 
         $inputfilename = $data['Meta']['File'] ?? null;
-        if ($inputfilename != $this->image->getFileInfo()->getFilename()) {
+        if ($inputfilename != $this->_image->getFileInfo()->getFilename()) {
             return new \LORIS\Http\Response\BasRequest(
                 'File name from URL does not match JSON metadata.'
             );
@@ -164,7 +170,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // TODO :: This is (and was) not checking or handling Caveats
         try {
-            $this->image->saveQcStatus(
+            $this->_image->saveQcStatus(
                 new \LORIS\ImageQcStatus(
                     $inputqcstatus,
                     $inputselected

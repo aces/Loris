@@ -25,13 +25,18 @@ use \LORIS\Api\Endpoint;
  */
 class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-
     /**
      * The requested Image
      *
      * @var \LORIS\Image
      */
-    protected $image;
+    private $_image;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -40,7 +45,7 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\LORIS\Image $image)
     {
-        $this->image = $image;
+        $this->_image = $image;
     }
 
     /**
@@ -102,8 +107,8 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $info = $this->image->getFileInfo();
+        if (!isset($this->_cache)) {
+            $info = $this->_image->getFileInfo();
 
             if (!$info->isFile()) {
                 error_log('file in database but not in file system');
@@ -116,12 +121,12 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
 
             $view = (new \LORIS\Api\Views\Visit\Image\Format\Brainbrowser(
-                $this->image
+                $this->_image
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

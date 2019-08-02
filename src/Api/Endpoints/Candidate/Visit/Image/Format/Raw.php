@@ -31,7 +31,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \LORIS\Image
      */
-    protected $image;
+    private $_image;
 
     /**
      * Contructor
@@ -40,7 +40,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\LORIS\Image $image)
     {
-        $this->image = $image;
+        $this->_image = $image;
     }
 
     /**
@@ -102,7 +102,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $info = $this->image->getFileInfo();
+        $info = $this->_image->getFileInfo();
 
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
@@ -146,7 +146,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $info = $this->image->getFileInfo();
+        $info = $this->_image->getFileInfo();
 
         exec("minctoraw -v 2>&1", $output);
 

@@ -102,38 +102,35 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $info = $this->_image->getThumbnailFileInfo();
+        $info = $this->_image->getThumbnailFileInfo();
 
-            if (!$info->isFile()) {
-                error_log('Thumbnail not found');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            if (!$info->isReadable()) {
-                error_log('Thumbnail exists but is not readable by webserver');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            $file     = $info->openFile('r');
-            $filename = $info->getFilename();
-
-            ob_start();
-            $file->fpassthru();
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            $body = new \LORIS\Http\StringStream($content);
-
-            $this->cache = (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'image/jpeg')
-                ->withHeader(
-                    'Content-Disposition',
-                    'attachment; filename=' . $filename
-                )
-                ->withBody($body);
+        if (!$info->isFile()) {
+            error_log('Thumbnail not found');
+            return new \LORIS\Http\Response\NotFound();
         }
-        return $this->cache;
+
+        if (!$info->isReadable()) {
+            error_log('Thumbnail exists but is not readable by webserver');
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $file     = $info->openFile('r');
+        $filename = $info->getFilename();
+
+        ob_start();
+        $file->fpassthru();
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        $body = new \LORIS\Http\StringStream($content);
+
+        return (new \LORIS\Http\Response())
+            ->withHeader('Content-Type', 'image/jpeg')
+            ->withHeader(
+                'Content-Disposition',
+                'attachment; filename=' . $filename
+            )
+            ->withBody($body);
     }
 
     /**

@@ -30,9 +30,16 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * The requested Visit
      *
+     * @var \Timepoint
+     */
+    private $_visit;
+
+    /**
+     * The requested Visit
+     *
      * @var \NDB_BVL_instrument
      */
-    protected $instrument;
+    private $_instrument;
 
     /**
      * Contructor
@@ -42,8 +49,8 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, \NDB_BVL_instrument $instrument)
     {
-        $this->visit      = $visit;
-        $this->instrument = $instrument;
+        $this->_visit      = $visit;
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -89,7 +96,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($flags) {
             // Delegate to sub-endpoints
-            $handler = new Flags($this->visit, $this->instrument);
+            $handler = new Flags($this->_visit, $this->_instrument);
 
             return $handler->process(
                 $request,
@@ -127,18 +134,14 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $body = (new \LORIS\Api\Views\Visit\Instrument(
-                $this->visit,
-                $this->instrument
-            ))->toArray();
+        $body = (new \LORIS\Api\Views\Visit\Instrument(
+            $this->_visit,
+            $this->_instrument
+        ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse(
-                $body
-            );
-        }
-
-        return $this->cache;
+        return = new \LORIS\Http\Response\JsonResponse(
+            $body
+        );
     }
 
     /**
@@ -153,7 +156,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         // TODO :: Check permissions. How??
 
-        if (!$this->instrument->determineDataEntryAllowed()) {
+        if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\Forbidden(
                 'Can not update instruments that are flagged as complete.'
             );
@@ -161,16 +164,16 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $data = json_decode((string) $request->getBody(), true);
 
-        if (!$this->instrument->validate($data)) {
+        if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\Forbidden(
                 'Could not update.'
             );
         }
 
         try {
-            $instrumentname = $this->instrument->testName;
-            $this->instrument->clearInstrument();
-            $this->instrument->_save($data[$instrumentname]);
+            $instrumentname = $this->_instrument->testName;
+            $this->_instrument->clearInstrument();
+            $this->_instrument->_save($data[$instrumentname]);
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\InternalServerError();
@@ -192,7 +195,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         // TODO :: Check permissions. How??
 
-        if (!$this->instrument->determineDataEntryAllowed()) {
+        if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\Forbidden(
                 'Can not update instruments that are flagged as complete.'
             );
@@ -200,15 +203,15 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $data = json_decode((string) $request->getBody(), true);
 
-        if (!$this->instrument->validate($data)) {
+        if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\Forbidden(
                 'Could not update.'
             );
         }
 
         try {
-            $instrumentname = $this->instrument->testName;
-            $this->instrument->_save($data[$instrumentname]);
+            $instrumentname = $this->_instrument->testName;
+            $this->_instrument->_save($data[$instrumentname]);
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\InternalServerError();
@@ -226,7 +229,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5($this->instrument->toJSON());
+        return md5($this->_instrument->toJSON());
     }
 }
 

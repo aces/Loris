@@ -32,7 +32,13 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -41,7 +47,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit)
     {
-        $this->visit = $visit;
+        $this->_visit = $visit;
     }
 
     /**
@@ -99,7 +105,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $instrumentname = array_shift($pathparts);
 
         $battery = new \NDB_BVL_Battery();
-        $battery->selectBattery($this->visit->getSessionID());
+        $battery->selectBattery($this->_visit->getSessionID());
 
         $entry = array_filter(
             $battery->getBatteryVerbose(),
@@ -128,7 +134,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $endpoint = new Instrument\Instrument($this->visit, $instrument);
+        $endpoint = new Instrument\Instrument($this->_visit, $instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);
@@ -143,14 +149,14 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             $view = (new \LORIS\Api\Views\Visit\Instruments(
-                $this->visit
+                $this->_visit
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

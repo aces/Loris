@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 
 /**
- * A class for handling request for a visit dicoms.
+ * A class for handling request for a visit image.
  *
  * @category API
  * @package  Loris
@@ -32,14 +32,14 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
 
     /**
      * The requested Image filename
      *
      * @var string
      */
-    protected $filename;
+    private $_filename;
 
     /**
      * Contructor
@@ -49,8 +49,8 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, string $filename)
     {
-        $this->visit    = $visit;
-        $this->filename = $filename;
+        $this->_visit    = $visit;
+        $this->_filename = $filename;
     }
 
     /**
@@ -107,7 +107,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // At this point, the image must exist
         $user = $request->getAttribute('user');
         try {
-            $image = $this->visit->getImageByFilename($user, $this->filename);
+            $image = $this->visit->getImageByFilename($user, $this->_filename);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\NotFound($e->getMessage());
         }
@@ -115,13 +115,13 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'format':
-            $handler = new Format($this->visit, $image);
+            $handler = new Format($image);
             break;
         case 'headers':
-            $handler = new Headers($this->visit, $image);
+            $handler = new Headers($this->_visit, $image);
             break;
         case 'qc':
-            $handler = new Qc($this->visit, $image);
+            $handler = new Qc($this->_visit, $image);
             break;
         default:
             return new \LORIS\Http\Response\NotFound();
@@ -145,47 +145,44 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $user = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
 
-            try {
-                $image = $this->visit->getImageByFilename($user, $this->filename);
-            } catch (\NotFound $e) {
-                return new \LORIS\Http\Response\NotFound($e->getMessage());
-            }
-
-            $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
-                'application/x.minc2' : 'application/octet-stream';
-
-            $info = $image->getFileInfo();
-            if (!$info->isFile()) {
-                error_log('file in database but not in file system');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            if (!$info->isReadable()) {
-                error_log('file exist but is not readable by webserver');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            $file = $info->openFile('r');
-
-            ob_start();
-            $file->fpassthru();
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            $body = new \LORIS\Http\StringStream($content);
-
-            $this->cache = (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', $mimetype)
-                ->withHeader(
-                    'Content-Disposition',
-                    'attachment; filename=' . $this->filename
-                )
-                ->withBody($body);
+        try {
+            $image = $this->_visit->getImageByFilename($user, $this->_filename);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\NotFound($e->getMessage());
         }
-        return $this->cache;
+
+        $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
+            'application/x.minc2' : 'application/octet-stream';
+
+        $info = $image->getFileInfo();
+        if (!$info->isFile()) {
+            error_log('file in database but not in file system');
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        if (!$info->isReadable()) {
+            error_log('file exist but is not readable by webserver');
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $file = $info->openFile('r');
+
+        ob_start();
+        $file->fpassthru();
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        $body = new \LORIS\Http\StringStream($content);
+
+        return = (new \LORIS\Http\Response())
+            ->withHeader('Content-Type', $mimetype)
+            ->withHeader(
+                'Content-Disposition',
+                'attachment; filename=' . $this->_filename
+            )
+            ->withBody($body);
     }
 
     /**
@@ -200,7 +197,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
 
         try {
-            $image = $this->visit->getImageByFilename($user, $this->filename);
+            $image = $this->_visit->getImageByFilename($user, $this->_filename);
         } catch (\Throwable $e) {
             return '';
         }
@@ -208,7 +205,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $info = $image->getFileInfo();
 
         $signature = array(
-                      'filename' => $this->filename,
+                      'filename' => $this->_filename,
                       'size'     => $info->getSize(),
                       'mtime'    => $info->getMTime(),
                      );

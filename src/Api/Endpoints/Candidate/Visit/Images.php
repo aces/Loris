@@ -32,7 +32,13 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -41,7 +47,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit)
     {
-        $this->visit = $visit;
+        $this->_visit = $visit;
     }
 
     /**
@@ -100,7 +106,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withAttribute('pathparts', $pathparts);
 
         $handler = new Image\Image(
-            $this->visit,
+            $this->_visit,
             $filename
         );
 
@@ -119,19 +125,19 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $images = $this->visit->getImages(
+        if (!isset($this->_cache)) {
+            $images = $this->_visit->getImages(
                 $request->getAttribute('user')
             );
 
             $view = (new \LORIS\Api\Views\Visit\Images(
-                $this->visit,
+                $this->_visit,
                 ...$images
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

@@ -49,8 +49,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, \NDB_BVL_instrument $instrument)
     {
-        $this->visit      = $visit;
-        $this->instrument = $instrument;
+        $this->_visit      = $visit;
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -120,18 +120,14 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $body = (new \LORIS\Api\Views\Visit\Flags(
-                $this->visit,
-                $this->instrument
-            ))->toArray();
+        $body = (new \LORIS\Api\Views\Visit\Flags(
+            $this->_visit,
+            $this->_instrument
+        ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse(
-                $body
-            );
-        }
-
-        return $this->cache;
+        return new \LORIS\Http\Response\JsonResponse(
+            $body
+        );
     }
 
     /**
