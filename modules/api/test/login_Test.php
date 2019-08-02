@@ -26,7 +26,7 @@ use \Zend\Diactoros\ServerRequest;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ApiLoginTest extends TestCase
+class LoginTest extends TestCase
 {
     /**
      * Set a blank server request and the mock authenticator.
