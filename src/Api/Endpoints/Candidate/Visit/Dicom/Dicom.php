@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements a visit's dicom endpoint class
+ * This implements a visit's dicom endpoint class.
  *
  * PHP Version 7
  *
@@ -32,14 +32,20 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
 
     /**
      * The requested Dicom filename
      *
      * @var string
      */
-    protected $tarname;
+    private $_tarname;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -49,8 +55,8 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, string $tarname)
     {
-        $this->visit   = $visit;
-        $this->tarname = $tarname;
+        $this->_visit   = $visit;
+        $this->_tarname = $tarname;
     }
 
     /**
@@ -75,7 +81,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request to /candidates/$candid/$visit_label/dicoms/$tarname
+     * Handles a request to /candidates/$candid/$visit_label/dicoms/$tarname.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -113,9 +119,9 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             try {
-                $dicom = $this->visit->getDicomTarByFilename($this->tarname);
+                $dicom = $this->_visit->getDicomTarByFilename($this->_tarname);
             } catch (\NotFound $e) {
                 return new \LORIS\Http\Response\NotFound();
             }
@@ -127,19 +133,19 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $fullpath = $tarchivepath . $dicom->getArchiveLocation();
             $info     = new \SplFileInfo($fullpath);
             if (!$info->isFile()) {
-                return new \LORIS\Http\Response\NotFound();
+                return new \LORIS\Http\Response\NotFound('');
             }
 
             if (!$info->isReadable()) {
                 return new \LORIS\Http\Response\NotFound();
             }
 
-            $file        = $info->openFile('r');
-            $this->cache = (new \LORIS\Http\Response())
+            $file         = $info->openFile('r');
+            $this->_cache = (new \LORIS\Http\Response())
                 ->withHeader('Content-Type', 'application/x-tar')
                 ->withHeader(
                     'Content-Disposition',
-                    'attachment; filename=' . $this->tarname
+                    'attachment; filename=' . $this->_tarname
                 )
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -147,7 +153,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     )
                 );
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
