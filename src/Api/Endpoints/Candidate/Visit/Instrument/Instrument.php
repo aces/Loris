@@ -139,7 +139,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_instrument
         ))->toArray();
 
-        return = new \LORIS\Http\Response\JsonResponse(
+        return new \LORIS\Http\Response\JsonResponse(
             $body
         );
     }

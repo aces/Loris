@@ -107,7 +107,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // At this point, the image must exist
         $user = $request->getAttribute('user');
         try {
-            $image = $this->visit->getImageByFilename($user, $this->_filename);
+            $image = $this->_visit->getImageByFilename($user, $this->_filename);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\NotFound($e->getMessage());
         }
@@ -176,7 +176,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $body = new \LORIS\Http\StringStream($content);
 
-        return = (new \LORIS\Http\Response())
+        return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)
             ->withHeader(
                 'Content-Disposition',

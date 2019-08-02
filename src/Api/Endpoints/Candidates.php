@@ -16,7 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 /**
- * A class for handling the api/v????/candidates endpoint.
+ * A class for handling the /candidates endpoint.
  *
  * @category API
  * @package  Loris
@@ -30,7 +30,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that it doesn't
      * need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * Permission checks
@@ -39,7 +39,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    protected function hasAccess(\User $user)
+    private function _hasAccess(\User $user)
     {
         return (
             $user->hasPermission('access_all_profiles') ||
@@ -89,7 +89,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\Unauthorized();
         }
 
-        if (!$this->hasAccess($user)) {
+        if (!$this->_hasAccess($user)) {
             return new \LORIS\Http\Response\Forbidden();
         }
 
@@ -140,7 +140,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
             $user        = $request->getAttribute('user');
             $provisioner = (new \LORIS\api\CandidatesProvisioner())
                 ->forUser($user);
@@ -149,11 +149,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse(
+            $this->_cache = new \LORIS\Http\Response\JsonResponse(
                 array('Candidates' => $candidates)
             );
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**

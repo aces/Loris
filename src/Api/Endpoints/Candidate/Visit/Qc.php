@@ -32,7 +32,13 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -41,7 +47,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit)
     {
-        $this->visit = $visit;
+        $this->_visit = $visit;
     }
 
     /**
@@ -111,16 +117,16 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
+        if (!isset($this->_cache)) {
 
-            $qcstatus = $this->visit->getImagingQC();
+            $qcstatus = $this->_visit->getImagingQC();
 
-            $view = (new \LORIS\Api\Views\Visit\Qc($this->visit, $qcstatus))
+            $view = (new \LORIS\Api\Views\Visit\Qc($this->_visit, $qcstatus))
                 ->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -148,14 +154,14 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $candid = $data['Meta']['CandID'] ?? null;
-        if (intval($candid) !== $this->visit->getCandID()) {
+        if (intval($candid) !== $this->_visit->getCandID()) {
             return new \LORIS\Http\Response\BadRequest(
                 'Candidate from URL does not match metadata'
             );
         }
 
         $visitlabel = $data['Meta']['Visit'] ?? null;
-        if ($visitlabel !== $this->visit->getVisitLabel()) {
+        if ($visitlabel !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\BadRequest(
                 'Visit from URL does not match metadata'
             );
@@ -165,7 +171,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $ispending = $data['Pending'] ? 'Y' : 'N';
 
         try {
-            $this->visit->setData(array('MRIQCStatus' => $qcstatus));
+            $this->_visit->setData(array('MRIQCStatus' => $qcstatus));
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\BadRequest(
                 'MRIQCStatus value not acceptable'
@@ -173,7 +179,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->visit->setData(array('MRIQCPending' => $ispending));
+            $this->_visit->setData(array('MRIQCPending' => $ispending));
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\BadRequest(
                 'MRIQCPending value not acceptable'

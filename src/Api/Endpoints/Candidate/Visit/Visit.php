@@ -32,14 +32,14 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Candidate
      */
-    protected $candidate;
+    private $_candidate;
 
     /**
      * The requested Visit
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
 
     /**
      * Contructor
@@ -49,8 +49,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Candidate $candidate, ?\Timepoint $visit)
     {
-        $this->candidate = $candidate;
-        $this->visit     = $visit;
+        $this->_candidate = $candidate;
+        $this->_visit     = $visit;
     }
 
     /**
@@ -94,11 +94,13 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                if ($this->visit->getSessionID() === null) {
-                    return new \LORIS\Http\Response\NotFound('Visit not found');
-                }
+                return $this->_handleGET($request);
+
+            if ($this->_visit->getSessionID() === null) {
+                return new \LORIS\Http\Response\NotFound('Visit not found');
+            }
                 return new \LORIS\Http\Response\JsonResponse(
-                    (new \LORIS\Api\Views\Visit($this->visit))
+                    (new \LORIS\Api\Views\Visit($this->_visit))
                         ->toArray()
                 );
 
@@ -116,7 +118,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
-        if ($this->visit === null) {
+        if ($this->_visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
             return new \LORIS\Http\Response\NotFound('Visit not found');
         }
@@ -125,16 +127,16 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'instruments':
-            $handler = new Instruments($this->visit);
+            $handler = new Instruments($this->_visit);
             break;
         case 'images':
-            $handler = new Images($this->visit);
+            $handler = new Images($this->_visit);
             break;
         case 'qc':
-            $handler = new Qc($this->visit);
+            $handler = new Qc($this->_visit);
             break;
         case 'dicoms':
-            $handler = new Dicoms($this->visit);
+            $handler = new Dicoms($this->_visit);
             break;
         default:
             return new \LORIS\Http\Response\NotFound();
@@ -146,6 +148,25 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return $handler->process(
             $newrequest,
             $handler
+        );
+    }
+
+    /**
+     * Generates a response fitting the API specification for this endpoint.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    {
+        if ($this->_visit->getSessionID() === null) {
+            return new \LORIS\Http\Response\NotFound('Visit not found');
+        }
+
+        return new \LORIS\Http\Response\JsonResponse(
+            (new \LORIS\Api\Views\Visit($this->_visit))
+                ->toArray()
         );
     }
 
@@ -181,7 +202,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if ($visitinfo['CandID'] !== $this->candidate->getCandID()) {
+        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
             return new \LORIS\Http\Response\BadRequest(
                 'CandID do not match this candidate'
             );
@@ -189,7 +210,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $sessionid = array_search(
             $visitinfo['Visit'],
-            $this->candidate->getListOfVisitLabels()
+            $this->_candidate->getListOfVisitLabels()
         );
 
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
@@ -267,6 +288,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->visit));
+        return md5(json_encode($this->_visit));
     }
 }

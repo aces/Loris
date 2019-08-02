@@ -158,6 +158,6 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->handleGET($request)->getBody()));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }
