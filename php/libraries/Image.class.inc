@@ -13,7 +13,7 @@
 namespace LORIS;
 
 /**
- * This class defines an Image to allow one to type hint function's parameters
+ * This class defines an Image and business logic related to Images.
  *
  *  @category Imaging
  *  @package  Main
@@ -174,8 +174,8 @@ class Image
     /**
      * Update this image qc status in the database
      *
-     * This is not hadnling the QCFirstChangeTime. That column and
-     * QCLastChangeTime shoudl be managed by `DEFAULT CURRENT_TIMESTAMP`
+     * This is not handling the QCFirstChangeTime. That column and
+     * QCLastChangeTime should be managed by `DEFAULT CURRENT_TIMESTAMP`
      * and `ON UPDATE CURRENT_TIMESTAMP` respectively
      *
      * @param \LORIS\ImageQcStatus $qcstatus The new values
