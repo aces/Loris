@@ -28,17 +28,11 @@ use \LORIS\Api\Endpoint;
 class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the endpoint results, so that it doesn't need to be
-     * recalculated for the ETag and handler.
-     */
-    protected $cache;
-
-    /**
      * The requested Candidate.
      *
      * @var \Candidate
      */
-    protected $candidate;
+    private $_candidate;
 
     /**
      * Contructor
@@ -47,7 +41,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Candidate $candidate)
     {
-        $this->candidate = $candidate;
+        $this->_candidate = $candidate;
     }
 
     /**
@@ -84,14 +78,11 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // TODO :: User permission to acces this and subendpoints
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                $array = (new \LORIS\Api\Views\Candidate($this->candidate))
-                    ->toArray();
-                return new \LORIS\Http\Response\JsonResponse($array);
+                return $this->_handleGET($request);
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -111,7 +102,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $sessionid = array_search(
             $visit_label,
-            $this->candidate->getListOfVisitLabels()
+            $this->_candidate->getListOfVisitLabels()
         );
 
         try {
@@ -121,7 +112,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $handler = new Visit\Visit(
-            $this->candidate,
+            $this->_candidate,
             $visit
         );
 
@@ -129,6 +120,22 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $newrequest,
             $handler
         );
+    }
+
+    /**
+     * Returns an array representation of the requested candiate following
+     * the API specifications.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    {
+        // TODO :: User permission to acces this and subendpoints
+        $array = (new \LORIS\Api\Views\Candidate($this->_candidate))
+            ->toArray();
+        return new \LORIS\Http\Response\JsonResponse($array);
     }
 
     /**
@@ -140,6 +147,6 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->candidate));
+        return md5(json_encode($this->_candidate));
     }
 }

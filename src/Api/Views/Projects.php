@@ -12,6 +12,8 @@
 namespace LORIS\Api\Views;
 
 /**
+ * Create a array representations of a project list suitable to
+ * the API specifications.
  *
  * @category ApiViews
  * @package  Loris
@@ -27,13 +29,18 @@ class Projects
     /**
      * Create an api formated view of an array of projects
      *
-     * @param \Project[] The projects
+     * @param \Project[] $projects The projects
      */
     public function __construct(array $projects)
     {
         $this->_projects = $projects;
     }
 
+    /**
+     * Gets the required data from the projects.
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         $config = \NDB_Factory::singleton()->config();

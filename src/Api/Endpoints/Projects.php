@@ -125,9 +125,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Returns an array of projects for this LORIS instance
-     * a format that can be JSON encoded to confirm to the
-     * API.
+     * Returns a loist of projects for this LORIS instance.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *

@@ -32,7 +32,13 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Timepoint
      */
-    protected $visit;
+    private $_visit;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * Contructor
@@ -41,7 +47,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit)
     {
-        $this->visit = $visit;
+        $this->_visit = $visit;
     }
 
     /**
@@ -97,7 +103,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withAttribute('pathparts', $pathparts);
 
         $handler = new Dicom\Dicom(
-            $this->visit,
+            $this->_visit,
             $tarname
         );
 
@@ -116,19 +122,19 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $dicomtars = $this->visit->getDicomTars(
+        if (!isset($this->_cache)) {
+            $dicomtars = $this->_visit->getDicomTars(
                 $request->getAttribute('user')
             );
 
             $view = (new \LORIS\Api\Views\Visit\Dicoms(
-                $this->visit,
+                $this->_visit,
                 ...$dicomtars
             ))->toArray();
 
-            $this->cache = new \LORIS\Http\Response\JsonResponse($view);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
         }
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
