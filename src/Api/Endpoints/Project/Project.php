@@ -7,7 +7,7 @@
  * @category API
  * @package  Loris
  * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\Api\Endpoints\Project;
@@ -22,7 +22,7 @@ use \LORIS\Api\Endpoint;
  * @category API
  * @package  Loris
  * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator

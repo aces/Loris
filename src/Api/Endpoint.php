@@ -8,7 +8,7 @@
  * @category Main
  * @package  Loris
  * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\Api;
@@ -24,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @category Main
  * @package  Loris
  * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 abstract class Endpoint implements RequestHandlerInterface
