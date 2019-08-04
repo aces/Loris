@@ -31,12 +31,12 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the projects/$projectname endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * The requested project
      */
-    protected $project;
+    private $_project;
 
     /**
      * Contructor
@@ -45,7 +45,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Project $project)
     {
-        $this->project = $project;
+        $this->_project = $project;
     }
 
     /**
@@ -89,9 +89,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                return new \LORIS\Http\Response\JsonResponse(
-                    $this->_toArray()
-                );
+                return $this->_handleGET($request);
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -108,16 +106,16 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'candidates':
-            $handler = new Candidates($this->project);
+            $handler = new Candidates($this->_project);
             break;
         case 'images':
-            $handler = new Images($this->project);
+            $handler = new Images($this->_project);
             break;
         case 'instruments':
-            $handler = new Instruments($this->project);
+            $handler = new Instruments($this->_project);
             break;
         case 'visits':
-            $handler = new Visits($this->project);
+            $handler = new Visits($this->_project);
             break;
         default:
             return new \LORIS\Http\Response\NotFound();
@@ -133,20 +131,23 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Returns an array of projects for this LORIS instance
-     * a format that can be JSON encoded to confirm to the
-     * API.
+     * Generates a JSON representation of this project following the API
+     * specification.
      *
-     * @return array The representation of a project
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
      */
-    private function _toArray(): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $this->cache = (new \LORIS\Api\Views\Project($this->project))
+        if (!isset($this->_cache)) {
+            $array = (new \LORIS\Api\Views\Project($this->_project))
                 ->toArray();
+
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -158,6 +159,6 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray()));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }

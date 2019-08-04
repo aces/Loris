@@ -98,7 +98,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
-        // Delegate to project specific endpoint.
+        // Delegate to instrument specific endpoint.
         $instrumentname = array_shift($pathparts);
         try {
             $instrument = \NDB_BVL_Instrument::factory(
@@ -111,7 +111,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $endpoint = new Instrument\Instrument($this->_project, $instrument);
+        $endpoint = new Instrument\Instrument($instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
 
         return $endpoint->process($request, $endpoint);

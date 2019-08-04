@@ -30,7 +30,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the projects/ endpoint, so that it doesn't
      * need to be recalculated for the ETag and handler
      */
-    protected $cache;
+    private $_cache;
 
     /**
      * All users have access to the login endpoint to try and login.
@@ -92,9 +92,6 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             switch ($request->getMethod()) {
             case 'GET':
                 return $this->_handleGET($request);
-                return new \LORIS\Http\Response\JsonResponse(
-                    $this->_toArray()
-                );
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -117,7 +114,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $endpoint = new Project\Project($project);
 
-        // removing `/projects/<project_name>` from pathparts.
+        // Removing `/projects/<project_name>` from pathparts.
         $pathparts = array_slice($pathparts, 2);
         $request   = $request->withAttribute('pathparts', $pathparts);
 

@@ -32,28 +32,21 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the results of the endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
-    protected $cache;
-
-    /**
-     * The requested project
-     */
-    protected $project;
+    private $_cache;
 
     /**
      * The requested instrument
      */
-    protected $instrument;
+    private $_instrument;
 
     /**
      * Contructor
      *
-     * @param \Project            $project    The requested project
      * @param \NDB_BVL_Instrument $instrument The requested instrument
      */
-    public function __construct(\Project $project, \NDB_BVL_Instrument $instrument)
+    public function __construct(\NDB_BVL_Instrument $instrument)
     {
-        $this->project    = $project;
-        $this->instrument = $instrument;
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -118,13 +111,13 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->cache)) {
-            $this->cache = new \LORIS\Http\Response\JsonResponse(
-                json_decode($this->instrument->toJSON(), true)
+        if (!isset($this->_cache)) {
+            $this->_cache = new \LORIS\Http\Response\JsonResponse(
+                json_decode($this->_instrument->toJSON(), true)
             );
         }
 
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
