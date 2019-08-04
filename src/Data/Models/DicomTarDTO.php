@@ -38,18 +38,18 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Constructor
      *
-     * @param ?int           $tarchiveid      The TarchiveID
-     * @param ?string        $tarname         The dicom filename
-     * @param ?string        $archivelocation The dicom file location
-     * @param ?string        $patientname     The PatientName
-     * @param DicomSeriesDTO ...$series       An array of dicom series
+     * @param ?int            $tarchiveid      The TarchiveID
+     * @param ?string         $tarname         The dicom filename
+     * @param ?string         $archivelocation The dicom file location
+     * @param ?string         $patientname     The PatientName
+     * @param ?DicomSeriesDTO ...$series       An array of dicom series
      */
     public function __construct(
         ?int $tarchiveid,
         ?string $tarname,
         ?string $archivelocation,
         ?string $patientname,
-        DicomSeriesDTO ...$series
+        ?DicomSeriesDTO ...$series
     ) {
         $this->_tarchiveid      = $tarchiveid;
         $this->_tarname         = $tarname;
@@ -90,9 +90,9 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Accessor for series
      *
-     * @return DicomSeriesDTO[]
+     * @return DicomSeriesDTO[]|null
      */
-    public function getSeries(): array
+    public function getSeries(): ?array
     {
         return $this->_series;
     }

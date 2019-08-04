@@ -12,6 +12,8 @@
 namespace LORIS\Api\Views;
 
 /**
+ * This class formats a candidate object into an array following the API
+ * specifications.
  *
  * @category ApiViews
  * @package  Loris
@@ -22,28 +24,40 @@ namespace LORIS\Api\Views;
 
 class Candidate
 {
-    protected $meta = array();
+    private $_candidate;
 
-    protected $visits = array();
-
+    /**
+     * Constructor.
+     *
+     * @param \Candidate $candidate The candidate to format
+     */
     public function __construct(\Candidate $candidate)
     {
-        $this->meta['CandID']  = $candidate->getCandID();
-        $this->meta['Project'] = $candidate->getProjectTitle();
-        $this->meta['PSCID']   = $candidate->getPSCID();
-        $this->meta['Site']    = $candidate->getCandidateSite();
-        $this->meta['EDC']     = $candidate->getCandidateEDC();
-        $this->meta['DoB']     = $candidate->getCandidateDoB();
-        $this->meta['Sex']     = $candidate->getCandidateSex();
-
-        $this->visits = array_values($candidate->getListOfVisitLabels());
+        $this->_candidate = $candidate;
     }
 
+    /**
+     * Generates the array
+     *
+     * @return array
+     */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID'  => $this->_candidate->getCandID(),
+                 'Project' => $this->_candidate->getProjectTitle(),
+                 'PSCID'   => $this->_candidate->getPSCID(),
+                 'Site'    => $this->_candidate->getCandidateSite(),
+                 'EDC'     => $this->_candidate->getCandidateEDC(),
+                 'DoB'     => $this->_candidate->getCandidateDoB(),
+                 'Sex'     => $this->_candidate->getCandidateSex(),
+                );
+
+        $visits = array_values($this->_candidate->getListOfVisitLabels());
+
         return array(
-                'Meta'   => $this->meta,
-                'Visits' => $this->visits,
+                'Meta'   => $meta,
+                'Visits' => $visits,
                );
     }
 }

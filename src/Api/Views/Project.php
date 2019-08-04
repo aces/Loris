@@ -12,6 +12,8 @@
 namespace LORIS\Api\Views;
 
 /**
+ * This class formats a Project object into arrays following the API
+ * specifications.
  *
  * @category ApiViews
  * @package  Loris
@@ -22,75 +24,85 @@ namespace LORIS\Api\Views;
 
 class Project
 {
-    private $project;
+    /**
+     * The project to format
+     *
+     * @var \Project
+     */
+    private $_project;
 
-    protected $meta = array();
-
-    // Variables used to store data after lazy evaluation
-    protected $candidates;
-    protected $images;
-    protected $instruments;
-    protected $visits;
-
-
+    /**
+     * Constructor
+     *
+     * @param \Project $project The project to format
+     */
     public function __construct(\Project $project)
     {
-        $this->project         = $project;
-        $this->meta['Project'] = $project->getName();
+        $this->_project = $project;
     }
 
+
+    /**
+     * Produce an array representation of this project.
+     *
+     * @return array
+     */
     public function toArray(): array
     {
+        $meta = array('Project' => $this->_project->getName());
+
         return array(
-                'Meta'        => $this->meta,
-                'Candidates'  => $this->_getCandidates(),
-                'Instruments' => array_keys($this->_getInstruments()),
+                'Meta'        => $meta,
+                'Candidates'  => $this->_project->getCandidateIds(),
+                'Instruments' => array_keys(\Utility::getAllInstruments()),
                 'Visits'      => $this->_getVisits(),
                );
     }
 
+    /**
+     * Produce a list of all candidate candids of this project following
+     * the api specifications for /project/<project_name>/candidates.
+     *
+     * @return array
+     */
     public function toCandidateArray(): array
     {
+        $meta = array('Project' => $this->_project->getName());
 
         return array(
-                'Meta'       => $this->meta,
-                'Candidates' => $this->_getCandidates(),
+                'Meta'       => $meta,
+                'Candidates' => $this->_project->getCandidateIds(),
                );
     }
 
+    /**
+     * Produce a list of all existing visit labels of this project following
+     * the api specifications for /project/<project_name>/visits.
+     *
+     * @return array
+     */
     public function toVisitArray(): array
     {
+        $meta = array('Project' => $this->_project->getName());
+
         return array(
-                'Meta'   => $this->meta,
+                'Meta'   => $meta,
                 'Visits' => $this->_getVisits(),
                );
     }
 
-    private function _getCandidates(): array
-    {
-        if (!isset($this->candidates)) {
-            $this->candidates = $this->project->getCandidateIds();
-        }
-        return $this->candidates;
-    }
-
-    private function _getInstruments(): array
-    {
-        if (!isset($this->instruments)) {
-            $this->instruments = \Utility::getAllInstruments();
-        }
-        return $this->instruments;
-    }
-
+    /**
+     * Generates the list of visit_labels for the project.
+     *
+     * @return array
+     */
     private function _getVisits(): array
     {
-        if (!isset($this->visits)) {
-            $this->visits = array_keys(
-                \Utility::getExistingVisitLabels(
-                    $this->project->getId()
-                )
-            );
-        }
-        return $this->visits;
+        // TODO :: This should be replace by $this->_project->getVisitLabels();
+        return array_keys(
+            \Utility::getExistingVisitLabels(
+                $this->_project->getId()
+            )
+        );
     }
 }

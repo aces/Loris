@@ -11,6 +11,7 @@
 
 namespace LORIS\Api\Views\Project;
 
+use \LORIS\api\ProjectInstrumentRow;
 /**
  * Creates a representation of a project instrument following the api response
  * specifications.
@@ -24,27 +25,30 @@ namespace LORIS\Api\Views\Project;
 
 class Instruments
 {
-    protected $meta        = array();
-    protected $instruments = array();
+    /**
+     * The project
+     *
+     * @var \Project
+     */
+    private $_project;
+
+    /**
+     * The project instruments datainstance.
+     *
+     * @var ProjectInstrumentRow[]
+     */
+    private $_instruments;
 
     /**
      * Contructor that initialize this instance variables
      *
-     * @param \Project $project     The requested project
-     * @param array    $instruments An array of ProjectInstrumentRow
+     * @param \Project               $project     The requested project
+     * @param ProjectInstrumentRow[] $instruments An array of ProjectInstrumentRow
      */
     public function __construct(\Project $project, array $instruments)
     {
-        $this->meta['Project'] = $project->getName();
-        foreach ($instruments as $instrument) {
-            $shortname = $instrument['shortname'];
-            $item      = array(
-                          'Fullname'               => $instrument['fullname'],
-                          'Subgroup'               => $instrument['subgroup'],
-                          'DoubleDataEntryEnabled' => $instrument['ddeenable'],
-                         );
-            $this->instruments[$shortname] = $item;
-        }
+        $this->_project     = $project;
+        $this->_instruments = $instruments;
     }
 
     /**
@@ -54,9 +58,23 @@ class Instruments
      */
     public function toArray(): array
     {
+        $meta = array('Project' => $this->_project->getName());
+
+        $instruments = array();
+
+        foreach ($this->_instruments as $instrument) {
+            $shortname = $instrument['shortname'];
+            $item      = array(
+                          'Fullname'               => $instrument['fullname'],
+                          'Subgroup'               => $instrument['subgroup'],
+                          'DoubleDataEntryEnabled' => $instrument['ddeenable'],
+                         );
+            $instruments[$shortname] = $item;
+        }
+
         return array(
-                'Meta'        => $this->meta,
-                'Instruments' => $this->instruments,
+                'Meta'        => $meta,
+                'Instruments' => $instruments,
                );
     }
 }
