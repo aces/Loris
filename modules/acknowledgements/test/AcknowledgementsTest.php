@@ -127,11 +127,11 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testFilterWithData()
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        $this->_testFilter(self::$fullName,"1 rows",self::$testData['full_name'],self::$row,self::$btn);
-        $this->_testFilter(self::$citatioName,"1 rows",self::$testData['citation_name'],self::$row,self::$btn);
-        $this->_testFilter(self::$startDate, "1 rows",self::$testData['start_date'],self::$row,self::$btn);
-        $this->_testFilter(self::$endDate,"1 rows", self::$testData['end_date'],self::$row,self::$btn);
-        $this->_testFilter(self::$present,"2 rows", self::$testData['present'],self::$row,self::$btn);
+        $this->testFilter(self::$fullName,"1 rows",self::$testData['full_name'],self::$row,self::$btn);
+        $this->testFilter(self::$citatioName,"1 rows",self::$testData['citation_name'],self::$row,self::$btn);
+        $this->testFilter(self::$startDate, "1 rows",self::$testData['start_date'],self::$row,self::$btn);
+        $this->testFilter(self::$endDate,"1 rows", self::$testData['end_date'],self::$row,self::$btn);
+        $this->testFilter(self::$present,"2 rows", self::$testData['present'],self::$row,self::$btn);
 
     }
     /**
