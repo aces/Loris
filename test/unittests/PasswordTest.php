@@ -32,7 +32,7 @@ class PasswordTest extends TestCase
     {
         return array(
             // Should fail for not meeting length requirements
-            [implode('', range(1, Password::MIN_PASSWORD_LENGTH - 1))],
+            [implode('', range(1, Password::getMinimumPasswordLength() - 1))],
             // Should fail for being an alphabet subset
             ['abcdefghi'],
             // Should fail based on dictionary attack ('hunter2' is meme)

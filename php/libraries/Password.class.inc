@@ -15,9 +15,9 @@ use ZxcvbnPhp\Zxcvbn;
 
 /**
  * Represents a well-formed password for use in the LORIS software.
- * Automatically validates that a password is well-formed, i.e. has a sufficient
+ * Automatically _validates that a password is well-formed, i.e. has a sufficient
  * length as well as complexity.
- * Does not validate any state-related information such as whether a password
+ * Does not _validate any state-related information such as whether a password
  * exists in the database, is expired, etc. This functionality is achieved by
  * the User class.
  *
@@ -64,7 +64,7 @@ class Password
      * @return bool Whether the submitted value has length of at least
      *              MIN_PASSWORD_LENGTH;
      */
-    private function hasSufficientLength(string $value): bool
+    private function _hasSufficientLength(string $value): bool
     {
         // Check length
         return strlen($value) >= self::MIN_PASSWORD_LENGTH;
@@ -79,7 +79,7 @@ class Password
      * @return bool Whether the submitted value meets the minimum score defined
      *              above and given by Zxcvbn.
      */
-    private function hasSufficientComplexity(string $value): bool
+    private function _hasSufficientComplexity(string $value): bool
     {
         // Return true if the password's complexity score exceeds
         // MIN_COMPLEXITY_SCORE and false otherwise.
@@ -96,16 +96,26 @@ class Password
      *
      * @throws \DomainException When password is too short or weak.
      */
-    private function validate($value): void
+    private function _validate($value): void
     {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
-        if (!$this->hasSufficientLength($value)) {
+        if (!$this->_hasSufficientLength($value)) {
             throw new \DomainException('The password is too short');
         }
-        if (!$this->hasSufficientComplexity($value)) {
+        if (!$this->_hasSufficientComplexity($value)) {
             throw new \DomainException('The password is not complex enough.');
         }
+    }
+
+    /**
+     * Returns the minimum length required for a valid password.
+     *
+     * @return int The value of MIN_PASSWORD_LENGTH.
+     */
+    public static function getMinimumPasswordLength(): int
+    {
+        return self::MIN_PASSWORD_LENGTH;
     }
 
     /**
@@ -119,7 +129,7 @@ class Password
     public final function __construct(string $value)
     {
         // Ensure proposed value is well-formed.
-        $this->validate($value);
+        $this->_validate($value);
         // Don't store the value in the object; instead use the hashed version
         // This mitigates the risk of accidentally revealing the plaintext.
         $this->_hash = password_hash($value, PASSWORD_DEFAULT);
