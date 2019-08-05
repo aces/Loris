@@ -109,6 +109,13 @@ class NDB_Factory
     function config(?string $configfile = "../project/config.xml"): \NDB_Config
     {
         if (self::$config !== null) {
+            // The below suppression is necessary to satisfy phan. It flags an
+            // error here because the function is declared to return
+            // NDB_Config and phan doesn't understand MockNDB_Config (as it is
+            // generated dynamically by PHPUnit).
+            // We know this will always return \NDB_Config since this is guaranteed
+            // by the return type of the function.
+            // @phan-suppress-next-line PhanTypeMismatchReturn
             return self::$config;
         }
         if ($this->Testing) {
@@ -154,6 +161,13 @@ class NDB_Factory
     function user(): \User
     {
         if (self::$_user !== null) {
+            // The below suppression is necessary to satisfy phan. It flags an
+            // error here because the function is declared to return
+            // User and phan doesn't understand MockUser (as it is
+            // generated dynamically by PHPUnit).
+            // We know this will always return \User since this is guaranteed
+            // by the return type of the function.
+            // @phan-suppress-next-line PhanTypeMismatchReturn
             return self::$_user;
         }
         if ($this->Testing) {
