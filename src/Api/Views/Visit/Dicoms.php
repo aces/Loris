@@ -26,8 +26,8 @@ use \LORIS\Data\Models\DicomSeriesDTO;
 
 class Dicoms
 {
-    protected $meta      = array();
-    protected $dicomtars = array();
+    private $_timepoint;
+    private $_dicoms;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint
@@ -37,13 +37,8 @@ class Dicoms
      */
     public function __construct(\Timepoint $timepoint, DicomTarDTO ...$dicoms)
     {
-        $this->meta['CandID'] = $timepoint->getCandID();
-        $this->meta['Visit']  = $timepoint->getVisitLabel();
-
-        $this->dicomtars[] = array_map(
-            'self::_formatDicomTars',
-            $dicoms
-        );
+        $this->_timepoint = $timepoint;
+        $this->_dicoms    = $dicoms;
     }
 
     /**
@@ -94,9 +89,19 @@ class Dicoms
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
+
+        $dicomtars = array_map(
+            'self::_formatDicomTars',
+            $this->_dicoms
+        );
+
         return array(
-                'Meta'      => $this->meta,
-                'DicomTars' => $this->dicomtars,
+                'Meta'      => $meta,
+                'DicomTars' => $dicomtars,
                );
     }
 }

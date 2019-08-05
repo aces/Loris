@@ -24,10 +24,9 @@ namespace LORIS\Api\Views\Visit\Image;
 
 class Qc
 {
-    private $_meta = array();
-    private $_qc;
-    private $_selected;
-    private $_caveats = array();
+    private $_timepoint;
+
+    private $_image;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint
@@ -38,9 +37,8 @@ class Qc
      */
     public function __construct(\Timepoint $timepoint, \LORIS\Image $image)
     {
-        $this->_meta['CandID'] = $timepoint->getCandID();
-        $this->_meta['Visit']  = $timepoint->getVisitLabel();
-        $this->_meta['File']   = $image->getFileInfo()->getFilename();
+        $this->_timepoint = $timepoint;
+        $this->_image     = $image;
 
         $imageqcstatus = $image->getQcStatus();
 
@@ -56,6 +54,17 @@ class Qc
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                 'File'   => $this->_image->getFileInfo()->getFilename(),
+                );
+
+        $imageqcstatus = $this->_image->getQcStatus();
+
+        $qc       = $imageqcstatus->getQcStatus();
+        $selected = $imageqcstatus->isSelected();
+
         $caveats = array_map(
             function ($caveat) {
                 return array(
@@ -66,13 +75,13 @@ class Qc
                         'ValidRegex' => $caveat->getValidRegex(),
                        );
             },
-            $this->_caveats
+            $this->_image->getCaveats()
         );
 
         return array(
-                'Meta'     => $this->_meta,
-                'QC'       => $this->_qc,
-                'Selected' => $this->_selected,
+                'Meta'     => $meta,
+                'QC'       => $qc,
+                'Selected' => $selected,
                 'Caveats'  => $caveats,
                );
     }

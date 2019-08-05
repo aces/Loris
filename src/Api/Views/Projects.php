@@ -12,8 +12,8 @@
 namespace LORIS\Api\Views;
 
 /**
- * Create a array representations of a project list suitable to
- * the API specifications.
+ * Create a array representations of this LORIS instance projects
+ *  suitable to the API specifications.
  *
  * @category ApiViews
  * @package  Loris

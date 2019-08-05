@@ -24,9 +24,7 @@ namespace LORIS\Api\Views;
 
 class Visit
 {
-    protected $meta   = array();
-    protected $stages = array();
-
+    private $_timepoint;
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *
@@ -34,34 +32,7 @@ class Visit
      */
     public function __construct(\Timepoint $timepoint)
     {
-        $this->meta['CandID']  = $timepoint->getCandID();
-        $this->meta['Visit']   = $timepoint->getVisitLabel();
-        $this->meta['Site']    = $timepoint->getPSC();
-        $this->meta['Battery'] = $timepoint->getData('SubprojectTitle');
-
-        if ($timepoint->getDateOfScreening() !== null) {
-            $screening = array(
-                          'Date'   => $timepoint->getDateOfScreening(),
-                          'Status' => $timepoint->getScreeningStatus(),
-                         );
-            $this->stages['Screening'] = $screening;
-        }
-
-        if ($timepoint->getDateOfVisit() !== null) {
-            $visit = array(
-                      'Date'   => $timepoint->getDateOfVisit(),
-                      'Status' => $timepoint->getVisitStatus(),
-                     );
-            $this->stages['Visit'] = $visit;
-        }
-
-        if ($timepoint->getDateOfApproval() !== null) {
-            $approval = array(
-                         'Date'   => $timepoint->getDateOfapproval(),
-                         'Status' => $timepoint->getApprovalStatus(),
-                        );
-            $this->stages['Screening'] = $approval;
-        }
+        $this->_timepoint = $timepoint;
     }
 
     /**
@@ -71,9 +42,45 @@ class Visit
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID'  => $this->_timepoint->getCandID(),
+                 'Visit'   => $this->_timepoint->getVisitLabel(),
+                 'Site'    => $this->_timepoint->getPSC(),
+                 'Battery' => $this->_timepoint->getData('SubprojectTitle'),
+                );
+
+        $stages = array();
+
+        if ($this->_timepoint->getDateOfScreening() !== null) {
+            $screening = array(
+                          'Date'   => $this->_timepoint->getDateOfScreening(),
+                          'Status' => $this->_timepoint->getScreeningStatus(),
+                         );
+
+            $stages['Screening'] = $screening;
+        }
+
+        if ($this->_timepoint->getDateOfVisit() !== null) {
+            $visit = array(
+                      'Date'   => $this->_timepoint->getDateOfVisit(),
+                      'Status' => $this->_timepoint->getVisitStatus(),
+                     );
+
+            $stages['Visit'] = $visit;
+        }
+
+        if ($this->_timepoint->getDateOfApproval() !== null) {
+            $approval = array(
+                         'Date'   => $this->_timepoint->getDateOfapproval(),
+                         'Status' => $this->_timepoint->getApprovalStatus(),
+                        );
+
+            $stages['Screening'] = $approval;
+        }
+
         return array(
-                'Meta'   => $this->meta,
-                'Stages' => $this->stages,
+                'Meta'   => $meta,
+                'Stages' => $stages,
                );
     }
 }

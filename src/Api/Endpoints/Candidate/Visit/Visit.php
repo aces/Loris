@@ -96,14 +96,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'GET':
                 return $this->_handleGET($request);
 
-            if ($this->_visit->getSessionID() === null) {
-                return new \LORIS\Http\Response\NotFound('Visit not found');
-            }
-                return new \LORIS\Http\Response\JsonResponse(
-                    (new \LORIS\Api\Views\Visit($this->_visit))
-                        ->toArray()
-                );
-
             case 'PUT':
                 return $this->_handlePUT($request);
 
