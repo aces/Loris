@@ -477,12 +477,25 @@ function editConsentStatusFields($db, $user)
                           requires only the date of consent.');
                     return;
                 }
-            } else { // If no status stays no or record existed as NULL,
-                     // consent date and empty withdrawal date still required
+            } else { // If no status stays no or record existed as NULL
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
-                    && empty($withdrawal)
                 ) {
-                    $validated = true;
+                    $countYesStatusHistory = $db->pselectOne(
+                        "SELECT COUNT(*) FROM candidate_consent_history
+                        WHERE PSCID=:pscid AND ConsentName=:cn AND Status='yes'",
+                        array(
+                         'pscid' => $pscid,
+                         'cn'    => $consentName,
+                        )
+                    );
+                    // If consent was 'yes' at some point, withdrawal date is not empty
+                    // if it was never 'yes', withdrawal date should be empty
+                    // Either is valid.
+                    if ((!empty($withdrawal) && $countYesStatusHistory > 0)
+                        || (empty($withdrawal) && $countYesStatusHistory === 0)
+                    ) {
+                        $validated = true;
+                    }
                 } else if ($oldStatus === 'yes' && !empty($date)
                     && !empty($withdrawal)
                 ) { // Withdrawing from 'yes' status required consent date
