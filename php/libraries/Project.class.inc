@@ -132,8 +132,8 @@ class Project
         $factory->database()->insert(
             'Project',
             array(
-             'name'              => $projectName,
-             'recruitmentTarget' => $recruitmentTarget,
+                'name'              => $projectName,
+                'recruitmentTarget' => $recruitmentTarget,
             )
         );
 
@@ -240,12 +240,12 @@ class Project
         return array_map(
             function ($row) {
                 return (object) array(
-                                 'subprojectId'      => $row['subprojectId'],
-                                 'title'             => $row['title'],
-                                 'useEDC'            => $row['useEDC'],
-                                 'windowDifference'  => $row['windowDifference'],
-                                 'recruitmentTarget' => $row['recruitmentTarget'],
-                                );
+                    'subprojectId'      => $row['subprojectId'],
+                    'title'             => $row['title'],
+                    'useEDC'            => $row['useEDC'],
+                    'windowDifference'  => $row['windowDifference'],
+                    'recruitmentTarget' => $row['recruitmentTarget'],
+                );
             },
             $subProjectData
         );

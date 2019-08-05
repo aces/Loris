@@ -40,8 +40,8 @@ class Examiner extends \NDB_Menu_Filter_Form
     {
         return $user->hasAnyPermission(
             array(
-             'examiner_view',
-             'examiner_multisite',
+                'examiner_view',
+                'examiner_multisite',
             )
         );
     }
@@ -88,34 +88,34 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         // set the class variables
         $this->columns      = array(
-                               'e.full_name as Examiner',
-                               'e.examinerID as ID',
-                               'psc.Name as Site',
-                               'e.radiologist as Radiologist',
-                               "GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
+            'e.full_name as Examiner',
+            'e.examinerID as ID',
+            'psc.Name as Site',
+            'e.radiologist as Radiologist',
+            "GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
                                 Certification",
-                              );
+        );
         $this->group_by     = "e.full_name,psc.Name,e.examinerID";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
-                               'Examiner',
-                               'ID',
-                               'Site',
-                               'Radiologist',
-                               'Certification',
-                              );
+            'Examiner',
+            'ID',
+            'Site',
+            'Radiologist',
+            'Certification',
+        );
         $this->validFilters = array(
-                               'e.full_name',
-                               'epr.centerID',
-                               'COALESCE(e.radiologist, 0)',
-                              );
+            'e.full_name',
+            'epr.centerID',
+            'COALESCE(e.radiologist, 0)',
+        );
 
         $this->formToFilter = array(
-                               'examiner'    => 'e.full_name',
-                               'site'        => 'epr.centerID',
-                               'radiologist' => 'COALESCE(e.radiologist, 0)',
-                              );
+            'examiner'    => 'e.full_name',
+            'site'        => 'epr.centerID',
+            'radiologist' => 'COALESCE(e.radiologist, 0)',
+        );
         return true;
     }
 
@@ -148,14 +148,14 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         // Radiologist options
         $radiologist = array(
-                        '1' => 'Yes',
-                        '0' => 'No',
-                       );
+            '1' => 'Yes',
+            '0' => 'No',
+        );
 
         $this->fieldOptions = array(
-                               'sites'        => $sites,
-                               'radiologists' => $radiologist,
-                              );
+            'sites'        => $sites,
+            'radiologists' => $radiologist,
+        );
 
         $this->form->addFormRule(array(&$this, '_validateAddExaminer'));
     }
@@ -239,9 +239,9 @@ class Examiner extends \NDB_Menu_Filter_Form
             $DB->insert(
                 'examiners',
                 array(
-                 'full_name'   => $fullName,
-                 'radiologist' => $radiologist,
-                 'userID'      => $user_id,
+                    'full_name'   => $fullName,
+                    'radiologist' => $radiologist,
+                    'userID'      => $user_id,
                 )
             );
         } else {
@@ -255,8 +255,8 @@ class Examiner extends \NDB_Menu_Filter_Form
         $DB->insert(
             'examiners_psc_rel',
             array(
-             'examinerID' => $this->getExaminerID($fullName),
-             'centerID'   => $siteID,
+                'examinerID' => $this->getExaminerID($fullName),
+                'centerID'   => $siteID,
             )
         );
 
@@ -281,8 +281,8 @@ class Examiner extends \NDB_Menu_Filter_Form
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
              WHERE e.full_name=:fullName AND epr.centerID=:siteID",
             array(
-             'fullName' => $fullName,
-             'siteID'   => $siteID,
+                'fullName' => $fullName,
+                'siteID'   => $siteID,
             )
         );
 
@@ -364,7 +364,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/examiner/js/examinerIndex.js",
+                $baseURL . "/examiner/js/examinerIndex.js",
             )
         );
     }

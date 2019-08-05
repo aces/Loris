@@ -214,10 +214,10 @@ class NDB_Menu_Filter extends NDB_Menu
      * set.
      *
      * @param array $values An array of the form
-     *                             [FormFieldName => Value,
-     *                             FormFieldName2 => Value2,
-     *                             ...
-     *                             ]
+     *                      [FormFieldName => Value,
+     *                      FormFieldName2 => Value2,
+     *                      ...
+     *                      ]
      *                      to retrieve the values from.
      *
      * @return array of filters in the same form as the $values parameter
@@ -255,10 +255,10 @@ class NDB_Menu_Filter extends NDB_Menu
      * it into the current filter.
      *
      * @param array $order An array of the form
-     *                      [
-     *                          'field' => Form Field Name
-     *                          'fieldOrder' => "ASC|DESC"
-     *                      ]
+     *                     [
+     *                     'field' => Form Field Name
+     *                     'fieldOrder' => "ASC|DESC"
+     *                     ]
      *
      * @return void (modifies both $_SESSION and $this->filter as
      *         a side-effect.)
@@ -409,10 +409,10 @@ class NDB_Menu_Filter extends NDB_Menu
         return true;
     }
     /**
-    * Gets the base query
-    *
-    * @return string ($query)
-    */
+     * Gets the base query
+     *
+     * @return string ($query)
+     */
     function _getBaseQuery()
     {
         $query = "SELECT ";
@@ -426,14 +426,14 @@ class NDB_Menu_Filter extends NDB_Menu
 
     }
     /**
-    * Adds filters
-    *
-    * @param string $prepared_key filter key
-    * @param string $field        filter field
-    * @param string $val          filter value
-    *
-    * @return string ($query)
-    */
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = '';
@@ -574,9 +574,9 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         return array(
-                'clause' => $WhereClause,
-                'params' => $qparams,
-               );
+            'clause' => $WhereClause,
+            'params' => $qparams,
+        );
     }
 
     /**
@@ -738,12 +738,12 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
+     * Coverts array into CSV string
+     *
+     * @param array $array the array to be converted
+     *
+     * @return string CSV string of data
+     */
     function arrayToCSV(array $array): string
     {
         $fp = fopen("php://temp", 'w+');
@@ -788,10 +788,10 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         return array(
-                'Headers'      => $headers,
-                'Data'         => $MappedData,
-                'fieldOptions' => $this->fieldOptions,
-               );
+            'Headers'      => $headers,
+            'Data'         => $MappedData,
+            'fieldOptions' => $this->fieldOptions,
+        );
     }
 
     /**
@@ -875,9 +875,9 @@ class NDB_Menu_Filter extends NDB_Menu
         return array_merge(
             $depends,
             array(
-             $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/StaticDataTable.js',
-             $baseURL . '/js/components/DynamicDataTable.js',
+                $baseURL . '/js/components/PaginationLinks.js',
+                $baseURL . '/js/components/StaticDataTable.js',
+                $baseURL . '/js/components/DynamicDataTable.js',
             )
         );
     }

@@ -215,10 +215,10 @@ foreach ($links as $label => $url) {
     $WindowName = md5($url);
 
     $tpl_data['links'][] = array(
-                            'url'        => $url,
-                            'label'      => $label,
-                            'windowName' => $WindowName,
-                           );
+        'url'        => $url,
+        'label'      => $label,
+        'windowName' => $WindowName,
+    );
 }
 
 
@@ -237,19 +237,19 @@ if (!$anonymous) {
     }
     $tpl_data['userPerms']   = $realPerms;
     $tpl_data['studyParams'] = array(
-                                'useEDC'      => $config->getSetting('useEDC'),
-                                'useProband'  => $config->getSetting('useProband'),
-                                'useFamilyID' => $config->getSetting('useFamilyID'),
-                                'useConsent'  => $config->getSetting('useConsent'),
-                               );
+        'useEDC'      => $config->getSetting('useEDC'),
+        'useProband'  => $config->getSetting('useProband'),
+        'useFamilyID' => $config->getSetting('useFamilyID'),
+        'useConsent'  => $config->getSetting('useConsent'),
+    );
     $tpl_data['jsonParams']  = json_encode(
         array(
-         'BaseURL'   => $tpl_data['baseurl'],
-         'TestName'  => $tpl_data['test_name'],
-         'Subtest'   => $tpl_data['subtest'],
-         'CandID'    => $tpl_data['candID'],
-         'SessionID' => $tpl_data['sessionID'],
-         'CommentID' => $tpl_data['commentID'],
+            'BaseURL'   => $tpl_data['baseurl'],
+            'TestName'  => $tpl_data['test_name'],
+            'Subtest'   => $tpl_data['subtest'],
+            'CandID'    => $tpl_data['candID'],
+            'SessionID' => $tpl_data['sessionID'],
+            'CommentID' => $tpl_data['commentID'],
         )
     );
 }

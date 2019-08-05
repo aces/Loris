@@ -39,7 +39,7 @@ Class TimePoint_List_ControlPanel extends \Candidate
      * select function provide by the Candidate class.
      *
      * @param integer $candID A 6 digit Loris CandID that matches
-     * a candidate in the candidate table
+     *                        a candidate in the candidate table
      *
      * @return null As a side-effect loads candidate into current object
      */

@@ -204,8 +204,8 @@ class NDB_Form extends NDB_Page
     function toArray(): array
     {
         return array(
-                'fieldOptions' => $this->fieldOptions,
-               );
+            'fieldOptions' => $this->fieldOptions,
+        );
     }
 
     /**

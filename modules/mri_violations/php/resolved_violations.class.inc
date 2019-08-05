@@ -150,42 +150,42 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         $this->columns = array(
-                          'v.Resolved as Resolution_status',
-                          'pjct.Name as Project',
-                          'subpjct.title as Subproject',
-                          'v.PatientName as PatientName',
-                          'site.Name as Site',
-                          'v.TimeRun as TimeRun',
-                          'v.MincFile as MincFile',
-                          'v.Series_Description as Series_Description_Or_Scan_Type',
-                          'v.Problem as Problem',
-                          'v.SeriesUID as SeriesUID',
-                          'v.hash as Hash',
-                          'v.join_id as JoinID',
-                          'v.Site as SiteID',
-                         );
+            'v.Resolved as Resolution_status',
+            'pjct.Name as Project',
+            'subpjct.title as Subproject',
+            'v.PatientName as PatientName',
+            'site.Name as Site',
+            'v.TimeRun as TimeRun',
+            'v.MincFile as MincFile',
+            'v.Series_Description as Series_Description_Or_Scan_Type',
+            'v.Problem as Problem',
+            'v.SeriesUID as SeriesUID',
+            'v.hash as Hash',
+            'v.join_id as JoinID',
+            'v.Site as SiteID',
+        );
         $this->headers = array(
-                          'Resolution_status',
-                          'Project',
-                          'Subproject',
-                          'PatientName',
-                          'Site',
-                          'TimeRun',
-                          'MincFile',
-                          'Series_Description_Or_Scan_Type',
-                          'Problem',
-                          'SeriesUID',
-                          'Hash',
-                          'JoinID',
-                          'SiteID',
-                         );
+            'Resolution_status',
+            'Project',
+            'Subproject',
+            'PatientName',
+            'Site',
+            'TimeRun',
+            'MincFile',
+            'Series_Description_Or_Scan_Type',
+            'Problem',
+            'SeriesUID',
+            'Hash',
+            'JoinID',
+            'SiteID',
+        );
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
-             'SeriesUID',
-             'Hash',
-             'JoinID',
-             'SiteID',
+                'SeriesUID',
+                'Hash',
+                'JoinID',
+                'SiteID',
             ]
         );
 
@@ -275,29 +275,29 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-                               'PatientName' => 'v.PatientName',
-                               'Site'        => 'v.Site',
-                               'TimeRun'     => 'v.TimeRun',
-                               'Project'     => 'v.Project',
-                               'Subproject'  => 'v.Subproject',
-                               'ProblemType' => 'v.Problem',
-                               'Filename'    => 'v.MincFile',
-                               'Description' => 'v.Series_Description',
-                               'SeriesUID'   => 'v.SeriesUID',
-                               'Resolved'    => 'v.Resolved',
-                              );
+            'PatientName' => 'v.PatientName',
+            'Site'        => 'v.Site',
+            'TimeRun'     => 'v.TimeRun',
+            'Project'     => 'v.Project',
+            'Subproject'  => 'v.Subproject',
+            'ProblemType' => 'v.Problem',
+            'Filename'    => 'v.MincFile',
+            'Description' => 'v.Series_Description',
+            'SeriesUID'   => 'v.SeriesUID',
+            'Resolved'    => 'v.Resolved',
+        );
         $this->validFilters = array(
-                               'v.PatientName',
-                               'v.Site',
-                               'v.TimeRun',
-                               'v.Project',
-                               'v.Subproject',
-                               'v.MincFile',
-                               'v.Problem',
-                               'v.Series_Description',
-                               'v.SeriesUID',
-                               'v.Resolved',
-                              );
+            'v.PatientName',
+            'v.Site',
+            'v.TimeRun',
+            'v.Project',
+            'v.Subproject',
+            'v.MincFile',
+            'v.Problem',
+            'v.Series_Description',
+            'v.SeriesUID',
+            'v.Resolved',
+        );
         return;
     }
 
@@ -318,12 +318,12 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             - $config->getSetting('ageMax');
         $maxYear     = $config->getSetting('endYear');
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $minYear,
-                        'maxYear'        => $maxYear,
-                       );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $minYear,
+            'maxYear'        => $maxYear,
+        );
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
@@ -334,10 +334,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             "ProblemType",
             "Type of problem",
             array(
-             ''                             => 'Any',
-             $notMatchString                => 'Candidate Mismatch',
-             'Could not identify scan type' => 'Could not identify scan type',
-             'Protocol Violation'           => 'MRI Protocol Check violation',
+                ''                             => 'Any',
+                $notMatchString                => 'Candidate Mismatch',
+                'Could not identify scan type' => 'Could not identify scan type',
+                'Protocol Violation'           => 'MRI Protocol Check violation',
             )
         );
         // violation resolved
@@ -345,13 +345,13 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'Resolved',
             'Violation resolved',
             array(
-             ''              => 'Any',
-             'reran'         => 'Reran',
-             'emailed'       => 'Emailed site/pending',
-             'inserted'      => 'Inserted',
-             'rejected'      => 'Rejected',
-             'inserted_flag' => 'Inserted with flag',
-             'other'         => 'Other',
+                ''              => 'Any',
+                'reran'         => 'Reran',
+                'emailed'       => 'Emailed site/pending',
+                'inserted'      => 'Inserted',
+                'rejected'      => 'Rejected',
+                'inserted_flag' => 'Inserted with flag',
+                'other'         => 'Other',
             )
         );
         // project

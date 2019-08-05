@@ -38,10 +38,10 @@ class ServerProcessLauncher
     private $_databaseProvider;
 
     /**
-      * Accessor for field $_databaseProvider
-      *
-      * @return IDatabaseProvider value of field $_databaseProvider
-      */
+     * Accessor for field $_databaseProvider
+     *
+     * @return IDatabaseProvider value of field $_databaseProvider
+     */
     public function getDatabaseProvider()
     {
         if (is_null($this->_databaseProvider)) {
@@ -52,13 +52,13 @@ class ServerProcessLauncher
     }
 
     /**
-      * Mutator for field $_databaseProvider
-      *
-      * @param mixed $databaseProvider new value of field
-      *                                $_databaseProvider
-      *
-      * @return void
-      */
+     * Mutator for field $_databaseProvider
+     *
+     * @param mixed $databaseProvider new value of field
+     *                                $_databaseProvider
+     *
+     * @return void
+     */
     public function setDatabaseProvider($databaseProvider)
     {
         $this->_databaseProvider = $databaseProvider;
@@ -97,13 +97,13 @@ class ServerProcessLauncher
         $db->insert(
             'server_processes',
             array(
-             'pid'            => $process->getPid(),
-             'type'           => $process->getType(),
-             'stdout_file'    => $process->getStdoutFile(),
-             'stderr_file'    => $process->getStderrFile(),
-             'exit_code_file' => $process->getExitCodeFile(),
-             'userid'         => $process->getUserId(),
-             'start_time'     => $process->getStartTime(),
+                'pid'            => $process->getPid(),
+                'type'           => $process->getType(),
+                'stdout_file'    => $process->getStdoutFile(),
+                'stderr_file'    => $process->getStderrFile(),
+                'exit_code_file' => $process->getExitCodeFile(),
+                'userid'         => $process->getUserId(),
+                'start_time'     => $process->getStartTime(),
             )
         );
 

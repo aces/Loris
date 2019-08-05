@@ -63,9 +63,9 @@ class Dataquery extends \NDB_Form
             "DQG-2.0",
             "runlog",
             array(
-             "reduce"     => "false",
-             "limit"      => "1",
-             "descending" => "true",
+                "reduce"     => "false",
+                "limit"      => "1",
+                "descending" => "true",
             )
         );
         $this->tpl_data['updatetime'] = $update[0]['key'];
@@ -74,8 +74,8 @@ class Dataquery extends \NDB_Form
             "DQG-2.0",
             "datadictionary",
             array(
-             "reduce"      => "true",
-             "group_level" => "1",
+                "reduce"      => "true",
+                "group_level" => "1",
             )
         );
 
@@ -93,8 +93,8 @@ class Dataquery extends \NDB_Form
             "DQG-2.0",
             "savedqueries",
             array(
-             "key"    => "\"$username\"",
-             "reduce" => "false",
+                "key"    => "\"$username\"",
+                "reduce" => "false",
             )
         );
 
@@ -102,8 +102,8 @@ class Dataquery extends \NDB_Form
             "DQG-2.0",
             "savedqueries",
             array(
-             "key"    => "\"global\"",
-             "reduce" => "false",
+                "key"    => "\"global\"",
+                "reduce" => "false",
             )
         );
 
@@ -115,15 +115,15 @@ class Dataquery extends \NDB_Form
         $globalsavedNames = array_map($IDMapCallback, $globalsaved);
 
         $this->tpl_data['savedqueries'] = array(
-                                           'user'   => $usersavedNames,
-                                           'shared' => $globalsavedNames,
-                                          );
+            'user'   => $usersavedNames,
+            'shared' => $globalsavedNames,
+        );
         $sessionResults           = $couch->queryView(
             "DQG-2.0",
             "sessions",
             array(
-             "reduce" => "true",
-             "group"  => "true",
+                "reduce" => "true",
+                "group"  => "true",
             )
         );
         $this->tpl_data['visits'] = \Utility::getExistingVisitLabels();
@@ -152,18 +152,18 @@ class Dataquery extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dataquery/js/arrayintersect.js",
-             $baseURL . "/dataquery/js/react.fieldselector.js",
-             $baseURL . "/dataquery/js/react.filterBuilder.js",
-             $baseURL . "/dataquery/js/react.tabs.js",
-             $baseURL . "/dataquery/js/react.sidebar.js",
-             $baseURL . "/dataquery/js/react.app.js",
-             $baseURL . "/dataquery/js/jstat.js",
-             $baseURL . "/js/components/StaticDataTable.js",
-             $baseURL . "/js/flot/jquery.flot.min.js",
-             $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . "/js/jszip/jszip.min.js",
-             $baseURL . "/js/components/MultiSelectDropdown.js",
+                $baseURL . "/dataquery/js/arrayintersect.js",
+                $baseURL . "/dataquery/js/react.fieldselector.js",
+                $baseURL . "/dataquery/js/react.filterBuilder.js",
+                $baseURL . "/dataquery/js/react.tabs.js",
+                $baseURL . "/dataquery/js/react.sidebar.js",
+                $baseURL . "/dataquery/js/react.app.js",
+                $baseURL . "/dataquery/js/jstat.js",
+                $baseURL . "/js/components/StaticDataTable.js",
+                $baseURL . "/js/flot/jquery.flot.min.js",
+                $baseURL . '/js/components/PaginationLinks.js',
+                $baseURL . "/js/jszip/jszip.min.js",
+                $baseURL . "/js/components/MultiSelectDropdown.js",
             )
         );
     }
@@ -182,7 +182,7 @@ class Dataquery extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dataquery/css/dataquery.css",
+                $baseURL . "/dataquery/css/dataquery.css",
             )
         );
     }

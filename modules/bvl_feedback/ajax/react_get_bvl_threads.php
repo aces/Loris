@@ -30,11 +30,11 @@ if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
     && !(isset($_POST['commentID']))
 ) {
     $feedbackThread =&
-         NDB_BVL_Feedback::Singleton(
-             $username,
-             $_POST['candID'],
-             $_POST['sessionID']
-         );
+        NDB_BVL_Feedback::Singleton(
+            $username,
+            $_POST['candID'],
+            $_POST['sessionID']
+        );
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && isset($_POST['commentID'])
 ) {

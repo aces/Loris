@@ -39,9 +39,9 @@ $scanData['labels']
 $list_of_sites      = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $siteID => $siteName) {
     $scanData['datasets'][] = array(
-                               "name" => $siteName,
-                               "data" => getScanData($siteID, $scanData['labels']),
-                              );
+        "name" => $siteName,
+        "data" => getScanData($siteID, $scanData['labels']),
+    );
 }
 
 print json_encode($scanData);
@@ -98,9 +98,9 @@ function getScanData($siteID, $labels)
              AND MONTH(mad.AcquisitionDate)=:Month 
              AND YEAR(mad.AcquisitionDate)=:Year",
             array(
-             'Site'  => $siteID,
-             'Month' => $month,
-             'Year'  => $year,
+                'Site'  => $siteID,
+                'Month' => $month,
+                'Year'  => $year,
             )
         );
     }

@@ -114,18 +114,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+        $this->webDriver->executescript(
+            "return document.querySelector('$btn').click()"
+        );
            // Go through each element and ensure it's on the page after clicking
            // advanced
-           $scanDoneOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("scanDone")
-           );
+        $scanDoneOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("scanDone")
+        );
            $this->assertEquals("select", $scanDoneOptions->getTagName());
-           $participantsStatusOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("participantStatus")
-           );
+        $participantsStatusOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("participantStatus")
+        );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
            $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoB"));
            $this->assertEquals("input", $dobOptions->getTagName());
@@ -133,9 +133,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
            $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
-           $numVisits = $this->webDriver->findElement(
-               WebDriverBy::Name("visitCount")
-           );
+        $numVisits = $this->webDriver->findElement(
+            WebDriverBy::Name("visitCount")
+        );
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done in Loris.
            //$this->assertEquals("number",$dobOptions->getAttribute("type"));
@@ -144,13 +144,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            $this->assertEquals("input", $edcOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-           $latestVisitOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("latestVisitStatus")
-           );
+        $latestVisitOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("latestVisitStatus")
+        );
            $this->assertEquals("select", $latestVisitOptions->getTagName());
-           $feedbackOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("feedback")
-           );
+        $feedbackOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("feedback")
+        );
            $this->assertEquals("select", $feedbackOptions->getTagName());
     }
     /**
@@ -178,9 +178,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // test advanced filter - sex
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+        $this->webDriver->executescript(
+            "return document.querySelector('$btn').click()"
+        );
            //female
            $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1');
            // male

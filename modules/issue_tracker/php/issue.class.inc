@@ -43,8 +43,8 @@ class Issue extends \NDB_Form
             || !isset($issueID))
             && !$user->hasAnyPermission(
                 array(
-                 'issue_tracker_reporter',
-                 'issue_tracker_developer',
+                    'issue_tracker_reporter',
+                    'issue_tracker_developer',
                 )
             )
         ) {

@@ -63,38 +63,38 @@ class CNV_Browser extends \NDB_Menu_Filter
     {
         // set the class variables
         $this->columns = array(
-                          'psc.Name AS PSC',
-                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
-                          'candidate.PSCID',
-                          'candidate.Sex',
-                          'cohort.SubprojectID as Subproject',
-                          'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as ExternalID',
-                          'CNV.Chromosome as Chromosome',
-                          'CNV.Strand as Strand',
-                          'CNV.StartLoc as StartLoc',
-                          'CNV.EndLoc as EndLoc',
-                          'CONCAT(
+            'psc.Name AS PSC',
+            'LPAD(candidate.CandID, 6, "0") AS DCCID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID as Subproject',
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'candidate.ExternalID as ExternalID',
+            'CNV.Chromosome as Chromosome',
+            'CNV.Strand as Strand',
+            'CNV.StartLoc as StartLoc',
+            'CNV.EndLoc as EndLoc',
+            'CONCAT(
                               CNV.Chromosome, 
                               ":",
                               CNV.StartLoc,
                               "-",
                               CNV.EndLoc
                            ) as Location',
-                          'CNV.OfficialSymbol as Gene_Symbol',
-                          'CNV.OfficialName as Gene_Name',
-                          'CNV.Description as CNV_Description',
-                          'CNV.Type as CNV_Type',
-                          'CNV.CopyNumChange as Copy_Num_Change',
-                          'CNV.EventName as Event_Name',
-                          'CNV.Common_CNV as Common_CNV',
-                          'CNV.Characteristics as Characteristics',
-                          'CNV.Inheritance as Inheritance',
-                          'CNV.ArrayReport as Array_Report',
-                          'CNV.Markers as Markers',
-                          'CNV.ValidationMethod as Validation_Method',
-                          'genotyping_platform.Name as Platform',
-                         );
+            'CNV.OfficialSymbol as Gene_Symbol',
+            'CNV.OfficialName as Gene_Name',
+            'CNV.Description as CNV_Description',
+            'CNV.Type as CNV_Type',
+            'CNV.CopyNumChange as Copy_Num_Change',
+            'CNV.EventName as Event_Name',
+            'CNV.Common_CNV as Common_CNV',
+            'CNV.Characteristics as Characteristics',
+            'CNV.Inheritance as Inheritance',
+            'CNV.ArrayReport as Array_Report',
+            'CNV.Markers as Markers',
+            'CNV.ValidationMethod as Validation_Method',
+            'genotyping_platform.Name as Platform',
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -104,22 +104,22 @@ class CNV_Browser extends \NDB_Menu_Filter
                         return ucwords(str_replace('_', ' ', $header));
                 },
                 array(
-                 'PSC',
-                 'DCCID',
-                 'Subproject',
-                 'DoB',
-                 'ExternalID',
-                 'Chromosome',
-                 'Strand',
-                 'StartLoc',
-                 'EndLoc',
-                 'Event_Name',
-                 'Gene_Symbol',
-                 'Gene_Name',
-                 'Platform',
-                 'Array_Report',
-                 'Markers',
-                 'Validation_Method',
+                    'PSC',
+                    'DCCID',
+                    'Subproject',
+                    'DoB',
+                    'ExternalID',
+                    'Chromosome',
+                    'Strand',
+                    'StartLoc',
+                    'EndLoc',
+                    'Event_Name',
+                    'Gene_Symbol',
+                    'Gene_Name',
+                    'Platform',
+                    'Array_Report',
+                    'Markers',
+                    'Validation_Method',
                 )
             )
         );
@@ -148,57 +148,57 @@ class CNV_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.RegistrationCenterID',
-                               'candidate.CandID',
-                               'candidate.PSCID',
-                               'candidate.Sex',
-                               'cohort.SubprojectID',
-                               'candidate.DoB',
-                               'candidate.ExternalID',
-                               'show_brief_results',
-                               'CNV.Type',
-                               'CNV.CopyNumChange',
-                               'CNV.Description',
-                               'CNV.EventName',
-                               'CNV.Common_CNV',
-                               'CNV.Characteristics',
-                               'CNV.Inheritance',
-                               'CNV.ArrayReport',
-                               'CNV.Markers',
-                               'CNV.ValidationMethod',
-                               'CNV.Chromosome',
-                               'CNV.Strand',
-                               'genomic_range',
-                               'CNV.OfficialSymbol',
-                               'CNV.OfficialName',
-                               'genotyping_platform.Name',
-                              );
+            'candidate.RegistrationCenterID',
+            'candidate.CandID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID',
+            'candidate.DoB',
+            'candidate.ExternalID',
+            'show_brief_results',
+            'CNV.Type',
+            'CNV.CopyNumChange',
+            'CNV.Description',
+            'CNV.EventName',
+            'CNV.Common_CNV',
+            'CNV.Characteristics',
+            'CNV.Inheritance',
+            'CNV.ArrayReport',
+            'CNV.Markers',
+            'CNV.ValidationMethod',
+            'CNV.Chromosome',
+            'CNV.Strand',
+            'genomic_range',
+            'CNV.OfficialSymbol',
+            'CNV.OfficialName',
+            'genotyping_platform.Name',
+        );
 
         $ftf = array(
-                'centerID'           => 'candidate.RegistrationCenterID',
-                'DCCID'              => 'candidate.CandID',
-                'PSCID'              => 'candidate.PSCID',
-                'sex'                => 'candidate.Sex',
-                'SubprojectID'       => 'cohort.SubprojectID',
-                'External_ID'        => 'candidate.ExternalID',
-                'Show_Brief_Results' => 'show_brief_results',
-                'CNV_Type'           => 'CNV.Type',
-                'Copy_Num_Change'    => 'CNV.CopyNumChange',
-                'CNV_Description'    => 'CNV.Description',
-                'Event_Name'         => 'CNV.EventName',
-                'Common_CNV'         => 'CNV.Common_CNV',
-                'Characteristics'    => 'CNV.Characteristics',
-                'Inheritance'        => 'CNV.Inheritance',
-                'Array_Report'       => 'CNV.ArrayReport',
-                'Markers'            => 'CNV.Markers',
-                'Validation_Method'  => 'CNV.ValidationMethod',
-                'Chromosome'         => 'CNV.Chromosome',
-                'Strand'             => 'CNV.Strand',
-                'genomic_range'      => 'genomic_range',
-                'Gene_Symbol'        => 'CNV.OfficialSymbol',
-                'Gene_Name'          => 'CNV.OfficialName',
-                'Platform'           => 'genotyping_platform.Name',
-               );
+            'centerID'           => 'candidate.RegistrationCenterID',
+            'DCCID'              => 'candidate.CandID',
+            'PSCID'              => 'candidate.PSCID',
+            'sex'                => 'candidate.Sex',
+            'SubprojectID'       => 'cohort.SubprojectID',
+            'External_ID'        => 'candidate.ExternalID',
+            'Show_Brief_Results' => 'show_brief_results',
+            'CNV_Type'           => 'CNV.Type',
+            'Copy_Num_Change'    => 'CNV.CopyNumChange',
+            'CNV_Description'    => 'CNV.Description',
+            'Event_Name'         => 'CNV.EventName',
+            'Common_CNV'         => 'CNV.Common_CNV',
+            'Characteristics'    => 'CNV.Characteristics',
+            'Inheritance'        => 'CNV.Inheritance',
+            'Array_Report'       => 'CNV.ArrayReport',
+            'Markers'            => 'CNV.Markers',
+            'Validation_Method'  => 'CNV.ValidationMethod',
+            'Chromosome'         => 'CNV.Chromosome',
+            'Strand'             => 'CNV.Strand',
+            'genomic_range'      => 'genomic_range',
+            'Gene_Symbol'        => 'CNV.OfficialSymbol',
+            'Gene_Name'          => 'CNV.OfficialName',
+            'Platform'           => 'genotyping_platform.Name',
+        );
         $this->formToFilter = $ftf;
         return true;
     }
@@ -243,9 +243,9 @@ class CNV_Browser extends \NDB_Menu_Filter
             'sex',
             'Sex:',
             array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female',
+                ''       => 'All',
+                'Male'   => 'Male',
+                'Female' => 'Female',
             )
         );
         $this->addSelect(
@@ -256,65 +256,65 @@ class CNV_Browser extends \NDB_Menu_Filter
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $show_results_options = array(
-                                 'brief' => 'Summary fields',
-                                 'full'  => 'All fields',
-                                );
+            'brief' => 'Summary fields',
+            'full'  => 'All fields',
+        );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // CNV
 
         $Base_options = array(
-                         null => 'Any',
-                         '37' => 'GRCh37',
-                        );
+            null => 'Any',
+            '37' => 'GRCh37',
+        );
         $this->addSelect('Assembly', 'Build:', $Base_options);
 
         $CNV_Type_options = array(
-                             null      => 'All',
-                             'gain'    => 'gain',
-                             'loss'    => 'loss',
-                             'unknown' => 'Unknown',
-                            );
+            null      => 'All',
+            'gain'    => 'gain',
+            'loss'    => 'loss',
+            'unknown' => 'Unknown',
+        );
         $this->addSelect('CNV_Type', 'Type:', $CNV_Type_options);
         $this->addBasicText('Copy_Num_Change', 'Copy Number Change:');
         $this->addBasicText('CNV_Description', 'Description:');
         $this->addBasicText('Event_Name', 'Event Name:');
 
         $Common_CNV_options = array(
-                               null => 'Any',
-                               'Y'  => 'Yes',
-                               'N'  => 'No',
-                              );
+            null => 'Any',
+            'Y'  => 'Yes',
+            'N'  => 'No',
+        );
         $this->addSelect('Common_CNV', 'Common:', $Common_CNV_options);
         $Characteristics_options = array(
-                                    null         => 'Any',
-                                    'Benign'     => 'Benign',
-                                    'Pathogenic' => 'Pathogenic',
-                                    'Unknown'    => 'Unknown',
-                                   );
+            null         => 'Any',
+            'Benign'     => 'Benign',
+            'Pathogenic' => 'Pathogenic',
+            'Unknown'    => 'Unknown',
+        );
         $this->addSelect(
             'Characteristics',
             'Characteristics:',
             $Characteristics_options
         );
         $Inheritance_options = array(
-                                null           => 'Any',
-                                'de novo'      => 'de novo',
-                                'maternal'     => 'maternal',
-                                'paternal'     => 'paternal',
-                                'unclassified' => 'unclassified',
-                                'unknown'      => 'unknown',
-                                'NA'           => 'NA',
-                               );
+            null           => 'Any',
+            'de novo'      => 'de novo',
+            'maternal'     => 'maternal',
+            'paternal'     => 'paternal',
+            'unclassified' => 'unclassified',
+            'unknown'      => 'unknown',
+            'NA'           => 'NA',
+        );
         $this->addSelect('Inheritance', 'Inheritance:', $Inheritance_options);
 
         $this->addBasicText('Chromosome', 'Chromosome:');
 
         $Base_options = array(
-                         null => 'Any',
-                         'F'  => 'Forward',
-                         'R'  => 'Reverse',
-                        );
+            null => 'Any',
+            'F'  => 'Forward',
+            'R'  => 'Reverse',
+        );
         $this->addSelect('Strand', 'Strand:', $Base_options);
 
         $this->addBasicText('genomic_range', 'Genomic Range:');
@@ -333,12 +333,12 @@ class CNV_Browser extends \NDB_Menu_Filter
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
         $Array_Report_options = array(
-                                 null        => 'Any',
-                                 'Abnormal'  => 'Abnormal',
-                                 'Normal'    => 'Normal',
-                                 'Pending'   => 'Pending',
-                                 'Uncertain' => 'Uncertain',
-                                );
+            null        => 'Any',
+            'Abnormal'  => 'Abnormal',
+            'Normal'    => 'Normal',
+            'Pending'   => 'Pending',
+            'Uncertain' => 'Uncertain',
+        );
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
@@ -418,8 +418,8 @@ class CNV_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/cnvColumnFormatter.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/cnvColumnFormatter.js",
             )
         );
     }

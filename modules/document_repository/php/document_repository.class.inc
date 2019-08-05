@@ -21,7 +21,7 @@ namespace LORIS\document_repository;
  * @author   Justin Kat <justinkat@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
-*/
+ */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
     public $AjaxModule   = true;
@@ -38,8 +38,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     {
         return $user->hasAnyPermission(
             array(
-             'document_repository_view',
-             'document_repository_delete',
+                'document_repository_view',
+                'document_repository_delete',
             )
         );
     }
@@ -101,11 +101,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
         $this->fieldOptions = array(
-                               'fileCategories' => $categoriesList,
-                               'sites'          => $siteList,
-                               'instruments'    => $instrumentsList,
-                               'fileTypes'      => $fileTypeList,
-                              );
+            'fileCategories' => $categoriesList,
+            'sites'          => $siteList,
+            'instruments'    => $instrumentsList,
+            'fileTypes'      => $fileTypeList,
+        );
         return;
     }
     /**
@@ -132,9 +132,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             }
         } while ($value['parent_id'] != 0);
          return array(
-                 "name" => $categoryName,
-                 "id"   => $id,
-                );
+             "name" => $categoryName,
+             "id"   => $id,
+         );
     }
     /**
      * Utility function to convert data from database to a
@@ -173,19 +173,19 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $query .= " WHERE COALESCE(v.hide_video, false)=false";
         // set the class variables
         $this->columns =[
-                         'v.File_name',
-                         'v.version',
-                         'v.File_type',
-                         'v.Instrument',
-                         'v.uploaded_by',
-                         '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-                         'v.comments',
-                         'v.Date_uploaded',
-                         'v.record_id as Edit',
-                         'v.record_id as Delete_File',
-                         'v.File_category as category',
-                         'v.Data_dir',
-                        ];
+            'v.File_name',
+            'v.version',
+            'v.File_type',
+            'v.Instrument',
+            'v.uploaded_by',
+            '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
+            'v.comments',
+            'v.Date_uploaded',
+            'v.record_id as Edit',
+            'v.record_id as Delete_File',
+            'v.File_category as category',
+            'v.Data_dir',
+        ];
         $this->query   = $query;
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -224,7 +224,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             [
-             $baseURL . "/document_repository/css/document_repository.css",
+                $baseURL . "/document_repository/css/document_repository.css",
             ]
         );
     }
@@ -243,7 +243,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/document_repository/js/docIndex.js",
+                $baseURL . "/document_repository/js/docIndex.js",
             )
         );
     }

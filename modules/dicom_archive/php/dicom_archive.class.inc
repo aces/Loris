@@ -86,9 +86,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $table = (new \LORIS\Data\Table())
+        $table   = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
-        $arr   = array_map(
+        $arr     = array_map(
             function ($row) {
                 return array_values($row);
             },
@@ -97,8 +97,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $options = array('sites' => \Utility::getSiteList());
         return json_encode(
             [
-             'data'         => $arr,
-             'fieldOptions' => $options,
+                'data'         => $arr,
+                'fieldOptions' => $options,
             ]
         );
     }
@@ -129,7 +129,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );
     }

@@ -114,14 +114,14 @@ class SinglePointLogin
         if (!User::isPasswordStrong(
             $_POST['password'],
             array(
-             $_POST['confirm'] ?? '',
-             $data['UserID'],
-             $data['Email'],
+                $_POST['confirm'] ?? '',
+                $data['UserID'],
+                $data['Email'],
             ),
             array(
-             '==',
-             '!=',
-             '!=',
+                '==',
+                '!=',
+                '!=',
             )
         )
         ) {
@@ -240,17 +240,17 @@ class SinglePointLogin
         $this->_username = isset($username) ? $username : 'Unknown';
 
         $setArray = array(
-                     'userID'          => $this->_username,
-                     'Success'         => 'Y',
-                     'Failcode'        => null,
-                     'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => $_SERVER['HTTP_X_FORWARDED_FOR']
+            'userID'          => $this->_username,
+            'Success'         => 'Y',
+            'Failcode'        => null,
+            'Login_timestamp' => date('Y-m-d H:i:s'),
+            'IP_address'      => $_SERVER['HTTP_X_FORWARDED_FOR']
                          ?? $_SERVER['REMOTE_ADDR']
                          ?? 'Unknown',
-                     'Page_requested'  => isset($_SERVER['REQUEST_URI'])
+            'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
-                    );
+        );
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -465,10 +465,10 @@ class SinglePointLogin
             "AND Success = 'Y'" .
         ");";
         $params = array(
-                   'username'            => $username,
-                   'timeWindowInMinutes' => $shortWindowInMinutes,
-                   'ip'                  => $_SERVER['REMOTE_ADDR'],
-                  );
+            'username'            => $username,
+            'timeWindowInMinutes' => $shortWindowInMinutes,
+            'ip'                  => $_SERVER['REMOTE_ADDR'],
+        );
 
         // Query DB for login attempts.
         $database  = \NDB_Factory::singleton()->database();

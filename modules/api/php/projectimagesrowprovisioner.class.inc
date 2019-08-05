@@ -75,8 +75,8 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              ORDER BY f.InsertTime ASC
             ',
             array(
-             'v_projectname' => $project->getName(),
-             'v_time'        => $since->getTimestamp(),
+                'v_projectname' => $project->getName(),
+                'v_time'        => $since->getTimestamp(),
             )
         );
     }

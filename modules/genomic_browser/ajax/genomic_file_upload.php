@@ -8,12 +8,12 @@
  *
  * PHP Version 7
  *
- *  @category   Loris
- *  @package    Genomic_Module
- *  @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
- *  @contriutor Xavier Lecours boucher <xavier.lecoursboucher@mcgill.ca>
- *  @license    Loris license
- *  @link       https://github.com/aces/Loris-Trunk
+ * @category   Loris
+ * @package    Genomic_Module
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @contriutor Xavier Lecours boucher <xavier.lecoursboucher@mcgill.ca>
+ * @license    Loris license
+ * @link       https://github.com/aces/Loris-Trunk
  */
 $userSingleton =& User::singleton();
 if (!$userSingleton->hasPermission('genomic_browser_view_site')
@@ -41,15 +41,15 @@ $bytes = $_FILES["fileData"]['size'];
 
 $fileToUpload
     = (object) array(
-                'file_type'         => $_FILES["fileData"]["type"],
-                'file_name'         => $_FILES["fileData"]["name"],
-                'tmp_name'          => $_FILES["fileData"]["tmp_name"],
-                'size'              => round($bytes / 1048576, 0),
-                'inserted_by'       => $userSingleton->getData('UserID'),
-                'genomic_file_type' => empty($_POST['fileType']) ?
+        'file_type'         => $_FILES["fileData"]["type"],
+        'file_name'         => $_FILES["fileData"]["name"],
+        'tmp_name'          => $_FILES["fileData"]["tmp_name"],
+        'size'              => round($bytes / 1048576, 0),
+        'inserted_by'       => $userSingleton->getData('UserID'),
+        'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
-                'description'       => $_POST['description'],
-               );
+        'description'       => $_POST['description'],
+    );
 
 setFullPath($fileToUpload);
 
@@ -72,9 +72,10 @@ default:
     die(
         json_encode(
             array(
-             'message'  => "Unsupported filetype: $fileToUpload->genomic_file_type",
-             'progress' => 100,
-             'error'    => true,
+                'message'  => "Unsupported filetype: "
+                                . $fileToUpload->genomic_file_type,
+                'progress' => 100,
+                'error'    => true,
             )
         )
     );
@@ -99,9 +100,9 @@ function validateRequest()
         die(
             json_encode(
                 array(
-                 'message'  => 'Validation failed : Missing inputs',
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => 'Validation failed : Missing inputs',
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -137,10 +138,10 @@ function setFullPath(&$fileToUpload)
             die(
                 json_encode(
                     array(
-                     'message'  => 'That file already exists, '
+                        'message'  => 'That file already exists, '
                         . 'could not generate a non-colliding name',
-                     'progress' => 100,
-                     'error'    => true,
+                        'progress' => 100,
+                        'error'    => true,
                     )
                 )
             );
@@ -157,7 +158,7 @@ function setFullPath(&$fileToUpload)
  * directory specified in the configSettings.
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -200,9 +201,9 @@ function moveFileToFS(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => "File copy failed",
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => "File copy failed",
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -213,7 +214,7 @@ function moveFileToFS(&$fileToUpload)
  * This insert a record in the genomic_files table
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -224,14 +225,14 @@ function registerFile(&$fileToUpload)
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
     $values = array(
-               'FileName'         => $fileToUpload->full_path,
-               'Description'      => $fileToUpload->description,
-               'FileType'         => $fileToUpload->file_type,
-               'AnalysisModality' => $fileToUpload->genomic_file_type,
-               'FileSize'         => $fileToUpload->size,
-               'Date_inserted'    => date("Y-m-d h:i:s", time()),
-               'InsertedByUserID' => $fileToUpload->inserted_by,
-              );
+        'FileName'         => $fileToUpload->full_path,
+        'Description'      => $fileToUpload->description,
+        'FileType'         => $fileToUpload->file_type,
+        'AnalysisModality' => $fileToUpload->genomic_file_type,
+        'FileSize'         => $fileToUpload->size,
+        'Date_inserted'    => date("Y-m-d h:i:s", time()),
+        'InsertedByUserID' => $fileToUpload->inserted_by,
+    );
     try {
         $DB->replace('genomic_files', $values);
         //TODO :: This should select using date_insert and
@@ -252,9 +253,10 @@ function registerFile(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => 'File registration failed. Is the description empty?',
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => 'File registration failed. '
+                                    . 'Is the description empty?',
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -269,7 +271,7 @@ function registerFile(&$fileToUpload)
  *        duplication (data loss).
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -322,11 +324,11 @@ function createSampleCandidateRelations(&$fileToUpload)
         foreach ($headers as $pscid) {
             $success = $stmt->execute(
                 array(
-                 "sample_label" => $pscid,
-                 "pscid"        => explode(
-                     '_',
-                     $pscid
-                 )[1],
+                    "sample_label" => $pscid,
+                    "pscid"        => explode(
+                        '_',
+                        $pscid
+                    )[1],
                 )
             );
         }
@@ -337,9 +339,9 @@ function createSampleCandidateRelations(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => "Can't insert into the database.",
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => "Can't insert into the database.",
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -353,7 +355,7 @@ function createSampleCandidateRelations(&$fileToUpload)
  *        duplication (data loss).
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -417,9 +419,9 @@ function insertBetaValues(&$fileToUpload)
                 foreach ($values as $key => $value) {
                     $success = $stmt->execute(
                         array(
-                         "sample_label" => $headers[$key],
-                         "cpg_name"     => $probe_id,
-                         "beta_value"   => $value,
+                            "sample_label" => $headers[$key],
+                            "cpg_name"     => $probe_id,
+                            "beta_value"   => $value,
                         )
                     );
                     if (!$success) {
@@ -431,9 +433,9 @@ function insertBetaValues(&$fileToUpload)
                 die(
                     json_encode(
                         array(
-                         'message'  => 'Insertion failed',
-                         'progress' => 100,
-                         'error'    => true,
+                            'message'  => 'Insertion failed',
+                            'progress' => 100,
+                            'error'    => true,
                         )
                     )
                 );
@@ -445,9 +447,9 @@ function insertBetaValues(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => 'Beta value file can`t be opened',
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => 'Beta value file can`t be opened',
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -459,7 +461,7 @@ function insertBetaValues(&$fileToUpload)
  * that have values inserted.
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -495,8 +497,8 @@ function createCandidateFileRelations(&$fileToUpload)
                 $pscid   = trim($pscid);
                 $success = $stmt->execute(
                     array(
-                     "pscid"           => $pscid,
-                     "genomic_file_id" => $fileToUpload->GenomicFileID,
+                        "pscid"           => $pscid,
+                        "genomic_file_id" => $fileToUpload->GenomicFileID,
                     )
                 );
                 if (!$success) {
@@ -508,9 +510,9 @@ function createCandidateFileRelations(&$fileToUpload)
             die(
                 json_encode(
                     array(
-                     'message'  => 'File registration failed',
-                     'progress' => 100,
-                     'error'    => true,
+                        'message'  => 'File registration failed',
+                        'progress' => 100,
+                        'error'    => true,
                     )
                 )
             );
@@ -520,9 +522,9 @@ function createCandidateFileRelations(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => 'Beta value file can`t be opened',
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => 'Beta value file can`t be opened',
+                    'progress' => 100,
+                    'error'    => true,
                 )
             )
         );
@@ -535,7 +537,7 @@ function createCandidateFileRelations(&$fileToUpload)
  * This coordinate the Methylation beta-values insertions.
  *
  * @param object $fileToUpload The object containing the $_FILES
- *               and the $_POST values.
+ *                             and the $_POST values.
  *
  * @return void
  */
@@ -559,9 +561,9 @@ function insertMethylationData(&$fileToUpload)
 function reportProgress($progress, $message)
 {
     $response = array(
-                 'message'  => $message,
-                 'progress' => $progress,
-                );
+        'message'  => $message,
+        'progress' => $progress,
+    );
     echo json_encode($response);
     sleep(1);
 }

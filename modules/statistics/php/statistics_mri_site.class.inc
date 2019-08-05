@@ -190,10 +190,10 @@ class Statistics_Mri_Site extends Statistics_Site
     function setup()
     {
         $this->issues = array(
-                         "Tarchive_Missing",
-                         "Files_Missing",
-                         "PF_Missing",
-                        );
+            "Tarchive_Missing",
+            "Files_Missing",
+            "PF_Missing",
+        );
 
         $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID,".
@@ -222,18 +222,18 @@ class Statistics_Mri_Site extends Statistics_Site
                     $visits[] = $row['Visit_label'];
                 }
                 $results[$row['Visit_label']][] = array(
-                                                   'test_url'  => $test_url,
-                                                   'CandID'    => $row['CandID'],
-                                                   'SessionID' => $row['SessionID'],
-                                                   'CommentID' => $row['CommentID'],
-                                                   'PSCID'     => $row['PSCID'],
-                                                  );
+                    'test_url'  => $test_url,
+                    'CandID'    => $row['CandID'],
+                    'SessionID' => $row['SessionID'],
+                    'CommentID' => $row['CommentID'],
+                    'PSCID'     => $row['PSCID'],
+                );
             }
             $data[] = array(
-                       'name'        => $this->_getIssueName($issue),
-                       'count'       => $complete_count,
-                       'incompletes' => $results,
-                      );
+                'name'        => $this->_getIssueName($issue),
+                'count'       => $complete_count,
+                'incompletes' => $results,
+            );
         }
 
         $this->tpl_data["data"]     = $data;

@@ -114,26 +114,26 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     {
         parent::__construct(
             new \ArrayIterator(
-                [
-                 "/css/"    => new \LORIS\Router\ModuleFileRouter(
-                     $this,
-                     $moduledir,
-                     "css",
-                     "text/css"
-                 ),
-                 "/js/"     => new \LORIS\Router\ModuleFileRouter(
-                     $this,
-                     $moduledir,
-                     "js",
-                     "application/javascript"
-                 ),
-                 "/static/" => new \LORIS\Router\ModuleFileRouter(
-                     $this,
-                     $moduledir,
-                     "static",
-                     ""
-                 ),
-                ]
+                array(
+                    "/css/"    => new \LORIS\Router\ModuleFileRouter(
+                        $this,
+                        $moduledir,
+                        "css",
+                        "text/css"
+                    ),
+                    "/js/"     => new \LORIS\Router\ModuleFileRouter(
+                        $this,
+                        $moduledir,
+                        "js",
+                        "application/javascript"
+                    ),
+                    "/static/" => new \LORIS\Router\ModuleFileRouter(
+                        $this,
+                        $moduledir,
+                        "static",
+                        ""
+                    ),
+                )
             )
         );
         $this->name = $name;
@@ -348,7 +348,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * @param ServerRequestInterface $request The request to process.
      * @param \User                  $user    The user to decorate the page with.
      * @param string                 $message An error message explaining the
-     *                                  500 code to the user.
+     *                                        500 code to the user.
      *
      * @return ResponseInterface A properly decorated 500 response.
      */

@@ -10,21 +10,21 @@
  *
  * PHP Version 5
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Behavioural
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 /**
  * Class that implements a wrapper around a Loris battery.
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Behavioural
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Battery
 {
@@ -201,10 +201,10 @@ class NDB_BVL_Battery
         $success = $DB->insert(
             'flag',
             array(
-             'SessionID' => $sessionData['SessionID'],
-             'Test_name' => $testName,
-             'CommentID' => $commentID,
-             'UserID'    => $sessionData['UserID'],
+                'SessionID' => $sessionData['SessionID'],
+                'Test_name' => $testName,
+                'CommentID' => $commentID,
+                'UserID'    => $sessionData['UserID'],
             )
         );
 
@@ -218,10 +218,10 @@ class NDB_BVL_Battery
         $success = $DB->insert(
             'flag',
             array(
-             'SessionID' => $sessionData['SessionID'],
-             'Test_name' => $testName,
-             'CommentID' => $ddeCommentID,
-             'UserID'    => $sessionData['UserID'],
+                'SessionID' => $sessionData['SessionID'],
+                'Test_name' => $testName,
+                'CommentID' => $ddeCommentID,
+                'UserID'    => $sessionData['UserID'],
             )
         );
 
@@ -429,9 +429,9 @@ class NDB_BVL_Battery
             $this->age = $age;
         }
         $qparams = array(
-                    'vAge'      => $this->age,
-                    'SubprojID' => $SubprojectID,
-                   );
+            'vAge'      => $this->age,
+            'SubprojID' => $SubprojectID,
+        );
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
         $query = "
@@ -453,8 +453,8 @@ class NDB_BVL_Battery
                     FROM test_battery
                     WHERE Visit_label =:VL AND SubprojectID=:SubID",
                 array(
-                 'VL'    => $visit_label,
-                 'SubID' => $SubprojectID,
+                    'VL'    => $visit_label,
+                    'SubID' => $SubprojectID,
                 )
             );
             if ($VisitBatteryExists > 0) {
@@ -498,9 +498,9 @@ class NDB_BVL_Battery
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
             $where            = array(
-                                 'FV'    => 'Y',
-                                 'subID' => $SubprojectID,
-                                );
+                'FV'    => 'Y',
+                'subID' => $SubprojectID,
+            );
             $rows_firstVisit  = $DB->pselect($query_firstVisit, $where);
 
             foreach ($rows_firstVisit as $row) {
@@ -514,9 +514,9 @@ class NDB_BVL_Battery
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
             $where = array(
-                      'FV'    => 'N',
-                      'subID' => $SubprojectID,
-                     );
+                'FV'    => 'N',
+                'subID' => $SubprojectID,
+            );
 
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit, $where);
             foreach ($rows_notfirstVisit as $row) {

@@ -238,9 +238,9 @@ abstract class NDB_Notifier_Abstract
                     AND nm.operation_type=:ot
                     ";
         $params = array(
-                   "nm" => $this->module,
-                   "ot" => $this->operation,
-                  );
+            "nm" => $this->module,
+            "ot" => $this->operation,
+        );
 
         if (!$this->_asAdmin) {
             $query        .=" AND (FIND_IN_SET(upsc.CenterID,:cid) > 0 
@@ -289,8 +289,8 @@ abstract class NDB_Notifier_Abstract
              WHERE nm.module_name=:mid
                   AND nm.operation_type=:ot",
             array(
-             "mid" => $this->module,
-             "ot"  => $this->operation,
+                "mid" => $this->module,
+                "ot"  => $this->operation,
             )
         );
 
@@ -369,15 +369,15 @@ abstract class NDB_Notifier_Abstract
         \Database::singleton()->insert(
             'notification_history',
             array(
-             "module_id"    => $this->getNotificationModuleID(
-                 $this->module,
-                 $this->operation
-             ),
-             "service_id"   => $this->getNotificationServiceID(
-                 $service
-             ),
-             "trigger_user" => $trigger_user,
-             "target_user"  => $target_user,
+                "module_id"    => $this->getNotificationModuleID(
+                    $this->module,
+                    $this->operation
+                ),
+                "service_id"   => $this->getNotificationServiceID(
+                    $service
+                ),
+                "trigger_user" => $trigger_user,
+                "target_user"  => $target_user,
             )
         );
     }
@@ -488,9 +488,9 @@ abstract class NDB_Notifier_Abstract
                       AND operation_type=:ot
                     ";
         $params = array(
-                   "mn" => $module,
-                   "ot" => $operation_type,
-                  );
+            "mn" => $module,
+            "ot" => $operation_type,
+        );
         return intval(\Database::singleton()->pselectOne($query, $params));
     }
 

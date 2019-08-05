@@ -133,8 +133,8 @@ class EditExaminer extends \NDB_Form
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
                 array(
-                 'EID' => $examinerID,
-                 'TID' => $testID,
+                    'EID' => $examinerID,
+                    'TID' => $testID,
                 )
             );
             // FIXME $visit_label should be set properly. This declaration
@@ -145,11 +145,11 @@ class EditExaminer extends \NDB_Form
             if (empty($certID) && !empty($certStatus)) {
                 // insert a new certification entry
                 $data = array(
-                         'examinerID' => $examinerID,
-                         'testID'     => $testID,
-                         'pass'       => $certStatus,
-                         'comment'    => $comment,
-                        );
+                    'examinerID' => $examinerID,
+                    'testID'     => $testID,
+                    'pass'       => $certStatus,
+                    'comment'    => $comment,
+                );
                 if ($date_cert != "") {
                     $data['date_cert'] = $date_cert;
                 }
@@ -163,21 +163,21 @@ class EditExaminer extends \NDB_Form
                      FROM certification
                      WHERE examinerID =:EID and testID=:TID",
                     array(
-                     'EID' => $examinerID,
-                     'TID' => $testID,
+                        'EID' => $examinerID,
+                        'TID' => $testID,
                     )
                 );
                 // Add a new entry to the certification history table
                 $data = array(
-                         'col'         => 'pass',
-                         'new'         => $certStatus,
-                         'primaryVals' => $certID,
-                         'testID'      => $testID,
-                         'visit_label' => $visit_label,
-                         'changeDate'  => date("Y-m-d H:i:s"),
-                         'userID'      => $_SESSION['State']->getUsername(),
-                         'type'        => 'I',
-                        );
+                    'col'         => 'pass',
+                    'new'         => $certStatus,
+                    'primaryVals' => $certID,
+                    'testID'      => $testID,
+                    'visit_label' => $visit_label,
+                    'changeDate'  => date("Y-m-d H:i:s"),
+                    'userID'      => $_SESSION['State']->getUsername(),
+                    'type'        => 'I',
+                );
                 if ($date_cert != "") {
                     $data['new_date'] = $date_cert;
                 }
@@ -196,8 +196,8 @@ class EditExaminer extends \NDB_Form
                      WHERE c.examinerID=:EID AND ch.testID=:TID
                      ORDER BY changeDate DESC",
                     array(
-                     'EID' => $examinerID,
-                     'TID' => $testID,
+                        'EID' => $examinerID,
+                        'TID' => $testID,
                     )
                 );
 
@@ -209,8 +209,8 @@ class EditExaminer extends \NDB_Form
                      FROM certification
                      WHERE examinerID=:EID AND testID=:TID",
                     array(
-                     'EID' => $examinerID,
-                     'TID' => $testID,
+                        'EID' => $examinerID,
+                        'TID' => $testID,
                     )
                 );
 
@@ -221,9 +221,9 @@ class EditExaminer extends \NDB_Form
                 ) {
                     // Update the certification entry
                     $data = array(
-                             'pass'    => $certStatus,
-                             'comment' => $comment,
-                            );
+                        'pass'    => $certStatus,
+                        'comment' => $comment,
+                    );
                     if ($date_cert != "") {
                         $data['date_cert'] = $date_cert;
                     }
@@ -231,24 +231,24 @@ class EditExaminer extends \NDB_Form
                         'certification',
                         $data,
                         array(
-                         'examinerID' => $examinerID,
-                         'testID'     => $testID,
+                            'examinerID' => $examinerID,
+                            'testID'     => $testID,
                         )
                     );
 
                     // Add a new entry to the certification history table
                     if ($oldDate != $date_cert || $oldVal != $certStatus) {
                         $data = array(
-                                 'col'         => 'pass',
-                                 'old'         => $oldVal,
-                                 'new'         => $certStatus,
-                                 'primaryVals' => $certID,
-                                 'testID'      => $testID,
-                                 'visit_label' => $visit_label,
-                                 'changeDate'  => date("Y-m-d H:i:s"),
-                                 'userID'      => $_SESSION['State']->getUsername(),
-                                 'type'        => 'U',
-                                );
+                            'col'         => 'pass',
+                            'old'         => $oldVal,
+                            'new'         => $certStatus,
+                            'primaryVals' => $certID,
+                            'testID'      => $testID,
+                            'visit_label' => $visit_label,
+                            'changeDate'  => date("Y-m-d H:i:s"),
+                            'userID'      => $_SESSION['State']->getUsername(),
+                            'type'        => 'U',
+                        );
                         if ($oldDate != "") {
                             $data['old_date'] = $oldDate;
                         }
@@ -299,18 +299,18 @@ class EditExaminer extends \NDB_Form
         $config = \NDB_Config::singleton();
 
         $dateOptions   = array(
-                          'language'       => 'en',
-                          'format'         => 'YMd',
-                          'addEmptyOption' => true,
-                          'minYear'        => $config->getSetting('startYear'),
-                          'maxYear'        => $config->getSetting('endYear'),
-                         );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $config->getSetting('startYear'),
+            'maxYear'        => $config->getSetting('endYear'),
+        );
         $statusOptions = array(
-                          null            => 'N/A',
-                          'not_certified' => 'Not Certified',
-                          'in_training'   => 'In Training',
-                          'certified'     => 'Certified',
-                         );
+            null            => 'N/A',
+            'not_certified' => 'Not Certified',
+            'in_training'   => 'In Training',
+            'certified'     => 'Certified',
+        );
 
         // Get the list of certification instruments
         $instruments = $this->getCertificationInstruments();
@@ -338,8 +338,8 @@ class EditExaminer extends \NDB_Form
                 $value,
                 '',
                 array(
-                 'prefix_wrapper'  => '<div class="col-md-3">',
-                 'postfix_wrapper' => '</div>',
+                    'prefix_wrapper'  => '<div class="col-md-3">',
+                    'postfix_wrapper' => '</div>',
                 )
             );
             unset($group);

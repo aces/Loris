@@ -75,9 +75,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                         } else {
                             // user input doesn't match DB, so we update the DB
                             $setArray   = array(
-                                           'Resolved'   => (string)$val,
-                                           'ChangeDate' => date("Y-m-d H:i:s"),
-                                          );
+                                'Resolved'   => (string)$val,
+                                'ChangeDate' => date("Y-m-d H:i:s"),
+                            );
                             $whereArray = array('hash' => $hash);
                             $DB->update(
                                 'violations_resolved',
@@ -161,40 +161,40 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     {
         // set the class variables
         $this->columns = array(
-                          'v.PatientName',
-                          'pjct.Name as Project',
-                          'subpjct.title as Subproject',
-                          'site.Name as Site',
-                          'v.TimeRun',
-                          'v.MincFile',
-                          'v.Series_Description as Series_Description_Or_Scan_Type',
-                          'v.Problem',
-                          'v.SeriesUID',
-                          'v.hash',
-                          'v.join_id',
-                          'v.Resolved',
-                         );
+            'v.PatientName',
+            'pjct.Name as Project',
+            'subpjct.title as Subproject',
+            'site.Name as Site',
+            'v.TimeRun',
+            'v.MincFile',
+            'v.Series_Description as Series_Description_Or_Scan_Type',
+            'v.Problem',
+            'v.SeriesUID',
+            'v.hash',
+            'v.join_id',
+            'v.Resolved',
+        );
 
         $this->headers = array(
-                          'PatientName',
-                          'Project',
-                          'Subproject',
-                          'Site',
-                          'TimeRun',
-                          'MincFile',
-                          'Series_Description_Or_Scan_Type',
-                          'Problem',
-                          'SeriesUID',
-                          'Hash',
-                          'JoinID',
-                          'Resolution_status',
-                         );
+            'PatientName',
+            'Project',
+            'Subproject',
+            'Site',
+            'TimeRun',
+            'MincFile',
+            'Series_Description_Or_Scan_Type',
+            'Problem',
+            'SeriesUID',
+            'Hash',
+            'JoinID',
+            'Resolution_status',
+        );
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
-             'SeriesUID',
-             'Hash',
-             'JoinID',
+                'SeriesUID',
+                'Hash',
+                'JoinID',
             ]
         );
 
@@ -299,28 +299,28 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-                               'PatientName' => 'v.PatientName',
-                               'Project'     => 'v.Project',
-                               'Subproject'  => 'v.Subproject',
-                               'TimeRun'     => 'v.TimeRun',
-                               'ProblemType' => 'v.Problem',
-                               'Filename'    => 'v.MincFile',
-                               'Description' => 'v.Series_Description',
-                               'SeriesUID'   => 'v.SeriesUID',
-                               'Site'        => 'v.Site',
-                              );
+            'PatientName' => 'v.PatientName',
+            'Project'     => 'v.Project',
+            'Subproject'  => 'v.Subproject',
+            'TimeRun'     => 'v.TimeRun',
+            'ProblemType' => 'v.Problem',
+            'Filename'    => 'v.MincFile',
+            'Description' => 'v.Series_Description',
+            'SeriesUID'   => 'v.SeriesUID',
+            'Site'        => 'v.Site',
+        );
 
         $this->validFilters = array(
-                               'v.PatientName',
-                               'v.Project',
-                               'v.Subproject',
-                               'v.TimeRun',
-                               'v.MincFile',
-                               'v.Problem',
-                               'v.Series_Description',
-                               'v.SeriesUID',
-                               'v.Site',
-                              );
+            'v.PatientName',
+            'v.Project',
+            'v.Subproject',
+            'v.TimeRun',
+            'v.MincFile',
+            'v.Problem',
+            'v.Series_Description',
+            'v.SeriesUID',
+            'v.Site',
+        );
 
         $this->EqualityFilters[] = 'v.Site';
     }
@@ -343,12 +343,12 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $maxYear = $config->getSetting('endYear');
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $minYear,
-                        'maxYear'        => $maxYear,
-                       );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $minYear,
+            'maxYear'        => $maxYear,
+        );
 
         $problemOptions = ['' => 'Any'];
 
@@ -421,7 +421,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
             )
         );
     }
