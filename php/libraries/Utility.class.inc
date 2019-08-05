@@ -551,7 +551,7 @@ class Utility
     {
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config        =& \NDB_Config::singleton();
+        $config        = $Factory->config();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -653,7 +653,9 @@ class Utility
      */
     static function getSubprojectIDUsingCandID(string $Cand_id): int
     {
-        $db    =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return intval($stage[0]['SubprojectID']);
@@ -673,7 +675,8 @@ class Utility
     static function getTestNameUsingFullName(string $fullname): string
     {
         $test_name  = '';
-        $db         =& \Database::singleton();
+        $factory    = NDB_Factory::singleton();
+        $db         = $factory->database();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
             array('fname' => $fullname)
@@ -712,7 +715,9 @@ class Utility
         ?string $name = null
     ): array {
 
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         //get sourcefield using instrument
         $sourcefields = array();
         if (!is_null($instrument)) {
@@ -809,7 +814,8 @@ class Utility
      */
     static function getVisitInstruments(string $visit_label): array
     {
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
@@ -914,7 +920,8 @@ class Utility
      */
     static function getLanguageList(): array
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
