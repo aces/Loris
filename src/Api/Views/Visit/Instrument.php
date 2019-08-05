@@ -64,7 +64,7 @@ class Instrument
                  'Instrument' => $instrumentname,
                 );
 
-        $instrument = array($instrumentname =>  $instrumentdat);
+        $instrument = array($instrumentname => $instrumentdata);
 
         return array_merge(
             array('Meta' => $meta),
