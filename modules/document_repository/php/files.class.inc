@@ -48,8 +48,8 @@ class Files extends \NDB_Page
     {
         return $user->hasAnyPermission(
             array(
-             'document_repository_view',
-             'document_repository_delete',
+                'document_repository_view',
+                'document_repository_delete',
             )
         );
     }
@@ -78,6 +78,15 @@ class Files extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
+            } else {
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withStatus(409)
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode("duplicate file name")
+                        )
+                    );
             }
             return new \LORIS\Http\Response\Conflict("duplicate file name");
         case "PUT":
@@ -144,12 +153,12 @@ class Files extends \NDB_Page
         $db           = \Database::singleton();
         $user         = \User::singleton();
         $updateValues = [
-                         'instrument' => $req['instrument'] ?? null,
-                         'comments'   => $req['comments'] ?? null,
-                         'version'    => $req['version'] ?? null,
-                         'visitLabel' => $req['visitLabel'] ?? null,
-                         'pscid'      => $req['pscid'] ?? null,
-                        ];
+            'instrument' => $req['instrument'] ?? null,
+            'comments'   => $req['comments'] ?? null,
+            'version'    => $req['version'] ?? null,
+            'visitLabel' => $req['visitLabel'] ?? null,
+            'pscid'      => $req['pscid'] ?? null,
+        ];
         try {
             $db->update(
                 'document_repository',
@@ -256,14 +265,15 @@ class Files extends \NDB_Page
         $docData = $db->pselectRow($query, $where);
 
         $result = array(
-                   'categories'  => $categoriesList,
-                   'sites'       => $siteList,
-                   'instruments' => $instrumentsList,
-                   'docData'     => $docData,
-                  );
+            'categories'  => $categoriesList,
+            'sites'       => $siteList,
+            'instruments' => $instrumentsList,
+            'docData'     => $docData,
+        );
 
         return $result;
     }
+
     /**
     * Handler of parsing category
     *
@@ -296,20 +306,20 @@ class Files extends \NDB_Page
             }
         } while ($value['parent_id'] != 0);
         return array(
-                "name" => $categoryName,
-                "id"   => $id,
-               );
+            "name" => $categoryName,
+            "id"   => $id,
+        );
     }
     /**
-    * Utility function to convert data from database to a
-    * (select) dropdown friendly format
-    *
-    * @param array  $options array of options
-    * @param string $item    key
-    * @param string $item2   value
-    *
-    * @return array
-    */
+     * Utility function to convert data from database to a
+     * (select) dropdown friendly format
+     *
+     * @param array  $options array of options
+     * @param string $item    key
+     * @param string $item2   value
+     *
+     * @return array
+     */
     function toDocSelect($options, $item, $item2): array
     {
         $selectOptions = array();
@@ -399,18 +409,18 @@ class Files extends \NDB_Page
                 $DB->insert(
                     'document_repository',
                     array(
-                     'File_category' => $category,
-                     'For_site'      => $site,
-                     'comments'      => $comments,
-                     'version'       => $version,
-                     'File_name'     => $fileName,
-                     'File_size'     => $fileSize,
-                     'Data_dir'      => $fileName,
-                     'uploaded_by'   => $name,
-                     'Instrument'    => $instrument,
-                     'PSCID'         => $pscid,
-                     'visitLabel'    => $visit,
-                     'File_type'     => $fileType,
+                        'File_category' => $category,
+                        'For_site'      => $site,
+                        'comments'      => $comments,
+                        'version'       => $version,
+                        'File_name'     => $fileName,
+                        'File_size'     => $fileSize,
+                        'Data_dir'      => $fileName,
+                        'uploaded_by'   => $name,
+                        'Instrument'    => $instrument,
+                        'PSCID'         => $pscid,
+                        'visitLabel'    => $visit,
+                        'File_type'     => $fileType,
                     )
                 );
                 $msg_data = array(

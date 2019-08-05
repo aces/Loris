@@ -60,10 +60,10 @@ class Utility
             );
         }
         $dob = array(
-                'year' => $matches[1],
-                'mon'  => $matches[2],
-                'day'  => $matches[3],
-               );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -76,10 +76,10 @@ class Utility
             );
         }
         $testdate = array(
-                     'year' => $matches[1],
-                     'mon'  => $matches[2],
-                     'day'  => $matches[3],
-                    );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if ($testdate['day'] < $dob['day']) {
             $testdate['day'] += 30;
@@ -91,10 +91,10 @@ class Utility
         }
 
         $age = array(
-                'year' => (int)$testdate['year'] - (int)$dob['year'],
-                'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
-                'day'  => (int)$testdate['day'] - (int)$dob['day'],
-               );
+            'year' => (int)$testdate['year'] - (int)$dob['year'],
+            'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
+            'day'  => (int)$testdate['day'] - (int)$dob['day'],
+        );
 
         return $age;
     }
@@ -230,7 +230,7 @@ class Utility
      * Returns a list of study Subprojects
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
@@ -261,7 +261,7 @@ class Utility
      * Returns a list of study Subprojects associated with a project
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
@@ -301,7 +301,7 @@ class Utility
      *
      * @param array       $structure  the structure root
      * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                           of the PSCID
+     *                                of the PSCID
      *
      * @return string the regex pattern
      *
@@ -681,11 +681,11 @@ class Utility
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string|null $instrument If specified, return fields from this
-     *                           test_name
+     *                                test_name
      * @param string|null $commentID  If specified, return fields for this
-     *                           commentid
+     *                                commentid
      * @param string|null $name       If specified, return fields for this
-     *                           parameter_type name
+     *                                parameter_type name
      *
      * @return  ?array Format: array(
      *              0 => array(
@@ -742,7 +742,7 @@ class Utility
      * Returns a list of study Visit Labels that are being used by this study.
      *
      * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                  project.
+     *                                project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label

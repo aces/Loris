@@ -88,11 +88,11 @@ $tpl_data = array();
 
 // Page 1: Help, prompt server, root username, root password
 // Page 2: 1. Connect with username/password
-// 	2. Check has required permissions -- abort if not
-//	 3. Source schema
+//     2. Check has required permissions -- abort if not
+//     3. Source schema
 // Page 3: Help, prompt for new username/password (include defaults)
 // Page 4: 1. Check if user exists -- if so, error, if not create
-//	 2. Update config.xml if write access, otherwise download copy
+//     2. Update config.xml if write access, otherwise download copy
 switch(isset($_POST['formname']) ? $_POST['formname'] : '') {
 case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the

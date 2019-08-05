@@ -37,33 +37,33 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-         $this->DB->insert(
-             "psc",
-             array(
-              'CenterID'  => '55',
-              'Name'      => 'TESTinPSC',
-              'Alias'     => 'tst',
-              'MRI_alias' => 'test',
-             )
-         );
-         $this->DB->insert(
-             "users",
-             array(
-              'ID'     => '999998',
-              'UserID' => 'TestUser',
-             )
-         );
-         $this->DB->insert(
-             "issues",
-             array(
-              'issueID'  => '999999',
-              'title'    => 'Test Issue',
-              'status'   => 'new',
-              'priority' => 'low',
-              'reporter' => 'TestUser',
-              'centerID' => '55',
-             )
-         );
+        $this->DB->insert(
+            "psc",
+            array(
+                'CenterID'  => '55',
+                'Name'      => 'TESTinPSC',
+                'Alias'     => 'tst',
+                'MRI_alias' => 'test',
+            )
+        );
+        $this->DB->insert(
+            "users",
+            array(
+                'ID'     => '999998',
+                'UserID' => 'TestUser',
+            )
+        );
+        $this->DB->insert(
+            "issues",
+            array(
+                'issueID'  => '999999',
+                'title'    => 'Test Issue',
+                'status'   => 'new',
+                'priority' => 'low',
+                'reporter' => 'TestUser',
+                'centerID' => '55',
+            )
+        );
     }
 
     /**

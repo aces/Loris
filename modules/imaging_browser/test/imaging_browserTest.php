@@ -44,20 +44,20 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "psc",
             array(
-             'CenterID'  => '253',
-             'Name'      => 'Test Site AOL',
-             'Alias'     => 'AOL',
-             'MRI_alias' => 'Y',
+                'CenterID'  => '253',
+                'Name'      => 'Test Site AOL',
+                'Alias'     => 'AOL',
+                'MRI_alias' => 'Y',
             )
         );
 
         $this->DB->insert(
             "psc",
             array(
-             'CenterID'  => '254',
-             'Name'      => 'Test Site BOL',
-             'Alias'     => 'BOL',
-             'MRI_alias' => 'Y',
+                'CenterID'  => '254',
+                'Name'      => 'Test Site BOL',
+                'Alias'     => 'BOL',
+                'MRI_alias' => 'Y',
             )
         );
 
@@ -115,14 +115,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'session',
             array(
-             'ID'            => 999998,
-             'CandID'        => 000002,
-             'Visit_label'   => 'Test1',
-             'CenterID'      => 253,
-             'ProjectID'     => 1,
-             'Scan_done'     => 'Y',
-             'Current_stage' => 'Visit',
-             'Visit'         => 'In Progress',
+                'ID'            => 999998,
+                'CandID'        => 000002,
+                'Visit_label'   => 'Test1',
+                'CenterID'      => 253,
+                'Scan_done'     => 'Y',
+                'Current_stage' => 'Visit',
+                'Visit'         => 'In Progress',
             )
         );
 
@@ -145,24 +144,24 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'mri_processing_protocol',
             array(
-             'ProcessProtocolID' => 1111,
-             'ProtocolFile'      => 'None1',
-             'FileType'          => null,
-             'Tool'              => 'None1',
-             'InsertTime'        => 0,
-             'md5sum'            => null,
+                'ProcessProtocolID' => 1111,
+                'ProtocolFile'      => 'None1',
+                'FileType'          => null,
+                'Tool'              => 'None1',
+                'InsertTime'        => 0,
+                'md5sum'            => null,
             )
         );
 
         $this->DB->insert(
             'mri_processing_protocol',
             array(
-             'ProcessProtocolID' => 2222,
-             'ProtocolFile'      => 'None2',
-             'FileType'          => null,
-             'Tool'              => 'None2',
-             'InsertTime'        => 0,
-             'md5sum'            => null,
+                'ProcessProtocolID' => 2222,
+                'ProtocolFile'      => 'None2',
+                'FileType'          => null,
+                'Tool'              => 'None2',
+                'InsertTime'        => 0,
+                'md5sum'            => null,
             )
         );
 
@@ -170,52 +169,52 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'tarchive',
             array(
-             'TarchiveID'             => 263,
-             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'TarchiveID'             => 263,
+                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
-             'PatientID'              => 'AOL0002_000002_Test1',
-             'PatientName'            => 'AOL0002_000002_Test1',
-             'CenterName'             => 'Test site AOL',
-             'AcquisitionCount'       => 10,
-             'NonDicomFileCount'      => 3,
-             'DicomFileCount'         => 1000,
-             'CreatingUser'           => 'lorisdev',
-             'sumTypeVersion'         => 1,
-             'SourceLocation'         => '/data/incoming/AOL0002_000002_Test1',
-             'ScannerManufacturer'    => 'Siemens',
-             'ScannerModel'           => 'TrioTim',
-             'ScannerSerialNumber'    => '33333',
-             'ScannerSoftwareVersion' => 'syngo MR B17',
-             'uploadAttempt'          => 1,
-             'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => 999998,
-             'PendingTransfer'        => 1,
+                'PatientID'              => 'AOL0002_000002_Test1',
+                'PatientName'            => 'AOL0002_000002_Test1',
+                'CenterName'             => 'Test site AOL',
+                'AcquisitionCount'       => 10,
+                'NonDicomFileCount'      => 3,
+                'DicomFileCount'         => 1000,
+                'CreatingUser'           => 'lorisdev',
+                'sumTypeVersion'         => 1,
+                'SourceLocation'         => '/data/incoming/AOL0002_000002_Test1',
+                'ScannerManufacturer'    => 'Siemens',
+                'ScannerModel'           => 'TrioTim',
+                'ScannerSerialNumber'    => '33333',
+                'ScannerSoftwareVersion' => 'syngo MR B17',
+                'uploadAttempt'          => 1,
+                'AcquisitionMetadata'    => 'metadata',
+                'SessionID'              => 999998,
+                'PendingTransfer'        => 1,
             )
         );
 
         $this->DB->insert(
             'tarchive',
             array(
-             'TarchiveID'             => 264,
-             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'TarchiveID'             => 264,
+                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000001',
-             'PatientID'              => 'BOL0003_000003_Test2',
-             'PatientName'            => 'BOL0003_000003_Test2',
-             'CenterName'             => 'Test site BOL',
-             'AcquisitionCount'       => 10,
-             'NonDicomFileCount'      => 3,
-             'DicomFileCount'         => 1000,
-             'CreatingUser'           => 'lorisdev',
-             'sumTypeVersion'         => 1,
-             'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
-             'ScannerManufacturer'    => 'Siemens',
-             'ScannerModel'           => 'TrioTim',
-             'ScannerSerialNumber'    => '33336',
-             'ScannerSoftwareVersion' => 'syngo MR B17',
-             'uploadAttempt'          => 1,
-             'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => 999999,
-             'PendingTransfer'        => 1,
+                'PatientID'              => 'BOL0003_000003_Test2',
+                'PatientName'            => 'BOL0003_000003_Test2',
+                'CenterName'             => 'Test site BOL',
+                'AcquisitionCount'       => 10,
+                'NonDicomFileCount'      => 3,
+                'DicomFileCount'         => 1000,
+                'CreatingUser'           => 'lorisdev',
+                'sumTypeVersion'         => 1,
+                'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
+                'ScannerManufacturer'    => 'Siemens',
+                'ScannerModel'           => 'TrioTim',
+                'ScannerSerialNumber'    => '33336',
+                'ScannerSoftwareVersion' => 'syngo MR B17',
+                'uploadAttempt'          => 1,
+                'AcquisitionMetadata'    => 'metadata',
+                'SessionID'              => 999999,
+                'PendingTransfer'        => 1,
             )
         );
 

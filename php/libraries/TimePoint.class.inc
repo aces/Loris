@@ -30,45 +30,45 @@ class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-                          null,
-                          'Not Started',
-                          'Screening',
-                          'Visit',
-                          'Approval',
-                          'Subject',
-                          'Recycling Bin',
-                         );
+        null,
+        'Not Started',
+        'Screening',
+        'Visit',
+        'Approval',
+        'Subject',
+        'Recycling Bin',
+    );
 
     var $_dynamicStageOptions = array(
-                                 'Screening',
-                                 'Visit',
-                                 'Approval',
-                                );
+        'Screening',
+        'Visit',
+        'Approval',
+    );
 
     var $_statusOptions = array(
-                           null,
-                           'Pass',
-                           'Failure',
-                           'Withdrawal',
-                           'In Progress',
-                          );
+        null,
+        'Pass',
+        'Failure',
+        'Withdrawal',
+        'In Progress',
+    );
 
     var $bvlQcTypes = array(
-                       null,
-                       'Visual',
-                       'Hardcopy',
-                      );
+        null,
+        'Visual',
+        'Hardcopy',
+    );
 
     var $bvlQcStatuses = array(
-                          null,
-                          'Complete',
-                         );
+        null,
+        'Complete',
+    );
 
     var $bvlQcExclusionStatuses = array(
-                                   null,
-                                   'Excluded',
-                                   'Not Excluded',
-                                  );
+        null,
+        'Excluded',
+        'Not Excluded',
+    );
 
 
     /**
@@ -348,7 +348,7 @@ class TimePoint
      * use setData.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and its
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -370,7 +370,7 @@ class TimePoint
             'session',
             $newData,
             array(
-             'ID' => $this->getData('SessionID'),
+                'ID' => $this->getData('SessionID'),
             )
         );
         // this select updates the timepoint object
@@ -757,9 +757,9 @@ class TimePoint
 
         // update session table
         $update_columns = array(
-                           "Date_stage_change" => $today,
-                           'Current_stage'     => $newCurrentStage,
-                          );
+            "Date_stage_change" => $today,
+            'Current_stage'     => $newCurrentStage,
+        );
 
         $db->update(
             'session',
@@ -783,9 +783,9 @@ class TimePoint
     function startStage(string $stage): void
     {
         $setArray = array(
-                     'Current_stage'     => $stage,
-                     'Date_stage_change' => date('Y-m-d'),
-                    );
+            'Current_stage'     => $stage,
+            'Date_stage_change' => date('Y-m-d'),
+        );
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null

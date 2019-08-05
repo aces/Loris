@@ -71,6 +71,31 @@ class Dicom_Archive extends \DataFrameworkMenu
     }
 
     /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $table   = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr     = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        $options = array('sites' => \Utility::getSiteList());
+        return json_encode(
+            [
+                'data'         => $arr,
+                'fieldOptions' => $options,
+            ]
+        );
+    }
+
+    /**
      * Gets the data source for this menu filter.
      *
      * @return \LORIS\Data\Provisioner
@@ -98,7 +123,7 @@ class Dicom_Archive extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );
     }

@@ -282,9 +282,9 @@ class Stats_MRI extends \NDB_Form
                 && $_REQUEST['MRIsite'] == $row['NumericID']
             ) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
 
@@ -330,10 +330,10 @@ class Stats_MRI extends \NDB_Form
             return;
         }
         $MRISubcategories = array(
-                             'Complete',
-                             'Partial Run',
-                             'No Scan',
-                            );
+            'Complete',
+            'Partial Run',
+            'No Scan',
+        );
 
         //Check if a specific scan is requested otherwise display first
         //available scan
@@ -567,7 +567,7 @@ class Stats_MRI extends \NDB_Form
      * of statistics totals. They will eventually be passed to tpl_data.
      *
      * @param array $subcategories The subcategories being tracked by this
-     *                              module. Keys of the returned array.
+     *                             module. Keys of the returned array.
      *
      * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
      */
@@ -595,8 +595,8 @@ class Stats_MRI extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/table_statistics.js",
-             $baseURL . "/statistics/js/form_stats_MRI.js",
+                $baseURL . "/statistics/js/table_statistics.js",
+                $baseURL . "/statistics/js/form_stats_MRI.js",
             )
         );
     }

@@ -174,10 +174,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
         // get control panel selections from _REQUEST
         $possibleFlags = array(
-                          'setDataEntry',
-                          'setAdministration',
-                          'setValidity',
-                         );
+            'setDataEntry',
+            'setAdministration',
+            'setValidity',
+        );
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
 
         // make sure there are at least one flag to save

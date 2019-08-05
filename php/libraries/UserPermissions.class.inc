@@ -207,8 +207,8 @@ class UserPermissions
             $DB->insert(
                 'user_perm_rel',
                 array(
-                 'userID' => $this->userID,
-                 'permID' => $value,
+                    'userID' => $this->userID,
+                    'permID' => $value,
                 )
             );
         }
@@ -242,8 +242,8 @@ class UserPermissions
                 $DB->delete(
                     'user_perm_rel',
                     array(
-                     'userID' => $this->userID,
-                     'permID' => $value,
+                        'userID' => $this->userID,
+                        'permID' => $value,
                     )
                 );
             }
@@ -325,9 +325,9 @@ class UserPermissions
         $DB->insert(
             'user_account_history',
             array(
-             'userID'     => $this->userID,
-             'PermID'     => $PermID,
-             'PermAction' => $permAction,
+                'userID'     => $this->userID,
+                'PermID'     => $PermID,
+                'PermAction' => $permAction,
             )
         );
     }

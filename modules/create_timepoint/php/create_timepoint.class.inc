@@ -159,11 +159,11 @@ class Create_Timepoint extends \NDB_Form
         }
 
         $attributes = array(
-                       "onchange" => "location.href='?test_name=create_timepoint" .
+            "onchange" => "location.href='?test_name=create_timepoint" .
                 "&candID=" . $this->identifier .
                 "&identifier=" . $this->identifier .
                 "&subprojectID='+this[this.selectedIndex].value;",
-                      );
+        );
         $this->addSelect(
             'subprojectID',
             'Subproject',

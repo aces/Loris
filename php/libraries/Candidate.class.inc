@@ -123,8 +123,8 @@ class Candidate
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
                     array(
-                     'Candidate' => $candID,
-                     'PTName'    => $parameter_type,
+                        'Candidate' => $candID,
+                        'PTName'    => $parameter_type,
                     )
                 );
                 // Sanitize values coming from the parameter_candidate table
@@ -182,19 +182,18 @@ class Candidate
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
-     *                                           candidate will belong
-     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
-     * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
-     * @param string      $sex                   sex, either 'Male' or 'Female'
-     * @param string|null $PSCID                 PSCID specified by the user,
-     *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param int         $centerID    centerID of the site to which the
+     *                                 candidate will belong
+     * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
+     * @param string|null $edc         estimated date of confinement written as
+     *                                 YYYY-MM-DD. Value should be null
+     *                                 unless the useEDC setting is
+     *                                 configured to be true.
+     * @param string      $sex         sex, either 'Male' or 'Female'
+     * @param string|null $PSCID       PSCID specified by the user, if available
+     * @param int|null    $projectID   The project ID, if available
      *
-     * @return CandID   $candID      candidate id of the new candidate
+     * @return int   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
@@ -247,18 +246,18 @@ class Candidate
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'RegistrationCenterID'  => $centerID,
-                     'PSCID'                 => $PSCID,
-                     'DoB'                   => $dateOfBirth,
-                     'EDC'                   => $edc,
-                     'Sex'                   => $sex,
-                     'RegistrationProjectID' => $registrationProjectID,
-                     'Date_active'           => date('Y-m-d'),
-                     'Date_registered'       => date('Y-m-d'),
-                     'Entity_type'           => 'Human',
-                     'RegisteredBy'          => $user->getUsername(),
-                     'UserID'                => $user->getUsername(),
-                    );
+            'RegistrationCenterID' => $centerID,
+            'PSCID'                => $PSCID,
+            'DoB'                  => $dateOfBirth,
+            'EDC'                  => $edc,
+            'Sex'                  => $sex,
+            'ProjectID'            => $projectID,
+            'Date_active'          => date('Y-m-d'),
+            'Date_registered'      => date('Y-m-d'),
+            'Entity_type'          => 'Human',
+            'RegisteredBy'         => $user->getUsername(),
+            'UserID'               => $user->getUsername(),
+        );
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = (new \ExternalIDGenerator())->generate();
@@ -307,9 +306,9 @@ class Candidate
         $db      = $factory->database();
 
         $candidateIDs = array(
-                         ':candidate_id' => $candID,
-                         ':pscid'        => $PSCID,
-                        );
+            ':candidate_id' => $candID,
+            ':pscid'        => $PSCID,
+        );
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -354,7 +353,7 @@ class Candidate
      * Return a piece of data about this candidate
      *
      * @param string|null $var The type of data about the Candidate
-     *                    to be returned
+     *                         to be returned
      *
      * @return mixed The info requested
      */
@@ -372,7 +371,7 @@ class Candidate
      * database.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and the
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -395,7 +394,7 @@ class Candidate
             'candidate',
             $newData,
             array(
-             'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getData('CandID'),
             )
         );
         return true;
@@ -672,8 +671,8 @@ class Candidate
      *
      * @param string      $PSCID      The PSCID to validate
      * @param string|null $siteAbbrev (optional) The site of the candidate
-     *                           being validated to check against appropriate
-     *                           parts of PSCID definition
+     *                                being validated to check against appropriate
+     *                                parts of PSCID definition
      *
      * @return boolean True if PSCID is valid, false otherwise
      */

@@ -32,8 +32,8 @@ class SiteIDGenerator extends IdentifierGenerator
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?string $siteAbbrevPrefix To be appended to the ID value. Usually an
-     *                       abbreviation for the name of a site.
+     * @param ?string $prefix To be appended to the ID value. Usually an
+     *                        abbreviation for the name of a site.
      *
      * @return void
      */
@@ -146,7 +146,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * settings relating to the PSCID structure.
      *
      * @param string $setting One of: 'generation', 'length', 'alphabet',
-     * 'length', 'min', 'max'.
+     *                        'length', 'min', 'max'.
      *
      * @return array|int|string|null
      */
@@ -225,9 +225,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * value corresponding to the requested setting.
      *
      * @param array  $idStructure Settings concerning ID structure extracted
-     *                  from project/config.sml
+     *                            from project/config.sml
      * @param string $setting     The name of the variable for which we want the
-     *                  value.
+     *                            value.
      *
      * @throws \ConfigurationException
      *
@@ -285,9 +285,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * for $setting.
      *
      * @param array  $idStructure Settings concerning ID structure extracted
-     *                  from project/config.xml
+     *                            from project/config.xml
      * @param string $setting     The name of the variable for which we want the
-     *                  value.
+     *                            value.
      *
      * @return array The value(s) corresponding to $setting.
      */

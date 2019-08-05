@@ -109,7 +109,7 @@ class User extends UserPermissions
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             array(
-             "fn" => $row['Real_name'],
+                "fn" => $row['Real_name'],
             )
         );
 
@@ -120,9 +120,9 @@ class User extends UserPermissions
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
                 $examiner_info[$val['centerID']] =array(
-                                                   $val['active'],
-                                                   $val['radiologist'],
-                                                  );
+                    $val['active'],
+                    $val['radiologist'],
+                );
             }
         }
         // store user data in object property
@@ -276,10 +276,10 @@ class User extends UserPermissions
     }
 
      /**
-     * Get the user's site's ID number
-     *
-     * @return array
-     */
+      * Get the user's site's ID number
+      *
+      * @return array
+      */
     function getCenterID()
     {
         throw new \LorisException(

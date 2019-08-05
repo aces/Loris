@@ -69,18 +69,18 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * Checking permissions
-    *
-    * @param \User $user The user whose access is being checked
-    *
-    * @return bool
-    */
+     * Checking permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
             array(
-             'instrument_manager_read',
-             'instrument_manager_write',
+                'instrument_manager_read',
+                'instrument_manager_write',
             )
         );
     }
@@ -246,19 +246,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * SetupVariables function
-    *
-    * @return void
-    */
+     * SetupVariables function
+     *
+     * @return void
+     */
     function _setupVariables()
     {
         $this->headers      = array(
-                               'Instrument',
-                               'Instrument_Type',
-                               'Table_Installed',
-                               'Table_Valid',
-                               'Pages_Valid',
-                              );
+            'Instrument',
+            'Instrument_Type',
+            'Table_Installed',
+            'Table_Valid',
+            'Pages_Valid',
+        );
         $this->columns      = array('Test_name as Instrument');
         $this->query        = " FROM test_names";
         $this->validFilters = array();
@@ -302,19 +302,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
 
         return array(
-                'Headers'      => $headers,
-                'Data'         => $MappedData,
-                'fieldOptions' => $this->fieldOptions,
-                'writable'     => $this->canWriteFiles(),
-                'caninstall'   => $this->isQuatUserConfigured(),
-               );
+            'Headers'      => $headers,
+            'Data'         => $MappedData,
+            'fieldOptions' => $this->fieldOptions,
+            'writable'     => $this->canWriteFiles(),
+            'caninstall'   => $this->isQuatUserConfigured(),
+        );
     }
 
     /**
-    * SetFilterForm function
-    *
-    * @return void
-    */
+     * SetFilterForm function
+     *
+     * @return void
+     */
     function _setFilterForm()
     {
     }
@@ -397,8 +397,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
            TABLE_NAME=:tablename
           ',
             array(
-             'dbname'    => $this->factory->settings()->dbName(),
-             'tablename' => $instrument,
+                'dbname'    => $this->factory->settings()->dbName(),
+                'tablename' => $instrument,
             )
         );
         return ($exists > 0) ? 'Exists' : 'Missing';
@@ -441,10 +441,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $exists       = $db->pselectOne(
             $sqlSelectOne,
             array(
-             'dbname'     => $this->factory->settings()->dbName(),
-             'columnname' => $columnname,
-             'tablename'  => $tablename,
-             'typename'   => $type,
+                'dbname'     => $this->factory->settings()->dbName(),
+                'columnname' => $columnname,
+                'tablename'  => $tablename,
+                'typename'   => $type,
             )
         );
         if (!$exists) {
@@ -454,12 +454,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckTable function
-    *
-    * @param string $instname the value of instname
-    *
-    * @return string An evocative answer
-    */
+     * CheckTable function
+     *
+     * @param string $instname the value of instname
+     *
+     * @return string An evocative answer
+     */
     protected function checkTable($instname): string
     {
         $filename = $this->path . "project/instruments/$instname.linst";
@@ -511,9 +511,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                     'dbname'     => $this->factory->settings()->dbName(),
-                     'columnname' => $name,
-                     'tablename'  => $instname,
+                        'dbname'     => $this->factory->settings()->dbName(),
+                        'columnname' => $name,
+                        'tablename'  => $instname,
                     )
                 );
                 $options      = array();
@@ -539,12 +539,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckPages function
-    *
-    * @param string $instname the value of instname
-    *
-    * @return string An evocative response
-    */
+     * CheckPages function
+     *
+     * @param string $instname the value of instname
+     *
+     * @return string An evocative response
+     */
     protected function checkPages($instname): string
     {
         $filename = $this->path . "project/instruments/$instname.linst";
@@ -564,8 +564,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $exists = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                     'testname' => $instname,
-                     'testdesc' => trim($pieces[2]),
+                        'testname' => $instname,
+                        'testdesc' => trim($pieces[2]),
                     )
                 );
                 if ($exists <= 0) {
@@ -641,7 +641,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         return array_merge(
             $depends,
             array(
-             $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
+                $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
             )
         );
     }

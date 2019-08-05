@@ -105,7 +105,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 array(
-                 $currentStage => $_REQUEST['setStageUpdate'],
+                    $currentStage => $_REQUEST['setStageUpdate'],
                 )
             );
             return;
@@ -172,7 +172,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // Send to DCC - set Submitted to Y
             $this->setData(
                 array(
-                 'Submitted' => $_REQUEST['setSubmitted'],
+                    'Submitted' => $_REQUEST['setSubmitted'],
                 )
             );
             // move to next stage (approval or the bin)
@@ -223,10 +223,10 @@ class Instrument_List_ControlPanel extends \TimePoint
         $condition3 = !in_array(
             $currentStage,
             array(
-             null,
-             'Not Started',
-             'Visit',
-             'Screening',
+                null,
+                'Not Started',
+                'Visit',
+                'Screening',
             )
         );
         // un-submit to dcc
@@ -240,8 +240,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             if ($currentStage == 'Approval') {
                 $this->setData(
                     array(
-                     'Approval'      => null,
-                     'Date_approval' => null,
+                        'Approval'      => null,
+                        'Date_approval' => null,
                     )
                 );
             }
@@ -293,7 +293,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // in the request.
             $this->setData(
                 array(
-                 'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
+                    'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
                 )
             );
             return;
@@ -320,7 +320,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // in the request.
             $this->setData(
                 array(
-                 'BVLQCType' => $_REQUEST['setBVLQCType'],
+                    'BVLQCType' => $_REQUEST['setBVLQCType'],
                 )
             );
             return;
@@ -640,10 +640,10 @@ class Instrument_List_ControlPanel extends \TimePoint
     }
 
     /**
-    * Returns the reason why the user cannot send to dcc.
-    *
-    * @return string
-    */
+     * Returns the reason why the user cannot send to dcc.
+     *
+     * @return string
+     */
     function _getSendToDCCStatusMessage()
     {
         // create user object
@@ -673,8 +673,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!in_array(
             $this->getData('Current_stage'),
             array(
-             'Screening',
-             'Visit',
+                'Screening',
+                'Visit',
             )
         )
         ) {
@@ -685,8 +685,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (in_array(
             $this->getData($this->getData('Current_stage')),
             array(
-             null,
-             'In Progress',
+                null,
+                'In Progress',
             )
         )
         ) {
@@ -771,15 +771,15 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array(
                 $this->getData('Current_stage'),
                 array(
-                 'Screening',
-                 'Visit',
+                    'Screening',
+                    'Visit',
                 )
             )
             && !in_array(
                 $this->getData($this->getData('Current_stage')),
                 array(
-                 null,
-                 'In Progress',
+                    null,
+                    'In Progress',
                 )
             )
             && ($config->getSetting("useScanDone")==="false"

@@ -81,7 +81,7 @@ class Next_Stage extends \NDB_Form
         // set the date for the new stage
         $timePoint->setData(
             array(
-             "Date_".$newStage => $values['date1'],
+                "Date_".$newStage => $values['date1'],
             )
         );
 
@@ -89,7 +89,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['SubprojectID'])) {
             $timePoint->setData(
                 array(
-                 'SubprojectID' => $values['SubprojectID'],
+                    'SubprojectID' => $values['SubprojectID'],
                 )
             );
         }
@@ -98,7 +98,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['scan_done'])) {
             $timePoint->setData(
                 array(
-                 'Scan_done' => $values['scan_done'],
+                    'Scan_done' => $values['scan_done'],
                 )
             );
         }
@@ -152,12 +152,12 @@ class Next_Stage extends \NDB_Form
         $config    =& \NDB_Config::singleton();
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $config->getSetting('startYear'),
-                        'maxYear'        => $config->getSetting('endYear'),
-                       );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $config->getSetting('startYear'),
+            'maxYear'        => $config->getSetting('endYear'),
+        );
 
         $this->addHidden('candID', $timePoint->getData('CandID'));
         $this->addHidden('sessionID', $timePoint->getData('SessionID'));
@@ -171,9 +171,9 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 array(
-                 null => null,
-                 'Y'  => 'Yes',
-                 'N'  => 'No',
+                    null => null,
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
                 )
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');
