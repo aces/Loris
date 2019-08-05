@@ -153,8 +153,8 @@ class NDB_Factory
      */
     function user(): \User
     {
-        if (self::$_user !== null) {	
-            return self::$_user;	
+        if (self::$_user !== null) {
+            return self::$_user;
         }
         if ($this->Testing) {
             Mock::generate("User");
