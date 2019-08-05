@@ -117,10 +117,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerFilter()
     {
-        $this->testFilter('issueID', '999999');
-        $this->testFilter('status', 'new');
-        $this->testFilter('priority', 'low');
-        $this->testFilter('reporter', 'TestUser');
+        $this->_testFilters('issueID', '999999');
+        $this->_testFilters('status', 'new');
+        $this->_testFilters('priority', 'low');
+        $this->_testFilters('reporter', 'TestUser');
     }
     /**
      * Tests that Issue Tracker filter
@@ -130,7 +130,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function testFilter($name,$value)
+    private function _testFilters($name,$value)
     {
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();
