@@ -1044,6 +1044,11 @@ class TimePoint
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
     }
 
+    public function addDicomTar(\LORIS\Data\Models\DicomTarDTO $dicomtar): void
+    {
+        throw new RuntimeException('Not implemented');
+    }
+
     /**
      * Accessor for this timepoint imaging QC status.
      *

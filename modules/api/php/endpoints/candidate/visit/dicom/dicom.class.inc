@@ -68,7 +68,10 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return array(
+                'GET',
+                'POST',
+               );
     }
 
     /**
@@ -96,6 +99,9 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
             switch ($request->getMethod()) {
             case 'GET':
                 return $this->_handleGET($request);
+
+            case 'POST':
+                return $this->_handlePOST($request);
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -159,6 +165,29 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
 
         return $this->_cache;
+    }
+
+    private function _handlePOST(ServerRequestInterface $request): ResponseInterface
+    {
+        $tarchivepath = \NDB_factory::singleton()
+                ->config()
+                ->getSetting('tarchiveLibraryDir');
+
+        $incomingdir = new \SplFileInfo($tarchivepath);
+
+        $incomingdir = new \SplFileInfo('/data/loris/data/tarchive');
+
+        $uploader = (new \LORIS\FilesUploadHandler($incomingdir))
+            ->withPermittedMIMETypes('application/x-tar');
+        if ($request->getHeaderLine('LORIS-Overwrite') == 'overwrite') {
+            $uploader = $uploader->withOverwrite(true);
+        }
+
+        $uploadresponse = $uploader->handle($request);
+        //if 201
+        $dicomtar = new \LORIS\Data\Models\DicomTarDTO();
+        $this->_visit->addDicomTar($dicomtar);
+        return $uploadresponse;
     }
 
     /**
