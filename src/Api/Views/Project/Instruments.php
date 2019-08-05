@@ -63,11 +63,11 @@ class Instruments
         $instruments = array();
 
         foreach ($this->_instruments as $instrument) {
-            $shortname = $instrument['shortname'];
+            $shortname = $instrument->getShortname();
             $item      = array(
-                          'Fullname'               => $instrument['fullname'],
-                          'Subgroup'               => $instrument['subgroup'],
-                          'DoubleDataEntryEnabled' => $instrument['ddeenable'],
+                          'Fullname'               => $instrument->getFullname(),
+                          'Subgroup'               => $instrument->getSubgroupname(),
+                          'DoubleDataEntryEnabled' => $instrument->isDDE(),
                          );
             $instruments[$shortname] = $item;
         }

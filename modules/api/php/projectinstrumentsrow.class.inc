@@ -49,6 +49,46 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
+     * Accessor for shortname.
+     *
+     * @return string|null
+     */
+    public function getShortname(): ?string
+    {
+        return $this->_shortname;
+    }
+
+    /**
+     * Accessor for fullname.
+     *
+     * @return string|null
+     */
+    public function getFullname(): ?string
+    {
+        return $this->_fullname;
+    }
+
+    /**
+     * Accessor for subgroupname.
+     *
+     * @return string|null
+     */
+    public function getSubgroupname(): ?string
+    {
+        return $this->_subgroupname;
+    }
+
+    /**
+     * Accessor for isDDE.
+     *
+     * @return bool
+     */
+    public function isDDE(): bool
+    {
+        return $this->_isDDE;
+    }
+
+    /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return string the row data.
