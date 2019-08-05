@@ -677,7 +677,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function testFilter($element,$records,$value,$row,$btn)
+    function _testFilter($element,$records,$value,$row,$btn)
     { 
         // get element from the page
  
