@@ -41,11 +41,13 @@ $config = $DB->pselectRow(
     array('config' => $setting)
 );
 
-if (count($config) === 0) {
+if (count($config ?? []) === 0) {
     die("Invalid config name");
 }
 
+$id       = $config['ID'];
 $multiple = $config['AllowMultiple'];
+
 if ($multiple == '1') {
     die(
         "Script only valid on single value settings. " .
