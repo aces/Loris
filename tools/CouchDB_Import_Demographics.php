@@ -93,6 +93,9 @@ class CouchDBDemographicsImporter
                                ),
                   );
 
+    /**
+     * Creates a CouchDBDemographicsImporter object
+     */
     function __construct()
     {
         $factory       = \NDB_Factory::singleton();
@@ -108,55 +111,83 @@ class CouchDBDemographicsImporter
         );
     }
 
+    /**
+     * Returns the project name of the project given by $id
+     *
+     * @param int $id The ID of the subproject
+     *
+     * @return string The project name
+     */
     function _getSubproject($id)
     {
         $config   = \NDB_Config::singleton();
         $subprojs = $config->getSubprojectSettings($id);
-        if($subprojs['id'] == $id) {
+        if ($subprojs['id'] == $id) {
             return $subprojs['title'];
         }
     }
 
+    /**
+     * Returns the project name of the project given by $id
+     *
+     * @param int $id The ID of the project
+     *
+     * @return string The project name
+     */
     function _getProject($id)
     {
         $config = \NDB_Config::singleton();
         $projs  = $config->getProjectSettings($id);
-        if($projs['id'] == $id) {
+        if ($projs['id'] == $id) {
             return $projs['Name'];
         }
     }
 
+    /**
+     * Generate the query used to import demographics data.
+     *
+     * @return string The query generated
+     */
     function _generateQuery()
     {
         $config = \NDB_Config::singleton();
 
         $fieldsInQuery = "SELECT c.DoB,
-                                c.CandID, 
-                                c.PSCID, 
-                                s.Visit_label, 
-                                s.SubprojectID, 
-                                p.Alias as Site, 
-                                c.Sex,
-                                s.Current_stage, 
-                                CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, 
-                                c.ProjectID, 
-                                c.flagged_caveatemptor as CEF, 
-                                c_o.Description as CEF_reason, 
-                                c.flagged_other as CEF_comment, 
-                                pc_comment.Value as Comment, 
-                                COALESCE(pso.Description,'Active') as Status, 
-                                ps.participant_suboptions as Status_reason, 
-                                ps.reason_specify as Status_comments, 
-                                GROUP_CONCAT(fbe.Comment) as session_feedback";
+            c.CandID, 
+            c.PSCID, 
+            s.Visit_label, 
+            s.SubprojectID, 
+            p.Alias as Site, 
+            c.Sex,
+            s.Current_stage, 
+            CASE 
+            WHEN s.Visit='Failure' THEN 'Failure' 
+            WHEN s.Screening='Failure' THEN 'Failure' 
+            WHEN s.Visit='Withdrawal' THEN 'Withdrawal' 
+            WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' 
+            END as Failure, 
+            c.ProjectID, 
+            c.flagged_caveatemptor as CEF, 
+            c_o.Description as CEF_reason, 
+            c.flagged_other as CEF_comment, 
+            pc_comment.Value as Comment, 
+            COALESCE(pso.Description,'Active') as Status, 
+            ps.participant_suboptions as Status_reason, 
+            ps.reason_specify as Status_comments, 
+            GROUP_CONCAT(fbe.Comment) as session_feedback";
         $tablesToJoin  = " FROM session s 
-                                JOIN candidate c USING (CandID) 
-                                LEFT JOIN psc p ON (p.CenterID=s.CenterID) 
-                                LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) 
-                                LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') 
-                                LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
-                                LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
-                                LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
-                                LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
+            JOIN candidate c USING (CandID) 
+            LEFT JOIN psc p ON (p.CenterID=s.CenterID) 
+            LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) 
+            LEFT JOIN parameter_candidate 
+                AS pc_comment ON (pc_comment.CandID=c.CandID) 
+                AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID 
+                FROM parameter_type WHERE Name='candidate_comment') 
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
+            LEFT JOIN participant_status_options pso 
+                ON (pso.ID=ps.participant_status)
+            LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
+            LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
         $groupBy       =" GROUP BY s.ID, 
                             c.DoB,
                             c.CandID,
@@ -176,13 +207,17 @@ class CouchDBDemographicsImporter
                             ps.participant_suboptions, 
                             ps.reason_specify";
 
-        // If proband fields are being used, add proband information into the query
+        // If proband fields are being used, add proband information into the
+        // query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields  = ", c.ProbandSex as Sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields  = ", c.ProbandSex as Sex_proband, 
+                ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) 
+                AS Age_difference";
             $fieldsInQuery .= $probandFields;
             $groupBy       .= ", c.ProbandSex, Age_difference";
         }
-        // If expected date of confinement is being used, add EDC information into the query
+        // If expected date of confinement is being used, add EDC information
+        // into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields      = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
@@ -200,35 +235,46 @@ class CouchDBDemographicsImporter
                 $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
                 $fieldsInQuery .= $consentFields;
                 $tablesToJoin  .= "
-                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID) 
-                                AND $cField.ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+                    LEFT JOIN candidate_consent_rel $cField 
+                        ON ($cField.CandidateID=c.CandID) 
+                    AND $cField.ConsentID=(SELECT ConsentID 
+                    FROM consent WHERE Name='" . $consentName . "') ";
                 $groupBy       .= ",
                             $cField.Status,
                             $cField.DateGiven,
                             $cField.DateWithdrawn";
             }
         }
-        $whereClause =" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+        $whereClause =" WHERE s.Active='Y' 
+            AND c.Active='Y' 
+            AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
         return $concatQuery;
     }
 
+    /**
+     * Updates the data dictionary of this class
+     *
+     * @return void
+     */
     function _updateDataDict()
     {
         $config = \NDB_Config::singleton();
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"]    = array(
-                                                   'Description' => 'Proband\'s biological sex',
+                                                   'Description' => "Proband's biological sex",
                                                    'Type'        => "enum('Male','Female')",
                                                   );
             $this->Dictionary["Age_difference"] = array(
-                                                   'Description' => 'Age difference between the candidate and the proband',
+                                                   'Description' => 'Age difference between the candidate '
+                                    . 'and the proband',
                                                    'Type'        => "int",
                                                   );
         }
-        // If expected date of confinement is being used, update the data dictionary
+        // If expected date of confinement is being used, update the data
+        // dictionary
         if ($config->getSetting("useEDC") === "true") {
             $this->Dictionary["EDC"] = array(
                                         'Description' => 'Expected Date of Confinement (Due Date)',
@@ -263,44 +309,43 @@ class CouchDBDemographicsImporter
                                                                   );
             }
         }
-        /*
-        // Add any candidate parameter fields to the data dictionary
-        $parameterCandidateFields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom='parameter_candidate' AND Queryable=1",
-            array());
-        foreach($parameterCandidateFields as $field) {
-            if(isset($field['Name'])) {
-                $fname = $field['Name'];
-                $Dict[$fname] = array();
-                $Dict[$fname]['Description'] = $field['Description'];
-                $Dict[$fname]['Type'] = $field['Type'];
-            }
-        }
-        */
     }
 
+    /**
+     * Executes the query.
+     *
+     * @return void
+     */
     function run()
     {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
 
         // Run query
-        $max_len      = $this->SQLDB->run("SET SESSION group_concat_max_len = 100000;", array());
+        $max_len      = $this->SQLDB->run(
+            "SET SESSION group_concat_max_len = 100000;",
+            array()
+        );
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
         $config_setting = \NDB_Config::singleton();
-        foreach($demographics as $demographics) {
-            $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
-            $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
+        foreach ($demographics as $demographics) {
+            $id = 'Demographics_Session_' . $demographics['PSCID']
+                . '_' . $demographics['Visit_label'];
+            $demographics['Cohort'] = $this->_getSubproject(
+                $demographics['SubprojectID']
+            );
             unset($demographics['SubprojectID']);
-            if(isset($demographics['ProjectID'])) {
-                $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+            if (isset($demographics['ProjectID'])) {
+                $demographics['Project'] = $this->_getProject(
+                    $demographics['ProjectID']
+                );
                 unset($demographics['ProjectID']);
             }
             if ($config_setting->getSetting("useFamilyID") === "true") {
                 $familyID = $this->SQLDB->pselectOne(
-                    "SELECT FamilyID FROM family
-                                                          WHERE CandID=:cid",
+                    "SELECT FamilyID FROM family WHERE CandID=:cid",
                     array('cid' => $demographics['CandID'])
                 );
                 if (!empty($familyID)) {
@@ -321,16 +366,20 @@ class CouchDBDemographicsImporter
                     );
                     $num_family   = 1;
                     if (!empty($familyFields)) {
-                        foreach($familyFields as $row) {
-                            //adding each sibling id and relationship to the file
-                            $this->Dictionary["Family_CandID".$num_family]            = array(
-                                                                                         'Description' => 'CandID of Family Member '.$num_family,
-                                                                                         'Type'        => "varchar(255)",
-                                                                                        );
-                            $this->Dictionary["Relationship_type_Family".$num_family] = array(
-                                                                                         'Description' => 'Relationship of candidate to Family Member '.$num_family,
-                                                                                         'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
-                                                                                        );
+                        foreach ($familyFields as $row) {
+                            //adding each sibling id and relationship to the
+                            //file
+                            $this->Dictionary["Family_CandID".$num_family]            =
+                                array(
+                                 'Description' => 'CandID of Family Member ',
+                                    .$num_family,
+                                 'Type'        => "varchar(255)",
+                                );
+                            $this->Dictionary["Relationship_type_Family".$num_family]
+                                = array(
+                                   'Description' => 'Relationship of candidate to Family Member '.$num_family,
+                                   'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
+                                  );
                             $demographics['Family_CandID'.$num_family]            = $row['Family_ID'];
                             $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
                             $num_family += 1;
@@ -364,12 +413,11 @@ class CouchDBDemographicsImporter
         );
 
         print $this->CouchDB->commitBulkTransaction();
-
     }
 }
 
 // Don't run if we're doing the unit tests; the unit test will call run.
-if(!class_exists('UnitTestCase')) {
+if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBDemographicsImporter();
     $Runner->run();
 }
