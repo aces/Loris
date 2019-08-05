@@ -268,6 +268,7 @@ class Dashboard extends \NDB_Form
                  ORDER BY Testdate DESC LIMIT 4",
                 array()
             );
+            $frontend_feedback = array();
             foreach ($bvl_feedback as $row) {
                 if ($row['Testdate'] > $last_login) {
                     $row['new'] = 1;
@@ -293,9 +294,10 @@ class Dashboard extends \NDB_Form
                             . $row['CommentID'];
                     }
                 }
+                $frontend_feedback[] = $row;
             }
             $this->tpl_data['bvl_feedback_notifications']
-                = $bvl_feedback;
+                = $frontend_feedback;
         }
     }
 
