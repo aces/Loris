@@ -258,7 +258,7 @@ class Dashboard extends \NDB_Form
 
         // Behavioural Feedback Items
         if ($user->hasPermission('bvl_feedback')) {
-            $bvl_feedback = $DB->pselect(
+            $bvl_feedback      = $DB->pselect(
                 "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName, 
                 fbth.CommentID, fbth.SessionID, fbth.CandID, fbth.Feedback_level
                  FROM feedback_bvl_entry fbe 
