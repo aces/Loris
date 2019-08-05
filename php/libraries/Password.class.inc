@@ -46,7 +46,7 @@ class Password
      *
      * @var int
      */
-    public const MIN_PASSWORD_LENGTH = 8;
+    private const MIN_PASSWORD_LENGTH = 8;
 
     /**
      * The result of running the $value through the password_hash algorithm.
@@ -64,7 +64,7 @@ class Password
      * @return bool Whether the submitted value has length of at least
      *              MIN_PASSWORD_LENGTH;
      */
-    protected function hasSufficientLength(string $value): bool
+    private function hasSufficientLength(string $value): bool
     {
         // Check length
         return strlen($value) >= self::MIN_PASSWORD_LENGTH;
@@ -79,7 +79,7 @@ class Password
      * @return bool Whether the submitted value meets the minimum score defined
      *              above and given by Zxcvbn.
      */
-    protected function hasSufficientComplexity(string $value): bool
+    private function hasSufficientComplexity(string $value): bool
     {
         // Return true if the password's complexity score exceeds
         // MIN_COMPLEXITY_SCORE and false otherwise.
@@ -96,7 +96,7 @@ class Password
      *
      * @throws \DomainException When password is too short or weak.
      */
-    public function validate($value): void
+    private function validate($value): void
     {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
