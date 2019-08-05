@@ -36,12 +36,15 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->_shortname    = $row['shortname'];
-        $this->_fullname     = $row['fullname'];
-        $this->_subgroupname = $row['subgroupname'];
+        $shortname      = $row['shortname'] ?? null;
+        $ddeinstruments = array_keys(\Utility::getAllDDEInstruments());
+
+        $this->_shortname    = $shortname;
+        $this->_fullname     = $row['fullname'] ?? null;
+        $this->_subgroupname = $row['subgroupname'] ?? null;
         $this->_isDDE        = in_array(
-            $row['shortname'],
-            \Utility::getAllDDEInstruments()
+            $shortname,
+            $ddeinstruments
         );
     }
 

@@ -11,7 +11,7 @@
 
 namespace LORIS\Api\Views\Project;
 
-use \LORIS\api\ProjectInstrumentRow;
+use \LORIS\api\ProjectInstrumentsRow;
 /**
  * Creates a representation of a project instrument following the api response
  * specifications.
@@ -35,15 +35,15 @@ class Instruments
     /**
      * The project instruments datainstance.
      *
-     * @var ProjectInstrumentRow[]
+     * @var ProjectInstrumentsRow[]
      */
     private $_instruments;
 
     /**
      * Contructor that initialize this instance variables
      *
-     * @param \Project               $project     The requested project
-     * @param ProjectInstrumentRow[] $instruments An array of ProjectInstrumentRow
+     * @param \Project                $project     The requested project
+     * @param ProjectInstrumentsRow[] $instruments An array of ProjectInstrumentsRow
      */
     public function __construct(\Project $project, array $instruments)
     {
