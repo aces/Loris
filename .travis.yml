@@ -1,5 +1,5 @@
 sudo: required
-
+dist: trusty
 # any language should do it
 language: php
 
