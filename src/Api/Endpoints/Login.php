@@ -30,15 +30,15 @@ class Login extends Endpoint
     /*
      * A supplied JWT key must have at least this length or it will
      * be rejected for being too weak.
-     * 
-     * @var int 
+     *
+     * @var int
      */
     protected const MIN_JWT_KEY_LENGTH = 20;
 
-    /* 
-     * The number of "character sets" that must be used in a password. 
-     * For example the characters 0-9, a-z, and miscellaneous symbols are all 
-     * different character sets. Used as a heuristic to determine password 
+    /*
+     * The number of "character sets" that must be used in a password.
+     * For example the characters 0-9, a-z, and miscellaneous symbols are all
+     * different character sets. Used as a heuristic to determine password
      * complexity.
      *
      * @var int
@@ -80,7 +80,6 @@ class Login extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.1',
                 'v0.0.2',
                 'v0.0.3-dev',
                );

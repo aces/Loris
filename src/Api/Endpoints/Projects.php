@@ -58,15 +58,11 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Versions of the LORIS API which are supported by this
      * endpoint.
      *
-     * Projects has existed since v0.0.1 of the API and has not
-     * changed since.
-     *
      * @return array a list of supported API versions.
      */
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.1',
                 'v0.0.2',
                 'v0.0.3-dev',
                );
