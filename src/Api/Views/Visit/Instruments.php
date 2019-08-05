@@ -24,8 +24,7 @@ namespace LORIS\Api\Views\Visit;
 
 class Instruments
 {
-    private $_meta            = array();
-    private $_instrumentnames = array();
+    private $_timepoint;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint
@@ -34,10 +33,7 @@ class Instruments
      */
     public function __construct(\Timepoint $timepoint)
     {
-        $this->_meta['CandID'] = $timepoint->getCandID();
-        $this->_meta['Visit']  = $timepoint->getVisitLabel();
-
-        $this->_instrumentnames = $timepoint->getInstrumentNames();
+        $this->_timepoint = $timepoint;
     }
 
     /**
@@ -47,9 +43,14 @@ class Instruments
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
+
         return array(
-                'Meta'        => $this->_meta,
-                'Instruments' => $this->_instrumentnames,
+                'Meta'        => $meta,
+                'Instruments' => $this->_timepoint->getInstrumentNames(),
                );
     }
 }

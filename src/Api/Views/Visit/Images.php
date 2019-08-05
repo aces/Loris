@@ -25,8 +25,8 @@ use \LORIS\Data\Models\ImageDTO;
 
 class Images
 {
-    protected $meta   = array();
-    protected $images = array();
+    private $_timepoint;
+    private $_images;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint
@@ -36,19 +36,8 @@ class Images
      */
     public function __construct(\Timepoint $timepoint, ImageDTO ...$images)
     {
-        $this->meta['CandID'] = $timepoint->getCandID();
-        $this->meta['Visit']  = $timepoint->getVisitLabel();
-
-        $this->images = array_map(
-            function ($image) {
-                return array(
-                        'OutputType'      => $image->getOutputType(),
-                        'Filename'        => $image->getFilename(),
-                        'AcquisitionType' => $image->getAcquisitionprotocol(),
-                       );
-            },
-            $images
-        );
+        $this->_timepoint = $timepoint;
+        $this->_images    = $images;
     }
 
     /**
@@ -58,9 +47,25 @@ class Images
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
+
+        $imagesdata = array_map(
+            function ($image) {
+                return array(
+                        'OutputType'      => $image->getOutputType(),
+                        'Filename'        => $image->getFilename(),
+                        'AcquisitionType' => $image->getAcquisitionprotocol(),
+                       );
+            },
+            $this->_images
+        );
+
         return array(
-                'Meta'  => $this->meta,
-                'Files' => $this->images,
+                'Meta'  => $meta,
+                'Files' => $imagesdata,
                );
     }
 }

@@ -26,9 +26,8 @@ use \LORIS\TimePointImagingQC;
 
 class Qc
 {
-    protected $meta = array();
-    protected $sessionqc;
-    protected $ispending;
+    private $_timepoint;
+    private $_qc;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint.
@@ -38,11 +37,8 @@ class Qc
      */
     public function __construct(\Timepoint $timepoint, TimePointImagingQC $qc)
     {
-        $this->meta['CandID'] = $timepoint->getCandID();
-        $this->meta['Visit']  = $timepoint->getVisitLabel();
-
-        $this->sessionqc = $qc->getQC();
-        $this->ispending = $qc->getQCPending();
+        $this->_timepoint = $timepoint;
+        $this->_qc        = $qc;
     }
 
     /**
@@ -52,10 +48,18 @@ class Qc
      */
     public function toArray(): array
     {
+        $meta = array(
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
+
+        $sessionqc = $this->_qc->getQC;
+        $ispending = $this->_qc->getQCPending();
+
         return array(
-                'Meta'      => $this->meta,
-                'SessionQC' => $this->sessionqc,
-                'Pending'   => $this->ispending === 'N' ? false : true,
+                'Meta'      => $meta,
+                'SessionQC' => $sessionqc,
+                'Pending'   => $ispending === 'N' ? false : true,
                );
     }
 }

@@ -39,12 +39,6 @@ class Qc
     {
         $this->_timepoint = $timepoint;
         $this->_image     = $image;
-
-        $imageqcstatus = $image->getQcStatus();
-
-        $this->_qc       = $imageqcstatus->getQcStatus();
-        $this->_selected = $imageqcstatus->isSelected();
-        $this->_caveats  = $image->getCaveats();
     }
 
     /**

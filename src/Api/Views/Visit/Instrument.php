@@ -24,8 +24,8 @@ namespace LORIS\Api\Views\Visit;
 
 class Instrument
 {
-    protected $meta       = array();
-    protected $instrument = array();
+    private $_timepoint;
+    private $_instrument;
 
     /**
      * Constructor which sets the instance variables based on the provided timepoint
@@ -38,19 +38,8 @@ class Instrument
         \Timepoint $timepoint,
         \NDB_BVL_Instrument $instrument
     ) {
-        $instrumentname = $instrument->testName;
-        $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
-            $instrument
-        );
-
-        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
-
-        $this->meta['Candidate']  = $timepoint->getCandID();
-        $this->meta['Visit']      = $timepoint->getVisitLabel();
-        $this->meta['DDE']        = $isDDE;
-        $this->meta['Instrument'] = $instrumentname;
-
-        $this->instrument[$instrumentname] = $instrumentdata;
+        $this->_timepoint  = $timepoint;
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -60,11 +49,26 @@ class Instrument
      */
     public function toArray(): array
     {
+        $instrumentname = $this->_instrument->testName;
+
+        $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
+            $this->_instrument
+        );
+
+        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
+
+        $meta = array(
+                 'Candidate'  => $this->_timepoint->getCandID(),
+                 'Visit'      => $this->_timepoint->getVisitLabel(),
+                 'DDE'        => $isDDE,
+                 'Instrument' => $instrumentname,
+                );
+
+        $instrument = array($instrumentname =>  $instrumentdat);
+
         return array_merge(
-            array(
-             'Meta' => $this->meta,
-            ),
-            $this->instrument
+            array('Meta' => $meta),
+            $instrument
         );
     }
 }
