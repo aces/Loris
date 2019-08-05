@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This contains tests relevant to the Login endpoint
  *
