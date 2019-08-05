@@ -44,7 +44,8 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
         $this->_subgroupname = $row['subgroupname'] ?? null;
         $this->_isDDE        = in_array(
             $shortname,
-            $ddeinstruments
+            $ddeinstruments,
+            true
         );
     }
 
