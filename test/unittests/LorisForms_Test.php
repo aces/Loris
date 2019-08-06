@@ -1421,20 +1421,35 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that isSubmitted returns true/false depending on the element
-     * TODO I am unsure of how submission can be accomplished in the backend
-     *      It might be something only specified in the frontend
-     * 
+     * Test that isSubmitted returns true/false if the $_POST array
+     * is set or not set
+     *
      * @covers LorisForm::isSubmitted
      * @return void
      */
-    function testIsSubmitted()
+    function testIsSubmittedWithPostArraySet()
     {
-        $this->markTestIncomplete("This test is incomplete!");
-        $this->form->addElement("select", "abc", "Hello", array(), array());
+        $_POST = "test";
         $this->assertTrue($this->form->isSubmitted());
+        unset($_POST);
+        $this->assertFalse($this->form->isSubmitted());
     }
-   
+
+    /**
+     * Test that isSubmitted returns true/false if the $_FILES array
+     * is set or not set
+     *
+     * @covers LorisForm::isSubmitted
+     * @return void
+     */
+    function testIsSubmittedWithFilesArraySet()
+    {
+        $_FILES = "test";
+        $this->assertTrue($this->form->isSubmitted());
+        unset($_FILES);
+        $this->assertFalse($this->form->isSubmitted());
+    }
+
     /**
      * Test that toArray returns the correctly formatted array 
      * for the element in the form
