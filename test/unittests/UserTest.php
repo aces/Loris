@@ -160,12 +160,12 @@ class UserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_factory = NDB_Factory::singleton();
+        $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
         $this->_factory->setTesting(false);
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $database     = $this->_configMock->getSetting('database');
-        $this->_dbMock     = Database::singleton(
+        $database          = $this->_configMock->getSetting('database');
+        $this->_dbMock     = \Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -174,6 +174,7 @@ class UserTest extends TestCase
         );
 
         $this->_username = "968775";
+
         $this->_userInfoComplete = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
         $this->_userInfoComplete['Privilege'] = '1';
@@ -456,7 +457,7 @@ class UserTest extends TestCase
         $newUserInfo = $this->_userInfo;
         $newUserInfo['ID'] = 2;
         $newUserInfo['UserID'] = '968776';
-        $this->assertTrue(User::insert($newUserInfo));
+        $this->assertTrue(\User::insert($newUserInfo));
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('968776', $this->_otherUser->getUsername());
     }
@@ -486,8 +487,11 @@ class UserTest extends TestCase
     public function testUpdatePasswordWithExpiryDate()
     {
         $this->_user = \User::factory($this->_username);
+
         $oldHash = $this->_user->getData('Password_hash');
+
         $this->_user->updatePassword('really_great_password', '2021-07-18');
+        //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
         $this->assertEquals("2021-07-18", $this->_user->getData('Password_expiry'));
@@ -507,9 +511,12 @@ class UserTest extends TestCase
     public function testUpdatePasswordWithoutExpiry()
     {
         $this->_user = \User::factory($this->_username);
+
         $oldHash = $this->_user->getData('Password_hash');
         $newDate = date('Y-m-d', strtotime('+6 months'));
+
         $this->_user->updatePassword('really_great_password');
+        //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
         $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
@@ -524,7 +531,7 @@ class UserTest extends TestCase
      */
     public function testNewPassword()
     {
-        $newPassword = User::newPassword(6);
+        $newPassword = \User::newPassword(6);
         $this->assertEquals(6, strlen($newPassword));
     }
 
