@@ -6,7 +6,10 @@ set -euo pipefail
 find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null  
 
 # Run PHPCS on all .php and .inc files in folders: 
-#  php/, htdocs/, modules/
+# php/
+# htdocs/
+# modules/
+# The old API files under htdocs/ are ignored.
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php,inc --colors php/ htdocs/ modules/ --ignore=htdocs/api/*|| exit $?;
 
 # Run PHPCS on src/ directory using a different ruleset conforming to PSR2.
