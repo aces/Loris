@@ -85,7 +85,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             array('token' => 'jwt_token'),
-            json_decode($response->getBody(), true)
+            json_decode((string) $response->getBody(), true)
         );
     }
 }
