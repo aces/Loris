@@ -72,8 +72,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->setupPermissions(array("access_all_profiles"));
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->getReactElementContent("body");
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
@@ -89,14 +88,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListPageLoads()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->getReactElementContent("body");
         $this->assertContains("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
-         $btn        = self::$advancedFilter;
-         $buttonText = $this->getReactElementContent($btn);
-         $this->assertContains("Advanced", $buttonText);
+        $btn        = self::$advancedFilter;
+        $buttonText = $this->getReactElementContent($btn);
+        $this->assertContains("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -107,47 +105,30 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListAdvancedOptionsAppear()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
          $this->clickReactElement($btn);
            // Go through each element and ensure it's on the page after clicking
            // advanced
-         $scanDone  = ".col-xs-12:nth-child(8) .col-sm-3";
-         $scan_text = $this->getReactElementContent($scanDone);
-         $this->assertContains("Scan Done", $scan_text);
-
-           $participantsStatusOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("participantStatus")
-           );
-           $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoB"));
-           $this->assertEquals("input", $dobOptions->getTagName());
-           // Not currently done
-           //$this->assertEquals("date",$dobOptions->getAttribute("type"));
-           $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
-           $this->assertEquals("select", $sexOptions->getTagName());
-           $numVisits = $this->webDriver->findElement(
-               WebDriverBy::Name("visitCount")
-           );
-           $this->assertEquals("input", $dobOptions->getTagName());
-           // Not currently done in Loris.
-           //$this->assertEquals("number",$dobOptions->getAttribute("type"));
-           //$this->assertEquals("0",$dobOptions->getAttribute("min"));
-           $edcOptions = $this->webDriver->findElement(WebDriverBy::Name("edc"));
-           $this->assertEquals("input", $edcOptions->getTagName());
-           // Not currently done
-           //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-           $latestVisitOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("latestVisitStatus")
-           );
-           $this->assertEquals("select", $latestVisitOptions->getTagName());
-           $feedbackOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("feedback")
-           );
-           $this->assertEquals("select", $feedbackOptions->getTagName());
+         $filter = $this->getReactElementContent("fieldset");
+         $this->assertContains("Scan Done", $filter);
+         $this->assertContains("Participant Status", $filter);
+         $this->assertContains("DoB", $filter);
+         $this->assertContains("Sex", $filter);
+         $this->assertContains("VisitCount", $filter);
+         $this->assertContains("Feedback", $filter);
+         $this->assertContains("Latest Visit Status", $filter);
+          // click hidden filter button
+         $hideBtn = "div:nth-child(2) > .btn:nth-child(1)";
+         $this->clickReactElement($hideBtn);
+         $filter = $this->getReactElementContent("fieldset");
+         $this->assertNotContains("Scan Done", $filter);
+         $this->assertNotContains("Participant Status", $filter);
+         $this->assertNotContains("DoB", $filter);
+         $this->assertNotContains("Sex", $filter);
+         $this->assertNotContains("VisitCount", $filter);
+         $this->assertNotContains("Feedback", $filter);
+         $this->assertNotContains("Latest Visit Status", $filter);
     }
     /**
      * Tests clear button in the form
@@ -234,6 +215,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $URL =  $this->webDriver->executescript("return window.location.href;");
         $this->assertContains("300001", $URL);
         $this->resetPermissions();
+
     }
     /**
      * Tests that, click the pscid link, and it will goto the candidate profile page
