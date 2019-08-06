@@ -649,7 +649,9 @@ class User extends UserPermissions
      */
     public function hasLoggedIn(): bool
     {
-        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+        $DB = \Database::singleton();
+
+        $count = $DB->pselectOne(
             "SELECT
                COUNT(1)
              FROM user_login_history

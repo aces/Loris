@@ -12,43 +12,6 @@
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
-
-/**
- * Fake User class that has an exact copy of the User::hasLoggedIn method
- * to test the SQL query properly
- *
- * @category Tests
- * @package  Main
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-class FakeUser extends User
-{
-    /**
-     * Determines if the user has ever logged in successfully
-     *
-     * @param \User     $user The user object used for testing
-     * @param \Database $db   The mock database used for testing
-     *
-     * @return bool
-     */
-    public function fakeHasLoggedIn(\User $user, \Database $db): bool
-    {
-        $count = $db->pselectOne(
-            "SELECT
-               COUNT(1)
-             FROM user_login_history
-             WHERE
-               UserID = :v_userid AND
-               Success = 'Y'
-            ",
-            array('v_userid' => $user->userInfo['UserID'])
-        );
-        return $count > 0;
-    }
-}
-
 /**
  * Unit tests for the User class
  *
@@ -575,7 +538,7 @@ class UserTest extends TestCase
     public function testHasLoggedInWhenTrue()
     {
         $this->_user = \User::factory($this->_username);
-        $this->assertTrue(FakeUser::fakeHasLoggedIn($this->_user, $this->_dbMock));
+        $this->assertTrue($this->_user->hasLoggedIn());
     }
 
     /**
@@ -595,7 +558,7 @@ class UserTest extends TestCase
             $newTableInfo
         );
         $this->_user = \User::factory($this->_username);
-        $this->assertFalse(FakeUser::fakeHasLoggedIn($this->_user, $this->_dbMock));
+        $this->assertFalse($this->_user->hasLoggedIn());
     }
 
     /**
