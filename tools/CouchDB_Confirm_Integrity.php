@@ -89,8 +89,8 @@ class CouchDBIntegrityChecker
                 LEFT JOIN session s USING (CandID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 array(
-                 "PID" => $pscid,
-                 "VL"  => $vl,
+                    "PID" => $pscid,
+                    "VL"  => $vl,
                 )
             );
 
@@ -103,8 +103,8 @@ class CouchDBIntegrityChecker
                 $numActive = $this->SQLDB->execute(
                     $activeExists,
                     array(
-                     'PID' => $pscid,
-                     'VL'  => $vl,
+                        'PID' => $pscid,
+                        'VL'  => $vl,
                     )
                 );
 

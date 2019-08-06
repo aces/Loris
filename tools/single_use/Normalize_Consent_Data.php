@@ -227,8 +227,8 @@ foreach ($consentList as $consentName=>$consentLabel) {
         $db->insert(
             'consent',
             array(
-             'Name'  => $consentName,
-             'Label' => $consentLabel,
+                'Name'  => $consentName,
+                'Label' => $consentLabel,
             )
         );
     }
@@ -247,12 +247,12 @@ foreach ($consentList as $consentName=>$consentLabel) {
     foreach ($psData as $entry) {
         // Format data
         $consentValues = [
-                          'CandidateID'   => $entry['CandID'],
-                          'ConsentID'     => $consentID,
-                          'Status'        => $entry[$consentName],
-                          'DateGiven'     => $entry[$consentDate],
-                          'DateWithdrawn' => $entry[$consentWithdrawal],
-                         ];
+            'CandidateID'   => $entry['CandID'],
+            'ConsentID'     => $consentID,
+            'Status'        => $entry[$consentName],
+            'DateGiven'     => $entry[$consentDate],
+            'DateWithdrawn' => $entry[$consentWithdrawal],
+        ];
         // Push each formatted entry to array
         array_push($dataArray, $consentValues);
     }
@@ -306,15 +306,15 @@ foreach ($consentHistory as $entry) {
             // As long as there's some data in the history
             if(!empty($consentStatus) || !empty($consentDate) || !empty($consentWithdrawal)) {
                 $formattedHistory = [
-                                     'PSCID'         => $pscid,
-                                     'ConsentName'   => $consentName,
-                                     'ConsentLabel'  => $consentLabel,
-                                     'Status'        => $consentStatus,
-                                     'DateGiven'     => $consentDate,
-                                     'DateWithdrawn' => $consentWithdrawal,
-                                     'EntryStaff'    => $entryStaff,
-                                     'EntryDate'     => $entryDate,
-                                    ];
+                    'PSCID'         => $pscid,
+                    'ConsentName'   => $consentName,
+                    'ConsentLabel'  => $consentLabel,
+                    'Status'        => $consentStatus,
+                    'DateGiven'     => $consentDate,
+                    'DateWithdrawn' => $consentWithdrawal,
+                    'EntryStaff'    => $entryStaff,
+                    'EntryDate'     => $entryDate,
+                ];
                 //Populate candidate_consent_history table
                 //Nullifying empty field to avoid data truncation
                 foreach ($formattedHistory as $k=>$v) {

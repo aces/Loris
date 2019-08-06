@@ -78,8 +78,8 @@ $candExists = $DB->pselectOne(
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
-     'cid' => $CandID,
-     'pid' => $PSCID,
+        'cid' => $CandID,
+        'pid' => $PSCID,
     )
 );
 if ($candExists == 0) {
@@ -92,8 +92,8 @@ if ($sessionID != null) {
     $sessionExists = $DB->pselectOne(
         "SELECT COUNT(*) FROM session WHERE ID=:sid AND CandID=:cid AND Active ='Y'",
         array(
-         'sid' => $sessionID,
-         'cid' => $CandID,
+            'sid' => $sessionID,
+            'cid' => $CandID,
         )
     );
     if ($sessionExists == 0) {

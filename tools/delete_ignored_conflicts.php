@@ -43,13 +43,13 @@ $config =& NDB_Config::singleton();
 
 // Meta fields that should be removed
 $defaultFields = array(
-                  'CommentID',
-                  'UserID',
-                  'Testdate',
-                  'Window_Difference',
-                  'Candidate_Age',
-                  'Data_entry_completion_status',
-                 );
+    'CommentID',
+    'UserID',
+    'Testdate',
+    'Window_Difference',
+    'Candidate_Age',
+    'Data_entry_completion_status',
+);
 
 $instruments         = array();
 $instrumentSpecified = false;

@@ -91,8 +91,8 @@ $candExists = $DB->pselectOne(
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
-     'cid' => $CandID,
-     'pid' => $PSCID,
+        'cid' => $CandID,
+        'pid' => $PSCID,
     )
 );
 if ($candExists == 0) {
@@ -105,8 +105,8 @@ $entityType = $DB->pselectOne(
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
-     'cid' => $CandID,
-     'pid' => $PSCID,
+        'cid' => $CandID,
+        'pid' => $PSCID,
     )
 );
 if ($entityType === "Scanner") {

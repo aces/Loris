@@ -137,8 +137,8 @@ foreach($testNames as $test) {
         $params = array_merge(
             $params,
             array(
-             'sid' => $sessionID,
-             'cid' => $candID,
+                'sid' => $sessionID,
+                'cid' => $candID,
             )
         );
     }

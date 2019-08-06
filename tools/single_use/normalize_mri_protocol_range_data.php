@@ -101,9 +101,9 @@ function split_ranges($table_name, $printToSQL, $output)
 }
 
 $tables_to_normalize = array(
-                        "mri_protocol",
-                        "mri_protocol_checks",
-                       );
+    "mri_protocol",
+    "mri_protocol_checks",
+);
 foreach ($tables_to_normalize as $table) {
     split_ranges($table, $printToSQL, $output);
 }

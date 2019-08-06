@@ -287,14 +287,14 @@ else {
 
 
 /**
-*Get the commentids for the given instrument, candidate and visit_label
-*
-* @param String $test_name   The instrument been searched
-* @param string $visit_label The  visit_label been searched
-* @param string $candid      The  candid been searched
-*
-* @return array $commentids An array of commentids found
-*/
+ * Get the commentids for the given instrument, candidate and visit_label
+ *
+ * @param String $test_name   The instrument been searched
+ * @param string $visit_label The  visit_label been searched
+ * @param string $candid      The  candid been searched
+ *
+ * @return array $commentids An array of commentids found
+ */
 
 function getCommentIDs($test_name, $visit_label=null, $candid=null)
 {
@@ -325,13 +325,13 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
 
 
 /**
-*Get the conflicts currently in the conflicts_unresolved table
-*
-* @param String $test_name   The instrument been searched
-* @param string $visit_label The visit_label been searched
-*
-* @return array $conflicts An array of conflicts detected
-*/
+ * Get the conflicts currently in the conflicts_unresolved table
+ *
+ * @param String $test_name   The instrument been searched
+ * @param string $visit_label The visit_label been searched
+ *
+ * @return array $conflicts An array of conflicts detected
+ */
 
 
 function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
@@ -361,16 +361,16 @@ function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
 
 
 /**
-* detect the conflicts by
-* 1) instantiating the instrument for each given commmentid
-* 2) and then taking the diff
-*
-* @param String $test_name         The instrument been searched
-* @param Array  $commentids        An array of commentids used as haystack
-* @param Array  $current_conflicts An array of current conflicts detected
-*
-* @return Array $detected_conflicts List of newly detected conflicts
-*/
+ * detect the conflicts by
+ * 1) instantiating the instrument for each given commmentid
+ * 2) and then taking the diff
+ *
+ * @param String $test_name         The instrument been searched
+ * @param Array  $commentids        An array of commentids used as haystack
+ * @param Array  $current_conflicts An array of current conflicts detected
+ *
+ * @return Array $detected_conflicts List of newly detected conflicts
+ */
 
 function detectConflicts($test_name,$commentids,$current_conflicts)
 {
@@ -399,16 +399,16 @@ function detectConflicts($test_name,$commentids,$current_conflicts)
 
 
 /**
-*  Write the data into a csv file
-*
-* @param String $output      Array of data been written into csv
-* @param String $path        The file path
-* @param String $instrument  The name of the instrument
-* @param String $visit_label The name of the visit
-* @param String $prefix      The type of csv file
-*
-* @return Null
-*/
+ *  Write the data into a csv file
+ *
+ * @param String $output      Array of data been written into csv
+ * @param String $path        The file path
+ * @param String $instrument  The name of the instrument
+ * @param String $visit_label The name of the visit
+ * @param String $prefix      The type of csv file
+ *
+ * @return Null
+ */
 
 function writeCSV($output,$path,$instrument,$visit_label,$prefix)
 {
@@ -457,12 +457,12 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
 
 
 /**
-*  Return data using the commentid
-*
-* @param String $commentid extract data using commentid
-*
-* @return Array $data        Result of the query
-*/
+ *  Return data using the commentid
+ *
+ * @param String $commentid extract data using commentid
+ *
+ * @return Array $data        Result of the query
+ */
 
 function getInfoUsingCommentID($commentid)
 {
@@ -480,15 +480,15 @@ function getInfoUsingCommentID($commentid)
 
 
 /**
-* *Detect those conflicts which are currently in the conflicts_unresolved table
-* But should be excluded based on the _doubleDataEntryDiffIgnoreColumns array
-*
-* @param String $instrument        The instrument used for conflict detection
-* @param Array  $commentids        Used for creation of instrument-instantiation
-* @param Array  $current_conflicts An array of current conflicts detected
-*
-* @return Array $conflicts_to_excluded Array of confllicts to be execluded
-*/
+ * *Detect those conflicts which are currently in the conflicts_unresolved table
+ * But should be excluded based on the _doubleDataEntryDiffIgnoreColumns array
+ *
+ * @param String $instrument        The instrument used for conflict detection
+ * @param Array  $commentids        Used for creation of instrument-instantiation
+ * @param Array  $current_conflicts An array of current conflicts detected
+ *
+ * @return Array $conflicts_to_excluded Array of confllicts to be execluded
+ */
 function detectConflictsTobeExcluded($instrument,$commentids,$current_conflicts)
 {
 

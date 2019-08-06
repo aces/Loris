@@ -34,55 +34,55 @@ require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 
 $table_array = array(
-                'MRICandidateErrors'  => array(
-                                          'table1'   => 'MRICandidateErrors',
-                                          'table2'   => 'tarchive',
-                                          'FK_name1' => 'TarchiveID',
-                                          'FK_name2' => 'TarchiveID',
-                                         ),
-                'mri_violations_log'  => array(
-                                          'table1'   => 'mri_violations_log',
-                                          'table2'   => 'tarchive',
-                                          'FK_name1' => 'TarchiveID',
-                                          'FK_name2' => 'TarchiveID',
-                                         ),
-                'files'               => array(
-                                          'table1'   => 'files',
-                                          'table2'   => 'tarchive',
-                                          'FK_name1' => 'TarchiveSource',
-                                          'FK_name2' => 'TarchiveID',
-                                         ),
-                'files_qcstatus'      => array(
-                                          'table1'   => 'files_qcstatus',
-                                          'table2'   => 'files',
-                                          'FK_name1' => 'FileID',
-                                          'FK_name2' => 'FileID',
-                                         ),
-                'mri_upload_tarchive' => array(
-                                          'table1'   => 'mri_upload',
-                                          'table2'   => 'tarchive',
-                                          'FK_name1' => 'TarchiveID',
-                                          'FK_name2' => 'TarchiveID',
-                                         ),
-                'mri_upload_session'  => array(
-                                          'table1'   => 'mri_upload',
-                                          'table2'   => 'session',
-                                          'FK_name1' => 'SessionID',
-                                          'FK_name2' => 'ID',
-                                         ),
-                'mri_protocol_checks' => array(
-                                          'table1'   => 'mri_protocol_checks',
-                                          'table2'   => 'mri_scan_type',
-                                          'FK_name1' => 'Scan_type',
-                                          'FK_name2' => 'ID',
-                                         ),
-                'tarchive'            => array(
-                                          'table1'   => 'tarchive',
-                                          'table2'   => 'session',
-                                          'FK_name1' => 'SessionID',
-                                          'FK_name2' => 'ID',
-                                         ),
-               );
+    'MRICandidateErrors'  => array(
+        'table1'   => 'MRICandidateErrors',
+        'table2'   => 'tarchive',
+        'FK_name1' => 'TarchiveID',
+        'FK_name2' => 'TarchiveID',
+    ),
+    'mri_violations_log'  => array(
+        'table1'   => 'mri_violations_log',
+        'table2'   => 'tarchive',
+        'FK_name1' => 'TarchiveID',
+        'FK_name2' => 'TarchiveID',
+    ),
+    'files'               => array(
+        'table1'   => 'files',
+        'table2'   => 'tarchive',
+        'FK_name1' => 'TarchiveSource',
+        'FK_name2' => 'TarchiveID',
+    ),
+    'files_qcstatus'      => array(
+        'table1'   => 'files_qcstatus',
+        'table2'   => 'files',
+        'FK_name1' => 'FileID',
+        'FK_name2' => 'FileID',
+    ),
+    'mri_upload_tarchive' => array(
+        'table1'   => 'mri_upload',
+        'table2'   => 'tarchive',
+        'FK_name1' => 'TarchiveID',
+        'FK_name2' => 'TarchiveID',
+    ),
+    'mri_upload_session'  => array(
+        'table1'   => 'mri_upload',
+        'table2'   => 'session',
+        'FK_name1' => 'SessionID',
+        'FK_name2' => 'ID',
+    ),
+    'mri_protocol_checks' => array(
+        'table1'   => 'mri_protocol_checks',
+        'table2'   => 'mri_scan_type',
+        'FK_name1' => 'Scan_type',
+        'FK_name2' => 'ID',
+    ),
+    'tarchive'            => array(
+        'table1'   => 'tarchive',
+        'table2'   => 'session',
+        'FK_name1' => 'SessionID',
+        'FK_name2' => 'ID',
+    ),
+);
 
 iterate($table_array);
 
@@ -222,7 +222,7 @@ function printOrphan($table_name, $orphan_list)
  *
  * @param string $table_name name of the table in which to delete orphans
  * @param string $FK_field   foreign key to set to null if don't want to delete
- * orphans
+ *                           orphans
  *
  * @return string  answer from the user to the question
  */

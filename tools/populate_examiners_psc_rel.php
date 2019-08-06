@@ -155,11 +155,11 @@ if ($errorPRE) {
 
 foreach ($examinersRows as $k=>$row) {
     $item = array(
-             'examinerID'       => $row['examinerID'],
-             'centerID'         => $row['centerID'],
-             'active'           => $row['active'],
-             'pending_approval' => $row['pending_approval'],
-            );
+        'examinerID'       => $row['examinerID'],
+        'centerID'         => $row['centerID'],
+        'active'           => $row['active'],
+        'pending_approval' => $row['pending_approval'],
+    );
     // Compare without spaces, without cases
     $examinersOrganized[strtolower(
         str_replace(' ', '', $row['full_name'])

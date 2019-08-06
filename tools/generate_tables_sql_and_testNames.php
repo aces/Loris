@@ -91,7 +91,11 @@ foreach($instruments AS $instrument){
     fwrite($fp, $output);
     fwrite($fp, "REPLACE INTO test_names (Test_name, Full_name, Sub_group) VALUES ('$tablename', '$title', 1);\n");
     foreach($pages as $pageNo => $page) {
-        fwrite($fp, "INSERT INTO instrument_subtests (Test_name, Subtest_name, Description) VALUES ('$tablename', '" . $tablename  . "_page" . ($pageNo+1) . "', '$page');\n");
+        fwrite(
+            $fp, 
+            "INSERT INTO instrument_subtests "
+            . "(Test_name, Subtest_name, Description) "
+            . "VALUES ('$tablename', '" . $tablename  . "_page" . ($pageNo+1) . "', '$page');\n");
 
     }
     fclose($fp);
@@ -102,13 +106,13 @@ echo "\n\Table SQL Generation complete\n";
 function enumizeOptions($options, $table, $name)
 {
     $options =explode("{-}", $options);
-    foreach($options as $option){
+    foreach ($options as $option){
         $option =explode("=>", $option);
-        if($option[0]!='NULL') {
+        if ($option[0]!='NULL') {
             $enum[] =$option[0];
         }
     }
-    if(!is_array($enum)) {
+    if (!is_array($enum)) {
         echo "$table $name $options\n";
     }
     $enum =implode(",", $enum);

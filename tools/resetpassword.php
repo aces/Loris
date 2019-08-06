@@ -29,7 +29,7 @@ if (count($args) < MIN_NUMBER_OF_ARGS) {
 $user = $args[1];
 
 $validate = $DB->pselectOne(
-    "SELECT UserID FROM users WHERE UserID=:username", 
+    "SELECT UserID FROM users WHERE UserID=:username",
     array("username" => $user)
 );
 if (empty($validate)) {

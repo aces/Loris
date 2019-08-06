@@ -80,9 +80,9 @@ function split_commas($table_name)
 }
 
 $tables_to_normalize = array(
-                        "mri_protocol",
-                        "mri_protocol_checks",
-                       );
+    "mri_protocol",
+    "mri_protocol_checks",
+);
 foreach ($tables_to_normalize as $table) {
     split_commas($table);
 }

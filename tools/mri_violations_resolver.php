@@ -121,9 +121,9 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
 
 // Filter values to modify
 $where   = array(
-            'pr' => 'Protocol Violation',
-            'sd' => '%t1%',
-           );
+    'pr' => 'Protocol Violation',
+    'sd' => '%t1%',
+);
 $results = $DB->pselect($query, $where);
 
 foreach ($results AS $result) {
@@ -141,8 +141,8 @@ foreach ($results AS $result) {
         "SELECT * FROM violations_resolved
         WHERE hash = :ha and ExtID = :ex ",
         array(
-         'ha' => $result['hash'],
-         'ex' => $result['join_id'],
+            'ha' => $result['hash'],
+            'ex' => $result['join_id'],
         )
     );
 

@@ -86,12 +86,12 @@ if ($argv[2] === "apply") {
 if ($action === "schemaTables") {
     // SETUP INPUT from schema files in SQL loris directory
     $schemaFiles    = [
-                       "0000-00-00-schema.sql",
-                       "0000-00-01-Permission.sql",
-                       "0000-00-02-Menus.sql",
-                       "0000-00-03-ConfigTables.sql",
-                       "0000-00-04-Help.sql",
-                      ];
+        "0000-00-00-schema.sql",
+        "0000-00-01-Permission.sql",
+        "0000-00-02-Menus.sql",
+        "0000-00-03-ConfigTables.sql",
+        "0000-00-04-Help.sql",
+    ];
     $schemaFileBase = $base . "SQL/";
     $completeSchema = "";
     foreach ($schemaFiles as $file) {
@@ -195,8 +195,8 @@ function getNumberOfCols($DBTable, $DB, $dbConfig)
           FROM `information_schema`.`COLUMNS` 
           WHERE TABLE_NAME=:tbl AND TABLE_SCHEMA=:dbn",
         array(
-         "tbl" => $DBTable,
-         "dbn" => $dbConfig["database"],
+            "tbl" => $DBTable,
+            "dbn" => $dbConfig["database"],
         )
     );
     return $number;

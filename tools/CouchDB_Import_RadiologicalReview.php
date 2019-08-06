@@ -10,75 +10,75 @@ class CouchDBRadiologicalReviewImporter
     var $CouchDB; // reference to the CouchDB database handler
 
     var $Dictionary = array(
-                       'FinalReview_Radiologist'        => array(
-                                                            'Description' => 'Radiologist/Reviewer doing the final review',
-                                                            'Type'        => 'varchar(255)',
-                                                           ),
-                       'FinalReview_Done'               => array(
-                                                            'Description' => 'Final review done',
-                                                            'Type'        => "enum('No','Yes')",
-                                                           ),
-                       'FinalReview_Results'            => array(
-                                                            'Description' => 'Results of the final radiology review',
-                                                            'Type'        => "enum('normal','abnormal','atypical','not_answered')",
-                                                           ),
-                       'FinalReview_ExclusionaryStatus' => array(
-                                                            'Description' => 'Final review exclusionary status',
-                                                            'Type'        => "enum('exclusionary','non_exclusionary','not_answered')",
-                                                           ),
-                       'FinalReview_SAS'                => array(
-                                                            'Description' => 'Final review subarachnoid space',
-                                                            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
-                                                           ),
-                       'FinalReview_PVS'                => array(
-                                                            'Description' => 'Final review perivascular space',
-                                                            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
-                                                           ),
-                       'FinalReview_Comment'            => array(
-                                                            'Description' => 'Current stage of visit',
-                                                            'Type'        => 'text',
-                                                           ),
-                       'FinalReview_Finalized'          => array(
-                                                            'Description' => 'Final review finalized',
-                                                            'Type'        => "enum('No','Yes')",
-                                                           ),
-                       'ExtraReview_Radiologist'        => array(
-                                                            'Description' => 'Radiologist/Reviewer doing the extra review',
-                                                            'Type'        => 'varchar(255)',
-                                                           ),
-                       'ExtraReview_Done'               => array(
-                                                            'Description' => 'Extra review done',
-                                                            'Type'        => "enum('No','Yes')",
-                                                           ),
-                       'ExtraReview_Results'            => array(
-                                                            'Description' => 'Results of the extra radiology review',
-                                                            'Type'        => "enum('normal','abnormal','atypical','not_answered')",
-                                                           ),
-                       'ExtraReview_ExclusionaryStatus' => array(
-                                                            'Description' => 'Extra review exclusionary status',
-                                                            'Type'        => "enum('exclusionary','non_exclusionary','not_answered')",
-                                                           ),
-                       'ExtraReview_SAS'                => array(
-                                                            'Description' => 'Extra review subarachnoid space',
-                                                            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
-                                                           ),
-                       'ExtraReview_PVS'                => array(
-                                                            'Description' => 'Extra review perivascular space',
-                                                            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
-                                                           ),
-                       'ExtraReview_Comment'            => array(
-                                                            'Description' => 'Current stage of visit',
-                                                            'Type'        => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')",
-                                                           ),
-                       'Conflict_Final_Extra'           => array(
-                                                            'Description' => 'Conflict between final and extra reviews',
-                                                            'Type'        => "enum('No','Yes')",
-                                                           ),
-                       'Conflict_Any'                   => array(
-                                                            'Description' => 'Conflict between any reviews',
-                                                            'Type'        => "enum('No','Yes')",
-                                                           ),
-                      );
+        'FinalReview_Radiologist'        => array(
+            'Description' => 'Radiologist/Reviewer doing the final review',
+            'Type'        => 'varchar(255)',
+        ),
+        'FinalReview_Done'               => array(
+            'Description' => 'Final review done',
+            'Type'        => "enum('No','Yes')",
+        ),
+        'FinalReview_Results'            => array(
+            'Description' => 'Results of the final radiology review',
+            'Type'        => "enum('normal','abnormal','atypical','not_answered')",
+        ),
+        'FinalReview_ExclusionaryStatus' => array(
+            'Description' => 'Final review exclusionary status',
+            'Type'        => "enum('exclusionary','non_exclusionary','not_answered')",
+        ),
+        'FinalReview_SAS'                => array(
+            'Description' => 'Final review subarachnoid space',
+            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
+        ),
+        'FinalReview_PVS'                => array(
+            'Description' => 'Final review perivascular space',
+            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
+        ),
+        'FinalReview_Comment'            => array(
+            'Description' => 'Current stage of visit',
+            'Type'        => 'text',
+        ),
+        'FinalReview_Finalized'          => array(
+            'Description' => 'Final review finalized',
+            'Type'        => "enum('No','Yes')",
+        ),
+        'ExtraReview_Radiologist'        => array(
+            'Description' => 'Radiologist/Reviewer doing the extra review',
+            'Type'        => 'varchar(255)',
+        ),
+        'ExtraReview_Done'               => array(
+            'Description' => 'Extra review done',
+            'Type'        => "enum('No','Yes')",
+        ),
+        'ExtraReview_Results'            => array(
+            'Description' => 'Results of the extra radiology review',
+            'Type'        => "enum('normal','abnormal','atypical','not_answered')",
+        ),
+        'ExtraReview_ExclusionaryStatus' => array(
+            'Description' => 'Extra review exclusionary status',
+            'Type'        => "enum('exclusionary','non_exclusionary','not_answered')",
+        ),
+        'ExtraReview_SAS'                => array(
+            'Description' => 'Extra review subarachnoid space',
+            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
+        ),
+        'ExtraReview_PVS'                => array(
+            'Description' => 'Extra review perivascular space',
+            'Type'        => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
+        ),
+        'ExtraReview_Comment'            => array(
+            'Description' => 'Current stage of visit',
+            'Type'        => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')",
+        ),
+        'Conflict_Final_Extra'           => array(
+            'Description' => 'Conflict between final and extra reviews',
+            'Type'        => "enum('No','Yes')",
+        ),
+        'Conflict_Any'                   => array(
+            'Description' => 'Conflict between any reviews',
+            'Type'        => "enum('No','Yes')",
+        ),
+    );
 
     function __construct()
     {
@@ -102,8 +102,8 @@ class CouchDBRadiologicalReviewImporter
         $this->CouchDB->replaceDoc(
             'DataDictionary:FinalRadiologicalReview',
             array(
-             'Meta'           => array('DataDict' => true),
-             'DataDictionary' => array('FinalRadiologicalReview' => $this->Dictionary),
+                'Meta'           => array('DataDict' => true),
+                'DataDictionary' => array('FinalRadiologicalReview' => $this->Dictionary),
             )
         );
 
@@ -168,20 +168,20 @@ class CouchDBRadiologicalReviewImporter
         // Adding the data to CouchDB documents
         foreach($finalradiologicalreview as $review) {
             $identifier = array(
-                           $review['PSCID'],
-                           $review['Visit_label'],
-                          );
+                $review['PSCID'],
+                $review['Visit_label'],
+            );
             $id         = 'Final_Radiological_Review_' . join($identifier, '_');
             unset($review['PSCID']);
             unset($review['Visit_label']);
             $success = $this->CouchDB->replaceDoc(
                 $id,
                 array(
-                 'Meta' => array(
-                            'DocType'    => 'FinalRadiologicalReview',
-                            'identifier' => $identifier,
-                           ),
-                 'data' => $review,
+                    'Meta' => array(
+                        'DocType'    => 'FinalRadiologicalReview',
+                        'identifier' => $identifier,
+                    ),
+                    'data' => $review,
                 )
             );
             print "$id: $success\n";

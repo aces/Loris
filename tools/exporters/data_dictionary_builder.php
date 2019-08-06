@@ -112,7 +112,8 @@ foreach ($instruments AS $instrument) {
         case "title":
             $title = $bits[1];
             // Check if there's already an entry with the same name and reuse same ID
-            // insertIgnore does not work here since name is not a Unique key in the database
+            // insertIgnore does not work here since name is not a Unique key
+            // in the database
             $catId = $DB->pselectOne(
                 "SELECT ParameterTypeCategoryID 
                        FROM parameter_type_category
@@ -120,16 +121,16 @@ foreach ($instruments AS $instrument) {
                 array(
                 // htmlspecialchars() is necessary since data is escaped when
                 // inserted in the database but not escaped in the $title variable
-                 "name" => htmlspecialchars($title),
-                 "type" => "Instrument",
+                    "name" => htmlspecialchars($title),
+                    "type" => "Instrument",
                 )
             );
             if (empty($catId)) {
                 $DB->insert(
                     "parameter_type_category",
                     array(
-                     "Name" => $title,
-                     "Type" => "Instrument",
+                        "Name" => $title,
+                        "Type" => "Instrument",
                     )
                 );
                 $catId = $DB->lastInsertID;
@@ -178,13 +179,13 @@ foreach ($instruments AS $instrument) {
             }
             $parameterCount++;
             $query_params = array(
-                             "Name"        => $Name,
-                             "Type"        => $bits[0],
-                             "Description" => $bits[2],
-                             "SourceField" => $bits[1],
-                             "SourceFrom"  => $table,
-                             "Queryable"   => "1",
-                            );
+                "Name"        => $Name,
+                "Type"        => $bits[0],
+                "Description" => $bits[2],
+                "SourceField" => $bits[1],
+                "SourceFrom"  => $table,
+                "Queryable"   => "1",
+            );
 
             //Check if the same element existed in the parameter_type table
             //before deleting the data.
@@ -215,8 +216,8 @@ foreach ($instruments AS $instrument) {
             $DB->insert(
                 "parameter_type_category_rel",
                 array(
-                 "ParameterTypeID"         => $paramId,
-                 "ParameterTypeCategoryID" => $catId,
+                    "ParameterTypeID"         => $paramId,
+                    "ParameterTypeCategoryID" => $catId,
                 )
             );
         }
@@ -238,13 +239,13 @@ foreach ($instruments AS $instrument) {
     $_type_enum = "enum('Questionable', 'Invalid', 'Valid')";
 
     $query_params = array(
-                     "Name"        => $Name,
-                     "Type"        => $_type_enum,
-                     "Description" => "Validity of $table",
-                     "SourceField" => "Validity",
-                     "SourceFrom"  => $table,
-                     "Queryable"   => "1",
-                    );
+        "Name"        => $Name,
+        "Type"        => $_type_enum,
+        "Description" => "Validity of $table",
+        "SourceField" => "Validity",
+        "SourceFrom"  => $table,
+        "Queryable"   => "1",
+    );
 
     if (array_key_exists($Name, $parameter_types)) {
         $ParameterTypeID = $parameter_types[$Name];
@@ -266,8 +267,8 @@ foreach ($instruments AS $instrument) {
     $DB->insert(
         "parameter_type_category_rel",
         array(
-         "ParameterTypeID"         => $paramId,
-         "ParameterTypeCategoryID" => $catId,
+            "ParameterTypeID"         => $paramId,
+            "ParameterTypeCategoryID" => $catId,
         )
     );
 
@@ -275,19 +276,20 @@ foreach ($instruments AS $instrument) {
     print "\tInserting administration for $table\n";
     $Name = $table . "_Administration";
     if (in_array($Name, $parameterNames, true)) {
-        // this specific table__Administration combination was already inserted, skip.
+        // this specific table__Administration combination was already
+        // inserted, skip.
         continue;
     }
 
     $_type_enum   = "enum('None', 'Partial', 'All')";
     $query_params = array(
-                     "Name"        => $Name,
-                     "Type"        => $_type_enum,
-                     "Description" => "Administration for $table",
-                     "SourceField" => "Administration",
-                     "SourceFrom"  => $table,
-                     "Queryable"   => "1",
-                    );
+        "Name"        => $Name,
+        "Type"        => $_type_enum,
+        "Description" => "Administration for $table",
+        "SourceField" => "Administration",
+        "SourceFrom"  => $table,
+        "Queryable"   => "1",
+    );
 
     if (array_key_exists($Name, $parameter_types)) {
         $ParameterTypeID = $parameter_types[$Name];
@@ -311,8 +313,8 @@ foreach ($instruments AS $instrument) {
     $DB->insert(
         "parameter_type_category_rel",
         array(
-         "ParameterTypeID"         => $paramId,
-         "ParameterTypeCategoryID" => $catId,
+            "ParameterTypeID"         => $paramId,
+            "ParameterTypeCategoryID" => $catId,
         )
     );
 }

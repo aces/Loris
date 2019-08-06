@@ -1,10 +1,13 @@
 <?php
 /**
- * This script generates data-only dumps for all tables in the currently active database.
- * Each table in the database gets dumped into a single file in the following location :
- *  BASE_PATH_TO_LORIS/test/RBfiles/RB_TABLE_NAME.sql
+ * This script generates data-only dumps for all tables in the currently active
+ * database.
+ * Each table in the database gets dumped into a single file in the following
+ * location:
+ *     BASE_PATH_TO_LORIS/test/RBfiles/RB_TABLE_NAME.sql
  *
- * This script was primarily written to simplify contributions to the raisinbread dataset.
+ * This script was primarily written to simplify contributions to the
+ * raisinbread dataset.
  * Each file contains data TRUNCATION, table LOCKING, and individual INSERTS for each
  * row. This is done by design to allow for an easier review of the changes through
  * a VCS system.
@@ -69,7 +72,8 @@ foreach ($tableNames as $tableName) {
         '--verbose '.
         '--skip-tz-utc '.
         $tableName .
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\nTRUNCATE TABLE \1;\nLOCK TABLES \1/g\''.
+        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'
+        . 'TRUNCATE TABLE \1;\nLOCK TABLES \1/g\''.
         ' > '. $filename .
         '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename
     );

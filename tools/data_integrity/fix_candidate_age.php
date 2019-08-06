@@ -130,9 +130,9 @@ foreach ($instruments as $inst=>$fullName) {
                 if ($calculatedAgeMonths != $DBAge) {
                     //$incorrectAges[] = $row;
                     $incorrectAges[$inst][$commentID] = array(
-                                                         'cal' => $calculatedAgeMonths,
-                                                         'db'  => $DBAge,
-                                                        );
+                        'cal' => $calculatedAgeMonths,
+                        'db'  => $DBAge,
+                    );
                     $trouble =true;
                 }
             }

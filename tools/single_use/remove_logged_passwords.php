@@ -1,4 +1,16 @@
 <?php declare(strict_types=1);
+/**
+ * Script to delete plaintext passwords accidentally stored in the history
+ * table.
+ *
+ * PHP Version 7
+ *
+ * @category Tools
+ * @package  Tools
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris
+ */
 error_reporting(E_ALL);
 require_once __DIR__ . "/../generic_includes.php";
 $info = <<<INFO
@@ -35,12 +47,12 @@ $result = $DB->pselect($sql, array());
 
 // Reduce the result to one entry per user with the most recent date changed.
 $compromised = array();
-foreach($result as $row) {
+foreach ($result as $row) {
     $compromised[$row['userID']] = array(
-                                    'date'   => $row['changeDate'],
-                                    'email'  => $row['Email'],
-                                    'active' => $row['Active'],
-                                   );
+        'date'   => $row['changeDate'],
+        'email'  => $row['Email'],
+        'active' => $row['Active'],
+    );
 }
 
 if (count($compromised) === 0) {
@@ -61,7 +73,7 @@ REPORT;
 
 // Add the user's details to the report for output to the user.
 // Also, trigger a password reset for that user.
-foreach($compromised as $username => $details) {
+foreach ($compromised as $username => $details) {
     $report[] = sprintf(
         $entry,
         $username,
@@ -87,14 +99,14 @@ echo "These users should be contacted and informed of the potential password "
 $DB->delete(
     'history',
     array(
-     'col' => 'Password_hash',
-     'tbl' => 'users',
+        'col' => 'Password_hash',
+        'tbl' => 'users',
     )
 );
 $DB->delete(
     'history',
     array(
-     'col' => 'Password_md5',
-     'tbl' => 'users',
+        'col' => 'Password_md5',
+        'tbl' => 'users',
     )
 );

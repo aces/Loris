@@ -1,8 +1,8 @@
 <?php
 /**
- * script to move config.xml data to the database
+ * Script to move config.xml data to the database
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
@@ -21,7 +21,7 @@ $iterator = new SimpleXmlIterator($xml_file, null, true);
 iterate($iterator, null);
 
 /**
- * iterate over the config xml
+ * Iterate over the config xml
  *
  * @param SimpleXmlIterator $iterator  xml iterator
  * @param string            $parentKey parent of the current value of the iterator
@@ -65,7 +65,7 @@ function iterate($iterator, $parentKey)
 }
 
 /**
- * insert a value into the Config table
+ * Insert a value into the Config table
  *
  * @param string $name     name of the config field
  * @param string $value    value of the config field
@@ -95,8 +95,8 @@ function processLeaf($name, $value, $configID)
         $db->insert(
             'Config',
             array(
-             'ConfigID' => $configID,
-             'Value'    => $value,
+                'ConfigID' => $configID,
+                'Value'    => $value,
             )
         );
 
@@ -116,8 +116,8 @@ function processLeaf($name, $value, $configID)
             $db->insert(
                 'Config',
                 array(
-                 'ConfigID' => $configID,
-                 'Value'    => $value,
+                    'ConfigID' => $configID,
+                    'Value'    => $value,
                 )
             );
         }
@@ -126,7 +126,7 @@ function processLeaf($name, $value, $configID)
 }
 
 /**
- * recursive in_array function
+ * Recursive in_array function
  *
  * @param string $value the value being searched for
  * @param array  $array the array being searched through

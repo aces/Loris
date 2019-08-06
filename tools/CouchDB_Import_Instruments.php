@@ -29,35 +29,35 @@ class CouchDBInstrumentImporter
     {
         foreach ($Instruments as $instrument => $name) {
             $Dict   = array(
-                       'Administration'  => array(
-                                             'Type'        => "enum('None'," .
+                'Administration'  => array(
+                    'Type'        => "enum('None'," .
                                                " 'Partial', 'All')",
-                                             'Description' => "Administration " .
+                    'Description' => "Administration " .
                                                "for $name",
-                                            ),
-                       'Data_entry'      => array(
-                                             'Type'        => "enum('In Progress'," .
+                ),
+                'Data_entry'      => array(
+                    'Type'        => "enum('In Progress'," .
                                                " 'Complete')",
-                                             'Description' => "Data entry status " .
+                    'Description' => "Data entry status " .
                                                "for $name",
-                                            ),
-                       'Validity'        => array(
-                                             'Type'        => "enum('Questionable'" .
+                ),
+                'Validity'        => array(
+                    'Type'        => "enum('Questionable'" .
                                                ", 'Invalid', 'Valid')",
-                                             'Description' => "Validity of data " .
+                    'Description' => "Validity of data " .
                                                "for $name",
-                                            ),
-                       'Conflicts_Exist' => array(
-                                             'Type'        => "enum('Yes', 'No')",
-                                             'Description' => 'Conflicts exist for' .
+                ),
+                'Conflicts_Exist' => array(
+                    'Type'        => "enum('Yes', 'No')",
+                    'Description' => 'Conflicts exist for' .
                                                ' instrument data entry',
-                                            ),
-                       'DDE_Complete'    => array(
-                                             'Type'        => "enum('Yes', 'No')",
-                                             'Description' => 'Double Data Entry ' .
+                ),
+                'DDE_Complete'    => array(
+                    'Type'        => "enum('Yes', 'No')",
+                    'Description' => 'Double Data Entry ' .
                                                'was completed for instrument',
-                                            ),
-                      );
+                ),
+            );
             $Fields = $this->SQLDB->pselect(
                 "SELECT * from parameter_type WHERE SourceFrom=:inst " .
                   "AND Queryable=1",
@@ -78,8 +78,8 @@ class CouchDBInstrumentImporter
             $this->CouchDB->replaceDoc(
                 "DataDictionary:$instrument",
                 array(
-                 'Meta'           => array('DataDict' => true),
-                 'DataDictionary' => array($instrument => $Dict),
+                    'Meta'           => array('DataDict' => true),
+                    'DataDictionary' => array($instrument => $Dict),
                 )
             );
         }
@@ -122,10 +122,10 @@ class CouchDBInstrumentImporter
     function UpdateCandidateDocs($Instruments)
     {
         $results = array(
-                    'new'       => 0,
-                    'modified'  => 0,
-                    'unchanged' => 0,
-                   );
+            'new'       => 0,
+            'modified'  => 0,
+            'unchanged' => 0,
+        );
         foreach ($Instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the database
             // we need to instantiate the object to get the table name
@@ -167,15 +167,15 @@ class CouchDBInstrumentImporter
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $docdata['Examiner']));
                 }
                 $doc     = array(
-                            'Meta' => array(
-                                       'DocType'    => $instrument,
-                                       'identifier' => array(
-                                                        $row['PSCID'],
-                                                        $row['Visit_label'],
-                                                       ),
-                                      ),
-                            'data' => $docdata,
-                           );
+                    'Meta' => array(
+                        'DocType'    => $instrument,
+                        'identifier' => array(
+                            $row['PSCID'],
+                            $row['Visit_label'],
+                        ),
+                    ),
+                    'data' => $docdata,
+                );
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
                 print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
 
@@ -203,14 +203,14 @@ class CouchDBInstrumentImporter
         $now = date("c");
         $id  = $this->CouchDB->createDoc(
             array(
-             'Meta'    => array('DocType' => 'RunLog'),
-             'RunInfo' => array(
-                           'Script'        => 'Instrument Importer',
-                           'Time'          => "$now",
-                           'DocsCreated'   => $results['new'],
-                           'DocsModified'  => $results['modified'],
-                           'DocsUnchanged' => $results['unchanged'],
-                          ),
+                'Meta'    => array('DocType' => 'RunLog'),
+                'RunInfo' => array(
+                    'Script'        => 'Instrument Importer',
+                    'Time'          => "$now",
+                    'DocsCreated'   => $results['new'],
+                    'DocsModified'  => $results['modified'],
+                    'DocsUnchanged' => $results['unchanged'],
+                ),
             )
         );
         print "Created run log with id $id\n";

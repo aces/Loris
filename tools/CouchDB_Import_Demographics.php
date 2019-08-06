@@ -1,8 +1,14 @@
 <?php
+/**
+ * This script imports demographic information into CouchDB
+ */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
+/*
+ * This class is responsible for importing demographic information into CouchDB
+ */
 class CouchDBDemographicsImporter
 {
     var $SQLDB; // reference to the database handler, store here instead
@@ -12,86 +18,86 @@ class CouchDBDemographicsImporter
     // this is just in an instance variable to make
     // the code a little more readable.
     var $Dictionary = array(
-                       'DoB'              => array(
-                                              'Description' => 'Date of Birth',
-                                              'Type'        => 'varchar(255)',
-                                             ),
-                       'CandID'           => array(
-                                              'Description' => 'DCC Candidate Identifier',
-                                              'Type'        => 'varchar(255)',
-                                             ),
-                       'PSCID'            => array(
-                                              'Description' => 'Project Candidate Identifier',
-                                              'Type'        => 'varchar(255)',
-                                             ),
-                       'Visit_label'      => array(
-                                              'Description' => 'Visit of Candidate',
-                                              'Type'        => 'varchar(255)',
-                                             ),
-                       'Cohort'           => array(
-                                              'Description' => 'Cohort of this session',
-                                              'Type'        => 'varchar(255)',
-                                             ),
-                       'Sex'              => array(
-                                              'Description' => 'Candidate\'s biological sex',
-                                              'Type'        => "enum('Male', 'Female')",
-                                             ),
-                       'Site'             => array(
-                                              'Description' => 'Site that this visit took place at',
-                                              'Type'        => "varchar(3)",
-                                             ),
-                       'Current_stage'    => array(
-                                              'Description' => 'Current stage of visit',
-                                              'Type'        => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')",
-                                             ),
-                       'Failure'          => array(
-                                              'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
-                                              'Type'        => "enum('Failure','Withdrawal','Neither')",
-                                             ),
-                       'CEF'              => array(
-                                              'Description' => 'Caveat Emptor flag',
-                                              'Type'        => "enum('true','false')",
-                                             ),
-                       'CEF_reason'       => array(
-                                              'Description' => 'Reason for Caveat Emptor flag',
-                                              'Type'        => "varchar(255)",
-                                             ),
-                       'CEF_comment'      => array(
-                                              'Description' => 'Comment on Caveat Emptor flag',
-                                              'Type'        => "varchar(255)",
-                                             ),
-                       'Comment'          => array(
-                                              'Description' => 'Candidate comment',
-                                              'Type'        => "varchar(255)",
-                                             ),
-                       'Status'           => array(
-                                              'Description' => 'Participant status',
-                                              'Type'        => "varchar(255)",
-                                             ),
-                       'Status_reason'    => array(
-                                              'Description' => 'Reason for status - only filled out if status is inactive or incomplete',
-                                              'Type'        => "int(10)",
-                                             ),
-                       'Status_comments'  => array(
-                                              'Description' => 'Participant status comments',
-                                              'Type'        => "text",
-                                             ),
-                       'session_feedback' => array(
-                                              'Description' => 'Behavioural feedback at the session level',
-                                              'Type'        => "varchar(255)",
-                                             ),
-                      );
+        'DoB'              => array(
+            'Description' => 'Date of Birth',
+            'Type'        => 'varchar(255)',
+        ),
+        'CandID'           => array(
+            'Description' => 'DCC Candidate Identifier',
+            'Type'        => 'varchar(255)',
+        ),
+        'PSCID'            => array(
+            'Description' => 'Project Candidate Identifier',
+            'Type'        => 'varchar(255)',
+        ),
+        'Visit_label'      => array(
+            'Description' => 'Visit of Candidate',
+            'Type'        => 'varchar(255)',
+        ),
+        'Cohort'           => array(
+            'Description' => 'Cohort of this session',
+            'Type'        => 'varchar(255)',
+        ),
+        'Sex'              => array(
+            'Description' => 'Candidate\'s biological sex',
+            'Type'        => "enum('Male', 'Female')",
+        ),
+        'Site'             => array(
+            'Description' => 'Site that this visit took place at',
+            'Type'        => "varchar(3)",
+        ),
+        'Current_stage'    => array(
+            'Description' => 'Current stage of visit',
+            'Type'        => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')",
+        ),
+        'Failure'          => array(
+            'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
+            'Type'        => "enum('Failure','Withdrawal','Neither')",
+        ),
+        'CEF'              => array(
+            'Description' => 'Caveat Emptor flag',
+            'Type'        => "enum('true','false')",
+        ),
+        'CEF_reason'       => array(
+            'Description' => 'Reason for Caveat Emptor flag',
+            'Type'        => "varchar(255)",
+        ),
+        'CEF_comment'      => array(
+            'Description' => 'Comment on Caveat Emptor flag',
+            'Type'        => "varchar(255)",
+        ),
+        'Comment'          => array(
+            'Description' => 'Candidate comment',
+            'Type'        => "varchar(255)",
+        ),
+        'Status'           => array(
+            'Description' => 'Participant status',
+            'Type'        => "varchar(255)",
+        ),
+        'Status_reason'    => array(
+            'Description' => 'Reason for status - only filled out if status is inactive or incomplete',
+            'Type'        => "int(10)",
+        ),
+        'Status_comments'  => array(
+            'Description' => 'Participant status comments',
+            'Type'        => "text",
+        ),
+        'session_feedback' => array(
+            'Description' => 'Behavioural feedback at the session level',
+            'Type'        => "varchar(255)",
+        ),
+    );
 
     var $Config = array(
-                   'Meta'   => array('DocType' => 'ServerConfig'),
-                   'Config' => array(
-                                'GroupString'  => 'How to arrange data: ',
-                                'GroupOptions' => array(
-                                                   'Cross-sectional',
-                                                   'Longitudinal',
-                                                  ),
-                               ),
-                  );
+        'Meta'   => array('DocType' => 'ServerConfig'),
+        'Config' => array(
+            'GroupString'  => 'How to arrange data: ',
+            'GroupOptions' => array(
+                'Cross-sectional',
+                'Longitudinal',
+            ),
+        ),
+    );
 
     /**
      * Creates a CouchDBDemographicsImporter object
@@ -264,31 +270,31 @@ class CouchDBDemographicsImporter
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"]    = array(
-                                                   'Description' => "Proband's biological sex",
-                                                   'Type'        => "enum('Male','Female')",
-                                                  );
+                'Description' => "Proband's biological sex",
+                'Type'        => "enum('Male','Female')",
+            );
             $this->Dictionary["Age_difference"] = array(
-                                                   'Description' => 'Age difference between the candidate '
+                'Description' => 'Age difference between the candidate '
                                     . 'and the proband',
-                                                   'Type'        => "int",
-                                                  );
+                'Type'        => "int",
+            );
         }
         // If expected date of confinement is being used, update the data
         // dictionary
         if ($config->getSetting("useEDC") === "true") {
             $this->Dictionary["EDC"] = array(
-                                        'Description' => 'Expected Date of Confinement (Due Date)',
-                                        'Type'        => "varchar(255)",
-                                       );
+                'Description' => 'Expected Date of Confinement (Due Date)',
+                'Type'        => "varchar(255)",
+            );
         }
         $projects      = \Utility::getProjectList();
         $projectsEnum  = "enum('";
         $projectsEnum .= implode("', '", $projects);
         $projectsEnum .= "')";
         $this->Dictionary["Project"] = array(
-                                        'Description' => 'Project for which the candidate belongs',
-                                        'Type'        => $projectsEnum,
-                                       );
+            'Description' => 'Project for which the candidate belongs',
+            'Type'        => $projectsEnum,
+        );
         // If consent is being used, update the data dictionary
         if ($config->getSetting("useConsent") === "true") {
             $consents = \Utility::getConsentList();
@@ -296,17 +302,17 @@ class CouchDBDemographicsImporter
                 $consentName  = $consent['Name'];
                 $consentLabel = $consent['Label'];
                 $this->Dictionary[$consentName]           = array(
-                                                             'Description' => $consentLabel,
-                                                             'Type'        => "enum('yes','no')",
-                                                            );
+                    'Description' => $consentLabel,
+                    'Type'        => "enum('yes','no')",
+                );
                 $this->Dictionary[$consentName . "_date"] = array(
-                                                             'Description' => $consentLabel . ' Date',
-                                                             'Type'        => "date",
-                                                            );
+                    'Description' => $consentLabel . ' Date',
+                    'Type'        => "date",
+                );
                 $this->Dictionary[$consentName . "_withdrawal"] = array(
-                                                                   'Description' => $consentLabel . ' Withdrawal Date',
-                                                                   'Type'        => "date",
-                                                                  );
+                    'Description' => $consentLabel . ' Withdrawal Date',
+                    'Type'        => "date",
+                );
             }
         }
     }
@@ -350,9 +356,9 @@ class CouchDBDemographicsImporter
                 );
                 if (!empty($familyID)) {
                     $this->Dictionary["FamilyID"] = array(
-                                                     'Description' => 'FamilyID of Candidate',
-                                                     'Type'        => "int(6)",
-                                                    );
+                        'Description' => 'FamilyID of Candidate',
+                        'Type'        => "int(6)",
+                    );
                     $demographics['FamilyID']     = $familyID;
                     $familyFields = $this->SQLDB->pselect(
                         "SELECT candID as Family_ID,
@@ -360,8 +366,8 @@ class CouchDBDemographicsImporter
                                     FROM family
                                     WHERE FamilyID=:fid AND CandID<>:cid",
                         array(
-                         'fid' => $familyID,
-                         'cid' => $demographics['CandID'],
+                            'fid' => $familyID,
+                            'cid' => $demographics['CandID'],
                         )
                     );
                     $num_family   = 1;
@@ -369,18 +375,17 @@ class CouchDBDemographicsImporter
                         foreach ($familyFields as $row) {
                             //adding each sibling id and relationship to the
                             //file
-                            $this->Dictionary["Family_CandID".$num_family]            =
-                                array(
-                                 'Description' => 'CandID of Family Member ',
-                                    .$num_family,
-                                 'Type'        => "varchar(255)",
-                                );
+                            $this->Dictionary["Family_CandID".$num_family] = array(
+                                'Description' => 'CandID of Family Member ',
+                                .$num_family,
+                                'Type'        => "varchar(255)",
+                            );
                             $this->Dictionary["Relationship_type_Family".$num_family]
                                 = array(
-                                   'Description' => 'Relationship of candidate to Family Member '.$num_family,
-                                   'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
-                                  );
-                            $demographics['Family_CandID'.$num_family]            = $row['Family_ID'];
+                                    'Description' => 'Relationship of candidate to Family Member '.$num_family,
+                                    'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
+                                );
+                            $demographics['Family_CandID'.$num_family] = $row['Family_ID'];
                             $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
                             $num_family += 1;
                         }
@@ -391,14 +396,14 @@ class CouchDBDemographicsImporter
             $success = $this->CouchDB->replaceDoc(
                 $id,
                 array(
-                 'Meta' => array(
-                            'DocType'    => 'demographics',
-                            'identifier' => array(
-                                             $demographics['PSCID'],
-                                             $demographics['Visit_label'],
-                                            ),
-                           ),
-                 'data' => $demographics,
+                    'Meta' => array(
+                        'DocType'    => 'demographics',
+                        'identifier' => array(
+                            $demographics['PSCID'],
+                            $demographics['Visit_label'],
+                        ),
+                    ),
+                    'data' => $demographics,
                 )
             );
             print "$id: $success\n";
@@ -407,8 +412,8 @@ class CouchDBDemographicsImporter
         $this->CouchDB->replaceDoc(
             'DataDictionary:Demographics',
             array(
-             'Meta'           => array('DataDict' => true),
-             'DataDictionary' => array('demographics' => $this->Dictionary),
+                'Meta'           => array('DataDict' => true),
+                'DataDictionary' => array('demographics' => $this->Dictionary),
             )
         );
 

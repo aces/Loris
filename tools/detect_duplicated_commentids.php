@@ -1,14 +1,13 @@
 <?php
 /**
- * detects the duplicated commentids for the given instrument
+ * Detects the duplicated commentids for the given instrument
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @license  Loris License
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . "/../vendor/autoload.php";
@@ -48,9 +47,7 @@ if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) 
     die();
 }
 
-/**
- * parse the options
- */
+// parse the options
 $opts        = getopt("i:r");
 $change      = false;
 $change_all  = false;
@@ -62,16 +59,12 @@ if (!is_array($opts)) {
     exit(1);
 }
 
-/**
- * IF it's an instrument
- */
+// If it's an instrument
 if ($opts['i']!=null) {
     $instrument = $opts['i'];
 }
 
-/**
- * to be removed
- */
+// to be removed
 if ($opts['r']!=null) {
     $to_remove = true;
 }
@@ -116,9 +109,9 @@ foreach ($instruments as $instrument=>$full_name) {
                     WHERE s.candID = :cid AND f.test_name = :fname AND
                     s.subprojectid = :subid",
                     array(
-                     'cid'   => $candid,
-                     'fname' => $instrument,
-                     'subid' => $subprojectid['subprojectid'],
+                        'cid'   => $candid,
+                        'fname' => $instrument,
+                        'subid' => $subprojectid['subprojectid'],
                     )
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
@@ -153,18 +146,17 @@ foreach ($instruments as $instrument=>$full_name) {
 
 
 /**
-*Get the commentids for the given instrument, candidate and visit_label
-*
-* @param String $test_name    The instrument been searched
-* @param string $visit_label  The VisitLabel Placed in the CSV file
-* @param string $sid          The SessionID been searched
-* @param string $candid       The candid been searched
-* @param string $pscid        The PSCID been searched
-* @param string $subprojectid The subprojecitd been searched
-*
-* @return array $commentids An array of commentids found
-*/
-
+ * Get the commentids for the given instrument, candidate and visit_label
+ *
+ * @param string $test_name    The instrument been searched
+ * @param string $visit_label  The VisitLabel Placed in the CSV file
+ * @param string $sid          The SessionID been searched
+ * @param string $candid       The candid been searched
+ * @param string $pscid        The PSCID been searched
+ * @param string $subprojectid The subprojecitd been searched
+ *
+ * @return array $commentids An array of commentids found
+ */
 function getCommentIDs(
     $test_name, $visit_label=null, $sid=null,
     $candid=null,$pscid=null, $subprojectid=null
@@ -209,15 +201,14 @@ function getCommentIDs(
 
 
 /**
-*  Write the data into a csv file
-*
-* @param String $output     Array of data been written into csv
-* @param String $path       The file path
-* @param String $instrument The name of the instrument
-*
-* @return NULL
-*/
-
+ *  Write the data into a csv file
+ *
+ * @param String $output     Array of data been written into csv
+ * @param String $path       The file path
+ * @param String $instrument The name of the instrument
+ *
+ * @return NULL
+ */
 function writeCSV($output,$path,$instrument)
 {
     /**
@@ -244,13 +235,12 @@ function writeCSV($output,$path,$instrument)
     }
 }
 /**
- * checks to see if the table has some data
+ * Checks to see if the table has some data
  *
  * @param String $instrument instrument-name
  *
  * @return NULL
  */
-
 function hasData($instrument)
 {
     $commentids = $GLOBALS['DB']->pselect(

@@ -160,12 +160,12 @@ echo "$tarFile ready in $destinationDir\n";
 
 
 /**
-* Converts the column number into the excel column name in letters
-*
-* @param int $num The column number
-*
-* @return string $letter The excel column name in letters
-**/
+ * Converts the column number into the excel column name in letters
+ *
+ * @param int $num The column number
+ *
+ * @return string $letter The excel column name in letters
+ **/
 function getNameFromNumber($num)
 {
     $numeric = $num % 26;
@@ -191,12 +191,12 @@ function writeExcel($Test_name, $instrument_table, $dataDir)
 {
     //    $metaCols = array("PSCID", "CandID", "Visit_label", "Examiner_name", "Data_entry_completion_status", "Date_taken"); //metadata columns
     $junkCols = array(
-                 "CommentID",
-                 "UserID",
-                 "Examiner",
-                 "Testdate",
-                 "Data_entry_completion_status",
-                ); //columns to be removed
+        "CommentID",
+        "UserID",
+        "Examiner",
+        "Testdate",
+        "Data_entry_completion_status",
+    ); //columns to be removed
 
     // create empty Excel file to fill up
     // Create a new PHPExcel Object
@@ -227,9 +227,9 @@ function writeExcel($Test_name, $instrument_table, $dataDir)
 
     $hor_cen = \PHPExcel_Style_Alignment::HORIZONTAL_CENTER;
     $style   = array(
-                'font'      => array('bold' => true),
-                'alignment' => array('horizontal' => $hor_cen),
-               );
+        'font'      => array('bold' => true),
+        'alignment' => array('horizontal' => $hor_cen),
+    );
     $ExcelWorkSheet->getStyle($header)->applyFromArray($style);
 
     // add data to worksheet
