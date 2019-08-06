@@ -2090,7 +2090,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
-    function getCandidateAge(string $date): array
+    function getCandidateAge(string $date = null): array
     {
         $dates = array(
                   'Date_taken' => $this->getFieldValue('Date_taken'),
