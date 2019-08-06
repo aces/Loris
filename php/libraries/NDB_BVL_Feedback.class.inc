@@ -677,7 +677,7 @@ class NDB_BVL_Feedback
         $active = 'Y';
 
         // create SET array for the INSERT into the feedback_bvl_thread table
-        $setArray = array(
+        $setArray     = array(
             'FeedbackID'    => null,
             'Feedback_type' => $type,
             'Public'        => $public,
@@ -686,8 +686,8 @@ class NDB_BVL_Feedback
             'Date_taken'    => $today,
             'UserID'        => $this->_username,
         );
+        $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
         if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
-            $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
             $setArray = array_merge(
                 $setArray,
