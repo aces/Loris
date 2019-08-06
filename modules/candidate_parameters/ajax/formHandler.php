@@ -488,7 +488,7 @@ function editConsentStatusFields($db, $user)
                          'cn'    => $consentName,
                         )
                     );
-                    // If consent was 'yes' at some point, withdrawal date is not empty
+                    // If consent was 'yes' at some point, withdrawal date is !empty
                     // if it was never 'yes', withdrawal date should be empty
                     // Either is valid.
                     if ((!empty($withdrawal) && $countYesStatusHistory > 0)
