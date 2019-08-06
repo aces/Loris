@@ -71,8 +71,8 @@ if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
 foreach ($tableNames as $tableName) {
     $paths = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
-    exec('mysqldump -u '.$dbUser.' -p'.$dbPassword.' -h '.$dbHost.' '.
-        $databaseInfo['database'].' '.
+    exec('mysqldump -u '.escapeshellarg($dbUser).' -p'.escapeshellarg($dbPassword).' -h '.escapeshellarg($dbHost).' '.
+        escapeshellarg($databaseInfo['database']).' '.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.
