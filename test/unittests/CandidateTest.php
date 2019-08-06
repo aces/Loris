@@ -29,7 +29,7 @@ class CandidateTest extends TestCase
      */
     private $_candidateInfo
         = array(
-           'RegistrationCenterID'     => 2,
+           'RegistrationCenterID'     => '2',
            'CandID'       => '969664',
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
@@ -233,42 +233,6 @@ class CandidateTest extends TestCase
 
         $this->assertTrue($this->_candidate->setData($data));
         $this->assertEquals($data['Active'], $this->_candidate->getData('Active'));
-    }
-
-    /**
-     * Test setData method sets data when passing variable name and value
-     * TODO Same test as above? 
-     * 
-     * @return void
-     * @covers Candidate::setData
-     * @covers Candidate::getData
-     */
-    public function testSetDataWithValueSucceeds()
-    {
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $data = array('RegisteredBy' => 'TestUser');
-        //assert update method is called with correct parameters
-        $this->_dbMock->expects($this->once())
-            ->method('update')
-            ->with(
-                'candidate',
-                $data,
-                array('CandID' => $this->_candidateInfo['CandID'])
-            );
-
-        $this->assertTrue(
-            $this->_candidate->setData(
-                array(
-                    'RegisteredBy' => 'TestUser'
-                )
-            )
-        );
-        $this->assertEquals(
-            $data['RegisteredBy'],
-            $this->_candidate->getData('RegisteredBy')
-        );
     }
 
     /**
@@ -567,7 +531,9 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT SubprojectID from project_rel where ProjectID = :prj"
+                   "SELECT SubprojectID 
+                    FROM project_subproject_rel 
+                    WHERE ProjectID = :prj"
                 )
             )
             ->willReturn(
