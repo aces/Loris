@@ -10,6 +10,6 @@ done
 
 # Run PHPCS on all .php and .inc files in folders: 
 #  php/, htdocs/, modules/
-vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ --ignore=htdocs/api/*|| exit $?;
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php,inc --colors php/ htdocs/ modules/ --ignore=htdocs/api/*|| exit $?;
 
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;
