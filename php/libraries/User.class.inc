@@ -85,6 +85,11 @@ class User extends UserPermissions
             $user_cid[$key] = intval($val['CenterID']);
         }
 
+        $user_pid = $DB->pselectCol(
+            "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
+            array('uid' => $row['ID'])
+        );
+
         // Get examiner information
         $examiner_check = $DB->pselect(
             "SELECT e.full_name,
@@ -116,9 +121,10 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  = $examiner_info;
-        $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
+        $row['examiner']   = $examiner_info;
+        $row['CenterIDs']  = $user_cid;
+        $row['ProjectIDs'] = $user_pid;
+        $obj->userInfo     = $row;
         return $obj;
     }
 

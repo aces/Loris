@@ -307,6 +307,23 @@
         </div>
         {/if}
     </div>
+        {if $form.errors.projects_group}
+        <div class="row form-group form-inline has-error">
+            {else}
+            <div class="row form-group form-inline">
+                {/if}
+                <label class="col-sm-2">
+                    {$form.ProjectIDs.label}
+                </label>
+                <div class="col-sm-10">
+                    {$form.ProjectIDs.html}
+                </div>
+                {if $form.errors.projects_group}
+                    <div class="col-sm-offset-2 col-xs-12">
+                        <font class="form-error">{$form.errors.projects_group}</font>
+                    </div>
+                {/if}
+            </div>
     {if $form.examiner_sites}
     {if $form.errors.examiner_sites}
     <div class="row form-group form-inline form-inline has-error">

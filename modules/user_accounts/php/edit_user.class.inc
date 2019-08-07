@@ -277,6 +277,23 @@ class Edit_User extends \NDB_Form
         unset($values['CenterIDs']);
         // END multi-site UPDATE
 
+        // START PROJECT UPDATE
+        $us_curr_projects = $values['ProjectIDs'];
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_project_rel', array("UserID" => $uid));
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                     "UserID"    => $uid,
+                     "ProjectID" => $project,
+                    )
+                );
+            }
+        }
+        unset($values['ProjectIDs']);
+        // END PROJECT UPDATE
+
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
@@ -447,6 +464,15 @@ class Edit_User extends \NDB_Form
                     array(
                      "UserID"   => $uid,
                      "CenterID" => $site,
+                    )
+                );
+            }
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                     "UserID"    => $uid,
+                     "ProjectID" => $project,
                     )
                 );
             }
@@ -705,6 +731,7 @@ class Edit_User extends \NDB_Form
         $siteOptions = array();
         $site        = array();
 
+        $siteOptions = array();
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
@@ -724,6 +751,22 @@ class Edit_User extends \NDB_Form
             $siteOptions,
             array('multiple' => 'multiple')
         );
+
+        // START PROJECT SECTION
+        $project_arr    = $editor->getData('ProjectIDs');
+        $projectOptions = array();
+        foreach ($project_arr as $key => $val) {
+            $project[$key]        = \Project::getProjectFromID(intval($val));
+            $projectOptions[$val] = $project[$key]->getName();
+        }
+
+        $this->addSelect(
+            'ProjectIDs',
+            'Projects',
+            $projectOptions,
+            array('multiple' => 'multiple')
+        );
+        // END PROJECT SECTION
 
         if ($editor->hasPermission('examiner_multisite')) {
             $groupA = array();
@@ -1114,6 +1157,15 @@ class Edit_User extends \NDB_Form
         if (empty($values['CenterIDs'])) {
             $errors['sites_group'] = "You must select at least one " .
                 "site/affiliation";
+        }
+
+        //======================================
+        //           Validate Project
+        //======================================
+        // Ensure that at least one site is selected
+        if (empty($values['ProjectIDs'])) {
+            $errors['projectss_group'] = "You must select at least one " .
+                "project/affiliation";
         }
 
         //======================================
