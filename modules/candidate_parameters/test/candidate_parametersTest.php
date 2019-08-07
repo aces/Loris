@@ -38,9 +38,9 @@ class CandidateParametersTestIntegrationTest
             $this->url
             . "/candidate_parameters/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $bodyText = $this->getReactElementContent(
+                       'body'
+                    );
         $this->assertContains("Candidate Parameters", $bodyText);
     }
 

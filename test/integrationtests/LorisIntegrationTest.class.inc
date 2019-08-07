@@ -585,6 +585,30 @@ abstract class LorisIntegrationTest extends TestCase
         } while($attempts < self::NUM_OF_ATTEMPTS);
     }
     /**
+     * Click a React Element by href 
+     *
+     * @param  string $href the location of href 
+     * @return void
+     */
+    function clickReactElementByHref($href)
+    {     
+          $ref = "a[href^=\"".$href."\"]";
+          $attempts = 0;
+        do {
+            try {
+                $this->webDriver->executescript(
+                    "document.querySelector('$ref').click()"
+                );
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+            break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+    }
+    /**
      * Get rows of the React table, ? rows displayed of ?
      *
      * @param  string $ui the result of React table (css selector)
