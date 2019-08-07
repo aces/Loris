@@ -307,6 +307,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
             $sitesOption  = new WebDriverSelect($sitesElement);
             $sitesOption->selectByValue("1");
+
+            $projectsElement = $this->safeFindElement(WebDriverBy::Name('ProjectIDs[]'));
+            $projectsOption  = new WebDriverSelect($projectsElement);
+            $projectsOption->selectByValue("1");
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
 
