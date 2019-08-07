@@ -121,6 +121,17 @@ CREATE TABLE `user_psc_rel` (
 
 INSERT INTO user_psc_rel (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
+CREATE TABLE `user_project_rel` (
+  `UserID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UserID`,`ProjectID`),
+  CONSTRAINT `FK_user_project_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_project_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_project_rel (UserID, ProjectID) SELECT 1, ProjectID FROM Project;
+
+
 CREATE TABLE `caveat_options` (
   `ID` int(6),
   `Description` varchar(255),

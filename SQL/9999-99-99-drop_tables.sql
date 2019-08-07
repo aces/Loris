@@ -159,6 +159,7 @@ DROP TABLE IF EXISTS `test_subgroups`;
 DROP TABLE IF EXISTS `session_status`;
 DROP TABLE IF EXISTS `session`;
 DROP TABLE IF EXISTS `user_psc_rel`;
+DROP TABLE IF EXISTS `user_project_rel`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
