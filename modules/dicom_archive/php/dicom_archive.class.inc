@@ -27,8 +27,6 @@ namespace LORIS\dicom_archive;
  */
 class Dicom_Archive extends \DataFrameworkMenu
 {
-    var $dicomArchiveSettings;
-    public $AjaxModule = true;
 
     /**
      * Determine whether the user has permission to view this page
@@ -80,7 +78,11 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new DicomArchiveRowProvisioner();
+        $provisioner = new DicomArchiveRowProvisioner();
+
+        $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
+
+        return $provisioner;
     }
 
     /**
