@@ -155,6 +155,7 @@ class DicomArchive extends Component {
       }},
       {label: 'TarchiveID', show: false},
       {label: 'SessionID', show: false},
+      {label: 'CenterID', show: false},
     ];
 
     return (

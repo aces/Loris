@@ -37,20 +37,20 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     function __construct()
     {
         parent::__construct(
-            "SELECT t.PatientID as `Patient ID`,
-            t.PatientName as `Patient Name`,
-            t.PatientSex as Sex,
-            t.PatientDoB as `Date of birth`,
-            t.DateAcquired as Acquisition,
-            t.ArchiveLocation as Archive_Location,
-            'View Details' as Metadata,
-            'View Images' as `MRI Browser`,
+            "SELECT t.PatientID AS patientID,
+            t.PatientName AS patientName,
+            t.PatientSex AS sex,
+            t.PatientDoB AS dateOfBirth,
+            t.DateAcquired AS acquisitionDate,
+            t.ArchiveLocation AS archiveLocation,
+            'View Details' AS Metadata,
+            'View Images' AS `MRI Browser`,
             (SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE
-                    e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID,
-            s.CenterID as Site,
-            t.TarchiveID as TarchiveID,
-            s.ID as SessionID,
-            s.CenterID
+                    e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) AS seriesUID,
+            s.CenterID AS site,
+            t.TarchiveID AS TarchiveID,
+            s.ID AS SessionID,
+            s.CenterID AS CenterID
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
@@ -69,7 +69,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = $row['CenterID'];
+            $cid = (int) $row['CenterID'];
             unset($row['CenterID']);
             return new DICOMArchiveRow($row, $cid);
     }
