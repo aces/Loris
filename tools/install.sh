@@ -13,6 +13,11 @@ if ! test -t 0 -a -t 1 -a -t 2 ; then
     exit 2
 fi
 
+if [ $(id -u) = 0 ]; then
+   echo "This script must not be run as root"
+   exit 1
+fi
+
 # Create logs directory, if needed.
 mkdir -p logs
 
