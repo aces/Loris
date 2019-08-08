@@ -112,8 +112,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->getReactElementContent("body");
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
@@ -138,9 +137,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              $this->url
              . "/conflict_resolver/resolved_conflicts/"
          );
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+         $bodyText = $this->getReactElementContent("body");
          $this->assertContains("Resolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
@@ -154,9 +151,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/conflict_resolver/");
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+         $bodyText = $this->getReactElementContent("body");
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
@@ -169,63 +164,18 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForUnresolvedConflicts()
     {
         $this->safeGet($this->url . "/conflict_resolver/");
+        $row = self::$display;
+        $btn = self::$clearFilter;
         //testing data
         // site = montreal
-        $this-> _testFilter(self::$ForSite, "20 rows displayed of 311", '2');
+        $this-> _testFilter(self::$ForSite, "20 rows displayed of 311", '2',$row,$btn);
         // Visit label = V1
-        $this-> _testFilter(self::$VisitLabel, "displayed of 576", '1');
-        $this-> _testFilter(self::$CandID, "2 rows displayed of 2", '300004');
-        $this-> _testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004');
-        $this-> _testFilter(self::$Question, "displayed of 181", 'height_inches');
+        $this-> _testFilter(self::$VisitLabel, "displayed of 576", '1',$row,$btn);
+        $this-> _testFilter(self::$CandID, "2 rows displayed of 2", '300004',$row,$btn);
+        $this-> _testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004',$row,$btn);
+        $this-> _testFilter(self::$Question, "displayed of 181", 'height_inches',$row,$btn);
          // project = Pumpernickel
         $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1');
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") === false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-        }
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-            //test clear filter
-            $btn = self::$clearFilter;
-            $this->webDriver->executescript(
-                "document.querySelector('$btn').click();"
-            );
-            $inputText = $this->webDriver->executescript(
-                "return document.querySelector('$element').value"
-            );
-            $this->assertEquals("", $inputText);
     }
      /**
      * Tests filter in resolved conflicts
@@ -236,12 +186,14 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForResolvedConflicts()
     {
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
-        $this-> _testFilter(self::$ForSite, "displayed of 14", '2');
-        $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1');
-        $this-> _testFilter(self::$CandID, "1 row", '400167');
-        $this-> _testFilter(self::$PSCID, "1 row", 'ROM167');
-        $this-> _testFilter(self::$Question, "9 rows", 'date_taken');
-        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 18:35:51');
+        $row = self::$display;
+        $btn = self::$clearFilter;
+        $this-> _testFilter(self::$ForSite, "displayed of 14", '2',$row,$btn);
+        $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1',$row,$btn);
+        $this-> _testFilter(self::$CandID, "1 row", '400167',$row,$btn);
+        $this-> _testFilter(self::$PSCID, "1 row", 'ROM167',$row,$btn);
+        $this-> _testFilter(self::$Question, "9 rows", 'date_taken',$row,$btn);
+        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 18:35:51',$row,$btn);
 
     }
      /**
@@ -252,29 +204,18 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testSaveUnresolvedToResolved()
     {
-        $this->markTestSkipped(
-            'Todo:Rewrite this test function.'
-        );
          $this->safeGet($this->url . "/conflict_resolver/");
          //give a correct answer and save it for the first row
          $element = "tr:nth-child(1) .form-control";
          $value   = "2";
          $btn     = self::$saveBtn;
          $row     = self::$display;
-         $this->webDriver->executescript(
-             "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                "
-         );
-         $this->webDriver->executescript(
-             "document.querySelector('$btn').click()"
-         );sleep(1);
-         //todo find this
-         $bodyText = $this->webDriver->executescript(
-             "return document.querySelector('$row').textContent"
-         );
+         $this->reactDropdownSendKey($element,$value);
+
+         $this->clickReactElement($btn);
+         $bodyText = $this->getReactElementContent(".table-header .col-xs-12");
             // 4 means there are 4 records under this site.
-         $this->assertContains("of 585", $bodyText);
+         $this->assertContains("of 577", $bodyText);
 
     }
 }
