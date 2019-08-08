@@ -146,6 +146,28 @@ class UserTest extends TestCase
      */
     private $_dbMock;
     /**
+     * Test double for Database object for hasLoggedIn method
+     * 
+     * @note This is needed for User::hasLoggedIn because it declares and uses
+     *       the database differently than other methods in the User class.
+     *       This can be changed when the rest of the User class updates how it 
+     *       declares its database. - Alexandra Livadas
+     * 
+     *@var \Database | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_mockDB;
+    /**
+     * Test double for Database object for hasLoggedIn method
+     * 
+     * @note This is needed for User::hasLoggedIn because it declares and uses
+     *       the database differently than other methods in the User class.
+     *       This can be changed when the rest of the User class updates how it
+     *       declares its database. - Alexandra Livadas
+     *
+     * @var NDB_Factory
+     */
+    private $_mockFactory;
+    /**
      * Maps config names to values
      * Used to set behavior of NDB_Config test double
      *
@@ -172,6 +194,10 @@ class UserTest extends TestCase
             $database['host'],
             true
         );
+
+        $this->_mockDB = $this->getMockBuilder('Database')->getMock();
+        $this->_mockFactory = \NDB_Factory::singleton();
+        $this->_mockFactory->setDatabase($this->_mockDB);
 
         $this->_username = "968775";
 
@@ -545,6 +571,14 @@ class UserTest extends TestCase
     public function testHasLoggedInWhenTrue()
     {
         $this->_user = \User::factory($this->_username);
+        $count = 1;
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("FROM user_login_history")
+            )
+            ->willReturn($count);
+
         $this->assertTrue($this->_user->hasLoggedIn());
     }
 
@@ -557,14 +591,14 @@ class UserTest extends TestCase
      */
     public function testHasLoggedInWhenFalse()
     {
-        $this->_dbMock->run("DROP TEMPORARY TABLE user_login_history");
-        $newTableInfo = array(0 => array('UserID' => '968775',
-                                         'Success' => 'N'));
-        $this->_dbMock->setFakeTableData(
-            "user_login_history",
-            $newTableInfo
-        );
         $this->_user = \User::factory($this->_username);
+        $count = 0;
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("FROM user_login_history")
+            )
+            ->willReturn($count);
         $this->assertFalse($this->_user->hasLoggedIn());
     }
 
@@ -594,11 +628,6 @@ class UserTest extends TestCase
         $this->_dbMock->setFakeTableData(
             "examiners_psc_rel",
             $this->_eprInfo
-        );
-        $this->_dbMock->setFakeTableData(
-            "user_login_history",
-            array(0 => array('UserID' => '968775',
-                             'Success' => 'Y'))
         );
     }
 }
