@@ -41,7 +41,7 @@ class LoginTest extends TestCase
     }
 
     /**
-     * This checks if, given correct credentials, a HTTP 200 response
+     * This checks if, given correct credentials, an HTTP 200 response
      * is return and that its body is a JSON string with a token key.
      *
      * @return void

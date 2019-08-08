@@ -105,7 +105,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
             }
         }
 
-        // If a can't view phantoms from all sites, check if they can view phantoms
+        // If a user can't view phantoms from all sites, check if they can view phantoms
         // from its own sites. If not, filter out phantoms.
         if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
             if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
