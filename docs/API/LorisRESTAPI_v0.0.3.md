@@ -827,6 +827,30 @@ object of the form:
 The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
 scans, respectively.
 
+```
+POST /candidates/$CandID/$Visit/dicoms
+
+In addition to the uploaded file, the body of the POST request should contain the
+following keys and values:
+
+```js
+{
+    'CandID': $CandID,
+    'PSCID': string,
+    'Visit': $VisitLabe,
+    'IsPhantom': "true|false"
+}
+```
+
+An optionnal header 'LORIS-Overwrite' with the value 'overwrite' can be used to
+overwrite an existing file. 
+
+A successful request will be answered by a `303 See Other` response with its
+`Location` header pointing to the processes list of the new upload.  
+(See 5.3 Tar Level processes)
+
+```
+
 ### 5.2 Tar Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
@@ -836,4 +860,17 @@ Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
-Only `GET` is currently supported.
+### 5.3 Tar Level processes
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+```
+POST /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes/$processid
+```
+
