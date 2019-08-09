@@ -847,11 +847,10 @@ overwrite an existing file.
 
 A successful request will be answered by a `303 See Other` response with its
 `Location` header pointing to the processes list of the new upload.  
-(See 5.3 Tar Level processes)
+(See 5.3 Tar Level processes)  
 
-```
+### 5.2 Tar Level Data  
 
-### 5.2 Tar Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
 ```
