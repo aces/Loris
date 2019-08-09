@@ -1044,9 +1044,56 @@ class TimePoint
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
     }
 
-    public function addDicomTar(\LORIS\Data\Models\DicomTarDTO $dicomtar): void
+    /**
+     * Adds a file to the mri_upload table for that session
+     *
+     * @param \User        $user        The user inserting the file.
+     * @param \SplFileInfo $file        The file on the file system.
+     * @param string       $patientname The patient name
+     * @param bool         $isphantom   True if it's a phantom file
+     *
+     * @return int The UploadID from the mri_upload table sequence.
+     */
+    public function addMRIUpload(
+        \User $user,
+        \SplFileInfo $file,
+        string $patientname,
+        bool $isphantom
+    ): int {
+
+        $values = array(
+                   'UploadedBy'     => $user->getUsername(),
+                   'UploadDate'     => date('Y-m-d H:i:s'),
+                   'UploadLocation' => $file->getPathname(),
+                   'SessionID'      => $this->getSessionID(),
+                   'PatientName'    => $patientname,
+                   'IsPhantom'      => ($isphantom ? 'Y' : 'N'),
+                  );
+
+        $db = \NDB_Factory::singleton()->database();
+        $db->insert('mri_upload', $values);
+        return (int) $db->getLastInsertId();
+    }
+
+    /**
+     * This retreives all MRIUpload with the given filename for that session.
+     *
+     * @param \User  $user     The requesting user.
+     * @param string $filename The mri_upload file's basename.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO[]
+     */
+    public function getMRIUploadsByFilename(\User $user, string $filename): array
     {
-        throw new RuntimeException('Not implemented');
+        $provisioner = new \LORIS\Data\Provisioners\TimepointMRIUploadsProvisioner(
+            $this,
+            $filename
+        );
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
     }
 
     /**

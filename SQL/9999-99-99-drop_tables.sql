@@ -91,6 +91,7 @@ DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
 DROP TABLE IF EXISTS `media`;
+DROP TABLE IF EXISTS `mri_upload_server_processes_rel`;
 DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;

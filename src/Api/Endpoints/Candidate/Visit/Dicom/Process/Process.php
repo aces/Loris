@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 /**
- * This implements a visit's dicom endpoint class.
- *
  * PHP Version 7
  *
  * @category API
@@ -10,14 +8,16 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api\Endpoints\Candidate\Visit\Dicom;
+namespace LORIS\Api\Endpoints\Candidate\Visit\Dicom\Process;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\api\Endpoint;
+use \LORIS\Api\Endpoint;
+
+use \LORIS\server_processes_manager\ServerProcessesMonitor;
 
 /**
- * A class for handling request for a visit specific dicom.
+ * A class for handling request for a visit specific dicom process.
  *
  * @category API
  * @package  Loris
@@ -25,7 +25,7 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
      * The requested Visit
@@ -35,17 +35,14 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_visit;
 
     /**
-     * The requested Dicom filename
+     * The requested dicom filename
      *
      * @var string
      */
     private $_tarname;
-
     /**
      * A cache of the endpoint results, so that it doesn't need to be
      * recalculated for the ETag and handler.
-     *
-     * @var ResponseInterface
      */
     private $_cache;
 
@@ -60,7 +57,6 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_visit   = $visit;
         $this->_tarname = $tarname;
     }
-
     /**
      * Return which methods are supported by this endpoint.
      *
@@ -83,7 +79,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request to /candidates/$candid/$visit_label/dicoms/$tarname.
+     * Handles a request to a Dicom file processes.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -92,24 +88,23 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) === 0) {
-            switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
-
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
-            }
+        if (count($pathparts) !== 1) {
+            return \LORIS\Http\Response\NotFound();
         }
 
-        // Delegate to sub-endpoints
-        return new \LORIS\Http\Response\NotFound();
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
+
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
+
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
     }
 
     /**
@@ -121,44 +116,34 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (isset($this->_cache)) {
-            return $this->_cache;
+        // *************************
+        // *** Permission checks ***
+        // *************************
+        $user = $request->getAttribute('user');
+        if (!$user->hasPermission('server_processes_manager')) {
+            return new \LORIS\Http\Response\Forbidden();
         }
 
-        try {
-            $dicom = $this->_visit->getDicomTarByFilename($this->_tarname);
-        } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound();
+        $pathparts = $request->getAttribute('pathparts');
+        $processid = array_shift($pathparts);
+        if (!is_numeric($processid)) {
+            return \LORIS\Http\Response\NotFound();
         }
 
-        $tarchivepath = \NDB_factory::singleton()
-            ->config()
-            ->getSetting('tarchiveLibraryDir');
+        // Instantiate the server process module to autoload
+        // its namespace classes
+        \Module::factory('server_processes_manager');
+        $ids = array($processid);
+        $serverProcessesMonitor = new ServerProcessesMonitor();
+        $processesState         = $serverProcessesMonitor->getProcessesState(
+            $ids,
+            null,
+            null
+        );
 
-        $fullpath = $tarchivepath . $dicom->getArchiveLocation();
-        $info     = new \SplFileInfo($fullpath);
-        if (!$info->isFile()) {
-            return new \LORIS\Http\Response\NotFound('');
-        }
+        $body = array('process_state' => $processesState);
 
-        if (!$info->isReadable()) {
-            return new \LORIS\Http\Response\NotFound();
-        }
-
-        $file         = $info->openFile('r');
-        $this->_cache = (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/x-tar')
-            ->withHeader(
-                'Content-Disposition',
-                'attachment; filename=' . $this->_tarname
-            )
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    $file->fread($file->getSize())
-                )
-            );
-
-        return $this->_cache;
+        return new \LORIS\Http\Response\JsonResponse($body);
     }
 
     /**

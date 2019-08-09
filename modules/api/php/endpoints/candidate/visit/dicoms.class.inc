@@ -57,7 +57,10 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return array(
+                'GET',
+                'POST',
+               );
     }
 
     /**
@@ -86,6 +89,9 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'GET':
                 return $this->_handleGET($request);
 
+            case 'POST':
+                return $this->_handlePOST($request);
+
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
@@ -98,14 +104,26 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $tarname    = array_shift($pathparts);
+        $tarname     = array_shift($pathparts);
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'processes':
+            $handler = new Dicom\Processes(
+                $this->_visit,
+                $tarname
+            );
+            break;
+
+        default:
+            $handler = new Dicom\Dicom(
+                $this->_visit,
+                $tarname
+            );
+            break;
+        }
+
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);
-
-        $handler = new Dicom\Dicom(
-            $this->_visit,
-            $tarname
-        );
 
         return $handler->process(
             $newrequest,
@@ -138,6 +156,129 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
 
         return $this->_cache;
+    }
+
+    /**
+     * Upload the dicom file and add it to the timepoint's MRIUploads
+     * A successful upload should return a 303 response toward this dicom
+     * processes.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePOST(ServerRequestInterface $request): ResponseInterface
+    {
+        // *************************
+        // *** Permission checks ***
+        // *************************
+        $user = $request->getAttribute('user');
+        if (!$user->hasPermission('imaging_uploader')) {
+            return new \LORIS\Http\Response\Forbidden();
+        }
+
+        // *************************
+        // *** Input Validation ****
+        // *************************
+        $files = $request->getUploadedFiles();
+        if (count($files) !== 1) {
+            return new \LORIS\Http\Response\BadRequest(
+                'There should be 1 and only 1 file uploaded'
+            );
+        }
+        $uploadedfile = $files['mriFile'];
+
+        $data = $request->getParsedBody();
+
+        $candid = $data['CandID'] ?? null;
+        if (intval($candid) !== $this->_visit->getCandID()) {
+            return new \LORIS\Http\Response\BadRequest(
+                'CandID in POST data do not match URL.'
+            );
+        }
+
+        $pscid = $data['PSCID'] ?? null;
+        if (!\Candidate::candidateExists(intval($candid), $pscid)) {
+            return new \LORIS\Http\Response\BadRequest(
+                'PSCID in POST data do not match CandID.'
+            );
+        }
+
+        $visitlabel = $data['Visit'] ?? null;
+        if ($visitlabel !== $this->_visit->getVisitLabel()) {
+            return new \LORIS\Http\Response\BadRequest(
+                'CandID in POST data do not match URL.'
+            );
+        }
+
+        $isphantom = $data['IsPhantom'] ?? null;
+        if (!in_array($isphantom, ['true', 'false'])) {
+            return new \LORIS\Http\Response\BadRequest(
+                'IsPhantom must be a the string "true" of "false".'
+            );
+        }
+
+        $filename    = $uploadedfile->getClientFilename();
+        $patientname = $pscid. "_" . $candid . "_" . $visitlabel;
+        if (!preg_match("/^${patientname}/", $filename)) {
+            return new \LORIS\Http\Response\BadRequest(
+                "Filename must start with $patientname."
+            );
+        }
+
+        // *************************
+        // *** Upload file *********
+        // *************************
+        $incomingpath = \NDB_factory::singleton()
+                ->config()
+                ->getSetting('MRIUploadIncomingPath');
+
+        $incomingdir = new \SplFileInfo($incomingpath);
+
+        $uploader = (new \LORIS\FilesUploadHandler($incomingdir))
+            ->withPermittedMIMETypes('application/x-tar');
+
+        if ($request->getHeaderLine('LORIS-Overwrite') == 'overwrite') {
+            $uploader = $uploader->withOverwrite(true);
+        }
+
+        $uploadresponse = $uploader->handle($request);
+        if ($uploadresponse->getStatusCode() !== 201) {
+            return $uploadresponse;
+        }
+
+        // *************************
+        // *** Update Database *****
+        // *************************
+        $fileinfo = new \SplFileInfo($incomingpath . $filename);
+        if (!$fileinfo->isFile()) {
+            return new \LORIS\Http\Response\InternalServerError(
+                'Upload failed (see error_log.)'
+            );
+        }
+
+        try {
+            $this->_visit->addMRIUpload(
+                $user,
+                $fileinfo,
+                $patientname,
+                ($isphantom === 'true')
+            );
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\InternalServerError(
+                'Database insertion failed (see error_log.)'
+            );
+        }
+
+        $lorispath = $request->getQueryParams()['lorispath'] ?? '';
+        $newpath   = $lorispath . $filename . '/processes' ;
+
+        $processeslocation = $request->getUri()
+            ->withPath($newpath)
+            ->withQuery('');
+
+        return new \LORIS\Http\Response\SeeOther($processeslocation);
     }
 
     /**

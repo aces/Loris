@@ -170,7 +170,18 @@ class ServerProcessLauncher
             $mriUploadId,
             $sourceLocation
         );
-        return $this->_launch($mriUploadProcess);
+
+        $dbprocessid = $this->_launch($mriUploadProcess);
+
+        \NDB_Factory::singleton()->database()->insert(
+            'mri_upload_server_processes_rel',
+            array(
+             'mri_upload_id' => $mriUploadId,
+             'process_id'    => $dbprocessid,
+            )
+        );
+
+        return $dbprocessid;
     }
 }
 
