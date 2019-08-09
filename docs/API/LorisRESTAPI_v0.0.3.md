@@ -829,6 +829,7 @@ scans, respectively.
 
 ```
 POST /candidates/$CandID/$Visit/dicoms
+```
 
 In addition to the uploaded file, the body of the POST request should contain the
 following keys and values:
@@ -864,12 +865,55 @@ scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
 ```
+Response shape:  
+
+```js
+{
+  "mri_uploads": [
+    {
+      "mri_upload_id": 123,
+      "processes": [
+        {
+          "END_TIME": "YYYY-MM-DD hh:mm:ss",
+          "EXIT_CODE": "0",
+          "ID": "1",
+          "PID": "24971",
+          "PROGRESS": "text"
+          "STATE": "SUCCESS|ERROR"
+        },
+        ...
+      ]
+    }
+    ...
+  ]
+}
+```
+
 
 ```
 POST /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
 ```
+Expected esponse: 202 Accepted with `Location` header pointing to the new process. 
+
 
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes/$processid
+```
+
+Response shape:
+
+```js
+{
+  "process_state": [
+    {
+      "END_TIME": "YYYY-MM-DD hh:mm:ss",
+      "EXIT_CODE": "0",
+      "ID": "1",
+      "PID": "24971",
+      "PROGRESS": "text"
+      "STATE": "SUCCESS|ERROR"
+    }
+  ]
+}
 ```
 
