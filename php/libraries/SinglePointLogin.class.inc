@@ -3,7 +3,7 @@
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -105,45 +105,27 @@ class SinglePointLogin
     function save(): bool
     {
         // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
+        $user = \User::factory($_POST['username']);
 
         // get user's data
         $data = $user->getData();
 
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'] ?? '',
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-            return false;
-        }
 
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-            return false;
-        }
-        // Check if password is present in existing data breaches.
-        if ($user->pwnedPassword($_POST['password'])) {
-            $this->_lastError = 'The password you chose is too common. Please '
-                . 'choose a more unique password.';
+        try {
+            $password = new \Password($_POST['password']);
+            // New password must be different than current one
+            if (!\Utility::passwordChanged($user, $password)) {
+                $this->_lastError = 'You cannot keep the same password';
                 return false;
+            }
+        } catch (\InvalidArgumentException $e) {
+            $this->_lastError = $e->getMessage();
+            return false;
         }
 
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
+        \Utility::updatePassword($user, $password);
         return true;
     }
 
@@ -312,8 +294,7 @@ class SinglePointLogin
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                $user = \User::factory($username);
-                $user->updatePassword($password);
+                \Utility::updatePassword(\User::factory($username), $password);
             }
 
             if ($row['Active'] == 'N'

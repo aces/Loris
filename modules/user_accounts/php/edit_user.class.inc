@@ -1027,17 +1027,17 @@ class Edit_User extends \NDB_Form
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             try {
-                $password = new \Password($value['Password_hash']);
-            } catch (InvalidArgumentException $e) {
+                $password = new \Password($values['Password_hash']);
+                // New password must be different than current one
+                if (!\Utility::passwordChanged(
+                    \User::factory($this->identifier), 
+                    $password)
+                ) {
+                    $errors['Password_Group'] = 'New and old passwords '
+                        . 'are identical: please choose another one';
+                }
+            } catch (\InvalidArgumentException $e) {
                 $errors['Password_Group'] = $e->getMessage();
-            }
-            // New password must be different than current one
-            if (!\Utility::passwordChanged(
-                User::factory($this->identifier), 
-                $values['Password_hash'])
-            ) {
-                $errors['Password_Group'] = 'New and old passwords '
-                    . 'are identical: please choose another one';
             }
         }
 

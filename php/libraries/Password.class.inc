@@ -194,7 +194,7 @@ class Password
      *
      * @param string $value The proposed password value.
      *
-     * @throws \InvalidArgumentException When passsword is too short or too simple.
+     * @throws InvalidArgumentException When passsword is too short or too simple.
      */
     public final function __construct(string $value)
     {
@@ -206,7 +206,7 @@ class Password
     }
 
     /**
-     * The hashed value fo the original input.
+     * The hashed value of the original input.
      *
      * @return string The password hash.
      */

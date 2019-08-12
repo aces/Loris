@@ -948,7 +948,10 @@ class Utility
         // Update the users table to get $user's (hashed) pasword to $password.
         \NDB_Factory::singleton()->database()->update(
             'users',
-            array('Password_hash' => $password),
+            array(
+                'Password_hash' => $password,
+                'Password_expiry' => date("Y-m-d", strtotime('+6 months')
+            ),
             array(
              'UserID' => $user->getUsername(),
             )
