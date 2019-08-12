@@ -2,7 +2,7 @@
 /**
  * The user account page
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -384,7 +384,7 @@ class My_Preferences extends \NDB_Form
      *
      * @return array $errors all the errors found.
      */
-    function _validateMyPreferences($values)
+    function _validateMyPreferences(array $values): array
     {
         // create DB object
         $DB     = \Database::singleton();
@@ -393,17 +393,17 @@ class My_Preferences extends \NDB_Form
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
             try {
-                $password = new \Password($value['Password_hash']);
-            } catch (InvalidArgumentException $e) {
+                $password = new \Password($values['Password_hash']);
+                // New password must be different than current one
+                if (!\Utility::passwordChanged(
+                    \User::factory($this->identifier), 
+                    $password)
+                ) {
+                    $errors['Password_hash'] = 'New and old passwords '
+                        . 'are identical: please choose another one';
+                }
+            } catch (\InvalidArgumentException $e) {
                 $errors['Password_hash'] = $e->getMessage();
-            }
-            // New password must be different than current one
-            if (!\Utility::passwordChanged(
-                User::factory($this->identifier), 
-                $values['Password_hash'])
-            ) {
-                $errors['Password_hash'] = 'New and old passwords '
-                    . 'are identical: please choose another one';
             }
         }
 
