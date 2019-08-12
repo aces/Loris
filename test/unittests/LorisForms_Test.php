@@ -964,9 +964,13 @@ class LorisForms_Test extends TestCase
             ->setMethods(array('yearHTML'))
             ->getMock();
         $this->form->expects($this->once())
-            ->method('yearHTML');
+            ->method('yearHTML')
+            ->willReturn('called yearHTML function');
         $this->form->addDate("abc", "Hello", $testOptions, $testAttributes);
-        $this->form->dateHTML($this->form->form["abc"]);
+        $this->assertEquals(
+            "called yearHTML function",
+            $this->form->dateHTML($this->form->form["abc"])
+        );
     }
 
     /**
