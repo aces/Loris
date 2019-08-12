@@ -460,7 +460,7 @@ DELETE FROM user_perm_rel WHERE
     `permID`= (SELECT permID FROM permissions WHERE code='biobank_container_create') OR
     `permID`= (SELECT permID FROM permissions WHERE code='biobank_container_update') OR
     `permID`= (SELECT permID FROM permissions WHERE code='biobank_pool_view') OR
-    `permID`= (SELECT permID FROM permissions WHERE code='biobank_pool_create') OR
+    `permID`= (SELECT permID FROM permissions WHERE code='biobank_pool_create');
 
 DELETE FROM permissions WHERE 
     `code`='biobank_specimen_view' OR 
