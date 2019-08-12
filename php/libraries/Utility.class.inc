@@ -950,7 +950,7 @@ class Utility
             'users',
             array(
                 'Password_hash' => $password,
-                'Password_expiry' => date("Y-m-d", strtotime('+6 months')
+                'Password_expiry' => date("Y-m-d", strtotime('+6 months'))
             ),
             array(
              'UserID' => $user->getUsername(),
@@ -976,7 +976,7 @@ class Utility
             FROM users
             WHERE UserID = :UID";
 
-        $current = $db->pselectOne(
+        $current = \NDB_Factory::singleton()->database()->pselectOne(
             $passwordQuery,
             array('UID' => $user->getID())
         );
