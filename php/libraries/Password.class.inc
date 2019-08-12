@@ -11,6 +11,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+use \LORIS\Http\Client;
+use \LORIS\Http\Request;
+
 use ZxcvbnPhp\Zxcvbn;
 
 /**
@@ -94,17 +97,22 @@ class Password
      *
      * @return void
      *
-     * @throws \DomainException When password is too short or weak.
+     * @throws \InvalidArgumentException When password is too short or weak.
      */
     private function _validate($value): void
     {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
         if (!$this->_hasSufficientLength($value)) {
-            throw new \DomainException('The password is too short');
+            throw new \InvalidArgumentException('The password is too short');
         }
         if (!$this->_hasSufficientComplexity($value)) {
-            throw new \DomainException('The password is not complex enough.');
+            throw new \InvalidArgumentException('The password is not complex enough.');
+        }
+        if ($this::pwned($value)) {
+            throw new \InvalidArgumentException(
+                'This password is known to be exposed in online data breaches.'
+            );
         }
     }
 
@@ -119,12 +127,74 @@ class Password
     }
 
     /**
+     * Use the Pwned Passwords API to determine whether a user is trying
+     * to use a password that has been revealed in public data breaches.
+     *
+     * @param string $password The password to check for pwnage.
+     *
+     * @return bool Whether the password is known to be pwned.
+     */
+    function pwned(string $password): bool
+    {
+
+        // If the project is configured to disable the Pwned Password check,
+        // always return false (meanning that the password has not been pwned).
+        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
+            'usePwnedPasswordsAPI'
+        )
+        ) {
+            return false;
+        }
+
+        /* The pwned passwords API searches a range of password hashes to
+         * protect the actual SHA1 hash from being revealed.
+         * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
+         *
+         * NOTE The webserver will need to be configured to allow outgoing
+         * connections to the link below. If errors are encountered when this
+         * setting is enabled, verify local firewall settings.
+         */
+        $hash       = sha1($password);
+        $hashPrefix = substr(sha1($password), 0, 5);
+        // $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
+
+        $client   = new Client('https://api.pwnedpasswords.com');
+        $response = $client->sendRequest(
+            new Request('GET', "/range/$hashPrefix")
+        );
+
+        /* We don't want password changes to fail in case there is a
+         * networking issue while making the request. If the API can't be
+         * reached for any reason, we will skip the pwned password check.
+         */
+        if (!$response->getStatusCode() === 200) {
+            return false;
+        }
+        $hashSuffixes = explode("\n", $response->getBody()->getContents());
+        /* The response will be one long string consisting of suffixes matching
+         * our hash prefix, followed by a colon and the number of times the
+         * password has occurred in data breaches.
+         * Here we iterate over all of the suffixes and check whether the prefix
+         * and the whole suffix line together contain $hash as a substring at
+         * the beginning of the line.
+         * Check the API documentation linked above if you want more info.
+         */
+        foreach ($hashSuffixes as $suffix) {
+            $line = strtolower($hashPrefix . $suffix);
+            if ($hash == substr($line, 0, strlen($hash))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Creates a new Password object when the $value param is well-formed.
      * well-formed.
      *
      * @param string $value The proposed password value.
      *
-     * @throws \DomainException When passsword is too short or too simple.
+     * @throws \InvalidArgumentException When passsword is too short or too simple.
      */
     public final function __construct(string $value)
     {

@@ -934,5 +934,79 @@ class Utility
         }
         return $languages;
     }
+
+    /**
+     * Updates the password for this user into the appropriate field in the
+     * database.
+     *
+     * @param \Password $password The plain text password to be hashed and saved.
+     *
+     * @return void
+     */
+    static function updatePassword(\User $user, \Password $password): void
+    {
+        // Update the users table to get $user's (hashed) pasword to $password.
+        \NDB_Factory::singleton()->database()->update(
+            'users',
+            array('Password_hash' => $password),
+            array(
+             'UserID' => $user->getUsername(),
+            )
+        );
+    }
+
+    /**
+     * Determines if the supplied password parameter is different than a User's
+     * current password (the one stored in the database).
+     *
+     * @param \User     $user        database object.
+     * @param \Password $newPassword the new password the user entered.
+     *
+     * @return bool  true if the password changed, false otherwise.
+     */
+    function passwordChanged(
+        \User $user,
+        \Password $password
+    ): bool {
+
+        $passwordQuery = "SELECT Password_hash
+            FROM users
+            WHERE UserID = :UID";
+
+        $current = $db->pselectOne(
+            $passwordQuery,
+            array('UID' => $user->getID())
+        );
+
+        if (!is_null($current)) {
+            return !password_verify($password, $current);
+        }
+
+        return true;
+    }
+
+    /**
+     * Generate a random string, using a cryptographically secure
+     * pseudorandom number generator (random_int)
+     *
+     * @param  int    $length   How many characters do we want?
+     * @param  string $keyspace A string of all possible characters
+     *                         to select from
+     * @return string
+     */
+    function randomString(
+        int $length = 64,
+        string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    ): string {
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max    = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
+    }
 }
 

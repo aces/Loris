@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Implements the user password expiry page in LORIS, to reset
  * expired passwords.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -86,50 +86,22 @@ class PasswordExpiry extends \NDB_Form
      */
     function _validate($values)
     {
-        if (empty($values['password'])) {
-            // FIXME: The way error_message is displayed in the template is inherited
-            // from before this page was a "real" LORIS page, when it was all done
-            // from SinglePointLogin. As a result, the usual way of displaying errors
-            // by returning them in an array with the key of the element with the
-            // problem doesn't work.
-            $this->tpl_data['error_message'] = 'Cannot use an empty password';
-
-            // But we'll pretend it does anyways, so that validation still fails.
-            return array('password' => 'Cannot use an empty password');
-        }
-
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
+        try {
+            $password = new \Password($_POST['password']);
+        } catch (\DomainException $e) {
+            return array('password' => $e->getMessage());
+        }
 
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
+        if (password_verify($password, $data['Password_hash'])) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
             return array('password' => 'You cannot keep the same password');
         }
 
-        if (!\User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'],
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->tpl_data['error_message'] = 'The password is weak, or'
-                . ' the passwords do not match';
-            return array('password' => 'Weak password.');
-        }
-        // Check if password is present in existing data breaches.
-        if (\User::pwnedPassword($_POST['password'])) {
-            $this->tpl_data['error_message'] = 'The password you chose is ' .
-                'too common. Please choose a more unique password.';
-            return array('password' => 'Password pwned.');
-        }
+        // Update the value for password in the $values array so that it can be
+        // properly processed by the $process function.
+        $values['password'] = $password;
 
         return true;
     }
