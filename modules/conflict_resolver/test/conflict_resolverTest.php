@@ -110,8 +110,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverPermission()
     {
-         $this->setupPermissions(array("conflict_resolver"));
-         $this->safeGet($this->url . "/conflict_resolver/");
+        $this->setupPermissions(array("conflict_resolver"));
+        $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->getReactElementContent("body");
         $this->assertNotContains(
             "You do not have access to this page.",
@@ -175,7 +175,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this-> _testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004',$row,$btn);
         $this-> _testFilter(self::$Question, "displayed of 181", 'height_inches',$row,$btn);
          // project = Pumpernickel
-        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1');
+        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1',$row,$btn);
     }
      /**
      * Tests filter in resolved conflicts
@@ -213,10 +213,29 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->reactDropdownSendKey($element,$value);
 
          $this->clickReactElement($btn);
+         sleep(1);
          $bodyText = $this->getReactElementContent(".table-header .col-xs-12");
             // 4 means there are 4 records under this site.
-         $this->assertContains("of 577", $bodyText);
-
+         $this->assertContains("of 578", $bodyText);
+                  $this->DB->insert(
+             "conflicts_unresolved",
+             array(
+              'ConflictID'     => '92',
+              'TableName'      => 'bmi',
+              'ExtraKeyColumn' =>  NULL,
+              'ExtraKey1'      => '',
+              'ExtraKey2'      => '',
+              'FieldName'      => 'height_inches',
+              'CommentId1'     => '300004MTL0044121465351036',
+              'Value1'         => '5',
+              'CommentId2'     => 'DDE_300004MTL0044121465351036',
+              'Value2'         => '8',
+             )
+         );
+         $this->DB->delete(
+            "conflicts_resolved",
+            array('ConflictID' => '92')
+        );
     }
 }
 
