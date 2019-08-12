@@ -42,7 +42,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     su - lorisadmin
     ```
 
-    <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
+    <b>Important: All steps from this point forward must be executed by lorisadmin user</b>
 
     ```
     sudo mkdir -m 775 -p /var/www/$projectname
