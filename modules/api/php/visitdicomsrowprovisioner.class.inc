@@ -42,7 +42,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
                t.TarchiveID as tarchiveid
              FROM tarchive t
              JOIN session s
-               ON (t.SessionID=t.SessionID)
+               ON (s.ID=t.SessionID)
              JOIN candidate c
                ON (s.CandID=c.CandID)
              WHERE 
