@@ -53,7 +53,7 @@ class Qc
                  'Visit'  => $this->_timepoint->getVisitLabel(),
                 );
 
-        $sessionqc = $this->_qc->getQC;
+        $sessionqc = $this->_qc->getQC();
         $ispending = $this->_qc->getQCPending();
 
         return array(

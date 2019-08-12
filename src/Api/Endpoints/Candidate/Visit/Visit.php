@@ -228,16 +228,20 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
             $username = $user->getUsername();
             $today    = date("Y-m-d");
-            // TODO :: Add a replace function in \Timepoint.class.inc
-            $timepoint->setData(array('CenterID' => $centerid));
-            $timepoint->setData(array('Visit_label' => $visitinfo['Visit']));
-            $timepoint->setData(array('SubprojectID' => $subprojectid));
-            $timepoint->setData(array('Active' => 'Y'));
-            $timepoint->setData(array('Date_active' => $today));
-            $timepoint->setData(array('RegisteredBy' => $username));
-            $timepoint->setData(array('UserID' => $username));
-            $timepoint->setData(array('Date_registered' => $today));
-            $timepoint->setData(array('Testdate' => $today));
+
+            $timepoint->setData(
+                array(
+                 'CenterID'        => $centerid,
+                 'Visit_label'     => $visitinfo['Visit'],
+                 'SubprojectID'    => $subprojectid,
+                 'Active'          => 'Y',
+                 'Date_active'     => $today,
+                 'RegisteredBy'    => $username,
+                 'UserID'          => $username,
+                 'Date_registered' => $today,
+                 'Testdate'        => $today,
+                )
+            );
 
             $link = '/' . $request->getUri()->getPath();
             return (new \LORIS\Http\Response())
