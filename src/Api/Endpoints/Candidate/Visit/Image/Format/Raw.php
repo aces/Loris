@@ -114,7 +114,17 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        if (!`which minctoraw`) {
+        $mincpath = \NDB_Factory::singleton()->config()
+            ->getSetting('MINCToolsPath');
+
+        $minctooldir = new \SPLFileInfo($mincpath);
+        if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
+            return new \LORIS\Http\Response\InternalServerError(
+                'Invalid MINCToolsPath configuration setting.'
+            );
+        }
+
+        if (!`$mincpath/bin/minctoraw -v`) {
             return new \LORIS\Http\Response\InternalServerError(
                 'minctoraw not installed'
             );
@@ -124,7 +134,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $fullpath = escapeshellarg($info->getPathname());
 
         ob_start();
-        passthru("minctoraw -byte -unsigned -normalize $fullpath");
+        passthru("${mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath");
         $content = ob_get_contents();
         ob_end_clean();
 
