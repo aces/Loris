@@ -106,8 +106,19 @@ class NDB_Factory
      *
      * @return NDB_Config A config singleton
      */
-    function config(?string $configfile = "../project/config.xml"): \NDB_Config
+    function config(?string $configfile = '../project/config.xml'): \NDB_Config
     {
+        // If the path to the config file is null, use the default location
+        // of the file created by the install script.
+        // NOTE: Calling config(null) is different than calling config()
+        // without any arguments.
+        // The latter call will result in $configfile being initialized to the 
+        // default param value above. This check handles the former case when
+        // a value of NULL is passed to the function.
+        if (is_null($configfile)) {
+            $configfile = '../project/config.xml';
+        }
+
         if (self::$config !== null) {
             // The below suppression is necessary to satisfy phan. It flags an
             // error here because the function is declared to return
