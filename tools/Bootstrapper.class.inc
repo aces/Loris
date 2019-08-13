@@ -36,12 +36,13 @@ interface Bootstrapper
      * set-up a development environment for LORIS.
      * TODO: These values must be updated as time goes on.
      *
-     * Last updated for version: 20.2.0
+     * Last updated for version: 21.0.0
      */
     const PHP_MAJOR_VERSION_REQUIRED    = 7;
     const PHP_MINOR_VERSION_REQUIRED    = 2;
     const APACHE_MAJOR_VERSION_REQUIRED = 2;
     const APACHE_MINOR_VERSION_REQUIRED = 4;
+    const NODEJS_MAJOR_VERSION_REQUIRED = 8;
 
     /**
      * Whether the PHP version used by the system is sufficient to run LORIS.
@@ -58,6 +59,13 @@ interface Bootstrapper
      * @return bool Whether the requirement is met.
      */
     function apacheRequirementSatisfied(): bool;
+
+    /**
+     * Returns whether the installed version of NodeJS is sufficient.
+     *
+     * @return bool Whether the requirement is met.
+     */
+    function nodeJSRequirementSatisfied(): bool;
 
     /**
      * Returns whether a given package is installed on the system. Examples

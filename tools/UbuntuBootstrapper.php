@@ -62,7 +62,6 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
                                "unzip",
                                "php-json",
                                "make",
-                               "npm",
                                "software-properties-common",
                                "php-ast",
                                "php$required_php",
@@ -121,6 +120,20 @@ class UbuntuBootstrapper extends CLI_Helper implements Bootstrapper
 
         // When preg_match returns 0 it means no match was found.
         return preg_match($pattern, $apacheVersion) !== 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool Whether the requirement is met.
+     */
+    public function nodeJSRequirementSatisfied(): bool
+    {
+        $cmdOutput = shell_exec('nodejs -v');
+        // The output should be like 'vX.X.X'.
+        // Strip the v character and split on periods.
+        $version = explode('.', ltrim($cmdOutput, 'v'));
+        return $version[0] >= self::NODEJS_MAJOR_VERSION_REQUIRED;
     }
 
 
