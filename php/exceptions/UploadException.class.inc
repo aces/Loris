@@ -61,7 +61,7 @@ class UploadException extends \LorisException
             $message = 'No file was uploaded';
             break;
         case UPLOAD_ERR_NO_TMP_DIR:
-            $message = 'Missing a temporary folder';
+            $message = 'Temporary folder not found';
             break;
         case UPLOAD_ERR_CANT_WRITE:
             $message = 'Failed to write file to disk';
