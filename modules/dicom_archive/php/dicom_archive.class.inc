@@ -66,9 +66,7 @@ class Dicom_Archive extends \DataFrameworkMenu
             $site_options[$name] = $name;
         }
 
-        return [
-            'sites' => $site_options,
-        ];
+        return [ 'sites' => $site_options ];
     }
 
     /**
