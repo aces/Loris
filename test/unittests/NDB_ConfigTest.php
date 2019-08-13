@@ -111,20 +111,21 @@ class NDB_ConfigTest extends TestCase
     }
 
     /**
-     * Test configFilePath() method. Giving a config file name (i.e.: "config.xml")
+     * Test configFilePath() method. Given a config file name (i.e.: "config.xml")
      * it should return the absolute path to the file.
      *
      * @covers NDB_Config::configFilePath
      * @return void
      */
-    public function testconfigFilePath()
+    public function testConfigFilePath()
     {
         $text = $this->_config::configFilePath("config.xml");
         $this->assertContains("config.xml", $text);
 
     }
+
     /**
-     * Test convertToArray() method. Giving an xml file,
+     * Test convertToArray() method. Given an xml file,
      * it should return the array representation.
      *
      * @covers NDB_Config::convertToArray
@@ -136,11 +137,12 @@ class NDB_ConfigTest extends TestCase
         $text = $this->_config::convertToArray($xml);
         $this->assertEquals(array('unit' => 'test'), $text);
     }
+
     /**
      * Test isNumericArray() method.
      * Passing an array with key range [0-n] should return true.
      *
-     * @covers NDB_Config::isNumericaArray
+     * @covers NDB_Config::isNumericArray
      * @return void
      */
     public function testIsNumericArray()
@@ -152,8 +154,9 @@ class NDB_ConfigTest extends TestCase
         $text      = $this->_config::isNumericArray($arrayTest);
         $this->assertEquals(true, $text);
     }
+
     /**
-     * Test getSettingFromDB() method. Giving any of (database,sandbox,
+     * Test getSettingFromDB() method. Given any of (database,sandbox,
      * showDatabaseQueries), it will return null.
      * If database class exists and the dabase returns 'AllowMultiple' => '0',
      * 'ParentID' => 'test', this method should return a non-null value.
@@ -179,7 +182,7 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getSettingFromXML() method.Giving an array,
+     * Test getSettingFromXML() method. Given an array,
      * it should return the value associated to a key.
      *
      * @covers NDB_Config::getSettingFromXML
@@ -230,11 +233,12 @@ class NDB_ConfigTest extends TestCase
         $this->_config->_settings = array('aaa' => array("bbb" => "false"));
         $this->assertFalse($this->_config->settingEnabled("bbb"));
     }
+
     /**
-     * Test getProjectSettings() method. Giving a projectID, it should
+     * Test getProjectSettings() method. Given a projectID, it should
      * return an array containing the project information.
      *
-     * @covers NDB_Config::getProectSettings
+     * @covers NDB_Config::getProjectSettings
      * @return void
      */
     public function testGetProjectSettings()
@@ -256,7 +260,7 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getSubprojectSettings() method. Giving a projectID, it should
+     * Test getSubprojectSettings() method. Given a projectID, it should
      * return an array containing the subproject information.
      *
      * @covers NDB_Config::getSubprojectSettings
@@ -287,8 +291,9 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals($result, $this->_config->getSubprojectSettings(999));
 
     }
+
     /**
-     * Test getSubprojectSettings() method. Giving a projectID, it should
+     * Test getSubprojectSettings() method. Given a projectID, it should
      * return an array containing the subproject information.
      * Giving an invalid ID, it should return an empty array.
      *
@@ -302,8 +307,9 @@ class NDB_ConfigTest extends TestCase
             ->willReturn(null);
         $this->assertEquals(array(), $this->_config->getSubprojectSettings(111));
     }
+
     /**
-     * Test getExternalLinks() method.Giving a valid ExternalLink, it should
+     * Test getExternalLinks() method. Given a valid ExternalLink, it should
      * return an array containing the URL associated with the link text.
      *
      * @covers NDB_Config::getExternalLinks
@@ -337,6 +343,7 @@ class NDB_ConfigTest extends TestCase
             ->willReturn(array());
         $this->assertTrue($this->_config->checkMenuPermission(1));
     }
+
     /**
      * Test checkMenuPermission() method. Given an array of permission codes 
      * from the database query, it should return true if User::hasPermission
