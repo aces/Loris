@@ -3,7 +3,7 @@
 /**
  * Class to upload files in a safe way.
  *
- * This class uploads files being uploaded to LORIS. It should
+ * This class handles files being uploaded to LORIS. It should
  * serve as the ONLY way that files are uploaded so that all file uploading
  * functionality can occur on a well-tested foundation.
  *
@@ -136,7 +136,7 @@ class FilesUploadHandler implements RequestHandlerInterface
      * overwritten.
      *
      * If the files need different permissions or need to go in different
-     * directories, the file must be split in different request an passed to a
+     * directories, the file must be split in different request and passed to a
      * FileUploadHandler with the correct variables.
      *
      * @param ServerRequestInterface $request An HTTP Request that contains files.
