@@ -26,20 +26,15 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(2)>div>div>input";
-    static $patientName = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(3)>div>div>input";
-    static $site        = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(9)>div>div>select";
-    static $sex         = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(4)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(5)>div>div>input";
+    static $patientID   = ".col-xs-12:nth-child(2) > .row .form-control";
+    static $patientName = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $site        = ".col-xs-12:nth-child(9) .form-control, select";
+    static $sex         = ".col-xs-12:nth-child(4) .form-control";
+    static $UID         = ".col-xs-12:nth-child(8) .form-control";
+    static $dateOfBirth = ".col-xs-12:nth-child(5) .form-control";
     static $clearFilter = ".col-sm-9 > .btn";
     // first row of react table
-    static $table   = "#dynamictable > tbody > tr:nth-child(1)";
-    static $display = ".table-header > div > div > div:nth-child(1)";
+    static $table   = ".table-header > .row > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -67,8 +62,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchiveViewDetailsDoespageLoad()
     {
         $this->safeGet($this->url . "/dicom_archive/viewDetails/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
+        $bodyText = $this->getReactElementContent(
+                       'body'
+                    );
         $this->assertContains("View Details", $bodyText);
     }
     /**
@@ -80,9 +76,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("dicom_archive_view_allsites"));
         $this->safeGet($this->url . "/dicom_archive/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $bodyText = $this->getReactElementContent(
+                       'body'
+                    );
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
@@ -103,69 +99,15 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-        //$this-> _testFilter(self::$patientID, self::$table, null, "ibis");
-        $this-> _testFilter(
-            self::$patientName,
-            self::$table,
-            null,
-            "MTL022_300022_V1"
-        );
-        $this-> _testFilter(self::$sex, self::$table, "1", "M");
-        $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
-        $this-> _testFilter(self::$site, self::$table, "8", "4");
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$table,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") == false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
-            $this->assertContains($value, $bodyText);
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-        }
-        //test clear filter
+        $row = self::$table;
         $btn = self::$clearFilter;
+        $this->_testFilter(self::$patientID,"0 rows","test",$row,$btn);
+        $this->_testFilter(self::$patientName,"1 rows","MTL022_300022_V1",$row,$btn);
+        $this->_testFilter(self::$sex, "1 rows", "M",$row,$btn);
+        $this->_testFilter(self::$dateOfBirth,"1 rows", "1972-10-10",$row,$btn);
+        $this->_testFilter(self::$site,"8 rows", "4",$row,$btn);
+        $this->_testFilter(self::$UID,"1 rows", "201110192002451318",$row,$btn);
 
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
-        $inputText = $this->webDriver->executescript(
-            "return document.querySelector('$element').value"
-        );
-        $this->assertEquals("", $inputText);
     }
     /**
      * Tests that the (view-details) link works
@@ -174,21 +116,20 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testLinksViewDetails()
     {
-        $this->markTestSkipped(
-            'This test needs work. It is causing failures sometimes for '
-            . 'unkown reasons.'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
-        $location = "#dynamictable>tbody>tr:nth-child(1)>td:nth-child(8)>a";
-        $text     = $this->webDriver->executescript(
-            "return document.querySelector('$location').textContent"
-        );
+        $location = "tr:nth-child(1)>td:nth-child(8)>a";
+        $text     = $this->getReactElementContent($location);
         $this->assertEquals('View Details', $text);
-        $this->webDriver->executescript(
-            "document.querySelector('$location').click()"
-        );
-        $text = $this->webDriver->getPageSource();
-        $this->assertContains('View Details', $text);
+        $this->clickReactElement($location);
+        $text = $this->getReactElementContent('h2');
+        $this->assertContains('Tarchive Metadata', $text);
+        //test click Acquisition ID
+        $AcquistionID = "td:nth-child(2) > .dicom_archive";
+        $this->clickReactElement($AcquistionID);
+        $text = $this->getReactElementContent('.btn > div');
+        $this->assertContains('Mri Violations', $text);
+
+
     }
     /**
      * Tests that the (view-Images) link works
@@ -197,23 +138,38 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testLinksViewImages()
     {
-        $this->markTestSkipped(
-            'Imaging is not set'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
-        $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(10) > a";
-        $text     = $this->webDriver->executescript(
-            "return document.querySelector('$location').textContent"
-        );
+        $location = "tr:nth-child(1) > td:nth-child(9) > a";
+        $text     = $this->getReactElementContent($location);
         $this->assertEquals('View Images', $text);
-        $this->webDriver->executescript(
-            "document.querySelector('$location').click()"
-        );
-        sleep(1);
-        $text = $this->webDriver->getPageSource();
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
-        );
+        $this->clickReactElement($location);
+        $text     = $this->getReactElementContent('.btn:nth-child(3) > div');
         $this->assertEquals('View Session', $text);
+    }
+    /**
+     * Tests that the (view-Images) Hidden link works
+     *
+     * @return void
+     */
+    function testLinksViewDetailsHidden()
+    {
+        $this->safeGet($this->url . "/dicom_archive/");
+        $location = "tr:nth-child(1)>td:nth-child(8)>a";
+        $text     = $this->getReactElementContent($location);
+        $this->assertEquals('View Details', $text);
+        $this->clickReactElement($location);
+        // Patient ID = INVALID - HIDDEN
+        $text = $this->getReactElementContent('.error');
+        $this->assertContains('INVALID - HIDDEN', $text);
+        //test Show/Hide Series and Show/Hide Files 
+        $Series = ".collapsed";
+        $this->clickReactElement($Series);
+        $text = $this->getReactElementContent('#series-data th:nth-child(1)');
+        $this->assertContains('Series Number', $text);
+        // Show/Hide Files 
+        $Files = "tr:nth-child(21) > td:nth-child(2) > a";
+        $this->clickReactElement($Files);
+        $text = $this->getReactElementContent('#files-data th:nth-child(1)');
+        $this->assertContains('SeriesNumber', $text);
     }
 }

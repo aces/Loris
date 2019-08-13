@@ -3,7 +3,7 @@
 1.  Access the 'DICOM Archive' under 'Imaging' Tab and check to see if the user has permission
     [Automation Testing]
 2.  Under 'Selection Filter' section, verfiy that the following Filter options exist: Patient ID, Patient Name, Sex, Date of Birth, Acquisition Date, Archive Location, Series UID, Site.
-    [Manual Testing]
+    [Automation Testing]
 3.  Choose a parameter from the 'Selection Filter' that applies: [Automation Testing]
      - Select the right 'Site'
      - Input the right 'Patient ID'
@@ -17,18 +17,18 @@
 4.  Click on 'Clear Filters' to make sure the previously entered data can be erased
     [Automation Testing]
 5.  Click on 'View Details' under Metadata to view the Details of MRI Scan
-    [Manual Testing]
+    [Automation Testing]
 6.  Under 'View Details' Check to make sure all the specific parameters are Populated
-    [Manual Testing]
+    [Automation Testing]
 7.  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if permission 
     'Violated Scans: View all-sites Violated Scans' is granted
-    [Manual Testing]
+    [Automation Testing]
 8.  Under 'View Details' Click on 'Show/Hide Series' and 'Show/Hide Files' to view a list of all DICOM Series/Files,
     respectively, for the given DICOM study
-    [Manual Testing]
+    [Automation Testing]
 9.  Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the PatientID does not match the
     regex set in the Configuration module under the 'Imaging Modules' submenu. Repeat the same operation for
-    'Patient Name' [Manual Testing]
+    'Patient Name' [Automation Testing]
 10. Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
     pages' or 'View own-site Imaging Browser pages' permission is set
     [Manual Testing]
