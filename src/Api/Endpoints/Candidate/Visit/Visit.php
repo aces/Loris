@@ -151,7 +151,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if ($this->_visit->getSessionID() === null) {
+        if ($this->_visit === null) {
             return new \LORIS\Http\Response\NotFound('Visit not found');
         }
 
