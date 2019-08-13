@@ -11,8 +11,8 @@
 namespace LORIS\Data\Models;
 
 /**
- * This class defines a MRIUploadDTO which is an immutable representation of a
- * MRIUpload object.
+ * This class defines an MRIUploadDTO which is an immutable representation of
+ * an MRIUpload object.
  *
  *  @category Imaging
  *  @package  Main
@@ -41,21 +41,21 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
     /**
      * Constructor
      *
-     * @param int|null mri_upload_id The UploadID
-     * @param $uploaded_by The UploadedBy
-     * @param $upload_date The UploadDate
-     * @param $upload_location The UploadLocation
-     * @param $decompress_location The DecompressedLocation
-     * @param $insertion_complete The InsertionComplete
-     * @param $inserting The Inserting
-     * @param $patient_name The PatientName
-     * @param int|null                                                 $inserted_minc_count The number_of_mincInserted
-     * @param int|null                                                 $created_minc_count  The number_of_mincCreated
-     * @param int|null                                                 $tarchive_id         The TarchiveID
-     * @param int|null                                                 $session_id          The SessionID
-     * @param $is_candidate_info_validated The IsCandidateInfoValidated
-     * @param $is_tarchive_validated The IsTarchiveValidated
-     * @param $is_phantom The IsPhantom
+     * @param int|null    $mri_upload_id               The UploadID
+     * @param string|null $uploaded_by                 The UploadedBy
+     * @param \DateTime   $upload_date                 The UploadDate
+     * @param string|null $upload_location             The UploadLocation
+     * @param string|null $decompress_location         The DecompressedLocation
+     * @param bool|null   $insertion_complete          The InsertionComplete
+     * @param bool|null   $inserting                   The Inserting
+     * @param string|null $patient_name                The PatientName
+     * @param int|null    $inserted_minc_count         The number_of_mincInserted
+     * @param int|null    $created_minc_count          The number_of_mincCreated
+     * @param int|null    $tarchive_id                 The TarchiveID
+     * @param int|null    $session_id                  The SessionID
+     * @param bool|null   $is_candidate_info_validated The IsCandidateInfoValidated
+     * @param bool|null   $is_tarchive_validated       The IsTarchiveValidated
+     * @param bool|null   $is_phantom                  The IsPhantom
      */
     public function __construct(
         ?int $mri_upload_id,
@@ -63,7 +63,7 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
         \DateTime $upload_date,
         ?string $upload_location,
         ?string $decompress_location,
-        ?bool $insertion_complete = false,
+        ?bool $insertion_complete,
         ?bool $inserting,
         ?string $patient_name,
         ?int $inserted_minc_count,
@@ -71,15 +71,15 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
         ?int $tarchive_id,
         ?int $session_id,
         ?bool $is_candidate_info_validated,
-        ?bool $is_tarchive_validated = false,
-        ?bool $is_phantom = false
+        ?bool $is_tarchive_validated,
+        ?bool $is_phantom
     ) {
         $this->_mri_upload_id       = $mri_upload_id;
         $this->_uploaded_by         = $uploaded_by;
         $this->_upload_date         = $upload_date;
         $this->_upload_location     = $upload_location;
         $this->_decompress_location = $decompress_location;
-        $this->_insertion_complete  = $insertion_complete;
+        $this->_insertion_complete  = $insertion_complete ?? false;
         $this->_inserting           = $inserting;
         $this->_patient_name        = $patient_name;
         $this->_inserted_minc_count = $inserted_minc_count;
@@ -87,12 +87,28 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
         $this->_tarchive_id         = $tarchive_id;
         $this->_session_id          = $session_id;
         $this->_is_candidate_info_validated = $is_candidate_info_validated;
-        $this->_is_tarchive_validated       = $is_tarchive_validated;
-        $this->_is_phantom = $is_phantom;
+        $this->_is_tarchive_validated       = $is_tarchive_validated ?? false;
+        $this->_is_phantom = $is_phantom ?? false;
     }
 
+    /**
+     * Helper function to instanciate an MRIUploadDTO object from a row in the
+     * database .
+     *
+     * @param array $row A row from the mri_upload table.
+     *
+     * @return MRIUploadDTO
+     */
     public static function fromDBRow(array $row): MRIUploadDTO
     {
+        $nullOrBool = function ($val) {
+            return is_null($val) ? null : boolval($val);
+        };
+
+        $nullOrInt = function ($val) {
+            return is_null($val) ? null : intval($val);
+        };
+
         return new MRIUploadDTO(
             intval($row['mri_upload_id']),
             $row['uploaded_by'],
@@ -100,13 +116,13 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
             $row['upload_location'],
             $row['decompress_location'],
             boolval($row['insertion_complete']),
-            is_null($row['inserting']) ? null : boolval($row['inserting']),
+            $nullOrBool($row['inserting']),
             $row['patient_name'],
-            is_null($row['inserted_minc_count']) ? null : intval($row['inserted_minc_count']),
-            is_null($row['created_minc_count']) ? null : intval($row['created_minc_count']),
-            is_null($row['tarchive_id']) ? null : intval($row['tarchive_id']),
-            is_null($row['session_id']) ? null : intval($row['session_id']),
-            is_null($row['is_candidate_info_validated']) ? null : boolval($row['is_candidate_info_validated']),
+            $nullOrInt($row['inserted_minc_count']),
+            $nullOrInt($row['created_minc_count']),
+            $nullOrInt($row['tarchive_id']),
+            $nullOrInt($row['session_id']),
+            $nullOrBool($row['is_candidate_info_validated']),
             boolval($row['is_tarchive_validated']),
             $row['is_phantom'] === 'Y'
         );

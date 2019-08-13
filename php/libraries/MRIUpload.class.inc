@@ -66,6 +66,9 @@ class MRIUpload
             array('v_mri_upload_id' => $this->_mriuploadid)
         );
 
+        if (empty($rows)) {
+            return [];
+        }
         // Instantiate the server process module to autoload
         // its namespace classes
         \Module::factory('server_processes_manager');

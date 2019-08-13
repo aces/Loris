@@ -32,7 +32,7 @@ use \Psr\Http\Message\UriInterface;
 class SeeOther extends JsonResponse
 {
     /**
-     * Create a Json response specific to 404 Not Found
+     * Create a Json response specific to 303 See Other.
      *
      * @param UriInterface $location The endpoint etag
      */

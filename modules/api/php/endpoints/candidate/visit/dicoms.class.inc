@@ -132,7 +132,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body.
+     * Create an array representation of this endpoint's response body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -183,7 +183,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $files = $request->getUploadedFiles();
         if (count($files) !== 1) {
             return new \LORIS\Http\Response\BadRequest(
-                'There should be 1 and only 1 file uploaded'
+                'There should be 1 and only 1 file uploaded per POST request.'
             );
         }
         $uploadedfile = $files['mriFile'];
@@ -200,21 +200,21 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pscid = $data['PSCID'] ?? null;
         if (!\Candidate::candidateExists(intval($candid), $pscid)) {
             return new \LORIS\Http\Response\BadRequest(
-                'PSCID in POST data do not match CandID.'
+                'PSCID and CandID in POST data do not refer to the same candidate.'
             );
         }
 
         $visitlabel = $data['Visit'] ?? null;
         if ($visitlabel !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\BadRequest(
-                'CandID in POST data do not match URL.'
+                'Visit label in URL and POST data do not match.'
             );
         }
 
         $isphantom = $data['IsPhantom'] ?? null;
         if (!in_array($isphantom, ['true', 'false'])) {
             return new \LORIS\Http\Response\BadRequest(
-                'IsPhantom must be a the string "true" of "false".'
+                'IsPhantom must be a the string "true" or "false".'
             );
         }
 
@@ -236,7 +236,12 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $incomingdir = new \SplFileInfo($incomingpath);
 
         $uploader = (new \LORIS\FilesUploadHandler($incomingdir))
-            ->withPermittedMIMETypes('application/x-tar');
+            ->withPermittedMIMETypes(
+                'application/gzip',
+                'application/tar',
+                'application/tar+gzip',
+                'application/x-tar'
+            );
 
         if ($request->getHeaderLine('LORIS-Overwrite') == 'overwrite') {
             $uploader = $uploader->withOverwrite(true);
@@ -250,7 +255,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *************************
         // *** Update Database *****
         // *************************
-        $fileinfo = new \SplFileInfo($incomingpath . $filename);
+        $filepath = $incomingdir->getPathname() . '/' . $filename;
+        $fileinfo = new \SplFileInfo($filepath);
         if (!$fileinfo->isFile()) {
             return new \LORIS\Http\Response\InternalServerError(
                 'Upload failed (see error_log.)'

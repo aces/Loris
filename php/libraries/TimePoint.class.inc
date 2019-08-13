@@ -1076,7 +1076,7 @@ class TimePoint
     }
 
     /**
-     * This retreives all MRIUpload with the given filename for that session.
+     * This retrieves all MRIUpload with the given filename for that session.
      *
      * @param \User  $user     The requesting user.
      * @param string $filename The mri_upload file's basename.

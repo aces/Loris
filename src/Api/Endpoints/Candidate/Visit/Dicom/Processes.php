@@ -206,7 +206,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (is_null($mriupload)) {
             return new \LORIS\Http\Response\NotFound(
-                'filename and uploadif do not match'
+                'filename and MRIUploadID do not match'
             );
         }
 
