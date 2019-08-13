@@ -25,7 +25,7 @@ namespace LORIS\imaging_browser;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class CandidateListRow implements \LORIS\Data\DataInstance
+class ImagingBrowserRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
@@ -62,5 +62,15 @@ class CandidateListRow implements \LORIS\Data\DataInstance
     public function getCenterID(): int
     {
         return $this->CenterID;
+    }
+
+    /**
+     * This tells if the image is a phantom.
+     *
+     * @return bool True is the Entity_type is a scanner
+     */
+    public function isPhantom(): bool
+    {
+        return $this->DBRow['entityType'] === 'Scanner';
     }
 }
