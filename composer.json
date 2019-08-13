@@ -15,7 +15,7 @@
         "bjeavons/zxcvbn-php": "^0.4"
     },
     "require-dev" : {
-        "squizlabs/php_codesniffer" : "3.4.1",
+        "squizlabs/php_codesniffer" : "3.4.2",
         "phpunit/phpunit" : "6.5.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
