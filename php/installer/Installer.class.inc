@@ -215,14 +215,12 @@ class Installer
     {
         $DB = Database::singleton();
 
-        try {
-            $DB->connect(
+        if ($DB->connect(
                 $values['dbname'],
                 $values['dbadminuser'],
                 $values['dbadminpassword'],
                 $values['dbhost']
-            );
-        } catch (\Exception $e) {
+            ) === false) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
