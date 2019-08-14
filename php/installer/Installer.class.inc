@@ -216,11 +216,12 @@ class Installer
         $DB = Database::singleton();
 
         if ($DB->connect(
-                $values['dbname'],
-                $values['dbadminuser'],
-                $values['dbadminpassword'],
-                $values['dbhost']
-            ) === false) {
+            $values['dbname'],
+            $values['dbadminuser'],
+            $values['dbadminpassword'],
+            $values['dbhost']
+        ) === false
+        ) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
