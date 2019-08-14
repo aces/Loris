@@ -31,7 +31,7 @@ class CandidateTest extends TestCase
     private $_candidateInfo
         = array(
            'RegistrationCenterID'     => '2',
-           'CandID'       => new CandID('969664'),
+           'CandID'       => 969664,
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
@@ -149,6 +149,8 @@ class CandidateTest extends TestCase
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 
+        $this->_candidateInfo['CandID'] = 
+            new CandID($this->_candidateInfo['CandID']);
         $this->_candidate = new Candidate();
     }
 
