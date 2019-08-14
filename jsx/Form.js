@@ -1528,6 +1528,7 @@ class ButtonElement extends Component {
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
+            disabled={this.props.disabled}
           >
             {this.props.label}
           </button>
