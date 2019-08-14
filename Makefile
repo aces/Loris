@@ -28,7 +28,7 @@ checkstatic: phpdev
 	vendor/bin/phan
 
 unittests: phpdev
-	vendor/bin/phpunit --configuration test/phpunit.xml
+	npm run tests:unit
 
 # Perform all tests that don't require an install.
 check: checkstatic unittests
