@@ -50,10 +50,7 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables
-=======
      * Setup all the class variables needed for the data release menu page
->>>>>>> reactified the main page of the data release module. Need to create the modal windows for the different action buttons
      *
      * @return void
      */
