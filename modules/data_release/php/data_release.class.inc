@@ -30,6 +30,7 @@ class Data_Release extends \NDB_Menu_Filter
     public $skipTemplate = true;
 
     /**
+<<<<<<< HEAD
      * Check user permissions
      *
      * @param \User $user The user whose access is being checked
@@ -49,7 +50,14 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
+<<<<<<< HEAD
      * Setup all the class variables needed for the data release menu page
+=======
+     * Setup variables
+=======
+     * Setup all the class variables needed for the data release menu page
+>>>>>>> reactified the main page of the data release module. Need to create the modal windows for the different action buttons
+>>>>>>> reactified the main page of the data release module. Need to create the modal windows for the different action buttons
      *
      * @return void
      */
@@ -249,7 +257,7 @@ class Data_Release extends \NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-                $baseurl . "/data_release/js/dataReleaseIndex.js",
+             $baseurl . "/data_release/js/dataReleaseIndex.js",
             )
         );
     }

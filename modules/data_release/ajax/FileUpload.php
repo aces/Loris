@@ -54,40 +54,20 @@ if ($_GET['action'] == 'upload') {
         $DB->insert(
             'data_release',
             array(
-                'file_name'   => $fileName,
-                'version'     => $version,
-                'upload_date' => $upload_date,
+             'file_name'   => $fileName,
+             'version'     => $version,
+             'upload_date' => $upload_date,
             )
         );
-        header("HTTP/1.1 500 Internal Server Error");
-    } elseif (!is_writable($path)) {
-        error_log(
-            "File upload failed. Upload directory"
-            . " does not appear to be writeable."
+        // get the ID of the user who uploaded the file
+        $user_ID = $DB->pselectOne(
+            "SELECT ID FROM users WHERE userid=:UserID",
+            array('UserID' => $user->getUsername())
         );
-        header("HTTP/1.1 500 Internal Server Error");
-    } else {
-        $target_path = $path . $fileName;
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
-            // insert the file into the data_release table
-            $DB->insert(
-                'data_release',
-                array(
-                    'file_name'   => $fileName,
-                    'version'     => $version,
-                    'upload_date' => $upload_date,
-                )
-            );
-
-            // get the ID of the user who uploaded the file
-            $user_ID = $DB->pselectOne(
-                "SELECT ID FROM users WHERE userid=:UserID",
-                array('UserID' => $user->getUsername())
-            );
-            // get the ID of the file inserted in the data_release table
-            $version_where = $version ? "version=:version" : "version IS :version";
-            $ID = $DB->pselectOne(
-                "SELECT 
+        // get the ID of the file inserted in the data_release table
+        $version_where = $version ? "version=:version" : "version IS :version";
+        $ID            = $DB->pselectOne(
+            "SELECT 
                id 
              FROM 
                data_release 
@@ -95,24 +75,23 @@ if ($_GET['action'] == 'upload') {
                file_name=:file_name 
                AND $version_where
                AND upload_date=:upload_date",
-                array(
-                    'file_name' => $fileName,
-                    'version' => $version,
-                    'upload_date' => $upload_date,
-                )
-            );
-            // add permission to the user for the uploaded data_release file
-            $DB->insert(
-                'data_release_permissions',
-                array(
-                    'userid' => $user_ID,
-                    'data_release_id' => $ID,
-                )
-            );
-        }
-        header("Location: {$baseURL}/data_release/?uploadSuccess=true");
-        header("HTTP/1.1 201 Created");
+            array(
+             'file_name'   => $fileName,
+             'version'     => $version,
+             'upload_date' => $upload_date,
+            )
+        );
+        // add permission to the user for the uploaded data_release file
+        $DB->insert(
+            'data_release_permissions',
+            array(
+             'userid'          => $user_ID,
+             'data_release_id' => $ID,
+            )
+        );
     }
+    header("Location: {$baseURL}/data_release/?uploadSuccess=true");
+    header("HTTP/1.1 201 Created");
 
 } elseif ($_GET['action'] == 'getData') {
     $filesList = $DB->pselect(

@@ -100,8 +100,8 @@ if ($_GET['action'] == 'addpermission') {
         '',
         '',
     );
-    $vFiles         = $data_release->getVersionedFiles($DB);
-    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
+    $vFiles         = $data_release->getVersionedFiles();
+    $prePermissions = $data_release->getUserVersionPermissions($vFiles);
 
     $postPermissions = array();
     foreach ($_POST as $key => $value) {
@@ -226,6 +226,7 @@ function getManagePermissionsData(): void
         ''
     );
 
+
     $DB     = \Database::singleton();
     $users  = $data_release->getUsersList($DB);
     $vFiles = $data_release->getVersionedFiles($DB);
@@ -240,11 +241,11 @@ function getManagePermissionsData(): void
                 $hasPermission = true;
             }
             $data_table_values[] = [
-                $index,
-                $username,
-                $versionName,
-                $hasPermission,
-            ];
+                                    $index,
+                                    $username,
+                                    $versionName,
+                                    $hasPermission,
+                                   ];
             $index++;
         }
     }
