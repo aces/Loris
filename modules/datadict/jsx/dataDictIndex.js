@@ -115,10 +115,10 @@ class DataDictIndex extends Component {
             },
         },
         {
-            label: 'Field',
+            label: 'Source Field',
             show: true,
             filter: {
-                name: 'Field',
+                name: 'Source Field',
                 type: 'text',
             },
         },
