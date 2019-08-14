@@ -47,13 +47,14 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             'View Images' AS `MRI Browser`,
             (SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE
                     e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) AS seriesUID,
-            s.CenterID AS site,
+            psc.Name AS site,
             t.TarchiveID AS TarchiveID,
             s.ID AS SessionID,
             s.CenterID AS CenterID
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
+                  LEFT JOIN psc ON (psc.CenterID=s.CenterID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
             array()
         );
