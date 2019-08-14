@@ -91,6 +91,8 @@ class NDB_Page implements RequestHandlerInterface
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
+     * FIXME: $formname is never used. - Alexandra Livadas
+     *
      * @param Module $module     The test name being accessed
      * @param string $page       The subtest being accessed (may be an empty string)
      * @param string $identifier The identifier for the data to load on this page
@@ -161,6 +163,8 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Wrapper to create a header
+     * FIXME: Setting the name to null is not a good idea because the name
+     *        is the key to the element in the form array! -Alexandra Livadas
      *
      * @param string $header The text to put in the header
      *
@@ -194,6 +198,8 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Wrapper to create a static label to the current page
+     * FIXME: Setting the name to null is not a good idea because the name
+     *        is the key to the element in the form array! -Alexandra Livadas
      *
      * @param string $label The text to add to the label.
      *
@@ -260,6 +266,10 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a date field (without an accompanying not answered option) to the
      * current page.
      *
+     * FIXME: 'style' is not a valid attribute that is set in the
+     *        LorisForm::createBase method, so it is not actually used.
+     *        - Alexandra Livadas
+     *
      * @param string $field   The name of the date field
      * @param string $label   Label to attach to the date field in the frontend
      * @param array  $options Options to pass to HTML_QuickForm
@@ -285,6 +295,12 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Wrapper to create a checkbox
      *
+     * FIXME: The optional array is never actually put into the element
+     *        because LorisForm::addHeader does not take it as a parameter.
+     *        The 'class' attribute should be added to the 'options' array
+     *        instead and the optional array should be removed.
+     *        - Alexandra Livadas
+     *
      * @param string $name     The field name of this checkbox
      * @param string $label    The label to attach to this checkbox
      * @param array  $options  Options to pass to QuickForm for this
@@ -305,6 +321,8 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Wrapper to create a radio button
+     * FIXME: Should this be "addRadioGroup"? There is no method
+     *        that just adds 1 radio element. - Alexandra Livadas
      *
      * @param string $name       The field name of this radio button
      * @param string $groupLabel The label to attach to this group of
@@ -523,6 +541,10 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm date element but does not add it to the form.
      *
+     * FIXME: 'style' is not a supported attribute that is added in the
+     *        LorisForm::createBase method. This should be changed or removed.
+     *        - Alexandra Livadas
+     *
      * @param string $field       The fieldname for this date field
      * @param string $label       The label to attach to this date
      * @param array  $dateOptions List of options to pass to QuickForm
@@ -551,6 +573,8 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Creates an HTML checkbox but does not add it to the form.
+     *
+     * FIXME: $closer is never used or explained. - Alexandra Livadas
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
