@@ -35,9 +35,9 @@ class PasswordTest extends TestCase
             [implode('', range(1, Password::getMinimumPasswordLength() - 1))],
             // Should fail for being an alphabet subset
             ['abcdefghi'],
-            // Should fail based on dictionary attack ('hunter2' is meme)
+            // Should fail based on dictionary attack ('hunter2' is a meme)
             ['hunter22'],
-            // Should fail for simplicty
+            // Should fail for simplicity
             ['8chars!!'],
             // Should fail based on using a common name
             ['johnnyloris'],
@@ -47,7 +47,7 @@ class PasswordTest extends TestCase
             ['Spring2016!'],
             // Should fail for using just a few simple English words
             ['i am cool'],
-            // Should fail for common L33T substituions
+            // Should fail for common L33T substitutions
             ['p@55w0rd1!']
         );
     }
