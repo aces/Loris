@@ -416,7 +416,7 @@ function checkDateTaken($dateTaken)
         $now  = new DateTime();
         $diff = date_diff($date, $now)->format("%R%a");
         if ($diff < 0) {
-            showMediaError("Date of administration can not be in the future", 400);
+            showMediaError("Date of administration cannot be in the future", 400);
         }
     }
 }
