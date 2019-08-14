@@ -108,17 +108,6 @@ class NDB_Factory
      */
     function config(?string $configfile = '../project/config.xml'): \NDB_Config
     {
-        // If the path to the config file is null, use the default location
-        // of the file created by the install script.
-        // NOTE: Calling config(null) is different than calling config()
-        // without any arguments.
-        // The latter call will result in $configfile being initialized to the
-        // default param value above. This check handles the former case when
-        // a value of NULL is passed to the function.
-        if (is_null($configfile)) {
-            $configfile = '../project/config.xml';
-        }
-
         if (self::$config !== null) {
             // The below suppression is necessary to satisfy phan. It flags an
             // error here because the function is declared to return
@@ -131,14 +120,14 @@ class NDB_Factory
             return self::$config;
         }
         if ($this->Testing) {
-            $config = new MockNDB_Config();
+            $config     = new MockNDB_Config();
             $configfile = '../test/config.xml';
         } else {
             $config = NDB_Config::singleton($configfile);
         }
 
         self::$config = $config;
-        
+
         // The below suppression is necessary to satisfy phan. It flags an
         // error here because the function is declared to return
         // NDB_Config and phan doesn't understand MockNDB_Config (as it is
