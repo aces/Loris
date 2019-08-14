@@ -455,6 +455,17 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
+        // Now set the password. Note that this field is named incorrectly
+        // and represents a plaintext password, not a hash.
+        // Use a date in the past to ensure that the password is expired
+        // so the user must create a new password on login.
+        if (isset($values['Password_hash'])) {
+            \Utility::updatePassword(
+                $user, 
+                new \Password($values['Password_hash']),
+                new \DateTime(date('Y-m-d', strtotime('last year')))
+            );
+        }
 
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where

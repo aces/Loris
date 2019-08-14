@@ -110,7 +110,6 @@ class SinglePointLogin
         // get user's data
         $data = $user->getData();
 
-
         try {
             $password = new \Password($_POST['password']);
             // New password must be different than current one

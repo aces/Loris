@@ -89,7 +89,6 @@ class PasswordExpiry extends \NDB_Form
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
 
-        error_log('In password expiry validate');
         try {
             $password = new \Password($_POST['password']);
         } catch (\InvalidArgumentException $e) {
@@ -115,7 +114,6 @@ class PasswordExpiry extends \NDB_Form
      */
     function _process($values)
     {
-        error_log('In password expiry process');
         \Utility::updatePassword($this->_user, new \Password($values['password']));
         
         // The password is no longer expired after updating it.

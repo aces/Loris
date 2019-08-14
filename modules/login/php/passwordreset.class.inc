@@ -68,10 +68,14 @@ class PasswordReset extends \NDB_Form
             if ($user->isEmailValid()) {
                   $config = \NDB_Config::singleton();
                   // generate a new password
-                  $password = \User::newPassword();
+                  $password = \Utility::randomString();
                   // reset the password in the database
                   // expire password so user must change it upon login
-                  $user->updatePassword($password, '1999-01-01');
+                  \Utility::updatePassword(
+                      $user, 
+                      new \Password($password), 
+                      new \DateTime('1999-01-01')
+                  );
                   // send the user an email
                   $msg_data          = array();
                   $msg_data['study'] = $config->getSetting('title');
@@ -88,7 +92,9 @@ class PasswordReset extends \NDB_Form
                 );
             }
         } catch(\Exception $e) {
-            error_log("Unhandled exception in reset_password.");
+            error_log(
+                "Unhandled exception in reset_password: `{$e->getMessage}`"
+            );
         }
     }
 

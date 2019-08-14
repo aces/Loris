@@ -25,6 +25,8 @@
  */
 class Utility
 {
+    public const MYSQL_DATE_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -940,20 +942,31 @@ class Utility
      * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
+     * @param \Password $password The plain text password to be hashed and saved.
+     * @param ?DateTime $expiry When the password will expire. Can be set to a
+     *              date in the past in order to create a one-time password.
      *
      * @return void
      */
-    static function updatePassword(\User $user, \Password $password): void
+    static function updatePassword(
+        \User $user, 
+        \Password $password,
+        ?\DateTime $expiry = null
+    ): void
     {
-        // Update the users table to get $user's (hashed) pasword to $password.
+        // Set default expiry date value to 6 months in the future.
+        $expiry = $expiry ?? new \DateTime(date('Y-m-d', strtotime('+6 months')));
+        error_log($expiry->format(self::MYSQL_DATE_FORMAT));
+
+        // Update the users table to change $user's pasword to $password.
         \NDB_Factory::singleton()->database()->update(
             'users',
             array(
                 'Password_hash' => $password,
-                'Password_expiry' => date("Y-m-d", strtotime('+6 months'))
+                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
             ),
             array(
-             'UserID' => $user->getUsername(),
+                'UserID' => $user->getUsername(),
             )
         );
     }
