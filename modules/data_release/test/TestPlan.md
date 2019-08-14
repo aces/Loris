@@ -1,10 +1,12 @@
 # Data Release Module Test Plan 
 
 Ensure that regular users can see the data release module without the 
-'Upload File' and 'Add Permission' buttons at the top.
+'Upload File', 'Add Permission' and 'Manage Permissions' buttons at the top
+of the data table.
 
 
 ## Upload File
+
 1. Give the user the `data_release_upload` *(Data Release: Upload file)* permission. 
  Ensure the user can upload new files to the module.
  
@@ -13,8 +15,8 @@ Ensure that regular users can see the data release module without the
  
 ## Permissions
 
-1. Give the user the `data_release_edit_file_access` *(Data Release: Give user 
-permission to view files)* permission.
+1. Give the user the `data_release_edit_file_access` *(Data Release: Grant other 
+users view-file permissions)* permission.
 
 2. Click on the 'Add Permission' button.
 
