@@ -457,13 +457,22 @@ class Edit_User extends \NDB_Form
         }
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
-        // Use a date in the past to ensure that the password is expired
-        // so the user must create a new password on login.
-        if (isset($values['Password_hash'])) {
+        if (isset($values['Password_hash'], $values['Password_expiry'])) {
+            // If both hash and expiry are set, use both values when resetting
+            // the password. This occurs when a new password is generated
+            // by the system.
             \Utility::updatePassword(
-                $user, 
+                $user,
                 new \Password($values['Password_hash']),
-                new \DateTime(date('Y-m-d', strtotime('last year')))
+                new \DateTime($values['Password_expiry'])
+            );
+        } else if (isset($values['Password_hash'])) {
+            // If just the Password_hash value is present, no not specify a
+            // custom expiry date. This will set the password to expire in
+            // 6 months from the current date (handled in updatePassword()).
+            \Utility::updatePassword(
+                $user,
+                new \Password($values['Password_hash'])
             );
         }
 
@@ -1041,8 +1050,9 @@ class Edit_User extends \NDB_Form
                 $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
                 if (!\Utility::passwordChanged(
-                    \User::factory($this->identifier), 
-                    $password)
+                    \User::factory($this->identifier),
+                    $_POST['password']
+                )
                 ) {
                     $errors['Password_Group'] = 'New and old passwords '
                         . 'are identical: please choose another one';

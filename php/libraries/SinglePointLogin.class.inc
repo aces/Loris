@@ -97,38 +97,6 @@ class SinglePointLogin
     }
 
     /**
-     * Saves the new password if last was expired
-     *
-     * @return bool
-     * @access public
-     */
-    function save(): bool
-    {
-        // get saved data to pre-populate form
-        $user = \User::factory($_POST['username']);
-
-        // get user's data
-        $data = $user->getData();
-
-        try {
-            $password = new \Password($_POST['password']);
-            // New password must be different than current one
-            if (!\Utility::passwordChanged($user, $password)) {
-                $this->_lastError = 'You cannot keep the same password';
-                return false;
-            }
-        } catch (\InvalidArgumentException $e) {
-            $this->_lastError = $e->getMessage();
-            return false;
-        }
-
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-        \Utility::updatePassword($user, $password);
-        return true;
-    }
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return bool Whether a user has successfully authenticated.
@@ -372,14 +340,10 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
-                $success = $this->save();
-
-                if ($success == false) {
-                    if ($redirect) {
-                        $this->showPasswordExpiryScreen();
-                    }
-                    return false;
+                if ($redirect) {
+                    $this->showPasswordExpiryScreen();
                 }
+                return false;
             }
             // Allow a user to login if none of the previous cases have occurred
             $this->_username = $row['UserID'];

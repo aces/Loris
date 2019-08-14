@@ -107,7 +107,9 @@ class Password
             throw new \InvalidArgumentException('The password is too short');
         }
         if (!$this->_hasSufficientComplexity($value)) {
-            throw new \InvalidArgumentException('The password is not complex enough.');
+            throw new \InvalidArgumentException(
+                'The password is not complex enough.'
+            );
         }
         if ($this::pwned($value)) {
             throw new \InvalidArgumentException(

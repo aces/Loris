@@ -123,7 +123,7 @@ class My_Preferences extends \NDB_Form
         $user = \User::factory($this->identifier);
 
         // If editing a user and nothing was specified in the password text field
-        // remove Password_md5 from the value set, otherwise Password_md5
+        // remove the key from the value set, otherwise Password_hash
         // will be set to '' by the system
         if ($values['Password_hash'] == '') {
             unset($values['Password_hash']);
@@ -192,12 +192,8 @@ class My_Preferences extends \NDB_Form
         // update the user
         $success = $user->update($set);
 
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            $user->updatePassword(
-                $set['Password_hash'],
-                $values['Password_expiry'] ?? ''
-            );
+        if (isset($values['Password_hash'])) {
+            \Utility::updatePassword($user, new \Password($values['Password_hash']));
         }
 
         // send the user an email
@@ -396,8 +392,9 @@ class My_Preferences extends \NDB_Form
                 $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
                 if (!\Utility::passwordChanged(
-                    \User::factory($this->identifier), 
-                    $password)
+                    \User::factory($this->identifier),
+                    $values['Password_hash']
+                )
                 ) {
                     $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';

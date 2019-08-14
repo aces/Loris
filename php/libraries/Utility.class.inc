@@ -941,32 +941,34 @@ class Utility
      * Updates the password for this user into the appropriate field in the
      * database.
      *
+     * @param \User     $user     The plain text password to be hashed and saved.
      * @param \Password $password The plain text password to be hashed and saved.
-     * @param \Password $password The plain text password to be hashed and saved.
-     * @param ?DateTime $expiry When the password will expire. Can be set to a
-     *              date in the past in order to create a one-time password.
+     * @param ?DateTime $expiry   When the password will expire. Can be set to a
+     *                            date in the past in order to create a one-time
+     *                            password.
      *
      * @return void
      */
     static function updatePassword(
-        \User $user, 
+        \User $user,
         \Password $password,
         ?\DateTime $expiry = null
-    ): void
-    {
+    ): void {
         // Set default expiry date value to 6 months in the future.
-        $expiry = $expiry ?? new \DateTime(date('Y-m-d', strtotime('+6 months')));
+        $expiry = $expiry ?? new \DateTime(
+            date('Y-m-d', strtotime('+6 months'))
+        );
         error_log($expiry->format(self::MYSQL_DATE_FORMAT));
 
         // Update the users table to change $user's pasword to $password.
         \NDB_Factory::singleton()->database()->update(
             'users',
             array(
-                'Password_hash' => $password,
-                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
+             'Password_hash'   => $password,
+             'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
             ),
             array(
-                'UserID' => $user->getUsername(),
+             'UserID' => $user->getUsername(),
             )
         );
     }
@@ -975,16 +977,16 @@ class Utility
      * Determines if the supplied password parameter is different than a User's
      * current password (the one stored in the database).
      *
-     * @param \User     $user        database object.
-     * @param \Password $newPassword the new password the user entered.
+     * @param \User  $user              User whose password may have changed
+     * @param string $plaintextPassword The new desired password string entered
+     *                                  by the user.
      *
-     * @return bool  true if the password changed, false otherwise.
+     * @return bool  true if the password has changed, false otherwise.
      */
-    function passwordChanged(
+    static function passwordChanged(
         \User $user,
-        \Password $password
+        string $plaintextPassword
     ): bool {
-
         $passwordQuery = "SELECT Password_hash
             FROM users
             WHERE UserID = :UID";
@@ -995,7 +997,9 @@ class Utility
         );
 
         if (!is_null($current)) {
-            return !password_verify($password, $current);
+            // The plaintext password must be used here rather than the
+            // Password class.
+            return !password_verify($plaintextPassword, $current);
         }
 
         return true;
@@ -1005,15 +1009,18 @@ class Utility
      * Generate a random string, using a cryptographically secure
      * pseudorandom number generator (random_int)
      *
-     * @param  int    $length   How many characters do we want?
-     * @param  string $keyspace A string of all possible characters
-     *                         to select from
+     * @param int     $length   How many characters do we want?
+     * @param ?string $keyspace A string of all possible characters
+     *                         to select from. Will default to the alphanum set.
+     *
      * @return string
      */
-    function randomString(
+    static function randomString(
         int $length = 64,
-        string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        ?string $keyspace = null
     ): string {
+        $keyspace = $keyspace
+        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         if ($length < 1) {
             throw new \RangeException("Length must be a positive integer");
         }

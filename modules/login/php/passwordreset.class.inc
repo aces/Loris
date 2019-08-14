@@ -72,8 +72,8 @@ class PasswordReset extends \NDB_Form
                   // reset the password in the database
                   // expire password so user must change it upon login
                   \Utility::updatePassword(
-                      $user, 
-                      new \Password($password), 
+                      $user,
+                      new \Password($password),
                       new \DateTime('1999-01-01')
                   );
                   // send the user an email
