@@ -63,24 +63,16 @@ if ($_GET['action'] == 'upload') {
     } else {
         $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
-            $DB->insert(
-                'data_release',
-                array(
-                    'file_name' => $fileName,
-                    'version' => $version,
-                    'upload_date' => $upload_date,
-                )
-            );
-
             // insert the file into the data_release table
             $DB->insert(
                 'data_release',
                 array(
-                    'file_name' => $fileName,
-                    'version' => $version,
+                    'file_name'   => $fileName,
+                    'version'     => $version,
                     'upload_date' => $upload_date,
                 )
             );
+
             // get the ID of the user who uploaded the file
             $user_ID = $DB->pselectOne(
                 "SELECT ID FROM users WHERE userid=:UserID",
@@ -98,8 +90,8 @@ if ($_GET['action'] == 'upload') {
                AND $version_where
                AND upload_date=:upload_date",
                 array(
-                    'file_name'   => $fileName,
-                    'version'     => $version,
+                    'file_name' => $fileName,
+                    'version' => $version,
                     'upload_date' => $upload_date,
                 )
             );
@@ -107,7 +99,7 @@ if ($_GET['action'] == 'upload') {
             $DB->insert(
                 'data_release_permissions',
                 array(
-                    'userid'          => $user_ID,
+                    'userid' => $user_ID,
                     'data_release_id' => $ID,
                 )
             );
@@ -130,7 +122,6 @@ if ($_GET['action'] == 'upload') {
     $results = [
         'files' => array_values($dataReleaseFiles),
     ];
-
     echo json_encode($results);
 
 } else {
