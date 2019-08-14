@@ -25,6 +25,39 @@ use PHPUnit\Framework\TestCase;
 class PasswordTest extends TestCase
 {
     protected const VALID_PASSWORD = 'correct horse battery staple';
+    private const PWNED_PASSWORDS_CONFIG_ID = '65';
+
+    /**
+     * Test double for NDB_Config object
+     *
+     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_configMock;
+
+    private $_configInfo = array(0 => array('65' => 'false'));
+
+    protected function setUp(): void {
+        parent::setUp();
+
+        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+
+        $this->_factory = NDB_Factory::singleton();
+        $this->_factory->setConfig($this->_configMock);
+        $this->_factory->setDatabase($this->_dbMock);
+    }
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     *
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->_factory->reset();
+    }
+
     /*
      * dataProviders for constructor invalid values
      */
@@ -54,10 +87,14 @@ class PasswordTest extends TestCase
 
     /**
      * @dataProvider invalidValues
-     * @expectedException \DomainException
+     * @expectedException \InvalidArgumentException
      */
     public function testContructorInvalidValues($invalidValue): void
     {
+        $this->_configMock->expects($this->any())
+            ->method('getSetting')
+            ->willReturn('false');
+
         new Password($invalidValue);
     }
 
