@@ -112,7 +112,7 @@ class NDB_Factory
         // of the file created by the install script.
         // NOTE: Calling config(null) is different than calling config()
         // without any arguments.
-        // The latter call will result in $configfile being initialized to the 
+        // The latter call will result in $configfile being initialized to the
         // default param value above. This check handles the former case when
         // a value of NULL is passed to the function.
         if (is_null($configfile)) {
@@ -126,25 +126,26 @@ class NDB_Factory
             // generated dynamically by PHPUnit).
             // We know this will always return \NDB_Config since this is guaranteed
             // by the return type of the function.
+            //
             // @phan-suppress-next-line PhanTypeMismatchReturn
             return self::$config;
         }
         if ($this->Testing) {
             $config = new MockNDB_Config();
+            $configfile = '../test/config.xml';
         } else {
             $config = NDB_Config::singleton($configfile);
         }
 
         self::$config = $config;
-        // NDB_Config::singleton() is already loading the config file
-        // in a better way. this needs to be modified
-        $config->load($configfile);
+        
         // The below suppression is necessary to satisfy phan. It flags an
         // error here because the function is declared to return
         // NDB_Config and phan doesn't understand MockNDB_Config (as it is
         // generated dynamically by PHPUnit).
         // We know this will always return \NDB_Config since this is guaranteed
         // by the return type of the function.
+        //
         // @phan-suppress-next-line PhanTypeMismatchReturn
         return $config;
     }
