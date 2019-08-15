@@ -620,7 +620,7 @@ class LorisForm
     }
 
     /**
-     * Determines if a fomr element if of type 'advcheckbox'.
+     * Determines if a form element is of type 'advcheckbox'.
      *
      * @param string $elementName Name of a form element that exists in the $form.
      *

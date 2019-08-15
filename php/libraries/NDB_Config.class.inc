@@ -509,8 +509,10 @@ class NDB_Config
      */
     static function checkMenuPermission(int $menuID): bool
     {
-        $DB   = Database::singleton();
-        $user = User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $user = $factory->user();
 
         $perms = $DB->pselect(
             "SELECT code FROM LorisMenuPermissions
@@ -545,7 +547,9 @@ class NDB_Config
      */
     static function getMenuTabs(?int $parent = null): array
     {
-        $DB = \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         if ($parent === null) {
             $thisLevel = $DB->pselect(
                 "SELECT Label,
