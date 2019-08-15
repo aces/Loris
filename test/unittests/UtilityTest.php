@@ -165,7 +165,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();   
@@ -177,7 +177,7 @@ class UtilityTest extends TestCase
      * @covers Utility::calculateAge
      * @return void
      */
-    public function testCalculateAge()
+    public function testCalculateAge(): void
     {
         $array = Utility::calculateAge("1998-08-25", "2019-06-11");
         $this->assertEquals($array['year'], 20);
@@ -197,7 +197,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    public function testCalculateAgeFormat($first, $second)
+    public function testCalculateAgeFormat($first, $second): void
     {
         $this->expectException('\LorisException');
         $array = Utility::calculateAge($first, $second);
@@ -208,7 +208,7 @@ class UtilityTest extends TestCase
      * 
      * @return void
      */
-    public function ageIncorrectFormatProvider()
+    public function ageIncorrectFormatProvider(): void
     {
         return array(
             array("1990\\07\\05", "2018\\05\\23"),
@@ -224,7 +224,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getConsentList()
      * @return void
      */
-    public function testGetConsentList()
+    public function testGetConsentList(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselectWithIndexKey')
@@ -238,7 +238,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getProjectList()
      * @return void
      */
-    public function testGetProjectList()
+    public function testGetProjectList(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
@@ -257,7 +257,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSubprojectList()
      * @return void
      */
-    public function testGetSubprojectList()
+    public function testGetSubprojectList(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -284,7 +284,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSubprojectList()
      * @return void
      */
-    public function testGetSubprojectListWithProjectID()
+    public function testGetSubprojectListWithProjectID(): void
     {
         /**
          * The 'with' assertion is included to check that the mySQL query changes
@@ -316,7 +316,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getAllInstruments()
      * @return void
      */
-    public function testGetInstruments()
+    public function testGetInstruments(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -336,7 +336,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getAllDDEInstruments()
      * @return void
      */
-    public function testGetAllDDEInstruments()
+    public function testGetAllDDEInstruments(): void
     {
         $test_names = array(
                           array('Test_name' => 'test_name1',
@@ -365,7 +365,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getDirectInstruments()
      * @return void
      */
-    public function testGetDirectInstruments()
+    public function testGetDirectInstruments(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -388,7 +388,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getVisitList()
      * @return void
      */
-    public function testGetVisitList()
+    public function testGetVisitList(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -417,7 +417,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getAssociativeSiteList
      * @return void
      */
-    public function testGetSiteListAndGetAssociativeSiteList()
+    public function testGetSiteListAndGetAssociativeSiteList(): void
     {       
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -449,7 +449,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getTestNameByCommentID
      * @return void 
      */
-    public function testGetTestNameByCommentID()
+    public function testGetTestNameByCommentID(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
@@ -473,7 +473,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getStageUsingCandID
      * @return void
      */
-    public function testGetStageUsingCandID()
+    public function testGetStageUsingCandID(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -492,7 +492,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSubprojectIDUsingCandID
      * @return void
      */
-    public function testGetSubprojectIDUsingCandID()
+    public function testGetSubprojectIDUsingCandID(): void
     { 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -511,7 +511,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getTestNameUsingFullName
      * @return void
      */
-    public function testGetTestNameUsingFullName()
+    public function testGetTestNameUsingFullName(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -537,7 +537,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getExistingVisitLabels
      * @return void
      */
-    public function testGetExistingVisitLabels()
+    public function testGetExistingVisitLabels(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -567,7 +567,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getExistingVisitLabels
      * @return void
      */
-    public function testGetExistingVisitLabelsWithProjectID()
+    public function testGetExistingVisitLabelsWithProjectID(): void
     {
         /**
          * The 'with' assertion is included to ensure that the mySQL query changes
@@ -601,7 +601,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getLanguageList
      * @return void
      */
-    public function testGetLanguageList()
+    public function testGetLanguageList(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -621,7 +621,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getVisitInstruments()
      * @return void
      */
-    public function testGetVisitInstruments()
+    public function testGetVisitInstruments(): void
     {
 
         $this->_dbMock->expects($this->any())
@@ -648,7 +648,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getVisitInstruments()
      * @return void
      */
-    public function testGetVisitInstrumentsWithoutTestNameDisplay()
+    public function testGetVisitInstrumentsWithoutTestNameDisplay(): void
     {
 
         $this->_dbMock->expects($this->any())
@@ -675,7 +675,7 @@ class UtilityTest extends TestCase
      * @covers Utility::lookupBattery()
      * @return void
      */
-    public function testLookupBattery()
+    public function testLookupBattery(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -699,7 +699,7 @@ class UtilityTest extends TestCase
      * @covers Utility::lookupBattery()
      * @return void
      */
-    public function testLookupBatteryWithStage()
+    public function testLookupBatteryWithStage(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -724,7 +724,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields()
      * @return void
      */
-    public function testGetSourcefieldsReturnsNothingWithNoParameters()
+    public function testGetSourcefieldsReturnsNothingWithNoParameters(): void
     {
         $this->assertEquals(
             array(), 
@@ -739,7 +739,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields()
      * @return void
      */
-    public function testGetSourcefieldsWithInstrumentSpecified()
+    public function testGetSourcefieldsWithInstrumentSpecified(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
@@ -764,7 +764,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields()
      * @return void
      */
-    public function testGetSourcefieldsWithCommentIDSpecified()
+    public function testGetSourcefieldsWithCommentIDSpecified(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -788,7 +788,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields()
      * @return void
      */
-    public function testGetSourcefieldsWithNameSpecified()
+    public function testGetSourcefieldsWithNameSpecified(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
@@ -812,7 +812,7 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields()
      * @return void
      */
-    public function testGetSourcefieldsWithAllThreeParameters()
+    public function testGetSourcefieldsWithAllThreeParameters(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')

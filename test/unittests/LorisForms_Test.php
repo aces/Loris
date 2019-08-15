@@ -95,7 +95,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void but makes assertions
      */
-    function assertAttribute($el, $attribute, $attribValue)
+    function assertAttribute($el, $attribute, $attribValue): void
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");

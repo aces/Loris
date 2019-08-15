@@ -171,7 +171,7 @@ class SettingsTest extends TestCase
      * @return void
      * @covers Settings::getBaseURL
      */
-    public function testGetBaseURLWithLorisBaseURL()
+    public function testGetBaseURLWithLorisBaseURL(): void
     {
         //putenv sets the environment variable:
         putenv("LORIS_BASEURL=test2.loris.ca");

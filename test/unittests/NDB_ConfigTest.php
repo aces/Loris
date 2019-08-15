@@ -28,7 +28,7 @@ class FakeConfig extends NDB_Config
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(): void
     {
     }
 }
@@ -228,7 +228,7 @@ class NDB_ConfigTest extends TestCase
      * @covers NDB_Config::settingEnabled
      * @return void
      */
-    public function testSettingEnabledWhenFalse()
+    public function testSettingEnabledWhenFalse(): void
     {
         $this->_config->_settings = array('aaa' => array("bbb" => "false"));
         $this->assertFalse($this->_config->settingEnabled("bbb"));
@@ -352,7 +352,7 @@ class NDB_ConfigTest extends TestCase
      * @covers NDB_Config::checkMenuPermission
      * @return void
      */
-    public function testCheckMenuPermissionsWhenHasPerms()
+    public function testCheckMenuPermissionsWhenHasPerms(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -372,7 +372,7 @@ class NDB_ConfigTest extends TestCase
      * @covers NDB_Config::checkMenuPermission
      * @return void
      */
-    public function testCheckMenuPermissionsWhenHasNoPerms()
+    public function testCheckMenuPermissionsWhenHasNoPerms(): void
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
