@@ -615,4 +615,59 @@ class NDB_PageTest extends TestCase
             $this->_page->createPassword("test_field", "test_label")
         );
     }
+
+    /**
+     * Test that display returns a string of content in JSON form if the format
+     * variable is set to 'json'
+     *
+     * @covers NDB_Page::display
+     * @return void
+     *
+     * @note This test is incomplete because format is a protected var that 
+     *       cannot be set here. - Alexandra Livadas
+     */
+    public function testDisplayWithJSONFormat()
+    {
+        $this->markTestIncomplete("This test is incomplete");
+        //$this->_page->format = 'json';
+        $this->assertEquals("", $this->_page->display());
+    }
+
+    /**
+     * Test that display returns an empty string if skipTemplate is true
+     *
+     * @covers NDB_Page::display
+     * @return void
+     */
+    public function testDisplayWithSkipTemplateTrue()
+    {
+        $this->_page->skipTemplate = true;
+        $this->assertEquals("", $this->_page->display());
+    }
+
+    /**
+     * Test that display uses a Smarty_NeuroDB object to return an html of the
+     * page object. 
+     *
+     * @covers NDB_Page::display
+     * @return void
+     *
+     * @note This test is incomplete because it uses Smarty_NeuroDB which needs
+     *       to use a mock object. - Alexandra Livadas
+     */
+    public function testDisplayWithFormFrozen()
+    {
+        $this->markTestIncomplete("This test is incomplete!");
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($configMock);
+        $smartyMock = $this->getMockBuilder('Smarty_NeuroDB')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $smartyMock->expects($this->any())
+            ->method('fetch')
+            ->willReturn("fetch was called!");
+        $this->_page->form->freeze();
+        $this->assertEquals("fetch was called!", $this->_page->display());
+    }
 }
