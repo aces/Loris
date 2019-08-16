@@ -113,22 +113,21 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addHeader calls addElement from LorisForm and properly adds
      * an element to the page's form
-     * FIXME: This is incomplete because the addHeader method sets the name value
-     *        to null which makes it hard to define the element or to find it in the
-     *        form->form array! See fixme commmet in addHeader method 
-     *        - Alexandra Livadas
+     * FIXME: Ideally the name should not be ' '. See the fixme comment in
+     *        the addHeader method. - Alexandra Livadas
      *
      * @covers NDB_Page::addHeader
      * @return void
      */
     public function testAddHeader()
     {
-        $this->markTestIncomplete("This test is incomplete!");
+        //$this->markTestIncomplete("This test is incomplete!");
         $this->_page->addHeader("test_header");
         $this->assertEquals(
             array('label' => 'test_header',
-                  'type'  => 'header'),
-            $this->_page->form->form['anonymous1']
+                  'type'  => 'header',
+                  'name'  => ' '),
+            $this->_page->form->form[' ']
         );
     }
 
@@ -155,11 +154,10 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addLabel calls addElement from LorisForm and properly adds
      * an element to the page's form
-     * FIXME: Same as testAddHeader: This is incomplete because the addLabel
+     * FIXME: This is incomplete because the addLabel
      *        method sets the name value to null which makes it hard to 
      *        define the element or to find it in the form->form array! 
-     *        See fixme commmet in addHeader method
-     *        - Alexandra Livadas
+     *        See fixme commment in addLabel method -Alexandra Livadas
      *
      * @covers NDB_Page::addLabel
      * @return void
@@ -169,9 +167,9 @@ class NDB_PageTest extends TestCase
         $this->markTestIncomplete("This test is incomplete!");
         $this->_page->addLabel("test_label");
         $this->assertEquals(
-            array('label'   => 'test_label',
-                  'type'    => 'static'),
-            $this->_page->form->form['anonymous2']
+            array('label' => 'test_label',
+                  'type'  => 'static'),
+            $this->_page->form->form['anonymous1']
         );
     }
 
@@ -288,7 +286,8 @@ class NDB_PageTest extends TestCase
         $this->assertEquals(
             array('name'    => 'test_name',
                   'label'   => 'test_label',
-                  'type'    => 'advcheckbox'),
+                  'type'    => 'advcheckbox',
+                  'class' => 'form-control input-sm'),
             $this->_page->form->form['test_name']
         );
     }
@@ -296,8 +295,6 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addRadio calls LorisForm::addGroup and properly creates a 
      * group of radio elements.
-     *
-     * @note See fixme comment for NDB_Page::addRadio
      *
      * @covers NDB_Page::addRadio
      * @return void
@@ -387,6 +384,172 @@ class NDB_PageTest extends TestCase
     }
 
     /**
+     * Test that addPassword calls addElement from LorisForm and properly adds
+     * an element to the page's form
+     *
+     * @covers NDB_Page::addPassword
+     * @return void
+     */
+    public function testAddPassword()
+    {
+        $this->_page->addPassword("test_name", "test_label");
+        $this->assertEquals(
+            array('name'    => 'test_name',
+                  'label'   => 'test_label',
+                  'type'    => 'password',
+                  'class'   => 'form-control input-sm'),
+            $this->_page->form->form['test_name']
+        );
+    }
+
+    /**
+     * Test that addRule calls the LorisForm::addRule method and adds
+     * the rule attribute to the given element
+     *
+     * @covers NDB_Page::addRule
+     * @return void
+     */
+    public function testAddRule()
+    {
+        $this->_page->addBasicText("abc", "Hello", array());
+        $this->_page->addRule("abc", "Required!", "required");
+        $this->assertTrue($this->_page->form->form['abc']['required']);
+        $this->assertEquals(
+            'Required!', $this->_page->form->form['abc']['requireMsg']
+        );
+    }
+
+    /**
+     * Test that addGroup calls LorisForm::addGroup and adds a group of elements
+     * to the form correctly
+     *
+     * @covers NDB_Page::addGroup
+     * @return void
+     */
+    public function testAddGroup()
+    {
+        $text1 = $this->_page->createText("test_name1", "test_label1");
+        $text2 = $this->_page->createText("test_name2", "test_label2");
+        $this->_page->addGroup(
+            array($text1, $text2), "test_group", "group_label", ", "
+        );
+        $result = array('name'      => 'test_group',
+                        'type'      => 'group',
+                        'label'     => 'group_label',
+                        'delimiter' => ', ',
+                        'options'   => null,
+                        'elements'  => array($text1, $text2));
+        $this->assertEquals(
+            $result,
+            $this->_page->form->form['test_group']
+        );    
+    }
+
+    /**
+     * Test that addGroupRule calls LorisForm::addGroupRule and adds the correct
+     * rules and rule messages to the given group's elements
+     *
+     * @covers NDB_Page::addGroupRule
+     * @return void
+     */
+    public function testAddGroupRule()
+    {
+        $text1 = $this->_page->createText("test_name1", "test_label1");
+        $text2 = $this->_page->createText("test_name2", "test_label2");
+        $this->_page->addGroup(
+            array($text1, $text2), "test_group", "group_label", ", "
+        );
+        $testRules = array(
+                         array(
+                             array("Message for text1!", 'required')),
+                         array(
+                             array("Message for text2!", 'numeric')));
+        $this->_page->addGroupRule("test_group", $testRules);
+
+        $this->assertTrue(
+            $this->_page->form->form['test_group']['elements'][0]['required']
+        );
+        $this->assertEquals(
+            "Message for text1!",
+            $this->_page->form->form['test_group']['elements'][0]['requireMsg']
+        );
+        $this->assertTrue(
+            $this->_page->form->form['test_group']['elements'][1]['numeric']
+        );
+        $this->assertEquals(
+            "Message for text2!",
+            $this->_page->form->form['test_group']['elements'][1]['numericMsg']
+        );
+    }
+
+    /**
+     * Test that createSelect returns an array representing a select element
+     *
+     * @covers NDB_Page::createSelect
+     * @return void
+     */
+    public function testCreateSelect()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'select',
+                  'class' => 'form-control input-sm',
+                  'options' => null),
+            $this->_page->createSelect("test_field", "test_label")
+        );
+    }
+
+    /**
+     * Test that createLabel returns an array representing a label element
+     *
+     * FIXME: This is incomplete because the createLabel function needs
+     *        to be updated. See the fixme comment above NDB_Page::createLabel
+     *        - Alexandra Livadas
+     *
+     * @covers NDB_Page::createLabel
+     * @return void
+     */
+    public function testCreateLabel()
+    {
+        $this->markTestIncomplete("This test is incomplete");
+    }
+
+    /**
+     * Test that createText returns an array representing a text element
+     *
+     * @covers NDB_Page::createText
+     * @return void
+     */
+    public function testCreateText()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'text',
+                  'class' => 'form-control input-sm'),
+            $this->_page->createText("test_field", "test_label")
+        );
+    }
+
+    /**
+     * Test that createTextArea returns an array representing a textarea element
+     *
+     * @covers NDB_Page::createTextArea
+     * @return void
+     */
+    public function testCreateTextArea()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'textarea',
+                  'class' => 'form-control input-sm'),
+            $this->_page->createTextArea("test_field", "test_label")
+        );
+    }
+
+    /**
      * Test that createDate returns an array representing a date element
      *
      * @covers NDB_Page::createDate
@@ -401,6 +564,55 @@ class NDB_PageTest extends TestCase
                   'class' => 'form-control input-sm',
                   'options' => null),
             $this->_page->createDate("test_field", "test_label")
+        );
+    }
+
+    /**
+     * Test that createCheckbox returns an array representing an advcheckbox element
+     *
+     * @covers NDB_Page::createCheckbox
+     * @return void
+     */
+    public function testCreateCheckbox()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'advcheckbox'),
+            $this->_page->createCheckbox("test_field", "test_label")
+        );
+    }
+
+    /**
+     * Test that createRadio returns an array representing a radio element
+     *
+     * @covers NDB_Page::createRadio
+     * @return void
+     */
+    public function testCreateRadio()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'radio'),
+            $this->_page->createRadio("test_field", "test_label")
+        );
+    }
+
+    /**
+     * Test that createPassword returns an array representing a password element
+     *
+     * @covers NDB_Page::createPassword
+     * @return void
+     */
+    public function testCreatePassword()
+    {
+        $this->assertEquals(
+            array('name' => 'test_field',
+                  'label' => 'test_label',
+                  'type' => 'password',
+                  'class' => 'form-control input-sm'),
+            $this->_page->createPassword("test_field", "test_label")
         );
     }
 }

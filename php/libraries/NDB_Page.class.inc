@@ -164,7 +164,9 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Wrapper to create a header
      * FIXME: Setting the name to null is not a good idea because the name
-     *        is the key to the element in the form array! -Alexandra Livadas
+     *        is the key to the element in the form array. It's been changed
+     *        to a ' ' string so that the method can be unit tested but ideally
+     *        there should be a name param. -Alexandra Livadas
      *
      * @param string $header The text to put in the header
      *
@@ -172,7 +174,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', null, $header);
+        $this->form->addElement('header', ' ', $header);
     }
 
     /**
@@ -199,7 +201,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Wrapper to create a static label to the current page
      * FIXME: Setting the name to null is not a good idea because the name
-     *        is the key to the element in the form array! -Alexandra Livadas
+     *        is the key to the element in the form array. -Alexandra Livadas
      *
      * @param string $label The text to add to the label.
      *
@@ -266,25 +268,21 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a date field (without an accompanying not answered option) to the
      * current page.
      *
-     * FIXME: 'style' is not a valid attribute that is set in the
-     *        LorisForm::createBase method, so it is not actually used.
-     *        - Alexandra Livadas
-     *
      * @param string $field   The name of the date field
      * @param string $label   Label to attach to the date field in the frontend
      * @param array  $options Options to pass to HTML_QuickForm
      * @param array  $attr    Extra HTML attributes to add to the date group.
      *
      * @return void
+     *
+     * @note The 'style' information was removed because it is not an attribute
+     *       added to an element in the LorisForm library. -Alexandra Livadas
      */
     function addBasicDate(
         $field,
         $label,
         $options=array(),
-        $attr=array(
-               'class' => 'form-control input-sm',
-               'style' => 'max-width:33%; display:inline-block;',
-              )
+        $attr=array('class' => 'form-control input-sm')
     ) {
         if ($options === array() && !empty($this->dateOptions)) {
             $options = $this->dateOptions;
@@ -295,12 +293,6 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Wrapper to create a checkbox
      *
-     * FIXME: The optional array is never actually put into the element
-     *        because LorisForm::addHeader does not take it as a parameter.
-     *        The 'class' attribute should be added to the 'options' array
-     *        instead and the optional array should be removed.
-     *        - Alexandra Livadas
-     *
      * @param string $name     The field name of this checkbox
      * @param string $label    The label to attach to this checkbox
      * @param array  $options  Options to pass to QuickForm for this
@@ -309,12 +301,18 @@ class NDB_Page implements RequestHandlerInterface
      *                         to the checkbox
      *
      * @return void
+     *
+     * @note The optional array is never actually put into the element
+     *       because LorisForm::addHeader does not take it as a parameter.
+     *       The 'class' attribute is now added to the $options array instead
+     *       whereas before it was in the $optional array.
+     *        - Alexandra Livadas
      */
     function addCheckbox($name, $label, $options, $optional=array())
     {
-        $optional = array_merge(
+        $options = array_merge(
             array('class' => 'form-control input-sm'),
-            $optional
+            $options
         );
         $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
     }
@@ -427,10 +425,16 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $format  See QuickForm documentation.
      *
      * @return void
+     *
+     * @note The fourth parameter ($format) was removed because
+     *       LorisForm::addRule does not have this fourth parameter. It is
+     *       still included in the function declaration because this function
+     *       may be called with four parameters elsewhere in the codebase!
+     *       - Alexandra Livadas
      */
     function addRule($element, $message, $type, $format=null)
     {
-        $this->form->addRule($element, $message, $type, $format);
+        $this->form->addRule($element, $message, $type);
     }
 
     /**
@@ -453,17 +457,23 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array  $elements   The group of elements to add to the page
-     * @param string $name       The name to give this group
-     * @param string $label      A label to attach to the group
-     * @param string $separator  The separator to use between group elements
-     * @param string $appendName ????
+     * @param array  $elements  The group of elements to add to the page
+     * @param string $name      The name to give this group
+     * @param string $label     A label to attach to the group
+     * @param string $delimiter The separator to use between group elements
+     * @param string $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return void
+     *
+     * @note The names of the last two parameters were changed to match
+     *       the parameters of LorisForm::addGroup and make their purposes
+     *       more clear - Alexandra Livadas
      */
-    function addGroup($elements, $name, $label, $separator, $appendName=null)
+    function addGroup($elements, $name, $label, $delimiter, $options=null)
     {
-        $this->form->addGroup($elements, $name, $label, $separator, $appendName);
+        $this->form->addGroup($elements, $name, $label, $delimiter, $options);
     }
 
     /**
@@ -487,6 +497,11 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Create a QuickForm label element but does not add it to the form
+     *
+     * FIXME: LorisForm::createElement does not use the label parameter when
+     *        the element type is "static". Also, the $labelString paramter here
+     *        has been placed as the fourth parameter which is actually the $options
+     *        array in the createElement function! - Alexandra Livadas
      *
      * @param string $labelString The label to attach to the element
      *
@@ -541,10 +556,6 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm date element but does not add it to the form.
      *
-     * FIXME: 'style' is not a supported attribute that is added in the
-     *        LorisForm::createBase method. This should be changed or removed.
-     *        - Alexandra Livadas
-     *
      * @param string $field       The fieldname for this date field
      * @param string $label       The label to attach to this date
      * @param array  $dateOptions List of options to pass to QuickForm
@@ -552,15 +563,15 @@ class NDB_Page implements RequestHandlerInterface
      *                            group.
      *
      * @return array representing date element
+     *
+     * @note The 'style' information was removed because it is not an attribute
+     *       added to an element in the LorisForm library. -Alexandra Livadas
      */
     function createDate(
         $field,
         $label,
         $dateOptions=null,
-        $attr=array(
-               'class' => 'form-control input-sm',
-               'style' => 'max-width:33%; display:inline-block;',
-              )
+        $attr=array('class' => 'form-control input-sm')
     ) {
         return $this->form->createElement(
             "date",
