@@ -136,7 +136,7 @@ class Password
      *
      * @return bool Whether the password is known to be pwned.
      */
-    function pwned(string $password): bool
+    private function pwned(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
