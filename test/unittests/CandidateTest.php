@@ -536,7 +536,7 @@ class CandidateTest extends TestCase
                                    2 => 2
                                );
         
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(
             $expectedSubprojects,
@@ -601,7 +601,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('');
         
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals('', $this->_candidate->getFirstVisit());
     }
 
@@ -620,7 +620,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(2);
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(2, $this->_candidate->getNextVisitNo());
     }
  
@@ -639,7 +639,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(null);
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(1, $this->_candidate->getNextVisitNo());
     }
     /**
@@ -682,7 +682,7 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(array('CandID' => 969664));
+            ->willReturn(array('CandID' => new CandID(969664)));
 
         $this->assertTrue(
             Candidate::candidateExists(
@@ -769,7 +769,7 @@ class CandidateTest extends TestCase
     public function testGetConsents()
     {
         $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
+        $this->_candidate->select(new CandID(969664));
  
         $result = array(
                       array('ConsentID'     => 1,
