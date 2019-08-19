@@ -450,9 +450,10 @@ function editConsentStatusFields($db, $user)
                          ];
 
         // Validate data
-        $recordExists = array_key_exists($consentID, $candidateConsent);
-        $oldStatus    = $candidateConsent[$consentID]['Status'] ?? null;
-        $validated    = false;
+        $recordExists  = array_key_exists($consentID, $candidateConsent);
+        $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
+        $validated     = false;
 
         switch ($status) {
         case 'yes':
@@ -478,24 +479,12 @@ function editConsentStatusFields($db, $user)
                     return;
                 }
             } else { // If no status stays no or record existed as NULL
+                    // consent date and empty withdrawal date still required
+                    // old withdrawal may be filled in
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
+                    && (empty($withdrawal) || !empty($oldWithdrawal))
                 ) {
-                    $countYesStatusHistory = $db->pselectOne(
-                        "SELECT COUNT(*) FROM candidate_consent_history
-                        WHERE PSCID=:pscid AND ConsentName=:cn AND Status='yes'",
-                        array(
-                         'pscid' => $pscid,
-                         'cn'    => $consentName,
-                        )
-                    );
-                    // If consent was 'yes' at some point, withdrawal date is !empty
-                    // if it was never 'yes', withdrawal date should be empty
-                    // Either is valid.
-                    if ((!empty($withdrawal) && $countYesStatusHistory > 0)
-                        || (empty($withdrawal) && $countYesStatusHistory === 0)
-                    ) {
-                        $validated = true;
-                    }
+                    $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($date)
                     && !empty($withdrawal)
                 ) { // Withdrawing from 'yes' status required consent date
