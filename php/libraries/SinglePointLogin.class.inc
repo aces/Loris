@@ -261,7 +261,29 @@ class SinglePointLogin
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                \Utility::updatePassword(\User::factory($username), $password);
+                try {
+                    $newHash = new \Password($password);
+                    \Utility::updatePassword(
+                        \User::factory($username),
+                        $newHash
+                    );
+                } catch (\InvalidArgumentException $e) {
+                    // Edge-case: if a user has a password based on old LORIS
+                    // password standards and it needs rehashing, it will
+                    // generate this exception when used above.
+                    // Rather than force a password change, we will manually
+                    // update the password here without using the Password class
+                    $newHash = password_hash(
+                        $password,
+                        PASSWORD_DEFAULT
+                    );
+                    \NDB_Factory::singleton()->database()->update(
+                        'users',
+                        array('Password_hash' => $newHash),
+                        array('UserID' => $username)
+                    );
+                }
+
             }
 
             if ($row['Active'] == 'N'

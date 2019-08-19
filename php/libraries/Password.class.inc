@@ -111,10 +111,16 @@ class Password
                 'The password is not complex enough.'
             );
         }
-        if ($this->pwned($value)) {
-            throw new \InvalidArgumentException(
-                'This password is known to be exposed in online data breaches.'
-            );
+        if (\NDB_Factory::singleton()->config()->settingEnabled(
+            'usePwnedPasswordsAPI'
+        )
+        ) {
+            if ($this->_pwned($value)) {
+                throw new \InvalidArgumentException(
+                    'This password is known to be exposed in online data '
+                    . 'breaches.'
+                );
+            }
         }
     }
 
@@ -136,17 +142,11 @@ class Password
      *
      * @return bool Whether the password is known to be pwned.
      */
-    private function pwned(string $password): bool
+    private function _pwned(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
         // always return false (meanning that the password has not been pwned).
-        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
-            'usePwnedPasswordsAPI'
-        )
-        ) {
-            return false;
-        }
 
         /* The pwned passwords API searches a range of password hashes to
          * protect the actual SHA1 hash from being revealed.
