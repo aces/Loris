@@ -536,8 +536,6 @@ class CandidateTest extends TestCase
                                    2 => 2
                                );
         
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
         $this->assertEquals(
             $expectedSubprojects,
             $this->_candidate->getValidSubprojects()
