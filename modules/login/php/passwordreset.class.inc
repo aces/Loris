@@ -93,7 +93,7 @@ class PasswordReset extends \NDB_Form
             }
         } catch(\Exception $e) {
             error_log(
-                "Unhandled exception in reset_password: `{$e->getMessage}`"
+                "Unhandled exception in reset_password: `{$e->getMessage()}`"
             );
         }
     }
