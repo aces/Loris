@@ -34,12 +34,16 @@ class OK extends JsonResponse
     /**
      * Create a Json response containing the 200 OK Response
      *
-     * @param string $msg The response text
+     * @param array $body Data to convert to JSON.
+     * @param array $headers Array of headers to use at initialization.
+     *
+     * @return void
      */
-    public function __construct(string $msg = 'OK')
-    {
-        $body = array('msg' => $msg);
-        parent::__construct($body, 200);
+    public function __construct(
+        array $body = [],
+        array $headers = []
+    ) {
+        parent::__construct($body, 200, $headers);
     }
 }
 

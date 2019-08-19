@@ -32,11 +32,17 @@ use \LORIS\Http\Response\JsonResponse;
 class Created extends JsonResponse
 {
     /**
-     * Create a Json response containing the 200 OK Response
+     * Create a Json response specific to 201 Created
+     *
+     * @param array $body The response content
+     * @param string $location The created resource location
+     *
+     * @return void
      */
-    public function __construct()
+    public function __construct(array $body = [], string $location = '/')
     {
-        parent::__construct(new EmptyStream(), 201);
+        $headers = array('Location' => $location);
+        parent::__construct($body, 201, $headers);
     }
 }
 
