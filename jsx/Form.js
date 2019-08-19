@@ -972,10 +972,19 @@ class DateElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleButton = this.handleButton.bind(this);
   }
 
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  handleButton(e) {
+    let date = new Date();
+    let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                        .toISOString()
+                        .split('T')[0];
+    this.props.onUserInput(this.props.name, dateString);
   }
 
   render() {
@@ -1003,19 +1012,32 @@ class DateElement extends Component {
           {requiredHTML}
         </label>
         <div className="col-sm-9">
-          <input
-            type="date"
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            min={this.props.minYear}
-            max={this.props.maxYear}
-            onChange={this.handleChange}
-            value={this.props.value}
-            required={required}
-            disabled={disabled}
-          />
-          {errorMessage}
+          <div style={{display: 'flex'}}>
+            <div style={{flexGrow: 3}}>
+              <input
+                type="date"
+                className="form-control"
+                name={this.props.name}
+                id={this.props.id}
+                min={this.props.minYear}
+                max={this.props.maxYear}
+                onChange={this.handleChange}
+                value={this.props.value}
+                required={required}
+                disabled={disabled}
+              />
+              {errorMessage}
+            </div>
+            <div style={{flexGrow: 1}}>
+              <button
+                type="button"
+                onClick={this.handleButton}
+                className= "btn btn-primary"
+              >
+                Today
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1057,10 +1079,18 @@ class TimeElement extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleButton = this.handleButton.bind(this);
   }
 
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  handleButton(e) {
+    let date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    this.props.onUserInput(this.props.name, hours+':'+minutes);
   }
 
   render() {
@@ -1088,19 +1118,34 @@ class TimeElement extends Component {
           {requiredHTML}
         </label>
         <div className="col-sm-9">
-          <input
-            type="time"
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            onChange={this.handleChange}
-            value={this.props.value || ''}
-            required={required}
-            disabled={disabled}
-            pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])?"
-            title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
-          />
-          {errorMessage}
+          <div
+            style={{display: 'flex'}}
+          >
+            <div style={{flexGrow: 3}}>
+              <input
+                type="time"
+                className="form-control"
+                name={this.props.name}
+                id={this.props.id}
+                onChange={this.handleChange}
+                value={this.props.value || ''}
+                required={required}
+                disabled={disabled}
+                pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])?"
+                title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
+              />
+              {errorMessage}
+            </div>
+            <div style={{flexGrow: 1}}>
+              <button
+                type="button"
+                onClick={this.handleButton}
+                className= "btn btn-primary"
+              >
+                Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
