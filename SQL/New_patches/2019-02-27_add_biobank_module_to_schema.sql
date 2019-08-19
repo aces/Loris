@@ -541,6 +541,7 @@ INSERT INTO biobank_container_status (Label)
 VALUES  ('Available'),
         ('Reserved'),
         ('Dispensed'),
-        ('Discarded')
+        ('Discarded'),
+        ('Shipped')
 ;
 

@@ -350,7 +350,7 @@ class DataTable extends Component {
     }
     let rowsPerPage = this.state.page.rows;
     let headers = this.props.hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' onClick={() => {
+      <th key='th_col_0' style={{cursor: 'pointer'}} onClick={() => {
         this.setSortColumn(-1);
       }}>
         {this.props.rowNumLabel}
@@ -363,6 +363,7 @@ class DataTable extends Component {
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
+                style={{cursor: 'pointer'}}
                 onClick={() => {
                   this.setSortColumn(i);
                 }}>
@@ -371,7 +372,9 @@ class DataTable extends Component {
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={() => {
+            <th key={'th_col_' + colIndex}
+              style={{cursor: 'pointer'}}
+              onClick={() => {
               this.setSortColumn(i);
             }}>
               {this.props.fields[i].label}
