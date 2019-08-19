@@ -111,7 +111,7 @@ class Password
                 'The password is not complex enough.'
             );
         }
-        if ($this::pwned($value)) {
+        if ($this->pwned($value)) {
             throw new \InvalidArgumentException(
                 'This password is known to be exposed in online data breaches.'
             );
