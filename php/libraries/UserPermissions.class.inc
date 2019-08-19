@@ -91,11 +91,10 @@ class UserPermissions
         // values extracted for this user from the database.
         if (is_array($results) and !empty($results)) {
             foreach ($results AS $row) {
-                if (empty($row['userID']) || empty($row['code'])) {
+                if (empty($row['userID'])) {
+                    $this->permissions[$row['code']] = false;
                     continue;
                 }
-                // The line below may not be necessary as the $query already
-                // filters for a userID matching this user...
                 $userMatch = $row['userID'] === $this->userID;
                 $this->permissions[$row['code']] = $userMatch;
             }
