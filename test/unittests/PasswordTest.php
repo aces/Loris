@@ -95,7 +95,7 @@ class PasswordTest extends TestCase
             ->method('getSetting')
             ->willReturn('false');
 
-        new Password($invalidValue);
+        new \Password($invalidValue);
     }
 
     /**
@@ -105,7 +105,7 @@ class PasswordTest extends TestCase
      * @return void
      */
     public function testWellFormedPassword(): void {
-        $this->assertInstanceOf('Password', new Password(self::VALID_PASSWORD));
+        $this->assertInstanceOf('Password', new \Password(self::VALID_PASSWORD));
     }
 
     /*
@@ -116,7 +116,7 @@ class PasswordTest extends TestCase
      */
     public function testToString(): void
     {
-        $password = new Password(self::VALID_PASSWORD);
+        $password = new \Password(self::VALID_PASSWORD);
         $this->assertTrue(
             password_verify(self::VALID_PASSWORD, (string) $password)
         );
