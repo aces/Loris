@@ -34,7 +34,7 @@ class Created extends JsonResponse
     /**
      * Create a Json response specific to 201 Created
      *
-     * @param array $body The response content
+     * @param array  $body     The response content
      * @param string $location The created resource location
      *
      * @return void
