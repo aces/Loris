@@ -958,7 +958,6 @@ class Utility
         $expiry = $expiry ?? new \DateTime(
             date('Y-m-d', strtotime('+6 months'))
         );
-        error_log($expiry->format(self::MYSQL_DATE_FORMAT));
 
         // Update the users table to change $user's pasword to $password.
         \NDB_Factory::singleton()->database()->update(
