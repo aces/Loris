@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 # Run PHP -l on everything to ensure there's no syntax
 # errors.

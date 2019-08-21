@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Wrapper script which waits until MySQL and Selenium are up and serving requests.
 
-set -e
+set -euo pipefail
 
 cmd="$@"
 
