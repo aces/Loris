@@ -38,7 +38,7 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * A valid password to use for login tests.
      */
-    protected $validPassword = 'correct horse battery staple';
+    protected $validPassword = 'sufficient length and complexity';
 
     private $_oldConfig = array();
 
