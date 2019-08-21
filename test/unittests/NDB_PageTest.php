@@ -12,7 +12,7 @@
  */
 use PHPUnit\Framework\TestCase;
 /**
- * Unit test for NDB_Config class
+ * Unit tests for NDB_Config class
  *
  * @category Tests
  * @package  Main
@@ -121,7 +121,6 @@ class NDB_PageTest extends TestCase
      */
     public function testAddHeader()
     {
-        //$this->markTestIncomplete("This test is incomplete!");
         $this->_page->addHeader("test_header");
         $this->assertEquals(
             array('label' => 'test_header',
@@ -617,23 +616,6 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that display returns a string of content in JSON form if the format
-     * variable is set to 'json'
-     *
-     * @covers NDB_Page::display
-     * @return void
-     *
-     * @note This test is incomplete because format is a protected var that 
-     *       cannot be set here. - Alexandra Livadas
-     */
-    public function testDisplayWithJSONFormat()
-    {
-        $this->markTestIncomplete("This test is incomplete");
-        //$this->_page->format = 'json';
-        $this->assertEquals("", $this->_page->display());
-    }
-
-    /**
      * Test that display returns an empty string if skipTemplate is true
      *
      * @covers NDB_Page::display
@@ -661,11 +643,10 @@ class NDB_PageTest extends TestCase
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
-        $smartyMock = $this->getMockBuilder('Smarty_NeuroDB')
+        $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $smartyMock->expects($this->any())
-            ->method('fetch')
+        $smarty->expects($this->any())->method('fetch')
             ->willReturn("fetch was called!");
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
