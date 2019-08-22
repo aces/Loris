@@ -220,7 +220,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $filename    = $uploadedfile->getClientFilename();
         $patientname = $pscid. "_" . $candid . "_" . $visitlabel;
-        if (!preg_match("/^${patientname}/", $filename)) {
+        if (!preg_match("/^${patientname}/", $filename) && $isphantom !== 'true') {
             return new \LORIS\Http\Response\BadRequest(
                 "Filename must start with $patientname."
             );
