@@ -1552,7 +1552,7 @@ class ButtonElement extends Component {
 
   render() {
     return (
-      <div className="row form-group">
+      <div className={this.props.className}>
         <div className={this.props.columnSize}>
           <button
             name={this.props.name}
@@ -1572,12 +1572,17 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  className: PropTypes.string,
+  buttonClass: PropTypes.string,
+  columnSize: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
 ButtonElement.defaultProps = {
+  name: '',
   label: 'Submit',
   type: 'submit',
+  className: 'row form-group',
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
