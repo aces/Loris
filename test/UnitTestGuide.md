@@ -4,9 +4,9 @@
 ## Written: Summer 2019 for LORIS 21
 
 
-##  Alexandra Livadas, Google Summer of Code
+###  Alexandra Livadas, Google Summer of Code
 
-_[with reference to PHPUnit Manual (8.3)](https://phpunit.readthedocs.io/en/8.3/)_
+#### _[with reference to PHPUnit Manual (8.3)](https://phpunit.readthedocs.io/en/8.3/)_
 
  
 
@@ -23,7 +23,7 @@ Note that integration tests are run by Travis via GitHub and out of the scope of
 **<span style="text-decoration:underline;">A note on Branching:</span>** LORIS test development should be done on _major_ by convention.  However links in this guide sometimes point to the branch holding the latest release (_master)_.
 
 
-#### **<span style="text-decoration:underline;">Setting up your Test Dev Environment</span>**
+### **Setting up your Test Dev Environment**
 
 A very similar set-up guide can be found in the [README.md](https://github.com/aces/Loris/blob/master/test/README.md) in the test directory. 
 
@@ -55,7 +55,7 @@ Now the test-dev environment should be ready!
 Run the command `npm run tests:unit` to execute all unit tests. The first time this command is run, **it will take time** for the environment to be setup. Every time after this, it will take a lot less time.
 
 
-#### **<span style="text-decoration:underline;">How to Run Tests</span>**
+### **How to Run Tests**
 
 To run all unit tests under [/test/unittests](https://github.com/aces/Loris/tree/major/test/unittests), use the command below. (Run this from the LORIS root directory and NOT inside the test directory.)
 
@@ -132,9 +132,8 @@ So, the script runs the contents of [./test/dockerized-unit-tests.sh](https://gi
 The list of tests to run is defined in [./test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the ./test/unittests/ directory!
 
 
-#### **<span style="text-decoration:underline;">Troubleshooting </span>**
-
-<span style="text-decoration:underline;">General Errors:</span>
+### **Troubleshooting**
+**General Errors:**
 
 If  the _major_ branch has been updated on the Loris repo, and your test-dev environment is now out of sync (branch and/or database) you will see seemingly unrelated errors like: 	
 
@@ -172,7 +171,7 @@ Then, run `npm run tests:unit` again. The tests will take longer to run because 
 Unit tests are meant to test small units of the codebase. The idea is that if each small function is actively being tested, it will be easier to avoid larger errors and it will also make finding and fixing bugs a lot easier. So, the first thing to keep in mind is that unit tests should not be long or complicated bits of code! 
 
 
-#### **<span style="text-decoration:underline;">Class Definition</span>**
+### **Class Definition**
 
 Every unit test class should extend the _TestCase_ class from the PHPUnit framework. So, before your class definition, be sure to include this line of code:
 
@@ -193,14 +192,14 @@ Then, define your class:
 
 
 
-#### **<span style="text-decoration:underline;">Naming Conventions</span>**
+### **Naming Conventions**
 
 The name of the individual unit test must start with the word **‘test’** to be considered. For example, something like `testAddDate` works, but `addDateTest` does not. 
 
 All unit tests should be declared **public**.
 
 
-#### **<span style="text-decoration:underline;">The setUp function</span>**
+### **The setUp function**
 
 This function is called **before** each unit test in the class is run. This is where you can set up variables that you know will be used in every test, like constants or mock objects. Even if there are no variables to set up, you still need to write a generic method or you will get an error. Here is the generic setUp method, which calls the parent _setUp_ method from the _TestCase_ phpunit class:
 
@@ -214,7 +213,7 @@ This function is called **before** each unit test in the class is run. This is w
 
 
 
-#### **<span style="text-decoration:underline;">The tearDown function</span>**
+### **The tearDown function**
 
 This function is called **after** each unit test is run. If any variables or objects need to be reset or cleared before running the next test, it should be done here. Generally, if a mock factory or database was used, it should be reset here after every test (an example of this can be found in the “Testing Queries” section). Similarly to the setUp function explained above, the generic tearDown function will simply call its parent from the _TestCase_ class:
 
@@ -228,7 +227,7 @@ This function is called **after** each unit test is run. If any variables or obj
 
 
 
-#### **<span style="text-decoration:underline;">Incomplete tests</span>**
+### **Incomplete tests**
 
 [PHPUnit Documentation](https://phpunit.readthedocs.io/en/8.3/incomplete-and-skipped-tests.html#incomplete-tests)
 
@@ -245,7 +244,7 @@ $this->markTestIncomplete("This test is incomplete (or something more specific)"
 The message will appear on the command line when the unit tests are executed to specify which test is incomplete and why. **Code below this line does not have to be commented out or deleted because the test aborts as soon as it hits that line.**
 
 
-#### **<span style="text-decoration:underline;">Skipped tests</span>**
+### **Skipped tests**
 
 [PHPUnit Documentation](https://phpunit.readthedocs.io/en/8.3/incomplete-and-skipped-tests.html#skipping-tests)
 
@@ -271,17 +270,15 @@ Here is an example of this, taken from [Loris_PHPUnit_Database_TestCase.php](htt
 ## Specific Test Types
 
 
-#### **<span style="text-decoration:underline;">Data Providers</span>**
+### **Data Providers**
 
 [PHPUnit documentation](https://phpunit.readthedocs.io/en/8.2/writing-tests-for-phpunit.html#data-providers)
 
-Example Implementation: .[/test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/8f3f26e97e475cb918ed873d5d32019adc29974e/test/unittests/UtilityTest.php#L200)
+Example Implementation: [./test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/8f3f26e97e475cb918ed873d5d32019adc29974e/test/unittests/UtilityTest.php#L200)
 
 Data providers are used to provide an array of different inputs to a test. 
 
-<span style="text-decoration:underline;">Useful to Test: </span>
-
-
+_Useful to Test:_
 
 1. Methods that perform calculations -- test multiple inputs and their outputs.
     1. If the method you are testing is a pure function which takes parameters and returns a value, the data provider should return an array of tuples of the form 
@@ -289,9 +286,9 @@ Data providers are used to provide an array of different inputs to a test.
 2. Methods that change an input’s format, like a “toArray” method
 3. Methods that require a specific format for their input **(example used below)**
 
-<span style="text-decoration:underline;">In the “provider” function:</span> Return an array with whatever input to “feed” the test. 
+_In the “provider” function:_ Return an array with whatever input to “feed” the test. 
 
-<span style="text-decoration:underline;">In the test function:</span> Declare the data provider in the function comment. Then, declare the inputs as parameters for that test. 
+_In the test function:_ Declare the data provider in the function comment. Then, declare the inputs as parameters for that test. 
 
 _Fact:_ The comment the data provider is declared in **MUST** start with `/**` or it will not work. _Example implementation (from UtilityTest.php):_
 
@@ -333,7 +330,7 @@ _Fact:_ The comment the data provider is declared in **MUST** start with `/**` o
 
 
 
-#### **<span style="text-decoration:underline;">Test Doubles (Mocking)</span>**
+### **Test Doubles (Mocking)**
 
 [PHPUnit Documentation](https://phpunit.readthedocs.io/en/8.3/test-doubles.html#)
 
@@ -399,7 +396,7 @@ This tests that when LorisForm::addElement() is called with the ‘static’ par
 This can be used for almost any class within LORIS. In the section right below, there is more detail on how to use test doubles to test database queries. 
 
 
-#### **<span style="text-decoration:underline;">Testing Queries</span>**
+### **Testing Queries**
 
 To know before starting: if you encounter a user/database object declaration like this: 
 
@@ -624,7 +621,7 @@ $this->_dbMock->setFakeTableData(
  Once the tables that the query uses are added, you can test the method as normal, and 	the query should run on the “fake” database you’ve created!
 
 
-#### **<span style="text-decoration:underline;">Testing Exceptions</span>**
+### **Testing Exceptions**
 
 [PHPUnit Documentation](https://phpunit.readthedocs.io/en/8.3/writing-tests-for-phpunit.html#testing-exceptions)
 
@@ -634,11 +631,11 @@ If a method throws a \LorisException when called with a certain parameter, somet
 
 
 ```
-    public function testExample()
-    {
-        $this->expectException('\LorisException');
-        $this->exampleObject->exampleFunction(incorrectParam);
-    }
+public function testExample()
+{
+$this->expectException('\LorisException');
+$this->exampleObject->exampleFunction(incorrectParam);
+}
 ```
 
 
@@ -646,6 +643,6 @@ If that exception is not thrown, the test will fail with this error message:
 
 
 ```
-    Failed asserting that exception of type "\LorisException" is thrown. 
+Failed asserting that exception of type "\LorisException" is thrown. 
 ```
 
