@@ -411,7 +411,7 @@ Please update the code to use this LORIS standard declaration:
 
 
 ```
-	$factory = NDB_Factory::singleton();
+    $factory = NDB_Factory::singleton();
 	$DB      = $factory->database();
     $user    = $factory->user();
 ```
