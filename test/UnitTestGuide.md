@@ -165,6 +165,10 @@ After rebasing, you will need to run these commands, which resets your docker-co
 
 Then, run `npm run tests:unit` again. The tests will take longer to run because the docker-compose environment has to re-compile. 
 
+**When updating LORIS to new release:**
+Don't forget that there may be scripts as well as patches to run.  Double-check with a senior dev, and/or (for releases) be sure to follow the upgrade steps in the Release notes.
+
+
 
 ## The Basics
 
