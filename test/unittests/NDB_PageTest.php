@@ -156,7 +156,7 @@ class NDB_PageTest extends TestCase
      * FIXME: This is incomplete because the addLabel
      *        method sets the name value to null which makes it hard to 
      *        define the element or to find it in the form->form array! 
-     *        See fixme commment in addLabel method -Alexandra Livadas
+     *        See fixme comment in addLabel method -Alexandra Livadas
      *
      * @covers NDB_Page::addLabel
      * @return void
