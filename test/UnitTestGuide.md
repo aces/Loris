@@ -57,7 +57,7 @@ Run the command `npm run tests:unit` to execute all unit tests. The first time t
 
 ### **How to Run Tests**
 
-To run all unit tests under [/test/unittests](https://github.com/aces/Loris/tree/major/test/unittests), use the command below. (Run this from the LORIS root directory and NOT inside the test directory.)
+To run all unit tests under [test/unittests](https://github.com/aces/Loris/tree/major/test/unittests), use the command below. (Run this from the LORIS root directory and NOT inside the test directory.)
 
 
    `npm run tests:unit`
@@ -115,7 +115,7 @@ If any tests produce a failure or error, a big red error message will appear in 
 
 
 
-##### **How does this command work?**
+#### **How does this command work?**
 
 `npm run tests:unit` is a script specified in the package.json file in your LORIS root directory. It is defined as: 
 
@@ -123,13 +123,13 @@ If any tests produce a failure or error, a big red error message will appear in 
 `"tests:unit": "./test/dockerized-unit-tests.sh"`
 
 
-So, the script runs the contents of [./test/dockerized-unit-tests.sh](https://github.com/aces/Loris/blob/major/test/dockerized-unit-tests.sh). If we take a look at this file, it runs the unit tests using docker-compose and vendor/bin/phpunit. It specifies which tests to run with this line: 
+So, the script runs the contents of [test/dockerized-unit-tests.sh](https://github.com/aces/Loris/blob/major/test/dockerized-unit-tests.sh). If we take a look at this file, it runs the unit tests using docker-compose and vendor/bin/phpunit. It specifies which tests to run with this line: 
 
 
 `--configuration test/phpunit.xml --testsuite LorisUnitTests $*`
 
 
-The list of tests to run is defined in [./test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the ./test/unittests/ directory!
+The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the ./test/unittests/ directory!
 
 
 ### **Troubleshooting**
@@ -148,7 +148,7 @@ Example B:
 `E: Package 'mysql-client' has no installation candidate \
 ERROR: Service 'unit-tests' failed to build: The command '/bin/sh -c apt-get update &&     `	
 
-<span style="text-decoration:underline;">How to fix:</span>
+**How to fix:**
 
 You will need to update your environment to the major branch: 
 
@@ -274,7 +274,7 @@ Here is an example of this, taken from [Loris_PHPUnit_Database_TestCase.php](htt
 
 [PHPUnit documentation](https://phpunit.readthedocs.io/en/8.2/writing-tests-for-phpunit.html#data-providers)
 
-Example Implementation: [./test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/8f3f26e97e475cb918ed873d5d32019adc29974e/test/unittests/UtilityTest.php#L200)
+Example Implementation: [test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/major/test/unittests/UtilityTest.php#L200)
 
 Data providers are used to provide an array of different inputs to a test. 
 
@@ -290,7 +290,8 @@ _In the “provider” function:_ Return an array with whatever input to “feed
 
 _In the test function:_ Declare the data provider in the function comment. Then, declare the inputs as parameters for that test. 
 
-_Fact:_ The comment the data provider is declared in **MUST** start with `/**` or it will not work. _Example implementation (from UtilityTest.php):_
+_Fact:_ The comment the data provider is declared in **MUST** start with `/**` or it will not work. 
+_Example implementation (from UtilityTest.php):_
 
 
 ```
@@ -334,7 +335,8 @@ _Fact:_ The comment the data provider is declared in **MUST** start with `/**` o
 
 [PHPUnit Documentation](https://phpunit.readthedocs.io/en/8.3/test-doubles.html#)
 
-<span style="text-decoration:underline;">Useful to test:</span> Beyond testing database queries (discussed later), creating a test double of some object is most useful when you would like **to test that a method gets called**, but you do not need to test the actual logic of the method. 
+_Useful to test:_
+ Beyond testing database queries (discussed later), creating a test double of some object is most useful when you would like **to test that a method gets called**, but you do not need to test the actual logic of the method. 
 
 The two methods used to create test doubles are `createMock($type)` and `getMockBuilder($type)`. The method used most often within LORIS is `getMockBuilder()`, because it is more customizable. 
 
@@ -389,7 +391,7 @@ This tests that when LorisForm::addElement() is called with the ‘static’ par
 
 `expects:` specifies how many times the addStatic function is expected to be called.
 
-`with: `checks that the arguments being passed to the mock method are as expected. 
+`with:` checks that the arguments being passed to the mock method are as expected. 
 
 `willReturn:` specifies what “fake” output you would like the mock object to return once this method is called. Since this is a mock object, the method will not return anything on its own, so you can specify what you would like it to return for your test. 
 
@@ -425,14 +427,12 @@ This will make testing a lot easier. See issues #[4989](https://github.com/aces/
 
 **1. With the ‘pselect’-style database method**
 
-   Example implementation: [/test/unittests/UtilityTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UtilityTest.php) -- Not including the first 2 tests!
+   Example implementation: [test/unittests/UtilityTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UtilityTest.php) -- Not including the first 2 tests!
 
 
 	
 
-<span style="text-decoration:underline;">When to use this:</span>
-
-<span style="text-decoration:underline;">	</span>This test is a “pure” unit test because there are no external dependencies involved. It should be used when you would like **to test that the correct query is being called**. 
+**When to use this:** This test is a “pure” unit test because there are no external dependencies involved. It should be used when you would like **to test that the correct query is being called**. 
 
 As will be explained, the database is a mock and so you decide what the query returns. Therefore, you cannot test the logic of the query with this method. 
 
@@ -472,7 +472,7 @@ protected function tearDown()
 
 Everything is now setup so we can write tests. 
 
-The Database class comes with methods such as ‘pselect’, ‘pselectRow’, ‘pselectWithIndexKey’ that allow you to run MySQL queries. So, when a method calls 
+The Database class comes with methods such as `pselect`, `pselectRow`, `pselectWithIndexKey` that allow you to run MySQL queries. So, when a method calls 
 these methods, such as here:
 
 
@@ -514,12 +514,12 @@ public function testExample()
 
 **2. With the ‘setFakeTableData’ database method**
 
-Example implementation: [/test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php)
+Example implementation: [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php)
 
 **This is not a ‘pure’ unit test because it does not use a mock database! Instead, you are
 essentially creating a database object and inputting fake tables into it, which means that these tests usually take longer to execute.**
 
-**<span style="text-decoration:underline;">	When to use this:</span>** This method is useful when you would like to test the actual logic of the query. Since you are inserting tables into your fake database, you can test that the query returns the correct output given the table information you have included. 
+**When to use this:** This method is useful when you would like to test the actual logic of the query. Since you are inserting tables into your fake database, you can test that the query returns the correct output given the table information you have included. 
 
 The **setUp** method, where you declare the necessary objects:
 
@@ -615,7 +615,7 @@ $this->_dbMock->setFakeTableData(
 
 **Important:**
 
-**The table should only be added once**. So, setFakeTableData should never be included in the setUp method because you will get a “Table already exists” error after the first test is run. If you create some helper method, like “_setUpFakeTables” that adds tables that will be used in every test, **it should still only be run once**, like in the first test. See [/test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php) on the major branch for an example. 
+**The table should only be added once**. So, setFakeTableData should never be included in the setUp method because you will get a “Table already exists” error after the first test is run. If you create some helper method, like “_setUpFakeTables” that adds tables that will be used in every test, **it should still only be run once**, like in the first test. See [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php) on the major branch for an example. 
 
 
  Once the tables that the query uses are added, you can test the method as normal, and 	the query should run on the “fake” database you’ve created!
