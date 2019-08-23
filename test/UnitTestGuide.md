@@ -20,7 +20,7 @@ Note that integration tests are run by Travis via GitHub and out of the scope of
 
 ## Setup
 
-**<span style="text-decoration:underline;">A note on Branching:</span>** LORIS test development should be done on _major_ by convention.  However links in this guide sometimes point to the branch holding the latest release (_master)_.
+**<span style="text-decoration:underline;">A note on Branching:</span>** LORIS test development should be done on the _major_ branch by convention.  However links in this guide sometimes point to the branch holding the latest release (_master)_.
 
 
 ### **Setting up your Test Dev Environment**
