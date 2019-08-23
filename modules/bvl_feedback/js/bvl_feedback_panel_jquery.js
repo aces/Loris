@@ -8,13 +8,13 @@ $(document).ready(function() {
   var commentID = $('meta[itemprop="commentID"]').attr("context");
 
   $('.navbar-toggle').on('click',function(event){
-      $("#bvl_feedback_menu").toggleClass("active_panel");
-      $("#bvl_panel_wrapper").toggleClass("bvl_panel");
+    $("#bvl_feedback_menu").toggleClass("active_panel");
+    $("#bvl_panel_wrapper").toggleClass("bvl_panel");
 
 	  //We check if a sidebar exists on the page and toggle it if such.
 	  if ($("#page_wrapper_sidebar").length){
-	      $("#sidebar-wrapper").toggle("#sidebar-wrapper hide_sidebar");
-	      $("#page_wrapper_sidebar").toggleClass("wrapper");
+	    $("#sidebar-wrapper").toggle("#sidebar-wrapper hide_sidebar");
+	    $("#page_wrapper_sidebar").toggleClass("wrapper");
 	  }
     $('.dynamictable').DynamicTable();
   });
