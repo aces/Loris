@@ -129,7 +129,7 @@ So, the script runs the contents of [test/dockerized-unit-tests.sh](https://gith
 `--configuration test/phpunit.xml --testsuite LorisUnitTests $*`
 
 
-The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the ./test/unittests/ directory!
+The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/ directory`!
 
 
 ### **Troubleshooting**
