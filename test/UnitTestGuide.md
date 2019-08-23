@@ -129,7 +129,7 @@ So, the script runs the contents of [test/dockerized-unit-tests.sh](https://gith
 `--configuration test/phpunit.xml --testsuite LorisUnitTests $*`
 
 
-The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/ directory`!
+The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/` directory!
 
 
 ### **Troubleshooting**
@@ -295,6 +295,7 @@ _In the “provider” function:_ Return an array with whatever input to “feed
 _In the test function:_ Declare the data provider in the function comment. Then, declare the inputs as parameters for that test. 
 
 _Fact:_ The comment the data provider is declared in **MUST** start with `/**` or it will not work. 
+
 _Example implementation (from UtilityTest.php):_
 
 
@@ -391,7 +392,7 @@ public function testAddStaticIsCalled()
 ```
 
 
-This tests that when LorisForm::addElement() is called with the ‘static’ parameter, the addStatic method is called. 
+This tests that when `LorisForm::addElement()` is called with the ‘static’ parameter, the addStatic method is called. 
 
 `expects:` specifies how many times the addStatic function is expected to be called.
 
@@ -404,7 +405,7 @@ This can be used for almost any class within LORIS. In the section right below, 
 
 ### **Testing Queries**
 
-To know before starting: if you encounter a user/database object declaration like this: 
+**To know before starting:** if you encounter a user/database object declaration like this: 
 
 
 ```
@@ -550,7 +551,7 @@ protected function setUp(): void \
 } 
 
 ```
-As you can see, the `$this->_dbMock` object is now declared as a `\Database::singleton() ` rather than as a mock object. This is why it is not a pure unit test and why we cannot use the same “expects” method as in the previous section. 
+As you can see, the `$this->_dbMock` object is now declared as a `\Database::singleton()` rather than as a mock object. This is why it is not a pure unit test and why we cannot use the same “expects” method as in the previous section. 
 
 	
 The **tearDown** function is the same as before:
