@@ -4,7 +4,7 @@
 ## Written: Summer 2019 for LORIS 21
 
 
-###  Alexandra Livadas, Google Summer of Code
+###  Alexandra Livadas, [Google Summer of Code](https://alexandralivadas.github.io/pages/gsoc-2019.html)
 
 #### _[with reference to PHPUnit Manual (8.3)](https://phpunit.readthedocs.io/en/8.3/)_
 
@@ -13,7 +13,7 @@
 ---
 
 
-This guide was written as part of Google Summer of Code.  It is for LORIS developers or anyone working with LORIS who wants to contribute unit tests to the LORIS codebase (github.com/aces/Loris) and learn best practices for setting up and writing unit tests. 
+This guide was written as part of Google Summer of Code.  It is for [LORIS](http://loris.ca/) developers or anyone working with LORIS who wants to contribute unit tests to the [LORIS codebase](github.com/aces/Loris) and learn best practices for setting up and writing unit tests. 
 
 Note that integration tests are run by Travis via GitHub and out of the scope of this guide.
 
