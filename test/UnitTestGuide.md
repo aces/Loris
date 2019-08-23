@@ -152,7 +152,7 @@ ERROR: Service 'unit-tests' failed to build: The command '/bin/sh -c apt-get upd
 
 You will need to update your environment to the major branch: 
 
-Rebase your branch and update your database. It is convenient to reload a backup of your database and then run the patches needed to update it to _major_, but only do this if nothing else is working!
+Rebase your branch and update your database. It is convenient to reload a backup of your database and then run the patches needed to update it to _major_. **Only** reload a backup of your database if nothing else is working!
 
 After rebasing, you will need to run these commands, which resets your docker-compose environment. 
 
