@@ -402,7 +402,7 @@ To know before starting: if you encounter a user/database object declaration lik
 
 
 ```
-	$DB   = \Database::singleton();
+    $DB   = \Database::singleton();
     $user = \User::singleton();
 ```
 
