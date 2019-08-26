@@ -12,13 +12,13 @@ services:
 - docker
 
 install:
-- sudo apt-get update
 - sudo apt-get install -y libapparmor1
 - pecl install -f ast-1.0.1
 - sudo apt-get install npm
 - make dev
 
 before_script:
+- sudo apt-get update
 - sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
