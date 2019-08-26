@@ -22,21 +22,18 @@ depending on the kind of change you are making:
 
 #### Bug Fixes
    - Branch: `bugfix` 
-   - Label: **[branch] bugfix** 
    - Content: Generally these changes do not require SQL scripts
    and are concise with the sole objective to correct a single problem
    in the code.
 
 #### Minor Changes and Small Features
    - Branch: `minor` 
-   - Label: **[branch] minor** 
    - Content: Features affecting self-contained components such
    as modules. Additions to Libraries, API, or modules that do not change
    any function signatures.
 
 #### Major Changes, Non Backwards-Compatible Changes and Large Features
    - Branch: `major` 
-   - Label: **[branch] major** 
    - Content: Any change modifying a function signature in a
    library class. Features require extensive LORIS-wide testing. New
    complex systems and features spanning across multiple modules and
