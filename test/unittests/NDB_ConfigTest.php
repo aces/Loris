@@ -26,9 +26,8 @@ class FakeConfig extends NDB_Config
     /** 
      * Fake NDB_Config method to construct a fake config object
      *
-     * @return void
      */
-    public function __construct(): void
+    public function __construct()
     {
     }
 }
