@@ -24,8 +24,10 @@ namespace LORIS\conflict_resolver;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Conflict_Resolver extends \DataFrameworkMenu
+class Resolved extends \DataFrameworkMenu
 {
+    public $skipTemplate = true;
+
     /**
      * Returns true if the user has permission to access
      * the conflict resolver module
@@ -74,7 +76,7 @@ class Conflict_Resolver extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new UnresolvedProvisioner();
+        return new ResolvedProvisioner();
     }
 
     /**
@@ -90,7 +92,7 @@ class Conflict_Resolver extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . '/conflict_resolver/js/conflict_resolver.js',
+             $baseURL . '/conflict_resolver/js/ResolvedIndex.js',
             )
         );
     }
