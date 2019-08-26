@@ -132,13 +132,13 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 

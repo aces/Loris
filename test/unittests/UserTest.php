@@ -136,13 +136,13 @@ class UserTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
     /**
@@ -153,7 +153,7 @@ class UserTest extends TestCase
      *       This can be changed when the rest of the User class updates how it 
      *       declares its database. - Alexandra Livadas
      * 
-     *@var \Database | PHPUnit_Framework_MockObject_MockObject
+     *@var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
     /**
