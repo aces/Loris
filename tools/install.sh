@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # This will:
@@ -6,6 +6,8 @@
 #   2. Log the installation in the logs directory
 # This will only install the database components and LORIS config file.
 #
+
+set -euo pipefail
 
 # Must be run interactively.
 if ! test -t 0 -a -t 1 -a -t 2 ; then
