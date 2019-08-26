@@ -18,7 +18,6 @@ install:
 - make dev
 
 before_script:
-- sudo apt-get update
 - sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
