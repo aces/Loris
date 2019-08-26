@@ -12,7 +12,6 @@ services:
 - docker
 
 install:
-- sudo apt -o Acquire::https::No-Cache=True -o Acquire::http::No-Cache=True update
 - sudo apt-get install -y libapparmor1
 - pecl install -f ast-0.1.6
 - sudo apt-get install npm
@@ -26,5 +25,3 @@ script:
 # docker-compose up --build
 - make checkstatic
 - docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
-
-dist: xenial
