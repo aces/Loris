@@ -12,11 +12,17 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-if (isset($_POST['tab'])) {
+
+$user =& \User::singleton();
+if (!$user->hasPermission('candidate_parameter_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+if (isset($_POST['tab'] ?? '')) {
     $tab = $_POST['tab'];
 
-    $db   =& \Database::singleton();
-    $user =& \User::singleton();
+    $db =& \Database::singleton();
 
     if ($tab == "candidateInfo") {
         editCandInfoFields($db, $user);
@@ -50,11 +56,6 @@ if (isset($_POST['tab'])) {
  */
 function editCandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -132,10 +133,6 @@ function editCandInfoFields($db, $user)
  */
 function editProbandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
     $candID   = $sanitize['candID'];
@@ -202,11 +199,6 @@ function editProbandInfoFields($db, $user)
  */
 function editFamilyInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -302,11 +294,6 @@ function editFamilyInfoFields($db, $user)
  */
 function deleteFamilyMember($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
@@ -338,11 +325,6 @@ function deleteFamilyMember($db, $user)
  */
 function editParticipantStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -397,11 +379,6 @@ function editParticipantStatusFields($db, $user)
  */
 function editConsentStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header('HTTP/1.1 403 Forbidden');
-        exit;
-    }
-
     // Get CandID
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== 'null') ?
