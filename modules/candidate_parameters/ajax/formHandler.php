@@ -482,7 +482,7 @@ function editConsentStatusFields($db, $user)
                     // consent date and empty withdrawal date still required
                     // old withdrawal may be filled in
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
-                    && (empty($withdrawal) || !empty($oldWithdrawal))
+                    && ((empty($oldWithdrawal) && empty($withdrawal)) || (!empty($oldWithdrawal) && !empty($withdrawal)))
                 ) {
                     $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($date)
