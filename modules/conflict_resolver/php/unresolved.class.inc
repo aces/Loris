@@ -1,13 +1,17 @@
 <?php
 /**
- * PHP Version 7
+ * This class provides the php code to create the menu filter form that
+ * allows unresolved conflicts to be processed as part of the conflict resolver
+ *
+ * PHP Version 5
  *
  * @category Behavioural
  * @package  Main
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
 namespace LORIS\conflict_resolver;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -16,16 +20,18 @@ use \LORIS\Api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 
 /**
- * Request handler to provide resolved conflicts for the conflict resolver
- * resolved tab.
+ * Menu_Filter_Form_Conflicts_Resolver Class
+ *
+ * This class provides the php code to create the menu filter form that
+ * allows unresolved conflicts to be processed as part of the conflict resolver
  *
  * @category Behavioural
  * @package  Main
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Resolved extends Endpoint implements ETagCalculator
+class Unresolved extends Endpoint implements ETagCalculator
 {
     /**
      * A cache of the endpoint results, so that it doesn't need to be
@@ -45,6 +51,7 @@ class Resolved extends Endpoint implements ETagCalculator
     {
         return ($user->hasPermission('conflict_resolver'));
     }
+
 
     /**
      * Implements the ETagCalculator interface.
@@ -84,8 +91,7 @@ class Resolved extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Returns a list of instruments to use as the "Source From"
-     * filter options
+     * Provide the select inputs options
      *
      * @return array Dynamic field options
      */
@@ -134,7 +140,7 @@ class Resolved extends Endpoint implements ETagCalculator
     {
         if (!isset($this->_cache)) {
             $user        = $request->getAttribute('user');
-            $provisioner = (new ResolvedProvisioner())->forUser($user);
+            $provisioner = (new UnresolvedProvisioner())->forUser($user);
 
             $conflicts = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)

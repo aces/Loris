@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
-import ConflictsFilterableDataTable from './conflicts_filterabledatatable';
+import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
 
 class ConflictResolver extends Component {
@@ -28,7 +28,7 @@ class ConflictResolver extends Component {
     switch (this.state.activeTab) {
       case 'unresolved':
         filtertable = (
-          <ConflictsFilterableDataTable />
+          <UnresolvedFilterableDataTable />
         );
         break;
       case 'resolved':

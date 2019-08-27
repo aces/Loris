@@ -3,7 +3,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflict from './fix_conflict';
 
-class ConflictsFilterableDataTable extends Component {
+class UnresolvedFilterableDataTable extends Component {
   constructor(props) {
     super(props);
 
@@ -53,9 +53,15 @@ class ConflictsFilterableDataTable extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(loris.BaseURL.concat('/conflict_resolver?format=json'), {credentials: 'same-origin'})
+    return fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((json) => {
+        const data = {
+          fieldOptions: json.fieldOptions,
+          data: json.data.map((e) => Object.values(e)),
+        };
+        this.setState({data});
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -127,7 +133,7 @@ class ConflictsFilterableDataTable extends Component {
     return (
       <FilterableDataTable
         name="unresolved"
-        data={this.state.data.Data}
+        data={this.state.data.data}
         fields={fields}
         getFormattedCell={this.formatColumn}
       />
@@ -135,4 +141,4 @@ class ConflictsFilterableDataTable extends Component {
   }
 }
 
-export default ConflictsFilterableDataTable;
+export default UnresolvedFilterableDataTable;

@@ -24,7 +24,7 @@ namespace LORIS\conflict_resolver;
  */
 class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {
-   /**
+    /**
      * Create a RowProvisioner
      */
     function __construct()
@@ -61,9 +61,9 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
      *
      * @param \User $user The requesting user
      *
-     * @return CandidatesProvisioner
+     * @return UnresolvedProvisioner
      */
-    public function forUser(\User $user): ConflictsProvisioner
+    public function forUser(\User $user): UnresolvedProvisioner
     {
         $new = clone($this);
         if (!$user->hasPermission('access_all_profiles')) {

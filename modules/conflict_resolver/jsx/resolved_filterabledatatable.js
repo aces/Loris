@@ -50,9 +50,15 @@ class ResolvedFilterableDataTable extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(loris.BaseURL.concat('/conflict_resolver/resolved?format=json'), {credentials: 'same-origin'})
+    return fetch(loris.BaseURL.concat('/conflict_resolver/resolved'), {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((json) => {
+        const data = {
+          fieldOptions: json.fieldOptions,
+          data: json.data.map((e) => Object.values(e)),
+        };
+        this.setState({data});
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -73,8 +79,8 @@ class ResolvedFilterableDataTable extends Component {
     const options = this.state.data.fieldOptions;
 
     const fields = [
-      {label: 'Conflict ID', show: false, filter: {
-        name: 'ConflictID',
+      {label: 'Resolved ID', show: false, filter: {
+        name: 'ResolvedID',
         type: 'text',
       }},
       {label: 'Project', show: true, filter: {
@@ -128,7 +134,7 @@ class ResolvedFilterableDataTable extends Component {
     return (
       <FilterableDataTable
         name="resolved"
-        data={this.state.data.Data}
+        data={this.state.data.data}
         fields={fields}
         getFormattedCell={this.formatColumn}
       />
