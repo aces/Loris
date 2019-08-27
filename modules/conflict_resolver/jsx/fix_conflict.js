@@ -11,7 +11,7 @@ class FixConflict extends Component {
   fix(e) {
     const conflictid = e.target.name;
     const correctanswer = e.target.value;
-    fetch(loris.BaseURL.concat('/conflict_resolver/fix_conflict'), {
+    fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
@@ -19,8 +19,9 @@ class FixConflict extends Component {
         },
         body: JSON.stringify({conflicid: conflictid, correctanswer: correctanswer}), // body data type must match "Content-Type" header
     })
-    .then((resp) => resp.json()) // parses JSON response into native JavaScript objects
-    .then((data) => console.log(data));
+    .catch((error) => {
+      console.error(error);
+    });
    }
 
   render() {

@@ -1013,7 +1013,8 @@ CREATE TABLE `conflicts_resolved` (
   `OldValue2` text DEFAULT NULL,
   `NewValue` text DEFAULT NULL,
   `ConflictID` int(10) DEFAULT NULL,
-  PRIMARY KEY (`ResolvedID`)
+  PRIMARY KEY (`ResolvedID`),
+  UNIQUE KEY `ConflictID` (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
