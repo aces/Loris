@@ -122,7 +122,7 @@ while true; do
 done;
 
 echo ""
-
+projectname=""
 while [ "$projectname" == "" ]; do
         read -p "Enter project name: " projectname
         echo $projectname | tee -a $LOGFILE > /dev/null
