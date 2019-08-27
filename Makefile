@@ -26,6 +26,7 @@ checkstatic: phpdev
 	npm run lint:php
 	npm run lint:javascript
 	vendor/bin/phan
+	bash -c 'shopt -s globstar nullglob; GLOBIGNORE="vendor*:node_modules*"; shellcheck **/*.{sh,ksh,bash}'
 
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
