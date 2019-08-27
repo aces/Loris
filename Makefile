@@ -28,6 +28,7 @@ checkstatic: phpdev
 	npm run lint:php
 	npm run lint:javascript
 	vendor/bin/phan
+	bash -c 'shopt -s globstar nullglob; GLOBIGNORE="vendor*:node_modules*"; shellcheck **/*.{sh,ksh,bash}'
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
