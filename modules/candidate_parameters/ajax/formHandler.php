@@ -479,8 +479,7 @@ function editConsentStatusFields($db, $user)
                     return;
                 }
             } else { // If no status stays no or record existed as NULL
-                    // consent date and empty withdrawal date still required
-                    // old withdrawal may be filled in
+                    // consent date required and withdrawal date unchanged
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
                     && ((empty($oldWithdrawal) && empty($withdrawal))
                     || (!empty($oldWithdrawal) && !empty($withdrawal)))
