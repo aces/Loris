@@ -13,10 +13,6 @@ import PropTypes from 'prop-types';
  * Loader component
  */
 class Loader extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div
