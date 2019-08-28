@@ -124,7 +124,22 @@ class ResolvedFilterableDataTable extends Component {
         name: 'Value2',
         type: 'text',
       }},
-      {label: 'Correct Answer', show: true, filter: {}},
+      {label: 'Correct Answer', show: true, filter: {
+        name: 'CorrectAnswer',
+        type: 'text',
+      }},
+      {label: 'User 1', show: true, filter: {
+        name: 'User1',
+        type: 'text',
+      }},
+      {label: 'User 2', show: true, filter: {
+        name: 'User2',
+        type: 'text',
+      }},
+      {label: 'Resolver', show: true, filter: {
+        name: 'Resolver',
+        type: 'text',
+      }},
       {label: 'Resolution Timestamp', show: true, filter: {
         name: 'ResolutionTimestamp',
         type: 'text',

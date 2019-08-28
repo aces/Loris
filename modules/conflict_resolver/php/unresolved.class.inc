@@ -100,11 +100,15 @@ class Unresolved extends Endpoint implements ETagCalculator
      */
     private function _getFieldOptions() : array
     {
+        $sites       = array_values(\Utility::getSiteList(false));
+        $visitlabels = array_values(\Utility::getVisitList());
+        $projects    = array_values(\Utility::getProjectList());
+
         return array(
-                'site'       => \Utility::getSiteList(false),
+                'site'       => array_combine($sites, $sites),
                 'instrument' => \Utility::getAllInstruments(),
-                'visitLabel' => \Utility::getVisitList(),
-                'project'    => \Utility::getProjectList(),
+                'visitLabel' => array_combine($visitlabels, $visitlabels),
+                'project'    => array_combine($projects, $projects),
                );
     }
 

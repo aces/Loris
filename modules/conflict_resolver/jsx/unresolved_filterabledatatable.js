@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import FixConflict from './fix_conflict';
+import FixConflictForm from './fix_conflict_form';
 
 class UnresolvedFilterableDataTable extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class UnresolvedFilterableDataTable extends Component {
           {name: '2', value: rowData['Value 2']},
         ];
         return (
-          <FixConflict conflictid={rowData['Conflict ID']} values={values} />
+          <FixConflictForm conflictid={rowData['Conflict ID']} values={values} />
         );
     }
     return (
@@ -119,14 +119,8 @@ class UnresolvedFilterableDataTable extends Component {
         name: 'Question',
         type: 'text',
       }},
-      {label: 'Value 1', show: true, filter: {
-        name: 'Value1',
-        type: 'text',
-      }},
-      {label: 'Value 2', show: true, filter: {
-        name: 'Value2',
-        type: 'text',
-      }},
+      {label: 'Value 1', show: false},
+      {label: 'Value 2', show: false},
       {label: 'Correct Answer', show: true},
     ];
 

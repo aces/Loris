@@ -45,6 +45,9 @@ class ResolvedDTO implements \LORIS\Data\DataInstance
              'Value 1'             => $this->value1,
              'Value 2'             => $this->value2,
              'Correct Answer'      => $this->correctanswer,
+             'User 1'              => $this->user1,
+             'User 2'              => $this->user2,
+             'Resolver'            => $this->resolver,
              'ResolutionTimestamp' => $this->resolutiontimestamp,
             )
         );
