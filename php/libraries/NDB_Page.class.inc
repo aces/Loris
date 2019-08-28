@@ -434,7 +434,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addRule($element, $message, $type, $format=null)
     {
-        $this->form->addRule($element, $message, $type);
+        $this->form->addRule($element, $message, $type, $format);
     }
 
     /**
