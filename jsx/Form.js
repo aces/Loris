@@ -1123,7 +1123,8 @@ class TimeElement extends Component {
     let date = new Date();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    this.props.onUserInput(this.props.name, hours+':'+minutes);
+    const timeString = ('0'+hours).slice(-2)+':'+('0'+minutes).slice(-2);
+    this.props.onUserInput(this.props.name, timeString);
   }
 
   render() {
