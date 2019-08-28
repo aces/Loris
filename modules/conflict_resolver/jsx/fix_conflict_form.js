@@ -12,14 +12,19 @@ class FixConflictForm extends Component {
     const conflictid = e.target.name;
     const correctanswer = e.target.value;
     fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({conflicid: conflictid, correctanswer: correctanswer}), // body data type must match "Content-Type" header
+        body: JSON.stringify({conflicid: conflictid, correctanswer: correctanswer}),
+    })
+    .then((resp) => {
+      // TODO::Add feedback.
+      console.info('value saved');
     })
     .catch((error) => {
+      // TODO::Add feedback.
       console.error(error);
     });
    }
@@ -27,16 +32,16 @@ class FixConflictForm extends Component {
   render() {
     const options = [
       <option ></option>,
-      <option name='1'>{this.props.values[0].value}</option>,
-      <option name='2'>{this.props.values[1].value}</option>,
+      <option key='option1' name='1'>{this.props.values[0].value}</option>,
+      <option key='option2' name='2'>{this.props.values[1].value}</option>,
     ];
     return (
       <td>
-      <form action={loris.BaseURL.concat('/conflict_resolver/fix_conflict')}>
-      <select className='form-control input-sm' name={this.props.conflictid} onChange={this.fix}>
-        {options}
-      </select>
-      </form>
+        <form action={loris.BaseURL.concat('/conflict_resolver/fix_conflict')}>
+          <select className='form-control input-sm' name={this.props.conflictid} onChange={this.fix}>
+            {options}
+          </select>
+        </form>
       </td>
     );
   }
