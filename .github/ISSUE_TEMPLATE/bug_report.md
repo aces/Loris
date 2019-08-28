@@ -18,7 +18,7 @@ Steps to reproduce the behavior (attach screenshots if applicable):
 4. See error
 
 **What happened?**
-A clear and concise description of what the expected behaviour was.
+A clear and concise description of what the behaviour was. 
 
 **What did you expect to happen?**
 A clear and concise description of what you expected to happen.
@@ -29,7 +29,7 @@ A clear and concise description of what you expected to happen.
 - Version [e.g. 22]
 
 **Server Environment (if known):**
-- LORIS Version: [e.g. 21.0.0, 16.04]
+- LORIS Version: [e.g. 21.0.0]
 - Linux distribution and Version: [e.g. Ubuntu 16.04, CentOS 7]
 - MySQL/MariaDB Version: [e.g. MySQL 5.7, MariaDB 10.3]
 
