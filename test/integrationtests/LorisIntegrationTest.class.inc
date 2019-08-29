@@ -547,6 +547,7 @@ abstract class LorisIntegrationTest extends TestCase
     function getReactElementContent($ui)
     {
         $attempts = 0;
+        $err = null;
         do {
             try {
                 return $this->webDriver->executescript(
@@ -554,14 +555,15 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
          //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if ($err) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
     /**
@@ -573,6 +575,7 @@ abstract class LorisIntegrationTest extends TestCase
     function clickReactElement($ui)
     {
           $attempts = 0;
+          $err = null;
         do {
             try {
                 $this->webDriver->executescript(
@@ -580,14 +583,15 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
          //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if ($err) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
     /**
@@ -599,6 +603,7 @@ abstract class LorisIntegrationTest extends TestCase
     function clickReactElementByHref($href)
     {     
           $ref = "a[href^=\"".$href."\"]";
+          $err      = null;
           $attempts = 0;
         do {
             try {
@@ -607,14 +612,15 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
          //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if ($err) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
     /**
@@ -626,6 +632,7 @@ abstract class LorisIntegrationTest extends TestCase
     function getReactTableRows($ui)
     {
         $attempts = 0;
+        $err      = null;
         do {
             try {
                 $res = $this->webDriver->executescript(
@@ -633,14 +640,15 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
            //     echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if ($err) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
         $array =explode('rows', $res);
         return trim($array[0]);
@@ -655,6 +663,7 @@ abstract class LorisIntegrationTest extends TestCase
     function reactTextSendKey($ui,$value)
     {
          $attempts = 0;
+         $err      = null;
         do {
             try {
                 $this->webDriver->executescript(
@@ -667,14 +676,15 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
          //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if ($err) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
     /**
