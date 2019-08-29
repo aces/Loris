@@ -553,13 +553,16 @@ abstract class LorisIntegrationTest extends TestCase
                     "return document.querySelector('$ui').textContent"
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
     /**
      * Click a React Element
@@ -576,13 +579,16 @@ abstract class LorisIntegrationTest extends TestCase
                     "document.querySelector('$ui').click()"
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
     /**
      * Click a React Element by href 
@@ -600,13 +606,16 @@ abstract class LorisIntegrationTest extends TestCase
                     "document.querySelector('$ref').click()"
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
     /**
      * Get rows of the React table, ? rows displayed of ?
@@ -623,13 +632,16 @@ abstract class LorisIntegrationTest extends TestCase
                     "return document.querySelector('$ui').textContent"
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+           //     echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
         $array =explode('rows', $res);
         return trim($array[0]);
     }
@@ -654,13 +666,16 @@ abstract class LorisIntegrationTest extends TestCase
                  input.dispatchEvent(event);"
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
     /**
      * Select a value in a react dropdown list
@@ -682,13 +697,17 @@ abstract class LorisIntegrationTest extends TestCase
                 "
                 );
             } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
+             //   echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
+        if (!$e) {
+           echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
+         
     }
     /**
      * Testing filter funtion and clear button
