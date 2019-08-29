@@ -697,6 +697,7 @@ abstract class LorisIntegrationTest extends TestCase
     function reactDropdownSendKey($ui,$value)
     {
          $attempts = 0;
+         $err = null;
         do {
             try {
                 $this->webDriver->executescript(
@@ -708,13 +709,14 @@ abstract class LorisIntegrationTest extends TestCase
                 );
             } catch (Exception $e) {
              //   echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if (!$e) {
+        if ($err) {
            echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
          
