@@ -97,7 +97,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveFilterClearBtn()
     {
-print_r('testdicomArchiveFilterClearBtn');
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
         $row = self::$table;
@@ -117,7 +116,6 @@ print_r('testdicomArchiveFilterClearBtn');
      */
     function testLinksViewDetails()
     {
-print_r('testLinksViewDetails');
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "tr:nth-child(1)>td:nth-child(8)>a";
         $text     = $this->getReactElementContent($location);
@@ -140,7 +138,6 @@ print_r('testLinksViewDetails');
      */
     function testLinksViewImages()
     {
-print_r('testLinksViewImages');
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "tr:nth-child(1) > td:nth-child(9) > a";
         $text     = $this->getReactElementContent($location);
@@ -156,7 +153,6 @@ print_r('testLinksViewImages');
      */
     function testLinksViewDetailsHidden()
     {
-print_r('testLinksViewDetailsHidden');
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "tr:nth-child(1)>td:nth-child(8)>a";
         $text     = $this->getReactElementContent($location);
@@ -173,6 +169,7 @@ print_r('testLinksViewDetailsHidden');
         // Show/Hide Files 
         $Files = "tr:nth-child(21) > td:nth-child(2) > a";
         $this->clickReactElement($Files);
+        sleep(1);
         $text = $this->getReactElementContent('#files-data th:nth-child(1)');
         $this->assertContains('SeriesNumber', $text);
     }
