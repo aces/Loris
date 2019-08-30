@@ -717,7 +717,7 @@ abstract class LorisIntegrationTest extends TestCase
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
         if ($err) {
-           echo 'Caught exception: ',  $e->getMessage(), "\n";
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
          
     }
