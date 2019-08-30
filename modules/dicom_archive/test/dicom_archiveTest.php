@@ -164,14 +164,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         //test Show/Hide Series and Show/Hide Files 
         $Series = ".collapsed";
         $this->clickReactElement($Series);
-        sleep(1);
         $text = $this->getReactElementContent('#series-data th:nth-child(1)');
         $this->assertContains('Series Number', $text);
-        // Show/Hide Files 
-        $Files = "tr:nth-child(21) > td:nth-child(2) > a";
-        $this->clickReactElement($Files);
-        sleep(1);
-        $text = $this->getReactElementContent('#files-data th:nth-child(1)');
-        $this->assertContains('SeriesNumber', $text);
     }
 }
