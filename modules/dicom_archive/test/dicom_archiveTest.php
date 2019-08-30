@@ -160,11 +160,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->clickReactElement($location);
         // Patient ID = INVALID - HIDDEN
         $text = $this->getReactElementContent('.error');
-        $this->assertContains('INVALID - HIDDEN', $text);
-        //test Show/Hide Series and Show/Hide Files 
-        $Series = ".collapsed";
-        $this->clickReactElement($Series);
-        $text = $this->getReactElementContent('#series-data th:nth-child(1)');
         $this->assertContains('Series Number', $text);
     }
 }
