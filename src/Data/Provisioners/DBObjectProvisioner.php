@@ -11,7 +11,6 @@
  */
 
 namespace LORIS\Data\Provisioners;
-use \LORIS\Data\DataInstance;
 
 /**
  * A DBObejctProvisioner is an instance of ProvisionerInstance which
@@ -60,7 +59,7 @@ abstract class DBObjectProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     public function getAllInstances() : \Traversable
     {
-        $DB = (\NDB_Factory::singleton())->database();
+        $DB   = (\NDB_Factory::singleton())->database();
         $stmt = $DB->prepare($this->_query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS, $this->_classname);
         $stmt->execute($this->_params);

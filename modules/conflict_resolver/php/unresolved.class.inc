@@ -226,6 +226,12 @@ class Unresolved extends Endpoint implements ETagCalculator
             )
         );
 
+        if (empty($conflict)) {
+            return new \LORIS\Http\Response\NotFound(
+                'ConflictID not found.'
+            );
+        }
+
         // Fix instrument data
         $instrument = \NDB_BVL_Instrument::factory(
             $conflict['TableName'],
