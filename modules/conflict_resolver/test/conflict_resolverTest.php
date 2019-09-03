@@ -27,9 +27,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     //filter location on conflict_resolver page
     static $ForSite    = ".col-xs-12:nth-child(1) .form-control, [select]";
     static $Instrument = ".col-xs-12:nth-child(2) .form-control, [select]";
-    static $VisitLabel = ".col-xs-12:nth-child(3) .form-control, [select]";
-    static $CandID     = ".col-xs-12:nth-child(4) .form-control";
-    static $PSCID      = ".col-xs-12:nth-child(5) .form-control";
+    static $VisitLabel = "input[name='VisitLabel']";
+    static $CandID     = "input[name='CANDID']";
+    static $PSCID      = "input[name='PSCID']";
     static $Question   = ".col-xs-12:nth-child(6) .form-control";
     static $Project    = ".col-xs-12:nth-child(7) .form-control, [select]";
 
@@ -110,19 +110,13 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverPermission()
     {
-         $this->setupPermissions(array("conflict_resolver"));
-         $this->safeGet($this->url . "/conflict_resolver/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertNotContains(
-            "You do not have access to this page.",
-            $bodyText
-        );
-        $this->assertContains(
-            "Resolved Conflicts",
-            $bodyText
-        );
+        $this->setupPermissions(array("conflict_resolver"));
+        $this->safeGet($this->url . "/conflict_resolver");
 
+        $filters = $this->webDriver->findElement(
+            WebDriverBy::id('unresolved_filter')
+        );
+        $this->assertTrue(!empty($filters));
         $this->resetPermissions();
     }
 
@@ -133,16 +127,19 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverResolvedConflictsPermission()
     {
-         $this->setupPermissions(array("conflict_resolver"));
-         $this->safeGet(
-             $this->url
-             . "/conflict_resolver/resolved_conflicts/"
-         );
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertContains("Resolved Conflicts", $bodyText);
-         $this->resetPermissions();
+        $this->setupPermissions(array("conflict_resolver"));
+        $this->safeGet(
+            $this->url
+            . "/conflict_resolver"
+        );
+        $this->webDriver->executescript(
+            "document.querySelector('#tab-resolved').click();"
+        );
+        $filters = $this->webDriver->findElement(
+            WebDriverBy::id('resolved_filter')
+        );
+        $this->assertTrue(!empty($filters));
+        $this->resetPermissions();
     }
 
      /**
@@ -153,9 +150,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testConflictResolverWithoutPermission()
     {
          $this->setupPermissions(array());
-         $this->safeGet($this->url . "/conflict_resolver/");
+         $this->safeGet($this->url . "/conflict_resolver");
          $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
+             WebDriverBy::id('lorisworkspace')
          )->getText();
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
@@ -183,7 +180,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element loaction
+     * @param string $element The input element location
      * @param string $records The records number in the table
      * @param string $value   The test value
      *
