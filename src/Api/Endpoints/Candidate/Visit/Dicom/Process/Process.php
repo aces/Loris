@@ -89,7 +89,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) !== 1) {
-            return \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -127,7 +127,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pathparts = $request->getAttribute('pathparts');
         $processid = array_shift($pathparts);
         if (!is_numeric($processid)) {
-            return \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\NotFound();
         }
 
         // Instantiate the server process module to autoload

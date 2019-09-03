@@ -189,22 +189,12 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $mriuploads = $this->_visit->getMRIUploadsByFilename(
-            $user,
-            $this->_tarname
-        );
-
-        // TODO :: Put this in Timepoint::getMRIUplaodById()
-        $mriupload = array_shift(
-            array_filter(
-                $mriuploads,
-                function ($item) use ($mriuploadid) {
-                    return ($mriuploadid == $item->getUploadID());
-                }
-            )
-        );
-
-        if (is_null($mriupload)) {
+        try {
+            $mriupload = $this->_visit->getMRIUploadsById(
+                $user,
+                (int) $mriuploadid
+            );
+        } catch (\NotFound $e) {
             return new \LORIS\Http\Response\NotFound(
                 'filename and MRIUploadID do not match'
             );

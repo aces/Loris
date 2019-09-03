@@ -30,7 +30,7 @@ class Accepted extends JsonResponse
     /**
      * Create a Json response specific to 202 Accepted
      *
-     * @param string $body The error message
+     * @param array|null $body The error message
      */
     public function __construct(?array $body)
     {

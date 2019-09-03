@@ -1097,6 +1097,57 @@ class TimePoint
     }
 
     /**
+     * This retrieves a MRIUpload with the given id for that session.
+     *
+     * @param \User $user        The requesting user.
+     * @param int   $mriuploadid The mri_upload id.
+     *
+     * @throws \NotFound When the id can not be found for that session.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO
+     */
+    public function getMRIUploadsById(
+        \User $user,
+        int $mriuploadid
+    ): \LORIS\Data\Models\MRIUploadDTO {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               m.UploadID as mri_upload_id,
+               m.UploadedBy as uploaded_by,
+               m.UploadDate as upload_date,
+               m.UploadLocation as upload_location,
+               m.DecompressedLocation as decompress_location,
+               m.InsertionComplete as insertion_complete,
+               m.Inserting as inserting,
+               m.PatientName as patient_name,
+               m.number_of_mincInserted as inserted_minc_count,
+               m.number_of_mincCreated as created_minc_count,
+               m.TarchiveID as tarchive_id,
+               m.SessionID as session_id,
+               m.IsCandidateInfoValidated as is_candidate_info_validated,
+               m.IsTarchiveValidated as is_tarchive_validated,
+               m.IsPhantom as is_phantom
+             FROM
+               mri_upload m
+             WHERE
+               m.SessionID = :v_sessionid AND
+               m.UploadID = :v_mriuploadid
+            ',
+            array(
+             'v_sessionid'   => $this->getSessionID(),
+             'v_mriuploadid' => $mriuploadid,
+            )
+        );
+        if (empty($row)) {
+            throw new \NotFound('MRIUploadID not found.');
+        }
+
+        return \LORIS\Data\Models\MRIUploadDTO::fromDBRow($row);
+    }
+
+    /**
      * Accessor for this timepoint imaging QC status.
      *
      * @return \LORIS\TimePointImagingQC
