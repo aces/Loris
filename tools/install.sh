@@ -262,4 +262,6 @@ else
     exit 1
 fi
 
+make --file=../Makefile
+
 echo "Installation complete."
