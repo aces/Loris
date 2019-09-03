@@ -262,4 +262,6 @@ else
     exit 1
 fi
 
-echo "Installation complete."
+echo "Step 1 : Installation complete."
+echo "Step 2 : You need to run 'make' command under directly the your Loris folder."
+echo "Step 3 : Navigate to <loris-url>/installdb.php to install the database."
