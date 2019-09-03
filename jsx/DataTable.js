@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
@@ -7,7 +7,7 @@ import createFragment from 'react-addons-create-fragment';
  * Data Table component
  * Displays a set of data that is receives via props.
  */
-class DataTable extends PureComponent {
+class DataTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
