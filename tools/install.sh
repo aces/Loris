@@ -264,6 +264,6 @@ fi
 
 echo "The installation of LORIS software components is now complete."
 echo "Next: "
-echo "1. Todo: Run 'make' (or 'make dev') from inside your $RootDir folder ."
-echo "2. Todo: Configuring Apache2."
-echo "3. Todo: Open your browser to <loris-url>/installdb.php to continue installing the database."
+echo "Todo 1: Run 'make' (or 'make dev') from inside your $RootDir folder ."
+echo "Todo 2: Configuring Apache2."
+echo "Todo 3: Open your browser to <loris-url>/installdb.php to continue installing the database."
