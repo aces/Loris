@@ -262,6 +262,7 @@ else
     exit 1
 fi
 
-echo "Step 1 : Installation complete."
-echo "Step 2 : You need to run 'make' command under directly the your Loris folder."
-echo "Step 3 : Navigate to <loris-url>/installdb.php to install the database."
+echo "The installation of LORIS software components is now complete."
+echo "Next: "
+echo "1. Run 'make' (or 'make dev') from inside your $RootDir folder ."
+echo "2. Open your browser to <loris-url>/installdb.php to continue installing the database."
