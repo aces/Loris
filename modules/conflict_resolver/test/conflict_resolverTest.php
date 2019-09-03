@@ -39,9 +39,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 
     //public location for both pages
     static $clearFilter = ".col-sm-9 > .btn";
-    static $display     = ".table-header .col-xs-12";
-    static $saveBtn     = ".btn-sm:nth-child(1)";
-    static $resetBtn    = ".btn-sm:nth-child(2)";
+    static $display     = ".table-header";
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -213,7 +211,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertContains($records . ' rows', $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -252,27 +250,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Todo:Rewrite this test function.'
         );
-         $this->safeGet($this->url . "/conflict_resolver/");
-         //give a correct answer and save it for the first row
-         $element = "tr:nth-child(1) .form-control";
-         $value   = "2";
-         $btn     = self::$saveBtn;
-         $row     = self::$display;
-         $this->webDriver->executescript(
-             "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                "
-         );
-         $this->webDriver->executescript(
-             "document.querySelector('$btn').click()"
-         );sleep(1);
-         //todo find this
-         $bodyText = $this->webDriver->executescript(
-             "return document.querySelector('$row').textContent"
-         );
-            // 4 means there are 4 records under this site.
-         $this->assertContains("of 585", $bodyText);
-
     }
 }
 
