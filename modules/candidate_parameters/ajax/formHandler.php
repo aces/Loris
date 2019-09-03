@@ -13,36 +13,49 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-$user =& \User::singleton();
+$user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
-if (isset($_POST['tab'] ?? '')) {
-    $tab = $_POST['tab'];
-
-    $db =& \Database::singleton();
-
-    if ($tab == "candidateInfo") {
-        editCandInfoFields($db, $user);
-    } else if ($tab == "probandInfo") {
-        editProbandInfoFields($db, $user);
-    } else if ($tab == "familyInfo") {
-        editFamilyInfoFields($db, $user);
-    } else if ($tab == "deleteFamilyMember") {
-        deleteFamilyMember($db, $user);
-    } else if ($tab == "participantStatus") {
-        editParticipantStatusFields($db, $user);
-    } else if ($tab == "consentStatus") {
-        editConsentStatusFields($db, $user);
-    } else {
-        header("HTTP/1.1 404 Not Found");
-        exit;
-    }
+$tab = $_POST['tab'] ?? '';
+if ($tab === '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
 }
 
+$db = \Database::singleton();
 
+switch($tab) {
+case 'candidateInfo':
+    editCandInfoFields($db, $user);
+    break;
+
+case 'probandInfo':
+    editProbandInfoFields($db, $user);
+    break;
+
+case 'familyInfo':
+    editFamilyInfoFields($db, $user);
+    break;
+
+case 'deleteFamilyMember':
+    deleteFamilyMember($db, $user);
+    break;
+
+case 'participantStatus':
+    editParticipantStatusFields($db, $user);
+    break;
+
+case 'consentStatus':
+    editConsentStatusFields($db, $user);
+    break;
+
+default:
+    header("HTTP/1.1 404 Not Found");
+    exit;
+}
 
 /**
  * Handles the updating of Candidate Info
