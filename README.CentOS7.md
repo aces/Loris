@@ -135,7 +135,7 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 * admin : default username for Loris front-end admin account (browser login)
 
 **Run the LORIS install script to set up directories:**
-We do not recommend you configure apache on CentOS with this script.
+
 ```
 cd /var/www/loris/tools
 ./install.sh
@@ -145,8 +145,8 @@ Run the makefile (use `make dev` if you are setting up a development sandbox)
 cd /var/www/$projectname
 make
 ```
-**Install your database:*
-Open your browser (Chrome is supported0 go to: `http://%IPADDRESS%/installdb.php`
+**Install your database:**
+Open your browser and go to: `http://%IPADDRESS%/installdb.php`
 
 (%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
 
@@ -167,8 +167,8 @@ You may have to manually paste the xml output to `/var/www/loris/project/config.
 Your Loris instance should now be accessible by pointing your url to `http://%IPADDRESS%`
 
 If there are any errors or you get a blank page, troubleshoot the errors in your apache error log (by default
- `/var/log/httpd/lorris-error.log`) 
+ `/var/log/httpd/loris-error.log`) 
 
-Follow the Setup Guide in the LORIS wiki for all post-install steps.  
-Config settings re visible and editable in the LORIS configuration module under the Admin drop-down menu.
+Follow the Setup Guide in the LORIS wiki for all post-install steps and troubleshooting.  
+Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
 
