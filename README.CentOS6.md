@@ -2,7 +2,6 @@
 
 This document contains supplemental details on how to perform a basic CentOS 6.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
-As of Loris 17.0, the install script and web-based install steps as described in the main (Ubuntu) readme are applicable to CentOS installs. 
 
 This Readme assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
@@ -13,8 +12,8 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements
 
 Default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.7 is supported for LORIS 18.*
-* PHP 7 is supported for LORIS 18.* - upgrade your PHP manually
+* MySQL 5.7 is supported for LORIS 21.*
+* PHP 7.2 is supported for LORIS 21.* - upgrade your PHP manually
 
 The yum packages to be installed vary from any Ubuntu packages referenced in the LORIS README.
 
@@ -135,7 +134,8 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 * lorisuser : MySQL user with limited (insert, delete, update, select...) permissions on the Loris database, for database transactions requested by the Loris front end
 * admin : default username for Loris front-end admin account (browser login)
 
-**Run the loris install script:**
+**Run the LORIS install script to set up directories:**
+We do not recommend you configure apache on CentOS with this script.
 ```
 cd /var/www/loris/tools
 ./install.sh
@@ -145,8 +145,8 @@ Run the makefile (use `make dev` if you are setting up a development sandbox)
 cd /var/www/$projectname
 make
 ```
-**Configure your databse:*
-point your URL to: `http://%IPADDRESS%/installdb.php`
+**Install your database:*
+Open your browser (Chrome is supported0 go to: `http://%IPADDRESS%/installdb.php`
 
 (%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
 
@@ -166,8 +166,9 @@ You may have to manually paste the xml output to `/var/www/loris/project/config.
 
 Your Loris instance should now be accessible by pointing your url to `http://%IPADDRESS%`
 
-Further configuration can be done using the LORIS configuration module.
-
-If there are any errors or you get a blank page, you'll have to troubleshoot
-based on the errors in your apache error log (by default
+If there are any errors or you get a blank page, troubleshoot the errors in your apache error log (by default
  `/var/log/httpd/lorris-error.log`) 
+
+Follow the Setup Guide in the LORIS wiki for all post-install steps.  
+Config settings re visible and editable in the LORIS configuration module under the Admin drop-down menu.
+
