@@ -11,7 +11,7 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 
 # System Requirements
 
-Default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
+Default dependencies installed by CentOS 7.x may not meet the version requirements LORIS deployment or development.
 * MySQL 5.7 is supported for LORIS 21.*
 * PHP 7.2 is supported for LORIS 21.* - upgrade your PHP manually
 
@@ -21,6 +21,7 @@ The following should be installed with yum:
  * Apache2
  * PHP
  * MySQL
+ * Node
  * PHP Composer
 
 **Apache2:**
@@ -30,19 +31,16 @@ sudo service httpd start
 ```
 **PHP:**
 ```
-sudo yum install php php-pdo php-mysql 
+sudo yum install epel-release
+sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+sudo yum install yum-utils
+sudo yum-config-manager --enable remi-php72
+sudo yum update
+sudo yum search php72 | more
+sudo yum search php72 | egrep 'fpm|gd|mysql|memcache'
+sudo yum install php72
+sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
 ```
-
-*NOTE:* As of Loris 21.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
-``` 
-# update php5 -> php7
-curl 'https://setup.ius.io/' -o setup-ius.sh
-sudo bash setup-ius.sh
-
-# update php7 specific packages
-sudo yum remove php-cli mod_php php-common
-sudo yum install php70u-json php70-xml mod_php70u php70u-cli php70u-mysqlnd php70u-mbstring
-``` 
 **MySQL:**
 
 *Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
@@ -72,7 +70,11 @@ To finalise the MySQL/MariaDB installation:
 mysql_secure_installation
 ```
 (follow instructions to create a password the root user):
-
+**Nodejs:**
+```
+sudo yum install epel-release
+sudo yum install nodejs
+```
 **PHP Composer:**
 ```
 sudo curl -sS https://getcomposer.org/installer | php
