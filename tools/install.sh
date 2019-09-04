@@ -1,10 +1,12 @@
 #!/bin/bash
 
 #
-# This will:
-#   1. Set up the LORIS DB schema
-#   2. Log the installation in the logs directory
-# This will only install the database components and LORIS config file.
+# This script will:
+#   1. verify composer is installed to manage dependencies
+#   2. Set up the directory structure with appropriate permissions
+#   3. Log the installation in the logs directory
+#   4. Configure apache (optional)
+# This will only install the software components and directory structure.
 #
 
 # Must be run interactively.
@@ -203,7 +205,7 @@ echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
     while true; do
-        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] " yn
+        read -p "Would you like to automatically create/install apache config files? [yn] " yn
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
@@ -249,7 +251,7 @@ while true; do
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
 
             sudo service httpd restart
-            echo "You may need to manually uncomment the load rewrite module line of your conf."
+            echo "You may need to manually uncomment the load rewrite module line of your apache conf."
             break;;
         [Nn]* )
             echo "Not configuring apache."
@@ -263,6 +265,8 @@ else
 fi
 
 echo "The installation of LORIS software components is now complete."
-echo "Next: "
-echo "Todo 1: Run 'make' (or 'make dev') from inside your $RootDir folder."
-echo "Todo 2: Open your browser to <loris-url>/installdb.php to continue installing the database."
+echo "(For future troubleshooting assistance, you may wish to copy and save the output from this script.)"
+echo "Next steps: "
+echo "- Run 'make' (or 'make dev') from inside your $RootDir folder."
+echo "- Verify/enable your apache configuration and restart apache"
+echo "- Open Chrome (or Firefox) to <loris-url>/installdb.php to continue installing the database."
