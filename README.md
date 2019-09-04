@@ -72,9 +72,9 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     make
     ```
 
-5. Apache configuration and restart 
-Enable Apache's `mod_rewrite` module to rewrite LORIS URLs.
-Disable the default site and enable your `$projectname` site, then restart apache.
+5. Apache configuration
+
+If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:
 
     ```
     sudo a2enmod rewrite
