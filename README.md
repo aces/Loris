@@ -65,6 +65,8 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     cd /var/www/$projectname/tools
     ./install.sh
     ```
+    Run make (for production instances) or make dev (for development sandboxes).
+
 
 4. Apache configuration and restart 
 LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
