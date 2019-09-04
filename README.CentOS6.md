@@ -34,7 +34,7 @@ sudo service httpd start
 sudo yum install php php-pdo php-mysql 
 ```
 
-*NOTE:* As of Loris 17.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
+*NOTE:* As of Loris 21.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
 ``` 
 # update php5 -> php7
 curl 'https://setup.ius.io/' -o setup-ius.sh
@@ -139,6 +139,11 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 ```
 cd /var/www/loris/tools
 ./install.sh
+```
+Run the makefile (use `make dev` if you are setting up a development sandbox)
+```
+cd /var/www/$projectname
+make
 ```
 **Configure your databse:*
 point your URL to: `http://%IPADDRESS%/installdb.php`
