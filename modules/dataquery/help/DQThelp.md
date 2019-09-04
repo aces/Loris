@@ -1,29 +1,13 @@
 # Data Query Tool
 
-The Data Query Tool (DQT) is a simple and easy-to-use interface to your LORIS database. The DQT enables users to query and download data.
-The DQT can be used to define or use your query by using the following tabs:
- Info:
-A quick summary of each of the DQT tabs. It also states the time of last data cache update. 
-
-## Define Fields 
-
-Define the fields to be added to your query here. 
-
-## Define Filters 
-
-Define the criteria to filter the data for your query here. 
-
-## View Data 
-
-See the results of your query. 
-
-## Statistical Analysis
-
-Visualize or see basic statistical measures from your query here. 
-
-## Load Saved Query 
-
-Load a previously saved query (by name) by selecting from this menu.
+The Data Query Tool (DQT) is a simple and easy-to-use interface for querying and exporting data from LORIS. 
+The DQT module contains the following tabs: 
++ **Info** : View timestamp of last data update and general information 
++ **Define Fields** : Select fields for your query
++ **Define Filters** : Select criteria for your search based on field values
++ **View Data** : See the results of your query
++ **Statistical Analysis** : Visualize data and see basic statistical measures for your query results 
++ **Load Saved Query** : Load a previously stored query
 
 ## Manage Saved Queries
 
@@ -31,7 +15,21 @@ Either save your current query or see the criteria of previously saved queries h
 
 ## Define Fields
 
-The “Define Fields” tab is where you select the data categories and the specific data fields that you want added to your query. By default, all categories of data fields are displayed in a list when you first enter the tab. If you click on any category, its field names and field descriptions will appear in a table. If the number of fields in the chosen category exceeds the display limit per page, the results may be displayed on subsequent pages within the table, accessible via the page number buttons found by scrolling toward the bottom of the page. Any fields that are defined for the current query are listed on the right-hand side (subject to change). If there are no fields defined for the current query, this list is not shown. Time points can be specified within the field in the “Define Fields” tab or in the “Define Filters” tab. The options to add fields to your query are as follows: Option 1: Add Using Dropdown Fields can be searched for using the list of categories of data fields. After clicking the desired instrument, a list of fields are displayed. Clicking on a field row will highlight it and add it to the list of selected fields for your current query. Option 2: Search Within Instrument Fields can be searched for using the search bar. Once the user starts typing, all matches will be displayed in an active list. Once the desired field is displayed, the field must be clicked to be added into the query. Option 3: Add All If all fields from a particular category should be included in the query, use this method. By clicking the “Add All” button above the list of categories, all fields from the category will be added. Option 4: Load a Saved Query To reload a saved query, click on the "Load Saved Query" tab. User Saved Queries and Shared Saved Queries will appear in a dropdown. User Saved Queries are queries that the current user has saved, and are listed according to Query Name. Shared Saved Queries are publicly shared, and are listed according to the user who created it and the Query Name. Once a query is selected, the DQT will retrieve and load the query fields and filters that were selected when the query was initially created. This will be displayed under the “Define Fields” and “Define Filters” tabs, respectively. If you wish to remove fields from your query, you must find the field from the list (using the Search Within Instrument search bar or in the instrument list of fields) and click on the highlighted field. This can be confirmed by checking that the field no longer appears in your list of selected fields. If you wish to remove all currently selected fields from your query, you can click “Clear Query” in the list of Fields. If you wish to remove all fields from a specific category, click the “Remove All” button above the list of categories. Once all desired fields are listed under “Fields”, continue to the “Define Filters” tab to add filters to your query, or go directly to the “View Data” tab if your query does not require filters.
+The “Define Fields” tab is where you select the data categories and the specific data fields that you want added to your query. By default, all categories of data fields are displayed in a list when you first enter the tab. 
+If you click on any category, its field names and field descriptions will appear in a table. 
+
+If the number of fields in the chosen category exceeds the display limit per page, the results may be displayed on subsequent pages within the table, accessible via the page number buttons found by scrolling toward the bottom of the page. <br>
+Any fields that are defined for the current query are listed on the right-hand side (subject to change). If there are no fields defined for the current query, this list is not shown. Time points can be specified within the field in the “Define Fields” tab or in the “Define Filters” tab.<br><br>
+The options to add fields to your query are as follows: 
+
+
+Option 1: Add Using Dropdown Fields can be searched for using the list of categories of data fields. After clicking the desired instrument, a list of fields are displayed. Clicking on a field row will highlight it and add it to the list of selected fields for your current query. 
+Option 2: Search Within Instrument Fields can be searched for using the search bar. Once the user starts typing, all matches will be displayed in an active list. Once the desired field is displayed, the field must be clicked to be added into the query. 
+
+Option 3: Add All If all fields from a particular category should be included in the query, use this method. By clicking the “Add All” button above the list of categories, all fields from the category will be added. 
+Option 4: Load a Saved Query To reload a saved query, click on the "Load Saved Query" tab. User Saved Queries and Shared Saved Queries will appear in a dropdown. User Saved Queries are queries that the current user has saved, and are listed according to Query Name. Shared Saved Queries are publicly shared, and are listed according to the user who created it and the Query Name. 
+
+Once a query is selected, the DQT will retrieve and load the query fields and filters that were selected when the query was initially created. This will be displayed under the “Define Fields” and “Define Filters” tabs, respectively. If you wish to remove fields from your query, you must find the field from the list (using the Search Within Instrument search bar or in the instrument list of fields) and click on the highlighted field. This can be confirmed by checking that the field no longer appears in your list of selected fields. If you wish to remove all currently selected fields from your query, you can click “Clear Query” in the list of Fields. If you wish to remove all fields from a specific category, click the “Remove All” button above the list of categories. Once all desired fields are listed under “Fields”, continue to the “Define Filters” tab to add filters to your query, or go directly to the “View Data” tab if your query does not require filters.
 
 ## Define Filters
 
@@ -44,4 +42,6 @@ The “View Data” tab executes queries, displays query results, and allows use
 
 ## Manage Saved Queries
 
-The “Manage Saved Queries” tab organizes new or previously saved queries. The query name, selected fields and filters for each saved query are displayed in the table. Clicking on any column header (e.g. "Query Name") will sort the list by that column. The current query can be saved by clicking the "Save Current Query" button. A pop-up dialog will appear. Enter a descriptive query name. If you would like the query to be publicly shared, click on the checkbox. Then click "Save query" to complete the process, and the currently defined fields and filters will be saved under the specified query name. This saved query should now appear under the "Manage Saved Queries" tab in the “Your currently saved queries” table. New fields can be selected and saved under the same name to directly update the current query. To reload a saved query, click on the "Load Saved Query" tab. User Saved Queries and Shared Saved Queries will appear in a dropdown. User Saved Queries are queries that the current user has saved, and are listed according to Query Name. Shared Saved Queries are publicly shared, and are listed according to the user who created it and the Query Name. Once a query is selected, the DQT will retrieve and load the query fields and filters that were selected when the query was initially created. This will be displayed under the “Define Fields” and “Define Filters” tabs, respectively.
+The “Manage Saved Queries” tab organizes new or previously saved queries. The query name, selected fields and filters for each saved query are displayed in the table. Clicking on any column header (e.g. "Query Name") will sort the list by that column. The current query can be saved by clicking the "Save Current Query" button. A pop-up dialog will appear. Enter a descriptive query name. If you would like the query to be publicly shared, click on the checkbox. Then click "Save query" to complete the process, and the currently defined fields and filters will be saved under the specified query name. This saved query should now appear under the "Manage Saved Queries" tab in the “Your currently saved queries” table. New fields can be selected and saved under the same name to directly update the current query. To reload a saved query, click on the "Load Saved Query" tab. User Saved Queries and Shared Saved Queries will appear in a dropdown. 
+User Saved Queries are queries that the current user has saved, and are listed according to Query Name. 
+Shared Saved Queries are publicly shared, and are listed according to the user who created it and the Query Name. Once a query is selected, the DQT will retrieve and load the query fields and filters that were selected when the query was initially created. This will be displayed under the “Define Fields” and “Define Filters” tabs, respectively.
