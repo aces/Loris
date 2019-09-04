@@ -1,8 +1,7 @@
-#LORIS CentOS 6.x Notes
+#LORIS CentOS 7.x Notes
 
-This document contains supplemental details on how to perform a basic CentOS 6.x install of LORIS.
+This document contains supplemental details on how to perform a basic CentOS 7.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
-As of Loris 17.0, the install script and web-based install steps as described in the main (Ubuntu) readme are applicable to CentOS installs. 
 
 This Readme assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
@@ -12,9 +11,9 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 
 # System Requirements
 
-Default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.7 is supported for LORIS 18.*
-* PHP 7 is supported for LORIS 18.* - upgrade your PHP manually
+Default dependencies installed by CentOS 7.x may not meet the version requirements LORIS deployment or development.
+* MySQL 5.7 is supported for LORIS 21.*
+* PHP 7.2 is supported for LORIS 21.* - upgrade your PHP manually
 
 The yum packages to be installed vary from any Ubuntu packages referenced in the LORIS README.
 
@@ -22,6 +21,7 @@ The following should be installed with yum:
  * Apache2
  * PHP
  * MySQL
+ * Node
  * PHP Composer
 
 **Apache2:**
@@ -31,19 +31,14 @@ sudo service httpd start
 ```
 **PHP:**
 ```
-sudo yum install php php-pdo php-mysql 
+sudo yum install epel-release
+sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+sudo yum install yum-utils
+sudo yum-config-manager --enable remi-php72
+sudo yum update
+sudo yum install php72
+sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
 ```
-
-*NOTE:* As of Loris 17.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
-``` 
-# update php5 -> php7
-curl 'https://setup.ius.io/' -o setup-ius.sh
-sudo bash setup-ius.sh
-
-# update php7 specific packages
-sudo yum remove php-cli mod_php php-common
-sudo yum install php70u-json php70-xml mod_php70u php70u-cli php70u-mysqlnd php70u-mbstring
-``` 
 **MySQL:**
 
 *Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
@@ -73,7 +68,11 @@ To finalise the MySQL/MariaDB installation:
 mysql_secure_installation
 ```
 (follow instructions to create a password the root user):
-
+**Nodejs:**
+```
+sudo yum install epel-release
+sudo yum install nodejs
+```
 **PHP Composer:**
 ```
 sudo curl -sS https://getcomposer.org/installer | php
@@ -135,13 +134,19 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 * lorisuser : MySQL user with limited (insert, delete, update, select...) permissions on the Loris database, for database transactions requested by the Loris front end
 * admin : default username for Loris front-end admin account (browser login)
 
-**Run the loris install script:**
+**Run the LORIS install script to set up directories:**
+
 ```
 cd /var/www/loris/tools
 ./install.sh
 ```
-**Configure your databse:*
-point your URL to: `http://%IPADDRESS%/installdb.php`
+Run the makefile (use `make dev` if you are setting up a development sandbox)
+```
+cd /var/www/$projectname
+make
+```
+**Install your database:**
+Open your browser and go to: `http://%IPADDRESS%/installdb.php`
 
 (%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
 
@@ -161,8 +166,9 @@ You may have to manually paste the xml output to `/var/www/loris/project/config.
 
 Your Loris instance should now be accessible by pointing your url to `http://%IPADDRESS%`
 
-Further configuration can be done using the LORIS configuration module.
+If there are any errors or you get a blank page, troubleshoot the errors in your apache error log (by default
+ `/var/log/httpd/loris-error.log`) 
 
-If there are any errors or you get a blank page, you'll have to troubleshoot
-based on the errors in your apache error log (by default
- `/var/log/httpd/lorris-error.log`) 
+Follow the Setup Guide in the LORIS wiki for all post-install steps and troubleshooting.  
+Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
+
