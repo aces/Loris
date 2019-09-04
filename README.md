@@ -1,11 +1,11 @@
 # [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) LORIS Neuroimaging Platform 
 
-LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 ---
+LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 A demo instance is available at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v21.*</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -65,10 +65,14 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     cd /var/www/$projectname/tools
     ./install.sh
     ```
-    Run make (for production instances) or make dev (for development sandboxes).
 
+4. Run the makefile (use `make dev` if you are setting up a development sandbox)
+    ```
+    cd /var/www/$projectname
+    make
+    ```
 
-4. Apache configuration and restart 
+5. Apache configuration and restart 
 LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
 
     ```
@@ -76,7 +80,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
     sudo service apache2 reload
     ```
 
-5. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
+6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
 
     _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
 
@@ -86,7 +90,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
     sudo a2ensite $projectname
     ```
 
-6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
+7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
 ## Community
 
