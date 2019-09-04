@@ -3,10 +3,10 @@
 ---
 LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging, genetic and biospecimen data acquired over time or at different sites.
 
-Try the LORIS demo instance at https://demo.loris.ca.
+* Try the LORIS demo instance at https://demo.loris.ca.
 
 This Readme covers installation of the LORIS <b>v21.*</b> release on <b>Ubuntu</b>.
-([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
+([CentOS Readme also available](./README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
@@ -94,7 +94,7 @@ Then enable your project site and restart apache
 ## Community
 
 ### Get in touch
-For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, [please subscribe and contact us via the LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
+For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
 
 ### GitHub Issues
 For bug reporting and new feature requests, please search and report via our GitHub Issues. 
@@ -103,7 +103,7 @@ such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Contributing
 
-The [LORIS team](loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
+The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
 
 ### Contributing Code
 If you would like to contribute to LORIS development, please consult our
