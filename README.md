@@ -82,9 +82,6 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
 
-    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
-
-
     ```
     sudo a2dissite default
     sudo a2ensite $projectname
