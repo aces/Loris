@@ -73,21 +73,17 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     ```
 
 5. Apache configuration and restart 
-LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
+Enable Apache's `mod_rewrite` module to rewrite LORIS URLs.
+Disable the default site and enable your `$projectname` site, then restart apache.
 
     ```
     sudo a2enmod rewrite
-    sudo service apache2 reload
-    ```
-
-6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
-Then enable your project site and restart apache
-
-    ```
     sudo a2dissite default
     sudo a2ensite $projectname
     sudo service apache2 reload
     ```
+
+6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
 
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
