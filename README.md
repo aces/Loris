@@ -26,6 +26,7 @@ Deploy and log in with username *admin* and the password that's set up during de
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
  * PHP <b>7.2</b> or higher
+ * Node >= 6.17
  * [Composer](https://getcomposer.org/)
 
 _Composer should be run with --no-dev option unless you are an active LORIS developer._
