@@ -5,7 +5,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 
 * Try the LORIS demo instance at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v21.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](./README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
