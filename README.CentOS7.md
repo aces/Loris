@@ -70,7 +70,6 @@ mysql_secure_installation
 (follow instructions to create a password the root user):
 **Nodejs:**
 ```
-sudo yum install epel-release
 sudo yum install nodejs
 ```
 **PHP Composer:**
