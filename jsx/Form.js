@@ -938,7 +938,7 @@ class TextboxElement extends Component {
           {requiredHTML}
         </label>
       );
-      inputclass = 'col-sm-9';
+      inputClass = 'col-sm-9';
     }
 
     return (
