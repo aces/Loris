@@ -25,20 +25,20 @@
 class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
     //filter location on conflict_resolver page
-    static $ForSite    = "input[name='Site']";
-    static $Instrument = "iinput[name='instument']";
-    static $VisitLabel = "input[name='VisitLabel']";
-    static $CandID     = "input[name='CANDID']";
-    static $PSCID      = "input[name='PSCID']";
-    static $Question   = "input[name='Question']";
-    static $Project    = "input[name='Project']";
+    static $ForSite    = 'select[name="Site"]';
+    static $Instrument = 'select[name="instument"]';
+    static $VisitLabel = 'select[name="VisitLabel"]';
+    static $CandID     = 'input[name="CANDID"]';
+    static $PSCID      = 'input[name="PSCID"]';
+    static $Question   = 'input[name="Question"]';
+    static $Project    = 'select[name="Project"]';
 
     //filter location on resolved_conflicts page
-    static $Timestamp = "input[name='ResolutionTimestamp']";
+    static $Timestamp = 'input[name="ResolutionTimestamp"]';
 
     //public location for both pages
-    static $clearFilter = "button[type='reset']";
-    static $display     = ".table-header";
+    static $clearFilter = 'button[type="reset"]';
+    static $display     = '.table-header';
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -229,7 +229,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testFiltersForResolvedConflicts()
     {
-        $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
+        $this->safeGet($this->url."/conflict_resolver");
         $this->webDriver->executescript(
             "document.querySelector('#tab-resolved').click();"
         );
