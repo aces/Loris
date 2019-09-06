@@ -205,21 +205,22 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "
             );
         }
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-            //test clear filter
-            $btn = self::$clearFilter;
-            $this->webDriver->executescript(
-                "document.querySelector('$btn').click();"
-            );
-            $inputText = $this->webDriver->executescript(
-                "return document.querySelector('$element').value"
-            );
-            $this->assertEquals("", $inputText);
+
+        $row      = self::$display;
+        $bodyText = $this->webDriver->executescript(
+            "return document.querySelector('$row').textContent"
+        );
+        // 4 means there are 4 records under this site.
+        $this->assertContains($records, $bodyText);
+        //test clear filter
+        $btn = self::$clearFilter;
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click();"
+        );
+        $inputText = $this->webDriver->executescript(
+            "return document.querySelector('$element').value"
+        );
+        $this->assertEquals("", $inputText);
     }
      /**
      * Tests filter in resolved conflicts

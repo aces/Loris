@@ -24,7 +24,7 @@ automatically. Once a conflict is resolved a green check will appear
 beside the input filed. If a red cross is displayed, the conflict could
 not be saved (Your browser console log will display the error message.)
 
-It is possible to chnage the resolved conflicts to a new value until
+It is possible to change the resolved conflicts to a new value until
 the page is refreshed. After refresh or when changing tab, the newly
 resolved conflicts will appear in the “Resolved” tab.
 

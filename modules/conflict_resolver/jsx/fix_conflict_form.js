@@ -63,7 +63,7 @@ class FixConflictForm extends Component {
     return (
       <td>
         <form action={loris.BaseURL.concat('/conflict_resolver/fix_conflict')}>
-            <span className="glyphicon glyphicon-ok" style={{color: 'green', display: 'none'}} />
+            <span />
             <select style={{width: '85%', marginLeft: '10px'}} name={this.props.conflictid} onChange={this.fix}>
               {options}
             </select>
