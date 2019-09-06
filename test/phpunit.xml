@@ -2,8 +2,10 @@
 <phpunit
         bootstrap="bootstrap.php"
         verbose="true"
-        colors="true">
+        colors="true"
+        testdox="true">
     <testsuites>
+
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
         </testsuite>

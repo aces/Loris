@@ -25,20 +25,19 @@
 class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
     //filter location on conflict_resolver page
-    static $ForSite    = ".col-xs-12:nth-child(1) .form-control, [select]";
-    static $Instrument = ".col-xs-12:nth-child(2) .form-control, [select]";
+    static $ForSite    = "input[name='Site']";
+    static $Instrument = "iinput[name='instument']";
     static $VisitLabel = "input[name='VisitLabel']";
     static $CandID     = "input[name='CANDID']";
     static $PSCID      = "input[name='PSCID']";
-    static $Question   = ".col-xs-12:nth-child(6) .form-control";
-    static $Project    = ".col-xs-12:nth-child(7) .form-control, [select]";
+    static $Question   = "input[name='Question']";
+    static $Project    = "input[name='Project']";
 
     //filter location on resolved_conflicts page
-    static $Timestamp  = ".col-xs-12:nth-child(7) .form-control";
-    static $Project_RC = ".col-xs-12:nth-child(8) .form-control, [select]";
+    static $Timestamp = "input[name='ResolutionTimestamp']";
 
     //public location for both pages
-    static $clearFilter = ".col-sm-9 > .btn";
+    static $clearFilter = "button[type='reset']";
     static $display     = ".table-header";
     /**
      * Insert testing data into the database
@@ -211,7 +210,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records . ' rows', $bodyText);
+            $this->assertContains($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -231,6 +230,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForResolvedConflicts()
     {
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
+        $this->webDriver->executescript(
+            "document.querySelector('#tab-resolved').click();"
+        );
         $this-> _testFilter(self::$ForSite, "displayed of 14", '2');
         $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1');
         $this-> _testFilter(self::$CandID, "1 row", '400167');
