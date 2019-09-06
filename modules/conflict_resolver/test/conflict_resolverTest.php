@@ -26,9 +26,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
     //filter location on conflict_resolver page
     static $ForSite    = 'select[name="Site"]';
-    static $Instrument = 'select[name="instument"]';
+    static $Instrument = 'select[name="instrument"]';
     static $VisitLabel = 'select[name="VisitLabel"]';
-    static $CandID     = 'input[name="CANDID"]';
+    static $CandID     = 'input[name="CandID"]';
     static $PSCID      = 'input[name="PSCID"]';
     static $Question   = 'input[name="Question"]';
     static $Project    = 'select[name="Project"]';
