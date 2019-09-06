@@ -3,7 +3,7 @@ ALTER TABLE project_subproject_rel DROP FOREIGN KEY `FK_project_subproject_rel_P
 
 -- Change/add project ID fields to INT(10) consistently accross tables
 ALTER TABLE project_subproject_rel CHANGE COLUMN ProjectID ProjectID int(10) unsigned NOT NULL;
-ALTER TABLE Project CHANGE COLUMN ProjectID ProjectID int(10) unsigned NOT NULL;
+ALTER TABLE Project CHANGE COLUMN ProjectID ProjectID int(10) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE candidate CHANGE COLUMN ProjectID RegistrationProjectID int(10) unsigned NOT NULL;
 ALTER TABLE session ADD COLUMN ProjectID int(10) unsigned NOT NULL;
 
