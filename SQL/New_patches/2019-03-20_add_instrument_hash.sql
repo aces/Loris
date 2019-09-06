@@ -13,8 +13,8 @@ CREATE TABLE `instrument_schema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `test_names`
-  ADD COLUMN `InstrumentSchemaID` int(10) unsigned default NULL after Sub_group,
-  ADD CONSTRAINT `FK_test_names_InstrumentSchemaID` FOREIGN KEY (`InstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD COLUMN `LatestInstrumentSchemaID` int(10) unsigned UNIQUE default NULL after Sub_group,
+  ADD CONSTRAINT `FK_test_names_LatestInstrumentSchemaID` FOREIGN KEY (`LatestInstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 ALTER TABLE `flag`
   ADD COLUMN `InstrumentSchemaID` int(10) unsigned default NULL after Data,

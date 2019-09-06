@@ -244,13 +244,13 @@ CREATE TABLE `test_names` (
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
   `Sub_group` int(11) unsigned default NULL,
-  `InstrumentSchemaID` int(10) unsigned default NULL,
+  `LatestInstrumentSchemaID` int(10) unsigned UNIQUE default NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
   KEY `FK_test_names_1` (`Sub_group`),
   CONSTRAINT `FK_test_names_1` FOREIGN KEY (`Sub_group`) REFERENCES `test_subgroups` (`ID`),
-  CONSTRAINT `FK_test_names_InstrumentSchemaID` FOREIGN KEY (`InstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_test_names_LatestInstrumentSchemaID` FOREIGN KEY (`LatestInstrumentSchemaID`) REFERENCES `instrument_schema` (`InstrumentSchemaID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `instrument_subtests` (
