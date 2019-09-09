@@ -176,7 +176,7 @@ sudo apachectl -k restart
 
 Xdebug allows debugging with breakpoints (such as when using an IDE ex. Intellij).
 
-Paste into your terminal and hit enter:
+Type into your terminal and hit enter:
 ```
 pecl install xdebug
 ```
