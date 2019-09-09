@@ -25,7 +25,7 @@ A clear and concise description of what you expected to happen.
 
 **Browser Environment (please complete the following information):**
 - OS: [e.g. Plan9, HURD, etc]
-- Browser [e.g. chrome, safari]
+- Browser [e.g. chrome, firefox] (note that only these two browsers are supported)
 - Version [e.g. 22]
 
 **Server Environment (if known):**
