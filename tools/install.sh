@@ -235,7 +235,7 @@ echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
 logdirectory=/var/log/httpd
 while true; do
-    read -p "Would you like to automatically create/install apache config files? (In development for CentOS 6.5) [yn] " yn
+    read -p "Would you like to automatically create/install apache configuration files? (In development for CentOS) [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
@@ -251,7 +251,7 @@ while true; do
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
 
             sudo service httpd restart
-            echo "You may need to manually uncomment the load rewrite module line of your apache conf."
+            echo "You may need to manually uncomment the load rewrite module line of your apache configuration."
             break;;
         [Nn]* )
             echo "Not configuring apache."
