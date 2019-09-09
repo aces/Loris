@@ -265,20 +265,17 @@ class HelpFile
     function parentData($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
 
         $parentData = array();
 
         if ($this->data['parentID'] > 0) {
-            $result = $DB->pselectRow(
+            $parentData = $DB->pselectRow(
                 "SELECT helpID, topic, $level as level
                  FROM help
                  WHERE helpID = :HID",
                 array('HID' => $this->data['parentID'])
             );
-
-            // add the parent to the array
-            $parentData = $result;
 
             // check if we're done recursing
             if (is_array($parentData) && $level != $stopat) {
