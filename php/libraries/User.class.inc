@@ -30,6 +30,13 @@ class User extends UserPermissions
      * @access private
      */
     protected $userInfo = array();
+    /**
+     * The date format used by MySQL.
+     *
+     * @var    string
+     * @access private
+     */
+    public const MYSQL_DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * Constructor
@@ -438,6 +445,69 @@ class User extends UserPermissions
             array('v_userid' => $this->userInfo['UserID'])
         );
         return $count > 0;
+    }
+
+    /**
+     * Updates the password for this user into the appropriate field in the
+     * database.
+     *
+     * @param \Password $password The plain text password to be hashed and saved.
+     * @param ?DateTime $expiry   When the password will expire. Can be set to a
+     *                            date in the past in order to create a one-time
+     *                            password.
+     *
+     * @return void
+     */
+    function updatePassword(
+        \Password $password,
+        ?\DateTime $expiry = null
+    ): void {
+        // Set default expiry date value to 6 months in the future.
+        $expiry = $expiry ?? new \DateTime(
+            date('Y-m-d', strtotime('+6 months'))
+        );
+
+        // Update the users table to change $user's pasword to $password.
+        \NDB_Factory::singleton()->database()->update(
+            'users',
+            array(
+             'Password_hash'   => $password,
+             'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
+            ),
+            array(
+             'UserID' => $this->getUsername(),
+            )
+        );
+    }
+
+    /**
+     * Determines if the supplied password parameter is different than a User's
+     * current password (the one stored in the database).
+     *
+     * @param string $plaintextPassword The new desired password string entered
+     *                                  by the user.
+     *
+     * @return bool  true if the password has changed, false otherwise.
+     */
+    function passwordChanged(
+        string $plaintextPassword
+    ): bool {
+        $passwordQuery = "SELECT Password_hash
+            FROM users
+            WHERE UserID = :UID";
+
+        $current = \NDB_Factory::singleton()->database()->pselectOne(
+            $passwordQuery,
+            array('UID' => $this->getID())
+        );
+
+        if (!is_null($current)) {
+            // The plaintext password must be used here rather than the
+            // Password class.
+            return !password_verify($plaintextPassword, $current);
+        }
+
+        return true;
     }
 }
 

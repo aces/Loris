@@ -461,8 +461,7 @@ class Edit_User extends \NDB_Form
             // If both hash and expiry are set, use both values when resetting
             // the password. This occurs when a new password is generated
             // by the system.
-            \Utility::updatePassword(
-                $user,
+            $user->updatePassword(
                 new \Password($values['Password_hash']),
                 new \DateTime($values['Password_expiry'])
             );
@@ -470,8 +469,7 @@ class Edit_User extends \NDB_Form
             // If just the Password_hash value is present, no not specify a
             // custom expiry date. This will set the password to expire in
             // 6 months from the current date (handled in updatePassword()).
-            \Utility::updatePassword(
-                $user,
+            $user->updatePassword(
                 new \Password($values['Password_hash'])
             );
         }
@@ -1049,11 +1047,7 @@ class Edit_User extends \NDB_Form
             try {
                 $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
-                if (!\Utility::passwordChanged(
-                    \User::factory($this->identifier),
-                    $_POST['password']
-                )
-                ) {
+                if (!\User::passwordChanged($_POST['password'])) {
                     $errors['Password_Group'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }

@@ -193,7 +193,7 @@ class My_Preferences extends \NDB_Form
         $success = $user->update($set);
 
         if (isset($values['Password_hash'])) {
-            \Utility::updatePassword($user, new \Password($values['Password_hash']));
+            \User::updatePassword(new \Password($values['Password_hash']));
         }
 
         // send the user an email
@@ -391,8 +391,7 @@ class My_Preferences extends \NDB_Form
             try {
                 $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
-                if (!\Utility::passwordChanged(
-                    \User::factory($this->identifier),
+                if (!\User::passwordChanged(
                     $values['Password_hash']
                 )
                 ) {

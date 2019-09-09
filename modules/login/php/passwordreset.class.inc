@@ -71,8 +71,7 @@ class PasswordReset extends \NDB_Form
                   $password = \Utility::randomString();
                   // reset the password in the database
                   // expire password so user must change it upon login
-                  \Utility::updatePassword(
-                      $user,
+                  \User::updatePassword(
                       new \Password($password),
                       new \DateTime('1999-01-01')
                   );

@@ -96,7 +96,7 @@ class PasswordExpiry extends \NDB_Form
             return array('password' => $e->getMessage());
         }
 
-        if (!\Utility::passwordChanged($this->_user, $_POST['password'])) {
+        if (!$this->_user::passwordChanged($_POST['password'])) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
             return array('password' => 'You cannot keep the same password');
         }
@@ -114,7 +114,7 @@ class PasswordExpiry extends \NDB_Form
      */
     function _process($values)
     {
-        \Utility::updatePassword($this->_user, new \Password($values['password']));
+        $this->user::updatePassword(new \Password($values['password']));
 
         // The password is no longer expired after updating it.
         unset($_SESSION['PasswordExpiredForUser']);

@@ -99,7 +99,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->resetPermissions();
 
         $user = User::factory('UnitTester');
-        \Utility::updatePassword($user, $password);
+        $user->updatePassword($password);
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
