@@ -273,7 +273,7 @@ cd /tools
 ```
 
 ## 2.2.1 Launch the LORIS installer in your browser
-Open a browser (we officially support Firefox & Chrome) and navigate to:
+Open a browser (Firefox & Chrome are supported) and navigate to:
 
 ```
 localhost:8080/installdb.php
