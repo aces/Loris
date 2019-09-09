@@ -1,23 +1,34 @@
 <?php
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
-class UserPageDecorationMiddleware implements MiddlewareInterface {
+class UserPageDecorationMiddleware implements MiddlewareInterface
+{
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
     protected $BaseURL;
     protected $PageName;
 
-    public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS) {
-        $this->JSFiles = $JS;
+    public function __construct(
+        \User $user,
+        string $baseurl,
+        string $pagename,
+        \NDB_Config $config,
+        array $JS,
+        array $CSS
+    ) {
+
+        $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
-        $this->Config = $config;
-        $this->BaseURL = $baseurl;
+        $this->Config   = $config;
+        $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
-        $this->user = $user;
+        $this->user     = $user;
     }
 
     /**
@@ -29,11 +40,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
      *
      * @return ResponseInterface a PSR15 response of handler, after adding decorations.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface { 
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
-        $user = $request->getAttribute("user");
+        $user     = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
@@ -46,7 +58,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );
-
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
@@ -62,7 +73,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
             $tpl_data['candidate'] = $candidate->getData();
         }
-        $tpl_data['candID']      = $candID ?? '';
+        $tpl_data['candID'] = $candID ?? '';
 
         $timepoint = $request->getAttribute("TimePoint");
         if (!empty($timepoint)) {
@@ -122,7 +133,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
         // User related template variables that used to be in main.php.
         $site_arr = $this->user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
+        foreach ($site_arr as $key => $val) {
             $site[$key]        = & \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
@@ -195,7 +206,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'workspace' => $undecorated->getBody(),
                      );
 
-        if ($page instanceOf \NDB_Page) {
+        if ($page instanceof \NDB_Page) {
             $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
         }
 
@@ -205,10 +216,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
         // Finally, the actual content and render it..
         $tpl_data += array(
-            'jsfiles'   => $this->JSFiles,
-            'cssfiles'  => $this->CSSFiles,
-            'workspace' => $undecorated->getBody(),
-        );
+                      'jsfiles'   => $this->JSFiles,
+                      'cssfiles'  => $this->CSSFiles,
+                      'workspace' => $undecorated->getBody(),
+                     );
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);

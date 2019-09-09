@@ -104,6 +104,7 @@ class ExaminerIndex extends Component {
       if (resp.ok && resp.status === 200) {
         swal('Success!', 'Examiner added.', 'success').then((result) => {
           if (result.value) {
+            this.closeModal();
             this.fetchData();
           }
         });
@@ -157,7 +158,10 @@ class ExaminerIndex extends Component {
   }
 
   closeModal() {
-    this.setState({showModal: false});
+    this.setState({
+      formData: {},
+      showModal: false,
+    });
   }
 
   renderAddExaminerForm() {

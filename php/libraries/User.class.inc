@@ -70,6 +70,9 @@ class User extends UserPermissions
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
+        //Change 'language_preference' to number rather than a string
+        $row['language_preference'] = (int)$row['language_preference'];
+
         // get user sites
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
@@ -231,7 +234,7 @@ class User extends UserPermissions
      */
     function getId(): int
     {
-        return $this->userInfo['ID'];
+        return intval($this->userInfo['ID']);
     }
 
     /**
@@ -446,6 +449,13 @@ class User extends UserPermissions
         // the user whose password is being checked, the third is their
         // email, and the first is the "Confirm" password which has
         // nothing to do with whether the password is strong or not..)
+        // TODO Ideally, this should be checking whether the values in the array
+        // are IN the password, rather than checking if the password itself
+        // is either equal or not equal to the value. Also, in what case
+        // would there be a need to check whether a value is equal to or
+        // is contained in the password? If we only need to check whether
+        // the values are NOT in the password, then we wouldn't need the
+        // operator array - Alexandra Livadas
         $CharTypes = 0;
         // less than 8 characters
         if (strlen($password) < 8) {
@@ -501,7 +511,7 @@ class User extends UserPermissions
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID'] == 1);
+        return (in_array(1, $this->userInfo['CenterIDs']));
     }
 
     /**
@@ -516,6 +526,7 @@ class User extends UserPermissions
      */
     function updatePassword(string $password, string $expiry = ''): void
     {
+        $password = htmlspecialchars_decode($password);
         if ($expiry === '') {
             $expiry = date(
                 'Y-m-d',
@@ -541,15 +552,17 @@ class User extends UserPermissions
      *
      * @return bool Whether the password is known to be pwned.
      */
-    function pwnedPassword(string $password): bool
+    static function pwnedPassword(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
-        // always return false (meanning that the password has not been pwned).
-        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
-            'usePwnedPasswordsAPI'
-        )
-        ) {
+        // always return false (meaning that the password has not been pwned
+        // and the submitted password is acceptable).
+        $checkPwned = \NDB_Factory::singleton()
+            ->config()
+            ->settingEnabled('usePwnedPasswordsAPI');
+
+        if (!$checkPwned) {
             return false;
         }
 
@@ -636,12 +649,15 @@ class User extends UserPermissions
      */
     public function hasLoggedIn(): bool
     {
-        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $count = $DB->pselectOne(
             "SELECT
                COUNT(1)
              FROM user_login_history
              WHERE
-               UserID = :v_userid AND
+               userID = :v_userid AND
                Success = 'Y'
             ",
             array('v_userid' => $this->userInfo['UserID'])

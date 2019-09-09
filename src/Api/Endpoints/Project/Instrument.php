@@ -101,7 +101,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withHeader("Content-Type", "application/json")
             ->withBody(
                 new \LORIS\Http\StringStream(
-                    json_encode($this->_toArray($request))
+                    json_encode($this->toArray($request))
                 )
             );
     }
@@ -113,7 +113,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return array
      */
-    private function _toArray(ServerRequestInterface $request)
+    private function toArray(ServerRequestInterface $request)
     {
         $instrumentname = $this->instrument->name;
 
@@ -133,6 +133,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_toArray($request)));
+        return md5(json_encode($this->toArray($request)));
     }
 }

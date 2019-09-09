@@ -149,14 +149,14 @@ class DirectDataEntryMainPage
         if ($currentPage === null) {
             return 1;
         }
+        $nextPage = $currentPage+1;
         return intval(
             \Database::singleton()->pselectOne(
                 "SELECT Order_number FROM instrument_subtests
-                WHERE Test_name=:TN AND Order_number > :PN 
-                ORDER BY Order_number",
+                WHERE Test_name=:TN AND Order_number=:PN",
                 array(
                  'TN' => $this->TestName,
-                 'PN' => $currentPage,
+                 'PN' => $nextPage,
                 )
             )
         );
@@ -191,12 +191,13 @@ class DirectDataEntryMainPage
                 array('TN' => $this->TestName)
             );
         }
+        $prevPage = $currentPage-1;
         return $DB->pselectOne(
             "SELECT Order_number FROM instrument_subtests 
-            WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC",
+            WHERE Test_name=:TN AND Order_number=:PN",
             array(
              'TN' => $this->TestName,
-             'PN' => $currentPage,
+             'PN' => $prevPage,
             )
         );
     }

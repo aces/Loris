@@ -78,27 +78,27 @@ class Markdown extends Component {
 
         switch (hlevel) {
           case 6:
-            paragraphs[i] = <h6>{paragraphs[i]}</h6>;
+            paragraphs[i] = <h6 key={i + '_help_editor_h6'}>{paragraphs[i]}</h6>;
             break;
 
           case 5:
-            paragraphs[i] = <h5>{paragraphs[i]}</h5>;
+            paragraphs[i] = <h5 key={i + '_help_editor_h5'}>{paragraphs[i]}</h5>;
             break;
 
           case 4:
-            paragraphs[i] = <h4>{paragraphs[i]}</h4>;
+            paragraphs[i] = <h4 key={i + '_help_editor_h4'}>{paragraphs[i]}</h4>;
             break;
 
           case 3:
-            paragraphs[i] = <h3>{paragraphs[i]}</h3>;
+            paragraphs[i] = <h3 key={i + '_help_editor_h3'}>{paragraphs[i]}</h3>;
             break;
 
           case 2:
-            paragraphs[i] = <h2>{paragraphs[i]}</h2>;
+            paragraphs[i] = <h2 key={i + '_help_editor_h2'}>{paragraphs[i]}</h2>;
             break;
           case 1:
           default:
-            paragraphs[i] = <h1>{paragraphs[i]}</h1>;
+            paragraphs[i] = <h1 key={i + '_help_editor_h1'}>{paragraphs[i]}</h1>;
         }
       } else {
         let paramd = paragraphs[i];
@@ -111,7 +111,7 @@ class Markdown extends Component {
         paramd = paramd.replace(italRe2, italCallback);
 
         paramd = paramd.replace(linkRe, linkCallback);
-        paragraphs[i] = <p dangerouslySetInnerHTML={ {__html: paramd}} />;
+        paragraphs[i] = <p key={i + '_help_editor_p'} dangerouslySetInnerHTML={ {__html: paramd}} />;
       }
     }
     return <div>{paragraphs}</div>;

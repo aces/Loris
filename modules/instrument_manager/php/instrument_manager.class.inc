@@ -29,25 +29,23 @@ use \LORIS\Http\EmptyStream;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
-    const ALREADY_INSTALLED = 'This instrument already exists in the ' .
-                                  'test battery';
-
-    const CANNOT_WRITE_FILES = 'Automatic installation of instruments is ' .
+    const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
+                                  'test battery.';
+    const CANNOT_WRITE_FILES    = 'Automatic installation of instruments is ' .
                                   'not possible given the current server ' .
                                   'configuration. Please contact your ' .
                                   'administrator if you require this ' .
-                                  'functionality';
-
-    const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
+                                  'functionality.';
+    const FILE_ALREADY_EXISTS   = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
-                                  'install the instrument';
-
+                                  'install the instrument.';
+    const BAD_REQUEST           = 'Uploaded file is not of type LINST or is ' .
+                                  'too large.';
     const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
                                   'installation failed. Please contact your ' .
-                                  'administrator';
-
-    const UPLOAD_NO_INSTALL = 'File upload is successful but the ' .
-                                  'instrument needs to be installed manually';
+                                  'administrator.';
+    const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
+                                  'instrument needs to be installed manually.';
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -119,7 +117,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         // Ensure the user is allowed to upload.
         if (! \User::singleton()->hasPermission('instrument_manager_write')) {
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -130,57 +128,53 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
         // Ensure the server is properly configured.
-        if (! $this->canWriteFiles()) {
-            return (new \Loris\Http\Response())
+        if (!$this->canWriteFiles()) {
+            return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
+                            array('error' => self::CANNOT_WRITE_FILES)
                         )
                     )
                 );
         }
+
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
+        $targetdir     = new \SplFileInfo($this->path . 'project/instruments/');
+        $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
         if ($this->instrumentExists($instrument)) {
-            return (new \Loris\Http\Response())
-                ->withStatus(409, 'Conflict')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::ALREADY_INSTALLED)
-                        )
-                    )
-                );
+            // An instrument with this name already exists in the test_names
+            // table. Abort upload.
+            return new \LORIS\Http\Response\Conflict(self::ALREADY_INSTALLED);
         }
 
-        $fullpath = $this->path . "project/instruments/" . $filename;
+        /* Although only .linst files should be uploaded to this module, and
+         * they are just special text files, they are marked as
+         * application/octet-stream upon upload.
+         */
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'application/octet-stream'
+            );
 
-        if (file_exists($fullpath)) {
-            /**
-             * Don't update the file if it already exists on the back-end.
-             * Instead, inform users that an administrator must install it on
-             * their behalf.
-             * This should only happen for users on a system where automatic
-             * installation is disabled (ie. has no quatUser), as the above
-             * error will return before this one.
-            */
-            return (new \Loris\Http\Response())
-                ->withStatus(409, 'Conflict')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::FILE_ALREADY_EXISTS)
-                        )
-                    )
-                );
+        $response = $uploader->handle($request);
+
+        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+            if ($response->getStatusCode() == 409) {
+                /* Don't update the file if it already exists on the back-end.
+                 * Instead, inform users that an administrator must install it
+                 * on their behalf.
+                 * This should only happen for users on a system where automatic
+                 * installation is disabled (ie. has no quatUser).
+                 */
+                return new \LORIS\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
+            }
+            return $response;
         }
-
-        $uploaded_file->moveTo($fullpath);
-        chmod($fullpath, 0644);
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
@@ -195,7 +189,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$this->isQuatUserConfigured()) {
             // If no quatUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(200, 'OK')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -213,7 +207,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
         $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
-        $db_config  = $this->factory->config()->getSetting('database');
+
+        $db_config = $this->factory->config()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
@@ -234,7 +229,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "LORIS could not connect to the database using the "
                 . "credentials supplied in the config file."
             );
-            return (new \Loris\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -245,7 +240,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
 
-        return (new \Loris\Http\Response())
+        return (new \LORIS\Http\Response())
             ->withStatus(201, 'Created')
             ->withBody(new EmptyStream());
     }
@@ -410,7 +405,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Checks the test_names table for the existence of  the instrument
+     * Checks the test_names table for the existence of the instrument
      *
      * @param string $instrument The instrument name
      *

@@ -41,4 +41,3 @@ class NotModified extends JsonResponse
         parent::__construct(null, 304, $headers);
     }
 }
-

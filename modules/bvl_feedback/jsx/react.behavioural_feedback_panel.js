@@ -385,7 +385,7 @@ class NewThreadPanel extends Component {
     this.state = {
       textValue: '',
       selectValue: 'Across All Fields',
-      inputValue: 1,
+      inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
@@ -548,7 +548,7 @@ class FeedbackSummaryPanel extends Component {
           <tr key={key}>
             <td>{row.QC_Class}</td>
             <td>
-              <a href={loris.BaseURL + '/' + row.Instrument + '/?candID=' +
+              <a href={loris.BaseURL + '/instruments/' + row.Instrument + '/?candID=' +
                 row.CandID + '&sessionID=' + row.SessionID + '&commentID=' +
                 row.CommentID}
               >

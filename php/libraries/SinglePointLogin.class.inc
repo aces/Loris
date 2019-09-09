@@ -61,6 +61,12 @@ class SinglePointLogin
         // We store the username requesting the the password reset on the
         // PHP session superglobal so that the password expiry page can
         // trust it.
+        if ($_SERVER['REQUEST_URI'] == "/login/password-expiry/") {
+            // Prevent a loop to the same page if we got here
+            // while on the password expiry page, which can prevent
+            // error messages from being seen.
+            return;
+        }
         $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
         header("HTTP/1.1 303 See Other");
         header("Location: /login/password-expiry/");
@@ -238,9 +244,9 @@ class SinglePointLogin
                      'Success'         => 'Y',
                      'Failcode'        => null,
                      'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => isset($_SERVER['REMOTE_ADDR'])
-                                              ? $_SERVER['REMOTE_ADDR']
-                                              : 'Unknown',
+                     'IP_address'      => $_SERVER['HTTP_X_FORWARDED_FOR']
+                         ?? $_SERVER['REMOTE_ADDR']
+                         ?? 'Unknown',
                      'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',

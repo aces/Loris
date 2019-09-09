@@ -13,6 +13,7 @@
  */
 
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
@@ -73,7 +74,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $modulename = "dashboard";
             }
             $request = $request->withURI($uri->withPath("/"));
-        } else if ($path[0] === "/") {
+        } elseif ($path[0] === "/") {
             $path    = substr($path, 1);
             $request = $request->withURI($uri->withPath($path));
         }
@@ -106,30 +107,30 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $path    = $uri->getPath();
             $baseurl = $uri->withPath("/")->withQuery("");
             switch (count($components)) {
-            case 1:
-                $request = $request
+                case 1:
+                    $request = $request
+                    ->withAttribute("baseurl", rtrim($baseurl->__toString(), '/'))
+                    ->withAttribute("CandID", $components[0]);
+                    $module  = \Module::factory("timepoint_list");
+                    $mr      = new ModuleRouter($module, $this->moduledir);
+                    return $mr->handle($request);
+                case 2:
+                    // CandID/SessionID, inherited from htaccess
+                    $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
-                $module  = \Module::factory("timepoint_list");
-                $mr      = new ModuleRouter($module, $this->moduledir);
-                return $mr->handle($request);
-            case 2:
-                // CandID/SessionID, inherited from htaccess
-                $request = $request
-                    ->withAttribute("baseurl", $baseurl->__toString())
-                    ->withAttribute("CandID", $components[0]);
-                // FIXME: Validate CandID is valid before continuing.
-                $request = $request
+                    // FIXME: Validate CandID is valid before continuing.
+                    $request    = $request
                     ->withAttribute(
                         "TimePoint",
                         \TimePoint::singleton($components[1])
                     );
-                $module  = \Module::factory("instrument_list");
-                $mr      = new ModuleRouter($module, $this->moduledir);
-                return $mr->handle($request);
-            default:
-                // Fall through to 404. We don't have any routes that go farther
-                // than 2 levels..
+                        $module = \Module::factory("instrument_list");
+                        $mr     = new ModuleRouter($module, $this->moduledir);
+                    return $mr->handle($request);
+                default:
+                    // Fall through to 404. We don't have any routes that go farther
+                    // than 2 levels..
             }
         }
 
@@ -137,6 +138,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $this->user
         ))->process(
             $request,
-            new NoopResponder(new \LORIS\Http\Error($request, 404)));
+            new NoopResponder(new \LORIS\Http\Error($request, 404))
+        );
     }
 }

@@ -7,6 +7,8 @@ $(document).ready(function() {
         var ProjectID = $(form.find(".ProjectID")).val();
         var Name = $(form.find(".projectName")).val();
         var recruitmentTarget= $(form.find(".projectrecruitmentTarget")).val();
+        var SubprojectIDs= $(form.find(".projectSubprojectIDs")).val();
+
         e.preventDefault();
         var successClosure = function(i, form) {
             return function() {
@@ -18,9 +20,15 @@ $(document).ready(function() {
         }
         
         var errorClosure = function(i, form) {
-            return function() {
-                $(form.find(".saveStatus")).text("Failed to save, same name already exist!").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
+          if (isNaN(recruitmentTarget)) {
+            return function () {
+              $(form.find(".saveStatus")).text("Failed to save, recruitment target must be an integer!").css({'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
             }
+          } else {
+            return function () {
+              $(form.find(".saveStatus")).text("Failed to save, same name already exist!").css({'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
+            }
+          }
         }
 
         jQuery.ajax(
@@ -31,6 +39,7 @@ $(document).ready(function() {
                         "ProjectID" : ProjectID,
                         "Name" : Name,
                         "recruitmentTarget" : recruitmentTarget,
+                        "SubprojectIDs" : SubprojectIDs
                     },
                     "success" : successClosure(ProjectID, form),
                     "error" : errorClosure(ProjectID, form)   

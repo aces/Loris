@@ -37,6 +37,12 @@ class VisitTest extends TestCase
      */
     private $_visit;
 
+    /**
+     * This method is called before each test is executed.
+     * Sets up fixtures: factory, config, database
+     *
+     * @return void
+     */
     protected function setUp()
     {
         $this->factory = NDB_Factory::singleton();
@@ -76,133 +82,99 @@ class VisitTest extends TestCase
                               );
 
         $this->_listOfVisitProject = array(
-                                      array(
-                                       $v1,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v1,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v1,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v2,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v2,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v2,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       1,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       1,
-                                       2,
-                                      ),
-                                      array(
-                                       $v3,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v3,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v3,
-                                       3,
-                                       1,
-                                      ),
-                                      array(
-                                       $v3,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v4,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v4,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v4,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v5,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v5,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v5,
-                                       3,
-                                       3,
-                                      ),
-                                      array(
-                                       $v6,
-                                       2,
-                                       3,
-                                      ),
-                                      array(
-                                       $v6,
-                                       2,
-                                       4,
-                                      ),
-                                      array(
-                                       $v6,
-                                       3,
-                                       3,
-                                      ),
-                                     );
+            array($v1, 1, 1),
+            array($v1, 1, 2),
+            array($v1, 3, 1),
+            array($v2, 1, 1),
+            array($v2, 1, 2),
+            array($v2, 3, 1),
+            array($v3, 1, 1),
+            array($v3, 1, 2),
+            array($v3, 2, 3),
+            array($v3, 2, 4),
+            array($v3, 3, 1),
+            array($v3, 3, 3),
+            array($v4, 2, 3),
+            array($v4, 2, 4),
+            array($v4, 3, 3),
+            array($v5, 2, 3),
+            array($v5, 2, 4),
+            array($v5, 3, 3),
+            array($v6, 2, 3),
+            array($v6, 2, 4),
+            array($v6, 3, 3),
+        );
 
     }
 
+    /**
+     * Test that Visit::getName returns the correct name of the visit 
+     *
+     * @return void
+     * @covers Visit::getName
+     */
     function testVisit()
     {
         $visit_name = "Visit 1";
         $visit      = new Visit($visit_name);
-        $this->assertEquals($visit_name, $visit->getName(), "the name of the visit does not match");
+        $this->assertEquals(
+            $visit_name, 
+            $visit->getName(), 
+            "the name of the visit does not match"
+        );
     }
 
+    /**
+     * Test that VisitController::getAllVisits returns the correct array of
+     * visits in the database
+     *
+     * @return void
+     * @covers VisitController::getAllVisits
+     */
     function testAllVisit()
     {
         $visits = $this->_visitController->getAllVisits();
-        $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
+        $this->assertEquals(
+            $this->_listOfVisit, 
+            $visits, 
+            "the name of the visit does not match value in DB"
+        );
     }
 
+    /**
+     * Test that VisitController::getVisitsProjectSubproject returns the proper
+     * project-subproject relation for the visits in the database
+     *
+     * @return void
+     * @covers VisitController::getVisitsProjectSubproject
+     */
     function testVisitsProjects()
     {
-        $visits = $this->_visitController->getVisitsAndProject();
-        $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
+        $visits = $this->_visitController->getVisitsProjectSubproject();
+        $this->assertEquals(
+            $this->_listOfVisitProject, 
+            $visits, 
+            "the project subproject relation does not match value in DB"
+        );
     }
+
+    /**
+     * Test that VisitController::getVisitsByName returns an array with 
+     * visit objects from the database with the given name
+     *
+     * @return void
+     * @covers VisitController::getVisitsByName
+     */
+    function testGetVisitsByName()
+    {
+        $visit_result = new \Loris\Visit('V1', 1);
+        $visits = $this->_visitController->getVisitsByName("V1");
+        $this->assertEquals(
+            array($visit_result),
+            $visits
+        );
+    }
+
 
     /**
      * Tears down the fixture, for example, close a network connection.

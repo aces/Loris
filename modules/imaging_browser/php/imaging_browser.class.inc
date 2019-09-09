@@ -6,24 +6,24 @@
  *
  * PHP Version 5
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\imaging_browser;
 
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
@@ -156,7 +156,8 @@ END";
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            JOIN parameter_file pf ON (f.FileID=pf.FileID)
+            JOIN parameter_type pt USING (ParameterTypeID)
             LEFT JOIN mri_scan_type modality ON 
             (f.AcquisitionProtocolID=modality.ID)";
 
@@ -176,7 +177,8 @@ END";
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.FileType='mnc'";
+            pt.Name = 'acquisition_date' AND
+            f.FileType ='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -222,6 +224,8 @@ END";
                 $as[$key];
         }
 
+        $firstAcquisitionSubquery = 'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d")';
+
         $this->columns = array(
                           'p.Name as Site',
                           'c.PSCID as PSCID',
@@ -231,7 +235,7 @@ END";
                             WHERE ProjectID=c.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
-                          'MIN(md.AcquisitionDate) as First_Acquisition',
+                          "$firstAcquisitionSubquery as First_Acquisition",
                           'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
                           'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
                           "$NewDataSubquery as New_Data",
@@ -241,7 +245,7 @@ END";
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             array(
              's.ID as sessionID',
-             'GROUP_CONCAT(DISTINCT modality.ID) as sequenceType',
+             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
              "$PendingNewquery as pending",
             ),
             $modalities_subquery_as
@@ -349,7 +353,7 @@ END";
         );
         $scan_types = $allAr;
         foreach ($types_q as $key=>$sequenceType) {
-            $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
+            $scan_types[$sequenceType['Scan_type']] = $sequenceType['Scan_type'];
         }
 
         $outputTypes = $DB->pselect(

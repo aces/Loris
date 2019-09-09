@@ -1,10 +1,12 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Loader from 'Loader';
 /**
  * Proband Info Component.
  *
  * Renders the contents of the ProbandInfo tab, consisting of the FormElement component
  */
-class ProbandInfo extends React.Component {
+class ProbandInfo extends Component {
   constructor(props) {
     super(props);
 
