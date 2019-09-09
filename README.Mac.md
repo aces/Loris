@@ -264,7 +264,7 @@ Navigate in your browser to [NodeJS.org](https://nodejs.org/en/) to download and
 
 
 ## 2.2 Install LORIS
-Paste into your terminal and hit enter:
+Type into your terminal and hit enter:
 ```
 cd ~/Development/GitHub/Loris
 make dev
