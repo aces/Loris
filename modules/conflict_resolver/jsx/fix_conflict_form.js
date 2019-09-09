@@ -41,13 +41,14 @@ class FixConflictForm extends Component {
         icon.className = 'glyphicon glyphicon-remove-sign';
         icon.style.color = 'red';
       }
+      setTimeout(() => {
+        icon.style.display = 'inline';
+      }, 200);
     })
     .catch((error) => {
       console.error(error);
       icon.className = 'glyphicon glyphicon-remove-sign';
       icon.style.color = 'red';
-    })
-    .finally(() => {
       setTimeout(() => {
         icon.style.display = 'inline';
       }, 200);
