@@ -12,7 +12,7 @@ For production servers, we recommend installing LORIS on Ubuntu or CentOS.
 
 # 1. System Requirements
 
-The following list provides foresight into the proceeding sections and recommended versions to install:
+The following list provides foresight into the proceeding sections and versions to install:
 
  * macOS (tested on Mojave 10.14.3)
  * XCode Command Line Tools
