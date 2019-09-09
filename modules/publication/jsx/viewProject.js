@@ -248,9 +248,9 @@ class ViewProject extends React.Component {
           text={this.state.formData.leadInvestigator}
         />
         <EmailElement
-          id={'leadInvestigatorEmail'}
-          name="leadInvestigatorEmail"
-          label="Lead Investigator Email"
+          id='leadInvestigatorEmail'
+          name='leadInvestigatorEmail'
+          label='Lead Investigator Email'
           text={this.state.formData.leadInvestigatorEmail}
         />
         {collaborators}
