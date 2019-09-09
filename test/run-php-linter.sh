@@ -5,7 +5,7 @@ set -euo pipefail
 # errors.
 for i in php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* htdocs/*.php htdocs/*/*.php;
 do
-  php -l $i >/dev/null || exit $?;
+  php -l $i >/dev/null;
 done
 
 # Run PHPCS on the entire libraries directory.
