@@ -1402,6 +1402,7 @@ EmailElement.propTypes = {
 EmailElement.defaultProps = {
   id: null,
   label: '',
+  name: null,
   text: null,
 };
 
