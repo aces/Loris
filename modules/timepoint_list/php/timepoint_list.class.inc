@@ -86,10 +86,7 @@ class Timepoint_List extends \NDB_Menu
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         // FIXME: Update the code to add the singleton here, not the identifier.
-        $this->candID = new CandID(
-            $request->getAttribute('CandID')
-            ?? $request->getAttribute('candID')
-        );
+        $this->candID = new CandID($request->getAttribute('candID'));
         return parent::process($request, $handler);
     }
 

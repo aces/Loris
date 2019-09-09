@@ -131,7 +131,7 @@ class NDB_BVL_Feedback
     function setup(
         string $username,
         ?CandID $candID=null,
-        $sessionID=null,
+        ?string $sessionID=null,
         $commentID=null
     ) {
 

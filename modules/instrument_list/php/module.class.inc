@@ -91,7 +91,6 @@ class Module extends \Module
             $message = 'Could not find candidate information for candidate '
                 . htmlspecialchars($gets['candID']) . ' and session '
                 . htmlspecialchars($gets['sessionID']) . '.';
-            error_log($message . ' ' . $e->getMessage());
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
