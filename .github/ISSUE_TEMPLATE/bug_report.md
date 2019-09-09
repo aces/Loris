@@ -24,7 +24,7 @@ A clear and concise description of what the expected behaviour was.
 A clear and concise description of what you expected to happen.
 
 **Browser Environment (please complete the following information):**
-- OS: [e.g. Plan9, HURD, etc]
+- OS: [e.g. Plan9, HURD, Oberon, etc]
 - Browser [e.g. chrome, safari]
 - Version [e.g. 22]
 
