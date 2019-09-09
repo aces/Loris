@@ -243,7 +243,7 @@ brew services start mariadb
 mysql_secure_installation
 ```
 
-### 1.8.1 MySQL GUI tool (recommended)
+### 1.8.1 MySQL GUI tool (Optional)
 
 [Sequel Pro](https://sequelpro.com/test-builds) (free)
 
