@@ -162,28 +162,22 @@ class AjaxDashboard extends \NDB_Page
             $recruitmentData
         );
 
-        $useProjects = $config->getSetting('useProjects');
-        // todo useProjects used with recruitment
-        $recruitmentData['useProjects'] = $useProjects;
-        if ($useProjects == 'true') {
-            $projects = \Utility::getProjectList();
-            foreach ($projects as $projectID => $project) {
-                $projectInfo = $config->getProjectSettings($projectID);
-                if (is_null($projectInfo)) {
-                    throw new \LorisException(
-                        'No project settings exist in the Database for ' .
-                        'project ID ' . intval($projectID)
-                    );
-                }
-                // todo XXX
-                $recruitmentData = $this->createProjectProgressBar(
-                    $projectID,
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($projectID),
-                    $recruitmentData
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectInfo = $config->getProjectSettings($projectID);
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval($projectID)
                 );
             }
+            $recruitmentData = $this->createProjectProgressBar(
+                $projectID,
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject($projectID),
+                $recruitmentData
+            );
         }
 
         // Charts
@@ -467,7 +461,7 @@ class AjaxDashboard extends \NDB_Page
              AND c.RegistrationCenterID <> 1",
             array('sex' => $sex)
         );
-        return $total;
+        return intval($total);
     }
 
     /**
@@ -492,7 +486,7 @@ class AjaxDashboard extends \NDB_Page
              'PID' => $projectID,
             )
         );
-        return $total;
+        return intVal($total);
     }
 
     /**
