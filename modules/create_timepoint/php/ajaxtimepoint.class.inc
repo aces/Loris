@@ -46,15 +46,9 @@ class AjaxTimepoint extends \NDB_Page
          * Ensure it's a POST request.
          */
         if ($request->getMethod() != 'POST') {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(405)
-                ->withHeader('Allow', 'POST')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Only POST requests are allowed'
-                    )
-                );
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
         /**
          * Parse POST request body.
@@ -66,14 +60,9 @@ class AjaxTimepoint extends \NDB_Page
          */
         $user = $request->getAttribute('user');
         if (!isset($requestBody['identifier'])) {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(404)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Failed to retrieve data for create timepoint.'
-                    )
-                );
+            return new \LORIS\Http\Response\BadRequest(
+                'Failed to retrieve data for create timepoint.'
+            );
         }
         $requestBody['identifier'] = isset($requestBody['identifier']) ?
             intval($requestBody['identifier']) : null;
@@ -89,30 +78,18 @@ class AjaxTimepoint extends \NDB_Page
                 true
             ))
         ) {
-            return (new \Loris\Http\Response())
-                ->withStatus(403, 'Forbidden')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => 'Forbidden')
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\Forbidden(
+                'Forbidden'
+            );
         }
 
         /**
          * Response to reply.
          */
-        $response = $this->processRequest($requestBody);
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(200)
-            ->withHeader('Allow', 'POST')
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($response)
-                )
-            );
+        $response = $this->_handlePOST($requestBody);
+        return new \LORIS\Http\Response\JsonResponse(
+            json_encode($response)
+        );
     }
 
     /**
@@ -122,7 +99,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    function processRequest(array $values) : array
+    private function _handlePOST(array $values) : array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
             $response = $this->initializeSetup($values);
@@ -216,26 +193,7 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
         $values['visit'] = $visit_options;
-        if (!empty($visit_options)) {
-            // List of sites for the user.
-            $user = \User::singleton();
-            $DB   = \Database::singleton();
-            $user_list_of_sites = $user->getData('CenterIDs');
-            $num_sites          = count($user_list_of_sites);
-            $psc_labelOptions   = array();
-            if ($num_sites > 1) {
-                $psc_labelOptions = array(null => '');
-                foreach ($user_list_of_sites as $key => $siteID) {
-                    $center = $DB->pselectRow(
-                        "SELECT CenterID as ID, Name FROM psc 
-                        WHERE CenterID =:cid",
-                        array('cid' => $siteID)
-                    );
-                    $psc_labelOptions[$siteID] = $center['Name'];
-                }
-            }
-            $values['psc'] = array_filter($psc_labelOptions);
-        }
+        $values['psc'] = array_intersect(\Utility::getSiteList(), \User::singleton()->getSiteNames());
         if (!empty($errors)) {
             $values['errors'] = $errors;
         }
