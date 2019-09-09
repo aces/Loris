@@ -50,7 +50,10 @@ class ResolvedFilterableDataTable extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(loris.BaseURL.concat('/conflict_resolver/resolved'), {credentials: 'same-origin'})
+    return fetch(
+        loris.BaseURL.concat('/conflict_resolver/resolved'),
+        {credentials: 'same-origin', cache: 'no-store'}
+      )
       .then((resp) => resp.json())
       .then((json) => {
         const data = {

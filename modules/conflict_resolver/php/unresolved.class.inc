@@ -62,7 +62,7 @@ class Unresolved extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 
     /**
@@ -284,14 +284,32 @@ class Unresolved extends Endpoint implements ETagCalculator
                cu.CommentId2,
                cu.Value1,
                cu.Value2,
-               :v_newvalue,
+               CASE :v_newvalue WHEN cu.Value1 THEN 1 ELSE 2 END,
                cu.ConflictID
              FROM conflicts_unresolved cu
              LEFT JOIN flag f1
                ON (cu.CommentId1=f1.CommentID)
              LEFT JOIN flag f2
                ON (cu.CommentId2=f2.CommentID)
-             WHERE ConflictID = :v_conflictid
+             WHERE cu.ConflictID = :v_conflictid
+             UNION DISTINCT
+             SELECT
+               :v_username,
+               cr.User1,
+               cr.User2,
+               cr.TableName,
+               cr.ExtraKeyColumn,
+               cr.ExtraKey1,
+               cr.ExtraKey2,
+               cr.FieldName,
+               cr.CommentId1,
+               cr.CommentId2,
+               cr.OldValue1,
+               cr.OldValue2,
+               CASE :v_newvalue WHEN cr.OldValue1 THEN 1 ELSE 2 END,
+               cr.ConflictID
+             FROM conflicts_resolved cr
+             WHERE cr.ConflictID = :v_conflictid
             '
         );
 

@@ -55,7 +55,7 @@ class Resolved extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 
     /**
@@ -143,7 +143,7 @@ class Resolved extends Endpoint implements ETagCalculator
             $conflicts = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($user);
-
+            error_log(count($conflicts));
             $body = array(
                      'data'         => $conflicts,
                      'fieldOptions' => $this->_getFieldOptions(),
