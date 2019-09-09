@@ -193,7 +193,7 @@ b. Create the file `ext-xdebug.ini` with this command:
 sudo touch /usr/local/etc/php/<your_php_version>/conf.d/ext-xdebug.ini
 ```
 
-c. Paste the following into the `ext-xdebug.ini` file you just created (Note: replace the `zend_extension` path with the correct one on your machine):
+c. Type the following into the `ext-xdebug.ini` file you just created (Note: replace the `zend_extension` path with the correct one on your machine):
 ```
 [xdebug]
 zend_extension="/usr/local/Cellar/php@7.2/7.2.14/pecl/20170718/xdebug.so"
