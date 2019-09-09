@@ -1443,10 +1443,7 @@ class HeaderElement extends Component {
 }
 
 HeaderElement.propTypes = {
-  text: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.element,
-  ]).isRequired,
+  text: PropTypes.string.isRequired,
   headerLevel: PropTypes.oneOf([
     1, 2, 3, 4, 5, 6,
   ]),
