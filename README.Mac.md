@@ -230,7 +230,7 @@ xdebug off
 
 We’re installing MariaDB (fork of mysql).
 
-**a.** Paste the commands into your terminal and hit enter:
+**a.** Type the commands into your terminal and hit enter:
 ```
 brew update
 brew upgrade
