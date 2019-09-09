@@ -191,14 +191,18 @@ class PublicationUploadForm extends React.Component {
     let formClass = 'col-md-12 col-lg-12';
     if (!this.props.editMode) {
       createElements = [
-        <h3 className="col-md-offset-3 col-lg-offset-3">Propose a new project</h3>,
-        <TextboxElement
-          name="title"
-          label="Title"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.title}
-        />,
+        <div key={'propose_new_project'}>
+          <h3 className="col-md-offset-3 col-lg-offset-3">
+            Propose a new project
+          </h3>,
+          <TextboxElement
+            name="title"
+            label="Title"
+            onUserInput={this.setFormData}
+            required={true}
+            value={this.state.formData.title}
+          />,
+        </div>,
       ];
       // if not in edit mode, shrink form for consistent display
       formClass = 'col-md-8 col-lg-7';

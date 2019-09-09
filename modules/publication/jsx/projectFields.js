@@ -1,3 +1,5 @@
+import React from 'react';
+
 class EmailElement extends React.Component {
   constructor() {
     super();
@@ -170,13 +172,15 @@ class ProjectFormFields extends React.Component {
     for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = 'file_' + i;
       fileFields.push(
-        <FileElement
-          name={fileName}
-          id={'publicationUploadEl_' + i}
-          onUserInput={this.props.setFileData}
-          label="File to upload"
-          value={this.props.formData[fileName]}
-        />
+        <div key={'file_element_' + i}>
+          <FileElement
+            name={fileName}
+            id={'publicationUploadEl_' + i}
+            onUserInput={this.props.setFileData}
+            label="File to upload"
+            value={this.props.formData[fileName]}
+          />
+        </div>
       );
       if (this.props.formData[fileName]) {
         let publicationType = 'publicationType_' + i;
@@ -281,9 +285,12 @@ class ProjectFormFields extends React.Component {
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
 
-    let voiHelp = (<div>For help finding variables of interest, consult
+    let voiHelp = (
+      <div>
+        For help finding variables of interest, consult
       the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
-      </div>);
+      </div>
+    );
     let collabNames = [];
     if (this.props.formData.collaborators) {
       collabNames = this.props.formData.collaborators.map((c) => c.name);
@@ -404,9 +411,13 @@ class ProjectFormFields extends React.Component {
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
         />
-        <StaticElement
-          text={voiHelp}
-        />
+        <div className="row form-group">
+          <label className="col-sm-3 control-label">
+          </label>
+          <div className="col-sm-9">
+            <div className="form-control-static">{voiHelp}</div>
+          </div>
+        </div>
         {fileFields}
         <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'} />
       </div>
