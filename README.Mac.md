@@ -133,7 +133,7 @@ sudo apachectl -k restart
 
 ## 1.6 Install PHP and pkg-config
 
-Paste these commands into your terminal and hit enter:
+Type these commands into your terminal and hit enter:
 ```
 brew install php72
 brew link php72
