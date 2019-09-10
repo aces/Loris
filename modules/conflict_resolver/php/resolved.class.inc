@@ -143,7 +143,7 @@ class Resolved extends Endpoint implements ETagCalculator
             $conflicts = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($user);
-            error_log(count($conflicts));
+
             $body = array(
                      'data'         => $conflicts,
                      'fieldOptions' => $this->_getFieldOptions(),

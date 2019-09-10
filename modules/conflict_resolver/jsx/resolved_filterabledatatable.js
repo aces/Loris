@@ -52,7 +52,7 @@ class ResolvedFilterableDataTable extends Component {
   fetchData() {
     return fetch(
         loris.BaseURL.concat('/conflict_resolver/resolved'),
-        {credentials: 'same-origin', cache: 'no-store'}
+        {credentials: 'same-origin'}
       )
       .then((resp) => resp.json())
       .then((json) => {
