@@ -31,7 +31,7 @@ class CandidateTest extends TestCase
     private $_candidateInfo
         = array(
            'RegistrationCenterID'     => '2',
-           'CandID'       => 969664,
+           'CandID'       => '969664',
            'PSCID'        => 'AAA0011',
            'DoB'          => '2007-03-02',
            'EDC'          => null,
@@ -149,8 +149,10 @@ class CandidateTest extends TestCase
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 
-        $this->_candidateInfo['CandID'] = 
-            new CandID($this->_candidateInfo['CandID']);
+        $this->_candidateInfo['CandID'] = new \CandID(
+            $this->_candidateInfo['CandID']
+        );
+
         $this->_candidate = new Candidate();
     }
 
@@ -251,6 +253,12 @@ class CandidateTest extends TestCase
         $this->assertEquals(
             $this->_candidateInfo,
             $this->_candidate->getData()
+        );
+
+        $this->assertTrue(
+            $this->_candidate->setData(
+                array('RegisteredBy' => 'TestUser')
+            )
         );
     }
 
@@ -536,6 +544,8 @@ class CandidateTest extends TestCase
                                    2 => 2
                                );
         
+        $this->_candidate->select(969664);
+
         $this->assertEquals(
             $expectedSubprojects,
             $this->_candidate->getValidSubprojects()
@@ -599,7 +609,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('');
         
-        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_candidate->select(969664);
         $this->assertEquals('', $this->_candidate->getFirstVisit());
     }
 
@@ -618,7 +628,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(2);
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_candidate->select(969664);
         $this->assertEquals(2, $this->_candidate->getNextVisitNo());
     }
  
@@ -637,7 +647,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(null);
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_candidate->select(969664);
         $this->assertEquals(1, $this->_candidate->getNextVisitNo());
     }
     /**
@@ -680,7 +690,7 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
-            ->willReturn(array('CandID' => new CandID(969664)));
+            ->willReturn(array('CandID' => 969664));
 
         $this->assertTrue(
             Candidate::candidateExists(
@@ -767,7 +777,7 @@ class CandidateTest extends TestCase
     public function testGetConsents()
     {
         $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(new CandID(969664));
+        $this->_candidate->select(969664);
  
         $result = array(
                       array('ConsentID'     => 1,
