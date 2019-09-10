@@ -149,7 +149,7 @@ class CandidateTest extends TestCase
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 
-        $this->_candidateInfo['CandID'] = new \CandID(
+        $this->_candidateInfo['CandID'] = new CandID(
             $this->_candidateInfo['CandID']
         );
 
@@ -194,6 +194,19 @@ class CandidateTest extends TestCase
             $expectedTimepoints,
             $this->_candidate->getListOfTimePoints()
         );
+    }
+
+    /**
+     * Test select() method fails when invalid _candidate ID is passed
+     *
+     * @return void
+     * @covers Candidate::select
+     * @throws LorisException
+     */
+    public function testsSelectFailsWhenInvalidCandidateIdPassed()
+    {
+        $this->expectException('DomainException');
+        $this->_candidate->select(new CandID('88888'));
     }
 
     /**
@@ -341,13 +354,11 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-
         $this->assertEquals(
             $this->_candidateInfo['PSC'],
             $this->_candidate->getCandidateSite()
         );
     }
-
     /**
      * Test getCenterID returns the correct RegistrationCenterID for the candidate
      *
@@ -358,13 +369,11 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-
         $this->assertEquals(
             $this->_candidateInfo['RegistrationCenterID'],
             $this->_candidate->getCenterID()
         );
     }
-
     /**
      * Test getCandidateDoB returns the correct DoB for the candidate
      *
@@ -375,7 +384,6 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-
         $this->assertEquals(
             $this->_candidateInfo['DoB'],
             $this->_candidate->getCandidateDoB()
@@ -383,7 +391,7 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getCandidateEDC returns the correct 
+     * Test getCandidateEDC returns the correct
      * expected date of confinement for the candidate
      *
      * @covers Candidate::getCandidateEDC
@@ -537,14 +545,12 @@ class CandidateTest extends TestCase
                 $subprojects
             );
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
         $expectedSubprojects = array(
                                    1 => 1,
                                    2 => 2
                                );
         
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(
             $expectedSubprojects,
@@ -609,7 +615,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('');
         
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals('', $this->_candidate->getFirstVisit());
     }
 
@@ -628,7 +634,7 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(2);
 
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(2, $this->_candidate->getNextVisitNo());
     }
  
@@ -647,7 +653,8 @@ class CandidateTest extends TestCase
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(null);
 
-        $this->_candidate->select(969664);
+
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(1, $this->_candidate->getNextVisitNo());
     }
     /**
@@ -777,7 +784,7 @@ class CandidateTest extends TestCase
     public function testGetConsents()
     {
         $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
+        $this->_candidate->select($this->_candidateInfo['CandID']);
  
         $result = array(
                       array('ConsentID'     => 1,
@@ -924,5 +931,4 @@ class CandidateTest extends TestCase
             1
         );
     }
-
 }
