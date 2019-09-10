@@ -516,11 +516,9 @@ class UserTest extends TestCase
 
         $oldHash = $this->_user->getData('Password_hash');
 
+        // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockDB->expects($this->any())
             ->method('pselect')
-            ->with(
-                $this->stringContains("usePwnedPasswordsAPI")
-            )
             ->willReturn('false');
 
         $this->_user->updatePassword(
@@ -551,14 +549,14 @@ class UserTest extends TestCase
         $oldHash = $this->_user->getData('Password_hash');
         $newDate = date('Y-m-d', strtotime('+6 months'));
 
+        // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockDB->expects($this->any())
             ->method('pselect')
-            ->with(
-                $this->stringContains("usePwnedPasswordsAPI")
-            )
             ->willReturn('false');
 
-        $this->_user->updatePassword(new \Password(\Utility::randomString(16)));
+        $this->_user->updatePassword(
+            new \Password(\Utility::randomString(16))
+        );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
@@ -577,12 +575,6 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory($this->_username);
         $count = 1;
-        $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
-            ->with(
-                $this->stringContains("FROM user_login_history")
-            )
-            ->willReturn($count);
 
         $this->assertTrue($this->_user->hasLoggedIn());
     }
