@@ -178,6 +178,7 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
+        $set = array();
         foreach ($values as $key => $value) {
             // Password updates are handled separately. Password_hash is removed
             // from the initial update as otherwise it will be recorded in the
@@ -203,8 +204,9 @@ class My_Preferences extends \NDB_Form
             $config = \NDB_Config::singleton();
 
             // send the user an email
-            $msg_data['study']    = $config->getSetting('title');
-            $msg_data['url']      = $config->getSetting('url');
+            $msg_data          = array();
+            $msg_data['study'] = $config->getSetting('title');
+            $msg_data['url']   = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -303,6 +305,7 @@ class My_Preferences extends \NDB_Form
         $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
+        $nGroup   = array();
         $nGroup[] = $this->createLabel("Module");
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
@@ -323,6 +326,7 @@ class My_Preferences extends \NDB_Form
         $notification_rows =array();
         foreach ($notifier_list as $module=>$operation_services) {
             foreach ($operation_services as $operation=>$services) {
+                $nGroup   = array();
                 $nGroup[] = $this->createLabel($module);
                 $nGroup[] = $this->createLabel($operation);
                 $nGroup[] = $this->createLabel($services['desc']);

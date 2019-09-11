@@ -4,7 +4,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -18,7 +18,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue Tracker
@@ -495,9 +495,10 @@ function emailUser($issueID, $changed_assignee)
         array('issueID' => $issueID)
     );
 
-    $msg_data['url']         = $baseurl .
+    $msg_data            = array();
+    $msg_data['url']     = $baseurl .
         "/issue_tracker/issue/" . $issueID;
-    $msg_data['issueID']     = $issueID;
+    $msg_data['issueID'] = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
     $msg_data['title']       = $title;
 

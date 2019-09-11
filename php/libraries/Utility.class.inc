@@ -928,6 +928,7 @@ class Utility
              FROM language",
             array()
         );
+        $languages   = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }

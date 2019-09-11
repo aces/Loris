@@ -215,7 +215,7 @@ class Next_Stage extends \NDB_Form
     /**
      * Validate function
      *
-     * @param string $values the value
+     * @param array $values the value
      *
      * @return array|bool
      */

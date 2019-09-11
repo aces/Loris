@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+$tpl_data = array();
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
     header("Access-Control-Allow-Credentials: true");
@@ -87,9 +88,11 @@ if (!$anonymous) {
     tplFromRequest('dynamictabs');
     // draw the user information table
     try {
-        $user =& User::singleton();
+        $user = \User::singleton();
 
-        $site_arr = $user->getData('CenterIDs');
+        $site_arr    = $user->getData('CenterIDs');
+        $site        = array();
+        $isStudySite = array();
         foreach ($site_arr as $key=>$val) {
             $site[$key]        = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();

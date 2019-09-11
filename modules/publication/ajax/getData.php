@@ -72,6 +72,7 @@ function getData($db) : array
     sort($bvlVOIs);
 
     // sets keys and values to be equal
+    $allVOIs = array();
     $allVOIs['Behavioral'] = array_combine($bvlVOIs, $bvlVOIs);
 
     // imaging VoIs -- filter out non-human readable DICOM tags
