@@ -102,7 +102,7 @@ class AjaxTimepoint extends \NDB_Page
     private function _handlePOST(array $values) : array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
-            $response = $this->initializeSetup($values);
+            $response = $this->_handleGET($values);
         } else if (isset($values['command']) && $values['command'] == 'create') {
             $errors = $this->validate($values);
 
@@ -159,7 +159,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    function initializeSetup(array $values) : array
+    private function _handleGET(array $values) : array
     {
         // Setup variables
         $errors         = array(); // form errors.
@@ -187,8 +187,11 @@ class AjaxTimepoint extends \NDB_Page
                 if (in_array($subprojectID, $subprojList)) {
                     $tmp[$subprojectID] = $title;
                 }
-                $values['subproject'] = $tmp;
             }
+            $values['subproject'] = $tmp;
+        } else {
+            // projects disabled, add all subprojects
+            $values['subproject'] = $allSubprojects;
         }
 
         // Retrieve visit labels.
@@ -212,7 +215,10 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
         $values['visit'] = $visit_options;
-        $values['psc'] = array_intersect(\Utility::getSiteList(), \User::singleton()->getSiteNames());
+        $values['psc'] = array_intersect(
+            \Utility::getSiteList(),
+            \User::singleton()->getSiteNames()
+        );
         if (!empty($errors)) {
             $values['errors'] = $errors;
         }
