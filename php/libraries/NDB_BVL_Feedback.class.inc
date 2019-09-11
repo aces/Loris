@@ -227,13 +227,13 @@ class NDB_BVL_Feedback
     static public function getFeedbackTypes()
     {
         // new DB Object
-        $db =& Database::singleton();
 
         $query = "SELECT Feedback_type as Type, Name, Description
             FROM feedback_bvl_type";
 
-        $result = $db->pselect($query, array());
+        $result = \Database::singleton()->pselect($query, array());
 
+        $list = array();
         foreach ($result as $record) {
             $list[$record['Type']] = array(
                                       'Type'  => $record['Type'],

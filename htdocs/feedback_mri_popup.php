@@ -32,6 +32,7 @@ if (!$user->hasPermission('imaging_browser_qc')
     return;
 }
 
+$tpl_data = array();
 $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object

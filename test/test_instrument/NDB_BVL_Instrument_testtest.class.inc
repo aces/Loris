@@ -76,6 +76,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
       $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
       $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
+      $group = array();
       $group[] = $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
       $this->form->addGroup($group, "consent_group", "Test selecting 'Yes' from the dropdown menu.", null, false);

@@ -73,8 +73,9 @@ class PasswordReset extends \NDB_Form
                   // expire password so user must change it upon login
                   $user->updatePassword($password, '1999-01-01');
                   // send the user an email
-                  $msg_data['study']    = $config->getSetting('title');
-                  $msg_data['url']      = $config->getSetting('url');
+                  $msg_data          = array();
+                  $msg_data['study'] = $config->getSetting('title');
+                  $msg_data['url']   = $config->getSetting('url');
                   $msg_data['realname'] = $user->getData('Real_name');
                   $msg_data['password'] = $password;
                   \Email::send($email, 'lost_password.tpl', $msg_data);

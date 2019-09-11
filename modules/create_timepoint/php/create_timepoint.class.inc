@@ -178,8 +178,8 @@ class Create_Timepoint extends \NDB_Form
                         "longer supported in Loris."
                     );
                 }
-                $labelOptions[''] = null;
-                $items            = \Utility::associativeToNumericArray(
+                $labelOptions = array('' => null);
+                $items        = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {

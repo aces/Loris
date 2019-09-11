@@ -46,6 +46,7 @@ class Edit_Help_Content extends \NDB_Form
     {
         $DB = \Database::singleton();
         //Get the default values
+        $defaults = array();
 
         // Sanitize user input
         $safeSection    = $_REQUEST['section'] ?

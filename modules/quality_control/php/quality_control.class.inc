@@ -64,6 +64,7 @@ class Quality_Control extends \NDB_Menu_Filter
             array()
         );
 
+        $all_scan_types = array();
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -267,6 +268,8 @@ class Quality_Control extends \NDB_Menu_Filter
               ];
 
         $scan_types = $this->_getScanTypes();
+        $scans_done = array();
+        $acq_IDs    = array();
         foreach ($scan_types as $scan_type) {
             $query_params        = array('scan_type' => $scan_type);
             $acq_IDs[$scan_type] = $db->pselectOne(
