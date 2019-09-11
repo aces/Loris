@@ -128,7 +128,7 @@ class CreateTimepoint extends React.Component {
             this.setState(state);
           }
           // Populate the select options for subproject.
-          if (data.subproject) {
+          if (data.hasOwnProperty('subproject')) {
             const state = Object.assign({}, this.state);
             state.form.options.subproject = data.subproject;
             state.form.value.subproject = null;
@@ -155,11 +155,11 @@ class CreateTimepoint extends React.Component {
           // Display form to user.
           this.setState({isLoaded: true});
         }).catch((error) => {
-      const state = Object.assign({}, this.state);
-      state.errors = [{message: error}];
-      state.isLoaded = true;
-      this.setState(state);
-    });
+          const state = Object.assign({}, this.state);
+          state.errors = [{message: error}];
+          state.isLoaded = true;
+          this.setState(state);
+        });
   }
   /**
    * Visit Labels refreshes when Subproject changes.
