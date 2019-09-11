@@ -163,7 +163,10 @@ class AjaxTimepoint extends \NDB_Page
             If you are an administrator, please use the Configuration module to 
             add new subprojects and associate them with projects.";
         }
-        $values['subproject'] = array_intersect_key(\Utility::getSubprojectList(), $candidate->getValidSubprojects());
+        $values['subproject'] = array_intersect_key(
+            \Utility::getSubprojectList(),
+            $candidate->getValidSubprojects()
+        );
 
         // Retrieve visit labels.
         $visit_options      = array();
@@ -186,7 +189,10 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
         $values['visit'] = $visit_options;
-        $values['psc'] = array_intersect(\Utility::getSiteList(), \User::singleton()->getSiteNames());
+        $values['psc']   = array_intersect(
+            \Utility::getSiteList(),
+            \User::singleton()->getSiteNames()
+        );
         if (!empty($errors)) {
             $values['errors'] = $errors;
         }
