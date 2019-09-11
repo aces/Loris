@@ -214,7 +214,7 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
         $values['visit'] = $visit_options;
-        $values['psc'] = array_intersect(
+        $values['psc']   = array_intersect(
             \Utility::getSiteList(),
             \User::singleton()->getSiteNames()
         );
