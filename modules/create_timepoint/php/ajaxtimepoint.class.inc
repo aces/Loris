@@ -102,7 +102,7 @@ class AjaxTimepoint extends \NDB_Page
     private function _handlePOST(array $values) : array
     {
         if (isset($values['command']) && $values['command'] == 'initialize') {
-            $response = $this->initializeSetup($values);
+            $response = $this->_handleGET($values);
         } else if (isset($values['command']) && $values['command'] == 'create') {
             $errors = $this->validate($values);
             // convert site entered to a \Site object
@@ -141,7 +141,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    function initializeSetup(array $values) : array
+    private function _handleGET(array $values) : array
     {
         // Setup variables
         $errors         = array(); // form errors.
@@ -164,13 +164,7 @@ class AjaxTimepoint extends \NDB_Page
             If you are an administrator, please use the Configuration module to 
             add new subprojects and associate them with projects.";
         }
-        $tmp = array();
-        foreach ($allSubprojects as $subprojectID => $title) {
-            if (in_array($subprojectID, $subprojList)) {
-                $tmp[$subprojectID] = $title;
-            }
-            $values['subproject'] = $tmp;
-        }
+        $values['subproject'] = array_intersect_key(\Utility::getSubprojectList(), $candidate->getValidSubprojects());
 
         // Retrieve visit labels.
         $visit_options      = array();
