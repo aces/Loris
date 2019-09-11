@@ -28,10 +28,10 @@
 
  	*This table stores the list of timepoints configured for the study.*
  	
- 	|     Field    |          Description          |                                    Notes                                    |
-	|:------------:|:------------------------------------------------:|:--------------------------------------------------------:|
-	| `VisitID`   | Identifier of the Timepoint    | Avoid setting this field explicitly when inserting data, it auto increments.|
-	| `VisitName` | Back end name of the Timepoint | This name is used in file and imaging uploads                               |
+ 	|     Field    |          Description          |                                    Notes                                                |
+	|:------------:|:------------------------------------------------:|:-------------------------------------------------------------------:|
+	| `VisitID`   | Identifier of the Timepoint    | Avoid setting this field explicitly when inserting data, it auto increments.    |
+	| `VisitName` | Back end name of the Timepoint | This name is used in file and imaging uploads (previously known as `visit_label`) |
 
 - Table: `Visit_Windows`
 
