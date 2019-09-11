@@ -86,9 +86,8 @@ class AjaxTimepoint extends \NDB_Page
         /**
          * Response to reply.
          */
-        $response = $this->_handlePOST($requestBody);
         return new \LORIS\Http\Response\JsonResponse(
-            $response
+            $this->_handlePOST($requestBody)
         );
     }
 
