@@ -11,15 +11,17 @@ class FixConflictForm extends Component {
   fix(e) {
     const conflictid = e.target.name;
     const correctanswer = e.target.value;
-    const icon = e.target.parentElement.getElementsByTagName('span')[0];
 
+    // This is to manage the feedback icon inext to the input field to reflect
+    // success or error.
+    const icon = e.target.parentElement.getElementsByTagName('span')[0];
     icon.style.display = 'none';
 
     try {
       // Remove the empty option from the options to prevent sending an empty value.
       e.target.querySelector('option[name="0"]').remove();
-    } catch (e) {
-      // Do nothing, already removed
+    } catch (error) {
+      // TypeError when already removed. Do nothing.
     }
 
     fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {
@@ -31,25 +33,23 @@ class FixConflictForm extends Component {
         body: JSON.stringify({conflicid: conflictid, correctanswer: correctanswer}),
     })
     .then((resp) => {
-      if (resp.status == 200) {
-        icon.className = 'glyphicon glyphicon-ok-circle';
-        icon.style.color = 'green';
-      } else {
-        resp.text().then((text) => {
-          console.error(text);
-        });
-        icon.className = 'glyphicon glyphicon-remove-sign';
-        icon.style.color = 'red';
-      }
-      setTimeout(() => {
-        icon.style.display = 'inline';
-      }, 200);
+      return resp.ok ? {} : resp.json();
+    })
+    .then((json) => {
+        if (json.error) {
+          throw json.error;
+        }
+        setTimeout(() => {
+          icon.className = 'glyphicon glyphicon-ok-circle';
+          icon.style.color = 'green';
+          icon.style.display = 'inline';
+        }, 200);
     })
     .catch((error) => {
-      console.error(error);
-      icon.className = 'glyphicon glyphicon-remove-sign';
-      icon.style.color = 'red';
+      swal('Error!', error, 'error');
       setTimeout(() => {
+        icon.className = 'glyphicon glyphicon-remove-sign';
+        icon.style.color = 'red';
         icon.style.display = 'inline';
       }, 200);
     });
