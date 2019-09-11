@@ -132,8 +132,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr = $this->user->getData('CenterIDs');
-        $site = array();
+        $site_arr    = $this->user->getData('CenterIDs');
+        $site        = array();
         $isStudySite = array();
         foreach ($site_arr as $key => $val) {
             $site[$key]        = & \Site::singleton($val);
