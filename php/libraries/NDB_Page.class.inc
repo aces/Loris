@@ -319,6 +319,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addRadio($name, $groupLabel, $radios, $options=array())
     {
+        $radGroup = array();
         foreach ($radios as $radElement) {
             $tempOptions = array_merge(
                 array(

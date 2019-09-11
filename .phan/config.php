@@ -18,13 +18,11 @@ return [
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
-		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
-		"PhanNonClassMethodCall",
         "PhanTypeSuspiciousStringExpression",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],

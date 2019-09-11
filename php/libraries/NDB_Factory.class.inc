@@ -194,10 +194,18 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-                self::$db = Database::singleton();
+            self::$db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
+        // This check was added to satisfy phan, our static analysis tool.
+        // $db_ref should be set to either a new MockDatabase or a Database
+        // singleton above.
+        if ($db_ref === null) {
+            throw new \ConfigurationException(
+                'Could not configure database for LORIS'
+            );
+        }
         $db_ref->connect(
             $dbc['database'],
             $dbc['username'],

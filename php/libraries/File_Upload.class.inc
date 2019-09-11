@@ -473,13 +473,14 @@ class File_Upload
       *
       * @param string $name The string file name
       *
-      * @return string split file name
+      * @return array split file name
       * @see    File_Upload::nameToIncremental()
       * @see    File_Upload::nameToUniqueRandom()
       * @see    File_Upload::nameToUniqueTimestamp()
       */
     function getSplitFilename($name)
     {
+        $file = array();
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
             $file['name'] =substr($name, 0, $extpos);

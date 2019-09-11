@@ -211,9 +211,10 @@ class Files extends \NDB_Page
         //if user has document repository delete permission
         if ($user->hasPermission('document_repository_delete')) {
             $DB->delete("document_repository", array("record_id" => $rid));
-            $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
-            $msg_data['document']       = $fileName;
-
+            $msg_data = array(
+                         'deleteDocument' => $baseURL. "/document_repository/",
+                         'document'       => $fileName,
+                        );
             $Notifier->notify($msg_data);
         }
 
@@ -222,7 +223,6 @@ class Files extends \NDB_Page
         if (file_exists($path)) {
             unlink($path);
         }
-
     }
     /**
      * Returns a list of categories fields from database
@@ -280,9 +280,10 @@ class Files extends \NDB_Page
     /**
     * Handler of parsing category
     *
-    * @param string $value the value
+    * @param array $value the value
     *
-    * @return array
+    * @return array An array containing the category name and ID for file
+    *               categories in the document repository.
     */
     function parseCategory($value): array
     {
@@ -402,7 +403,7 @@ class Files extends \NDB_Page
         ) {
                 $uploadedFile->moveTo($uploadPath.$fileName);
 
-                $success = $DB->insert(
+                $success  = $DB->insert(
                     'document_repository',
                     array(
                      'File_category' => $category,
@@ -419,8 +420,10 @@ class Files extends \NDB_Page
                      'File_type'     => $fileType,
                     )
                 );
-                $msg_data['newDocument'] = $baseURL . "/document_repository/";
-                $msg_data['document']    = $fileName;
+                $msg_data = array(
+                             'newDocument' => $baseURL . "/document_repository/",
+                             'document'    => $fileName,
+                            );
                 $uploadNotifier->notify($msg_data);
                 $uploadOK = true;
         }
