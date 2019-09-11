@@ -519,6 +519,9 @@ class UserTest extends TestCase
         // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockDB->expects($this->any())
             ->method('pselect')
+            ->with(
+                $this->stringContains("SELECT Value FROM Config WHERE ConfigID=:CID")
+            )
             ->willReturn('false');
 
         $this->_user->updatePassword(
@@ -552,6 +555,9 @@ class UserTest extends TestCase
         // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockDB->expects($this->any())
             ->method('pselect')
+            ->with(
+                $this->stringContains("SELECT Value FROM Config WHERE ConfigID=:CID")
+            )
             ->willReturn('false');
 
         $this->_user->updatePassword(
