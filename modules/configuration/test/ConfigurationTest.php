@@ -150,7 +150,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->_linkTest("WWW");
         $this->_linkTest("Dashboard");
         $this->_linkTest("Imaging Modules");
-       //  $this->_linkTest("Statistics"); will be rewritten by REACT test 
+        // $this->_linkTest("Statistics"); will be rewritten by REACT test
         $this->_linkTest("Email");
         $this->_linkTest("Uploads");
         $this->_linkTest("API Keys");
