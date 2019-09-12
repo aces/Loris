@@ -35,7 +35,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         // $this->markTestSkipped(
         //"Permissions not correctly set up for next_page test");
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -52,7 +52,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesPageLoadWithPermission()
     {
         $this->setupPermissions(array("data_entry"));
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );

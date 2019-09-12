@@ -103,6 +103,10 @@ abstract class LorisIntegrationTest extends TestCase
         $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
         $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
         $desired_capabilities = DesiredCapabilities::firefox();
+        $desired_capabilities->setCapability(
+           'moz:firefoxOptions',
+           ['args' => ['-headless']]
+        );
         $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
 
         $this->webDriver = RemoteWebDriver::create(
