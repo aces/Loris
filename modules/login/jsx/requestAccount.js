@@ -1,0 +1,135 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Panel from 'Panel';
+
+/**
+ * Request account form.
+ *
+ * @description form for request account.
+ *
+ * @author Alizée Wickenheiser
+ * @version 1.0.0
+ *
+ */
+class RequestAccount extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      form: {
+        value: {
+          firstname: '',
+          lastname: '',
+          email: '',
+        },
+        error: '',
+      },
+    };
+    this.setForm = this.setForm.bind(this);
+  }
+
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
+  setForm(formElement, value) {
+    const state = Object.assign({}, this.state);
+    state.form.value[formElement] = value;
+    this.setState(state);
+  }
+  /**
+   * Handle form submission
+   *
+   * @param {object} e - Form submission event
+   */
+  handleSubmit(e) {
+    let form = document.getElementById('form');
+    form.submit();
+  }
+  render() {
+    const request = (
+      <div>
+        <FormElement
+          name={'login'}
+          action={''}
+          id={'form'}
+          fileUpload={'false'}
+          onSubmit={this.handleSubmit}
+        >
+          <StaticElement
+            text={'Please fill in the form below to request a LORIS account. ' +
+            'We will contact you once your account has been approved.'}
+            class={'col-sm-12'}
+            textClass={'text-center'}
+          />
+          <TextboxElement
+            name={'firstname'}
+            value={this.state.form.value.firstname}
+            onUserInput={this.setForm}
+            class={'col-sm-12'}
+            required={true}
+            type={'text'}
+            placeholder={'First name'}
+          />
+          <TextboxElement
+            name={'lastname'}
+            value={this.state.form.value.lastname}
+            onUserInput={this.setForm}
+            class={'col-sm-12'}
+            required={true}
+            type={'text'}
+            placeholder={'Last name'}
+          />
+          <TextboxElement
+            name={'firstname'}
+            value={this.state.form.value.email}
+            onUserInput={this.setForm}
+            class={'col-sm-12'}
+            required={true}
+            type={'text'}
+            placeholder={'Email address'}
+          />
+          <SelectElement
+            name={'site'}
+            options={{1: 1, 2: 2, 3: 3}}
+            class={'col-sm-12'}
+          />
+          <CheckboxElement
+            name={'examiner'}
+            label={'Examiner role'}
+          />
+          <CheckboxElement
+            name={'radiologist'}
+            label={'Radiologist'}
+          />
+          <ButtonElement
+            label={'Request Account'}
+            type={'submit'}
+            columnSize={'col-sm-12'}
+            buttonClass={'btn btn-primary btn-block'}
+          />
+        </FormElement>
+        <a onClick={()=>this.props.setMode('login')}
+           style={{cursor: 'pointer'}}>Back to login page</a>
+      </div>
+    );
+    return (
+      <div className={'container'}>
+        <Panel
+          title={'Request Account'}
+          class={'panel-default panel-center'}
+          collapsing={false}
+        >
+          {request}
+        </Panel>
+      </div>
+    );
+  }
+}
+RequestAccount.propTypes = {
+  module: PropTypes.string,
+  setMode: PropTypes.func,
+};
+
+export default RequestAccount;
