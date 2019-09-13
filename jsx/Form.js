@@ -914,12 +914,19 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
+      );
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
         <div className="col-sm-9">
           <input
             type="text"
@@ -931,6 +938,7 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            placeholder={this.props.placeholder}
           />
           {errorMessage}
         </div>
@@ -943,6 +951,9 @@ TextboxElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
+  class: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -955,6 +966,116 @@ TextboxElement.defaultProps = {
   name: '',
   label: '',
   value: '',
+  type: 'text',
+  class: 'col-sm-9',
+  placeholder: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  },
+};
+
+/**
+ * Password Component
+ * React wrapper for a <input type="password"> element.
+ */
+class PasswordElement extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id,
+      'textbox'
+    );
+  }
+
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    let label = null;
+    if (this.props.label) {
+      label = (
+        <label className='col-sm-3 control-label' htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+    }
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
+          <input
+            type={'password'}
+            className='form-control'
+            name={this.props.name}
+            id={this.props.id}
+            value={this.props.value || ''}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            placeholder={this.props.placeholder}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+PasswordElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  class: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+};
+
+PasswordElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  type: 'text',
+  class: 'col-sm-9',
+  placeholder: '',
   id: null,
   disabled: false,
   required: false,
@@ -1478,8 +1599,10 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
-    let label = null;
+    let elementClass = this.props.class + ' ' + this.props.offset;
+    const divStyle = this.props.class === 'checkbox-inline'
+      ? {paddingRight: '5px'}
+      : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (required) {
@@ -1489,25 +1612,29 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label htmlFor={this.props.id}>
-          <input
-            type="checkbox"
-            name={this.props.name}
-            id={this.props.id}
-            checked={this.props.value}
-            required={required}
-            disabled={disabled}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-          {this.props.label}
-          {requiredHTML}
-        </label>
+        <div className={'col-sm-12'}>
+          <label htmlFor={this.props.id}>
+            <div style={divStyle}>
+              <input
+                type="checkbox"
+                name={this.props.name}
+                id={this.props.id}
+                checked={this.props.value}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            {errorMessage}
+            {this.props.label}
+            {requiredHTML}
+          </label>
+        </div>
       </div>
     );
   }
@@ -1518,10 +1645,11 @@ CheckboxElement.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
+  class: PropTypes.string,
+  offset: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
-  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1530,7 +1658,8 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
-  elementClass: 'checkbox-inline col-sm-offset-3',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1555,9 +1684,11 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
+            style={this.props.style}
             onClick={this.handleClick}
           >
             {this.props.label}
@@ -1569,9 +1700,13 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  style: PropTypes.object,
+  columnSize: PropTypes.string,
+  buttonClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 

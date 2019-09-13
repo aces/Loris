@@ -27,42 +27,26 @@ namespace LORIS\login;
  */
 class Login extends \NDB_Page
 {
+
+    public $skipTemplate = true;
+    public $AjaxModule   = true;
+
     /**
-     * The constructor for login creates some basic tpl variables that are
-     * used in the login template.
+     * Include additional JS files
      *
-     * @return void
+     * @return array of javascript to be inserted
      */
-    function setup()
+    function getJSDependencies()
     {
-        $login = $_SESSION['State']->getProperty('login');
-        if (!empty($login->_lastError)) {
-            $this->tpl_data['error_message'] = $login->_lastError;
-        }
-        $config =& \NDB_Config::singleton();
-
-        $study_links = $config->getExternalLinks('Studylinks');
-        foreach ($study_links as $label => $url) {
-            $WindowName = md5($url);
-            $this->tpl_data['studylinks'][] = array(
-                                               'url'        => $url,
-                                               'label'      => $label,
-                                               'windowName' => $WindowName,
-                                              );
-        }
-
-        $this->tpl_data['study_description'] = html_entity_decode(
-            $config->getSetting("StudyDescription")
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . '/login/js/loginIndex.js',
+            )
         );
-
-        $this->tpl_data['study_title'] = $config->getSetting('title');
-
-        try {
-            $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
-        } catch(\ConfigurationException $e) {
-            $this->tpl_data['study_logo'] = '';
-        }
-
     }
-}
 
+}
