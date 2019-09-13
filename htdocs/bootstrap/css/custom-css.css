@@ -458,6 +458,12 @@ div.navbar div.container div.navbar-brand {
   margin: 0;
 }
 
+.btn-block {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
 .btn-default {
     border-color: #246EB6;
     color: #246EB6;

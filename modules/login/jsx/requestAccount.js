@@ -21,7 +21,7 @@ class RequestAccount extends Component {
           lastname: '',
           email: '',
           site: this.props.data.site
-            ? Object.keys(this.props.data.site)[0]
+            ? Object.keys(this.props.data.site)['']
             : '',
           examiner: false,
           radiologist: false,
@@ -199,6 +199,7 @@ class RequestAccount extends Component {
             class={'row form-group'}
             value={this.state.form.value.radiologist}
             onUserInput={this.setForm}
+            offset={'col-sm-offset-2'}
           />
           {captcha}
           <ButtonElement
@@ -215,6 +216,7 @@ class RequestAccount extends Component {
       <div className={'success-message'}>
         <h1>Thank you!</h1>
         <p>Your request for an account has been received successfully.</p>
+        <p>Please contact your project administrator to activate this account.</p>
         <a onClick={() => window.location.href = window.location.origin}
            style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>

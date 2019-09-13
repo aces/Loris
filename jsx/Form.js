@@ -1609,14 +1609,15 @@ class CheckboxElement extends React.Component {
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.checked);
   }
-
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.class;
-    let label = null;
+    let elementClass = this.props.class + ' ' + this.props.offset;
+    const divStyle = this.props.class === 'checkbox-inline'
+    ? {paddingRight: '5px'}
+    : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (required) {
@@ -1626,14 +1627,14 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     return (
       <div className={elementClass}>
         <div className={'col-sm-12'}>
-          <label htmlFor={this.props.id} className={'form-control'} style={{padding: '5px'}}>
-            <div style={{paddingRight: '5px', display: 'inline-block'}}>
+          <label htmlFor={this.props.id}>
+            <div style={divStyle}>
               <input
                 type="checkbox"
                 name={this.props.name}
@@ -1660,6 +1661,7 @@ CheckboxElement.propTypes = {
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
   class: PropTypes.string,
+  offset: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1672,7 +1674,8 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
-  class: 'checkbox-inline col-sm-offset-3',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1697,10 +1700,11 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
-            {...(this.props.id ? {id: this.props.id} : {})}
+            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
+            style={this.props.style}
             onClick={this.handleClick}
           >
             {this.props.label}
@@ -1716,6 +1720,7 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  style: PropTypes.object,
   columnSize: PropTypes.string,
   buttonClass: PropTypes.string,
   onUserInput: PropTypes.func,
