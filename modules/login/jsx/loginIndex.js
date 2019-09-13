@@ -95,6 +95,7 @@ class Login extends Component {
           state.study.logo = window.location.origin
             + '/' + data.login.logo;
           // request account setup.
+          data.requestAccount.site[''] = 'Choose your site:';
           state.component.requestAccount = data.requestAccount;
           state.isLoaded = true;
           this.setState(state);
@@ -176,7 +177,6 @@ class Login extends Component {
     state.mode = mode;
     this.setState(state);
   }
-
   /**
    * @return {DOMRect}
    */

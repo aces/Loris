@@ -32,7 +32,7 @@ use SinglePointLogin;
 class AjaxLogin extends \NDB_Page
 {
     public $skipTemplate = true;
-    public $AjaxModule = true;
+    public $AjaxModule   = true;
 
     /**
      * This function will return a json object for login.
@@ -40,7 +40,6 @@ class AjaxLogin extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
-     * @throws \DatabaseException
      * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -84,7 +83,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \DatabaseException
      * @throws \LorisException
      */
     function processRequest(array $values): array

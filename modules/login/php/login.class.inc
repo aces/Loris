@@ -49,4 +49,3 @@ class Login extends \NDB_Page
     }
 
 }
-
