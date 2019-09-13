@@ -54,6 +54,7 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
+    console.log('test');
     this.fetchInitializerData();
   }
 

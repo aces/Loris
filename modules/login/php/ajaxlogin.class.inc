@@ -68,13 +68,17 @@ class AjaxLogin extends \NDB_Page
          */
         $response = $this->processRequest($requestBody);
 
-        return (new \LORIS\Http\Response())
+        $test = new StringStream(json_encode($response));
+
+        $response = (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200)
             ->withHeader('Allow', 'POST')
             ->withBody(
                 new StringStream(json_encode($response))
             );
+
+        return $response;
     }
 
     /**
