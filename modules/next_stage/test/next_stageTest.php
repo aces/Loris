@@ -162,6 +162,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $startVisit = $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         );
+        sleep(1);
         $startVisit->submit();
 
         $bodyText = $this->webDriver->findElement(
@@ -181,7 +182,6 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        sleep(5);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
@@ -202,7 +202,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("fire_away")
         );
         $startVisit->submit();
-
+        sleep(2);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
