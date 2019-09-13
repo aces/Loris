@@ -29,7 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
 class AjaxTimepoint extends \NDB_Page
 {
     public $skipTemplate = true;
-
     /**
      * This function will return a json response.
      *
@@ -37,21 +36,20 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
-
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)
@@ -60,7 +58,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
@@ -71,22 +69,22 @@ class AjaxTimepoint extends \NDB_Page
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
         // Setup variables
-        $errors = array(); // form errors.
-        $config = \NDB_Config::singleton();
-        $candidate = \Candidate::singleton($values['identifier']);
+        $errors         = array(); // form errors.
+        $config         = \NDB_Config::singleton();
+        $candidate      = \Candidate::singleton($values['identifier']);
         $allSubprojects = \Utility::getSubprojectList();
         // All subprojects from config file (error).
         if (empty($allSubprojects)) {
@@ -107,15 +105,15 @@ class AjaxTimepoint extends \NDB_Page
             $candidate->getValidSubprojects()
         );
         // Retrieve visit labels.
-        $visit_options = array();
+        $visit_options      = array();
         $visitLabelSettings = $config->getSetting('visitLabel');
         foreach (
             \Utility::toArray($visitLabelSettings) as $visitLabel
         ) {
             if (!empty($values['subproject'])) {
-                $visitLabel = \Utility::toArray($visitLabel)[0];
+                $visitLabel   = \Utility::toArray($visitLabel)[0];
                 $labelOptions = array();
-                $items = \Utility::toArray(
+                $items        = \Utility::toArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -127,7 +125,7 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
         $values['visit'] = $visit_options;
-        $values['psc'] = array_intersect(
+        $values['psc']   = array_intersect(
             \Utility::getSiteList(),
             \User::singleton()->getSiteNames()
         );
@@ -141,7 +139,6 @@ class AjaxTimepoint extends \NDB_Page
             $values
         );
     }
-
     /**
      * Processes the values & saves to database and return a json response.
      *
@@ -149,7 +146,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePOST(ServerRequestInterface $request): ResponseInterface
+    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
         $values = $request->getParsedBody();
@@ -159,29 +156,29 @@ class AjaxTimepoint extends \NDB_Page
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
         // convert site entered to a \Site object
         $site = null;
         $user = \User::singleton();
         $user_list_of_sites = $user->getCenterIDs();
-        $num_sites = count($user_list_of_sites);
+        $num_sites          = count($user_list_of_sites);
         if ($num_sites == 1) {
             $site = \Site::singleton($user_list_of_sites[0]);
         } else if ($num_sites > 1) {
             $site = \Site::singleton(intval($values['psc']));
         }
-        $errors = $values['errors'];
+        $errors   = $values['errors'];
         $response = array();
         if (!$errors && $site) {
             \TimePoint::createNew(
@@ -199,7 +196,6 @@ class AjaxTimepoint extends \NDB_Page
             $response
         );
     }
-
     /**
      * Validate the post data,
      * from the create timepoint form.
@@ -208,7 +204,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    private function _validate(array $values): array
+    private function _validate(array $values) : array
     {
         $user = \User::singleton();
         $errors = array();
@@ -221,15 +217,15 @@ class AjaxTimepoint extends \NDB_Page
         $values['psc'] = empty($values['psc']) ?
             null : $values['psc'];
         // validate site entered
-        $site = (int)$values['psc'];
+        $site = (int) $values['psc'];
         $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites = count($user_list_of_sites);
+        $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
             $errors['psc'] = 'Site must be selected from the available dropdown.';
         }
-        $candid = intval($values['identifier']);
+        $candid       = intval($values['identifier']);
         $subprojectID = intval($values['subproject']);
-        $visitLabel = $values['visit'] ?? '';
+        $visitLabel   = $values['visit'] ?? '';
         try {
             \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
         } catch (\LorisException $exception) {
@@ -238,21 +234,19 @@ class AjaxTimepoint extends \NDB_Page
         $values['errors'] = $errors;
         return $values;
     }
-
     /**
      * Permission verification.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array $values The form values.
+     * @param array                  $values  The form values.
      *
      * @return array
      */
     private function _verifyPermissions(
         ServerRequestInterface $request,
         array $values
-    ): array
-    {
-        $user = $request->getAttribute('user');
+    ) : array {
+        $user      = $request->getAttribute('user');
         $candidate = \Candidate::singleton(
             isset($values['identifier']) ?
                 intval($values['identifier']) : null
@@ -269,5 +263,4 @@ class AjaxTimepoint extends \NDB_Page
         }
         return $values;
     }
-
 }
