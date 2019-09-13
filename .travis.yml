@@ -25,4 +25,4 @@ script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
 # docker-compose up --build
 - make checkstatic
-- docker-compose run --env HEADLESS=true -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
+- docker-compose run -e HEADLESS=true -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
