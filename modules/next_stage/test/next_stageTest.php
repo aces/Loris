@@ -162,9 +162,8 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $startVisit = $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         );
-        sleep(1);
         $startVisit->submit();
-
+        sleep(1);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
