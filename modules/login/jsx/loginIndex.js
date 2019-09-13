@@ -54,7 +54,6 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    console.log('test');
     this.fetchInitializerData();
   }
 
@@ -177,6 +176,42 @@ class Login extends Component {
     const state = Object.assign({}, this.state);
     state.mode = mode;
     this.setState(state);
+  }
+  /**
+   * Handle form submission
+   * @param {object} e - Form submission event
+   */
+  handleSubmit(e) {
+    // const state = Object.assign({}, this.state);
+    const send = this.urlSearchParams({
+      command: 'login',
+    });
+    const url = window.location.origin + '/login/AjaxLogin';
+    fetch(
+      url, {
+        method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: send,
+      }
+    ).then((response) => response.json())
+      .then(
+        (data) => {
+          if (data.status === 'error') {
+            // Populate the form errors.
+            if (data.errors) {
+              console.log('errors');
+            }
+          } else {
+            console.log('success');
+            // this.setState({success: true});
+          }
+        });
   }
   /**
    * @return {DOMRect}
