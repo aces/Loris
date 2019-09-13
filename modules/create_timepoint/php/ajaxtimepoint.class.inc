@@ -218,7 +218,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    function validate(array $values) : array
+    private function validate(array $values) : array
     {
         $user = \User::singleton();
 
@@ -253,7 +253,7 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    function verifyPermissions(
+    private function verifyPermissions(
         ServerRequestInterface $request,
         array $values
     ) : array {
