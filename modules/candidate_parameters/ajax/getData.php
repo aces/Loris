@@ -19,6 +19,10 @@ if (!$user->hasPermission('candidate_parameter_edit')) {
 }
 
 $data = $_GET['data'] ?? '';
+if ($data == '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
 
 switch($data) {
 case 'candidateInfo':
