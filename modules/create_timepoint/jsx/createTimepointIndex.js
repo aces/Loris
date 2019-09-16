@@ -103,7 +103,6 @@ class CreateTimepoint extends React.Component {
     const params = {
       candID: state.url.params.candID,
       identifier: state.url.params.identifier,
-      subprojectID: state.form.subproject,
     };
     url.search = new URLSearchParams(params).toString();
     fetch(
@@ -114,7 +113,6 @@ class CreateTimepoint extends React.Component {
         redirect: 'follow',
         headers: {
           'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
         },
       }
     ).then((response) => response.json())
@@ -154,11 +152,11 @@ class CreateTimepoint extends React.Component {
           // Display form to user.
           this.setState({isLoaded: true});
         }).catch((error) => {
-      const state = Object.assign({}, this.state);
-      state.errors = [{message: error}];
-      state.isLoaded = true;
-      this.setState(state);
-    });
+          const state = Object.assign({}, this.state);
+          state.errors = [{message: error}];
+          state.isLoaded = true;
+          this.setState(state);
+        });
   }
   /**
    * Visit Labels refreshes when Subproject changes.
@@ -199,7 +197,6 @@ class CreateTimepoint extends React.Component {
     e.preventDefault();
     const state = Object.assign({}, this.state);
     const send = this.urlSearchParams({
-      command: 'create',
       candID: state.url.params.candID,
       identifier: state.url.params.identifier,
       subproject: state.form.value.subproject,

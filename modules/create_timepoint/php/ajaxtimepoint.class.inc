@@ -178,33 +178,30 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
 
-        if (isset($values['command']) && $values['command'] == 'create') {
-            $errors = $this->validate($values);
-            // convert site entered to a \Site object
-            $site = null;
-            $user = \User::singleton();
-            $user_list_of_sites = $user->getCenterIDs();
-            $num_sites          = count($user_list_of_sites);
-            if ($num_sites == 1) {
-                $site = \Site::singleton($user_list_of_sites[0]);
-            } else if ($num_sites > 1) {
-                $site = \Site::singleton(intval($values['psc']));
-            }
-            if (!$errors && $site) {
-                \TimePoint::createNew(
-                    \Candidate::singleton($values['identifier']),
-                    intval($values['subproject']),
-                    $values['visit'],
-                    $site
-                );
-                $response['status'] = 'success';
-            } else {
-                $response['status'] = 'error';
-                $response['errors'] = $errors;
-            }
+        $errors = $this->validate($values);
+        // convert site entered to a \Site object
+        $site = null;
+        $user = \User::singleton();
+        $user_list_of_sites = $user->getCenterIDs();
+        $num_sites          = count($user_list_of_sites);
+        if ($num_sites == 1) {
+            $site = \Site::singleton($user_list_of_sites[0]);
+        } else if ($num_sites > 1) {
+            $site = \Site::singleton(intval($values['psc']));
+        }
+        if (!$errors && $site) {
+            \TimePoint::createNew(
+                \Candidate::singleton($values['identifier']),
+                intval($values['subproject']),
+                $values['visit'],
+                $site
+            );
+            $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
+            $response['errors'] = $errors;
         }
+
         return new \LORIS\Http\Response\JsonResponse(
             $response
         );
