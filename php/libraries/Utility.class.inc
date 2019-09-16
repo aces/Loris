@@ -302,7 +302,6 @@ class Utility
      *
      * @note    This should probably be moved to the Candidate class, since it's
      *       only used there to validate the PSCID
-     * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
     static function structureToPCRE(
