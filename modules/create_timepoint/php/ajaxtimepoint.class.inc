@@ -69,8 +69,11 @@ class AjaxTimepoint extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
+        // Validate Post data.
+        $values = $this->_validate($values);
+
         // User permission verification.
-        $values = $this->verifyPermissions($request, $values);
+        $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
             case 'BadRequest':
@@ -161,8 +164,11 @@ class AjaxTimepoint extends \NDB_Page
         // Parse POST request body.
         $values = $request->getParsedBody();
 
+        // Validate POST data.
+        $values = $this->_validate($values);
+
         // User permission verification.
-        $values = $this->verifyPermissions($request, $values);
+        $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
             case 'BadRequest':
@@ -178,7 +184,6 @@ class AjaxTimepoint extends \NDB_Page
             }
         }
 
-        $errors = $this->validate($values);
         // convert site entered to a \Site object
         $site = null;
         $user = \User::singleton();
@@ -189,6 +194,7 @@ class AjaxTimepoint extends \NDB_Page
         } else if ($num_sites > 1) {
             $site = \Site::singleton(intval($values['psc']));
         }
+        $errors = $values['errors'];
         if (!$errors && $site) {
             \TimePoint::createNew(
                 \Candidate::singleton($values['identifier']),
@@ -215,11 +221,20 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    private function validate(array $values) : array
+    private function _validate(array $values) : array
     {
         $user = \User::singleton();
 
         $errors = array();
+
+        if (!isset($values['identifier'])) {
+            $values['error'] = 'BadRequest';
+            return $values;
+        }
+        $values['identifier'] = isset($values['identifier']) ?
+            intval($values['identifier']) : null;
+        $values['psc']        = empty($values['psc']) ?
+            null : $values['psc'];
 
         // validate site entered
         $site = (int) $values['psc'];
@@ -238,8 +253,8 @@ class AjaxTimepoint extends \NDB_Page
         } catch (\LorisException $exception) {
             $errors['visitLabel'] = $exception->getMessage();
         }
-
-        return $errors;
+        $values['errors'] = $errors;
+        return $values;
     }
 
     /**
@@ -250,20 +265,12 @@ class AjaxTimepoint extends \NDB_Page
      *
      * @return array
      */
-    private function verifyPermissions(
+    private function _verifyPermissions(
         ServerRequestInterface $request,
         array $values
     ) : array {
-        $user = $request->getAttribute('user');
-        if (!isset($values['identifier'])) {
-            $values['error'] = 'BadRequest';
-            return $values;
-        }
-        $values['identifier'] = isset($values['identifier']) ?
-            intval($values['identifier']) : null;
-        $values['psc']        = empty($values['psc']) ?
-            null : $values['psc'];
-        $candidate            = \Candidate::singleton(
+        $user      = $request->getAttribute('user');
+        $candidate = \Candidate::singleton(
             $values['identifier']
         );
         if (!$user->hasPermission('data_entry')
