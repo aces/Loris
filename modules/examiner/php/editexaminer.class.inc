@@ -94,6 +94,7 @@ class EditExaminer extends \NDB_Form
         );
 
         // set the form defaults for the page
+        $defaults = array();
         foreach ($result as $row) {
             $defaults['date_cert[' . $row['testID'] . ']']       = $row['date_cert'];
             $defaults['certStatus['      . $row['testID'] . ']'] = $row['pass'];
@@ -317,6 +318,7 @@ class EditExaminer extends \NDB_Form
         $this->tpl_data['instruments'] = $instruments;
 
         // Create the form elements for each certification instrument
+        $group = array();
         foreach ($instruments as $key => $value) {
             $group[] = $this->createSelect(
                 'certStatus['.$key.']',

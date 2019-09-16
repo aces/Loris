@@ -402,9 +402,10 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // object identifier
+        $set = array();
         if ($this->objectType == 'volume') {
             // per-volume
             $set['FileID'] = $this->fileID;
