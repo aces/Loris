@@ -820,10 +820,7 @@ class UtilityTest extends TestCase
     }
 }
 
-=======
 
-=======
->>>>>>> 81d586a44... Fix file and class doc
     /*
      * dataProvider for function testValueIsPositiveIntegerReturnsFalse
      */
