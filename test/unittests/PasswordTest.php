@@ -25,7 +25,6 @@ use PHPUnit\Framework\TestCase;
 class PasswordTest extends TestCase
 {
     protected const VALID_PASSWORD = 'correct horse battery staple';
-    private const PWNED_PASSWORDS_CONFIG_ID = '65';
 
     /**
      * Test double for NDB_Config object

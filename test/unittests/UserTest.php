@@ -195,9 +195,11 @@ class UserTest extends TestCase
             true
         );
 
+        $this->_mockConfig = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_mockDB = $this->getMockBuilder('Database')->getMock();
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_factory->setConfig($this->_mockConfig);
 
         $this->_username = "968775";
 
@@ -513,25 +515,22 @@ class UserTest extends TestCase
     public function testUpdatePasswordWithExpiryDate()
     {
         $this->_user = \User::factory($this->_username);
-
         $oldHash = $this->_user->getData('Password_hash');
+        $customDate = '2021-07-18';
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockDB->expects($this->any())
-            ->method('pselect')
-            ->with(
-                $this->stringContains("SELECT Value FROM Config WHERE ConfigID=:CID")
-            )
-            ->willReturn('false');
+        $this->_mockConfig->expects($this->any())
+            ->method('settingEnabled')
+            ->willReturn(false);
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16)), 
-            new DateTime('2021-07-18')
+            new DateTime($customDate)
         );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
-        $this->assertEquals("2021-07-18", $this->_user->getData('Password_expiry'));
+        $this->assertEquals($customDate, $this->_user->getData('Password_expiry'));
         // This checks that the hash has been updated. There is no way to predict
         // what the new hash will be, so simply check that it changed!
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
@@ -553,12 +552,9 @@ class UserTest extends TestCase
         $newDate = date('Y-m-d', strtotime('+6 months'));
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockDB->expects($this->any())
-            ->method('pselect')
-            ->with(
-                $this->stringContains("SELECT Value FROM Config WHERE ConfigID=:CID")
-            )
-            ->willReturn('false');
+        $this->_mockConfig->expects($this->any())
+            ->method('settingEnabled')
+            ->willReturn(false);
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
@@ -581,6 +577,12 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory($this->_username);
         $count = 1;
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("FROM user_login_history")
+            )
+            ->willReturn($count);
 
         $this->assertTrue($this->_user->hasLoggedIn());
     }

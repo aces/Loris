@@ -463,19 +463,15 @@ class User extends UserPermissions
         ?\DateTime $expiry = null
     ): void {
         // Set default expiry date value to 6 months in the future.
+
         $expiry = $expiry ?? new \DateTime(
             date('Y-m-d', strtotime('+6 months'))
         );
 
-        // Update the users table to change $user's pasword to $password.
-        \NDB_Factory::singleton()->database()->update(
-            'users',
+        $this->update(
             array(
              'Password_hash'   => $password,
              'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
-            ),
-            array(
-             'UserID' => $this->getUsername(),
             )
         );
     }
