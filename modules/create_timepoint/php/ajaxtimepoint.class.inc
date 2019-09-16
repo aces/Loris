@@ -69,8 +69,9 @@ class AjaxTimepoint extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        // Validate Post data.
-        $values = $this->_validate($values);
+        // Verify identifier from Post.
+        $values['identifier'] = isset($values['identifier']) ?
+            intval($values['identifier']) : null;
 
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
@@ -233,7 +234,8 @@ class AjaxTimepoint extends \NDB_Page
         }
         $values['identifier'] = isset($values['identifier']) ?
             intval($values['identifier']) : null;
-        $values['psc']        = empty($values['psc']) ?
+
+        $values['psc'] = empty($values['psc']) ?
             null : $values['psc'];
 
         // validate site entered
@@ -271,7 +273,8 @@ class AjaxTimepoint extends \NDB_Page
     ) : array {
         $user      = $request->getAttribute('user');
         $candidate = \Candidate::singleton(
-            $values['identifier']
+            isset($values['identifier']) ?
+                intval($values['identifier']) : null
         );
         if (!$user->hasPermission('data_entry')
             && !(in_array(
