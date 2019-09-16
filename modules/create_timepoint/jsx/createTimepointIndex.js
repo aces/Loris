@@ -224,7 +224,9 @@ class CreateTimepoint extends React.Component {
               this.setState({errors: data.errors});
             }
           } else {
-            this.setState({success: true});
+            window.location.replace(
+              window.origin + '/' + this.state.url.params.candID
+            );
           }
         });
   }
@@ -301,42 +303,31 @@ class CreateTimepoint extends React.Component {
       />
     ) : null;
 
-    if (!this.state.success) {
-      return (
-        <div>
-          <Panel title='Create Time Point'>
-            {errors}
-            <FormElement
-              name={'timepointInfo'}
-              class={'form-group col-sm-12'}
-              onSubmit={this.handleSubmit}
-            >
-              <StaticElement
-                label={'DCCID'}
-                text={this.state.data.dccid}
-              />
-              {subproject}
-              {psc}
-              {visit}
-              <ButtonElement
-                label={'Create Time Point'}
-                type={'submit'}
-                name={'fire_away'}
-              />
-            </FormElement>
-          </Panel>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <h3>New time point successfully registered.</h3>
-          <a href={'/' + this.state.url.params.candID}>
-            Click here to continue.
-          </a>
-        </div>
-      );
-    }
+    return (
+      <div>
+        <Panel title='Create Time Point'>
+          {errors}
+          <FormElement
+            name={'timepointInfo'}
+            class={'form-group col-sm-12'}
+            onSubmit={this.handleSubmit}
+          >
+            <StaticElement
+              label={'DCCID'}
+              text={this.state.data.dccid}
+            />
+            {subproject}
+            {psc}
+            {visit}
+            <ButtonElement
+              label={'Create Time Point'}
+              type={'submit'}
+              name={'fire_away'}
+            />
+          </FormElement>
+        </Panel>
+      </div>
+    );
   }
 }
 CreateTimepoint.propTypes = {
