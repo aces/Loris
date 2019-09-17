@@ -24,13 +24,10 @@ The CouchDB import scripts (those named CouchDB_Import_*.php in the LORIS tools 
 Use of the DQT module requires setting up the CouchDB server and credentials:
 
 [CouchDB](http://couchdb.apache.org)
-[Erica](https://github.com/benoitc/erica)
 
-Note: Your version of Erlang should be the most recent version that is compatible with both your CouchDB and Erica.
+Note: Your version of Erlang should be the most recent version that is compatible with both your CouchDB.
 
-Once these are installed, there are two ways to complete setup. See below:
-
-#### The Easy Way (for non-developers)
+Once CouchDB is installed, follow these steps to complete setup:
 
 1. create a database on your local CouchDB instance
 2. clone the code from the server [http://couchdb.loris.ca:5984/dataquerytool-$VERSION]
@@ -38,16 +35,7 @@ Once these are installed, there are two ways to complete setup. See below:
 ..* i.e.
 `curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURCOUCHADMINPASS@$YOURSERVERNAME:5984/_replicate -d '{"source":"http://couchdb.loris.ca:5984/dataquerytool-1_0_0", "target":"$YOURDATABASENAME"}'`
 
-#### The Hard Way (for developers)
-
-1. create a CouchDB database using Futon [http://127.0.0.1:5984/_utils/index.html]
-..* In the following example, the database is named "dqg".
-2. clone this repository `git clone git@github.com:aces/Data-Query-Tool.git`
-3. push to CouchDB using erica `cd Data-Query-Tool`
-`erica push http://adminuser:adminpass@127.0.0.1:5984/dqg`
-4. visit [http://127.0.0.1:5984/dqg/_design/DQG-2.0/_rewrite/] to ensure code was pushed
-
-Finally, there are further steps required to complete configuration, regardless of how the user completed installation and setup:
+Finally, there are further steps required to complete configuration:
 
 Amend the section of your LORIS config.xml
 `<CouchDB>
@@ -60,19 +48,17 @@ Amend the section of your LORIS config.xml
 </CouchDB>`
 
 To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in tools/ directory: 
-`cd $lorisroot/tools
+`cd $lorisroot/tools`
 
-#Import the base candidate data
-php CouchDB_Import_Demographics.php
+##### Import the base candidate data
+`php CouchDB_Import_Demographics.php`
 
-#Import the Loris instrument data
-#This step is optional and not required if
-#only the MRI portion of Loris is used
-php CouchDB_Import_Instruments.php
+##### Import the Loris instrument data
+This step is optional and not required if only the MRI portion of Loris is used
+`php CouchDB_Import_Instruments.php`
 
-#Import the Loris MRI data
-#This step is optional and not required
-#if the MRI portion of Loris isn't installed
-php CouchDB_Import_MRI.php`
+##### Import the Loris MRI data
+This step is optional and not required if the MRI portion of Loris isn't installed
+`php CouchDB_Import_MRI.php`
 
 
