@@ -32,73 +32,92 @@ $client->makeCommandLine();
 $client->initialize();
 $factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
-$pathIDs = getPathIDs();
 foreach ($_POST as $key => $value) {
-    if (is_numeric($key)) { //update
+    if (is_numeric($key)) {
+        // When a $key is numeric, it means we are updating the entry in the
+        // Config table with ID == $key.
         if ($value == "") {
-            $DB->update('Config', array('Value' => null), array('ID' => $key));
+            // A blank value is the same as deleting.
+            $DB->delete('Config', array('ID' => $key));
         } else {
-            // if no duplicate value then do updating
-            if (noDuplicateInDropdown($key, $value)) {
-                if (in_array(intval($key), $pathIDs, true)) {
-                    if (!validPath($value)) {
-                        $err = 'Directory `'
-                            . htmlspecialchars($value, ENT_QUOTES)
-                            . '` is invalid';
-                        // Set response code and display error message.
-                        displayError(400, $err);
-                        return;
-                    }
-                }
-                $DB->update(
-                    'Config',
-                    array('Value' => $value),
-                    array('ID' => $key)
-                );
+            if (! noDuplicateInDropdown($key, $value)) {
+                // Don't alter the table if the same key was passed twice.
+                continue;
             }
-        }
-    } else { //add new or remove
-        $keySplit   = explode("-", $key);
-        $valueSplit = explode("-", $value);
-        if ($keySplit[0] == 'add') {
-            if ($value !== "") {
-                if (countDuplicate($keySplit[1], $value) == '0') {
-                    $DB->update(
-                        'Config',
-                        array('Value' => $value),
-                        array(
-                         'ConfigID' => $keySplit[1],
-                        )
-                    );
-                } else {
-                    header("HTTP/1.1 303 Duplicate value");
-                    exit();
+            // Get all the IDs in Config with a relation to an entry in the
+            // ConfigSettings table that has the web_path data type.
+            $pathIDs = getPathIDs('Config');
+            if (in_array($key, $pathIDs)) {
+                // If updating a path config setting, make sure that the
+                // value is a valid path. This helps to prevent malicious
+                // input.
+                if (!validPath($value)) {
+                    $err = 'Directory `'
+                        . htmlspecialchars($value, ENT_QUOTES)
+                        . '` is invalid';
+                    // Set response code and display error message.
+                    displayError(400, $err);
+                    return;
                 }
-                if (in_array(intval($keySplit[1]), $pathIDs, true)) {
-                    if (!validPath($value)) {
-                        $err = 'Directory `' . htmlspecialchars($value, ENT_QUOTES)
-                            . '` is invalid';
-                        // Set response code and display error message.
-                        displayError(400, $err);
-                        return;
-                    }
-                }
-                $DB->insert(
-                    'Config',
-                    array(
-                     'ConfigID' => $keySplit[1],
-                     'Value'    => $value,
-                    )
-                );
             }
-        } elseif ($valueSplit[0] == 'remove') {
+            // Update the config setting to the new value.
             $DB->update(
                 'Config',
-                array('Value' => null),
-                array('ID' => $valueSplit[1])
+                array('Value' => $value),
+                array('ID' => $key)
+            );
+        }
+    } else {
+        // This branch is executed when the key is prefixed with the string
+        // 'add' or 'remove' (i.e. the full key is not numeric and triggers this
+        // else branch).
+        // An example $key is 'add-38' which means "Add an entry in the Config
+        // table using foriegn key 38 from the ConfigSettings table." The
+        // number refers to ConfigSettings.ID which is different from
+        // Config.ID.
+        // This is different from the above is_numeric case; this makes use of
+        // Config.ID, not Config.ConfigID (which is a FK to ConfigSettings.ID).
+        // The Config table is the one that will be modified here.
+        $keySplit         = explode("-", $key); // e.g. 'add-10' or 'remove-49'
+        $action           = $keySplit[0];
+        $ConfigSettingsID = $keySplit[1];
+        if ($action == 'add') {
+            // This branch adds a new entry to the Config table.
+            if ($value === "") {
+                continue;
+            }
+            if (isDuplicate($ConfigSettingsID, $value)) {
+                header("HTTP/1.1 303 Duplicate value");
+                exit();
+            }
+            // Get all the IDs in ConfigSettings with the web_path data type.
+            $pathIDs = getPathIDs('ConfigSettings');
+            if (in_array($ConfigSettingsID, $pathIDs)) {
+                if (!validPath($value)) {
+                    $err = 'Directory `' . htmlspecialchars($value, ENT_QUOTES)
+                        . '` is invalid';
+                    // Set response code and display error message.
+                    displayError(400, $err);
+                    return;
+                }
+            }
+            // Add the new setting
+            $DB->insert(
+                'Config',
+                array(
+                 'ConfigID' => $ConfigSettingsID, // FK to ConfigSettings.
+                 'Value'    => $value,
+                )
+            );
+        } elseif ($action == 'remove') {
+            // Delete an entry from the Config table.
+            $DB->delete(
+                'Config',
+                array('ConfigID' => $ConfigSettingsID)
             );
         }
     }
+    unset($pathIDs);
 }
 /**
  * Check Duplicate value
@@ -106,20 +125,20 @@ foreach ($_POST as $key => $value) {
  * @param string $key   The value of the key
  * @param string $value The value of the value
  *
- * @return int $result
+ * @return bool $result
  */
-function countDuplicate($key,$value)
+function isDuplicate($key, $value): bool
 {
-    $factory   = \NDB_Factory::singleton();
-    $DB        = $factory->database();
-       $result = $DB->pselectOne(
-           "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
-           array(
-            'ConfigID' => $key,
-            'Value'    => $value,
-           )
-       );
-       return $result;
+    $factory = \NDB_Factory::singleton();
+    $DB      = $factory->database();
+    $result  = $DB->pselectOne(
+        "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
+        array(
+         'ConfigID' => $key,
+         'Value'    => $value,
+        )
+    );
+    return intval($result) > 0;
 }
 /**
  * Check dropdown list Duplicate value
@@ -157,31 +176,35 @@ function noDuplicateInDropdown($id,$value)
 }
 /**
  * Query DB for config settings that correspond to filepaths.
+ * Depending on the context, either the Config or ConfigSettings table can be
+ * used. This is determined by what IDs the code currently has access to.
+ *
+ * @param string $table 'Config' or 'ConfigSettings'.
  *
  * @return array IDs corresponding to path settings.
  */
-function getPathIDs()
+function getPathIDs(string $table): array
 {
-    $ids = array();
-    /* Query adapated from:
-     * https://github.com/aces/Loris/wiki/Project-Customization
-     */
-    $query  = "SELECT c.ConfigID,c.ID FROM Config c "
-        . "LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) "
-        . "JOIN ConfigSettings csp ON (cs.Parent = csp.ID) "
-        . "WHERE cs.DataType = 'web_path';";
-    $result = \Database::singleton()->pselect($query, array());
-    foreach ($result as $key => $value) {
-        // The configuration module uses both the ID and ConfigID in different
-        // contexts when updating or adding paths via the front-end.
-        // At some point in the future this should be reworked for consistency
-        // in the main module code. Either "ID" or "ConfigID" should be used,
-        // but not both.
-        // Until then, both IDs will also be used here.
-        $ids[] = intval($value['ID']);
-        $ids[] = intval($value['ConfigID']);
+    if (! in_array($table, array('Config', 'ConfigSettings', true))) {
+        throw new \LorisException('Table must be "Config" or "ConfigSettings"');
     }
-    return $ids;
+    $ids = array();
+    switch ($table) {
+    case 'Config':
+        /* Query adapated from:
+         * https://github.com/aces/Loris/wiki/Project-Customization
+         */
+        $query = "SELECT c.ID FROM Config c "
+            . "LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) "
+            . "JOIN ConfigSettings csp ON (cs.Parent = csp.ID) "
+            . "WHERE cs.DataType = 'web_path';";
+        break;
+    case 'ConfigSettings':
+        $query = "SELECT ID FROM ConfigSettings "
+            . "WHERE DataType = 'web_path';";
+        break;
+    }
+    return \Database::singleton()->pselectCol($query, array());
 }
 
 /**
