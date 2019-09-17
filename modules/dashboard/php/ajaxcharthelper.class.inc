@@ -82,6 +82,7 @@ class AjaxChartHelper extends \NDB_Page
      */
     function processRequest(array $values) : array
     {
+        $response = array();
         if (isset($values['command'])
             && $values['command'] == 'get_scan_line_data'
         ) {

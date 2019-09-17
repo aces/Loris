@@ -81,6 +81,7 @@ class AjaxDashboard extends \NDB_Page
      */
     function processRequest(array $values) : array
     {
+        $response = array();
         if (isset($values['command']) && $values['command'] == 'initialize') {
             $response = $this->initializeSetup($values);
         } else {
