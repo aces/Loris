@@ -19,7 +19,6 @@ namespace LORIS\create_timepoint;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 /**
  * The NDB_Page for the POST requests.
@@ -123,9 +122,9 @@ class AjaxTimepoint extends \NDB_Page
             \Utility::toArray($visitLabelSettings) as $visitLabel
         ) {
             if (!empty($values['subproject'])) {
-                $visitLabel       = \Utility::toArray($visitLabel)[0];
-                $labelOptions[''] = null;
-                $items            = \Utility::toArray(
+                $visitLabel   = \Utility::toArray($visitLabel)[0];
+                $labelOptions = array();
+                $items        = \Utility::toArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -195,7 +194,8 @@ class AjaxTimepoint extends \NDB_Page
         } else if ($num_sites > 1) {
             $site = \Site::singleton(intval($values['psc']));
         }
-        $errors = $values['errors'];
+        $errors   = $values['errors'];
+        $response = array();
         if (!$errors && $site) {
             \TimePoint::createNew(
                 \Candidate::singleton($values['identifier']),
