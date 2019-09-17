@@ -579,7 +579,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('VL1' => 'VL1'),
-            Utility::getExistingVisitLabels('1')
+            Utility::getExistingVisitLabels(1)
         );
     }
 
@@ -818,8 +818,6 @@ class UtilityTest extends TestCase
             Utility::getSourcefields('instrument1', '1', 'name')
         );
     }
-}
-
 
     /*
      * dataProvider for function testValueIsPositiveIntegerReturnsFalse
