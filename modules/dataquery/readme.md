@@ -17,32 +17,30 @@ It does NOT alter data in any way other than that required to convert the data f
 The most closely related module to the DQT is the Data Release module, which is used to store snapshots of data for any given release. 
 
 ## Permissions
-Users must have `dataquery_view` permission to use the DQT. It’s important to note that more granular permissions do not exist for this module, to restrict access to a subset of the data. Anyone with the `dataquery_view` permission has access to the DQT, and therefore has access to all data in the LORIS instance. 
+Users must have `dataquery_view` permission to use the DQT. 
+
+It’s important to note that more granular permissions do not exist for this module, to restrict access to a subset of the data. Anyone with the `dataquery_view` permission has access to view, query and download data from the DQT, and therefore has access to all data loaded in the DQT from this LORIS instance.
 
 ## Interactions with LORIS
-Before the DQT can be used, the CouchDB import scripts (those named `CouchDB_Import_*.php` in the LORIS `tools/` directory) must be run to import data from MySQL to CouchDB. It is recommended to set up a cronjob to execute these scripts to refresh the data on a regular basis. 
+Before the DQT can be used, the CouchDB import scripts must be run to load data from LORIS' MySQL tables into CouchDB. These scripts are found in the `tools/` directory, named `CouchDB_Import_*.php`.
+
+It is recommended to set up a cronjob to execute these scripts to refresh the data on a regular basis. 
 
 ## Configuration
 Use of the DQT module requires setting up the CouchDB server and credentials:
 
 [CouchDB](http://couchdb.apache.org)
 
-Note: Your version of Erlang should be the most recent version that is compatible with both your CouchDB.
-
 Once CouchDB is installed, follow these steps to complete setup:
 
 1. Create a database on your local CouchDB instance
-2. Clone the code from the server [http://couchdb.loris.ca:5984/dataquerytool-$VERSION]
-..* ensure $VERSION is separated by underscores rather than dots (because dots are not allowed in CouchDB database names)
-..* i.e.
+2. Clone the code from our server:
 
 `
 curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURCOUCHADMINPASS@$YOURSERVERNAME:5984/_replicate -d '{"source":"http://couchdb.loris.ca:5984/dataquerytool-1_0_0", "target":"$YOURDATABASENAME"}'
 `
 
-Finally, there are further steps required to complete configuration:
-
-Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
+3. Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
 
 ```
 <CouchDB>
@@ -55,27 +53,22 @@ Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
 </CouchDB>
 ```
 
-To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in tools/ directory: 
+4. To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in tools/ directory: 
 
-`
-cd $lorisroot/tools
-`
+`cd $lorisroot/tools`
 
 ##### Import the base candidate data
+
 `php CouchDB_Import_Demographics.php`
 
 ##### Import the LORIS instrument data
 This step is optional and not required if only the MRI portion of LORIS is used:
 
-`
-php CouchDB_Import_Instruments.php
-`
+`php CouchDB_Import_Instruments.php`
 
 ##### Import the LORIS MRI data
 This step is optional and not required if the MRI portion of LORIS isn't installed:
 
-`
-php CouchDB_Import_MRI.php
-`
+`php CouchDB_Import_MRI.php`
 
 
