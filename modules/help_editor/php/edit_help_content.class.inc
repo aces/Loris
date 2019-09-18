@@ -40,7 +40,8 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return array
+      * @return array An associative array containing the title and content
+      *         for the default help information.
       */
     function _getDefaults()
     {
@@ -52,6 +53,8 @@ class Edit_Help_Content extends \NDB_Form
             htmlspecialchars($_REQUEST['section']) : '';
         $safeSubsection = $_REQUEST['subsection'] ?
             htmlspecialchars($_REQUEST['subsection']) : '';
+
+        $defaults = array();
 
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);

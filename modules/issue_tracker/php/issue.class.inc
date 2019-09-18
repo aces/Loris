@@ -96,23 +96,19 @@ class Issue extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $db      = \Database::singleton();
         $issueID = $this->issueID;
         if (!$issueID) {
             return true;
         }
-        $issueData = $db->pselectRow(
+        $issueData = \Database::singleton()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
-        if (in_array($issueData['centerID'], $user->getData('CenterIDs'))
+        return (is_null($issueData)
+            || in_array($issueData['centerID'], $user->getData('CenterIDs'))
             || ($user->hasPermission('access_all_profiles'))
             || (!empty($issueData['centerID']))
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        );
     }
     /**
      * Handle the incoming request for an issue. This extracts URLs of the form
@@ -125,7 +121,7 @@ class Issue extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $results = [];
+        $results = array();
         preg_match(
             '#/issue/([0-9]+|new)$#',
             $request->getURI()->getPath(),

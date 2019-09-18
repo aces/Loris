@@ -168,7 +168,7 @@ class RequestAccount extends \NDB_Form
 
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
-            $success = $DB->insert('users', $vals);
+            $DB->insert('users', $vals);
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
