@@ -24,8 +24,8 @@ require_once 'ElectrophysioFile.class.inc';
  */
 $user      = \NDB_Factory::singleton()->user();
 $timePoint = \NDB_Factory::singleton()->timepoint(
-              intval($_REQUEST['sessionID'])
-             );
+    intval($_REQUEST['sessionID'])
+);
 
 // if a user does not have the permission to view all sites' electrophsyiology
 // sessions or if a user does not have permission to view other sites' session
@@ -78,7 +78,7 @@ function getSessionData(string $sessionID)
     return $response;
 }
 
-/*
+/**
  * Get the subject data information.
  *
  * @param int $sessionID ID of the electrophysiology session
@@ -151,7 +151,7 @@ function getFilesData($sessionID)
         // Create a file summary object with file's information
         // -----------------------------------------------------
 
-        ## get the file name
+        // get the file name
 
         $fileSummary['name'] = $fileName;
 
@@ -216,26 +216,26 @@ function getFilesData($sessionID)
         $serialNumber     = $physioFileObj->getParameter('DeviceSerialNumber');
         $artefactDesc     = $physioFileObj->getParameter('SubjectArtefactDescription');
 
-        $fileSummary['details']['task']['description']        = $taskDesc;
-        $fileSummary['details']['instructions']               = $instructions;
-        $fileSummary['details']['eeg']['ground']              = '';
-        $fileSummary['details']['eeg']['placement_scheme']    = $placement;
-        $fileSummary['details']['trigger_count']              = $triggerCount;
-        $fileSummary['details']['record_type']                = $recordingType;
-        $fileSummary['details']['cog']['atlas_id']            = $cogAtlasID;
-        $fileSummary['details']['cog']['poid']                = $cogPoid;
-        $fileSummary['details']['institution']['name']        = $instituteName;
-        $fileSummary['details']['institution']['address']     = $intituteAddress;
-        $fileSummary['details']['misc']['channel_count']      = $miscChannelCount;
-        $fileSummary['details']['manufacturer']['name']       = $manufacturer;
+        $fileSummary['details']['task']['description']     = $taskDesc;
+        $fileSummary['details']['instructions']            = $instructions;
+        $fileSummary['details']['eeg']['ground']           = '';
+        $fileSummary['details']['eeg']['placement_scheme'] = $placement;
+        $fileSummary['details']['trigger_count']           = $triggerCount;
+        $fileSummary['details']['record_type']             = $recordingType;
+        $fileSummary['details']['cog']['atlas_id']         = $cogAtlasID;
+        $fileSummary['details']['cog']['poid']             = $cogPoid;
+        $fileSummary['details']['institution']['name']     = $instituteName;
+        $fileSummary['details']['institution']['address']  = $intituteAddress;
+        $fileSummary['details']['misc']['channel_count']   = $miscChannelCount;
+        $fileSummary['details']['manufacturer']['name']    = $manufacturer;
         $fileSummary['details']['manufacturer']['model_name'] = $modelName;
         $fileSummary['details']['cap']['manufacturer']        = $capManufacturer;
         $fileSummary['details']['cap']['model_name']          = $capModelName;
         $fileSummary['details']['hardware_filters']           = $hardwareFilters;
         $fileSummary['details']['recording_duration']         = $duration;
-        $fileSummary['details']['epoch_length']               = $epochLength;
-        $fileSummary['details']['device']['version']          = $softwareVersion;
-        $fileSummary['details']['device']['serial_number']    = $serialNumber;
+        $fileSummary['details']['epoch_length']            = $epochLength;
+        $fileSummary['details']['device']['version']       = $softwareVersion;
+        $fileSummary['details']['device']['serial_number'] = $serialNumber;
         $fileSummary['details']['subject_artefact_description'] = $artefactDesc;
 
         // get the links to the files for downloads

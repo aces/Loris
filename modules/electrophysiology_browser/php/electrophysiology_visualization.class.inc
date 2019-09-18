@@ -42,8 +42,8 @@ class Electrophysiology_Visualization extends \NDB_Form
         $user = \NDB_Factory::singleton()->user();
 
         $timePoint = \NDB_Factory::singleton()->timepoint(
-                        intval($_REQUEST['sessionID'])
-                     );
+            intval($_REQUEST['sessionID'])
+        );
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
             || ((in_array(
