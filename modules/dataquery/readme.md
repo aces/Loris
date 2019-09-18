@@ -34,6 +34,7 @@ Use of the DQT module requires setting up the CouchDB server and credentials:
 Once CouchDB is installed, follow these steps to complete setup:
 
 1. Create a database on your local CouchDB instance
+
 2. Clone the code from our server:
 
 `
