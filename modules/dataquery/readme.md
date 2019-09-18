@@ -54,7 +54,7 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 </CouchDB>
 ```
 
-4. To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in tools/ directory: 
+4. To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in the `tools/` directory: 
 
 `cd $lorisroot/tools`
 
