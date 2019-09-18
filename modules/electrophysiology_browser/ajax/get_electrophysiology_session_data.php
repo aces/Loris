@@ -23,7 +23,7 @@ require_once 'ElectrophysioFile.class.inc';
  * are able to fetch the electrophysiology session data.
  */
 $user      =& \User::singleton();
-$timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+$timePoint =& \TimePoint::singleton(intval($_REQUEST['sessionID']));
 
 // if a user does not have the permission to view all sites' electrophsyiology
 // sessions or if a user does not have permission to view other sites' session
@@ -86,7 +86,7 @@ function getSessionData(string $sessionID)
 function getSubjectData($sessionID)
 {
     $subjectData = array();
-    $timePoint   =& \TimePoint::singleton($sessionID);
+    $timePoint   =& \TimePoint::singleton(intval($sessionID));
     $candidate   =& \Candidate::singleton($timePoint->getCandID());
 
     $subjectData['pscid']       = $candidate->getPSCID();
