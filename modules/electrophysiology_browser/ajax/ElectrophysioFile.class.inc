@@ -31,13 +31,16 @@ class ElectrophysioFile
      */
     function __construct($physiologicalFileID)
     {
-        $db       =& Database::singleton();
-        $params   = array('PFID' => $physiologicalFileID);
+        $db       = \NDB_Factory::singleton()->database();
+
         $query    = "SELECT * FROM physiological_file WHERE PhysiologicalFileID=:PFID";
+        $params   = array('PFID' => $physiologicalFileID);
         $fileData = $db->pselectRow($query, $params);
+
         foreach ($fileData AS $key=>$value) {
             $this->fileData[$key] = $value;
         }
+
         $query        = "SELECT 
                            Name, 
                            Value
@@ -48,6 +51,7 @@ class ElectrophysioFile
                            ppf.ParameterTypeID=pt.ParameterTypeID 
                            AND PhysiologicalFileID=:PFID";
         $parameterRaw = $db->pselect($query, $params);
+        
         foreach ($parameterRaw AS $row) {
             $this->parameters[$row['Name']] = $row['Value'];
         }

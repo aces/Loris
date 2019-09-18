@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file implements a data provisioner to get all possible rows
  * for the electrophysiology browser menu page.
@@ -8,7 +8,7 @@
  * @category   Behavioural
  * @package    Main
  * @subpackage Electrophysiology
- * @author     intralizee
+ * @author     intralizee <alizee.wickenheiser@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -23,7 +23,7 @@ namespace LORIS\electrophysiology_browser;
  * @category   Behavioural
  * @package    Main
  * @subpackage Electrophysiology
- * @author     intralizee
+ * @author     intralizee <alizee.wickenheiser@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -39,9 +39,11 @@ class Electrophysiology_Visualization extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user = &\User::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \NDB_Factory::singleton()->timepoint(
+                        intval($_REQUEST['sessionID'])
+                     );
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
             || ((in_array(

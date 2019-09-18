@@ -22,8 +22,10 @@ require_once 'ElectrophysioFile.class.inc';
  * have the view site permission and belong to candidates session site
  * are able to fetch the electrophysiology session data.
  */
-$user      =& \User::singleton();
-$timePoint =& \TimePoint::singleton(intval($_REQUEST['sessionID']));
+$user      = \NDB_Factory::singleton()->user();
+$timePoint = \NDB_Factory::singleton()->timepoint(
+              intval($_REQUEST['sessionID'])
+             );
 
 // if a user does not have the permission to view all sites' electrophsyiology
 // sessions or if a user does not have permission to view other sites' session
@@ -40,7 +42,7 @@ $response = getSessionData($_REQUEST['sessionID']);
 
 echo json_encode($response);
 
-/*
+/**
  * Get the session data information.
  *
  * @param int $sessionID ID of the electrophysiology session
@@ -49,7 +51,7 @@ echo json_encode($response);
  */
 function getSessionData(string $sessionID)
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $query = 'SELECT 
                 DISTINCT(pf.SessionID) 
@@ -69,7 +71,7 @@ function getSessionData(string $sessionID)
     $response['patient'] = getSubjectData($sessionID);
     $response['database']    = array_values(getFilesData($sessionID));
     $response['sessions']    = $sessions;
-    $currentIndex            = array_search($sessionID,$sessions);
+    $currentIndex            = array_search($sessionID, $sessions);
     $response['nextSession'] = isset($sessions[$currentIndex+1]) ?? '';
     $response['prevSession'] = isset($sessions[$currentIndex-1]) ?? '';
 
@@ -86,8 +88,8 @@ function getSessionData(string $sessionID)
 function getSubjectData($sessionID)
 {
     $subjectData = array();
-    $timePoint   =& \TimePoint::singleton(intval($sessionID));
-    $candidate   =& \Candidate::singleton($timePoint->getCandID());
+    $timePoint   = \NDB_Factory::singleton()->timepoint(intval($sessionID));
+    $candidate   = \NDB_Factory::singleton()->candidate($timePoint->getCandID());
 
     $subjectData['pscid']       = $candidate->getPSCID();
     $subjectData['dccid']       = $timePoint->getCandID();
@@ -102,7 +104,7 @@ function getSubjectData($sessionID)
     return $subjectData;
 }
 
-/*
+/**
  * Get the list of electrophysiology recordings with their recording information.
  *
  * @param int $sessionID ID of the electrophysiology session
@@ -111,7 +113,7 @@ function getSubjectData($sessionID)
  */
 function getFilesData($sessionID)
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $fileCollection = array();
     $outputType     = $_REQUEST['outputType'];
@@ -145,15 +147,15 @@ function getFilesData($sessionID)
         $physioFileObj       = new \ElectrophysioFile($physiologicalFileID);
         $fileName            = basename($physioFileObj->getParameter('FilePath'));
 
-        # -----------------------------------------------------
-        # Create a file summary object with file's information
-        # -----------------------------------------------------
+        // -----------------------------------------------------
+        // Create a file summary object with file's information
+        // -----------------------------------------------------
 
         ## get the file name
 
         $fileSummary['name'] = $fileName;
 
-        ## get the task frequency information
+        // get the task frequency information
 
         $sampling  = $physioFileObj->getParameter('SamplingFrequency');
         $powerline = $physioFileObj->getParameter('PowerLineFrequency');
@@ -161,7 +163,7 @@ function getFilesData($sessionID)
         $fileSummary['task']['frequency']['sampling']  = $sampling;
         $fileSummary['task']['frequency']['powerline'] = $powerline;
 
-        ## get the task channel information
+        // get the task channel information
 
         $eegChannelCount = $physioFileObj->getParameter('EEGChannelCount');
         $eogChannelCount = $physioFileObj->getParameter('EOGChannelCount');
@@ -170,28 +172,28 @@ function getFilesData($sessionID)
 
         $fileSummary['task']['channel'][] = array(
                                              'name'  => 'EEG Channel Count',
-                                             'value' => $eegChannelCount
+                                             'value' => $eegChannelCount,
                                             );
         $fileSummary['task']['channel'][] = array(
                                              'name'  => 'EOG Channel Count',
-                                             'value' => $eogChannelCount
+                                             'value' => $eogChannelCount,
                                             );
         $fileSummary['task']['channel'][] = array(
                                              'name'  => 'ECG Channel Count',
-                                             'value' => $ecgChannelCount
+                                             'value' => $ecgChannelCount,
                                             );
         $fileSummary['task']['channel'][] = array(
                                              'name'  => 'EMG Channel Count',
-                                             'value' => $emgChannelCount
+                                             'value' => $emgChannelCount,
                                             );
 
-        ## get the task reference
+        // get the task reference
 
         $reference = $physioFileObj->getParameter('EEGReference');
 
         $fileSummary['task']['reference'] = $reference;
 
-        ## get the file's details
+        // get the file's details
 
         $taskDesc         = $physioFileObj->getParameter('TaskDescription');
         $instructions     = $physioFileObj->getParameter('Instructions');
@@ -214,29 +216,29 @@ function getFilesData($sessionID)
         $serialNumber     = $physioFileObj->getParameter('DeviceSerialNumber');
         $artefactDesc     = $physioFileObj->getParameter('SubjectArtefactDescription');
 
-        $fileSummary['details']['task']['description']          = $taskDesc;
-        $fileSummary['details']['instructions']                 = $instructions;
-        $fileSummary['details']['eeg']['ground']                = '';
-        $fileSummary['details']['eeg']['placement_scheme']      = $placement;
-        $fileSummary['details']['trigger_count']                = $triggerCount;
-        $fileSummary['details']['record_type']                  = $recordingType;
-        $fileSummary['details']['cog']['atlas_id']              = $cogAtlasID;
-        $fileSummary['details']['cog']['poid']                  = $cogPoid;
-        $fileSummary['details']['institution']['name']          = $instituteName;
-        $fileSummary['details']['institution']['address']       = $intituteAddress;
-        $fileSummary['details']['misc']['channel_count']        = $miscChannelCount;
-        $fileSummary['details']['manufacturer']['name']         = $manufacturer;
-        $fileSummary['details']['manufacturer']['model_name']   = $modelName;
-        $fileSummary['details']['cap']['manufacturer']          = $capManufacturer;
-        $fileSummary['details']['cap']['model_name']            = $capModelName;
-        $fileSummary['details']['hardware_filters']             = $hardwareFilters;
-        $fileSummary['details']['recording_duration']           = $duration;
-        $fileSummary['details']['epoch_length']                 = $epochLength;
-        $fileSummary['details']['device']['version']            = $softwareVersion;
-        $fileSummary['details']['device']['serial_number']      = $serialNumber;
+        $fileSummary['details']['task']['description']        = $taskDesc;
+        $fileSummary['details']['instructions']               = $instructions;
+        $fileSummary['details']['eeg']['ground']              = '';
+        $fileSummary['details']['eeg']['placement_scheme']    = $placement;
+        $fileSummary['details']['trigger_count']              = $triggerCount;
+        $fileSummary['details']['record_type']                = $recordingType;
+        $fileSummary['details']['cog']['atlas_id']            = $cogAtlasID;
+        $fileSummary['details']['cog']['poid']                = $cogPoid;
+        $fileSummary['details']['institution']['name']        = $instituteName;
+        $fileSummary['details']['institution']['address']     = $intituteAddress;
+        $fileSummary['details']['misc']['channel_count']      = $miscChannelCount;
+        $fileSummary['details']['manufacturer']['name']       = $manufacturer;
+        $fileSummary['details']['manufacturer']['model_name'] = $modelName;
+        $fileSummary['details']['cap']['manufacturer']        = $capManufacturer;
+        $fileSummary['details']['cap']['model_name']          = $capModelName;
+        $fileSummary['details']['hardware_filters']           = $hardwareFilters;
+        $fileSummary['details']['recording_duration']         = $duration;
+        $fileSummary['details']['epoch_length']               = $epochLength;
+        $fileSummary['details']['device']['version']          = $softwareVersion;
+        $fileSummary['details']['device']['serial_number']    = $serialNumber;
         $fileSummary['details']['subject_artefact_description'] = $artefactDesc;
 
-        ## get the links to the files for downloads
+        // get the links to the files for downloads
 
         $links = getDownloadLinks($physiologicalFileID, $physiologicalFile);
 
@@ -253,29 +255,30 @@ function getFilesData($sessionID)
  * file (channels.tsv, electrodes.tsv, task events.tsv...)
  *
  * @param int    $physiologicalFileID FileID of the electrophysiology file
- * @param string $physiologicalFile electrophysiology file's relative path
+ * @param string $physiologicalFile   electrophysiology file's relative path
  *
  * @return array array with the path to the different files associated to the
  *               electrophysiology file
  */
 function getDownloadlinks($physiologicalFileID, $physiologicalFile)
 {
-    $db              = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
+
     $params['PFID']  = $physiologicalFileID;
     $downloadLinks   = array();
     $downloadLinks[] = array(
                         'type' => 'physiological_file',
-                        'file' => $physiologicalFile
+                        'file' => $physiologicalFile,
                        );
 
     $queries = [
                 'physiological_electrode'  => 'physiological_electrode_file',
                 'physiological_channel'    => 'physiological_channel_file',
                 'physiological_task_event' => 'physiological_task_event_file',
-                'physiological_archive'    => 'all_files'
+                'physiological_archive'    => 'all_files',
                ];
 
-    foreach($queries as $query_key=>$query_value) {
+    foreach ($queries as $query_key => $query_value) {
         $query_statement = "SELECT 
                               DISTINCT(FilePath), '$query_value' AS FileType
                             FROM 
@@ -286,7 +289,7 @@ function getDownloadlinks($physiologicalFileID, $physiologicalFile)
         if (isset($query_statement['FileType'])) {
             $downloadLinks[] = array(
                                 'type' => $query_statement['FileType'],
-                                'file' => $query_statement['FilePath']
+                                'file' => $query_statement['FilePath'],
                                );
         } else {
             $downloadLinks[] = array(
@@ -309,7 +312,7 @@ function getDownloadlinks($physiologicalFileID, $physiologicalFile)
     if (isset($queryFDT['FileType'])) {
         $downloadLinks[] = array(
                             'type' => $queryFDT['FileType'],
-                            'file' => $queryFDT['FilePath']
+                            'file' => $queryFDT['FilePath'],
                            );
     } else {
         $downloadLinks[] = array(

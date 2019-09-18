@@ -39,7 +39,9 @@ class Electrophysiology_Session extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $timePoint =& \TimePoint::singleton(intval($_REQUEST['sessionID']));
+        $timePoint = \NDB_Factory::singleton()->timepoint(
+                      intval($_REQUEST['sessionID'])
+                     );
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ((in_array(
