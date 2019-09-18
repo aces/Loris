@@ -87,7 +87,7 @@ foreach ($_POST as $key => $value) {
                 continue;
             }
             if (isDuplicate($ConfigSettingsID, $value)) {
-                header("HTTP/1.1 303 Duplicate value");
+                http_response_code(400);
                 exit();
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
