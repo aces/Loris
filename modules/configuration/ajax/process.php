@@ -80,6 +80,7 @@ foreach ($_POST as $key => $value) {
         $keySplit         = explode("-", $key); // e.g. 'add-10' or 'remove-49'
         $action           = $keySplit[0];
         $ConfigSettingsID = $keySplit[1];
+        assert(count($keySplit) == 2);
         if ($action == 'add') {
             // This branch adds a new entry to the Config table.
             if ($value === "") {
