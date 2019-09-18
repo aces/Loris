@@ -42,7 +42,7 @@ Finally, there are further steps required to complete configuration:
 
 Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
 
-`
+```
 <CouchDB>
     <SyncAccounts>true</SyncAccounts>
     <database>dqg</database>
@@ -51,7 +51,7 @@ Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
     <admin>adminuser</admin>
     <adminpass>adminpass</adminpass>
 </CouchDB>
-`
+```
 
 To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in tools/ directory: 
 
