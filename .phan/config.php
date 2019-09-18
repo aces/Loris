@@ -23,7 +23,7 @@ return [
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
-        "PhanTypeSuspiciousStringExpression",
+        "PhanTypeSuspiciousStringExpression"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
