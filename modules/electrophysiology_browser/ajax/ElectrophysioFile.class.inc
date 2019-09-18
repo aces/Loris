@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *
@@ -29,20 +29,15 @@ class ElectrophysioFile
      *
      * @param integer $physiologicalFileID The PhysiologicalFileID to be loaded
      */
-    function __construct(int $physiologicalFileID)
+    function __construct($physiologicalFileID)
     {
-        $db = \NDB_Factory::singleton()->database();
-
-        $query    = "SELECT * 
-                     FROM physiological_file 
-                     WHERE PhysiologicalFileID=:PFID";
+        $db       =& Database::singleton();
         $params   = array('PFID' => $physiologicalFileID);
+        $query    = "SELECT * FROM physiological_file WHERE PhysiologicalFileID=:PFID";
         $fileData = $db->pselectRow($query, $params);
-
         foreach ($fileData AS $key=>$value) {
             $this->fileData[$key] = $value;
         }
-
         $query        = "SELECT 
                            Name, 
                            Value
@@ -53,7 +48,6 @@ class ElectrophysioFile
                            ppf.ParameterTypeID=pt.ParameterTypeID 
                            AND PhysiologicalFileID=:PFID";
         $parameterRaw = $db->pselect($query, $params);
-
         foreach ($parameterRaw AS $row) {
             $this->parameters[$row['Name']] = $row['Value'];
         }
@@ -64,9 +58,9 @@ class ElectrophysioFile
      *
      * @param string $parameterName The parameter to be retrieved
      *
-     * @return string The value of the parameter
+     * @return mixed The value of the parameter
      */
-    function getParameter(string $parameterName): string
+    function getParameter($parameterName)
     {
         return $this->fileData[$parameterName] ??
             ($this->parameters[$parameterName] ?? '');
