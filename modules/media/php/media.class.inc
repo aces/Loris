@@ -27,11 +27,8 @@ namespace LORIS\media;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class Media extends \NDB_Menu_Filter
+class Media extends \DataFrameworkMenu
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
-
     /**
      * Check user permissions
      *
@@ -47,15 +44,24 @@ class Media extends \NDB_Menu_Filter
              'media_write',
             )
         );
-
     }
 
     /**
-     * Create a form to filter media by various criteria
+     * {@inheritDoc}
+     *
+     * @return bool true
+     */
+    public function useSiteFilter(): bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array
      */
-    function getOptions() : array
+    protected function getFieldOptions() : array
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -119,11 +125,21 @@ class Media extends \NDB_Menu_Filter
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new MediaFileProvisioner();
+    }
+
+    /**
      * Gets the data source for this menu filter.
      *
      * @return \LORIS\Data\Provisioner
      */
-    function getDataProvisioner() : \LORIS\Data\Provisioner
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = new MediaFileProvisioner();
 
@@ -151,7 +167,7 @@ class Media extends \NDB_Menu_Filter
     function toJSON() : string
     {
         $table = (new \LORIS\Data\Table())
-            ->withDataFrom($this->getDataProvisioner());
+            ->withDataFrom($this->getDataProvisionerWithFilters());
         $arr   = array_map(
             function ($row) {
                 return array_values($row);
@@ -161,7 +177,7 @@ class Media extends \NDB_Menu_Filter
         return json_encode(
             array(
              'data'         => $arr,
-             'fieldOptions' => $this->getOptions(),
+             'fieldOptions' => $this->getFieldOptions(),
             )
         );
     }
