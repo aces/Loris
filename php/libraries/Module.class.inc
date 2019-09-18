@@ -91,7 +91,6 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                             "does not exist"
                         );
                     }
-                    error_log($fpath);
                     include $fpath;
                 }
             }
