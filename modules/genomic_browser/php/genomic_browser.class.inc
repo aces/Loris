@@ -35,6 +35,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
      */
     var $_displayBrief = true;  // default: display only Brief results
 
+    public $skipTemplate = true;
+
     /**
      * Tell the Caller that data will be queried using ajax and after
      * the HTML page rendering.
@@ -307,8 +309,9 @@ class Genomic_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
+             $baseURL . "/genomic_browser/js/genomicBrowserIndex.js",
+             //$baseURL . "/genomic_browser/js/genomic_browser.js",
+             //$baseURL . "/genomic_browser/js/profileColumnFormatter.js",
             )
         );
     }
