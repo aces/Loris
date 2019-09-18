@@ -214,7 +214,9 @@ function getFilesData($sessionID)
         $epochLength      = $physioFileObj->getParameter('EpochLength');
         $softwareVersion  = $physioFileObj->getParameter('DeviceSoftwareVersion');
         $serialNumber     = $physioFileObj->getParameter('DeviceSerialNumber');
-        $artefactDesc     = $physioFileObj->getParameter('SubjectArtefactDescription');
+        $artefactDesc     = $physioFileObj->getParameter(
+            'SubjectArtefactDescription'
+        );
 
         $fileSummary['details']['task']['description']     = $taskDesc;
         $fileSummary['details']['instructions']            = $instructions;
