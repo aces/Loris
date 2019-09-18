@@ -40,7 +40,7 @@ class BehaviouralFeedbackNotifications extends Component {
                 (
                   <a key={'behavioural_feedback_notification_' + notification}
                     href={
-                    window.origin +
+                    window.location.origin +
                     this.props.data.notifications[notification].URL
                   }
                      className={'list-group-item'}

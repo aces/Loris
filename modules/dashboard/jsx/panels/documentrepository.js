@@ -77,7 +77,7 @@ class DocumentRepositoryNotifications extends Component {
           id={'documentRepositoryPanel'}
         >
           {panel.documentRepository.div}
-          <a href={window.origin + '/document_repository/'}
+          <a href={window.location.origin + '/document_repository/'}
              className={'btn btn-default btn-block'}>Document Repository
             <span className={'glyphicon glyphicon-chevron-right'}/></a>
         </Panel>

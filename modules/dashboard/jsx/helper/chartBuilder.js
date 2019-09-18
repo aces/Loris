@@ -194,7 +194,7 @@ function process() {
 
     // AJAX to get pie chart data
     fetch(
-      window.origin + '/dashboard/AjaxChartHelper', {
+      window.location.origin + '/dashboard/AjaxChartHelper', {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',
@@ -230,7 +230,7 @@ function process() {
 
     // AJAX to get bar chart data
     fetch(
-      window.origin + '/dashboard/AjaxChartHelper', {
+      window.location.origin + '/dashboard/AjaxChartHelper', {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',
@@ -275,7 +275,7 @@ function process() {
 
     // AJAX to get recruitment line chart data
     fetch(
-      window.origin + '/dashboard/AjaxChartHelper', {
+      window.location.origin + '/dashboard/AjaxChartHelper', {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',

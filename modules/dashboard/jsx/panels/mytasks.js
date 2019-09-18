@@ -42,7 +42,7 @@ class MyTasks extends Component {
           if (parseInt(this.props.data.conflicts) > 0) {
             const content = (
               <a key={'list_item_conflict_resolver'}
-                href={window.origin + '/conflict_resolver'}
+                href={window.location.origin + '/conflict_resolver'}
                  className={'list-group-item conflict_resolver'}
               >
                 <div className={'row'}>
@@ -71,7 +71,7 @@ class MyTasks extends Component {
             if (this.props.data.incomplete_forms_site === 'Sites: all') {
               content = (
                 <a key={'list_item_statistics'}
-                  href={window.origin + '/statistics/statistics_site'}
+                  href={window.location.origin + '/statistics/statistics_site'}
                    className={'list-group-item statistics'}
                 >
                   <div className={'row'}>
@@ -101,7 +101,7 @@ class MyTasks extends Component {
                     (
                       <a key={'tasks_user_sites_' + userSite}
                          href={
-                        window.origin +
+                        window.location.origin +
                         '/statistics/statistics_site/?CenterID=' +
                         this.props.data.user_site[userSite]
                       }>
@@ -140,7 +140,7 @@ class MyTasks extends Component {
           if (parseInt(this.props.data.new_scans) > 0) {
             const content = (
               <a key={'list_item_imaging_browser'}
-                href={window.origin + '/imaging_browser/'}
+                href={window.location.origin + '/imaging_browser/'}
                  className={'list-group-item new-scans'}
               >
                 <div className={'row'}>
@@ -165,7 +165,7 @@ class MyTasks extends Component {
           if (parseInt(this.props.data.violated_scans) > 0) {
             const content = (
               <a key={'list_item_mri_violations'}
-                href={window.origin + '/mri_violations/'}
+                href={window.location.origin + '/mri_violations/'}
                  className={'list-group-item mri_violations'}
               >
                 <div className={'row'}>
@@ -193,7 +193,7 @@ class MyTasks extends Component {
           if (parseInt(this.props.data.pending_users) > 0) {
             const content = (
               <a key={'list_item_user_accounts'}
-                href={window.origin + '/user_accounts/'}
+                href={window.location.origin + '/user_accounts/'}
                  className={'list-group-item pending-accounts'}
               >
                 <div className={'row'}>
@@ -222,7 +222,7 @@ class MyTasks extends Component {
             const content = (
               <a key={'list_item_issue_tracker'}
                 href={
-                  window.origin + '/issue_tracker/?submenu=my_issue_tracker'
+                  window.location.origin + '/issue_tracker/?submenu=my_issue_tracker'
                 }
                  className={'list-group-item issue_tracker'}>
                 <div className={'row'}>
