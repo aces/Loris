@@ -52,7 +52,7 @@ class InstrumentUploadForm extends Component {
       }
       if (data.error) {
          swal({
-          title: 'An error occured',
+          title: 'An error occurred',
           type: 'error',
           text: data.error,
         });

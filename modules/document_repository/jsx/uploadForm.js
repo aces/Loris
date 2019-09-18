@@ -154,21 +154,40 @@ class DocUploadForm extends Component {
 
     fetch(this.props.action, {
       method: 'POST',
-      cache: 'no-cache',
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data == 'uploaded successfully') {
-        swal.fire('Upload Successful!', '', 'success').then((result) => {
-          if (result.value) {
-            this.setState({formData: {}});
-            this.props.refreshPage();
-          }
+    .then((resp) => {
+      if (resp.status == 201) {
+        swal({
+          title: 'Upload Successful!',
+          type: 'success',
+        }, function() {
+          window.location.assign(loris.BaseURL + '/document_repository/');
         });
-      } else {
-        swal.fire('Duplicate File Name!', '', 'error');
+      }
+      return resp.json();
+    })
+    .then((data) => {
+        console.log(data);
+      if (data.message) {
+         swal({
+          title: 'Upload Successful!',
+          type: 'success',
+          text: data.message,
+        }, function() {
+          window.location.assign(loris.BaseURL + '/document_repository/');
+        });
+      }
+      if (data.error) {
+         swal({
+          title: 'An error occurred',
+          type: 'error',
+          text: data.error,
+        });
+        this.setState({
+          formData: formData,
+        });
       }
     })
     .catch((error) => {
