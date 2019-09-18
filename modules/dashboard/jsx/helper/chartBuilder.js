@@ -143,7 +143,7 @@ function process() {
 
     // Updated AJAX to get scan line chart data
     fetch(
-      window.origin + '/dashboard/AjaxChartHelper', {
+      window.location.origin + '/dashboard/AjaxChartHelper', {
         method: 'POST',
         mode: 'same-origin',
         credentials: 'include',
