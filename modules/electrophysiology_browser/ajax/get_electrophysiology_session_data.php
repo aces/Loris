@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Get Electrophysiology Session Data.
  *
@@ -25,6 +25,9 @@ require_once 'ElectrophysioFile.class.inc';
 $user      =& \User::singleton();
 $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
+// if a user does not have the permission to view all sites' electrophsyiology
+// sessions or if a user does not have permission to view other sites' session
+// then display a Forbidden message.
 if (!$user->hasPermission('electrophysiology_browser_view_allsites')
     && !((in_array($timePoint->getData('CenterID'), $user->getData('CenterIDs')))
     && $user->hasPermission('electrophysiology_browser_view_site'))
@@ -44,7 +47,7 @@ echo json_encode($response);
  *
  * @return array with the session information
  */
-function getSessionData($sessionID)
+function getSessionData(string $sessionID)
 {
     $db = \Database::singleton();
 
@@ -67,10 +70,8 @@ function getSessionData($sessionID)
     $response['database']    = array_values(getFilesData($sessionID));
     $response['sessions']    = $sessions;
     $currentIndex            = array_search($sessionID,$sessions);
-    $response['nextSession'] = isset($sessions[$currentIndex+1]) ?
-        $sessions[$currentIndex+1] : '';
-    $response['prevSession'] = isset($sessions[$currentIndex-1]) ?
-        $sessions[$currentIndex-1] : '';
+    $response['nextSession'] = isset($sessions[$currentIndex+1]) ?? '';
+    $response['prevSession'] = isset($sessions[$currentIndex-1]) ?? '';
 
     return $response;
 }
