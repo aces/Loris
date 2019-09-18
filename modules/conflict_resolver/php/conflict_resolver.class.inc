@@ -24,8 +24,10 @@ namespace LORIS\conflict_resolver;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Conflict_Resolver extends \DataFrameworkMenu
+class Conflict_Resolver extends \NDB_Page
 {
+    public $skipTemplate = true;
+
     /**
      * Returns true if the user has permission to access
      * the conflict resolver module
@@ -37,44 +39,6 @@ class Conflict_Resolver extends \DataFrameworkMenu
     function _hasAccess(\User $user) : bool
     {
         return ($user->hasPermission('conflict_resolver'));
-    }
-
-    /**
-     * The data dictionary has no sites affiliated with it and as
-     * such can not add site filters without an exception being
-     * thrown
-     *
-     * @return bool
-     */
-    public function useSiteFilter() : bool
-    {
-        return true;
-    }
-
-    /**
-     * Returns a list of instruments to use as the "Source From"
-     * filter options
-     *
-     * @return array Dynamic field options
-     */
-    public function getFieldOptions() : array
-    {
-        return array(
-                'site'       => \Utility::getSiteList(false),
-                'instrument' => \Utility::getAllInstruments(),
-                'visitLabel' => \Utility::getVisitList(),
-                'project'    => \Utility::getProjectList(),
-               );
-    }
-
-    /**
-     * Gets the data source for this menu filter.
-     *
-     * @return \LORIS\Data\Provisioner
-     */
-    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
-    {
-        return new UnresolvedProvisioner();
     }
 
     /**
