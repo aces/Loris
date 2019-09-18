@@ -27,7 +27,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxGenomicBrowser extends \NDB_Page
+class AjaxWasBrowser extends \NDB_Page
 {
     public $skipTemplate = true;
 
