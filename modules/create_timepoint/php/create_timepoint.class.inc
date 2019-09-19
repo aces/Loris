@@ -80,12 +80,24 @@ class Create_Timepoint extends \NDB_Form
             $site = \Site::singleton(intval($values['psc']));
         }
 
+        //Project
+        $projects = \Utility::getProjectList();
+        if (count($projects) == 1) {
+            //if there is only one project, autoselect first project from array of 1
+            //TODO: change this to array_key_first() when support is only PHP 7.3+
+            $project = \Project::singleton(array_pop($projects));
+        } else if (count($projects) > 1) {
+            $project_id = intval($values['project']);
+            $project    = \Project::singleton($projects[$project_id]);
+        }
+
         assert(isset($site) && $site !== null);
         \TimePoint::createNew(
             \Candidate::singleton($this->identifier),
             $values['subprojectID'],
             $values['visitLabel'] ?? null,
-            $site
+            $site,
+            $project
         );
 
         $this->tpl_data['success'] = true;
@@ -212,8 +224,15 @@ class Create_Timepoint extends \NDB_Form
                 }
             }
             $this->addSelect('psc', 'Site', $psc_labelOptions);
-        }
+            // List projects
+            $projects = \Utility::getProjectList();
+            if (count($projects) >1) {
+                $this->tpl_data['projectAdded'] = true;
+                $projectOptions = [null => ''] + $projects;
 
+                $this->addSelect('project', 'Project', $projectOptions);
+            }
+        }
         $this->form->addFormRule(array(&$this, '_validate'));
 
     }
@@ -241,6 +260,16 @@ class Create_Timepoint extends \NDB_Form
                 = "You must be affiliated with a site to create a timepoint.";
         } else if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
             $errors['psc'] = "Site must be selected from the available dropdown.";
+        }
+
+        //Project
+        $projects = \Utility::getProjectList();
+        if (count($projects) == 0) {
+            $errors['project'] = "No projects are defined in the database, please ".
+            "add projects in order to continue";
+        } else if (count($projects) > 1 && is_null($val['project'])) {
+            $errors['project'] = "A project must be selected from the available ".
+            "dropdown.";
         }
 
         $candid       = $this->identifier;

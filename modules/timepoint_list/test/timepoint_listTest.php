@@ -31,6 +31,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
                                         'Test',
                                         '',
                                         'DCC',
+                                        'Pumpernickel',
                                         'Not Started',
                                         '-',
                                         '',
@@ -108,12 +109,13 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => '900001',
-             'PSCID'                => 'TST0002',
-             'RegistrationCenterID' => 1,
-             'Active'               => 'Y',
-             'UserID'               => 1,
-             'Entity_type'          => 'Human',
+             'CandID'                => '900001',
+             'PSCID'                 => 'TST0002',
+             'RegistrationCenterID'  => 1,
+             'RegistrationProjectID' => 1,
+             'Active'                => 'Y',
+             'UserID'                => 1,
+             'Entity_type'           => 'Human',
             )
         );
 
@@ -125,6 +127,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
              'CandID'      => '900001',
              'Visit_label' => 'Test',
              'CenterID'    => 1,
+             'ProjectID'   => 1,
             )
         );
 
@@ -137,6 +140,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
              'CandID'      => self::$_TST0001_CANDID,
              'Visit_label' => 'Test2',
              'CenterID'    => 1,
+             'ProjectID'   => 1,
              'Active'      => 'N',
             )
         );

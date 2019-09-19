@@ -235,7 +235,7 @@ END";
                           'c.CandID as DCCID',
                           '(SELECT Name 
                             FROM Project 
-                            WHERE ProjectID=c.ProjectID) as project',
+                            WHERE ProjectID=s.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
                           "$firstAcquisitionSubquery as First_Acquisition",
