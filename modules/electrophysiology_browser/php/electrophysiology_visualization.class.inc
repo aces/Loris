@@ -37,7 +37,7 @@ class Electrophysiology_Visualization extends \NDB_Form
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(): bool
+    function _hasAccess(\User $user): bool
     {
         $user = \NDB_Factory::singleton()->user();
 
