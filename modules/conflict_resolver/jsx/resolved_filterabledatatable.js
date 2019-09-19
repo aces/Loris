@@ -8,7 +8,6 @@ class ResolvedFilterableDataTable extends Component {
 
     this.state = {
       data: {},
-      error: false,
       isLoaded: false,
     };
 
@@ -56,6 +55,9 @@ class ResolvedFilterableDataTable extends Component {
       )
       .then((resp) => resp.json())
       .then((json) => {
+        if (json.error) {
+          throw new Error(json.error);
+        }
         const data = {
           fieldOptions: json.fieldOptions,
           data: json.data.map((e) => Object.values(e)),
@@ -63,15 +65,19 @@ class ResolvedFilterableDataTable extends Component {
         this.setState({data});
       })
       .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
+        this.setState({error});
       });
   }
 
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <div className="alert alert-danger" role="alert">
+          <h4>An error occured while loading the page.</h4>
+          {this.state.error.message}
+        </div>
+      );
     }
 
     // Waiting for async data to load

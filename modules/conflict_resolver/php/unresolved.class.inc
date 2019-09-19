@@ -49,7 +49,7 @@ class Unresolved extends Endpoint implements ETagCalculator
      */
     public function hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('conflict_resolver'));
+        return !$user->hasPermission('conflict_resolver');
     }
 
 
