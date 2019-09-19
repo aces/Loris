@@ -269,4 +269,4 @@ echo "(For future troubleshooting assistance, you may wish to copy and save the 
 echo "Next steps: "
 echo "- Run 'make' (or 'make dev') from inside your $RootDir folder."
 echo "- Verify/enable your apache configuration and restart apache"
-echo "- Open Chrome (or Firefox) to <loris-url>/installdb.php to continue installing the database."
+echo "- Navigate to <loris-url>/installdb.php using a supported web browser (Chrome or Firefox) to continue installing the database."
