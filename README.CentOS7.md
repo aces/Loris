@@ -12,8 +12,8 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.7 is supported for LORIS 21.*
-* PHP 7.2 is supported for LORIS 21.* - upgrade your PHP manually
+* MySQL 5.7 is supported for LORIS 22.*
+* PHP 7.2 is supported for LORIS 22.* - upgrade your PHP manually
 
 The yum packages to be installed vary from any Ubuntu packages referenced in the LORIS README.
 
@@ -170,4 +170,3 @@ If there are any errors or you get a blank page, troubleshoot the errors in your
 
 Follow the Setup Guide in the LORIS wiki for all post-install steps and troubleshooting.  
 Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
-
