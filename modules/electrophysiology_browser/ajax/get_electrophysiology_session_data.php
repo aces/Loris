@@ -45,7 +45,7 @@ echo json_encode($response);
 /**
  * Get the session data information.
  *
- * @param int $sessionID ID of the electrophysiology session
+ * @param string $sessionID ID of the electrophysiology session
  *
  * @return array with the session information
  */
