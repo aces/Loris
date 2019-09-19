@@ -1,4 +1,4 @@
-#LORIS CentOS 7.x Notes
+# LORIS CentOS 7.x Notes
 
 This document contains supplemental details on how to perform a basic CentOS 7.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
@@ -68,7 +68,7 @@ To finalise the MySQL/MariaDB installation:
 mysql_secure_installation
 ```
 (follow instructions to create a password the root user):
-**Nodejs:**
+**NodeJS:**
 ```
 sudo yum install nodejs
 ```
@@ -77,7 +77,7 @@ sudo yum install nodejs
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
-# LORIS code base
+# LORIS codebase
 
 Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
 ```
