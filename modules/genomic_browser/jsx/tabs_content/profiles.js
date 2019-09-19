@@ -6,7 +6,7 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
 /**
  * Profiles Component.
  *
- * @description component for Profiles tab.
+ * @description Genomic Browser Profiles tab.
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
@@ -26,7 +26,7 @@ class Profiles extends Component {
       isLoaded: false,
     };
     this.fetchData = this.fetchData.bind(this);
-    // this.formatColumn = this.formatColumn.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +49,36 @@ class Profiles extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    // If a column if set as hidden, don't display it
+    console.log(column);
+    // const hide = [''];
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
+
+    // Mapping between rowHeaders & rowData in 'row' object.
+    let row = {};
+    rowHeaders.forEach((header, index) => {
+      row[header] = rowData[index];
+    }, this);
+
+    // Default cell style
+    const cellStyle = {whiteSpace: 'nowrap'};
+
+    return (<td style={cellStyle}>{cell}</td>);
   }
 
   /**
@@ -102,22 +132,22 @@ class Profiles extends Component {
     const fields = [
       // Candidate Filters
       {
-        label: 'Site', show: true, filter: {
-          name: 'site',
+        label: 'Site', show: false, filter: {
+          name: 'centerID',
           type: 'select',
           options: options.site,
         },
       },
       {
         label: 'Subproject', show: true, filter: {
-          name: 'subproject',
+          name: 'SubprojectID',
           type: 'select',
           options: options.subproject,
         },
       },
       {
-        label: 'DCCID', show: true, filter: {
-          name: 'dcid',
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
           type: 'text',
         },
       },
@@ -129,14 +159,14 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'External ID', show: true, filter: {
-          name: 'externalID',
+        label: 'External ID', show: false, filter: {
+          name: 'External_ID',
           type: 'text',
         },
       },
       {
         label: 'PSCID', show: true, filter: {
-          name: 'pscid',
+          name: 'PSCID',
           type: 'text',
         },
       },
@@ -170,7 +200,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Display', show: true, filter: {
+        label: 'Display', show: false, filter: {
           name: 'display',
           type: 'select',
           options: options.display,
@@ -183,7 +213,7 @@ class Profiles extends Component {
           name={'filterableDataTableProfiles'}
           data={data}
           fields={fields}
-          // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
         />
       </div>
     );

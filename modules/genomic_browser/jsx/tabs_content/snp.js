@@ -5,7 +5,7 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
 /**
  * SNP Component.
  *
- * @description component for SNP tab.
+ * @description Genomic Browser SNP tab.
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
@@ -134,22 +134,22 @@ class SNP extends Component {
     const fields = [
       // Candidate Filters
       {
-        label: 'Site', show: true, filter: {
-          name: 'site',
+        label: 'Site', show: false, filter: {
+          name: 'centerID',
           type: 'select',
           options: options.site,
         },
       },
       {
-        label: 'Subproject', show: true, filter: {
-          name: 'subproject',
+        label: 'Subproject', show: false, filter: {
+          name: 'SubprojectID',
           type: 'select',
           options: options.subproject,
         },
       },
       {
-        label: 'DCCID', show: true, filter: {
-          name: 'dcid',
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
           type: 'text',
         },
       },
@@ -161,34 +161,34 @@ class SNP extends Component {
         },
       },
       {
-        label: 'External ID', show: true, filter: {
-          name: 'externalID',
+        label: 'External ID', show: false, filter: {
+          name: 'External_ID',
           type: 'text',
         },
       },
       {
         label: 'PSCID', show: true, filter: {
-          name: 'pscid',
+          name: 'PSCID',
           type: 'text',
         },
       },
       // Genomic Range Filters
       {
-        label: 'Build', show: true, filter: {
+        label: 'Build', show: false, filter: {
           name: 'Build',
           type: 'select',
           options: options.build,
         },
       },
       {
-        label: 'Strand', show: true, filter: {
+        label: 'Strand', show: false, filter: {
           name: 'Strand',
           type: 'select',
           options: options.strand,
         },
       },
       {
-        label: 'Genomic Range', show: true, filter: {
+        label: 'Genomic Range', show: false, filter: {
           name: 'Genomic_Range',
           type: 'text',
         },
@@ -201,15 +201,15 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Name', show: true, filter: {
+        label: 'Name', show: false, filter: {
           name: 'Name',
-          type: 'test',
+          type: 'text',
         },
       },
       {
-        label: 'Description', show: true, filter: {
+        label: 'Description', show: false, filter: {
           name: 'Description',
-          type: 'test',
+          type: 'text',
         },
       },
       {
@@ -227,7 +227,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'External Source', show: true, filter: {
+        label: 'External Source', show: false, filter: {
           name: 'External_Source',
           type: 'text',
         },
@@ -260,13 +260,13 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Genotype Quality', show: true, filter: {
+        label: 'Genotype Quality', show: false, filter: {
           name: 'Genotype_Quality',
           type: 'text',
         },
       },
       {
-        label: 'Platform', show: true, filter: {
+        label: 'Platform', show: false, filter: {
           name: 'Platform',
           type: 'select',
           options: options.platform,
@@ -280,14 +280,14 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Validated', show: true, filter: {
+        label: 'Validated', show: false, filter: {
           name: 'Validated',
           type: 'select',
           options: options.validated,
         },
       },
       {
-        label: 'Display', show: true, filter: {
+        label: 'Display', show: false, filter: {
           name: 'display',
           type: 'select',
           options: options.display,

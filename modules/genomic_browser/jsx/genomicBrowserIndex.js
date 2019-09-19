@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {TabPane, Tabs} from 'jsx/Tabs';
 import Profiles from './tabs_content/profiles';
 import GWAS from './tabs_content/gwas';
@@ -53,18 +52,13 @@ class GenomicBrowser extends React.Component {
     );
   }
 }
-GenomicBrowser.propTypes = {
-  dataURL: PropTypes.string,
-};
 
 /**
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <GenomicBrowser
-      dataURL={`${loris.BaseURL}/genomic_browser/AjaxGenomicBrowser`}
-    />,
+    <GenomicBrowser/>,
     document.getElementById('lorisworkspace')
   );
 });

@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Modal from 'jsx/Modal';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 
 /**
  * Files Component.
  *
- * @description component for Files tab.
+ * @description Genomic Browser Files tab.
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
@@ -23,8 +24,19 @@ class Files extends Component {
       fieldOptions: {},
       error: false,
       isLoaded: false,
+      showFileUploadModal: false,
+      upload: {
+        formData: {
+          fileType: '',
+          fileDescription: '',
+        },
+      },
     };
     this.fetchData = this.fetchData.bind(this);
+    this.openFileUploadModal = this.openFileUploadModal.bind(this);
+    this.closeFileUploadModal = this.closeFileUploadModal.bind(this);
+    this.renderFileUploadForm = this.renderFileUploadForm.bind(this);
+    this.setFileUploadFormData = this.setFileUploadFormData.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +59,78 @@ class Files extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+  /**
+   * Store the value of the element in this.state.upload.formData
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
+  setFileUploadFormData(formElement, value) {
+    console.log('setFileUploadFormData');
+    const state = Object.assign({}, this.state);
+    state.upload.formData[formElement] = value;
+    this.setState(state);
+  }
+  handleFileUpload() {
+    console.log('handleFileUpload');
+  }
+
+  openFileUploadModal() {
+    this.setState({showFileUploadModal: true});
+  }
+  closeFileUploadModal() {
+    this.setState({
+      upload: {
+        formData: {
+          fileType: '',
+          fileDescription: '',
+        },
+      },
+      showFileUploadModal: false,
+    });
+  }
+  renderFileUploadForm() {
+    return (
+      <Modal
+        title='Upload File'
+        onClose={this.closeFileUploadModal}
+        show={this.state.showFileUploadModal}
+      >
+        <FormElement
+          Module='uploadFile'
+          name='uploadFile'
+          id='uploadFileForm'
+          onSubmit={this.handleFileUpload}
+          method='POST'
+        >
+          <SelectElement
+            name='fileType'
+            options={{
+              'Methylation beta-values': 'Methylation beta-values',
+              'Other': 'Other',
+            }}
+            label='File type'
+            value={this.state.upload.formData.fileType}
+            required={true}
+            onUserInput={this.setFileUploadFormData}
+          />
+          <TextboxElement
+            name='fileDescription'
+            label='Description'
+            value={this.state.upload.formData.fileDescription}
+            required={true}
+            onUserInput={this.setFileUploadFormData}
+          />
+          <ButtonElement
+            name='fire_away'
+            label='Upload'
+            type='submit'
+            buttonClass='btn btn-sm btn-success'
+          />
+        </FormElement>
+      </Modal>
+    );
   }
 
   /**
@@ -98,13 +182,20 @@ class Files extends Component {
         },
       },
     ];
+    const actions = [{
+      name: 'uploadFile',
+      label: 'Upload File',
+      action: this.openFileUploadModal,
+    }];
     return (
       <div>
+        {this.renderFileUploadForm()}
          <FilterableDataTable
           name={'filterableDataTableFiles'}
           data={data}
           fields={fields}
            // getFormattedCell={null}
+          actions={actions}
          />
       </div>
     );

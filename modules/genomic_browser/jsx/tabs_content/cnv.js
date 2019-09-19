@@ -5,7 +5,7 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
 /**
  * CNV Component.
  *
- * @description component for CNV tab.
+ * @description Genomic Browser CNV tab.
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
@@ -113,22 +113,22 @@ class CNV extends Component {
     const fields = [
       // Candidate Filters
       {
-        label: 'Site', show: true, filter: {
-          name: 'site',
+        label: 'Site', show: false, filter: {
+          name: 'centerID',
           type: 'select',
           options: options.site,
         },
       },
       {
         label: 'Subproject', show: true, filter: {
-          name: 'subproject',
+          name: 'SubprojectID',
           type: 'select',
           options: options.subproject,
         },
       },
       {
-        label: 'DCCID', show: true, filter: {
-          name: 'dcid',
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
           type: 'text',
         },
       },
@@ -140,14 +140,14 @@ class CNV extends Component {
         },
       },
       {
-        label: 'External ID', show: true, filter: {
-          name: 'externalID',
+        label: 'External ID', show: false, filter: {
+          name: 'External_ID',
           type: 'text',
         },
       },
       {
         label: 'PSCID', show: true, filter: {
-          name: 'pscid',
+          name: 'PSCID',
           type: 'text',
         },
       },

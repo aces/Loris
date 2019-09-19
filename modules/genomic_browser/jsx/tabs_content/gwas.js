@@ -6,7 +6,7 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
 /**
  * GWAS Component.
  *
- * @description component for GWAS tab.
+ * @description Genomic Browser GWAS tab.
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
