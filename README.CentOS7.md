@@ -35,11 +35,11 @@ sudo yum update
 sudo yum install php72
 sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
 ```
-**MySQL:**
+## MySQL
 
 *Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
 
-Running the following command will donnload and install MariaDB by default in CentOS 7 - for details: [(e.g. Tutorial, see paragraph2)](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7).
+Running the following command will download and install MariaDB by default in CentOS 7 - for details: [(e.g. Tutorial, see paragraph2)](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7).
 
 ``` 
 sudo yum install mysql mysql-server
@@ -66,11 +66,11 @@ To finalise the MySQL/MariaDB installation:
 mysql_secure_installation
 ```
 (follow instructions to create a password the root user):
-**NodeJS:**
+## NodeJS
 ```
 sudo yum install nodejs
 ```
-**PHP Composer:**
+## PHP Composer
 ```
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
