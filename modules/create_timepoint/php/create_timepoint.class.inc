@@ -265,11 +265,11 @@ class Create_Timepoint extends \NDB_Form
         //Project
         $projects = \Utility::getProjectList();
         if (count($projects) == 0) {
-            $errors['project'] = "No projects are defined in the database, please add
-            projects in order to continue";
+            $errors['project'] = "No projects are defined in the database, please".
+            "add projects in order to continue";
         } else if (count($projects) > 1 && is_null($val['project'])) {
-            $errors['project'] = "A project must be selected from the available 
-            dropdown.";
+            $errors['project'] = "A project must be selected from the available".
+            "dropdown.";
         }
 
         $candid       = $this->identifier;
