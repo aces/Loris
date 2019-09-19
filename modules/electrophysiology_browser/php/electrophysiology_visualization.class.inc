@@ -35,6 +35,8 @@ class Electrophysiology_Visualization extends \NDB_Form
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user hass access
      */
     function _hasAccess(\User $user): bool
