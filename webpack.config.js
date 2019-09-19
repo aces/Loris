@@ -32,8 +32,6 @@ const config = [{
     './modules/dataquery/js/react.sidebar.js': './modules/dataquery/jsx/react.sidebar.js',
     './modules/dataquery/js/react.tabs.js': './modules/dataquery/jsx/react.tabs.js',
     './modules/dicom_archive/js/dicom_archive.js': './modules/dicom_archive/jsx/dicom_archive.js',
-    './modules/genomic_browser/js/FileUploadModal.js': './modules/genomic_browser/jsx/FileUploadModal.js',
-    './modules/genomic_browser/js/profileColumnFormatter.js': './modules/genomic_browser/jsx/profileColumnFormatter.js',
     './modules/imaging_browser/js/ImagePanel.js': './modules/imaging_browser/jsx/ImagePanel.js',
     './modules/imaging_browser/js/imagingBrowserIndex.js': './modules/imaging_browser/jsx/imagingBrowserIndex.js',
     './modules/instrument_builder/js/react.instrument_builder.js': './modules/instrument_builder/jsx/react.instrument_builder.js',

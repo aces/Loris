@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Loader from 'Loader';
+import {TabPane, Tabs} from 'jsx/Tabs';
+import Profiles from './tabs_content/profiles';
+import GWAS from './tabs_content/gwas';
+import SNP from './tabs_content/snp';
+import CNV from './tabs_content/cnv';
+import Methylation from './tabs_content/methylation';
+import Files from './tabs_content/files';
 
 /**
  * Genomic Browser.
@@ -18,28 +24,31 @@ class GenomicBrowser extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
-  /**
-   * Executes after component mounts.
-   */
-  componentDidMount() {
-    // this.fetchInitializerData();
-  }
-
   /**
    * @return {DOMRect}
    */
   render() {
-    // Waiting for async data to load.
-    if (!this.state.isLoaded) {
-      return <Loader/>;
-    }
-
+    const tabList = [
+      {id: 'tabProfiles', label: 'Profiles'},
+      {id: 'tabGWAS', label: 'GWAS'},
+      {id: 'tabSNP', label: 'SNP'},
+      {id: 'tabCNV', label: 'CNV'},
+      {id: 'tabMethylation', label: 'Methylation'},
+      {id: 'tabFiles', label: 'Files'},
+    ];
     return (
-      <div>
-        hello world.
+      <div className={'col-sm-12'}>
+        <div className={'row'}>
+          <Tabs tabs={tabList} defaultTab='tabProfiles'>
+            <TabPane TabId={tabList[0].id}><Profiles/></TabPane>
+            <TabPane TabId={tabList[1].id}><GWAS/></TabPane>
+            <TabPane TabId={tabList[2].id}><SNP/></TabPane>
+            <TabPane TabId={tabList[3].id}><CNV/></TabPane>
+            <TabPane TabId={tabList[4].id}><Methylation/></TabPane>
+            <TabPane TabId={tabList[5].id}><Files/></TabPane>
+          </Tabs>
+        </div>
       </div>
     );
   }
@@ -49,7 +58,7 @@ GenomicBrowser.propTypes = {
 };
 
 /**
- * Render dashboard on page load.
+ * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
   ReactDOM.render(

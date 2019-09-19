@@ -40,54 +40,47 @@ class AjaxGenomicBrowser extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        /**
-         * Ensure it's a POST request.
-         */
-        if ($request->getMethod() != 'POST') {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(405)
-                ->withHeader('Allow', 'POST')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Only POST requests are allowed'
-                    )
+        // Ensure GET or POST request.
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            case 'POST':
+                return $this->_handlePOST($request);
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
                 );
         }
-        /**
-         * Parse POST request body.
-         */
-        $requestBody = $request->getParsedBody();
-        /**
-         * Response to reply.
-         */
-        $response = $this->processRequest($requestBody);
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(200)
-            ->withHeader('Allow', 'POST')
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($response)
-                )
-            );
     }
     /**
-     * Processes the values and saves to database
+     * Initialize setup, the extra values for the
+     * create timepoint form. (psc & errors)
      *
-     * @param array $values the user data received.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    function processRequest(array $values) : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = array();
-        if (isset($values['command']) && $values['command'] == 'initialize') {
-            // $response = $this->initializeSetup($values);
-        } else {
-            $response['status'] = 'error';
-        }
-        return $response;
+        // Parse GET query params.
+        $values = $request->getQueryParams();
+        return new \LORIS\Http\Response\JsonResponse(
+            $values
+        );
     }
-
+    /**
+     * Processes the values & saves to database and return a json response.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse POST request body.
+        $values = $request->getParsedBody();
+        return new \LORIS\Http\Response\JsonResponse(
+            []
+        );
+    }
 }
