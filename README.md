@@ -29,8 +29,6 @@ Deploy and log in with username *admin* and the password that's set up during de
  * NodeJS 8.0 or higher
  * [Composer](https://getcomposer.org/)
 
-_Composer should be run with --no-dev option unless you are an active LORIS developer._
-
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
 
 ### Install Steps
