@@ -72,8 +72,8 @@ class Database
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return object Database
-     * @throws DatabaseException
+     * @return \Database
+     * @throws \DatabaseException
      * @access public
      */
     static function &singleton(
@@ -82,7 +82,7 @@ class Database
         string $password     = '',
         string $host         = '',
         bool   $trackChanges = true
-    ) {
+    ): \Database {
 
         static $connections = array();
 
@@ -300,9 +300,9 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function insertOnDuplicateUpdate($table, $set)
+    public function insertOnDuplicateUpdate(string $table, array $set): bool
     {
         return $this->_realinsert($table, $set, true, false, true);
     }
@@ -318,10 +318,12 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function unsafeInsertOnDuplicateUpdate($table, $set)
-    {
+    public function unsafeInsertOnDuplicateUpdate(
+        string $table,
+        array $set
+    ): bool {
         return $this->_realinsert($table, $set, false, false, true);
     }
 

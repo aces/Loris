@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Reads a list of files from stdin and packages them up into a tar file
+
+set -euo pipefail
 
 GetConfigOption() {
         eval $1=`sed -n -e "/$2/ { s/^[ \t\n]*//; s/[ \t\n]*$//; s#<[/]*$2>##gp }" ../project/config.xml`

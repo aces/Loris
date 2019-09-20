@@ -21,7 +21,6 @@ return [
 		"PhanUndeclaredVariableDim",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
         "PhanTypeSuspiciousStringExpression",
 	],

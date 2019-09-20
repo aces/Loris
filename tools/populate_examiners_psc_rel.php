@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This script is written for a one time use only to populate the examiners_psc_rel

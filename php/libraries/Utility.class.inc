@@ -302,7 +302,6 @@ class Utility
      *
      * @note    This should probably be moved to the Candidate class, since it's
      *       only used there to validate the PSCID
-     * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
     static function structureToPCRE(
@@ -685,7 +684,7 @@ class Utility
      * @param string|null $name       If specified, return fields for this
      *                           parameter_type name
      *
-     * @return  Array of the form array(
+     * @return  ?array Format: array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name
@@ -701,9 +700,9 @@ class Utility
         ?string $instrument = null,
         ?string $commentID = null,
         ?string $name = null
-    ): array {
+    ): ?array {
 
-        $DB =& \Database::singleton();
+        $DB = \Database::singleton();
         //get sourcefield using instrument
         $sourcefields = array();
         if (!is_null($instrument)) {
@@ -905,9 +904,7 @@ class Utility
      */
     static function getLanguageList(): array
     {
-        $DB = \Database::singleton();
-
-        $languagesDB = $DB->pselect(
+        $languagesDB = \Database::singleton()->pselect(
             "SELECT language_id, language_label
              FROM language",
             array()

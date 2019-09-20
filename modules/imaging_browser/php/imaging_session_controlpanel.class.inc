@@ -87,14 +87,19 @@ class Imaging_Session_ControlPanel
                  'v_sessions_id' => $this->sessionID,
                 )
             );
+            if (is_null($qresult)) {
+                throw new \LorisException(
+                    'Could not find linked instruments for specified '
+                    . 'test name and session ID'
+                );
+            }
             $links[] = array(
                         "FEName"    => $qresult['Full_name'],
                         "BEName"    => $v,
                         "CommentID" => $qresult['CommentID'],
                        );
         }
-        $subjectData['links']
-            = (empty($links)) ? "" : $links;
+        $subjectData['links'] = (empty($links)) ? "" : $links;
 
         $candidate =& \Candidate::singleton($timePoint->getCandID());
 

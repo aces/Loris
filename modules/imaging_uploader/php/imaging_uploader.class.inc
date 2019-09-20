@@ -95,7 +95,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                'Visit_label' => 's.Visit_label',
                                'IsPhantom'   => 'mu.IsPhantom',
                               );
-        return true;
     }
      /**
      * Sets up the menu filter items for the imaging uploader
@@ -136,7 +135,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
         }
-        return true;
     }
     /**
      * Returns true if the _saveFile has successfully
@@ -144,7 +142,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @param array $values the array of values from the form
      *
-     * @return true on success, false othewise
+     * @return bool true on success, false othewise
      */
     function _process($values)
     {
@@ -337,9 +335,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      ':vlabel' => $visit_label,
                     ]
                 );
-                if (sizeOf($candidate) == 0 || (sizeOf($candidate) !== 0
-                    && $candidate["candid"] !== $candid)
-                ) {
+                if (is_null($candidate) || $candidate["candid"] !== $candid) {
                     array_push(
                         $errors["candID"],
                         "The CandID " . $candid .
@@ -635,35 +631,26 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     * @param string $file The full filename including directory.
     * @param Array  $args The list of arguments
     *
-    * @return bool  $success if operation succeeded
+    * @return string  $success if operation succeeded
     */
     function getTargetDirectory($file, $args)
     {
-        $user_name = $args['user_id'] ?? null;
-        if (($user_name==null) || (!(isset($user_name)))) {
-            $user      = \User::singleton();
-            $user_name = $user->getUsername();
-        }
-
-        $output ="$user_name/";
-
-        return $output;
+        return sprintf(
+            "%s/",
+            $args['user_id'] ?? \User::singleton()->getUsername()
+        );
     }
     /**
     * The function isCompressed returns true if the file is
     * compressed (gzip or zip) or false otherwise
     *
-    * @param string $file The full filename including directory.
+    * @param string $file The full filename including directory
     *
-    * @return bool  $success if operation succeeded
+    * @return bool Whether the file is compressed
     */
     function isCompressed($file)
     {
-        $file_info =  mime_content_type($file);
-        if (preg_match('/zip/', $file_info, $matches)) {
-            return true;
-        }
-        return false;
+        return strpos(mime_content_type($file), 'zip') !== false;
     }
     /**
     * The function removes the uploaded file from the /tmp directory

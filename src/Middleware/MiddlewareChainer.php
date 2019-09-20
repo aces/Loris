@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File defines the MiddlewareChainer interface.
  *
@@ -34,5 +34,5 @@ interface MiddlewareChainer extends MiddlewareInterface
      *
      * @return MiddlewareChainer
      */
-    public function withMiddleware(MiddlewareChainer $next) : MiddlewareChainer;
+    public function withMiddleware(MiddlewareChainer $next);
 }
