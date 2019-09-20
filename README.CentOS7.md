@@ -88,18 +88,6 @@ Alternatively the latest development branch can be obtained by forking the [LORI
 
 # Setup
 
-## Composer
-
-Composer will download all of LORIS's library requirements, assuming an active internet connection.
-This must be done from the LORIS project directory `/var/www/loris`. There may be additional packages
-to install at this setp for composer to exist successfully, be sure to install the php 7 compatible 
-versions of these packages, if necessary. 
-
-**Note** It may be necessary to create the `project/libraries/` directory before running the following: 
-```bash
-composer install --no-dev
-```
-
 ## Apache2
 
 A sample apache configuration file is in `docs/config/apache2-site`. 
