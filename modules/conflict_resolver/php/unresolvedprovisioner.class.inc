@@ -4,7 +4,7 @@
  *
  * @category Datadict
  * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -18,7 +18,7 @@ namespace LORIS\conflict_resolver;
  *
  * @category Datadict
  * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
