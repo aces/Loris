@@ -68,10 +68,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return [
+        return array(
                 "v0.0.2",
                 "v0.0.3-dev",
-               ];
+               );
     }
 
     /**
@@ -139,19 +139,22 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $user        = $request->getAttribute('user');
-            $provisioner = (new \LORIS\api\CandidatesProvisioner())
-                ->forUser($user);
-
-            $candidates = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($user);
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse(
-                array('Candidates' => $candidates)
-            );
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $user        = $request->getAttribute('user');
+        $provisioner = (new \LORIS\api\CandidatesProvisioner())
+            ->forUser($user);
+
+        $candidates = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse(
+            array('Candidates' => $candidates)
+        );
+
         return $this->_cache;
     }
 

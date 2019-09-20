@@ -112,12 +112,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $this->_cache = new \LORIS\Http\Response\JsonResponse(
-                (new \LORIS\Api\Views\Project($this->_project))
-                    ->toCandidateArray()
-            );
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse(
+            (new \LORIS\Api\Views\Project($this->_project))
+                ->toCandidateArray()
+        );
 
         return $this->_cache;
     }

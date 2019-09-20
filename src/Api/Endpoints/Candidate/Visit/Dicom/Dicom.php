@@ -44,6 +44,8 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * A cache of the endpoint results, so that it doesn't need to be
      * recalculated for the ETag and handler.
+     *
+     * @var ResponseInterface
      */
     private $_cache;
 
@@ -119,40 +121,43 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            try {
-                $dicom = $this->_visit->getDicomTarByFilename($this->_tarname);
-            } catch (\NotFound $e) {
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            $tarchivepath = \NDB_factory::singleton()
-                ->config()
-                ->getSetting('tarchiveLibraryDir');
-
-            $fullpath = $tarchivepath . $dicom->getArchiveLocation();
-            $info     = new \SplFileInfo($fullpath);
-            if (!$info->isFile()) {
-                return new \LORIS\Http\Response\NotFound('');
-            }
-
-            if (!$info->isReadable()) {
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            $file         = $info->openFile('r');
-            $this->_cache = (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/x-tar')
-                ->withHeader(
-                    'Content-Disposition',
-                    'attachment; filename=' . $this->_tarname
-                )
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        $file->fread($file->getSize())
-                    )
-                );
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        try {
+            $dicom = $this->_visit->getDicomTarByFilename($this->_tarname);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $tarchivepath = \NDB_factory::singleton()
+            ->config()
+            ->getSetting('tarchiveLibraryDir');
+
+        $fullpath = $tarchivepath . $dicom->getArchiveLocation();
+        $info     = new \SplFileInfo($fullpath);
+        if (!$info->isFile()) {
+            return new \LORIS\Http\Response\NotFound('');
+        }
+
+        if (!$info->isReadable()) {
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $file         = $info->openFile('r');
+        $this->_cache = (new \LORIS\Http\Response())
+            ->withHeader('Content-Type', 'application/x-tar')
+            ->withHeader(
+                'Content-Disposition',
+                'attachment; filename=' . $this->_tarname
+            )
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    $file->fread($file->getSize())
+                )
+            );
+
         return $this->_cache;
     }
 

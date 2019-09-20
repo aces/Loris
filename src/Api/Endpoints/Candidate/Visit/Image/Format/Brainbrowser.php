@@ -107,25 +107,28 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $info = $this->_image->getFileInfo();
-
-            if (!$info->isFile()) {
-                error_log('file in database but not in file system');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            if (!$info->isReadable()) {
-                error_log('file exist but is not readable by webserver');
-                return new \LORIS\Http\Response\NotFound();
-            }
-
-            $view = (new \LORIS\Api\Views\Visit\Image\Format\Brainbrowser(
-                $this->_image
-            ))->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $info = $this->_image->getFileInfo();
+
+        if (!$info->isFile()) {
+            error_log('file in database but not in file system');
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        if (!$info->isReadable()) {
+            error_log('file exist but is not readable by webserver');
+            return new \LORIS\Http\Response\NotFound();
+        }
+
+        $view = (new \LORIS\Api\Views\Visit\Image\Format\Brainbrowser(
+            $this->_image
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+
         return $this->_cache;
     }
 

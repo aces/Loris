@@ -125,18 +125,21 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $images = $this->_visit->getImages(
-                $request->getAttribute('user')
-            );
-
-            $view = (new \LORIS\Api\Views\Visit\Images(
-                $this->_visit,
-                ...$images
-            ))->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $images = $this->_visit->getImages(
+            $request->getAttribute('user')
+        );
+
+        $view = (new \LORIS\Api\Views\Visit\Images(
+            $this->_visit,
+            ...$images
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+
         return $this->_cache;
     }
 

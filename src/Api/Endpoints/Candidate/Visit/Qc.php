@@ -117,15 +117,17 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-
-            $qcstatus = $this->_visit->getImagingQC();
-
-            $view = (new \LORIS\Api\Views\Visit\Qc($this->_visit, $qcstatus))
-                ->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $qcstatus = $this->_visit->getImagingQC();
+
+        $view = (new \LORIS\Api\Views\Visit\Qc($this->_visit, $qcstatus))
+            ->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+
         return $this->_cache;
     }
 

@@ -110,11 +110,13 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $this->_cache = new \LORIS\Http\Response\JsonResponse(
-                json_decode($this->_instrument->toJSON(), true)
-            );
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse(
+            json_decode($this->_instrument->toJSON(), true)
+        );
 
         return $this->_cache;
     }

@@ -136,12 +136,14 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $array = (new \LORIS\Api\Views\Project($this->_project))
-                ->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $array = (new \LORIS\Api\Views\Project($this->_project))
+            ->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
 
         return $this->_cache;
     }

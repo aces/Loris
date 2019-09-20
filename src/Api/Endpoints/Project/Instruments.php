@@ -125,21 +125,24 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $provisioner = new \LORIS\api\ProjectInstrumentsRowProvisioner();
-            $user        = $request->getAttribute('user');
-
-            $instruments = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->getRows($user);
-
-            $array = (new \LORIS\Api\Views\Project\Instruments(
-                $this->_project,
-                iterator_to_array($instruments)
-            ))->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $provisioner = new \LORIS\api\ProjectInstrumentsRowProvisioner();
+        $user        = $request->getAttribute('user');
+
+        $instruments = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        $array = (new \LORIS\Api\Views\Project\Instruments(
+            $this->_project,
+            iterator_to_array($instruments)
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+
         return $this->_cache;
     }
 

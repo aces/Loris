@@ -115,36 +115,39 @@ class Headers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
+
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) > 1) {
             return new \LORIS\Http\Response\NotFound();
         }
 
-        if (!isset($this->_cache)) {
-            $headername = array_shift($pathparts);
-            switch ($headername) {
-            case '':
-                $view = new \LORIS\Api\Views\Visit\Image\Headers\Summary(
-                    $this->_visit,
-                    $this->_image
-                );
-                break;
-            case 'full':
-                $view = new \LORIS\Api\Views\Visit\Image\Headers\Full(
-                    $this->_visit,
-                    $this->_image
-                );
-                break;
-            default:
-                $view = new \LORIS\Api\Views\Visit\Image\Headers\Specific(
-                    $this->_visit,
-                    $this->_image,
-                    $headername
-                );
-            }
+        $headername = array_shift($pathparts);
 
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
+        switch ($headername) {
+        case '':
+            $view = new \LORIS\Api\Views\Visit\Image\Headers\Summary(
+                $this->_visit,
+                $this->_image
+            );
+            break;
+        case 'full':
+            $view = new \LORIS\Api\Views\Visit\Image\Headers\Full(
+                $this->_visit,
+                $this->_image
+            );
+            break;
+        default:
+            $view = new \LORIS\Api\Views\Visit\Image\Headers\Specific(
+                $this->_visit,
+                $this->_image,
+                $headername
+            );
         }
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
 
         return $this->_cache;
     }

@@ -121,14 +121,17 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $view = (new \LORIS\Api\Views\Visit\Image\Qc(
-                $this->_visit,
-                $this->_image
-            ))->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $view = (new \LORIS\Api\Views\Visit\Image\Qc(
+            $this->_visit,
+            $this->_image
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
+
         return $this->_cache;
     }
 
@@ -160,7 +163,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $inputfilename = $data['Meta']['File'] ?? null;
         if ($inputfilename != $this->_image->getFileInfo()->getFilename()) {
-            return new \LORIS\Http\Response\BasRequest(
+            return new \LORIS\Http\Response\BadRequest(
                 'File name from URL does not match JSON metadata.'
             );
         }

@@ -106,31 +106,33 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
+
         try {
             $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
             $since      = new \DateTime($datestring);
         } catch (\Exception $e) {
-            return new \LROIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\BadRequest(
                 $e->getMessage()
             );
         }
 
-        if (!isset($this->_cache)) {
-            $user = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
 
-            $provisioner = (new \LORIS\api\ProjectImagesRowProvisioner(
-                $this->_project,
-                $since
-            ))->forUser($user);
+        $provisioner = (new \LORIS\api\ProjectImagesRowProvisioner(
+            $this->_project,
+            $since
+        ))->forUser($user);
 
-            $images = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($user);
+        $images = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
 
-            $this->_cache = new \LORIS\Http\Response\JsonResponse(
-                array('Images' => $images)
-            );
-        }
+        $this->_cache = new \LORIS\Http\Response\JsonResponse(
+            array('Images' => $images)
+        );
 
         return $this->_cache;
     }
