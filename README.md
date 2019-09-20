@@ -102,3 +102,14 @@ The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) i
 If you would like to contribute to LORIS development, please consult our
 [Contributing Guide](./CONTRIBUTING.md).
 
+## Powered by MCIN
+
+LORIS is made by staff developers at the McGill Centre for Integrative Neuroscience ([MCIN.ca](www.mcin.ca)), led by Alan Evans and Samir Das at the Montreal Neurological Institute. 
+
+See our website for the [History of LORIS](http://loris.ca/about.html) and the current team. 
+
+See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
+
+The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
+
+
