@@ -39,7 +39,7 @@ class GWAS extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/genomic_browser/AjaxGenomicBrowser',
+    return fetch(window.location.origin + '/genomic_browser/GwasBrowser',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())

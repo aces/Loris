@@ -26,12 +26,12 @@ use \LORIS\Middleware\ETagCalculator;
  * allows profiles to be processed as part of the genomic browser.
  *
  * @category Loris
- * @package  Dashboard
+ * @package  Genomic Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class GenomicBrowser extends Endpoint implements ETagCalculator
+class Profiles extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
 

@@ -38,7 +38,7 @@ class CNV extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/genomic_browser/AjaxGenomicBrowser',
+    return fetch(window.location.origin + '/genomic_browser/CvnBrowser',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())

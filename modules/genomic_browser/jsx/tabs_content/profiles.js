@@ -40,7 +40,7 @@ class Profiles extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/genomic_browser/GenomicBrowser',
+    return fetch(window.location.origin + '/genomic_browser/Profiles',
       {credentials: 'same-origin'}
       )
       .then((resp) => resp.json())
