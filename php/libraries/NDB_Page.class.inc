@@ -163,10 +163,6 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Wrapper to create a header
-     * FIXME: Setting the name to null is not a good idea because the name
-     *        is the key to the element in the form array. It's been changed
-     *        to a ' ' string so that the method can be unit tested but ideally
-     *        there should be a name param. -Alexandra Livadas
      *
      * @param string $header The text to put in the header
      *
@@ -174,7 +170,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', ' ', $header);
+        $this->form->addElement('header', null, $header);
     }
 
     /**
@@ -200,8 +196,6 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Wrapper to create a static label to the current page
-     * FIXME: Setting the name to null is not a good idea because the name
-     *        is the key to the element in the form array. -Alexandra Livadas
      *
      * @param string $label The text to add to the label.
      *

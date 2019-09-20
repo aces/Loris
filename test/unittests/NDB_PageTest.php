@@ -113,8 +113,6 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addHeader calls addElement from LorisForm and properly adds
      * an element to the page's form
-     * FIXME: Ideally the name should not be ' '. See the fixme comment in
-     *        the addHeader method. - Alexandra Livadas
      *
      * @covers NDB_Page::addHeader
      * @return void
@@ -124,9 +122,8 @@ class NDB_PageTest extends TestCase
         $this->_page->addHeader("test_header");
         $this->assertEquals(
             array('label' => 'test_header',
-                  'type'  => 'header',
-                  'name'  => ' '),
-            $this->_page->form->form[' ']
+                  'type'  => 'header'),
+            current($this->_page->form->form)
         );
     }
 
@@ -153,22 +150,17 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addLabel calls addElement from LorisForm and properly adds
      * an element to the page's form
-     * FIXME: This is incomplete because the addLabel
-     *        method sets the name value to null which makes it hard to 
-     *        define the element or to find it in the form->form array! 
-     *        See fixme comment in addLabel method -Alexandra Livadas
      *
      * @covers NDB_Page::addLabel
      * @return void
      */
     public function testAddLabel()
     {
-        $this->markTestIncomplete("This test is incomplete!");
         $this->_page->addLabel("test_label");
         $this->assertEquals(
             array('label' => 'test_label',
                   'type'  => 'static'),
-            $this->_page->form->form['anonymous1']
+            current($this->_page->form->form)
         );
     }
 
