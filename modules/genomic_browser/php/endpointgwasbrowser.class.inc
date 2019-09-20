@@ -27,7 +27,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxCpgBrowser extends \NDB_Page
+class EndpointWasBrowser extends \NDB_Page
 {
     public $skipTemplate = true;
 

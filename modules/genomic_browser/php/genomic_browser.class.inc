@@ -25,10 +25,23 @@ namespace LORIS\genomic_browser;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Genomic_Browser extends \NDB_Menu_Filter
+class Genomic_Browser extends \NDB_Page
 {
     public $skipTemplate = true;
-    var $AjaxModule      = true;
+
+    /**
+     * Returns true if the user has permission to access
+     * the Genomic Browser module
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return ($user->hasPermission('genomic_browser_view_allsites')
+            || $user->hasPermission('genomic_browser_view_site'));
+    }
 
     /**
      * Add dependency on D3 and C3 javascript libraries
