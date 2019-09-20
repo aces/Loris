@@ -9,10 +9,10 @@ you should not follow this guide.
 
 For further details on the install process, please see the LORIS GitHub Wiki CentOS Install page.  
 
-# System Requirements
+# System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MySQL 5.7 is supported for LORIS 21.*
+* MariaDB 10.3 is supported for LORIS 21.* 
 * PHP 7.2 is supported for LORIS 21.*
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below.
@@ -35,47 +35,46 @@ sudo yum update
 sudo yum install php72
 sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
 ```
-## MySQL
+## MariaDB
 
-*Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
+MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7) for background). MySQL and MariaDB are nearly identical in operation.
 
-Running the following command will download and install MariaDB by default in CentOS 7 [(e.g. tutorial on DigitalOcean, see paragraph2)](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7).
+*Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your sysadmin for database credentials.
 
-``` 
-sudo yum install mysql mysql-server
+```
+sudo yum install MariaDB-client MariaDB-server
 ```
 
+By default in CentOS 7, the MariaDB version is (currently) 10.2.27
 Check what version you have installed by running:
 ```
 mysql -v
 ```
-If you have MySQL:
-```
-sudo service mysqld start
-sudo service mysqld status
-```
-If you have MariaDB:
+
+Upgrade your MariaDB to version 10.3 (LORIS 21 does not support MariaDB 10.2.27)
+Then, 
 ```
 sudo service mariadb start
 sudo service mariadb status
 ```
-The two versions should act nearly identically in all other respects. 
 
 To finalise the MySQL/MariaDB installation: 
 ```
 mysql_secure_installation
 ```
-(follow instructions to create a password the root user):
+Then follow instructions to create a password for the root user.
+
 ## NodeJS
 ```
 sudo yum install nodejs
 ```
+
 ## PHP Composer
 ```
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
-# LORIS codebase
+# Get the LORIS codebase
 
 Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
 ```
@@ -86,9 +85,7 @@ cp -r Loris-%VERSION%/* /var/www/loris
 
 Alternatively the latest development branch can be obtained by forking the [LORIS repository](http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 
 
-# Setup
-
-## Apache2
+# Configure Apache
 
 A sample apache configuration file is in `docs/config/apache2-site`. 
 The install script will ask if you want to automatically create/install apache config files.
