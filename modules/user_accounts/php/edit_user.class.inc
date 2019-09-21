@@ -753,11 +753,11 @@ class Edit_User extends \NDB_Form
         );
 
         // START PROJECT SECTION
-        $project_arr    = $editor->getData('ProjectIDs');
+        $editorProjects = $editor->getData('ProjectIDs');
+        $projects       = \Utility::getProjectList();
         $projectOptions = array();
-        foreach ($project_arr as $key => $val) {
-            $project[$key]        = \Project::getProjectFromID(intval($val));
-            $projectOptions[$val] = $project[$key]->getName();
+        foreach ($editorProjects as $key => $projectID) {
+            $projectOptions[$projectID] = $projects[$projectID];
         }
 
         $this->addSelect(
