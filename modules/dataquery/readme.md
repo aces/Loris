@@ -56,7 +56,6 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 4. To load the Data Query Tool with data stored in LORIS, run the `CouchDB_Import_*` scripts, in the `tools/` directory: 
 
-```
 `cd $lorisroot/tools`
 
 ##### Import the base candidate data
@@ -72,5 +71,5 @@ This step is optional and not required if only the MRI portion of LORIS is used:
 This step is optional and not required if the MRI portion of LORIS isn't installed:
 
 `php CouchDB_Import_MRI.php`
-```
+
 
