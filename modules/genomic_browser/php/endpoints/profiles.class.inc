@@ -106,8 +106,7 @@ class Profiles extends Endpoint implements ETagCalculator
     {
         // Parse POST request body.
         $values = $request->getParsedBody();
-
-
+        
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
@@ -124,7 +123,6 @@ class Profiles extends Endpoint implements ETagCalculator
                     break;
             }
         }
-
 
         return new \LORIS\Http\Response\JsonResponse(
             $values
