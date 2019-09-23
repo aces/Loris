@@ -422,6 +422,7 @@ class CandidateTest extends TestCase
         $this->assertEquals(
             $this->_candidateInfo['Sex'],
             $this->_candidate->getCandidateSex()
+        );
         $this->assertTrue(
             $this->_candidate->setData(
                 array('RegisteredBy' => 'TestUser')
