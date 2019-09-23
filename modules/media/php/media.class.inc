@@ -131,15 +131,7 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        $provisioner = parent::getDataProvisionerWithFilters();
-
-        if (!\NDB_Factory::singleton()->user()->hasPermission('superuser')) {
-            $provisioner = $provisioner->filter(
-                new HideFileFilter()
-            );
-        }
-
-        return $provisioner;
+        return new MediaFileProvisioner();
     }
 
     /**
@@ -149,20 +141,14 @@ class Media extends \DataFrameworkMenu
      */
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
-        $provisioner = new MediaFileProvisioner();
+        $provisioner = parent::getDataProvisionerWithFilters();
 
-        $user = \User::singleton();
-
-        if ($user->hasPermission("access_all_profiles") == false) {
-            $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-        if (!$user->hasPermission("superuser")) {
+        if (!\NDB_Factory::singleton()->user()->hasPermission('superuser')) {
             $provisioner = $provisioner->filter(
                 new HideFileFilter()
             );
         }
+
         return $provisioner;
     }
 
