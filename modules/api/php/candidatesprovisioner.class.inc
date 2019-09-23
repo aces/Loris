@@ -58,7 +58,7 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     }
 
     /**
-     * Creates a new providionner with user specific filter.
+     * Creates a new provisionner with user specific filter.
      *
      * @param \User $user The requesting user
      *
