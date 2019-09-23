@@ -16,6 +16,7 @@ const config = [{
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
     './modules/candidate_parameters/js/CandidateParameters.js': './modules/candidate_parameters/jsx/CandidateParameters.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
+    './modules/create_timepoint/js/createTimepointIndex.js': './modules/create_timepoint/jsx/createTimepointIndex.js',
     './modules/conflict_resolver/js/conflictResolverIndex.js': './modules/conflict_resolver/jsx/conflictResolverIndex.js',
     './modules/conflict_resolver/js/resolvedConflictsIndex.js': './modules/conflict_resolver/jsx/resolvedConflictsIndex.js',
     './modules/create_timepoint/js/createTimepointIndex.js': './modules/create_timepoint/jsx/createTimepointIndex.js',
