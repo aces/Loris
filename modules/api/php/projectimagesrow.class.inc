@@ -14,7 +14,7 @@
 namespace LORIS\api;
 
 /**
- * A ProjectImagesRow constains values from an image of a project.
+ * A ProjectImagesRow contains values from an image of a project.
  *
  * @category API
  * @package  Loris
