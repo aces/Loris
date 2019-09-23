@@ -45,4 +45,3 @@ class Created extends JsonResponse
         parent::__construct($body, 201, $headers);
     }
 }
-

@@ -46,4 +46,3 @@ class OK extends JsonResponse
         parent::__construct($body, 200, $headers);
     }
 }
-
