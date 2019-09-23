@@ -108,10 +108,11 @@ class AjaxDashboard extends \NDB_Page
         $documentRepositoryData = array();
         $behaviouralFeedbackData = array();
 
-        $DB     = \NDB_Factory::singleton()->database();
-        $user   = \NDB_Factory::singleton()->user();
-        $config = \NDB_Config::singleton();
-        $site   = $user->getSiteNames();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+        $config  = $factory->config();
+        $site    = $user->getSiteNames();
 
         $userID    = $user->getUsername();
         $lastLogin = $DB->pselectOne(
