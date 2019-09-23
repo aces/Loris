@@ -12,11 +12,12 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\dashboard;
+namespace LORIS\dashboard\endpoints;
 
-use Database;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Api\Endpoint;
+use \LORIS\Middleware\ETagCalculator;
 
 /**
  * The NDB_Page for the POST requests.
@@ -28,7 +29,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxChartHelper extends \NDB_Page
+class ChartHelper extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
     /**
@@ -40,68 +41,51 @@ class AjaxChartHelper extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        /**
-         * Ensure it's a POST request.
-         */
-        if ($request->getMethod() != 'POST') {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(405)
-                ->withHeader('Allow', 'POST')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Only POST requests are allowed'
-                    )
+        // Ensure GET or POST request.
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
                 );
         }
-        /**
-         * Parse POST request body.
-         */
-        $requestBody = $request->getParsedBody();
-
-        /**
-         * Response to reply.
-         */
-        $response = $this->processRequest($requestBody);
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(200)
-            ->withHeader('Allow', 'POST')
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($response)
-                )
-            );
     }
+
     /**
-     * Processes the values and saves to database
+     * Initialize setup, the extra values for the
+     * create timepoint form. (psc & errors)
      *
-     * @param array $values the user data received.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    function processRequest(array $values) : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
+        // Parse GET query params.
+        $values   = $request->getQueryParams();
         $response = array();
-        if (isset($values['command'])
-            && $values['command'] == 'get_scan_line_data'
+        if (isset($values['get'])
+            && $values['get'] == 'scan_line_data'
         ) {
             $response           = $this->populateDataForScanLineChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['command'])
-            && $values['command'] == 'get_recruitment_pie_data'
+        } else if (isset($values['get'])
+            && $values['get'] == 'recruitment_pie_data'
         ) {
             $response           = $this->populateDataForPieChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['command'])
-            && $values['command'] == 'get_recruitment_bar_data'
+        } else if (isset($values['get'])
+            && $values['get'] == 'recruitment_bar_data'
         ) {
             $response           = $this->populateDataForBarChart($values);
             $response['status'] = 'success';
         } else {
             $response['status'] = 'error';
         }
-        return $response;
+        return new \LORIS\Http\Response\JsonResponse(
+            $response
+        );
     }
 
     /**
@@ -283,4 +267,52 @@ class AjaxChartHelper extends \NDB_Page
         return $values;
     }
 
+    /**
+     * Returns true if the user has permission to access
+     * the Genomic Browser module
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
+     * An ETagCalculator provides the ability to calculate an ETag for
+     * an incoming HTTP request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return array(
+            'GET',
+        );
+    }
+
+    /**
+     * Return a list of LORIS API versions which this endpoint
+     * supports.
+     *
+     * @return string[] LORIS API Versions
+     */
+    protected function supportedVersions(): array
+    {
+        return array('unknown');
+    }
 }

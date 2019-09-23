@@ -49,34 +49,12 @@ class Dashboard extends React.Component {
   }
 
   /**
-   * Used with sending POST data to the server.
-   * @param {object} json - json object converted for POST.
-   * @return {string} send in POST to server.
-   */
-  urlSearchParams(json) {
-    return Object.keys(json).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
-    }).join('&');
-  }
-
-  /**
    * Retrieve data from the dataURL and save it in state.
    */
   fetchInitializerData() {
-    const send = this.urlSearchParams({
-      command: 'initialize',
-    });
     fetch(
-      this.props.dataURL, {
-          method: 'POST',
-          mode: 'same-origin',
-          credentials: 'include',
-          redirect: 'follow',
-          headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: send,
+      window.location.origin + '/dashboard/Dashboard', {
+          credentials: 'same-origin',
         }
     ).then((response) => response.json())
         .then(

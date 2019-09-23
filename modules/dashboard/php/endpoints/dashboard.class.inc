@@ -12,10 +12,12 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\dashboard;
+namespace LORIS\dashboard\endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Api\Endpoint;
+use \LORIS\Middleware\ETagCalculator;
 
 /**
  * The NDB_Page for the POST requests.
@@ -27,7 +29,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxDashboard extends \NDB_Page
+class Dashboard extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
     /**
@@ -39,66 +41,41 @@ class AjaxDashboard extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        /**
-         * Ensure it's a POST request.
-         */
-        if ($request->getMethod() != 'POST') {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(405)
-                ->withHeader('Allow', 'POST')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Only POST requests are allowed'
-                    )
+        // Ensure GET or POST request.
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
                 );
         }
-        /**
-         * Parse POST request body.
-         */
-        $requestBody = $request->getParsedBody();
-
-        /**
-         * Response to reply.
-         */
-        $response = $this->processRequest($requestBody);
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(200)
-            ->withHeader('Allow', 'POST')
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($response)
-                )
-            );
     }
+
     /**
-     * Processes the values and saves to database
+     * Initialize setup, the extra values for the
+     * create timepoint form. (psc & errors)
      *
-     * @param array $values the user data received.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    function processRequest(array $values) : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = array();
-        if (isset($values['command']) && $values['command'] == 'initialize') {
-            $response = $this->initializeSetup($values);
-        } else {
-            $response['status'] = 'error';
-        }
-        return $response;
+        $response = $this->initializeSetup();
+
+        return new \LORIS\Http\Response\JsonResponse(
+            $response
+        );
     }
 
     /**
      * Initialize setup, building the Dashboard.
      *
-     * @param array $values the user data received.
-     *
      * @return array
      * @throws \LorisException
      */
-    function initializeSetup(array $values) : array
+    function initializeSetup() : array
     {
         // data for panels.
         $welcomeData             = array();
@@ -538,4 +515,52 @@ class AjaxDashboard extends \NDB_Page
         return $recruitmentData;
     }
 
+    /**
+     * Returns true if the user has permission to access
+     * the Genomic Browser module
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
+     * An ETagCalculator provides the ability to calculate an ETag for
+     * an incoming HTTP request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return array(
+            'GET',
+        );
+    }
+
+    /**
+     * Return a list of LORIS API versions which this endpoint
+     * supports.
+     *
+     * @return string[] LORIS API Versions
+     */
+    protected function supportedVersions(): array
+    {
+        return array('unknown');
+    }
 }

@@ -129,32 +129,11 @@ function process() {
       return processedData;
     }
 
-    /**
-     * Used with sending POST data to the server.
-     * @param {object} json - json object converted for POST.
-     * @return {string} send in POST to server.
-     */
-    function urlSearchParams(json) {
-      return Object.keys(json).map((key) => {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
-      }).join('&');
-    }
-
-
     // Updated AJAX to get scan line chart data
     fetch(
-      window.location.origin + '/dashboard/AjaxChartHelper', {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: urlSearchParams({
-          command: 'get_scan_line_data',
-        }),
+      window.location.origin + '/dashboard/ChartHelper?get=scan_line_data',
+      {
+        credentials: 'same-origin',
       }
     ).then((response) => response.json())
       .then(
@@ -194,18 +173,9 @@ function process() {
 
     // AJAX to get pie chart data
     fetch(
-      window.location.origin + '/dashboard/AjaxChartHelper', {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: urlSearchParams({
-          command: 'get_recruitment_pie_data',
-        }),
+      window.location.origin + '/dashboard/ChartHelper?get=recruitment_pie_data',
+      {
+        credentials: 'same-origin',
       }
     ).then((response) => response.json())
       .then(
@@ -230,18 +200,9 @@ function process() {
 
     // AJAX to get bar chart data
     fetch(
-      window.location.origin + '/dashboard/AjaxChartHelper', {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: urlSearchParams({
-          command: 'get_recruitment_bar_data',
-        }),
+      window.location.origin + '/dashboard/ChartHelper?get=recruitment_bar_data',
+      {
+        credentials: 'same-origin',
       }
     ).then((response) => response.json())
       .then(
@@ -275,18 +236,9 @@ function process() {
 
     // AJAX to get recruitment line chart data
     fetch(
-      window.location.origin + '/dashboard/AjaxChartHelper', {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: urlSearchParams({
-          command: 'get_scan_line_data',
-        }),
+      window.location.origin + '/dashboard/ChartHelper?get=scan_line_data',
+      {
+        credentials: 'same-origin',
       }
     ).then((response) => response.json())
       .then(

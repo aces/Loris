@@ -3,11 +3,12 @@
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
@@ -20,14 +21,14 @@ namespace LORIS\dashboard;
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
 
-class Dashboard extends \NDB_Form
+class Dashboard extends \NDB_Page
 {
     public $skipTemplate = true;
-    public $AjaxModule   = true;
 
     /**
      * Include additional CSS files:
