@@ -3,7 +3,7 @@
 -- ********************************
 
 CREATE TABLE `Project` (
-    `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
+    `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NULL,
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
@@ -27,7 +27,7 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
 
 CREATE TABLE `project_subproject_rel` (
   `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ProjectID` int(2) NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
   `SubprojectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ProjectSubprojectRelID`),
   CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
@@ -136,7 +136,7 @@ CREATE TABLE `candidate` (
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
-  `ProjectID` int(11) DEFAULT NULL,
+  `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -159,13 +159,15 @@ CREATE TABLE `candidate` (
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
@@ -202,7 +204,8 @@ CREATE TABLE `session` (
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`)
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (

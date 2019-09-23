@@ -76,7 +76,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_vars['cid'] = $centerID;
         }
         if (!empty($projectID)) {
-            $this->query_criteria   .= " AND c.ProjectID =:pid ";
+            $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         }
     }

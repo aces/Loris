@@ -67,7 +67,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 $row  = $DB->pselectRow(
                     "SELECT cr.ConflictID, cr.TableName, cr.ExtraKeyColumn,
                     cr.ExtraKey1, cr.ExtraKey2, cr.FieldName, cr.CommentId1,
-                    cr.Value1, cr.CommentId2, cr.Value2, c.ProjectID
+                    cr.Value1, cr.CommentId2, cr.Value2, s.ProjectID
                     FROM conflicts_unresolved cr
                     JOIN flag f ON (cr.CommentId1=f.CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
@@ -219,7 +219,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
-            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            LEFT JOIN Project ON (session.ProjectID=Project.ProjectID )
             WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();

@@ -46,13 +46,10 @@ class UtilityTest extends TestCase
      * @var array contains project information retrieved by getProjectList method
      */
     private $_projectInfo = array(
-        array('ProjectID' => '12',
-              'Name' => 'project1',
-              'recruitmentTarget' => '123456'),
-        array('ProjectID' => '23',
-              'Name' => 'project2',
-              'recruitmentTarget' => '234567')
-        );
+        '12' => 'project1',
+        '23' => 'project2'
+    );
+
     /**
      * Test_name table information
      * 
@@ -241,7 +238,7 @@ class UtilityTest extends TestCase
     public function testGetProjectList()
     {
         $this->_dbMock->expects($this->at(0))
-            ->method('pselect')
+            ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
             Utility::getProjectList(),
@@ -577,7 +574,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)"
+                    "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
                 )
             )  
             ->willReturn(

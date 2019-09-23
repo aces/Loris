@@ -217,12 +217,12 @@ class Utility
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // get the list of projects
-        $projects = $DB->pselect("SELECT * FROM Project", array());
-        $project  = array();
-        foreach ($projects as $row) {
-            $project[$row['ProjectID']] = $row['Name'];
-        }
-        return $project;
+        $projects = $DB->pselectColWithIndexKey(
+            "SELECT ProjectID, Name FROM Project",
+            array(),
+            'ProjectID'
+        ) ?? array();
+        return $projects;
     }
 
     /**
@@ -772,7 +772,7 @@ class Utility
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
             $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
