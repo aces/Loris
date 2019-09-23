@@ -407,7 +407,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         //filter for candidate
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND ca.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -549,7 +549,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -597,6 +597,7 @@ class Data_Team_Helper extends \NDB_Form
         $qparams = array();
 
         $where =" WHERE s.Active='Y'
+            AND c.Active='Y'
             AND s.Current_stage <> 'Recycling Bin'
             AND f.CommentID NOT LIKE '%DDE%'
             AND psc.Centerid!= '1'";
@@ -623,7 +624,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -695,7 +696,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 

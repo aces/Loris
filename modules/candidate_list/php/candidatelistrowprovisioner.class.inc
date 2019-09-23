@@ -57,7 +57,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
                 max(s.Current_stage) AS LatestVisitStatus,
-                p.Name AS Project,
+                p.Name AS RegistrationProject,
                 c.RegistrationCenterID
                 $maybeEDC
                 FROM candidate c
@@ -68,7 +68,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
-                    LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
+                    LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
                 WHERE c.Active = 'Y'
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex

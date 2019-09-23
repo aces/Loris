@@ -100,8 +100,12 @@ class Database
                 throw new DatabaseException("No database connection exists");
             }
         } else {
-            // name the connection
-            $connection = md5($database.$host.$username.$password.$trackChanges);
+            // name the connection.
+            if ($trackChanges) {
+                $connection = md5($database.$host.$username.$password.'yep');
+            } else {
+                $connection = md5($database.$host.$username.$password.'nope');
+            }
 
             // create the connection if none exists
             if (empty($connections[$connection])) {

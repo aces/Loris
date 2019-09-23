@@ -28,7 +28,6 @@ require_once __DIR__ .
  */
 class DashboardTest extends LorisIntegrationTest
 {
-
     /**
      * Setup the screen size of Travis-cs
      *
@@ -76,15 +75,22 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
+            )
+        );
+        $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => '999888',
-             'RegistrationCenterID' => '55',
-             'UserID'               => '1',
-             'PSCID'                => '8888',
-             'ProjectID'            => '7777',
-             'Entity_type'          => 'Human',
-             'Active'               => 'Y',
+             'CandID'                => '999888',
+             'RegistrationCenterID'  => '55',
+             'UserID'                => '1',
+             'PSCID'                 => '8888',
+             'RegistrationProjectID' => '7777',
+             'Entity_type'           => 'Human',
+             'Active'                => 'Y',
             )
         );
         $this->DB->insert(
@@ -93,6 +99,7 @@ class DashboardTest extends LorisIntegrationTest
              'ID'           => '222222',
              'CandID'       => '999888',
              'CenterID'     => '55',
+             'ProjectID'    => '7777',
              'UserID'       => '1',
              'MRIQCStatus'  => '',
              'SubprojectID' => '55',
@@ -168,7 +175,7 @@ class DashboardTest extends LorisIntegrationTest
              'Data_entry' => 'In Progress',
             )
         );
-         //Insert a demo data into conflicts_unresolved
+        //Insert a demo data into conflicts_unresolved
         $this->DB->insert(
             "conflicts_unresolved",
             array(
@@ -353,6 +360,13 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "subproject",
             array('SubprojectID' => '55')
+        );
+        $this->DB->delete(
+            "Project",
+            array(
+             'ProjectID' => '7777',
+             'Name'      => 'TESTinProject',
+            )
         );
         $this->DB->delete(
             "flag",
@@ -644,7 +658,7 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan1(): void
     {
         $this->safeGet($this->url . '/main.php?logout=true');
-         $this->login("UnitTester", "4test4");
+        $this->login("UnitTester", "4test4");
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertStringContainsString("Unit Tester", $welcomeText);

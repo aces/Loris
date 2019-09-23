@@ -192,7 +192,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->query    = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
-                c.ProjectID as Project,
+                s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
@@ -224,7 +224,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
-                c.ProjectID as Project,
+                s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
                 mri_scan_type.Scan_type,

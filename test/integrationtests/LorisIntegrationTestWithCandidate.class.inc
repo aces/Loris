@@ -44,13 +44,13 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
         parent::setUp();
 
         $this->DB->insert("candidate", array(
-            'CandID'               => '900000',
-            'PSCID'                => 'TST0001',
-            'RegistrationCenterID' => 1,
-            'ProjectID'            => 1,
-            'Active'               => 'Y',
-            'UserID'               => 1,
-            'Entity_type'          => 'Human'
+            'CandID'                => '900000',
+            'PSCID'                 => 'TST0001',
+            'RegistrationCenterID'  => 1,
+            'RegistrationProjectID' => 1,
+            'Active'                => 'Y',
+            'UserID'                => 1,
+            'Entity_type'           => 'Human'
         ));
 
         $this->DB->insert('session', array(
@@ -58,6 +58,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
             'CandID'        => '900000',
             'Visit_label'   => 'Test',
             'CenterID'      => 1,
+            'ProjectID'     => 1,
             'Current_stage' => 'Not Started',
         ));
         // Set up database wrapper and config
