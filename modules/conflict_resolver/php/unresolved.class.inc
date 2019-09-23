@@ -148,21 +148,24 @@ class Unresolved extends Endpoint implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $user        = $request->getAttribute('user');
-            $provisioner = (new UnresolvedProvisioner())->forUser($user);
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
 
-            $conflicts = (new \LORIS\Data\Table())
+        $user        = $request->getAttribute('user');
+        $provisioner = (new UnresolvedProvisioner())->forUser($user);
+
+        $conflicts = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);
 
-            $body = array(
-                     'data'         => $conflicts,
-                     'fieldOptions' => $this->_getFieldOptions(),
-                    );
+        $body = array(
+                 'data'         => $conflicts,
+                 'fieldOptions' => $this->_getFieldOptions(),
+                );
 
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
-        }
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+
         return $this->_cache;
     }
 

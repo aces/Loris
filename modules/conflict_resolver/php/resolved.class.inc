@@ -136,21 +136,24 @@ class Resolved extends Endpoint implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            $user        = $request->getAttribute('user');
-            $provisioner = (new ResolvedProvisioner())->forUser($user);
-
-            $conflicts = (new \LORIS\Data\Table())
-                ->withDataFrom($provisioner)
-                ->toArray($user);
-
-            $body = array(
-                     'data'         => $conflicts,
-                     'fieldOptions' => $this->_getFieldOptions(),
-                    );
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
+
+        $user        = $request->getAttribute('user');
+        $provisioner = (new ResolvedProvisioner())->forUser($user);
+
+        $conflicts = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+
+        $body = array(
+                 'data'         => $conflicts,
+                 'fieldOptions' => $this->_getFieldOptions(),
+                );
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+
         return $this->_cache;
     }
 }
