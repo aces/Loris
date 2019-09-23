@@ -174,6 +174,7 @@ class CreateTimepoint extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
+    console.log('fired!');
     const state = Object.assign({}, this.state);
     fetch(
       window.location.origin + '/create_timepoint/CreateTimepoint', {
@@ -194,7 +195,6 @@ class CreateTimepoint extends React.Component {
         return response.ok ? {} : response.json();
       })
       .then((data) => {
-        console.log(data);
         if (data.status === 'error') {
           if (data.errors) {
             // data for the form errors.

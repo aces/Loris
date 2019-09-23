@@ -16,6 +16,7 @@
  */
 namespace LORIS\create_timepoint\endpoints;
 
+use http\Env\Request;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -305,6 +306,9 @@ class Timepoint extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
+        if ($request->getMethod() === 'POST') {
+            return 'Etag not calculated on POST request';
+        }
         return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 

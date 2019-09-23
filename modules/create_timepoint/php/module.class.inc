@@ -47,9 +47,6 @@ class Module extends \Module
             case 'CreateTimepoint':
                 $handler = new endpoints\Timepoint();
                 break;
-            case 'CvnBrowser':
-                $handler = new endpoints\CnvBrowser();
-                break;
             default:
                 return parent::handle($request);
         }
