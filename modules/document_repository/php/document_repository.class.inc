@@ -24,6 +24,11 @@ namespace LORIS\document_repository;
  */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
+    private const PERMISSIONS = array(
+        'document_repository_view',
+        'document_repository_edit',
+        'document_repository_delete',
+    );
     public $AjaxModule   = true;
     public $skipTemplate = true;
 
@@ -36,12 +41,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            [
-                'document_repository_view',
-                'document_repository_delete',
-            ]
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
     /**
      * Function _setupVariables
