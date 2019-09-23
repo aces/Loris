@@ -118,7 +118,7 @@ class AjaxChartHelper extends \NDB_Page
         $client->makeCommandLine();
         $client->initialize();
 
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $scanData           = array();
         $scanStartDate      = $DB->pselectOne(
@@ -186,7 +186,7 @@ class AjaxChartHelper extends \NDB_Page
      */
     function getScanData($siteID, $labels)
     {
-        $DB   = Database::singleton();
+        $DB   = \NDB_Factory::singleton()->database();
         $data = array();
         foreach ($labels as $label) {
             $month  = (strlen($label) == 6)
@@ -222,7 +222,7 @@ class AjaxChartHelper extends \NDB_Page
      */
     function populateDataForPieChart($values) : array
     {
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $recruitmentBySiteData = array();
         $list_of_sites         = \Utility::getAssociativeSiteList(true, false);
@@ -258,7 +258,7 @@ class AjaxChartHelper extends \NDB_Page
      */
     function populateDataForBarChart($values) : array
     {
-        $DB            = Database::singleton();
+        $DB            = \NDB_Factory::singleton()->database();
         $sexData       = array();
         $list_of_sites = \Utility::getAssociativeSiteList(true, false);
 
