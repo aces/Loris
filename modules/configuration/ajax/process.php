@@ -114,6 +114,8 @@ foreach ($_POST as $key => $value) {
                 'Config',
                 array('ConfigID' => $ConfigSettingsID)
             );
+        } else {
+            displayError(400, 'Invalid action');
         }
     }
     unset($pathIDs);
