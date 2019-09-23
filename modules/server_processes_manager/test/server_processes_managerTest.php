@@ -134,19 +134,6 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         $this->markTestSkipped("Skipping long test");
         return;
-        //this->_testFilter("/server_processes_manager/", "pid", "317", "1 rows");
-        //this->_testFilter(
-        //"/server_processes_manager/",
-        //"type",
-        //"mri_upload",
-        //"51"
-        //);
-        //this->_testFilter(
-        //   "/server_processes_manager/",
-        //   "userid",
-        //   "admin",
-        //   "51"
-        //;
     }
     /**
       * This function could test filter function in each Tabs.
