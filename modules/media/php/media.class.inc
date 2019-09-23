@@ -131,7 +131,15 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new MediaFileProvisioner();
+        $provisioner = parent::getDataProvisionerWithFilters();
+
+        if (!\NDB_Factory::singleton()->user()->hasPermission('superuser')) {
+            $provisioner = $provisioner->filter(
+                new HideFileFilter()
+            );
+        }
+
+        return $provisioner;
     }
 
     /**
@@ -156,30 +164,6 @@ class Media extends \DataFrameworkMenu
             );
         }
         return $provisioner;
-    }
-
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON() : string
-    {
-        $table = (new \LORIS\Data\Table())
-            ->withDataFrom($this->getDataProvisionerWithFilters());
-        $arr   = array_map(
-            function ($row) {
-                return array_values($row);
-            },
-            json_decode($table->toJSON(\User::singleton()), true)
-        );
-        return json_encode(
-            array(
-             'data'         => $arr,
-             'fieldOptions' => $this->getFieldOptions(),
-            )
-        );
     }
 
     /**
