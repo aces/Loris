@@ -231,7 +231,7 @@ class AjaxDashboard extends \NDB_Page
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
-		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
+		             LEFT JOIN Project p ON (s.ProjectID=p.ProjectID ) 
                      WHERE FIND_IN_SET(s.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
@@ -242,7 +242,6 @@ class AjaxDashboard extends \NDB_Page
         // Incomplete forms
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
-                // todo incomplete_forms used with myTasks
                 $myTasksData['incomplete_forms']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM flag
 			LEFT JOIN session s ON (s.ID=flag.SessionID)
@@ -271,7 +270,6 @@ class AjaxDashboard extends \NDB_Page
         if ($user->hasPermission('user_accounts_multisite')
             && $user->hasPermission('user_accounts')
         ) {
-            // todo pending_users used with myTasks
             $myTasksData['pending_users']      = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
@@ -282,7 +280,6 @@ class AjaxDashboard extends \NDB_Page
             $myTasksData['pending_users_site'] = 'Sites: all';
         } elseif ($user->hasPermission('user_accounts')) {
             $site_arr = $user->getCenterIDs();
-            // todo
             $myTasksData['pending_users'] = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
@@ -295,7 +292,6 @@ class AjaxDashboard extends \NDB_Page
 
         // Violated scans
         if ($user->hasPermission('violated_scans_view_allsites')) {
-            // todo violated_scans used with myTasks
             $myTasksData['violated_scans'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM mri_protocol_violated_scans
 			LEFT JOIN candidate c USING (CandID)
@@ -323,7 +319,6 @@ class AjaxDashboard extends \NDB_Page
                     $document_repository[$i]['new'] = 0;
                 }
             }
-            // todo document_repository_notifications used with documentRepository
             $documentRepositoryData['notifications']
                 = $document_repository;
         }
@@ -336,16 +331,13 @@ class AjaxDashboard extends \NDB_Page
                  AND assignee=:userID",
                 array('userID' => $user->getData('UserID'))
             );
-            // todo issues_assigned used with myTasks
             $myTasksData['issues_assigned']
                 = $issue_tracker;
 
             // I suppose you could also base it on your query
             if ($user->hasPermission('access_all_profiles')) {
-                // todo issues_assigned_site used with myTasks
                 $myTasksData['issues_assigned_site'] = 'Sites: all';
             } else {
-                // todo issues_assigned_site used with myTasks
                 $myTasksData['issues_assigned_site'] = 'Sites: All User Sites';
             }
         }
@@ -388,7 +380,6 @@ class AjaxDashboard extends \NDB_Page
                     }
                 }
             }
-            // todo bvl_feedback_notifications used with behaviouralFeedback
             $behaviouralFeedbackData['notifications']
                 = $bvl_feedback;
         }
@@ -438,8 +429,10 @@ class AjaxDashboard extends \NDB_Page
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*)
              FROM candidate c
-             WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
-             AND c.RegistrationCenterID <> 1",
+             WHERE c.Active='Y' 
+              AND c.RegistrationProjectID=:PID 
+              AND c.Entity_type='Human'
+              AND c.RegistrationCenterID <> 1",
             array('PID' => $projectID)
         );
         return $totalRecruitment;
@@ -480,11 +473,11 @@ class AjaxDashboard extends \NDB_Page
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
-             WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
+             WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
              AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
-             'sex' => $sex,
-             'PID' => $projectID,
+                'sex' => $sex,
+                'PID' => $projectID,
             )
         );
         return intVal($total);
