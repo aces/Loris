@@ -457,7 +457,6 @@ class Utility
      */
     static function toArray($var)
     {
-        // TODO Uncomment the exception code below after LORIS 21 is released.
         throw new \DeprecatedException(
             'Utility::toArray() is deprecated and should not be used. ' .
             'Instead use Utility::associativeToNumericArray() for converting ' .
