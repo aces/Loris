@@ -114,23 +114,17 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $file     = $info->openFile('r');
         $filename = $info->getFilename();
+        $body     = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
 
-        ob_start();
-        $file->fpassthru();
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $body = new \LORIS\Http\StringStream($content);
-
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'image/jpeg')
-            ->withHeader(
-                'Content-Disposition',
-                'attachment; filename=' . $filename
+        return new \LORIS\Http\Response(
+            $body,
+            200,
+            array(
+             'Content-Type'        => 'image/jpeg',
+             'Content-Disposition' => 'attachment; filename=' . $filename,
             )
-            ->withBody($body);
+        );
     }
 
     /**

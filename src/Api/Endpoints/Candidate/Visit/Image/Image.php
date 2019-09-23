@@ -157,6 +157,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'application/x.minc2' : 'application/octet-stream';
 
         $info = $image->getFileInfo();
+
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
             return new \LORIS\Http\Response\NotFound();
@@ -167,14 +168,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $file = $info->openFile('r');
-
-        ob_start();
-        $file->fpassthru();
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $body = new \LORIS\Http\StringStream($content);
+        $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)

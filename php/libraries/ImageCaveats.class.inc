@@ -25,7 +25,6 @@ class ImageCaveats
 {
     /**
      * Contructor
-     * TODO :: Add more descriptive comments on params
      *
      * @param ?string $severity   Severity
      * @param ?string $header     Header

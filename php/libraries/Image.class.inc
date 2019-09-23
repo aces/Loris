@@ -55,7 +55,7 @@ class Image
                      FROM
                        files f 
                      JOIN mri_scan_type mst
-                       ON (mst.ID=f.AcquisitionProtocolID)
+                       ON (mst.ID = f.AcquisitionProtocolID)
                      WHERE f.FileID = :v_fileid
                     ',
                     array('v_fileid' => $fileid)
@@ -216,7 +216,7 @@ class Image
              FROM
                files f
              LEFT JOIN mri_violations_log mvl
-               ON (f.SeriesUID=mvl.SeriesUID)
+               ON (f.SeriesUID = mvl.SeriesUID)
              WHERE
                f.FileID = :v_fileid
             ',

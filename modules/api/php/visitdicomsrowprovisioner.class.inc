@@ -46,8 +46,8 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
              JOIN candidate c
                ON (s.CandID=c.CandID)
              WHERE 
-               c.Active="Y" AND
-               s.Active="Y" AND
+               c.Active=\'Y\' AND
+               s.Active=\'Y\' AND
                s.ID = :v_sessionid
             ',
             array(

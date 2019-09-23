@@ -47,8 +47,8 @@ class TimepointImagesRowProvisioner extends DBRowProvisioner
                ON (s.CandID=c.CandID)
              WHERE
                s.ID=:v_sessionid AND
-               c.Active="Y" AND
-               s.Active="Y"
+               c.Active=\'Y\' AND
+               s.Active=\'Y\'
             ',
             array(
              'v_sessionid' => $timepoint->getSessionID(),

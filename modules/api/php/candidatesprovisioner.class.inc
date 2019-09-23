@@ -51,14 +51,14 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                ON (s.CenterID = c.RegistrationCenterID)
              LEFT JOIN Project p
                ON (c.ProjectID = p.ProjectID)
-             WHERE c.Active="Y"
+             WHERE c.Active=\'Y\'
             ',
             array()
         );
     }
 
     /**
-     * Creates a new providionner with user specific filter.
+     * Creates a new provisioner with user specific filter.
      *
      * @param \User $user The requesting user
      *

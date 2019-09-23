@@ -67,8 +67,8 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              LEFT JOIN Project project
                ON (c.ProjectID = project.ProjectID)
              WHERE
-               c.Active = "Y" AND
-               s.Active = "Y" AND
+               c.Active = \'Y\' AND
+               s.Active = \'Y\' AND
                project.Name = :v_projectname AND
                f.InsertTime > :v_time
              ORDER BY f.InsertTime ASC
