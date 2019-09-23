@@ -1367,7 +1367,7 @@ StaticElement.defaultProps = {
 
 /**
  * Email element component.
- * Used to displays plain/formatted email input as part of a form.
+ * Used to insert input type "email" for part of a form.
  */
 class EmailElement extends Component {
   constructor(props) {
