@@ -45,32 +45,28 @@ class Dashboard extends React.Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    this.fetchInitializerData();
+    this.fetchInitializerData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
-   * Retrieve data from the dataURL and save it in state.
+   * Retrieve data from the provided URL and save it in state.
+   *
+   * @return {object}
    */
   fetchInitializerData() {
-    fetch(
+    return fetch(
       window.location.origin + '/dashboard/Dashboard', {
           credentials: 'same-origin',
         }
     ).then((response) => response.json())
-        .then(
-            (data) => {
-              this.setState({
-                data: data,
-                isLoaded: true,
-              });
-            })
-        .catch(
-            (error) => {
-              console.error(error);
-              this.setState({
-                isLoaded: true,
-              });
-            });
+      .then((data) => {
+        this.setState({data: data});
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({error: true});
+      });
   }
 
   /**
