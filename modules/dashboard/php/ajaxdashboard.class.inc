@@ -108,8 +108,8 @@ class AjaxDashboard extends \NDB_Page
         $documentRepositoryData = array();
         $behaviouralFeedbackData = array();
 
-        $DB     = \Database::singleton();
-        $user   = \User::singleton();
+        $DB     = \NDB_Factory::singleton()->database();
+        $user   = \NDB_Factory::singleton()->user();
         $config = \NDB_Config::singleton();
         $site   = $user->getSiteNames();
 
@@ -406,7 +406,7 @@ class AjaxDashboard extends \NDB_Page
      */
     function getTotalRecruitment()
     {
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human' 
@@ -425,7 +425,7 @@ class AjaxDashboard extends \NDB_Page
      */
     function getTotalRecruitmentByProject($projectID)
     {
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*)
              FROM candidate c
@@ -447,7 +447,7 @@ class AjaxDashboard extends \NDB_Page
      */
     function getTotalSex(string $sex) : int
     {
-        $DB    = \Database::singleton();
+        $DB    = \NDB_Factory::singleton()->database();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
@@ -469,7 +469,7 @@ class AjaxDashboard extends \NDB_Page
      */
     function getTotalSexByProject(string $sex, int $projectID) : int
     {
-        $DB    = \Database::singleton();
+        $DB    = \NDB_Factory::singleton()->database();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
