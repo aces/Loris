@@ -4,9 +4,9 @@
  *
  * PHP Version 7
  *
- * @category Loris
+ * @category LORIS_Module
  * @package  Create_Timepoint
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -14,16 +14,15 @@ namespace LORIS\create_timepoint;
 /**
  * The forms for the new profile menu
  *
- * @category Loris
+ * @category LORIS_Module
  * @package  Create_Timepoint
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 class Create_Timepoint extends \NDB_Form
 {
     public $skipTemplate = true; // stops from looking for a smarty template
-    public $AjaxModule   = true;
     protected $candidate;
     /**
      * Determine whether the user has permission to view this page

@@ -69,7 +69,8 @@ class CreateTimepoint extends React.Component {
    */
   componentDidMount() {
     this.collectParams();
-    this.fetchInitializerData();
+    this.fetchInitializerData()
+      .then(() => this.setState({isLoaded: true}));
   }
   /**
    * Retrieve params from the browser URL and save it in state.
@@ -85,77 +86,56 @@ class CreateTimepoint extends React.Component {
     this.setState(state);
   }
   /**
-   * Used with sending POST data to the server.
-   * @param {object} json - json object converted for POST.
-   * @return {string} send in POST to server.
-   */
-  urlSearchParams(json) {
-    return Object.keys(json).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
-    }).join('&');
-  }
-  /**
    * Retrieve data from the provided URL and save it in state.
+   *
+   * @return {object}
    */
   fetchInitializerData() {
     const state = Object.assign({}, this.state);
-    let url = new URL(this.props.dataURL);
-    const params = {
-      candID: state.url.params.candID,
-      identifier: state.url.params.identifier,
-    };
-    url.search = new URLSearchParams(params).toString();
-    fetch(
-      url.toString(), {
-        method: 'GET',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-        },
+    return fetch(
+      window.location.origin +
+      '/create_timepoint/CreateTimepoint?candID=' + state.url.params.candID +
+      '&identifier=' + state.url.params.identifier,
+      {
+        credentials: 'same-origin',
       }
     ).then((response) => response.json())
-      .then(
-        (data) => {
-          // Populate the form errors.
-          if (data.errors) {
-            const state = Object.assign({}, this.state);
-            state.errors = data.errors;
-            this.setState(state);
-          }
-          // Populate the select options for subproject.
-          if (data.hasOwnProperty('subproject')) {
-            const state = Object.assign({}, this.state);
-            state.form.options.subproject = data.subproject;
-            state.form.value.subproject = null;
-            state.form.display.subproject = true;
-            this.setState(state);
-          }
-          // Populate the select options for psc.
-          if (data.psc) {
-            const state = Object.assign({}, this.state);
-            state.form.options.psc = data.psc;
-            state.form.value.psc = null;
-            state.form.display.psc = true;
-            this.setState(state);
-          }
-          // Populate the select options for visit.
-          if (data.visit) {
-            // Store the (complete) visit selection information.
-            const state = Object.assign({}, this.state);
-            state.storage.visit = data.visit;
-            this.setState(state);
-            // Handle visit selection.
-            this.handleVisitLabel();
-          }
-          // Display form to user.
-          this.setState({isLoaded: true});
-        }).catch((error) => {
-      const state = Object.assign({}, this.state);
-      state.errors = [{message: error}];
-      state.isLoaded = true;
-      this.setState(state);
+      .then((data) => {
+        // Populate the form errors.
+        if (data.errors) {
+          const state = Object.assign({}, this.state);
+          state.errors = data.errors;
+          this.setState(state);
+        }
+        // Populate the select options for subproject.
+        if (data.hasOwnProperty('subproject')) {
+          const state = Object.assign({}, this.state);
+          state.form.options.subproject = data.subproject;
+          state.form.value.subproject = null;
+          state.form.display.subproject = true;
+          this.setState(state);
+        }
+        // Populate the select options for psc.
+        if (data.psc) {
+          const state = Object.assign({}, this.state);
+          state.form.options.psc = data.psc;
+          state.form.value.psc = null;
+          state.form.display.psc = true;
+          this.setState(state);
+        }
+        // Populate the select options for visit.
+        if (data.visit) {
+          // Store the (complete) visit selection information.
+          const state = Object.assign({}, this.state);
+          state.storage.visit = data.visit;
+          this.setState(state);
+          // Handle visit selection.
+          this.handleVisitLabel();
+        }
+      }).catch((error) => {
+        const state = Object.assign({}, this.state);
+        state.errors = [{message: error}];
+        this.setState(state);
     });
   }
   /**
@@ -188,7 +168,6 @@ class CreateTimepoint extends React.Component {
       this.handleVisitLabel();
     }
   }
-
   /**
    * Handle form submission
    * @param {object} e - Form submission event
@@ -196,39 +175,40 @@ class CreateTimepoint extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     const state = Object.assign({}, this.state);
-    const send = this.urlSearchParams({
-      candID: state.url.params.candID,
-      identifier: state.url.params.identifier,
-      subproject: state.form.value.subproject,
-      psc: state.form.value.psc,
-      visit: state.form.value.visit,
-    });
     fetch(
-      this.props.dataURL, {
+      window.location.origin + '/create_timepoint/CreateTimepoint', {
         method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
+        credentials: 'same-origin',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.status === 'error') {
-            if (data.errors) {
-              // data for the form errors.
-              this.setState({errors: data.errors});
-            }
-          } else {
-            window.location.replace(
-              window.origin + '/' + this.state.url.params.candID
-            );
+        body: JSON.stringify({
+          candID: state.url.params.candID,
+          identifier: state.url.params.identifier,
+          subproject: state.form.value.subproject,
+          psc: state.form.value.psc,
+          visit: state.form.value.visit,
+        }),
+      })
+      .then((response) => {
+        return response.ok ? {} : response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.status === 'error') {
+          if (data.errors) {
+            // data for the form errors.
+            this.setState({errors: data.errors});
           }
-        });
+        } else {
+          window.location.replace(
+            window.origin + '/' + this.state.url.params.candID
+          );
+        }
+      })
+      .catch((error) => {
+        console.error('Error! ' + error);
+      });
   }
   /**
    * @return {DOMRect}

@@ -14,11 +14,15 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\create_timepoint;
+namespace LORIS\create_timepoint\endpoints;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Api\Endpoint;
+use \LORIS\Middleware\ETagCalculator;
+
 /**
- * The NDB_Page for the POST requests.
+ * The NDB_Filter_Form_Create_Timepoint for the POST requests.
  *
  * @category Loris
  * @package  Create_Timepoint
@@ -26,7 +30,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxTimepoint extends \NDB_Page
+class Timepoint extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
     /**
@@ -149,7 +153,7 @@ class AjaxTimepoint extends \NDB_Page
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values = $request->getParsedBody();
+        $values = json_decode((string) $request->getBody(), true);
         // Validate POST data.
         $values = $this->_validate($values);
         // User permission verification.
@@ -276,5 +280,55 @@ class AjaxTimepoint extends \NDB_Page
             return $values;
         }
         return $values;
+    }
+
+    /**
+     * Returns true if the user has permission to access
+     * the Genomic Browser module
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
+     * An ETagCalculator provides the ability to calculate an ETag for
+     * an incoming HTTP request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return array(
+            'GET',
+            'POST',
+        );
+    }
+
+    /**
+     * Return a list of LORIS API versions which this endpoint
+     * supports.
+     *
+     * @return string[] LORIS API Versions
+     */
+    protected function supportedVersions(): array
+    {
+        return array('unknown');
     }
 }
