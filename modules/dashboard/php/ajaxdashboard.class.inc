@@ -101,11 +101,11 @@ class AjaxDashboard extends \NDB_Page
     function initializeSetup(array $values) : array
     {
         // data for panels.
-        $welcomeData            = array();
-        $recruitmentData        = array();
-        $studyProgressionData   = array();
-        $myTasksData            = array();
-        $documentRepositoryData = array();
+        $welcomeData             = array();
+        $recruitmentData         = array();
+        $studyProgressionData    = array();
+        $myTasksData             = array();
+        $documentRepositoryData  = array();
         $behaviouralFeedbackData = array();
 
         $factory = \NDB_Factory::singleton();
