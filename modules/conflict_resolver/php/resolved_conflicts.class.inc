@@ -70,7 +70,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
-            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            LEFT JOIN Project ON (session.ProjectID=Project.ProjectID )
             WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();

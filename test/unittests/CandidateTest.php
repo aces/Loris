@@ -40,7 +40,7 @@ class CandidateTest extends TestCase
            'Active'       => 'Y',
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
-           'ProjectID'    => 1,
+           'RegistrationProjectID'    => 1,
            'ProjectTitle' => '',
           );
 
@@ -281,7 +281,7 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(
-            $this->_candidateInfo['ProjectID'],
+            $this->_candidateInfo['RegistrationProjectID'],
             $this->_candidate->getProjectID()
         );
     }
@@ -298,8 +298,8 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn($this->_listOfProjects);
+            ->method('pselectColWithIndexKey')
+            ->willReturn(array("1"=>'testProject'));
        
         $this->assertEquals("testProject", $this->_candidate->getProjectTitle());
     }

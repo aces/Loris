@@ -125,7 +125,7 @@ class Quality_Control extends \NDB_Menu_Filter
                " ) THEN 'In DICOM'".
               " ELSE 'Missing'
            END as tarchive_loc,
-           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
+           (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project,".
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
             " CASE
