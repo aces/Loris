@@ -409,7 +409,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @param webDriverElement $clickable The element to be clicked
      *
-     * @return void Once the element is stale.
+     * @return ?bool
      */
     public function clickToLoadNewPage($clickable)
     {
@@ -431,7 +431,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @param string $url The url to get.
      *
-     * @return void
+     * @return ?\RemoteWebDriver
      */
     function safeGet($url)
     {

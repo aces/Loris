@@ -167,13 +167,15 @@ class NDB_Form extends NDB_Page
      * Processes the values and saves to database. Usually overridden
      * by form instance.
      *
+     * NOTE Maybe this should be an abstract function?
+     *
      * @param array $values form values
      *
      * @return void
      */
     function _process($values)
     {
-        return true;
+        return;
     }
 
     /**
@@ -192,6 +194,31 @@ class NDB_Form extends NDB_Page
 
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+    /**
+     * Converts this form to an array with field options for the form
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return array
+     */
+    function toArray(): array
+    {
+        return array(
+                'fieldOptions' => $this->fieldOptions,
+               );
+    }
+
+    /**
+     * Converts the results of this form to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the options to send to the form
+     */
+    function toJSON(): string
+    {
+        return json_encode($this->toArray());
     }
 }
 

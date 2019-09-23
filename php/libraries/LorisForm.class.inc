@@ -1196,7 +1196,7 @@ class LorisForm
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
-     * @return true if all registered rules passed
+     * @return bool true if all registered rules passed
      */
     function validate()
     {
@@ -2070,7 +2070,14 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $arr[$key] = $_REQUEST[$key];
+                    $value = $_REQUEST[$key];
+                    // If the value is coming from a React DateElement with input
+                    // type='month' and is missing the dd part, convert month-year
+                    // format to a valid SQL format (i.e. yyyy-mm-dd)
+                    if (strlen($value) === 7 && strpos(strtolower($key), 'date')) {
+                        $value = sprintf("%s-01", $value);
+                    }
+                    $arr[$key] = $value;
                     continue;
                 }
             } else {
@@ -2212,13 +2219,9 @@ class LorisForm
      *
      * @return string the error message of the element
      */
-    function getElementError($el)
+    function getElementError($el): string
     {
-        if (isset($this->errors[$el])) {
-            return $this->errors[$el];
-        }
-
-        return;
+        return $this->errors[$el] ?? '';
     }
 
     /**
@@ -2305,7 +2308,7 @@ class LorisFormFileElement extends LorisFormElement
     /**
      * Returns true if the file was uploaded by the user.
      *
-     * @return true if the file was uploaded by the user.
+     * @return bool true if the file was uploaded by the user.
      */
     function isUploadedFile()
     {
@@ -2319,7 +2322,7 @@ class LorisFormFileElement extends LorisFormElement
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return void
+     * @return bool
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {

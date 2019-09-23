@@ -119,16 +119,16 @@ ORDER BY ID
                 'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
-                  pr.ProjectID as "project",
-                  pr.SubprojectID as "subproject"
+                  psr.ProjectID as "project",
+                  psr.SubprojectID as "subproject"
                  FROM
                   visit v
                  JOIN
                   visit_project_subproject_rel vps
                  ON v.VisitID = vps.VisitID
                  JOIN 
-                  project_rel pr 
-                 ON vps.ProjectSubprojectRelID = pr.ProjectSubprojectRelID
+                  project_subproject_rel psr 
+                 ON vps.ProjectSubprojectRelID = psr.ProjectSubprojectRelID
                 ORDER BY ID, project, subproject
                 ',
                 array()

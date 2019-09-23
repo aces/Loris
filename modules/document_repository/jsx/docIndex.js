@@ -21,6 +21,7 @@ class DocIndex extends React.Component {
       checked: false,
     };
     // Bind component instance to custom methods
+    this.handleCheck = this.handleCheck.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.newCategoryState = this.newCategoryState.bind(this);
@@ -32,112 +33,111 @@ class DocIndex extends React.Component {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
-  handleCheck() {
-    this.setState({checked: true});
+
+  handleCheck(formElement, value) {
+    const parentNode = this.state.parentNode;
+    parentNode.shift(['0', 'Root']);
+    this.setState({
+      checked: value,
+      parentNode: parentNode,
+    });
     this.dataByNode(0);
   }
-// function change tableData;
+
+  // function change tableData;
   dataByNode(id) {
-    return fetch(loris.BaseURL+'/document_repository/docTree/'+id)
-      .then((response)=> response.json())
-      .then((myJson)=> {
+    return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
+      .then((response) => response.json())
+      .then((myJson) => {
         let allNodesArray = [];
         let nodesArray = [];
         allNodesArray = myJson['allsubcategories'];
-        allNodesArray.forEach((element)=>{
+        allNodesArray.forEach((element) => {
           nodesArray.push(Object.values(element).toString());
         });
         let filterData = this.state.data.Data;
-       console.log(this.state.data.Data);
-        let fillData= filterData.filter((data) => {
+        let fillData = filterData.filter((data) => {
           return Object.values(nodesArray).includes(data[10]);
         });
-        console.log(fillData);
         if (id > 0) {
-           console.log(id);
-           this.setState({checked: false});
-           console.log(this.state.checked);
+          this.setState({checked: false});
         }
-        this.setState({tableData: fillData,
-                      childrenNode: myJson['subcategories'],
-                     parentNode: myJson['parentcategory'],
+        this.setState({
+          tableData: fillData,
+          childrenNode: myJson['subcategories'],
+          parentNode: myJson['parentcategory'],
         });
       });
   }
-
 
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
- this.setState({data: data, tableData: data.Data});
- }).then(() => {
-  this.dataByNode(0);
- })
-      .then(()=>this.setState({newCategory: false}))
+        this.setState({data: data, tableData: data.Data});
+      }).then(() => {
+        this.dataByNode(0);
+      })
+      .then(() => this.setState({newCategory: false}))
       .catch((error) => {
         this.setState({error: true});
-    });
+      });
   }
 
   handle(obj) {
     this.dataByNode(obj[0]);
   }
+
   newCategoryState() {
     this.setState({newCategory: true});
   }
-/**
- * Modify behaviour of specified column cells in the Data Table component
- * @param {string} column - column name
- * @param {string} cell - cell content
- * @param {arrray} row - array of cell contents for a specific row
- * @return {*} a formated table cell for a given column
- */
- formatColumn(column, cell, row) {
- let result = <td>{cell}</td>;
-   switch (column) {
-   case 'File Name':
-   let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-   result = (
-     <td>
-       <a href={downloadURL} target="_blank" download={row['File Name']}>
-         {cell}
-       </a>
-     </td>
-    );
-      break;
-    case 'Edit':
-    let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
-    result = <td><a href={editURL}>Edit</a></td>;
-      break;
-    case 'Delete File':
-    let id = row['Edit'];
-    function click() {
-      swal({
-        title: 'Are you sure?',
-        text: 'Your will not be able to recover this file!',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonClass: 'btn-danger',
-        confirmButtonText: 'Yes, delete it!',
-        closeOnConfirm: false,
-      },
-      function() {
-        let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
-          fetch(deleteurl, {
-          method: 'DELETE',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          }).then((resp) => resp.json())
-            .then(()=>{
-              location.reload();
-              swal('delete Successful!', '', 'success');
-            });
-      }
-      );
-    }
-    result = <td><a onClick={click}>Delete</a></td>;
-      break;
+
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {arrray} row - array of cell contents for a specific row
+   * @return {*} a formated table cell for a given column
+   */
+  formatColumn(column, cell, row) {
+    let result = <td>{cell}</td>;
+    switch (column) {
+      case 'File Name':
+        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
+        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        break;
+      case 'Edit':
+        let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
+        result = <td><a href={editURL}>Edit</a></td>;
+        break;
+      case 'Delete File':
+        let id = row['Edit'];
+        function click() {
+          swal({
+            title: 'Are you sure?',
+            text: 'Your will not be able to recover this file!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Yes, delete it!',
+            closeOnConfirm: false,
+          },
+          function() {
+            let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
+              fetch(deleteurl, {
+              method: 'DELETE',
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => resp.json())
+                .then(()=>{
+                  location.reload();
+                  swal('delete Successful!', '', 'success');
+                });
+          }
+          );
+        }
+        result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
+        break;
     }
     return result;
   }
@@ -167,7 +167,7 @@ class DocIndex extends React.Component {
         name: 'fileTypes',
         type: 'select',
         options: options.fileTypes,
-     }},
+      }},
       {label: 'Instrument', show: false},
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
@@ -182,7 +182,7 @@ class DocIndex extends React.Component {
         name: 'Comments',
         type: 'text',
       }},
-      {label: 'Date Upload', show: false},
+      {label: 'Date Uploaded', show: true},
       {label: 'Edit', show: true},
       {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
       {label: 'File Category', show: false},
@@ -195,53 +195,71 @@ class DocIndex extends React.Component {
       {id: 'upload', label: 'Upload'},
       {id: 'category', label: 'Category'},
     ];
- const treeTable = (this.state.tableData.length === 0) ? (
-         <NullFilterableDataTable>
-           <div>
-           <input type="checkbox" onChange={()=>this.handleCheck()} defaultChecked={this.state.checked} checked={this.state.checked}/> Global Selection Filter
-           <FilterableDataTable
-            name = "document"
-            data={this.state.tableData}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            folder={
-            <ChildTree
-              action={this.handle}
-              childrenNode = {this.state.childrenNode}
-            />}
-          >
-          <div>
-            <ParentTree
-              action={this.handle}
-              parentNode = {this.state.parentNode}
-            />
-         </div>
-         </FilterableDataTable>
-          </div>
-         </NullFilterableDataTable>
-          ) : (
+    const treeTable = (Object.keys(this.state.tableData.length).length === 0
+                        && Object.keys(this.state.childrenNode).length === 0) ? (
+      <NullFilterableDataTable>
         <div>
-          <input type="checkbox" onChange={()=>this.handleCheck()} defaultChecked={this.state.checked} checked={this.state.checked}/> Global Selection Filter
+          <CheckboxElement
+            name="globalSelection"
+            label="Global Selection Filter"
+            id="globalSelection"
+            value={this.state.checked}
+            elementClass='checkbox-inline'
+            onUserInput={this.handleCheck}
+          />
           <FilterableDataTable
             name = "document"
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
             folder={
-            <ChildTree
-              action={this.handle}
-              childrenNode = {this.state.childrenNode}
-            />}
+              <ChildTree
+                action={this.handle}
+                childrenNode={this.state.childrenNode}
+              />
+            }
           >
-          <div>
-            <ParentTree
-              action={this.handle}
-              parentNode = {this.state.parentNode}
-            />
-         </div>
-         </FilterableDataTable>
-       </div>
-          );
+            <div>
+              <ParentTree
+                action={this.handle}
+                parentNode={this.state.parentNode}
+              />
+            </div>
+          </FilterableDataTable>
+        </div>
+      </NullFilterableDataTable>
+    ) : (
+      <div>
+        <CheckboxElement
+          name="globalSelection"
+          label="Global Selection Filter"
+          id="globalSelection"
+          value={this.state.checked}
+          elementClass='checkbox-inline'
+          onUserInput={this.handleCheck}
+        />
+        <FilterableDataTable
+          name = "document"
+          data={this.state.tableData}
+          fields={fields}
+          getFormattedCell={this.formatColumn}
+          nullTableShow={true}
+          folder={
+          <ChildTree
+            action={this.handle}
+            childrenNode={this.state.childrenNode}
+          />}
+        >
+        <div>
+          <ParentTree
+            action={this.handle}
+            parentNode={this.state.parentNode}
+          />
+        </div>
+        </FilterableDataTable>
+      </div>
+    );
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>

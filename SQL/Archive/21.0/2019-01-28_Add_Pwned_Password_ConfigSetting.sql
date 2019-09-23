@@ -28,4 +28,4 @@ INSERT INTO ConfigSettings
   WHERE
     Name="study";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'true' FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";

@@ -298,12 +298,12 @@ class Stats_MRI extends \NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
 
-        $scans_selected =array();
+        $scans_selected = array();
         if ($_REQUEST['Scans'] ?? '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
         if (empty($scans_selected_input)) {
-            $scans_selected =$scan_types;
+            $scans_selected = $scan_types ?? array();
         } else {
             foreach ($scans_selected_input as $key => $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
@@ -312,7 +312,7 @@ class Stats_MRI extends \NDB_Form
 
         $Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
-        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
+        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected ?? array());
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;

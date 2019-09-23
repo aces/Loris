@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This parses all of the instruments and generates a staging file (ip_output.txt)
@@ -57,9 +58,9 @@ foreach ($files AS $file) {
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 
-    //Some instruments ought not be parsed with the quickform_parser
+    //Some instruments ought not be parsed with the lorisform_parser
     if ((in_array($obj->testName, $instrumentsToSkip))) {
-        echo "quickform_parser will    skip file {$file}\n";
+        echo "lorisform_parser will    skip file {$file}\n";
         continue;
     }
 

@@ -115,16 +115,18 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $record = basename($request->getUri()->getPath());
+            $name   = \User::singleton()->getUsername();
+            $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
-                $file = __DIR__ . "/../user_uploads/$record";
+                $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
-                ->withHeader(
-                    'Content-Disposition',
-                    'attachment; filename=' . basename($file)
-                )
-                ->withHeader('Content-Transfer-Encoding', 'Binary')
-                ->withBody(new \LORIS\Http\StringStream(readfile($file)));
+                  ->withHeader('Content-Type', 'application/octet-stream')
+                  ->withHeader(
+                      'Content-Disposition',
+                      'attachment; filename=' . basename($file)
+                  )
+                  ->withStatus(200)
+                  ->withBody(new \LORIS\Http\FileStream($file));
 
             }
             return (new \LORIS\Http\Response())
@@ -278,11 +280,12 @@ class Files extends \NDB_Page
     /**
     * Handler of parsing category
     *
-    * @param string $value the value
+    * @param array $value the value
     *
-    * @return array
+    * @return array An array containing the category name and ID for file
+    *               categories in the document repository.
     */
-    function parseCategory($value): array
+    function parseCategory(array $value): array
     {
         $id           = $value['id'];
         $depth        = 0;
@@ -290,12 +293,18 @@ class Files extends \NDB_Page
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth       += 1;
-                $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
+                $depth    += 1;
+                $parent_id = $value['parent_id'];
+                $query     = "SELECT * FROM document_repository_categories".
                             " WHERE id=:parent_id";
-                $where        = array('parent_id' => $parent_id);
-                $value        = $DB->pselectRow($query, $where);
+                $where     = array('parent_id' => $parent_id);
+                $value     = $DB->pselectRow($query, $where);
+                if (is_null($value)) {
+                    throw new \LorisException(
+                        'No parent category found for specified parentID. '
+                        . 'Cannot parse categories.'
+                    );
+                }
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
@@ -362,17 +371,17 @@ class Files extends \NDB_Page
             "SELECT CenterID FROM psc WHERE Name=:name",
             array('name' => $site)
         );
-        $instrument = $req['instrument'] !== '' ? $req['instrument'] : null;
-        $pscid      = $req['pscid']      !== '' ? $req['pscid'] : null;
-        $visit      = $req['visitLabel'] !== '' ? $req['visitLabel'] : null;
-        $comments   = $req['comments']   !== '' ? $req['comments'] : null;
-        $version    = $req['version']    !== '' ? $req['version'] : null;
+        $instrument = !empty($req['instrument']) ? $req['instrument'] : null;
+        $pscid      = !empty($req['pscid'])      ? $req['pscid']      : null;
+        $visit      = !empty($req['visitLabel']) ? $req['visitLabel'] : null;
+        $comments   = !empty($req['comments'])   ? $req['comments']   : null;
+        $version    = !empty($req['version'])    ? $req['version']    : null;
 
         $uploadedFile = $uploadedFiles['file'];
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
         $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = "$base/modules/document_repository/user_uploads/";
+        $uploadPath   = "$base/modules/document_repository/user_uploads/$name/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
@@ -380,7 +389,7 @@ class Files extends \NDB_Page
                 "'Category' parameter must be a positive integer."
             );
         }
-        // Check to see if $fullPath is writable. If not, throw an error. If it
+        // Check to see if $uploadPath is writable. If not, throw an error. If it
         // doesn't exist, create an uploads folder for the logged-in user.
         if (!is_writable($uploadPath)) {
             if (file_exists($uploadPath)) {
@@ -390,7 +399,7 @@ class Files extends \NDB_Page
             }
             if (!mkdir($uploadPath, 0770)) {
                 throw new \LorisException(
-                    "User can't make a directory."
+                    "Cannot create directory $uploadPath."
                 );
             }
         }
@@ -400,7 +409,7 @@ class Files extends \NDB_Page
         ) {
                 $uploadedFile->moveTo($uploadPath.$fileName);
 
-                $success = $DB->insert(
+                $DB->insert(
                     'document_repository',
                     array(
                      'File_category' => $category,

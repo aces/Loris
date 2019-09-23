@@ -113,9 +113,6 @@ class DirectDataEntryMainPage
                 )
             );
         }
-        if ($this->Subtest === array()) {
-            $this->Subtest = "";
-        }
 
         $totalPages        = $DB->pselectOne(
             "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
@@ -372,7 +369,7 @@ class DirectDataEntryMainPage
             $this->tpl_data['complete']  = true;
 
             $this->updateStatus('Complete');
-            $Responses      = $DB->update(
+            $DB->update(
                 $this->TestName,
                 array(
                  'Date_taken' => date('Y-m-d'),
@@ -381,7 +378,7 @@ class DirectDataEntryMainPage
                  'CommentID' => $this->CommentID,
                 )
             );
-            $Responses_flag = $DB->update(
+            $DB->update(
                 'flag',
                 array(
                  'Data_entry'     => 'Complete',

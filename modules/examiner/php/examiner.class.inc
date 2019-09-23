@@ -116,7 +116,6 @@ class Examiner extends \NDB_Menu_Filter_Form
                                'site'        => 'epr.centerID',
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
-        return true;
     }
 
     /**

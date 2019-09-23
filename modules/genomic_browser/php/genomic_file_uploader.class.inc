@@ -143,8 +143,6 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         $this->tpl_data['upload_allowed'] = $user->hasPermission(
             'genomic_data_manager'
         );
-
-        return true;
     }
 
     /**

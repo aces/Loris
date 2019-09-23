@@ -9,6 +9,8 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
+INSERT INTO `Project` (Name) VALUES ('loris');
+
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
@@ -23,12 +25,14 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_rel` (
+CREATE TABLE `project_subproject_rel` (
   `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(2) NOT NULL,
-  `SubprojectID` int(2) NOT NULL,
+  `SubprojectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ProjectSubprojectRelID`),
-  CONSTRAINT UK_project_subproject_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID)
+  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
+  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -164,7 +168,7 @@ CREATE TABLE `session` (
   `CenterID` integer unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(11) DEFAULT NULL,
+  `SubprojectID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
@@ -197,7 +201,8 @@ CREATE TABLE `session` (
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (
@@ -578,6 +583,7 @@ CREATE TABLE `mri_protocol` (
   `zstep_max` DECIMAL(9,4) DEFAULT NULL,
   `time_min` int(4) DEFAULT NULL,
   `time_max` int(4) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -796,6 +802,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
+  `image_type` varchar(255) default NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -880,6 +887,7 @@ CREATE TABLE `notification_spool` (
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
+  `Active` enum('Y', 'N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),
@@ -1980,7 +1988,7 @@ CREATE TABLE `visit_project_subproject_rel` (
   CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
-    REFERENCES `project_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status

@@ -41,7 +41,12 @@ class Issue extends \NDB_Form
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
-            && !$user->hasPermission('issue_tracker_reporter')
+            && !$user->hasAnyPermission(
+                array(
+                 'issue_tracker_reporter',
+                 'issue_tracker_developer',
+                )
+            )
         ) {
             header("HTTP/1.1 403 Forbidden");
         }
@@ -61,17 +66,6 @@ class Issue extends \NDB_Form
             $deps,
             [$baseURL . "/issue_tracker/css/issue_tracker.css"]
         );
-    }
-
-    /**
-    * Gets control panel
-    *
-    * @return string ($controlPanel)
-    */
-    function getControlPanel()
-    {
-        $controlPanel = new issue_tracker_ControlPanel($this->issueID);
-        return $controlPanel->display();
     }
 
     /**
@@ -102,23 +96,19 @@ class Issue extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $db      = \Database::singleton();
         $issueID = $this->issueID;
         if (!$issueID) {
             return true;
         }
-        $issueData = $db->pselectRow(
+        $issueData = \Database::singleton()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
-        if (in_array($issueData['centerID'], $user->getData('CenterIDs'))
+        return (is_null($issueData)
+            || in_array($issueData['centerID'], $user->getData('CenterIDs'))
             || ($user->hasPermission('access_all_profiles'))
             || (!empty($issueData['centerID']))
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        );
     }
     /**
      * Handle the incoming request for an issue. This extracts URLs of the form
@@ -131,8 +121,14 @@ class Issue extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->issueID = $request->getQueryParams()['issueID'];
-        if (empty($this->issueID)) {
+        $results = array();
+        preg_match(
+            '#/issue/([0-9]+|new)$#',
+            $request->getURI()->getPath(),
+            $results
+        );
+        $this->issueID = $results[1] ?? null;
+        if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
             return new \Loris\Http\Error($request, 404, "Issue not found");

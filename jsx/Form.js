@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
+TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -472,13 +472,26 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -508,7 +521,6 @@ SelectElement.propTypes = {
     PropTypes.array,
   ]),
   id: PropTypes.string,
-  class: PropTypes.string,
   multiple: PropTypes.bool,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -521,10 +533,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: '',
   value: undefined,
   id: null,
-  class: '',
   multiple: false,
   disabled: false,
   required: false,
@@ -914,13 +924,27 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <TextboxElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <input
             type="text"
             className="form-control"
@@ -953,7 +977,6 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: '',
   value: '',
   id: null,
   disabled: false,
@@ -976,8 +999,41 @@ class DateElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    if (!Modernizr.inputtypes.month) {
+      // Check if props minYear and maxYear are valid values if supplied
+      let minYear = this.props.minYear;
+      let maxYear = this.props.maxYear;
+      if (this.props.minYear === '' || this.props.minYear === null) {
+        minYear = '1000';
+      }
+      if (this.props.maxYear === '' || this.props.maxYear === null) {
+        maxYear = '9999';
+      }
+      let monthInputs = $('input[name=' + this.props.name+']');
+      monthInputs.datepicker({
+        dateFormat: 'yy-mm',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: minYear + ':' + maxYear,
+        constrainInput: true,
+        onChangeMonthYear: (y, m, d) => {
+          // Update date in the input field
+          $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+        },
+        onSelect: (dateText, picker) => {
+          this.props.onUserInput(this.props.name, dateText);
+        },
+      });
+      monthInputs.attr('placeholder', 'yyyy-mm');
+      monthInputs.on('keydown paste', (e) => {
+        e.preventDefault();
+      });
+    }
+  }
+
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
   render() {
@@ -990,6 +1046,27 @@ class DateElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    // Handle date format
+    let format = this.props.dateFormat;
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-12-31';
+    if (!format.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-12';
+    }
+
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -998,12 +1075,12 @@ class DateElement extends Component {
         </label>
         <div className="col-sm-9">
           <input
-            type="date"
+            type={inputType}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            min={this.props.minYear}
-            max={this.props.maxYear}
+            min={minFullDate}
+            max={maxFullDate}
             onChange={this.handleChange}
             value={this.props.value || ''}
             required={required}
@@ -1022,6 +1099,7 @@ DateElement.propTypes = {
   id: PropTypes.string,
   maxYear: PropTypes.string,
   minYear: PropTypes.string,
+  dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
@@ -1032,8 +1110,9 @@ DateElement.defaultProps = {
   label: '',
   value: '',
   id: null,
-  maxYear: '9999-12-31',
-  minYear: '1000-01-01',
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
   disabled: false,
   required: false,
   onUserInput: function() {
@@ -1406,6 +1485,37 @@ EmailElement.defaultProps = {
   text: null,
 };
 
+/**
+ * Header element component.
+ * Used to display a header element with specific level (1-6) as part of a form
+ *
+ */
+class HeaderElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    const Tag = 'h' + this.props.headerLevel;
+    return (
+      <div className="row form-group">
+        <Tag className='col-xs-12'>
+          {this.props.text}
+        </Tag>
+      </div>
+    );
+  }
+}
+
+HeaderElement.propTypes = {
+  text: PropTypes.string.isRequired,
+  headerLevel: PropTypes.oneOf([
+    1, 2, 3, 4, 5, 6,
+  ]),
+};
+
+HeaderElement.defaultProps = {
+  headerLevel: 3,
+};
 
 /**
  * Link element component.
@@ -1464,7 +1574,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline col-sm-offset-3';
+    let elementClass = this.props.elementClass;
     let label = null;
 
     // Add required asterix
@@ -1475,7 +1585,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
+      elementClass = this.props.elementClass + ' has-error';
     }
 
     return (
@@ -1507,6 +1617,7 @@ CheckboxElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1515,6 +1626,7 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1645,6 +1757,9 @@ class LorisElement extends Component {
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'header':
+        elementHtml = (<HeaderElement {...elementProps} />);
+        break;
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
@@ -1674,6 +1789,7 @@ window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
@@ -1693,6 +1809,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  HeaderElement,
   LinkElement,
   CheckboxElement,
   ButtonElement,

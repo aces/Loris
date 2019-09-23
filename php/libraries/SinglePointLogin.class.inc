@@ -61,6 +61,12 @@ class SinglePointLogin
         // We store the username requesting the the password reset on the
         // PHP session superglobal so that the password expiry page can
         // trust it.
+        if ($_SERVER['REQUEST_URI'] == "/login/password-expiry/") {
+            // Prevent a loop to the same page if we got here
+            // while on the password expiry page, which can prevent
+            // error messages from being seen.
+            return;
+        }
         $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
         header("HTTP/1.1 303 See Other");
         header("Location: /login/password-expiry/");
@@ -181,7 +187,7 @@ class SinglePointLogin
      * @param string $token The token extracted from the
      *                      Authorization: Bearer header
      *
-     * @return true if the session is valid, false otherwise
+     * @return bool true if the session is valid, false otherwise
      */
     function JWTAuthenticate(string $token): bool
     {
@@ -193,14 +199,12 @@ class SinglePointLogin
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
         $decodedArray    = (array) $decoded;
-        $this->_username
-            = isset($decodedArray['user'])
-                ? $decodedArray['user'] : 'Unknown';
+        $this->_username = $decodedArray['user'] ?? 'Unknown';
         return isset($decodedArray['user'])
             && !$this->accountLocked($decodedArray['user']);
     }
@@ -566,7 +570,7 @@ class SinglePointLogin
          * logging in. This will always be the case in our CI environment.
          * The user should not be disabled in this case.
          */
-        if (is_null($row['Login_timestamp'])) {
+        if (is_null($row) || is_null($row['Login_timestamp'])) {
             return false;
         }
         $last_login = new DateTime($row['Login_timestamp']);

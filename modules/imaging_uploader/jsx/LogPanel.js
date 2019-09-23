@@ -109,7 +109,7 @@ class LogPanel extends Component {
       }
       // If there were no updates to the string of dots, start updating
       if (!this.setServerPolling.dotUpdateInterval) {
-        this.setServerPolling.dotUpdateInterval = setInterval(function() {
+        this.setServerPolling.dotUpdateInterval = setInterval(() => {
           uploadProgress.updateDots();
           this.setState({
             logText: uploadProgress.getProgressText(),
@@ -118,7 +118,7 @@ class LogPanel extends Component {
       }
       // If there were no updates to the animated chars, start updating
       if (!this.setServerPolling.animatedCharInterval) {
-        this.setServerPolling.animatedCharInterval = setInterval(function() {
+        this.setServerPolling.animatedCharInterval = setInterval(() => {
           uploadProgress.updateAnimatedCharIndex();
           this.setState({
             logText: uploadProgress.getProgressText(),

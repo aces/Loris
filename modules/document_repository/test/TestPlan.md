@@ -2,7 +2,7 @@
    [Automation Testing]
 2. Create a category and a sub category.
    [Automation Testing]
-3. Check that the comments for a category are displayed properly. Also check that they can be edited/added.
+3. Check that the comments for a category are displayed properly as a tooltip.
    [Automation Testing]
 4. Upload a file.
    [Manual Testing]
@@ -19,26 +19,24 @@
    [Manual Testing]
 10. Check that if a category contains special characters (e.g. space, dot or comma) it can be expanded.
    [Manual Testing]
-11. Add two files with the same name but with different contents in two different categories. Verify that, when 
-   downloaded, their contents are different.
+11. Add two files with the same name. You should get a 'duplicate file name' error.
    [Manual Testing]
 12. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-13. Upload a file using another user and then update it. Check that “Last updated by” field is updated.
     [Manual Testing]
-14. User A edits a file. User B tries to delete the same file in the meantime. Check that he can't.
+13. User A edits a file. User B tries to delete the same file in the meantime. Check that he can't.
     [Manual Testing]
-15. Check that preference “Receive Document Repository Notifications” works.
+14. Check that preference “Receive Document Repository Notifications” works.
     [Manual Testing]
-16. Check that performance is OK with large number of files.
+15. Check that performance is OK with large number of files.
     [Manual Testing]
-17. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
+16. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
     time one of the following event occurs:
        - Addition, deletion or modification of a file
        - Addition of a category.
     Also check that the www address contained in the notification email is correct.
     [Manual Testing]
-18. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
+17. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
       session.gc_maxlifetime 10800
       max_execution_time  10800
       upload_max_filesize 1020M

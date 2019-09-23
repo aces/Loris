@@ -52,9 +52,11 @@ class LorisElement extends Component {
         if (element.Options.AllowMultiple) {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
+                                       emptyOption={false}
                                        multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
+                                       emptyOption={false}
                                        options={element.Options.Values}/>;
         }
         break;

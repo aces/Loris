@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # This will:
@@ -6,6 +6,8 @@
 #   2. Log the installation in the logs directory
 # This will only install the database components and LORIS config file.
 #
+
+set -euo pipefail
 
 # Must be run interactively.
 if ! test -t 0 -a -t 1 -a -t 2 ; then
@@ -28,6 +30,10 @@ exec 1>$LOGPIPE 2>&1
 CWD=`pwd`
 RootDir=`dirname $CWD`
 
+if [ $UID == "0" ]; then
+    echo "install.sh must not be run as root (but should be run as a user with sudo access.)"
+    exit 1
+fi
 
 echo "LORIS Installation Script starting at $START"
 
@@ -84,7 +90,9 @@ else
     echo ""
     echo "PHP Composer does not appear to be installed. Please install it before running this script."
     echo ""
-    echo "(e.g. curl -sS https://getcomposer.org/installer | php)"
+    echo "(e.g. wget https://getcomposer.org/installer"
+    echo "php installer --install-dir=/usr/local/bin --filename=composer)"
+    echo "while having root permission)";
     exit 2;
 fi
 
@@ -120,7 +128,7 @@ while true; do
 done;
 
 echo ""
-
+projectname=""
 while [ "$projectname" == "" ]; do
         read -p "Enter project name: " projectname
         echo $projectname | tee -a $LOGFILE > /dev/null
@@ -153,6 +161,8 @@ debian=("Debian" "Ubuntu")
 redhat=("Red" "CentOS" "Fedora" "Oracle") 
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
+    mkdir ../modules/document_repository/user_uploads
+    mkdir ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -161,6 +171,8 @@ if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
+    mkdir ../modules/document_repository/user_uploads
+    mkdir ../modules/data_release/user_uploads
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
@@ -197,7 +209,7 @@ echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
     while true; do
-        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
+        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] " yn
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )

@@ -84,15 +84,19 @@ class MediaIndex extends Component {
       result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
       break;
     case 'Edit Metadata':
+      if (!this.props.hasPermission('media_write')) {
+          return;
+      }
       const editButton = (
-        <TriggerableModal title="Edit Media File" label="Edit">
-          <MediaEditForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
-            fetchData={this.fetchData /* this should be passed to onSubmit function
-                   upon refactoring editForm.js*/}
-          />
-        </TriggerableModal>
+            <TriggerableModal title="Edit Media File" label="Edit">
+                    <MediaEditForm
+                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+                /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/
+                fetchData={this.fetchData }
+                    />
+            </TriggerableModal>
       );
       result = <td className={style}>{editButton}</td>;
       break;
@@ -118,7 +122,7 @@ class MediaIndex extends Component {
     * queried columns in _setupVariables() in media.class.inc
     */
     const options = this.state.fieldOptions;
-    const fields = [
+    let fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
         type: 'text',
@@ -167,8 +171,10 @@ class MediaIndex extends Component {
         options: options.hidden,
         hide: !this.props.hasPermission('superUser'),
       }},
-      {label: 'Edit Metadata', show: true},
     ];
+    if (this.props.hasPermission('media_write')) {
+      fields.push({label: 'Edit Metadata', show: true});
+    }
     const tabs = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
