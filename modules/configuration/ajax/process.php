@@ -80,13 +80,14 @@ foreach ($_POST as $key => $value) {
         $keySplit         = explode("-", $key); // e.g. 'add-10' or 'remove-49'
         $action           = $keySplit[0];
         $ConfigSettingsID = $keySplit[1];
+        assert(count($keySplit) == 2);
         if ($action == 'add') {
             // This branch adds a new entry to the Config table.
             if ($value === "") {
                 continue;
             }
             if (isDuplicate($ConfigSettingsID, $value)) {
-                header("HTTP/1.1 303 Duplicate value");
+                http_response_code(400);
                 exit();
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
