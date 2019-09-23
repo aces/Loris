@@ -15,7 +15,7 @@ namespace LORIS\conflict_resolver;
  * table columns and the JSON object properties returned to the frontend.
  *
  * Additionnaly, it implements the DataInstance interface so it can be used by
- * a Dababase Provisioner.
+ * a Database Provisioner.
  *
  * @category Behavioral
  * @package  Main
