@@ -62,7 +62,7 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         );
     }
     /**
-     * Creates a new providionner with user specific filter.
+     * Creates a new provisioner with user-specific filter.
      *
      * @param \User $user The requesting user
      *
