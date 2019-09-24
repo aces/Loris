@@ -43,12 +43,12 @@ class ChartHelper extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -300,9 +300,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
-            'GET',
-        );
+        return array('GET');
     }
 
     /**

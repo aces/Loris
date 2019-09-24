@@ -43,12 +43,12 @@ class Dashboard extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -78,11 +78,11 @@ class Dashboard extends Endpoint implements ETagCalculator
     function initializeSetup() : array
     {
         // data for panels.
-        $welcomeData             = array();
-        $recruitmentData         = array();
-        $studyProgressionData    = array();
-        $myTasksData             = array();
-        $documentRepositoryData  = array();
+        $welcomeData            = array();
+        $recruitmentData        = array();
+        $studyProgressionData   = array();
+        $myTasksData            = array();
+        $documentRepositoryData = array();
         $behaviouralFeedbackData = array();
 
         $factory = \NDB_Factory::singleton();
@@ -454,8 +454,8 @@ class Dashboard extends Endpoint implements ETagCalculator
              WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
              AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
-                'sex' => $sex,
-                'PID' => $projectID,
+             'sex' => $sex,
+             'PID' => $projectID,
             )
         );
         return intVal($total);
@@ -548,9 +548,7 @@ class Dashboard extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
-            'GET',
-        );
+        return array('GET');
     }
 
     /**

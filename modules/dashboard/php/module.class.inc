@@ -46,14 +46,14 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-            case 'Dashboard':
-                $handler = new endpoints\Dashboard();
-                break;
-            case 'ChartHelper':
-                $handler = new endpoints\ChartHelper();
-                break;
-            default:
-                return parent::handle($request);
+        case 'Dashboard':
+            $handler = new endpoints\Dashboard();
+            break;
+        case 'ChartHelper':
+            $handler = new endpoints\ChartHelper();
+            break;
+        default:
+            return parent::handle($request);
         }
         $user = $request->getAttribute('user');
         if (!$handler->_hasAccess($user)) {
