@@ -125,7 +125,7 @@ class Login extends Component {
     const state = Object.assign({}, this.state);
     const url = window.location.origin + '/login/AjaxLogin';
     const send = this.urlSearchParams({
-      login: true,
+      login: 'true',
       command: 'login',
       username: state.form.value.username,
       password: state.form.value.password,
@@ -133,6 +133,9 @@ class Login extends Component {
     fetch(
       url, {
         method: 'POST',
+        mode: 'same-origin',
+        credentials: 'include',
+        redirect: 'follow',
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -176,43 +179,6 @@ class Login extends Component {
     const state = Object.assign({}, this.state);
     state.mode = mode;
     this.setState(state);
-  }
-
-  /**
-   * Handle form submission
-   * @param {object} e - Form submission event
-   */
-  handleSubmit(e) {
-    // const state = Object.assign({}, this.state);
-    const send = this.urlSearchParams({
-      command: 'login',
-    });
-    const url = window.location.origin + '/login/AjaxLogin';
-    fetch(
-      url, {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.status === 'error') {
-            // Populate the form errors.
-            if (data.errors) {
-              console.log('errors');
-            }
-          } else {
-            console.log('success');
-            // this.setState({success: true});
-          }
-        });
   }
 
   /**

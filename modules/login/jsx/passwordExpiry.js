@@ -80,21 +80,20 @@ class PasswordExpired extends Component {
         body: send,
       }
     ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.error) {
-            // error - message.
-            const state = Object.assign({}, this.state);
-            state.form.error.toggle = true;
-            state.form.error.message = data.error;
-            this.setState(state);
-          } else {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
-          }
-        }).catch((error) => {
-      // no error should happen.
-    });
+      .then((data) => {
+        if (data.error) {
+          // error - message.
+          const state = Object.assign({}, this.state);
+          state.form.error.toggle = true;
+          state.form.error.message = data.error;
+          this.setState(state);
+        } else {
+          // success - refresh page and user is logged in.
+          window.location.href = window.location.origin;
+        }
+      }).catch((error) => {
+        // no error should happen.
+      });
   }
 
   /**
