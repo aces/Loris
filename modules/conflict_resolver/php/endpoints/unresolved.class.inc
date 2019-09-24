@@ -12,12 +12,13 @@
  * @link     https://github.com/aces/Loris
  */
 
-namespace LORIS\conflict_resolver;
+namespace LORIS\conflict_resolver\Endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
+use \LORIS\conflict_resolver\Provisioners\UnresolvedProvisioner;
 
 /**
  * Menu_Filter_Form_Conflicts_Resolver Class

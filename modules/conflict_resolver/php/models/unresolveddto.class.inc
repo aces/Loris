@@ -8,7 +8,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-namespace LORIS\conflict_resolver;
+
+namespace LORIS\conflict_resolver\Models;
+
 /**
  * A UnresolvedDTO represents an unresolved conflict in the conflict
  * resolver module. It is doing the mapping between the unresolved_conflicts

@@ -210,7 +210,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->executescript(
             "return document.querySelector('$row').textContent"
         );
-        // 4 means there are 4 records under this site.
         $this->assertContains($records, $bodyText);
         //test clear filter
         $btn = self::$clearFilter;

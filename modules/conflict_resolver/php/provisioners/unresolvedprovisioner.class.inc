@@ -9,7 +9,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-namespace LORIS\conflict_resolver;
+namespace LORIS\conflict_resolver\Provisioners;
 
 /**
  * Conflict Resolver module
@@ -53,7 +53,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
              WHERE session.Active="Y" AND candidate.Active ="Y"
             ',
             array(),
-            '\LORIS\conflict_resolver\UnresolvedDTO'
+            '\LORIS\conflict_resolver\Models\UnresolvedDTO'
         );
     }
     /**

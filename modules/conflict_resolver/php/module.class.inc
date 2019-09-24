@@ -47,10 +47,10 @@ class Module extends \Module
         $path = trim($request->getURI()->getPath(), "/");
         switch ($path) {
         case 'unresolved':
-            $handler = new Unresolved();
+            $handler = new Endpoints\Unresolved();
             break;
         case 'resolved':
-            $handler = new Resolved();
+            $handler = new Endpoints\Resolved();
             break;
         default:
             return parent::handle($request);
