@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
-for i in `ls php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* htdocs/*.php htdocs/*/*.php`;
+for i in `git ls-files |egrep '.class.inc$|.php$'`
 do
   php -l $i >/dev/null || exit $?;
 done
