@@ -113,16 +113,16 @@ class Timepoint extends Endpoint implements ETagCalculator
         $visit_options      = array();
         $visitLabelSettings = $config->getSetting('visitLabel');
         foreach (
-            \Utility::toArray($visitLabelSettings) as $visitLabel
+            \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
         ) {
             if (!empty($values['subproject'])) {
-                $visitLabel   = \Utility::toArray($visitLabel)[0];
+                $visitLabel   = \Utility::associativeToNumericArray($visitLabel)[0];
                 $labelOptions = array();
-                $items        = \Utility::toArray(
+                $items        = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
-                    $item = \Utility::toArray($item)[0];
+                    $item = \Utility::associativeToNumericArray($item)[0];
                     $labelOptions[$item['@']['value']] = $item['#'];
                 }
                 $visit_options[$visitLabel['@']['subprojectID']]
@@ -270,8 +270,7 @@ class Timepoint extends Endpoint implements ETagCalculator
             isset($values['identifier']) ?
                 intval($values['identifier']) : null
         );
-        if (!$user->hasPermission('data_entry')
-            && !(in_array(
+        if (!(in_array(
                 intval($candidate->getData('RegistrationCenterID')),
                 $user->getData('CenterIDs'),
                 true
@@ -293,7 +292,9 @@ class Timepoint extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return true;
+        return (
+            $user->hasPermission('data_entry')
+        );
     }
 
     /**
