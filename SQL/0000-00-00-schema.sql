@@ -1,4 +1,154 @@
 -- ********************************
+-- DROP TABLE (ORDER MATTERS)
+-- ********************************
+DROP TABLE IF EXISTS `candidate_consent_rel`;
+DROP TABLE IF EXISTS `consent`;
+DROP TABLE IF EXISTS `candidate_consent_history`;
+
+DROP TABLE IF EXISTS `acknowledgements`;
+
+DROP TABLE IF EXISTS `data_release_permissions`;
+DROP TABLE IF EXISTS `data_release`;
+
+DROP TABLE IF EXISTS `ExternalLinks`;
+DROP TABLE IF EXISTS `ExternalLinkTypes`;
+
+DROP TABLE IF EXISTS `feedback_mri_comments`;
+DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
+DROP TABLE IF EXISTS `feedback_mri_comment_types`;
+DROP TABLE IF EXISTS `feedback_bvl_entry`;
+DROP TABLE IF EXISTS `feedback_bvl_thread`;
+DROP TABLE IF EXISTS `feedback_bvl_type`;
+
+DROP TABLE IF EXISTS `genomic_cpg`;
+DROP TABLE IF EXISTS `genomic_cpg_annotation`;
+DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
+DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
+DROP TABLE IF EXISTS `genomic_files`;
+DROP TABLE IF EXISTS `genomic_analysis_modality_enum`;
+DROP TABLE IF EXISTS `GWAS`;
+DROP TABLE IF EXISTS `CNV`;
+DROP TABLE IF EXISTS `SNP_candidate_rel`;
+DROP TABLE IF EXISTS `SNP`;
+DROP TABLE IF EXISTS `genotyping_platform`;
+DROP TABLE IF EXISTS `gene`;
+DROP TABLE IF EXISTS `genome_loc`;
+
+DROP TABLE IF EXISTS `parameter_session`;
+DROP TABLE IF EXISTS `parameter_file`;
+DROP TABLE IF EXISTS `parameter_candidate`;
+DROP TABLE IF EXISTS `parameter_type_override`;
+DROP TABLE IF EXISTS `parameter_type_category_rel`;
+DROP TABLE IF EXISTS `parameter_type_category`;
+DROP TABLE IF EXISTS `parameter_type`;
+
+DROP TABLE IF EXISTS `issues_watching`;
+DROP TABLE IF EXISTS `issues_comments_history`;
+DROP TABLE IF EXISTS `issues_history`;
+DROP TABLE IF EXISTS `issues_comments`;
+DROP TABLE IF EXISTS `issues`;
+DROP TABLE IF EXISTS `issues_categories`;
+
+DROP TABLE IF EXISTS `media`;
+
+DROP TABLE IF EXISTS `server_processes`;
+
+DROP TABLE IF EXISTS `StatisticsTabs`;
+
+DROP TABLE IF EXISTS `user_login_history`;
+
+DROP TABLE IF EXISTS `user_account_history`;
+-- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
+
+DROP TABLE IF EXISTS `data_integrity_flag`;
+
+DROP TABLE IF EXISTS `certification_training_quiz_answers`;
+DROP TABLE IF EXISTS `certification_training_quiz_questions`;
+DROP TABLE IF EXISTS `certification_training`;
+DROP TABLE IF EXISTS `certification_history`;
+DROP TABLE IF EXISTS `certification`;
+DROP TABLE IF EXISTS `examiners_psc_rel`;
+DROP TABLE IF EXISTS `examiners`;
+
+DROP TABLE IF EXISTS `participant_status_history`;
+DROP TABLE IF EXISTS `family`;
+DROP TABLE IF EXISTS `participant_emails`;
+DROP TABLE IF EXISTS `participant_accounts`;
+DROP TABLE IF EXISTS `participant_status`;
+DROP TABLE IF EXISTS `participant_status_options`;
+
+DROP TABLE IF EXISTS `conflicts_resolved`;
+DROP TABLE IF EXISTS `conflicts_unresolved`;
+
+
+DROP TABLE IF EXISTS `notification_spool`;
+DROP TABLE IF EXISTS `notification_types`;
+DROP TABLE IF EXISTS `notification_history`;
+DROP TABLE IF EXISTS `users_notifications_rel`;
+DROP TABLE IF EXISTS `notification_modules_services_rel`;
+DROP TABLE IF EXISTS `notification_services`;
+DROP TABLE IF EXISTS `notification_modules`;
+
+DROP TABLE IF EXISTS `document_repository`;
+DROP TABLE IF EXISTS `document_repository_categories`;
+
+DROP TABLE IF EXISTS `violations_resolved`;
+DROP TABLE IF EXISTS `mri_violations_log`;
+DROP TABLE IF EXISTS `mri_protocol_checks`;
+DROP TABLE IF EXISTS `mri_upload`;
+DROP TABLE IF EXISTS `MRICandidateErrors`;
+DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
+
+DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group_rel`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group`;
+
+DROP TABLE IF EXISTS `mri_protocol_group_target`;
+DROP TABLE IF EXISTS `mri_protocol_group_rel`;
+DROP TABLE IF EXISTS `mri_protocol_group`;
+DROP TABLE IF EXISTS `mri_protocol`;
+DROP TABLE IF EXISTS `mri_acquisition_dates`;
+DROP TABLE IF EXISTS `files_qcstatus`;
+DROP TABLE IF EXISTS `files_intermediary`;
+DROP TABLE IF EXISTS `files`;
+DROP TABLE IF EXISTS `mri_scan_type`;
+DROP TABLE IF EXISTS `mri_scanner`;
+DROP TABLE IF EXISTS `mri_processing_protocol`;
+DROP TABLE IF EXISTS `ImagingFileTypes`;
+
+DROP TABLE IF EXISTS `tarchive_files`;
+DROP TABLE IF EXISTS `tarchive_series`;
+DROP TABLE IF EXISTS `tarchive`;
+
+DROP TABLE IF EXISTS bids_mri_scan_type_rel;
+DROP TABLE IF EXISTS bids_category;
+DROP TABLE IF EXISTS bids_scan_type;
+DROP TABLE IF EXISTS bids_scan_type_subcategory;
+
+DROP TABLE IF EXISTS `history`;
+DROP TABLE IF EXISTS `Visit_Windows`;
+DROP TABLE IF EXISTS `test_battery`;
+DROP TABLE IF EXISTS `flag`;
+DROP TABLE IF EXISTS `instrument_subtests`;
+DROP TABLE IF EXISTS `test_names`;
+DROP TABLE IF EXISTS `test_subgroups`;
+DROP TABLE IF EXISTS `session_status`;
+DROP TABLE IF EXISTS `session`;
+DROP TABLE IF EXISTS `user_psc_rel`;
+DROP TABLE IF EXISTS `candidate`;
+DROP TABLE IF EXISTS `caveat_options`;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `users`;
+SET FOREIGN_KEY_CHECKS=1;
+DROP TABLE IF EXISTS `language`;
+DROP TABLE IF EXISTS `psc`;
+DROP TABLE IF EXISTS `project_rel`;
+DROP TABLE IF EXISTS `subproject`;
+DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `visit_project_subproject_rel`;
+DROP TABLE IF EXISTS `visit`;
+
+-- ********************************
 -- Core tables
 -- ********************************
 
@@ -610,6 +760,38 @@ INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
    ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
    ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
 
+CREATE TABLE `mri_protocol_group` (
+    `MriProtocolGroupID`   INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                 VARCHAR(255)    NOT NULL,
+    PRIMARY KEY (`MriProtocolGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_group` VALUES(1, "Default MRI protocol group");
+
+CREATE TABLE `mri_protocol_group_rel` (
+    `MriProtocolGroupID` INT(2) UNSIGNED  NOT NULL,
+    `MriProtocolID`      INT(11) UNSIGNED NOT NULL,
+    CONSTRAINT `FK_mri_protocol_group_rel_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+    CONSTRAINT `FK_mri_protocol_group_rel_2` FOREIGN KEY (`MriProtocolID`)      REFERENCES `mri_protocol` (`ID`),
+    CONSTRAINT `UK_mri_protocol_group_rel`   UNIQUE (`MriProtocolID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_group_rel` SELECT 1, ID FROM `mri_protocol`;
+
+CREATE TABLE `mri_protocol_group_target` (
+     `MriProtocolGroupID` INT(2) UNSIGNED  NOT NULL,
+     `ProjectID`          INT(2)           DEFAULT NULL,
+     `SubprojectID`       INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`        VARCHAR(255)     DEFAULT NULL,
+     CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+     CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
+     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_group_target` VALUES(1, NULL, NULL, NULL);
+
+
+
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
@@ -648,6 +830,33 @@ CREATE TABLE `mri_protocol_checks` (
   CONSTRAINT `FK_mriProtocolChecks_ScanType`
     FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_protocol_checks_group` (
+    `MriProtocolChecksGroupID`   INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                       VARCHAR(255)    NOT NULL,
+    PRIMARY KEY (`MriProtocolChecksGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_checks_group` VALUES(1, 'Default MRI protocol checks group');
+
+CREATE TABLE `mri_protocol_checks_group_rel` (
+    `MriProtocolChecksGroupID` INT(2) UNSIGNED  NOT NULL,
+    `MriProtocolChecksID`      INT(11)          NOT NULL,
+    CONSTRAINT `FK_mri_protocol_checks_group_rel_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
+    CONSTRAINT `FK_mri_protocol_checks_group_rel_2` FOREIGN KEY (`MriProtocolChecksID`)      REFERENCES `mri_protocol_checks` (`ID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_protocol_checks_group_target` (
+     `MriProtocolChecksGroupID` INT(2) UNSIGNED  NOT NULL,
+     `ProjectID`                INT(2)           DEFAULT NULL,
+     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+     CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
+     CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
+     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `mri_protocol_checks_group_target` VALUES(1, NULL, NULL, NULL);
 
 
 -- ********************************
@@ -777,9 +986,12 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
+  `MriProtocolChecksGroupID` INT(2) UNSIGNED NOT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
-    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_checks_group_1` 
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `violations_resolved` (
@@ -815,9 +1027,11 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
+  `MriProtocolGroupID` INT(2) UNSIGNED NOT NULL
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
