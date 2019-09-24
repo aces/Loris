@@ -25,6 +25,7 @@
  */
 class Utility
 {
+
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -217,12 +218,12 @@ class Utility
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // get the list of projects
-        $projects = $DB->pselect("SELECT * FROM Project", array());
-        $project  = array();
-        foreach ($projects as $row) {
-            $project[$row['ProjectID']] = $row['Name'];
-        }
-        return $project;
+        $projects = $DB->pselectColWithIndexKey(
+            "SELECT ProjectID, Name FROM Project",
+            array(),
+            'ProjectID'
+        ) ?? array();
+        return $projects;
     }
 
     /**
@@ -772,7 +773,7 @@ class Utility
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
             $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
@@ -933,6 +934,33 @@ class Utility
             $languages[$language['language_id']] = $language['language_label'];
         }
         return $languages;
+    }
+
+    /**
+     * Generate a random string, using a cryptographically secure
+     * pseudorandom number generator (random_int)
+     *
+     * @param int     $length   How many characters do we want?
+     * @param ?string $keyspace A string of all possible characters
+     *                         to select from. Will default to the alphanum set.
+     *
+     * @return string
+     */
+    static function randomString(
+        int $length = 64,
+        ?string $keyspace = null
+    ): string {
+        $keyspace = $keyspace
+        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max    = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
     }
 }
 

@@ -126,10 +126,12 @@ class TimePoint
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         pr.Name as ProjectName, p.Alias as SiteAlias
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
+                        LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
@@ -194,6 +196,7 @@ class TimePoint
      *                                    being created. If null, consecutive V1, V2,
      *                                    etc will be created.
      * @param \Site       $psc            The center of the timepoint
+     * @param \Project    $project        The project of the timepoint
      *
      * @throws DatabaseException
      *
@@ -203,7 +206,8 @@ class TimePoint
         \Candidate $candidate,
         int $SubprojectID,
         ?string $nextVisitLabel,
-        \Site $psc
+        \Site $psc,
+        \Project $project
     ): void {
 
         // insert into session set CandID=$candID,
@@ -238,6 +242,7 @@ class TimePoint
                        'VisitNo'         => $visitNo,
                        'Visit_label'     => $VisitLabel,
                        'CenterID'        => $psc->getCenterID(),
+                       'ProjectID'       => $project->getId(),
                        'Current_stage'   => 'Not Started',
                        'Submitted'       => 'N',
                        'registeredBy'    => $userID,
@@ -245,7 +250,6 @@ class TimePoint
                        'Date_registered' => $today,
                        'Date_active'     => $today,
                       );
-
         // insert the data
         $db->insert('session', $insertData);
     }
