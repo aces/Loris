@@ -271,10 +271,10 @@ class Timepoint extends Endpoint implements ETagCalculator
                 intval($values['identifier']) : null
         );
         if (!(in_array(
-                intval($candidate->getData('RegistrationCenterID')),
-                $user->getData('CenterIDs'),
-                true
-            ))
+            intval($candidate->getData('RegistrationCenterID')),
+            $user->getData('CenterIDs'),
+            true
+        ))
         ) {
             $values['error'] = 'Forbidden';
             return $values;
