@@ -5,11 +5,11 @@
  *
  * PHP Version 7
  *
- * @category   LORIS_Module
- * @package    Create_Timepoint
- * @author     Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @category LORIS_Module
+ * @package  Create_Timepoint
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\create_timepoint;
 
@@ -44,11 +44,11 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-            case 'CreateTimepoint':
-                $handler = new endpoints\Timepoint();
-                break;
-            default:
-                return parent::handle($request);
+        case 'CreateTimepoint':
+            $handler = new endpoints\Timepoint();
+            break;
+        default:
+            return parent::handle($request);
         }
         $user = $request->getAttribute('user');
         if (!$handler->_hasAccess($user)) {

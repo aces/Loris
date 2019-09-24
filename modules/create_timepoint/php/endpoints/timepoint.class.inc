@@ -45,14 +45,14 @@ class Timepoint extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -74,16 +74,16 @@ class Timepoint extends Endpoint implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
         // Setup variables
@@ -161,16 +161,16 @@ class Timepoint extends Endpoint implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
         // convert site entered to a \Site object
@@ -225,7 +225,7 @@ class Timepoint extends Endpoint implements ETagCalculator
      */
     private function _validate(array $values) : array
     {
-        $user = \User::singleton();
+        $user   = \User::singleton();
         $errors = array();
         if (!isset($values['identifier'])) {
             $values['error'] = 'BadRequest';
@@ -233,7 +233,7 @@ class Timepoint extends Endpoint implements ETagCalculator
         }
         $values['identifier'] = isset($values['identifier']) ?
             intval($values['identifier']) : null;
-        $values['psc'] = empty($values['psc']) ?
+        $values['psc']        = empty($values['psc']) ?
             null : $values['psc'];
         // validate site entered
         $site = (int) $values['psc'];
@@ -320,9 +320,9 @@ class Timepoint extends Endpoint implements ETagCalculator
     protected function allowedMethods(): array
     {
         return array(
-            'GET',
-            'POST',
-        );
+                'GET',
+                'POST',
+               );
     }
 
     /**

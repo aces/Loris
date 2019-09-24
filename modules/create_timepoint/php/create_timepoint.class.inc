@@ -83,7 +83,7 @@ class Create_Timepoint extends \NDB_Form
         $depends = array_merge(
             $depends,
             array(
-                $baseurl . '/create_timepoint/js/createTimepointIndex.js',
+             $baseurl . '/create_timepoint/js/createTimepointIndex.js',
             )
         );
         return $depends;
