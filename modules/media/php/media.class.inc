@@ -141,8 +141,9 @@ class Media extends \DataFrameworkMenu
      */
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
-        return parent::getDataProvisionerWithFilters()
-            ->filter(new HideFileFilter());
+        $provisioner = parent::getDataProvisionerWithFilters();
+
+        return $provisioner->filter(new HideFileFilter());
     }
 
     /**
