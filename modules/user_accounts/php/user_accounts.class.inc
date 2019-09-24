@@ -135,7 +135,6 @@ class User_Accounts extends \NDB_Menu_Filter
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
         );
-        return true;
     }
     /**
      * Gathers JS dependecies and merge them with the parent

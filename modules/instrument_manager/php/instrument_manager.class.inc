@@ -421,14 +421,14 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckType function
-    *
-    * @param string $tablename  the value of table name
-    * @param string $columnname the value of column name
-    * @param string $type       the value of the type
-    *
-    * @return ?string
-    */
+     * CheckType function
+     *
+     * @param string $tablename  the value of table name
+     * @param string $columnname the value of column name
+     * @param string $type       the value of the type
+     *
+     * @return ?string
+     */
     protected function checkType($tablename, $columnname, $type)
     {
         $db           = $this->factory->database();

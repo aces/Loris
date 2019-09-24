@@ -95,7 +95,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'Visit_label' => 's.Visit_label',
             'IsPhantom'   => 'mu.IsPhantom',
         );
-        return true;
     }
      /**
       * Sets up the menu filter items for the imaging uploader
@@ -624,18 +623,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return $this->temp_path;
     }
     /**
-<<<<<<< HEAD
-    * The getTargetDirectory retrieves info about where the file should be stored.
-    *
-    * The returned directory is added to the baseUploadDirectory property.
-    * It should have a trailing slash.
-    *
-    * @param string $file The full filename including directory.
-    * @param Array  $args The list of arguments
-    *
-    * @return string  $success if operation succeeded
-    */
-=======
      * The getTargetDirectory retrieves info about where the file should be stored.
      *
      * The returned directory is added to the baseUploadDirectory property.
@@ -644,9 +631,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * @param string $file The full filename including directory.
      * @param Array  $args The list of arguments
      *
-     * @return bool  $success if operation succeeded
+     * @return string  $success if operation succeeded
      */
->>>>>>> 2f4e0817e... Change array rule and fix violations
     function getTargetDirectory($file, $args)
     {
         return sprintf(
@@ -654,24 +640,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $args['user_id'] ?? \User::singleton()->getUsername()
         );
     }
+
     /**
-<<<<<<< HEAD
-    * The function isCompressed returns true if the file is
-    * compressed (gzip or zip) or false otherwise
-    *
-    * @param string $file The full filename including directory
-    *
-    * @return bool Whether the file is compressed
-    */
-=======
      * The function isCompressed returns true if the file is
      * compressed (gzip or zip) or false otherwise
      *
-     * @param string $file The full filename including directory.
+     * @param string $file The full filename including directory
      *
-     * @return bool  $success if operation succeeded
+     * @return bool Whether the file is compressed
      */
->>>>>>> 2f4e0817e... Change array rule and fix violations
     function isCompressed($file)
     {
         return strpos(mime_content_type($file), 'zip') !== false;

@@ -63,9 +63,9 @@ $notifications = $DB->pselect(
 // Return JSON object encapsulating the response
 echo json_encode(
     array(
-     'inserting'         => $inserting,
-     'insertionComplete' => $insertionComplete,
-     'notifications'     => $notifications ?? '',
+        'inserting'         => $inserting,
+        'insertionComplete' => $insertionComplete,
+        'notifications'     => $notifications ?? '',
     )
 );
 
