@@ -34,7 +34,7 @@ sourced, followed by the different instrument schemas and finally the actual RB 
 The commands below assume that the current working directory is the main LORIS root
 directory.
 
-```
+```bash
 cat SQL/0000-00-00-schema.sql \
     SQL/0000-00-01-Permission.sql \
     SQL/0000-00-02-Menus.sql \
@@ -50,10 +50,10 @@ cat SQL/0000-00-00-schema.sql \
 ```
 
 Note: to empty and delete all RaisinBread tables, use the following command in the 
-main LORIS root directory
-```
-cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    SQL/9999-99-99-drop_tables.sql | mysql
+main LORIS root directory:
+
+```bash
+cat SQL/9999-99-99-drop_tables.sql | mysql
 ```
 
 
