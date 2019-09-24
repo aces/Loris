@@ -206,9 +206,10 @@ class FeedbackMRI
      *
      * @param string $fieldName field to select from in mri table
      *
-     * @return string value of $fieldName in mri table
+     * @return string|bool value of $fieldName in mri table or false when
+     *                      no information found in the database
      */
-    function getMRIValue(string $fieldName): string
+    function getMRIValue(string $fieldName)
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
@@ -287,7 +288,7 @@ class FeedbackMRI
 
         // build the query
         if ($updateNeeded) {
-            $success = $DB->update(
+            $DB->update(
                 'parameter_file',
                 array('Value' => $value),
                 array(
@@ -296,7 +297,7 @@ class FeedbackMRI
                 )
             );
         } else {
-            $success = $DB->insert(
+            $DB->insert(
                 'parameter_file',
                 array(
                  'Value'           => $value,

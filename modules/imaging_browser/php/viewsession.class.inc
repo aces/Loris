@@ -420,7 +420,7 @@ class ViewSession extends \NDB_Form
                 $updateSet = \Utility::nullifyEmpty($updateSet, 'QCStatus');
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
-                    $success = $this->DB->update(
+                    $this->DB->update(
                         'files_qcstatus',
                         $updateSet,
                         $updateWhere
@@ -498,7 +498,7 @@ class ViewSession extends \NDB_Form
                         $params
                     ) > 0
                     ) {
-                        $success = $this->DB->delete('files_qcstatus', $updateWhere);
+                        $this->DB->delete('files_qcstatus', $updateWhere);
                     }
                 } else {
                     if ($this->DB->pselectOne(
@@ -513,7 +513,7 @@ class ViewSession extends \NDB_Form
                                       'QCLastChangeTime' => time(),
                                      );
                         $updateSet = \Utility::nullifyEmpty($updateSet, 'Selected');
-                        $success   = $this->DB->update(
+                        $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
                             $updateWhere
@@ -525,7 +525,7 @@ class ViewSession extends \NDB_Form
                                       'QCFirstChangeTime' => time(),
                                      );
                         $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
-                        $success   = $this->DB->insert('files_qcstatus', $insertSet);
+                        $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
             }
@@ -576,7 +576,7 @@ class ViewSession extends \NDB_Form
                     = $updateSet['MRIQCLastChangeTime'];
             }
             $updateSet = \Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
-            $success   = $this->DB->update(
+            $this->DB->update(
                 'session',
                 $updateSet,
                 array('ID' => $this->sessionID)
@@ -707,6 +707,12 @@ class ViewSession extends \NDB_Form
             FROM session WHERE ID=:SID",
             array('SID' => $_REQUEST['sessionID'])
         );
+        if (is_null($qcstatus)) {
+            throw new \LorisException(
+                'Could not find QC status information for the supplied '
+                . 'session ID'
+            );
+        }
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['mricaveat']    = $qcstatus['MRICaveat'];

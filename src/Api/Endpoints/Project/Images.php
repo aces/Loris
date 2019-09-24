@@ -99,7 +99,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return array
+     * @return array|\Psr\Http\Message\ResponseInterface
      */
     private function _toArray(ServerRequestInterface $request)
     {

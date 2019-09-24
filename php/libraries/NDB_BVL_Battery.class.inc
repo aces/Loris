@@ -195,10 +195,10 @@ class NDB_BVL_Battery
         $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
         // insert into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $commentID));
+        $DB->insert($obj->table, array('CommentID' => $commentID));
 
         // insert into the flag table
-        $success = $DB->insert(
+        $DB->insert(
             'flag',
             array(
              'SessionID' => $sessionData['SessionID'],
@@ -212,10 +212,10 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
+        $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
-        $success = $DB->insert(
+        $DB->insert(
             'flag',
             array(
              'SessionID' => $sessionData['SessionID'],
@@ -225,8 +225,7 @@ class NDB_BVL_Battery
             )
         );
 
-        return $commentID;
-
+        return $commentID ?? '';
     } // end addInstrument()
 
     /**
@@ -380,12 +379,12 @@ class NDB_BVL_Battery
      *
      * @return string A test name
      */
-    static function getInstrumentNameForCommentId($commentId)
+    public static function getInstrumentNameForCommentId($commentId)
     {
-        $db    =& Database::singleton();
-        $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
-        return $instrumentName;
+        return \Database::singleton()->pselectOne(
+            "SELECT Test_name FROM flag WHERE CommentID=:CID",
+            array('CID' => $commentId)
+        );
     }
 
     /**
@@ -537,7 +536,7 @@ class NDB_BVL_Battery
      *
      * @param string $testName The test name that we want a commentID for
      *
-     * @return string the commentID generated
+     * @return ?string the commentID generated
      */
     function _createCommentID($testName)
     {
@@ -557,7 +556,8 @@ class NDB_BVL_Battery
      * @param integer $SessionID The session ID to generate a CommentID for
      * @param string  $Test_name The test name which the CommentID will be for.
      *
-     * @return string A Validly formatted CommentID
+     * @return ?string A Validly formatted CommentID or null if information
+     *                  is missing in the database.
      */
     static function generateCommentID($SessionID, $Test_name)
     {
@@ -616,6 +616,6 @@ class NDB_BVL_Battery
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, array('TN' => $testName));
 
-        return $row['counter'] >= 1;
+        return ($row['counter'] ?? 0) >= 1;
     } // end _assertValidInstrument()
 }

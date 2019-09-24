@@ -298,12 +298,12 @@ class Stats_MRI extends \NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
 
-        $scans_selected =array();
+        $scans_selected = array();
         if ($_REQUEST['Scans'] ?? '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
         if (empty($scans_selected_input)) {
-            $scans_selected =$scan_types;
+            $scans_selected = $scan_types ?? array();
         } else {
             foreach ($scans_selected_input as $key => $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
