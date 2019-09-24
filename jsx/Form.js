@@ -472,13 +472,19 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+    }
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -524,7 +530,7 @@ SelectElement.defaultProps = {
   label: '',
   value: undefined,
   id: null,
-  class: '',
+  class: 'col-sm-9',
   multiple: false,
   disabled: false,
   required: false,
@@ -927,7 +933,7 @@ class TextboxElement extends Component {
     return (
       <div className={elementClass}>
         {label}
-        <div className="col-sm-9">
+        <div className={this.props.class}>
           <input
             type="text"
             className="form-control"
@@ -1516,13 +1522,20 @@ class StaticElement extends Component {
     super(props);
   }
   render() {
-    return (
-      <div className="row form-group">
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
+      );
+    }
+
+    return (
+      <div className="row form-group">
+        {label}
+        <div className={this.props.class}>
+          <p className={this.props.textClass}>{this.props.text}</p>
         </div>
       </div>
     );
@@ -1531,6 +1544,8 @@ class StaticElement extends Component {
 
 StaticElement.propTypes = {
   label: PropTypes.string,
+  class: PropTypes.string,
+  textClass: PropTypes.string,
   text: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
@@ -1539,6 +1554,8 @@ StaticElement.propTypes = {
 
 StaticElement.defaultProps = {
   label: '',
+  class: 'col-sm-9',
+  textClass: 'form-control-static',
   text: null,
 };
 
@@ -1820,6 +1837,7 @@ window.TagsElement = TagsElement;
 window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
+window.PasswordElement = PasswordElement;
 window.DateElement = DateElement;
 window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
@@ -1839,6 +1857,7 @@ export default {
   SearchableDropdown,
   TextareaElement,
   TextboxElement,
+  PasswordElement,
   DateElement,
   TimeElement,
   NumericElement,
