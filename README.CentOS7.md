@@ -40,7 +40,7 @@ sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring ph
 
 MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7) for background). MySQL and MariaDB are nearly identical in operation.
 
-*Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your sysadmin for database credentials.
+*Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your system administrator for database credentials.
 
 ```
 sudo yum install MariaDB-client MariaDB-server
