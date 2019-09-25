@@ -136,7 +136,7 @@ The web page will prompt you for the following information:
 
  * `Admin Username` should be `root` or a MariaDB user with permission to create databases and tables
 
- * `Admin Password` whatever password you set when running the `mysql_secure_installation` step
+ * `Admin Password` The password you set for `root` user when running the `mysql_secure_installation` step
 
  * `Database Name` set to "LORIS" by default, can be customised
 
