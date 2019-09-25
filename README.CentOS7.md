@@ -16,7 +16,7 @@ Default dependencies installed by CentOS 7.x may not meet the version requiremen
 * PHP 7.2 is supported for LORIS 21.*
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below.
- * Apache2
+ * Apache2.4
  * Node
  * PHP Composer
 
