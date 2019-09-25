@@ -80,7 +80,7 @@ sudo mv composer.phar /usr/local/bin/composer
 
 Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
 ```
-wget https://github.com/aces/Loris/archive/v$VERSION.zip
+wget https://github.com/aces/Loris/archive/v$VERSION.tar.gz
 tar -zxf Loris-%VERSION%.tar.gz
 cp -r Loris-%VERSION%/* /var/www/loris
 ```
