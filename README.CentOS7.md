@@ -55,7 +55,8 @@ mysql -v
 Upgrade your MariaDB to version 10.3 (LORIS 21 does not support MariaDB 10.2.27)
 Then, 
 ```
-sudo service mariadb start
+sudo systemctl start mariadb 
+sudo systemctl enable mariadb
 sudo service mariadb status
 ```
 
