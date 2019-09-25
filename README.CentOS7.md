@@ -60,7 +60,7 @@ sudo systemctl enable mariadb
 sudo systemctl status mariadb
 ```
 
-To finalise the MySQL/MariaDB installation: 
+To finalise the MariaDB installation: 
 ```
 mysql_secure_installation
 ```
