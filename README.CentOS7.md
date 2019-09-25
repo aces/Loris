@@ -140,7 +140,7 @@ The web page will prompt you for the following information:
 
  * `Database Name` set to "LORIS" by default, can be customised
 
-Click submit, and on the next screen that is presented, follow instructions to enter the username and password of your backend user (`lorisuser`), and front-end `admin` user. 
+Click submit, and on the next screen that is presented, follow instructions to enter the username and password of your LORIS database user (`lorisuser`), and front-end `admin` user. 
 
 If you encounter issues creating/generating your config file, you may have to manually paste the xml output that appears on the screen into the file `/var/www/loris/project/config.xml`
 
