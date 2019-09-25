@@ -46,7 +46,7 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 sudo yum install MariaDB-client MariaDB-server
 ```
 
-By default in CentOS 7, the MariaDB version is (currently) 10.2.27
+By default in CentOS 7, the MariaDB version is 10.2
 Check what version you have installed by running:
 ```
 mysql -v
