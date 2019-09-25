@@ -23,7 +23,8 @@ In addition to the above, the following packages should be installed with `yum` 
 ## Apache2
 ```
 sudo yum install httpd 
-sudo service httpd start
+sudo systemctl enable httpd
+sudo systemctl start httpd
 ```
 ## PHP 7.2
 ```
