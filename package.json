@@ -23,6 +23,7 @@
     "eslint-config-google": "0.9.1",
     "eslint-loader": "2.1.0",
     "eslint-plugin-react": "7.11.1",
+    "ghooks": "^2.0.4",
     "prop-types": "latest",
     "react": "^16.4.2",
     "react-addons-create-fragment": "^15.6.2",
@@ -51,5 +52,11 @@
   "bugs": {
     "url": "https://github.com/aces/Loris/issues"
   },
-  "homepage": "https://github.com/aces/Loris"
+  "homepage": "https://github.com/aces/Loris",
+  "config": {
+      "ghooks": {
+          "pre-push": "make checkstatic",
+          "post-merge": "make dev"
+      }
+  }
 }
