@@ -134,7 +134,7 @@ The web page will prompt you for the following information:
 
  * `Server Hostname` localhost if your database if hosted on your VM or the IP address of your database server
 
- * `Admin Username` should be `root` or a unix user with a high level of privilege on your VM
+ * `Admin Username` should be `root` or a MariaDB user with permission to create databases and tables
 
  * `Admin Password` whatever password you set when running the `mysql_secure_installation` step
 
