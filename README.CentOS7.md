@@ -123,7 +123,7 @@ cd /var/www/loris/tools
 ```
 Run the makefile (use `make dev` if you are setting up a development sandbox)
 ```
-cd /var/www/$projectname
+cd /var/www/loris
 make
 ```
 ## Install your database
