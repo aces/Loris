@@ -82,7 +82,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 ```
 wget https://github.com/aces/Loris/archive/v$VERSION.tar.gz
 tar -zxf Loris-%VERSION%.tar.gz
-cp -r Loris-%VERSION%/* /var/www/loris
+cp -r Loris-%VERSION%/ /var/www/loris
 ```
 
 Alternatively the latest development branch can be obtained by forking the [LORIS repository](http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 
