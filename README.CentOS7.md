@@ -57,7 +57,7 @@ Then,
 ```
 sudo systemctl start mariadb 
 sudo systemctl enable mariadb
-sudo service mariadb status
+sudo systemctl status mariadb
 ```
 
 To finalise the MySQL/MariaDB installation: 
