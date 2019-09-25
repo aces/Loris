@@ -105,7 +105,7 @@ Customize and Verify your settings:
 Finally, restart apache:
 ```
 sudo service httpd restart
-sudo service httpd status
+sudo systemctl status httpd
 ```
 # Install LORIS
 
