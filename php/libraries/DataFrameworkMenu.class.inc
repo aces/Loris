@@ -129,7 +129,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
 
         return json_encode(
             [
-             'data'         => $arr,
+             'Data'         => $arr,
              'fieldOptions' => $this->getFieldOptions(),
             ]
         );
