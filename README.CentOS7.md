@@ -100,7 +100,7 @@ cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
 Customize and Verify your settings: 
 * Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log` 
  * DocumentRoot should point to `/var/www/loris/htdocs`
- * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `chmod 775 /var/www/loris/smarty/templates_c)
+ * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
 Finally, restart apache:
 ```
