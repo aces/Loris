@@ -15,6 +15,8 @@ namespace LORIS\Api\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
+use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+
 /**
  * A class for handling the /candidates endpoint.
  *
@@ -143,13 +145,16 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
-        $user        = $request->getAttribute('user');
+        $filter = new HasAnyPermissionOrUserSiteMatch(
+            array('access_all_profiles')
+        );
+
         $provisioner = (new \LORIS\api\CandidatesProvisioner())
-            ->forUser($user);
+            ->filter($filter);
 
         $candidates = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
-            ->toArray($user);
+            ->toArray($request->getAttribute('user'));
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
             array('Candidates' => $candidates)

@@ -58,24 +58,6 @@ class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     }
 
     /**
-     * Creates a new provisioner with user specific filter.
-     *
-     * @param \User $user The requesting user
-     *
-     * @return CandidatesProvisioner
-     */
-    public function forUser(\User $user): CandidatesProvisioner
-    {
-        $new = clone($this);
-        if (!$user->hasPermission('access_all_profiles')) {
-            $new = $new->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-        return $new;
-    }
-
-    /**
      * Returns an instance of a CandidatesRow object for a given
      * table row.
      *

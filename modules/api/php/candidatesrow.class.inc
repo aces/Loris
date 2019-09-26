@@ -47,6 +47,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         $this->_edc         = $row['EDC'] ?? null;
         $this->_dob         = $row['DoB'] ?? null;
         $this->_sex         = $row['Sex'] ?? null;
+        $this->_centerid    = $row['CenterID'] ?? null;
     }
 
     /**
@@ -77,6 +78,9 @@ class CandidatesRow implements \LORIS\Data\DataInstance
      */
     public function getCenterID(): int
     {
+        if ($this->_centerid === null) {
+            throw new \Exception('CenterID is null');
+        }
         return intval($this->_centerid);
     }
 }
