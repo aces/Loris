@@ -467,6 +467,7 @@ DELETE FROM permissions WHERE
     `code`='biobank_specimen_view' OR 
     `code`='biobank_specimen_create' OR
     `code`='biobank_specimen_update' OR
+    `code`='biobank_specimen_alter' OR
     `code`='biobank_container_view' OR
     `code`='biobank_container_create' OR
     `code`='biobank_container_update' OR
@@ -496,6 +497,7 @@ INSERT INTO permissions (code, description, categoryID) VALUES
     ('biobank_specimen_view', 'Biobank: View Specimen Data', 2),
     ('biobank_specimen_create', 'Biobank: Create Specimen Data', 2),
     ('biobank_specimen_update', 'Biobank: Update Specimen Data', 2),
+    ('biobank_specimen_alter', 'Biobank: Alter Specimen Data', 2),
     ('biobank_container_view', 'Biobank: View Container Data', 2),
     ('biobank_container_create', 'Biobank: Create Container Data', 2),
     ('biobank_container_update', 'Biobank: Update Container Data', 2),
@@ -507,6 +509,7 @@ INSERT INTO user_perm_rel (userID, permID) VALUES
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_view')),
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_create')),
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_update')),
+    ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_specimen_alter')),
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_view')),
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_create')),
     ((SELECT ID From users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='biobank_container_update')),
