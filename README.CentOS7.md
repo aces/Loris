@@ -13,10 +13,12 @@ Default dependencies installed by CentOS 7.x may not meet the version requiremen
 * MariaDB 10.3 is supported for LORIS 21.* 
 * PHP 7.2 is supported for LORIS 21.*
 
-In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below.
+In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache2.4
+ * [Composer](https://getcomposer.org)
  * Node
- * PHP Composer
+ * NPM
+ * make
 
 ## Apache2
 ```
@@ -92,6 +94,7 @@ The install script will ask if you want to automatically create/install apache c
 It is recommended to perform this step **manually** --: copy our sample file to the apache configuration directory (`/etc/httpd/conf.d/`) and add the `.conf` file extension:
 
 ```bash
+cd /var/www/loris
 cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
 ```
 
