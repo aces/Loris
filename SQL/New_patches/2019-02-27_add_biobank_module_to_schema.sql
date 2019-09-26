@@ -115,7 +115,7 @@ CREATE TABLE `biobank_container` (
   `CurrentCenterID` integer unsigned NOT NULL,
   `LotNumber` varchar(40),
   `ExpirationDate` DATE,
-  `Comment` varchar(255),
+  `Comments` varchar(255),
   `DateTimeCreate` DATETIME NOT NULL DEFAULT NOW(),
   `DateTimeUpdate` DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),
   CONSTRAINT `PK_biobank_container` PRIMARY KEY (`ContainerID`),
