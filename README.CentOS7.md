@@ -153,3 +153,5 @@ If there are any errors or you get a blank page, troubleshoot the errors in your
 
 **Next:** Follow the [**Setup Guide** in the LORIS wiki](https://github.com/aces/Loris/wiki/Setup) for all post-install steps and troubleshooting.  
 Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
+
+Please see the main (Ubuntu) [LORIS Readme](./README.md) for info on our Community, Contributing, and who we are. 
