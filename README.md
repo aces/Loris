@@ -28,14 +28,16 @@ Deploy and log in with username *admin* and the password that's set up during de
  * PHP <b>7.2</b> or higher
  * NodeJS 8.0 or higher
  * [Composer](https://getcomposer.org/)
+ * NPM
+ * make
 
-These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
+These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS. Installing some dependencies may require `sudo` privileges.
 
 ### Install Steps
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
-1. Set up LINUX user lorisadmin and create LORIS base directory:
+1. Set up LINUX user lorisadmin, with `sudo` privilege, and create LORIS base directory:
 
     ```
     sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
