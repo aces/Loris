@@ -73,7 +73,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 
 5. Apache configuration
 
-If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:
+If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:  (run by user who has root privileges)
     
     sudo a2enmod rewrite
     sudo a2dissite default
