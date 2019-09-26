@@ -3,16 +3,14 @@
 This document contains supplemental details on how to perform a basic CentOS 7.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
 
-This Readme assumes you already understand basic UNIX, MariaDB (MySQL) and Apache setup and
-settings. If you're not already comfortable troubleshooting system administration issues,
-you should not follow this guide.
+This Readme assumes some familiarity with UNIX, MariaDB (MySQL) and Apache.
 
 For further details on the install process, please see the LORIS GitHub Wiki CentOS Install page.  
 
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.2 is supported for LORIS 21.* 
+* MariaDB 10.3 is supported for LORIS 21.* 
 * PHP 7.2 is supported for LORIS 21.*
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below.
