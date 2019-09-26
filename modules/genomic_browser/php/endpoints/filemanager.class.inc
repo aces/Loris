@@ -7,13 +7,14 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser\endpoints;
 
+use LORIS\genomic_browser\Provisioners\FilesProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -26,14 +27,18 @@ use \LORIS\Middleware\ETagCalculator;
  * allows filemanager to be processed as part of the genomic browser.
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 class FileManager extends Endpoint implements ETagCalculator
 {
-    public $skipTemplate = true;
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * This function will return a json response.
@@ -46,14 +51,14 @@ class FileManager extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -68,33 +73,123 @@ class FileManager extends Endpoint implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
-
-        $values = $this->_setupVariables($request, $values);
-
-
-
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
-
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
-        );
+        $user        = $request->getAttribute('user');
+        $provisioner = (new FilesProvisioner())->forUser($user);
+        // $provisioner = (new FilesProvisioner())->filter();
+        $data         = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+        $body         = array(
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions(),
+                         'permissions'  => [
+                                            'user'           => $user->getUsername(),
+                                            'upload_allowed' => $user->hasPermission(
+                                                'genomic_data_manager'
+                                            ),
+                                           ],
+                        );
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+        return $this->_cache;
     }
+
+    /**
+     * Provide the select inputs options
+     *
+     * @return array Dynamic field options
+     */
+    private function _getFieldOptions() : array
+    {
+        return array(
+                'file_name'         => $this->_formElementObjectCreator(
+                    'file_name',
+                    'text',
+                    'Name',
+                    null
+                ),
+                'description'       => $this->_formElementObjectCreator(
+                    'description',
+                    'text',
+                    'Description',
+                    null
+                ),
+                'date_inserted'     => $this->_formElementObjectCreator(
+                    'date_inserted',
+                    'text',
+                    'Date inserted',
+                    null
+                ),
+                'notes'             => $this->_formElementObjectCreator(
+                    'notes',
+                    'text',
+                    'Notes',
+                    null
+                ),
+                'genomic_file_type' => $this->_formElementObjectCreator(
+                    'genomic_file_type',
+                    'text',
+                    'Type',
+                    null
+                ),
+                'caveat'            => $this->_formElementObjectCreator(
+                    'caveat',
+                    'select',
+                    'Caveat',
+                    $this->getDistinctValues(
+                        'genomic_files',
+                        'Caveat'
+                    )
+                ),
+               );
+    }
+
+    /**
+     * Provide an array of distinct value from a column in
+     * the specified table. The first element has a null key and
+     * its value is 'Any'.
+     *
+     * @param string $table  The tables name
+     * @param string $column The column name
+     *
+     * @return array An array where value are keys as well as values
+     */
+    function getDistinctValues( $table, $column)
+    {
+        $DB      = \Database::singleton();
+        $results = $DB->pselect(
+            "SELECT DISTINCT $column FROM $table ",
+            array()
+        );
+        return array_reduce(
+            $results,
+            function ($carry, $item) {
+                $value = array_values($item)[0];
+                if (!empty($value)) {
+                    $carry[str_replace(' ', '_', $value)] = $value;
+                }
+                return $carry;
+            },
+            array(null => 'Any')
+        );
+
+    }
+
     /**
      * Processes the values & saves to database and return a json response.
      *
@@ -107,24 +202,22 @@ class FileManager extends Endpoint implements ETagCalculator
         // Parse POST request body.
         $values = $request->getParsedBody();
 
-
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
-
 
         return new \LORIS\Http\Response\JsonResponse(
             $values
@@ -173,10 +266,10 @@ class FileManager extends Endpoint implements ETagCalculator
     /**
      * Used to create (select, text, ...) element for form filter.
      *
-     * @param string name for element
-     * @param string type for element
-     * @param string label for element
-     * @param array  values for element
+     * @param string     $name   for element
+     * @param string     $type   for element
+     * @param string     $label  for element
+     * @param array|null $values for element
      *
      * @return object
      */
@@ -184,11 +277,11 @@ class FileManager extends Endpoint implements ETagCalculator
         string $name,
         string $type,
         string $label,
-        array $values
+        ?array $values
     ) : object {
-        $element = new \stdClass();
-        $element->name = $name;
-        $element->type = $type;
+        $element        = new \stdClass();
+        $element->name  = $name;
+        $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
             $element->values = $values;
@@ -232,9 +325,9 @@ class FileManager extends Endpoint implements ETagCalculator
     protected function allowedMethods(): array
     {
         return array(
-            'GET',
-            'POST',
-        );
+                'GET',
+                'POST',
+               );
     }
 
     /**

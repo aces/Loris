@@ -28,8 +28,8 @@ class CNV extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -42,8 +42,10 @@ class CNV extends Component {
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
+      .then((data) => {
+        console.log(data);
+        this.setState({data});
+      }).catch((error) => {
         this.setState({error: true});
         console.error(error);
       });

@@ -7,13 +7,14 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser\endpoints;
 
+use LORIS\genomic_browser\Provisioners\MethylationProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -26,14 +27,18 @@ use \LORIS\Middleware\ETagCalculator;
  * allows methylation to be processed as part of the genomic browser.
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 class Methylation extends Endpoint implements ETagCalculator
 {
-    public $skipTemplate = true;
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * This function will return a json response.
@@ -44,16 +49,14 @@ class Methylation extends Endpoint implements ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // Ensure GET or POST request.
+        // Ensure GET request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -68,67 +71,313 @@ class Methylation extends Endpoint implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
-
-        $values = $this->_setupVariables($request, $values);
-
-
-
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
-
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
-        );
+        $user        = $request->getAttribute('user');
+        $provisioner = (new MethylationProvisioner())->forUser($user);
+        // $provisioner = (new MethylationProvisioner())->filter();
+        $data         = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+        $body         = array(
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions($request),
+                        );
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+        return $this->_cache;
     }
+
     /**
-     * Processes the values & saves to database and return a json response.
+     * Provide the select inputs options
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array Dynamic field options
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
-    {
-        // Parse POST request body.
-        $values = $request->getParsedBody();
+    private function _getFieldOptions(
+        ServerRequestInterface $request
+    ) : array {
 
+        $user = $request->getAttribute('user');
 
-        // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
-        if (isset($values['error'])) {
-            switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+        // PSC
+        if ($user->hasPermission('genomic_browser_view_allsites')) {
+            // has access to all sites genomic data
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites = \Utility::getSiteList();
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array('' => 'Any') + $list_of_sites;
             }
+        } else {
+            // allow only to view own site data
+            $list_of_sites = $user->getStudySites();
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
+        // Platform
+        $DB = \Database::singleton();
+        $platform_results = $DB->pselect(
+            "SELECT distinct Name FROM genotyping_platform",
+            array()
         );
+        $platform_options = array('' => 'Any');
+        foreach ($platform_results as $row => $result) {
+            $name = $result['Name'];
+            $platform_options[$name] = $name;
+        }
+
+        return array(
+                'centerID'           => $this->_formElementObjectCreator(
+                    'centerID',
+                    'select',
+                    'Site',
+                    $list_of_sites
+                ),
+                'DCCID'              => $this->_formElementObjectCreator(
+                    'DCCID',
+                    'text',
+                    'DCCID',
+                    null
+                ),
+                'PSCID'              => $this->_formElementObjectCreator(
+                    'PSCID',
+                    'text',
+                    'PSCID',
+                    null
+                ),
+                'Sex'                => $this->_formElementObjectCreator(
+                    'sex',
+                    'select',
+                    'Sex',
+                    array(
+                     ''       => 'All',
+                     'Male'   => 'Male',
+                     'Female' => 'Female',
+                    )
+                ),
+                'SubprojectID'       => $this->_formElementObjectCreator(
+                    'SubprojectID',
+                    'select',
+                    'Subproject',
+                    array('' => 'Any') + \Utility::getSubprojectList()
+                ),
+                'DoB'                => $this->_formElementObjectCreator(
+                    'dob',
+                    'select',
+                    'Date of Birth',
+                    array('maxlength' => 10)
+                ),
+                'Show_Brief_Results' => $this->_formElementObjectCreator(
+                    'Show_Brief_Results',
+                    'select',
+                    'Display',
+                    array(
+                     'brief' => 'Summary fields',
+                     'full'  => 'All fields',
+                    )
+                ),
+                'Gene_Symbol'        => $this->_formElementObjectCreator(
+                    'Gene_Symbol',
+                    'text',
+                    'Gene',
+                    null
+                ),
+                'genomic_range'      => $this->_formElementObjectCreator(
+                    'genomic_range',
+                    'text',
+                    'Genomic Range',
+                    null
+                ),
+                'Assembly'           => $this->_formElementObjectCreator(
+                    'Assembly',
+                    'select',
+                    'Build',
+                    array(
+                     null => 'Any',
+                     '37' => 'GRCh37',
+                    )
+                ),
+                'Strand'             => $this->_formElementObjectCreator(
+                    'Strand',
+                    'select',
+                    'Strand',
+                    array(
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
+                    )
+                ),
+                'cpg_name'           => $this->_formElementObjectCreator(
+                    'cpg_name',
+                    'text',
+                    'CPG Name',
+                    null
+                ),
+                'Context'            => $this->_formElementObjectCreator(
+                    'Context',
+                    'select',
+                    'Context',
+                    $this->getDistinctValues(
+                        'genomic_cpg_annotation',
+                        'island_relation'
+                    )
+                ),
+                'Platform'           => $this->_formElementObjectCreator(
+                    'Platform',
+                    'select',
+                    'Platform',
+                    $this->getDistinctValues(
+                        'genotyping_platform',
+                        'Name'
+                    )
+                ),
+                'Gene_Grp'           => $this->_formElementObjectCreator(
+                    'Gene_Grp',
+                    'select',
+                    'Position',
+                    array(
+                     null      => 'Any',
+                     '1stExon' => '1st Exon',
+                     '3`UTR'   => '3`UTR',
+                     '5`UTR'   => '5`UTR',
+                     'Body'    => 'Body',
+                     'TSS1500' => 'TSS1500',
+                     'TSS200'  => 'TSS200',
+                    )
+                ),
+                'Design'             => $this->_formElementObjectCreator(
+                    'Design',
+                    'select',
+                    'Infinium design',
+                    array(
+                     null => 'Any',
+                     'I'  => 'I',
+                     'II' => 'II',
+                    )
+                ),
+                'Color'              => $this->_formElementObjectCreator(
+                    'Strand',
+                    'select',
+                    'Color',
+                    array(
+                     null  => 'Any',
+                     'Grn' => 'Green',
+                     'Red' => 'Red',
+                    )
+                ),
+                'Enhancer'           => $this->_formElementObjectCreator(
+                    'Enhancer',
+                    'select',
+                    'Enhancer',
+                    array(
+                     null => 'Any',
+                     '1'  => 'Yes',
+                    )
+                ),
+                'SNP_10'             => $this->_formElementObjectCreator(
+                    'SNP_10',
+                    'select',
+                    'SNP',
+                    array(
+                     null   => 'Any',
+                     'NULL' => 'No',
+                     '_'    => 'Yes',
+                    )
+                ),
+                'Reg_Feature_Grp'    => $this->_formElementObjectCreator(
+                    'Reg_Feature_Grp',
+                    'select',
+                    'Regulatory feat.:',
+                    $this->getDistinctValues(
+                        'genomic_cpg_annotation',
+                        'reg_feature_group'
+                    )
+                ),
+                'Fantom_Prom'        => $this->_formElementObjectCreator(
+                    'Fantom_Prom',
+                    'select',
+                    'Promoter',
+                    array(
+                     null       => 'Any',
+                     'NULL'     => 'No',
+                     'NOT_NULL' => 'Yes',
+                    )
+                ),
+                'HMM_Island'         => $this->_formElementObjectCreator(
+                    'HMM_Island',
+                    'select',
+                    'HMM Island',
+                    array(
+                     null       => 'Any',
+                     'NULL'     => 'No',
+                     'NOT_NULL' => 'Yes',
+                    )
+                ),
+                'DHS'                => $this->_formElementObjectCreator(
+                    'DHS',
+                    'select',
+                    'DHS',
+                    array(
+                     null   => 'Any',
+                     '1'    => 'Yes',
+                     'NULL' => 'No',
+                    )
+                ),
+                'DMR'                => $this->_formElementObjectCreator(
+                    'DMR',
+                    'select',
+                    'DMR',
+                    $this->getDistinctValues(
+                        'genomic_cpg_annotation',
+                        'dmr'
+                    )
+                ),
+               );
+    }
+
+    /**
+     * Provide an array of distinct value from a column in
+     * the specified table. The first element has a null key and
+     * its value is 'Any'.
+     *
+     * @param string $table  The tables name
+     * @param string $column The column name
+     *
+     * @return array An array where value are keys as well as values
+     */
+    function getDistinctValues( $table, $column)
+    {
+        $DB      = \Database::singleton();
+        $results = $DB->pselect(
+            "SELECT DISTINCT $column FROM $table ",
+            array()
+        );
+        return array_reduce(
+            $results,
+            function ($carry, $item) {
+                $value = array_values($item)[0];
+                if (!empty($value)) {
+                    $carry[$value] = $value;
+                }
+                return $carry;
+            },
+            array(null => 'Any')
+        );
+
     }
 
     /**
@@ -173,10 +422,10 @@ class Methylation extends Endpoint implements ETagCalculator
     /**
      * Used to create (select, text, ...) element for form filter.
      *
-     * @param string name for element
-     * @param string type for element
-     * @param string label for element
-     * @param array  values for element
+     * @param string     $name   for element
+     * @param string     $type   for element
+     * @param string     $label  for element
+     * @param array|null $values for element
      *
      * @return object
      */
@@ -184,11 +433,11 @@ class Methylation extends Endpoint implements ETagCalculator
         string $name,
         string $type,
         string $label,
-        array $values
+        ?array $values
     ) : object {
-        $element = new \stdClass();
-        $element->name = $name;
-        $element->type = $type;
+        $element        = new \stdClass();
+        $element->name  = $name;
+        $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
             $element->values = $values;
@@ -231,10 +480,7 @@ class Methylation extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
-            'GET',
-            'POST',
-        );
+        return array('GET');
     }
 
     /**

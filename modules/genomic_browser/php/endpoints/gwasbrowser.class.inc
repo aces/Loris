@@ -7,13 +7,14 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser\endpoints;
 
+use LORIS\genomic_browser\Provisioners\GwasProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -26,14 +27,18 @@ use \LORIS\Middleware\ETagCalculator;
  * allows gwasbrowser to be processed as part of the genomic browser.
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 class GwasBrowser extends Endpoint implements ETagCalculator
 {
-    public $skipTemplate = true;
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * This function will return a json response.
@@ -46,14 +51,12 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -68,67 +71,116 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
-
-        $values = $this->_setupVariables($request, $values);
-
-
-
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
-
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
-        );
+        $user        = $request->getAttribute('user');
+        $provisioner = (new GwasProvisioner())->forUser($user);
+        // $provisioner = (new ProfileProvisioner())->filter();
+        $data         = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+        $body         = array(
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions($request),
+                        );
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+        return $this->_cache;
     }
+
     /**
-     * Processes the values & saves to database and return a json response.
+     * Provide the select inputs options
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array Dynamic field options
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    private function _getFieldOptions() : array
     {
-        // Parse POST request body.
-        $values = $request->getParsedBody();
+        $alleleArray = array(
+                        ''  => 'Any',
+                        'A' => 'A',
+                        'C' => 'C',
+                        'T' => 'T',
+                        'G' => 'G',
+                       );
 
-
-        // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
-        if (isset($values['error'])) {
-            switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
-            }
-        }
-
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
-        );
+        return array(
+                'Show_Brief_Results' => $this->_formElementObjectCreator(
+                    'Show_Brief_Results',
+                    'select',
+                    'Display',
+                    array(
+                     'brief' => 'Summary fields',
+                     'full'  => 'All fields',
+                    )
+                ),
+                'SNP_ID'             => $this->_formElementObjectCreator(
+                    'SNP_ID',
+                    'text',
+                    'SNP ID',
+                    null
+                ),
+                'Chromosome'         => $this->_formElementObjectCreator(
+                    'Chromosome',
+                    'text',
+                    'Chromosome',
+                    null
+                ),
+                'BP_Position'        => $this->_formElementObjectCreator(
+                    'BP_Position',
+                    'text',
+                    'BP Position',
+                    null
+                ),
+                'MAF'                => $this->_formElementObjectCreator(
+                    'MAF',
+                    'text',
+                    'MAF',
+                    null
+                ),
+                'Minor_Allele'       => $this->_formElementObjectCreator(
+                    'Minor_Allele',
+                    'select',
+                    'Minor Allele',
+                    $alleleArray
+                ),
+                'Major_Allele'       => $this->_formElementObjectCreator(
+                    'Major_Allele',
+                    'select',
+                    'Major Allele',
+                    $alleleArray
+                ),
+                'Estimate'           => $this->_formElementObjectCreator(
+                    'Estimate',
+                    'text',
+                    'Estimate',
+                    null
+                ),
+                'StdErr'             => $this->_formElementObjectCreator(
+                    'StdErr',
+                    'text',
+                    'Std Err',
+                    null
+                ),
+                'Pvalue'             => $this->_formElementObjectCreator(
+                    'Pvalue',
+                    'text',
+                    'P-value',
+                    null
+                ),
+               );
     }
 
     /**
@@ -154,29 +206,12 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Setup variables for form.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array                  $values  The form values.
-     *
-     * @return array
-     */
-    private function _setupVariables(
-        ServerRequestInterface $request,
-        array $values
-    ) : array {
-        // set the class variables
-
-    }
-
-
-    /**
      * Used to create (select, text, ...) element for form filter.
      *
-     * @param string name for element
-     * @param string type for element
-     * @param string label for element
-     * @param array  values for element
+     * @param string     $name   for element
+     * @param string     $type   for element
+     * @param string     $label  for element
+     * @param array|null $values for element
      *
      * @return object
      */
@@ -184,18 +219,17 @@ class GwasBrowser extends Endpoint implements ETagCalculator
         string $name,
         string $type,
         string $label,
-        array $values
+        ?array $values
     ) : object {
-        $element = new \stdClass();
-        $element->name = $name;
-        $element->type = $type;
+        $element        = new \stdClass();
+        $element->name  = $name;
+        $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
             $element->values = $values;
         }
         return $element;
     }
-
 
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
@@ -231,10 +265,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
-            'GET',
-            'POST',
-        );
+        return array('GET');
     }
 
     /**

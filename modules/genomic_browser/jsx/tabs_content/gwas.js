@@ -29,10 +29,9 @@ class GWAS extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
-
   /**
    * Retrieve data from the provided URL and save it in state.
    *
@@ -43,8 +42,10 @@ class GWAS extends Component {
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
+      .then((data) => {
+        console.log(data);
+        this.setState({data});
+      }).catch((error) => {
         this.setState({error: true});
         console.error(error);
       });

@@ -6,7 +6,7 @@
  * PHP Version 7
  *
  * @category LORIS_Module
- * @package  Genomics
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class module implements the basic LORIS module functionality
  *
  * @category LORIS_Module
- * @package  Genomics
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
@@ -44,26 +44,26 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-            case 'Profiles':
-                $handler = new endpoints\Profiles();
-                break;
-            case 'CvnBrowser':
-                $handler = new endpoints\CnvBrowser();
-                break;
-            case 'Methylation':
-                $handler = new endpoints\Methylation();
-                break;
-            case 'FileManager':
-                $handler = new endpoints\FileManager();
-                break;
-            case 'SnpBrowser':
-                $handler = new endpoints\SnpBrowser();
-                break;
-            case 'GwasBrowser':
-                $handler = new endpoints\GwasBrowser();
-                break;
-            default:
-                return parent::handle($request);
+        case 'Profiles':
+            $handler = new endpoints\Profiles();
+            break;
+        case 'CvnBrowser':
+            $handler = new endpoints\CnvBrowser();
+            break;
+        case 'Methylation':
+            $handler = new endpoints\Methylation();
+            break;
+        case 'FileManager':
+            $handler = new endpoints\FileManager();
+            break;
+        case 'SnpBrowser':
+            $handler = new endpoints\SnpBrowser();
+            break;
+        case 'GwasBrowser':
+            $handler = new endpoints\GwasBrowser();
+            break;
+        default:
+            return parent::handle($request);
         }
 
         $user = $request->getAttribute('user');

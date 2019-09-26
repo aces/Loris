@@ -44,8 +44,10 @@ class Profiles extends Component {
       {credentials: 'same-origin'}
       )
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
+      .then((data) => {
+        console.log(data);
+        this.setState({data});
+      }).catch((error) => {
         this.setState({error: true});
         console.error(error);
       });
@@ -63,9 +65,14 @@ class Profiles extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
-    console.log(column);
-    // const hide = [''];
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
+    // console.log(column);
+    const hiddenHeaders = [
+      'PSC',
+      'DCCID',
+      'externalID',
+      'DoB',
+    ];
+    if (hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
 

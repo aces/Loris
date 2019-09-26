@@ -7,13 +7,14 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser\endpoints;
 
+use LORIS\genomic_browser\Provisioners\CnvProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -26,14 +27,18 @@ use \LORIS\Middleware\ETagCalculator;
  * allows cnvbrowser to be processed as part of the genomic browser.
  *
  * @category Loris
- * @package  Genomic Browser
+ * @package  Genomic_Browser
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 class CnvBrowser extends Endpoint implements ETagCalculator
 {
-    public $skipTemplate = true;
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
 
     /**
      * This function will return a json response.
@@ -44,16 +49,14 @@ class CnvBrowser extends Endpoint implements ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // Ensure GET or POST request.
+        // Ensure GET request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -68,67 +71,267 @@ class CnvBrowser extends Endpoint implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
-
-        $values = $this->_setupVariables($request, $values);
-
-
-
         // User permission verification.
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
-
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
-        );
+        $user        = $request->getAttribute('user');
+        $provisioner = (new CnvProvisioner())->forUser($user);
+        // $provisioner = (new CnvProvisioner())->filter();
+        $data         = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+        $body         = array(
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions($request),
+                        );
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
+        return $this->_cache;
     }
+
     /**
-     * Processes the values & saves to database and return a json response.
+     * Provide the select inputs options
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array Dynamic field options
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
-    {
-        // Parse POST request body.
-        $values = $request->getParsedBody();
+    private function _getFieldOptions(
+        ServerRequestInterface $request
+    ) : array {
 
+        $user = $request->getAttribute('user');
 
-        // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
-        if (isset($values['error'])) {
-            switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+        // PSC
+        if ($user->hasPermission('genomic_browser_view_allsites')) {
+            // has access to all sites genomic data
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites = \Utility::getSiteList();
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array('' => 'Any') + $list_of_sites;
             }
+        } else {
+            // allow only to view own site data
+            $list_of_sites = $user->getStudySites();
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $values
+        // Platform
+        $DB = \Database::singleton();
+        $platform_results = $DB->pselect(
+            "SELECT distinct Name FROM genotyping_platform",
+            array()
         );
+        $platform_options = array('' => 'Any');
+        foreach ($platform_results as $row => $result) {
+            $name = $result['Name'];
+            $platform_options[$name] = $name;
+        }
+
+        return array(
+                'centerID'           => $this->_formElementObjectCreator(
+                    'centerID',
+                    'select',
+                    'Site',
+                    $list_of_sites
+                ),
+                'DCCID'              => $this->_formElementObjectCreator(
+                    'DCCID',
+                    'text',
+                    'DCCID',
+                    null
+                ),
+                'PSCID'              => $this->_formElementObjectCreator(
+                    'PSCID',
+                    'text',
+                    'PSCID',
+                    null
+                ),
+                'External_ID'        => $this->_formElementObjectCreator(
+                    'External_ID',
+                    'text',
+                    'External ID',
+                    null
+                ),
+                'Sex'                => $this->_formElementObjectCreator(
+                    'sex',
+                    'select',
+                    'Sex',
+                    array(
+                     ''       => 'All',
+                     'Male'   => 'Male',
+                     'Female' => 'Female',
+                    )
+                ),
+                'SubprojectID'       => $this->_formElementObjectCreator(
+                    'SubprojectID',
+                    'select',
+                    'Subproject',
+                    array('' => 'Any') + \Utility::getSubprojectList()
+                ),
+                'DoB'                => $this->_formElementObjectCreator(
+                    'dob',
+                    'select',
+                    'Date of Birth',
+                    array('maxlength' => 10)
+                ),
+                'Show_Brief_Results' => $this->_formElementObjectCreator(
+                    'Show_Brief_Results',
+                    'select',
+                    'Display',
+                    array(
+                     'brief' => 'Summary fields',
+                     'full'  => 'All fields',
+                    )
+                ),
+                'Assembly'           => $this->_formElementObjectCreator(
+                    'Assembly',
+                    'select',
+                    'Build',
+                    array(
+                     null => 'Any',
+                     '37' => 'GRCh37',
+                    )
+                ),
+                'CNV_Type'           => $this->_formElementObjectCreator(
+                    'CNV_Type',
+                    'select',
+                    'Type',
+                    array(
+                     null      => 'All',
+                     'gain'    => 'gain',
+                     'loss'    => 'loss',
+                     'unknown' => 'Unknown',
+                    )
+                ),
+                'Copy_Num_Change'    => $this->_formElementObjectCreator(
+                    'Copy_Num_Change',
+                    'text',
+                    'Copy Number Change',
+                    null
+                ),
+                'CNV_Description'    => $this->_formElementObjectCreator(
+                    'CNV_Description',
+                    'text',
+                    'Description',
+                    null
+                ),
+                'Event_Name'         => $this->_formElementObjectCreator(
+                    'Event_Name',
+                    'text',
+                    'Event Name',
+                    null
+                ),
+                'Common_CNV'         => $this->_formElementObjectCreator(
+                    'Common_CNV',
+                    'select',
+                    'Common',
+                    array(
+                     null => 'Any',
+                     'Y'  => 'Yes',
+                     'N'  => 'No',
+                    )
+                ),
+                'Characteristics'    => $this->_formElementObjectCreator(
+                    'Characteristics',
+                    'select',
+                    'Characteristics',
+                    array(
+                     null         => 'Any',
+                     'Benign'     => 'Benign',
+                     'Pathogenic' => 'Pathogenic',
+                     'Unknown'    => 'Unknown',
+                    )
+                ),
+                'Inheritance'        => $this->_formElementObjectCreator(
+                    'Inheritance',
+                    'select',
+                    'Inheritance',
+                    array(
+                     null           => 'Any',
+                     'de novo'      => 'de novo',
+                     'maternal'     => 'maternal',
+                     'paternal'     => 'paternal',
+                     'unclassified' => 'unclassified',
+                     'unknown'      => 'unknown',
+                     'NA'           => 'NA',
+                    )
+                ),
+                'Chromosome'         => $this->_formElementObjectCreator(
+                    'Chromosome',
+                    'text',
+                    'Chromosome',
+                    null
+                ),
+                'Strand'             => $this->_formElementObjectCreator(
+                    'Strand',
+                    'select',
+                    'Strand',
+                    array(
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
+                    )
+                ),
+                'genomic_range'      => $this->_formElementObjectCreator(
+                    'genomic_range',
+                    'text',
+                    'Genomic Range',
+                    null
+                ),
+                'Gene_Symbol'        => $this->_formElementObjectCreator(
+                    'Gene_Symbol',
+                    'text',
+                    'Gene',
+                    null
+                ),
+                'Platform'           => $this->_formElementObjectCreator(
+                    'Platform',
+                    'select',
+                    'Platform',
+                    $platform_options
+                ),
+                'Array_Report'       => $this->_formElementObjectCreator(
+                    'Array_Report',
+                    'select',
+                    'Array Report',
+                    array(
+                     null        => 'Any',
+                     'Abnormal'  => 'Abnormal',
+                     'Normal'    => 'Normal',
+                     'Pending'   => 'Pending',
+                     'Uncertain' => 'Uncertain',
+                    )
+                ),
+                'Markers'            => $this->_formElementObjectCreator(
+                    'Markers',
+                    'text',
+                    'Markers',
+                    array(
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
+                    )
+                ),
+                'Validation_Method'  => $this->_formElementObjectCreator(
+                    'Validation_Method',
+                    'text',
+                    'Validation Method',
+                    null
+                ),
+               );
     }
 
     /**
@@ -154,29 +357,12 @@ class CnvBrowser extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Setup variables for form.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array                  $values  The form values.
-     *
-     * @return array
-     */
-    private function _setupVariables(
-        ServerRequestInterface $request,
-        array $values
-    ) : array {
-        // set the class variables
-
-    }
-
-
-    /**
      * Used to create (select, text, ...) element for form filter.
      *
-     * @param string name for element
-     * @param string type for element
-     * @param string label for element
-     * @param array  values for element
+     * @param string     $name   for element
+     * @param string     $type   for element
+     * @param string     $label  for element
+     * @param array|null $values for element
      *
      * @return object
      */
@@ -184,11 +370,11 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         string $name,
         string $type,
         string $label,
-        array $values
+        ?array $values
     ) : object {
-        $element = new \stdClass();
-        $element->name = $name;
-        $element->type = $type;
+        $element        = new \stdClass();
+        $element->name  = $name;
+        $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
             $element->values = $values;
@@ -231,10 +417,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
-            'GET',
-            'POST',
-        );
+        return array('GET');
     }
 
     /**
