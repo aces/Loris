@@ -1,7 +1,5 @@
 <?php
 /**
- * This file provides an implementation of the NoPhantoms filter.
- *
  * PHP Version 7
  *
  * @category   Data
@@ -11,16 +9,14 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-namespace LORIS\Data\Filters;
+namespace LORIS\api;
 
 use \Loris\Data\DataInstance;
 use \LORIS\Data\Filter;
 
 /**
- * OnlyPhantoms filters out data for any images which is associated to a scanner
- * For a DataInstance to be compatible with the NoPhantoms filter, it must
- * implement a isPhantom  method which returns a boolean. The DataInstance will
- * be filtered out if isPhantom is true.
+ * This is meant to be used by a provisioner to filter-out images that are
+ * not phantoms when the user should not see them.
  *
  * @category   Data
  * @package    Main
@@ -29,7 +25,7 @@ use \LORIS\Data\Filter;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class NoPhantoms implements Filter
+class ScansFilter implements Filter
 {
     /**
      * Implements the \LORIS\Data\Filter interface
@@ -41,11 +37,19 @@ class NoPhantoms implements Filter
      */
     public function filter(\User $user, DataInstance $resource) : bool
     {
-        if (method_exists($resource, 'isPhantom')) {
-            return !$resource->isPhantom();
+        if ($resource->isPhantom()) {
+            // This filter only have jurisdiction over non-phantom images.
+            return true;
         }
-        throw new \LorisException(
-            "Can not implement NoPhantomsFilter on that resource."
-        );
+
+        if ($user->hasPermission('imaging_browser_view_allsites')) {
+            return true;
+        }
+
+        if ($user->hasPermission('imaging_browser_view_site')) {
+            return $user->hasCenter($resource->getCenterID());
+        }
+
+        return false;
     }
 }

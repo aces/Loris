@@ -119,16 +119,18 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $user = $request->getAttribute('user');
-
-        $provisioner = (new \LORIS\api\ProjectImagesRowProvisioner(
+        $provisioner = new \LORIS\api\ProjectImagesRowProvisioner(
             $this->_project,
             $since
-        ))->forUser($user);
+        );
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\api\ScansFilter())
+            ->filter(new \LORIS\api\PhantomsFilter());
 
         $images = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
-            ->toArray($user);
+            ->toArray($request->getAttribute('user'));
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
             array('Images' => $images)
