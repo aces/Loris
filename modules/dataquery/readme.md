@@ -45,7 +45,6 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 ```
 <CouchDB>
-    <SyncAccounts>true</SyncAccounts>
     <database>dqg</database>
     <hostname>localhost</hostname>
     <port>5984</port>
