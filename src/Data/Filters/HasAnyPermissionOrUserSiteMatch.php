@@ -13,7 +13,6 @@
  */
 namespace LORIS\Data\Filters;
 
-use \LORIS\Data\Filter;
 use \LORIS\Data\DataInstance;
 
 /**
