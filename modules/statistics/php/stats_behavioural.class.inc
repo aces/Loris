@@ -63,24 +63,23 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $DB    =& \Database::singleton();
-        $user  = \User::singleton();
+        $DB   =& \Database::singleton();
+        $user = \User::singleton();
 
-	$query =
-            "SELECT CONCAT('C', CenterID) as ID,
+        $query = "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                    AND Study_site = 'Y'";
+                  FROM psc
+                  WHERE CenterID <> '1'
+                        AND Study_site = 'Y'";
 
-	if (!$user->hasPermission('access_all_profiles')) {
+        if (!$user->hasPermission('access_all_profiles')) {
             $site_arr = implode(",", $user->getCenterIDs());
             $query   .= " AND CenterID IN (" . $site_arr . ")";
         }
 
-	$centers = $DB->pselect($query, array());
+        $centers = $DB->pselect($query, array());
 
         $this->tpl_data['Centers'] = $centers;
 
