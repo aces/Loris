@@ -9,6 +9,11 @@ We also have instructions for how to set up LORIS for macOS. However, only
  Ubuntu and CentOS are officially supported by the team so we may be unable to
  help you with issues arising on other systems.
 
+
+When you've completed this guide, further set up is required. Please visit
+[the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to be
+able to use LORIS properly.
+
 ## Prequisities
 
 ### Server Stack
@@ -177,3 +182,6 @@ at `raisinbread/README.md`
 If errors are encountered during the section "Running the install script",
 ensure that all the prequisites for LORIS are installed and meet the minimum
 required versions.
+
+Ensure you've followed the [Setup process](https://github.com/aces/Loris/wiki/Setup)
+after completing this guide.
