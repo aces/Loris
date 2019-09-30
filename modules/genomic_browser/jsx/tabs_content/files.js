@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import GenomicUploadForm from './filemanager/uploadForm';
 
 /**
  * Files Component.
@@ -99,38 +100,9 @@ class Files extends Component {
         onClose={this.closeFileUploadModal}
         show={this.state.showFileUploadModal}
       >
-        <FormElement
-          Module='uploadFile'
-          name='uploadFile'
-          id='uploadFileForm'
-          onSubmit={this.handleFileUpload}
-          method='POST'
-        >
-          <SelectElement
-            name='fileType'
-            options={{
-              'Methylation beta-values': 'Methylation beta-values',
-              'Other': 'Other',
-            }}
-            label='File type'
-            value={this.state.upload.formData.fileType}
-            required={true}
-            onUserInput={this.setFileUploadFormData}
-          />
-          <TextboxElement
-            name='fileDescription'
-            label='Description'
-            value={this.state.upload.formData.fileDescription}
-            required={true}
-            onUserInput={this.setFileUploadFormData}
-          />
-          <ButtonElement
-            name='fire_away'
-            label='Upload'
-            type='submit'
-            buttonClass='btn btn-sm btn-success'
-          />
-        </FormElement>
+        <GenomicUploadForm
+          permissions={this.state.data.permissions}
+        />
       </Modal>
     );
   }
