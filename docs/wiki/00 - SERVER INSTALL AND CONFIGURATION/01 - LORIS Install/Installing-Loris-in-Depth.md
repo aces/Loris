@@ -128,16 +128,18 @@ Once this step is complete, run the `make` command to install additional
 dependencies and compile JavaScript needed to properly render the LORIS
 front-end.
 
+`make` must be run from the LORIS root, not `tools/`
+
 ### Installing LORIS for production
 
 ```bash
-make
+cd `/var/www/loris/`; make
 ```
 
 ### Installing LORIS for development
 
 ```bash
-make dev
+cd `/var/www/loris/`; make dev
 ```
 
 The `dev` target for `make` will install additional libraries that are needed 
