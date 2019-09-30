@@ -63,7 +63,8 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $DB   =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
         $user = \User::singleton();
 
         $query = "SELECT CONCAT('C', CenterID) as ID,
