@@ -41,8 +41,8 @@ class Files extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -55,8 +55,13 @@ class Files extends Component {
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
+      .then((json) => {
+        console.log(json);
+        const data = {
+          fieldOptions: json.fieldOptions,
+          Data: json.data.map((e) => Object.values(e)),
+          subprojects: json.subprojects,
+        };
         this.setState({data});
       }).catch((error) => {
         this.setState({error: true});

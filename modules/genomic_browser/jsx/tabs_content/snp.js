@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import Loader from 'jsx/Loader';
 
 /**
  * SNP Component.
@@ -28,8 +29,8 @@ class SNP extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -42,8 +43,13 @@ class SNP extends Component {
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
+      .then((json) => {
+        console.log(json);
+        const data = {
+          fieldOptions: json.fieldOptions,
+          Data: json.data.map((e) => Object.values(e)),
+          subprojects: json.subprojects,
+        };
         this.setState({data});
       }).catch((error) => {
         this.setState({error: true});
@@ -52,14 +58,51 @@ class SNP extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    const hiddenHeaders = [
+      'PSC',
+      'DCCID',
+      'externalID',
+      'DoB',
+    ];
+
+    let reactElement = null;
+    if (-1 == hiddenHeaders.indexOf(column)) {
+      switch (column) {
+        case 'PSCID':
+          const url = window.location.origin + '/' + cell + '/';
+          reactElement = (
+            <td><a href={url}>{rowData.PSCID}</a></td>
+          );
+          break;
+        default:
+          reactElement = (
+            <td>{cell}</td>
+          );
+          break;
+      }
+    }
+    return reactElement;
+  }
+
+  /**
    * @return {DOMRect}
    */
   render() {
     // Waiting for async data to load.
-    // if (!this.state.isLoaded) {
-    //   return <Loader/>;
-    // }
-    const data = this.state.data;
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+    // const data = this.state.data;
     // const options = this.state.data.fieldOptions;
     const options = {
       site: {
@@ -143,15 +186,14 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Subproject', show: false, filter: {
-          name: 'SubprojectID',
-          type: 'select',
-          options: options.subproject,
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
+          type: 'text',
         },
       },
       {
-        label: 'DCCID', show: false, filter: {
-          name: 'DCCID',
+        label: 'PSCID', show: true, filter: {
+          name: 'PSCID',
           type: 'text',
         },
       },
@@ -163,14 +205,42 @@ class SNP extends Component {
         },
       },
       {
+        label: 'Subproject', show: false, filter: {
+          name: 'SubprojectID',
+          type: 'select',
+          options: options.subproject,
+        },
+      },
+      {
+        label: 'DoB', show: false, filter: {
+          name: 'Date of Birth',
+          type: 'select',
+          options: options.subproject,
+        },
+      },
+      {
         label: 'External ID', show: false, filter: {
           name: 'External_ID',
           type: 'text',
         },
       },
       {
-        label: 'PSCID', show: true, filter: {
-          name: 'PSCID',
+        label: 'Strand', show: false, filter: {
+          name: 'Strand',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Platform', show: false, filter: {
+          name: 'Platform',
+          type: 'select',
+          options: options.platform,
+        },
+      },
+      {
+        label: 'rsID', show: true, filter: {
+          name: 'rsID',
           type: 'text',
         },
       },
@@ -183,25 +253,12 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Strand', show: false, filter: {
-          name: 'Strand',
-          type: 'select',
-          options: options.strand,
-        },
-      },
-      {
         label: 'Genomic Range', show: false, filter: {
           name: 'Genomic_Range',
           type: 'text',
         },
       },
       // SNP Filters
-      {
-        label: 'rsID', show: true, filter: {
-          name: 'rsID',
-          type: 'text',
-        },
-      },
       {
         label: 'Name', show: false, filter: {
           name: 'Name',
@@ -211,6 +268,12 @@ class SNP extends Component {
       {
         label: 'Description', show: false, filter: {
           name: 'Description',
+          type: 'text',
+        },
+      },
+      {
+        label: 'External Source', show: false, filter: {
+          name: 'External_Source',
           type: 'text',
         },
       },
@@ -229,12 +292,6 @@ class SNP extends Component {
         },
       },
       {
-        label: 'External Source', show: false, filter: {
-          name: 'External_Source',
-          type: 'text',
-        },
-      },
-      {
         label: 'Allele B', show: true, filter: {
           name: 'Allele_B',
           type: 'select',
@@ -242,36 +299,10 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Exonic Function', show: true, filter: {
-          name: 'Exonic_Function',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Damaging', show: true, filter: {
-          name: 'Damaging',
-          type: 'select',
-          options: options.damaging,
-        },
-      },
-      {
         label: 'Reference Base', show: true, filter: {
           name: 'Reference_Base',
           type: 'select',
           options: options.reference_base,
-        },
-      },
-      {
-        label: 'Genotype Quality', show: false, filter: {
-          name: 'Genotype_Quality',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Platform', show: false, filter: {
-          name: 'Platform',
-          type: 'select',
-          options: options.platform,
         },
       },
       {
@@ -289,6 +320,25 @@ class SNP extends Component {
         },
       },
       {
+        label: 'Damaging', show: true, filter: {
+          name: 'Damaging',
+          type: 'select',
+          options: options.damaging,
+        },
+      },
+      {
+        label: 'Genotype Quality', show: false, filter: {
+          name: 'Genotype_Quality',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Exonic Function', show: true, filter: {
+          name: 'Exonic_Function',
+          type: 'text',
+        },
+      },
+      {
         label: 'Display', show: false, filter: {
           name: 'display',
           type: 'select',
@@ -300,9 +350,9 @@ class SNP extends Component {
       <div>
          <FilterableDataTable
           name={'filterableDataTableSNP'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
-           // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
          />
       </div>
     );

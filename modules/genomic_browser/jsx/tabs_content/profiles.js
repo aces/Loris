@@ -30,8 +30,8 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -44,8 +44,13 @@ class Profiles extends Component {
       {credentials: 'same-origin'}
       )
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
+      .then((json) => {
+        console.log(json);
+        const data = {
+          fieldOptions: json.fieldOptions,
+          Data: json.data.map((e) => Object.values(e)),
+          subprojects: json.subprojects,
+        };
         this.setState({data});
       }).catch((error) => {
         this.setState({error: true});
@@ -64,28 +69,72 @@ class Profiles extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    // If a column if set as hidden, don't display it
-    // console.log(column);
-    const hiddenHeaders = [
-      'PSC',
-      'DCCID',
-      'externalID',
-      'DoB',
-    ];
-    if (hiddenHeaders.indexOf(column) > -1) {
-      return null;
+    console.log('column: ');
+    console.log(column);
+    console.log('cell: ');
+    console.log(cell);
+    console.log('rowData: ');
+    console.log(JSON.stringify(rowData));
+
+    let reactElement = null;
+    switch (column) {
+      case 'PSCID': {
+        const url = window.location.origin + '/' + cell + '/';
+        reactElement = (
+          <td><a href={url}>{rowData.PSCID}</a></td>
+        );
+        break;
+      }
+      case 'Subproject':
+        reactElement = (
+          <td>{this.state.data.subprojects[parseInt(cell)]}</td>
+        );
+        break;
+      case 'File':
+        if (cell === 'Y') {
+          reactElement = (
+            <td>
+              <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+                'genomic_browser/viewGenomicFile/',
+                {candID: rowData[1]}
+              )}>{cell}</a>
+            </td>
+          );
+        } else {
+          reactElement = (
+            <td>{cell}</td>
+          );
+        }
+        break;
+      case 'CNV':
+      case 'CPG':
+      case 'SNP':
+        if (cell === 'Y') {
+          reactElement = (
+            <td>
+            <span
+              style={{cursor: 'pointer'}}
+              onClick={loris.loadFilteredMenuClickHandler(
+                'genomic_browser/' + column.toLowerCase() + '_browser/',
+                {DCCID: rowData[1]}
+              )}
+            >
+              {cell}
+            </span>
+            </td>
+          );
+        } else {
+          reactElement = (
+            <td>{cell}</td>
+          );
+        }
+        break;
+      default:
+        reactElement = (
+          <td>{cell}</td>
+        );
     }
-
-    // Mapping between rowHeaders & rowData in 'row' object.
-    let row = {};
-    rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index];
-    }, this);
-
-    // Default cell style
-    const cellStyle = {whiteSpace: 'nowrap'};
-
-    return (<td style={cellStyle}>{cell}</td>);
+    return reactElement;
   }
 
   /**
@@ -96,7 +145,8 @@ class Profiles extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    const data = this.state.data;
+    // const state = Object.assign({}, this.state);
+    // const data = state.data;
     // const options = this.state.data.fieldOptions;
     const options = {
       site: {
@@ -146,15 +196,14 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Subproject', show: true, filter: {
-          name: 'SubprojectID',
-          type: 'select',
-          options: options.subproject,
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
+          type: 'text',
         },
       },
       {
-        label: 'DCCID', show: false, filter: {
-          name: 'DCCID',
+        label: 'PSCID', show: true, filter: {
+          name: 'PSCID',
           type: 'text',
         },
       },
@@ -166,18 +215,25 @@ class Profiles extends Component {
         },
       },
       {
+        label: 'Subproject', show: true, filter: {
+          name: 'SubprojectID',
+          type: 'select',
+          options: options.subproject,
+        },
+      },
+      {
+        label: 'DoB', show: false, filter: {
+          name: 'Date of Birth',
+          type: 'select',
+          options: options.subproject,
+        },
+      },
+      {
         label: 'External ID', show: false, filter: {
           name: 'External_ID',
           type: 'text',
         },
       },
-      {
-        label: 'PSCID', show: true, filter: {
-          name: 'PSCID',
-          type: 'text',
-        },
-      },
-      // Genomic Filters.
       {
         label: 'Files', show: true, filter: {
           name: 'files',
@@ -186,24 +242,25 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'CPGs found', show: true, filter: {
-          name: 'cpg',
-          type: 'select',
-          options: options.cpg,
-        },
-      },
-      {
-        label: 'SNPs found', show: true, filter: {
+        label: 'SNP', show: true, filter: {
           name: 'snp',
           type: 'select',
           options: options.snp,
         },
       },
       {
-        label: 'CNVs found', show: true, filter: {
+        label: 'CNV', show: true, filter: {
           name: 'cnv',
           type: 'select',
           options: options.cnv,
+        },
+      },
+      // Genomic Filters.
+      {
+        label: 'CPG', show: true, filter: {
+          name: 'cpg',
+          type: 'select',
+          options: options.cpg,
         },
       },
       {
@@ -218,7 +275,7 @@ class Profiles extends Component {
       <div>
         <FilterableDataTable
           name={'filterableDataTableProfiles'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
           getFormattedCell={this.formatColumn}
         />

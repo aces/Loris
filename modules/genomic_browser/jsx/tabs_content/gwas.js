@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
-// import Loader from 'jsx/Loader';
+import Loader from 'jsx/Loader';
 
 /**
  * GWAS Component.
@@ -42,8 +42,13 @@ class GWAS extends Component {
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
+      .then((json) => {
+        console.log(json);
+        const data = {
+          fieldOptions: json.fieldOptions,
+          Data: json.data.map((e) => Object.values(e)),
+          subprojects: json.subprojects,
+        };
         this.setState({data});
       }).catch((error) => {
         this.setState({error: true});
@@ -52,14 +57,51 @@ class GWAS extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    const hiddenHeaders = [
+      'PSC',
+      'DCCID',
+      'externalID',
+      'DoB',
+    ];
+
+    let reactElement = null;
+    if (-1 == hiddenHeaders.indexOf(column)) {
+      switch (column) {
+        case 'PSCID':
+          const url = window.location.origin + '/' + cell + '/';
+          reactElement = (
+            <td><a href={url}>{rowData.PSCID}</a></td>
+          );
+          break;
+        default:
+          reactElement = (
+            <td>{cell}</td>
+          );
+          break;
+      }
+    }
+    return reactElement;
+  }
+
+  /**
    * @return {DOMRect}
    */
   render() {
     // Waiting for async data to load.
-    // if (!this.state.isLoaded) {
-    //   return <Loader/>;
-    // }
-    const data = this.state.data;
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+    // const data = this.state.data;
     // const options = this.state.data.fieldOptions;
     const options = {
       major_allele: {
@@ -82,14 +124,20 @@ class GWAS extends Component {
     const fields = [
       // GWAS Filters
       {
+        label: 'SNP ID', show: true, filter: {
+          name: 'SNP_ID',
+          type: 'text',
+        },
+      },
+      {
         label: 'Chromosome', show: true, filter: {
           name: 'Chromosome',
           type: 'text',
         },
       },
       {
-        label: 'SNP ID', show: true, filter: {
-          name: 'SNP_ID',
+        label: 'BP Position', show: true, filter: {
+          name: 'BP_Position',
           type: 'text',
         },
       },
@@ -101,18 +149,6 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'BP Position', show: true, filter: {
-          name: 'BP_Position',
-          type: 'text',
-        },
-      },
-      {
-        label: 'MAF', show: true, filter: {
-          name: 'MAF',
-          type: 'text',
-        },
-      },
-      {
         label: 'Minor Allele', show: true, filter: {
           name: 'Minor_Allele',
           type: 'select',
@@ -120,8 +156,8 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'P-value', show: true, filter: {
-          name: 'Pvalue',
+        label: 'MAF', show: true, filter: {
+          name: 'MAF',
           type: 'text',
         },
       },
@@ -138,6 +174,12 @@ class GWAS extends Component {
         },
       },
       {
+        label: 'P-value', show: true, filter: {
+          name: 'Pvalue',
+          type: 'text',
+        },
+      },
+      {
         label: 'Display', show: true, filter: {
           name: 'display',
           type: 'select',
@@ -149,9 +191,9 @@ class GWAS extends Component {
       <div>
          <FilterableDataTable
           name={'filterableDataTableGWAS'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
-          // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
          />
       </div>
     );

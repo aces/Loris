@@ -110,6 +110,7 @@ class Profiles extends Endpoint implements ETagCalculator
         $body         = array(
                          'data'         => $data,
                          'fieldOptions' => $this->_getFieldOptions($request),
+                         'subprojects'  => \Utility::getSubprojectList(),
                         );
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         return $this->_cache;
