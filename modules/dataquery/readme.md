@@ -71,4 +71,6 @@ This step is optional and not required if the MRI portion of LORIS isn't install
 
 `php CouchDB_Import_MRI.php`
 
+#### NOTE - for developer setup tips, see further instructions [here](https://github.com/aces/Data-Query-Tool)
 
+    <port>5984</port>
