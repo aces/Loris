@@ -40,40 +40,6 @@ if (preg_match(
     $_GET['script'] = $getParams[2];
 
     include_once __DIR__ . "/AjaxHelper.php";
-} else if (preg_match(
-    '#^(/*)instruments/(.+)/#',
-    $url
-)
-) {
-    // Redirect /CandID/Visit/Instrument/ to the instrument
-    // RewriteRule
-    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$
-    //      /main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
-
-    $getParams = explode("/", $url);
-
-    $_REQUEST["test_name"] = $getParams[1];
-    $_GET['test_name']     = $getParams[1];
-
-    include_once __DIR__ . "/main.php";
-} else if (preg_match(
-    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$#',
-    $url
-)
-) {
-    // Redirect /CandID/Visit/Instrument/subtest/ to the instrument
-    // RewriteRule
-    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$
-    //      /main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
-
-    $getParams = explode("/", $url);
-
-    $_REQUEST["test_name"] = $getParams[2];
-    $_REQUEST['candID']    = $getParams[0];
-    $_REQUEST['sessionID'] = $getParams[1];
-    $_REQUEST['subtest']   = $getParams[3];
-
-    include_once __DIR__ . "/main.php";
 } else {
     include_once __DIR__ . "/index.php";
 }

@@ -25,6 +25,7 @@
  */
 class Utility
 {
+
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -126,7 +127,8 @@ class Utility
      */
     static function getSiteList(bool $study_site = true): array
     {
-        $DB =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -161,7 +163,8 @@ class Utility
         bool $study_site = true,
         bool $DCC = true
     ): array {
-        $DB =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -190,7 +193,8 @@ class Utility
      */
     static function getVisitList() : array
     {
-        $DB =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
@@ -214,12 +218,12 @@ class Utility
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // get the list of projects
-        $projects = $DB->pselect("SELECT * FROM Project", array());
-        $project  = array();
-        foreach ($projects as $row) {
-            $project[$row['ProjectID']] = $row['Name'];
-        }
-        return $project;
+        $projects = $DB->pselectColWithIndexKey(
+            "SELECT ProjectID, Name FROM Project",
+            array(),
+            'ProjectID'
+        ) ?? array();
+        return $projects;
     }
 
     /**
@@ -237,8 +241,9 @@ class Utility
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
-                "SELECT * FROM subproject " .
-                "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
+                "SELECT * FROM subproject
+                JOIN project_subproject_rel USING (SubprojectID) 
+                WHERE ProjectID=:pID",
                 array('pID' => $projectID)
             );
         } else {
@@ -281,7 +286,8 @@ class Utility
      */
     static function getTestNameByCommentID(string $commentID): string
     {
-        $db =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $testName = $db->pselectOne($query, array('CID' => $commentID));
@@ -388,7 +394,8 @@ class Utility
      */
     static function lookupBattery(int $age, ?string $stage = null): array
     {
-        $DB =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         // craft the select query
         $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
@@ -451,21 +458,11 @@ class Utility
      */
     static function toArray($var)
     {
-        // TODO Uncomment the exception code below after LORIS 21 is released.
-        //throw new DeprecatedException(
-        //    'Utility::toArray() is deprecated and should not be used. ' .
-        //    'Instead use Utility::associativeToNumericArray() for converting ' .
-        //    'arrays. Scalar values cannot be passed to this function.'
-        //);
-        error_log(
-            'Utility::toArray() will be deprecated in LORIS ' .
-            'version 21. Please use Utility::associativeToNumericArray() ' .
-            'instead.'
+        throw new \DeprecatedException(
+            'Utility::toArray() is deprecated and should not be used. ' .
+            'Instead use Utility::associativeToNumericArray() for converting ' .
+            'arrays. Scalar values cannot be passed to this function.'
         );
-        if (is_array($var) && !array_key_exists(0, $var)) {
-            $var = array($var);
-        }
-        return $var;
     }
 
     /**
@@ -545,7 +542,7 @@ class Utility
     {
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config        =& \NDB_Config::singleton();
+        $config        = $Factory->config();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -575,7 +572,9 @@ class Utility
      */
     static function getDirectInstruments(): array
     {
-        $DB            =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         $instruments   = array();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
@@ -626,7 +625,9 @@ class Utility
      */
     static function getStageUsingCandID(string $Cand_id): string
     {
-        $db    =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
@@ -643,7 +644,9 @@ class Utility
      */
     static function getSubprojectIDUsingCandID(string $Cand_id): int
     {
-        $db    =& \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return intval($stage[0]['SubprojectID']);
@@ -663,7 +666,8 @@ class Utility
     static function getTestNameUsingFullName(string $fullname): string
     {
         $test_name  = '';
-        $db         =& \Database::singleton();
+        $factory    = NDB_Factory::singleton();
+        $db         = $factory->database();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
             array('fname' => $fullname)
@@ -702,7 +706,9 @@ class Utility
         ?string $name = null
     ): array {
 
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         //get sourcefield using instrument
         $sourcefields = array();
         if (!is_null($instrument)) {
@@ -757,7 +763,7 @@ class Utility
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
             $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
@@ -799,7 +805,8 @@ class Utility
      */
     static function getVisitInstruments(string $visit_label): array
     {
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
@@ -904,17 +911,46 @@ class Utility
      */
     static function getLanguageList(): array
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
              FROM language",
             array()
         );
+        $languages   = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
         return $languages;
+    }
+
+    /**
+     * Generate a random string, using a cryptographically secure
+     * pseudorandom number generator (random_int)
+     *
+     * @param int     $length   How many characters do we want?
+     * @param ?string $keyspace A string of all possible characters
+     *                         to select from. Will default to the alphanum set.
+     *
+     * @return string
+     */
+    static function randomString(
+        int $length = 64,
+        ?string $keyspace = null
+    ): string {
+        $keyspace = $keyspace
+        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max    = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
     }
 }
 

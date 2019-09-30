@@ -41,4 +41,3 @@ class NotFound extends JsonResponse
         parent::__construct($body, 404);
     }
 }
-

@@ -12,10 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-
 
 /**
  * A ModuleFileRouter is a type of RequestHandler which directly loads
@@ -57,9 +57,9 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     public function __construct(\Module $module, string $moduledir, string $subdir, string $contenttype)
     {
-        $this->module    = $module;
-        $this->moduledir = $moduledir;
-        $this->subdir    = $subdir;
+        $this->module      = $module;
+        $this->moduledir   = $moduledir;
+        $this->subdir      = $subdir;
         $this->contenttype = $contenttype;
     }
 
@@ -93,7 +93,8 @@ class ModuleFileRouter implements RequestHandlerInterface
         return (new \LORIS\Http\Error(
             $request,
             404,
-            $fullpath . ": File not found"))
+            $fullpath . ": File not found"
+        ))
             ->withHeader("Content-Type", "text/html");
     }
 }

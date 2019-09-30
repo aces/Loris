@@ -92,12 +92,13 @@ class BVL_Feedback_Panel
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
         $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
-        $Fields['Across All Fields'] = 'Across All Fields';
+        $fields      = array();
+        $fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {
-            $Fields[$field_name['SourceField']] = $field_name['SourceField'];
+            $fields[$field_name['SourceField']] = $field_name['SourceField'];
         }
 
-        $this->tpl_data['FieldNames'] = json_encode($Fields);
+        $this->tpl_data['FieldNames'] = json_encode($fields);
 
         $smarty = new Smarty_neurodb("bvl_feedback_panel");
         $smarty->assign($this->tpl_data);

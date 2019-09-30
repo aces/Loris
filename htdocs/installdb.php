@@ -188,8 +188,8 @@ $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 // pages
 if (isset($tpl_data['Page'])) {
     if ($tpl_data['Page'] == 'MySQLUserPrompt') {
-        $tpl_data['SamplePassword']  = User::newPassword(16);
-        $tpl_data['SamplePassword2'] = User::newPassword(16);
+        $tpl_data['SamplePassword']  = Utility::randomString(16);
+        $tpl_data['SamplePassword2'] = Utility::randomString(16);
     } else if ($tpl_data['Page'] == 'Done') {
         $tpl_data['lorisurl'] = $installer->getBaseURL();
     }

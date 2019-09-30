@@ -43,14 +43,14 @@ class ServerProcessFactory
      *                             YYYY-MM-DD HH:MM:SS format
      * @param string $exitText     text output by the process upon completion.
      *
-     * @return string the server process created
+     * @return MriUploadServerProcess the server process created
      * @throws \InvalidArgumentException if the server process type is unknown
      */
     public function getServerProcess(
         $id, $pid, $type, $stdoutFile, $stderrFile,
         $exitCodeFile, $exitCode, $userId,
         $startTime, $endTime, $exitText
-    ) {
+    ): MRIUploadServerProcess {
         if ($type == MriUploadServerProcess::PROCESS_TYPE) {
             return new MriUploadServerProcess(
                 null,

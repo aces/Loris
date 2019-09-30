@@ -349,7 +349,17 @@ class File_Upload
             return false;
         }
         //Test each method
-        foreach ($this->fileHandlers[$field]['methods'] AS $method) {
+        $methods = $this->fileHandlers[$field]['methods'];
+        if (!is_iterable($methods)) {
+            // Phan thinks methods is a string and fails below without
+            // this check, but the class only ever seems to set it to an
+            // array, so if somehow it become a string in a non-obvious
+            // code path, throw an exception.
+            throw new \UnexpectedValueException(
+                "Invalid internal state of FileHandler. Expected array of methods"
+            );
+        }
+        foreach ($methods AS $method) {
             if (!method_exists($test, $method)) {
                 $this->setError(
                     $field,
@@ -463,13 +473,14 @@ class File_Upload
       *
       * @param string $name The string file name
       *
-      * @return string split file name
+      * @return array split file name
       * @see    File_Upload::nameToIncremental()
       * @see    File_Upload::nameToUniqueRandom()
       * @see    File_Upload::nameToUniqueTimestamp()
       */
     function getSplitFilename($name)
     {
+        $file = array();
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
             $file['name'] =substr($name, 0, $extpos);

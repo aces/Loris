@@ -91,6 +91,8 @@ class NDB_Page implements RequestHandlerInterface
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
+     * FIXME: $formname is never used. - Alexandra Livadas
+     *
      * @param Module $module     The test name being accessed
      * @param string $page       The subtest being accessed (may be an empty string)
      * @param string $identifier The identifier for the data to load on this page
@@ -266,15 +268,15 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $attr    Extra HTML attributes to add to the date group.
      *
      * @return void
+     *
+     * @note The 'style' information was removed because it is not an attribute
+     *       added to an element in the LorisForm library. -Alexandra Livadas
      */
     function addBasicDate(
         $field,
         $label,
         $options=array(),
-        $attr=array(
-               'class' => 'form-control input-sm',
-               'style' => 'max-width:33%; display:inline-block;',
-              )
+        $attr=array('class' => 'form-control input-sm')
     ) {
         if ($options === array() && !empty($this->dateOptions)) {
             $options = $this->dateOptions;
@@ -293,18 +295,26 @@ class NDB_Page implements RequestHandlerInterface
      *                         to the checkbox
      *
      * @return void
+     *
+     * @note The optional array is never actually put into the element
+     *       because LorisForm::addHeader does not take it as a parameter.
+     *       The 'class' attribute is now added to the $options array instead
+     *       whereas before it was in the $optional array.
+     *        - Alexandra Livadas
      */
     function addCheckbox($name, $label, $options, $optional=array())
     {
-        $optional = array_merge(
+        $options = array_merge(
             array('class' => 'form-control input-sm'),
-            $optional
+            $options
         );
         $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
     }
 
     /**
      * Wrapper to create a radio button
+     * FIXME: Should this be "addRadioGroup"? There is no method
+     *        that just adds 1 radio element. - Alexandra Livadas
      *
      * @param string $name       The field name of this radio button
      * @param string $groupLabel The label to attach to this group of
@@ -319,6 +329,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addRadio($name, $groupLabel, $radios, $options=array())
     {
+        $radGroup = array();
         foreach ($radios as $radElement) {
             $tempOptions = array_merge(
                 array(
@@ -409,6 +420,12 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $format  See QuickForm documentation.
      *
      * @return void
+     *
+     * @note The fourth parameter ($format) was removed because
+     *       LorisForm::addRule does not have this fourth parameter. It is
+     *       still included in the function declaration because this function
+     *       may be called with four parameters elsewhere in the codebase!
+     *       - Alexandra Livadas
      */
     function addRule($element, $message, $type, $format=null)
     {
@@ -435,17 +452,23 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array  $elements   The group of elements to add to the page
-     * @param string $name       The name to give this group
-     * @param string $label      A label to attach to the group
-     * @param string $separator  The separator to use between group elements
-     * @param string $appendName ????
+     * @param array  $elements  The group of elements to add to the page
+     * @param string $name      The name to give this group
+     * @param string $label     A label to attach to the group
+     * @param string $delimiter The separator to use between group elements
+     * @param string $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return void
+     *
+     * @note The names of the last two parameters were changed to match
+     *       the parameters of LorisForm::addGroup and make their purposes
+     *       more clear - Alexandra Livadas
      */
-    function addGroup($elements, $name, $label, $separator, $appendName=null)
+    function addGroup($elements, $name, $label, $delimiter, $options=null)
     {
-        $this->form->addGroup($elements, $name, $label, $separator, $appendName);
+        $this->form->addGroup($elements, $name, $label, $delimiter, $options);
     }
 
     /**
@@ -469,6 +492,11 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Create a QuickForm label element but does not add it to the form
+     *
+     * FIXME: LorisForm::createElement does not use the label parameter when
+     *        the element type is "static". Also, the $labelString paramter here
+     *        has been placed as the fourth parameter which is actually the $options
+     *        array in the createElement function! - Alexandra Livadas
      *
      * @param string $labelString The label to attach to the element
      *
@@ -530,15 +558,15 @@ class NDB_Page implements RequestHandlerInterface
      *                            group.
      *
      * @return array representing date element
+     *
+     * @note The 'style' information was removed because it is not an attribute
+     *       added to an element in the LorisForm library. -Alexandra Livadas
      */
     function createDate(
         $field,
         $label,
         $dateOptions=null,
-        $attr=array(
-               'class' => 'form-control input-sm',
-               'style' => 'max-width:33%; display:inline-block;',
-              )
+        $attr=array('class' => 'form-control input-sm')
     ) {
         return $this->form->createElement(
             "date",
@@ -551,6 +579,8 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Creates an HTML checkbox but does not add it to the form.
+     *
+     * FIXME: $closer is never used or explained. - Alexandra Livadas
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
@@ -776,12 +806,12 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . '/js/polyfills.js',
                     // $baseurl . '/js/react/react-with-addons' . $min . '.js',
                     // $baseurl . '/js/react/react-dom' . $min . '.js',
-                  $baseurl . ($min === '') ?
+                  $baseurl . ($min === '' ?
                       '/vendor/js/react/react.development.js' :
-                      '/vendor/js/react/react.production.js',
-                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react.production' . $min . '.js'),
+                  $baseurl . ($min === '' ?
                       '/vendor/js/react/react-dom.development.js' :
-                      '/vendor/js/react/react-dom.production.js',
+                      '/vendor/js/react/react-dom.production' . $min . '.js'),
 
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',

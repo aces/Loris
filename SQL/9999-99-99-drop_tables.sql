@@ -137,7 +137,6 @@ DROP TABLE IF EXISTS `mri_upload`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 DROP TABLE IF EXISTS `mri_protocol`;
-DROP TABLE IF EXISTS `mri_acquisition_dates`;
 DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `files_intermediary`;
 DROP TABLE IF EXISTS `files`;
@@ -167,7 +166,7 @@ DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `visit_project_subproject_rel`;
 DROP TABLE IF EXISTS `visit`;
-DROP TABLE IF EXISTS `project_rel`;
+DROP TABLE IF EXISTS `project_subproject_rel`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;
 

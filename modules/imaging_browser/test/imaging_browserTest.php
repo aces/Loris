@@ -65,33 +65,36 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => '000001',
-             'PSCID'                => 'DCC0001',
-             'RegistrationCenterID' => 1,
-             'Active'               => 'Y',
-             'Entity_type'          => 'Human',
+             'CandID'                => '000001',
+             'PSCID'                 => 'DCC0001',
+             'RegistrationCenterID'  => 1,
+             'RegistrationProjectID' => 1,
+             'Active'                => 'Y',
+             'Entity_type'           => 'Human',
             )
         );
 
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => '000002',
-             'PSCID'                => 'AOL0002',
-             'RegistrationCenterID' => 253,
-             'Active'               => 'Y',
-             'Entity_type'          => 'Human',
+             'CandID'                => '000002',
+             'PSCID'                 => 'AOL0002',
+             'RegistrationCenterID'  => 253,
+             'RegistrationProjectID' => 1,
+             'Active'                => 'Y',
+             'Entity_type'           => 'Human',
             )
         );
 
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'               => 000003,
-             'PSCID'                => 'BOL0003',
-             'RegistrationCenterID' => 254,
-             'Active'               => 'Y',
-             'Entity_type'          => 'Human',
+             'CandID'                => 000003,
+             'PSCID'                 => 'BOL0003',
+             'RegistrationCenterID'  => 254,
+             'RegistrationProjectID' => 1,
+             'Active'                => 'Y',
+             'Entity_type'           => 'Human',
             )
         );
 
@@ -102,6 +105,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'CandID'        => 000001,
              'Visit_label'   => 'Test0',
              'CenterID'      => 1,
+             'ProjectID'     => 1,
              'Scan_done'     => 'Y',
              'Current_stage' => 'Visit',
              'Visit'         => 'In Progress',
@@ -115,6 +119,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'CandID'        => 000002,
              'Visit_label'   => 'Test1',
              'CenterID'      => 253,
+             'ProjectID'     => 1,
              'Scan_done'     => 'Y',
              'Current_stage' => 'Visit',
              'Visit'         => 'In Progress',
@@ -128,6 +133,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'CandID'        => 000003,
              'Visit_label'   => 'Test2',
              'CenterID'      => 254,
+             'ProjectID'     => 1,
              'Scan_done'     => 'Y',
              'Current_stage' => 'Visit',
              'Visit'         => 'In Progress',
@@ -268,22 +274,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // @codingStandardsIgnoreStart
 
         $this->DB->insert(
-            'mri_acquisition_dates',
-            array(
-             'SessionID'       => 999998,
-             'AcquisitionDate' => '2014-02-17',
-            )
-        );
-
-        $this->DB->insert(
-            'mri_acquisition_dates',
-            array(
-             'SessionID'       => 999999,
-             'AcquisitionDate' => '2014-02-17',
-            )
-        );
-
-        $this->DB->insert(
             'files_qcstatus',
             array(
              'FileQCID'          => 1111,
@@ -335,8 +325,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "mri_processing_protocol",
             array('ProcessProtocolID' => '2222')
         );
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
         $this->DB->delete("files_qcstatus", array('FileID' => '1111'));
         $this->DB->delete("files_qcstatus", array('FileID' => '2222'));
         $this->DB->delete("tarchive", array('TarchiveID' => '263'));
