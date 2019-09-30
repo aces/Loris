@@ -13,7 +13,7 @@
  */
 namespace LORIS\api\Test;
 
-use PHPUnit\Framework\TestCase;
+use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\ServerRequest;
 
 /**
@@ -29,14 +29,39 @@ use \Zend\Diactoros\ServerRequest;
 class LoginTest extends TestCase
 {
     /**
+     * Provide an autoloader for the api module namespace.
+     *
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        spl_autoload_register(
+            function ($class) {
+                if (strpos($class, "LORIS\\api\\") === 0) {
+                    $fpath = __DIR__ . "/../php/"
+                    . strtolower(substr($class, strlen("LORIS\\api\\")))
+                    . ".class.inc";
+                    $fpath = str_replace('\\', '/', $fpath);
+                    if (!file_exists($fpath)) {
+                        throw new \NotFound(
+                            "Could not load module `api`: file `$fpath` " .
+                            "does not exist"
+                        );
+                    }
+                    include $fpath;
+                }
+            }
+        );
+    }
+
+    /**
      * Set a blank server request and the mock authenticator.
      *
      * @return void
      */
     public function setUp()
     {
-        $this->_request = new ServerRequest();
-
+        $this->_request       = new ServerRequest();
         $this->_authenticator = $this->createMock('\SinglePointLogin');
     }
 
