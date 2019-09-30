@@ -34,14 +34,18 @@ class Created extends JsonResponse
     /**
      * Create a Json response specific to 201 Created
      *
-     * @param array  $body     The response content
      * @param string $location The created resource location
+     * @param array  $body     The response content
      *
      * @return void
      */
-    public function __construct(array $body = [], string $location = '/')
+    public function __construct(string $location, array $body = [])
     {
-        $headers = array('Location' => $location);
+        $headers = array();
+        if (isset($location)) {
+            $headers['Location'] = $location;
+        }
+
         parent::__construct($body, 201, $headers);
     }
 }
