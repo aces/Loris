@@ -2,7 +2,7 @@
 /**
  * The configuration module is used to manage the configuration of Loris.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Behavioural
  * @package  Main
@@ -14,7 +14,7 @@
 namespace LORIS\configuration;
 
 /**
- * Admin_Config Class
+ * Configuration Class
  *
  * This class is to configure the system settings
  *
@@ -47,22 +47,22 @@ class Configuration extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $config =& \NDB_Config::singleton();
-        $DB     =& \Database::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = \Database::singleton();
 
-        $scans = $DB->pselect(
+        $scans      = $DB->pselect(
             "SELECT Scan_type
              FROM mri_scan_type",
             array()
         );
+        $scan_types = array('' => '');
         foreach ($scans as $type) {
             $val = $type['Scan_type'];
-            $scan_types[$val] =$val;
+            $scan_types[$val] = $val;
         }
-        $scan_types = array_merge(array('' => ''), $scan_types);
 
-        $instruments = \Utility::getAllInstruments();
-        $instruments = array_merge(array('' => ''), $instruments);
+        $instruments     = \Utility::getAllInstruments();
+        $instruments[''] = '';
 
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
@@ -150,6 +150,7 @@ class Configuration extends \NDB_Form
         }
 
         // build a tree from configs array
+        $tree = array();
         foreach ($configs as &$node) {
             $node['Children']  = array();
             $tree[$node['ID']] = &$node;

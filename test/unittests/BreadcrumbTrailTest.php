@@ -52,7 +52,7 @@ class BreadcrumbTrailTest extends TestCase
     public function testToString($data1, $data2, $c)
     {
 	$this->breadcrumbTrail = new BreadcrumbTrail(new Breadcrumb($data1[0], $data1[1]), new Breadcrumb($data2[0], $data2[1]));
-        $this->assertEquals($c, $this->breadcrumbTrail->__toString());
+        $this->assertEquals($c, $this->breadcrumbTrail);
     }
 
     public function toStringProvider()

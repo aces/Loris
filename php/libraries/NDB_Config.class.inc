@@ -421,6 +421,23 @@ class NDB_Config
     }
 
     /**
+     * Helper function to determine whether a setting with a boolean value is
+     * enabled, i.e. equal to "true".
+     * Since settings are returned as strings, this must be done as a string
+     * comparison.
+     *
+     * @param string $name The name of the setting to retrieve. This setting
+     *                      should have a boolean value in the config file or DB.
+     *
+     * @return bool True if the setting is equal to "true".
+     */
+    function settingEnabled(string $name): bool
+    {
+        $val = $this->getSetting($name);
+        return $val === 'true' || $val === '1';
+    }
+
+    /**
      * Get list of projects for this projects, given a ProjectID.
      *
      * @param integer $ProjectID The ProjectID we want settings for
@@ -498,8 +515,10 @@ class NDB_Config
      */
     static function checkMenuPermission(int $menuID): bool
     {
-        $DB   = Database::singleton();
-        $user = User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $user = $factory->user();
 
         $perms = $DB->pselect(
             "SELECT code FROM LorisMenuPermissions
@@ -534,7 +553,9 @@ class NDB_Config
      */
     static function getMenuTabs(?int $parent = null): array
     {
-        $DB = \Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         if ($parent === null) {
             $thisLevel = $DB->pselect(
                 "SELECT Label,

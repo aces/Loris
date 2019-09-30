@@ -78,10 +78,9 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        $projects[null] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key=>$value) {
-            $projects[$key] = $value;
-        }
+        $projects     = \Utility::getProjectList();
+        $projects[''] = 'All Projects';
+
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
@@ -104,7 +103,7 @@ class Stats_Behavioural extends \NDB_Form
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $Param_Project       ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
             $currentProject = '';

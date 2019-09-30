@@ -27,6 +27,7 @@ $db          = $factory->database();
 $ProjectList = Utility::getProjectList();
 $recTarget   = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
+$projectID   = null;
 // if a new project is created add the new project.php
 // Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new') {
@@ -38,6 +39,7 @@ if ($_POST['ProjectID'] === 'new') {
              "recruitmentTarget" => $recTarget,
             )
         );
+        $projectID = $db->getLastInsertId();
     } else {
         header("HTTP/1.1 409 Conflict");
         print '{ "error" : "Conflict" }';
@@ -51,6 +53,40 @@ if ($_POST['ProjectID'] === 'new') {
          "recruitmentTarget" => $recTarget,
         ),
         array("ProjectID" => $_POST['ProjectID'])
+    );
+    $projectID = $_POST['ProjectID'];
+}
+
+// get values from the database before change to crossmatch with new submission
+$preValues = $db->pselectCol(
+    'SELECT SubprojectID 
+    FROM project_subproject_rel WHERE ProjectID=:pid',
+    array('pid' => $projectID)
+);
+
+// Compare submitted values with DB values.
+// It's important not to delete and reinsert the values due to delete cascades on
+// tables referencing project_subproject_rel in the database.
+$toAdd    = array_diff($_POST['SubprojectIDs'], $preValues);
+$toRemove = array_diff($preValues, $_POST['SubprojectIDs']);
+
+foreach ($toAdd as $sid) {
+    $db->insertIgnore(
+        'project_subproject_rel',
+        array(
+         'ProjectID'    => $projectID,
+         'SubprojectID' => $sid,
+        )
+    );
+}
+// the following can cause some deletions from the visit_project_subproject_rel table
+foreach ($toRemove as $sid) {
+    $db->delete(
+        'project_subproject_rel',
+        array(
+         'ProjectID'    => $projectID,
+         'SubprojectID' => $sid,
+        )
     );
 }
 header("HTTP/1.1 200 OK");

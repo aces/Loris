@@ -215,11 +215,12 @@ class Data_Team_Helper extends \NDB_Form
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
                       tn.Full_name, s.Visit_label, ca.PSCID 
-                       FROM feedback_bvl_thread AS fb
+                      FROM feedback_bvl_thread AS fb
                       JOIN candidate ca ON (ca.CandID = fb.CandID)
                       JOIN session s ON (s.ID = fb.SessionID)
                       JOIN psc ON (s.CenterID = psc.CenterID)
-                      JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
+                      JOIN project_subproject_rel psr 
+                          ON (s.SubprojectID = psr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                       LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)";
 
@@ -249,7 +250,7 @@ class Data_Team_Helper extends \NDB_Form
         }
 
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND pr.ProjectID = :PID";
+            $where         .= " AND psr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -406,7 +407,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         //filter for candidate
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND ca.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -548,7 +549,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -596,6 +597,7 @@ class Data_Team_Helper extends \NDB_Form
         $qparams = array();
 
         $where =" WHERE s.Active='Y'
+            AND c.Active='Y'
             AND s.Current_stage <> 'Recycling Bin'
             AND f.CommentID NOT LIKE '%DDE%'
             AND psc.Centerid!= '1'";
@@ -622,7 +624,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -694,7 +696,7 @@ class Data_Team_Helper extends \NDB_Form
             }
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where         .= " AND c.ProjectID = :PID";
+            $where         .= " AND s.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 

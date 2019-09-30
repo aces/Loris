@@ -32,7 +32,8 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $config = \NDB_Config::singleton();
+        $config   = \NDB_Config::singleton();
+        $tpl_data = array();
         $this->tpl_data['page_title'] = 'Request Account';
 
         $this->addBasicText(
@@ -221,6 +222,7 @@ class RequestAccount extends \NDB_Form
         }
 
         // Verify reCAPTCHA
+        $err = array();
         if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
             $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
             $resp      = $recaptcha->verify(

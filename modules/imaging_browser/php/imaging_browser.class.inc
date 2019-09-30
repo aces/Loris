@@ -6,24 +6,24 @@
  *
  * PHP Version 5
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\imaging_browser;
 
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
@@ -71,6 +71,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             array()
         );
 
+        $all_scan_types = array();
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -124,6 +125,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             ELSE ''
             END";
 
+        $pass = $qc = $coalesce_desc = $case_desc = array();
         foreach ($scan_id_types as $id => $type) {
             $pass[$id]          = $type . 'pass';
             $qc[$id]            = $type . 'QC';
@@ -156,7 +158,8 @@ END";
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            JOIN parameter_file pf ON (f.FileID=pf.FileID)
+            JOIN parameter_type pt USING (ParameterTypeID)
             LEFT JOIN mri_scan_type modality ON 
             (f.AcquisitionProtocolID=modality.ID)";
 
@@ -176,7 +179,8 @@ END";
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.FileType='mnc'";
+            pt.Name = 'acquisition_date' AND
+            f.FileType ='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -211,6 +215,7 @@ END";
         // Initialize the arrays that go into this->columns and
         // $this->headers so that array_merge works even if no
         // $scan_types are set in the configuration module
+        $modalities_subquery    = array();
         $modalities_subquery_as = array();
         $as = array();
 
@@ -222,16 +227,18 @@ END";
                 $as[$key];
         }
 
+        $firstAcquisitionSubquery = 'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d")';
+
         $this->columns = array(
                           'p.Name as Site',
                           'c.PSCID as PSCID',
                           'c.CandID as DCCID',
                           '(SELECT Name 
                             FROM Project 
-                            WHERE ProjectID=c.ProjectID) as project',
+                            WHERE ProjectID=s.ProjectID) as project',
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as Visit_QC_Status",
-                          'MIN(md.AcquisitionDate) as First_Acquisition',
+                          "$firstAcquisitionSubquery as First_Acquisition",
                           'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
                           'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
                           "$NewDataSubquery as New_Data",
@@ -296,6 +303,7 @@ END";
             array()
         );
 
+        $all_scan_types = array();
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -317,6 +325,7 @@ END";
         $as = array();
         $list_of_projects = array();
 
+        $modalities_subquery = array();
         foreach ($scan_id_types as $key => $value) {
             $modalities_subquery[$key] = $value;
             $as[$key] = $scan_id_types[$key] . '_QC_Status';

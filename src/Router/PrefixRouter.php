@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\URIInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -78,7 +79,6 @@ class PrefixRouter implements RequestHandlerInterface
         $path    = $uri->getPath();
         $newpath = substr($path, strlen($prefix));
         return $uri->withPath((string) $newpath);
-
     }
 
     /**

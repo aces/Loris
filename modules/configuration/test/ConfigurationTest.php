@@ -119,16 +119,16 @@ class ConfigurationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url . "/configuration/");
-        $this->_linkTest("study");
-        $this->_linkTest("paths");
-        $this->_linkTest("gui");
-        $this->_linkTest("www");
-        $this->_linkTest("dashboard");
-        $this->_linkTest("imaging_modules");
-        $this->_linkTest("statistics");
-        $this->_linkTest("mail");
-        $this->_linkTest("uploads");
-        $this->_linkTest("imaging_pipeline");
+        $this->_linkTest("Study");
+        $this->_linkTest("Paths");
+        $this->_linkTest("GUI");
+        $this->_linkTest("WWW");
+        $this->_linkTest("Dashboard");
+        $this->_linkTest("Imaging Modules");
+        // $this->_linkTest("Statistics"); will be rewritten by REACT test
+        $this->_linkTest("Email");
+        $this->_linkTest("Uploads");
+        $this->_linkTest("API Keys");
 
     }
     /**

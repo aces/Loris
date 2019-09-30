@@ -11,12 +11,12 @@
         "psr/http-server-handler" : "*",
         "psr/http-server-middleware" : "*",
         "zendframework/zend-diactoros": "~1.8.4",
-        "ext-json": "*"
+        "ext-json": "*",
+        "bjeavons/zxcvbn-php": "^0.4"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.9.2",
         "phpunit/phpunit" : "6.5.*",
-        "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
         "phan/phan": ">1.2.2"

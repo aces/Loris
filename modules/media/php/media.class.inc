@@ -27,11 +27,8 @@ namespace LORIS\media;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class Media extends \NDB_Menu_Filter
+class Media extends \DataFrameworkMenu
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
-
     /**
      * Check user permissions
      *
@@ -47,15 +44,24 @@ class Media extends \NDB_Menu_Filter
              'media_write',
             )
         );
-
     }
 
     /**
-     * Create a form to filter media by various criteria
+     * {@inheritDoc}
+     *
+     * @return bool true
+     */
+    public function useSiteFilter(): bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array
      */
-    function getOptions() : array
+    protected function getFieldOptions() : array
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -119,51 +125,25 @@ class Media extends \NDB_Menu_Filter
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new MediaFileProvisioner();
+    }
+
+    /**
      * Gets the data source for this menu filter.
      *
      * @return \LORIS\Data\Provisioner
      */
-    function getDataProvisioner() : \LORIS\Data\Provisioner
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
-        $provisioner = new MediaFileProvisioner();
+        $provisioner = parent::getDataProvisionerWithFilters();
 
-        $user = \User::singleton();
-
-        if ($user->hasPermission("access_all_profiles") == false) {
-            $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-        if (!$user->hasPermission("superuser")) {
-            $provisioner = $provisioner->filter(
-                new HideFileFilter()
-            );
-        }
-        return $provisioner;
-    }
-
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON() : string
-    {
-        $table = (new \LORIS\Data\Table())
-            ->withDataFrom($this->getDataProvisioner());
-        $arr   = array_map(
-            function ($row) {
-                return array_values($row);
-            },
-            json_decode($table->toJSON(\User::singleton()), true)
-        );
-        return json_encode(
-            array(
-             'data'         => $arr,
-             'fieldOptions' => $this->getOptions(),
-            )
-        );
+        return $provisioner->filter(new HideFileFilter());
     }
 
     /**

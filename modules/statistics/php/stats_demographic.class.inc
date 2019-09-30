@@ -170,7 +170,8 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects[null] = 'All Projects';
+        $projects     = array();
+        $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -185,7 +186,7 @@ class Stats_Demographic extends \NDB_Form
                    'ID'   => $demographicProject,
                    'Name' => $projects[$demographicProject] ?? '',
                   );
-            $paramProject        ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
 
@@ -225,7 +226,8 @@ class Stats_Demographic extends \NDB_Form
             array()
         );
 
-        $sites[null] ='All sites';
+        $sites     = array();
+        $sites[''] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
