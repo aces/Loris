@@ -12,9 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\api\Provisioners;
 
 use \LORIS\Data\Provisioners\DBRowProvisioner;
+use \LORIS\api\Models\ProjectImagesRow;
 /**
  * This file implements a data provisioner to get all images of a project
  * created since a given date.

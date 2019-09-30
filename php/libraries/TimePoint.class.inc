@@ -1004,7 +1004,7 @@ class TimePoint
      */
     public function getDicomTars(\User $user): array
     {
-        $provisioner = new \LORIS\api\VisitDicomsRowProvisioner($this);
+        $provisioner = new \LORIS\api\provisioners\VisitDicomsRowProvisioner($this);
         $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->getRows($user);

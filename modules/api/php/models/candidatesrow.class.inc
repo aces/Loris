@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance for candidates.
- *
  * PHP Version 7
  *
  * @category API
@@ -11,7 +9,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\api\Models;
 
 /**
  * A CandidatesRow contains the values from a row in the Database.

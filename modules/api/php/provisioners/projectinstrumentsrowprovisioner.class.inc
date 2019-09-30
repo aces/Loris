@@ -12,9 +12,11 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\api\Provisioners;
 
 use \LORIS\Data\Provisioners\DBRowProvisioner;
+use \LORIS\api\Models\ProjectInstrumentsRow;
+
 /**
  * This class implements a data provisioner to get all possible rows
  * for the projects/$projectname/instruments endpoint.

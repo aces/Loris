@@ -12,9 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\api\Provisioners;
 
 use \LORIS\Data\Provisioners\DBRowProvisioner;
+
 /**
  * This class implements a data provisioner to get all Dicoms
  * from a Visit.

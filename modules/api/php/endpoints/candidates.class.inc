@@ -149,7 +149,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             array('access_all_profiles')
         );
 
-        $provisioner = (new \LORIS\api\CandidatesProvisioner())
+        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
             ->filter($filter);
 
         $candidates = (new \LORIS\Data\Table())

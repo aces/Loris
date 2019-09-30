@@ -9,7 +9,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-namespace LORIS\api;
+namespace LORIS\api\Filters;
 
 use \Loris\Data\DataInstance;
 use \LORIS\Data\Filter;

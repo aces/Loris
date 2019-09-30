@@ -12,8 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\api;
+namespace LORIS\api\Provisioners;
 
+use \LORIS\Data\Provisioners\DBRowProvisioner;
+use \LORIS\api\Models\CandidatesRow;
 /**
  * This class implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.
@@ -26,7 +28,7 @@ namespace LORIS\api;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class CandidatesProvisioner extends DBRowProvisioner
 {
     /**
      * Create a RowProvisioner, which gets rows for candidates/
