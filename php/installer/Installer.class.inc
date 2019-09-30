@@ -335,9 +335,8 @@ class Installer
 
         // Generate a new secret key for JWT tokens. We don't really care
         // what it is, as long as the server always uses the same one to
-        // validate tokens. So we use the new user password code to generate a
-        // really long password and use that as the key.
-        $this->_updateConfig($DB, "JWTKey", \User::newPassword(64));
+        // validate tokens.
+        $this->_updateConfig($DB, "JWTKey", \Utility::randomString());
     }
 
     /**

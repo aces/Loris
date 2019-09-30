@@ -14,7 +14,7 @@ class MediaIndex extends Component {
     super(props);
 
     this.state = {
-      data: {},
+      Data: {},
       fieldOptions: {},
       error: false,
       isLoaded: false,
@@ -39,7 +39,7 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.data, fieldOptions: data.fieldOptions}))
+      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);

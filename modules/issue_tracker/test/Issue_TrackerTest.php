@@ -87,7 +87,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/issue_tracker/");
+        $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -102,7 +102,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function testIssueTrackerDoespageLoadWithPermission()
     {
         $this->setupPermissions(array("issue_tracker_reporter"));
-        $this->webDriver->get($this->url . "/issue_tracker/");
+        $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();

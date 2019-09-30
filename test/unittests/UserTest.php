@@ -195,9 +195,11 @@ class UserTest extends TestCase
             true
         );
 
+        $this->_mockConfig = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_mockDB = $this->getMockBuilder('Database')->getMock();
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_factory->setConfig($this->_mockConfig);
 
         $this->_username = "968775";
 
@@ -513,14 +515,22 @@ class UserTest extends TestCase
     public function testUpdatePasswordWithExpiryDate()
     {
         $this->_user = \User::factory($this->_username);
-
         $oldHash = $this->_user->getData('Password_hash');
+        $customDate = '2021-07-18';
 
-        $this->_user->updatePassword('really_great_password', '2021-07-18');
+        // Cause usePwnedPasswordsAPI config option to return false.
+        $this->_mockConfig->expects($this->any())
+            ->method('settingEnabled')
+            ->willReturn(false);
+
+        $this->_user->updatePassword(
+            new \Password(\Utility::randomString(16)), 
+            new DateTime($customDate)
+        );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
-        $this->assertEquals("2021-07-18", $this->_user->getData('Password_expiry'));
+        $this->assertEquals($customDate, $this->_user->getData('Password_expiry'));
         // This checks that the hash has been updated. There is no way to predict
         // what the new hash will be, so simply check that it changed!
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
@@ -541,24 +551,19 @@ class UserTest extends TestCase
         $oldHash = $this->_user->getData('Password_hash');
         $newDate = date('Y-m-d', strtotime('+6 months'));
 
-        $this->_user->updatePassword('really_great_password');
+        // Cause usePwnedPasswordsAPI config option to return false.
+        $this->_mockConfig->expects($this->any())
+            ->method('settingEnabled')
+            ->willReturn(false);
+
+        $this->_user->updatePassword(
+            new \Password(\Utility::randomString(16))
+        );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory($this->_username);
 
         $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
-    }
-
-    /**
-     * Test that newPassword generates a password of the correct length
-     *
-     * @return void
-     * @covers User::newPassword
-     */
-    public function testNewPassword()
-    {
-        $newPassword = \User::newPassword(6);
-        $this->assertEquals(6, strlen($newPassword));
     }
 
     /**

@@ -25,6 +25,7 @@
  */
 class Utility
 {
+
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -457,21 +458,11 @@ class Utility
      */
     static function toArray($var)
     {
-        // TODO Uncomment the exception code below after LORIS 21 is released.
-        //throw new DeprecatedException(
-        //    'Utility::toArray() is deprecated and should not be used. ' .
-        //    'Instead use Utility::associativeToNumericArray() for converting ' .
-        //    'arrays. Scalar values cannot be passed to this function.'
-        //);
-        error_log(
-            'Utility::toArray() will be deprecated in LORIS ' .
-            'version 21. Please use Utility::associativeToNumericArray() ' .
-            'instead.'
+        throw new \DeprecatedException(
+            'Utility::toArray() is deprecated and should not be used. ' .
+            'Instead use Utility::associativeToNumericArray() for converting ' .
+            'arrays. Scalar values cannot be passed to this function.'
         );
-        if (is_array($var) && !array_key_exists(0, $var)) {
-            $var = array($var);
-        }
-        return $var;
     }
 
     /**
@@ -936,6 +927,33 @@ class Utility
             }
         }
         return $languages;
+    }
+
+    /**
+     * Generate a random string, using a cryptographically secure
+     * pseudorandom number generator (random_int)
+     *
+     * @param int     $length   How many characters do we want?
+     * @param ?string $keyspace A string of all possible characters
+     *                         to select from. Will default to the alphanum set.
+     *
+     * @return string
+     */
+    static function randomString(
+        int $length = 64,
+        ?string $keyspace = null
+    ): string {
+        $keyspace = $keyspace
+        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max    = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
     }
 }
 

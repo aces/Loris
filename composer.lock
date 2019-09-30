@@ -7,6 +7,51 @@
     "content-hash": "9eeaef223325497933cbdffb3120e521",
     "packages": [
         {
+            "name": "bjeavons/zxcvbn-php",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bjeavons/zxcvbn-php.git",
+                "reference": "7a7e1130c74c715e84c60c27384f657e9574a933"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bjeavons/zxcvbn-php/zipball/7a7e1130c74c715e84c60c27384f657e9574a933",
+                "reference": "7a7e1130c74c715e84c60c27384f657e9574a933",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "satooshi/php-coveralls": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ZxcvbnPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "See contributors",
+                    "homepage": "https://github.com/bjeavons/zxcvbn-php"
+                }
+            ],
+            "description": "Realistic password strength estimation PHP library based on Zxcvbn JS",
+            "homepage": "https://github.com/bjeavons/zxcvbn-php",
+            "keywords": [
+                "password",
+                "zxcvbn"
+            ],
+            "time": "2018-07-23T05:05:36+00:00"
+        },
+        {
             "name": "firebase/php-jwt",
             "version": "v3.0.0",
             "source": {
@@ -1184,9 +1229,9 @@
             "authors": [
                 {
                     "name": "Christian Weiske",
+                    "role": "Developer",
                     "email": "cweiske@cweiske.de",
-                    "homepage": "http://github.com/cweiske/jsonmapper/",
-                    "role": "Developer"
+                    "homepage": "http://github.com/cweiske/jsonmapper/"
                 }
             ],
             "description": "Map nested JSON structures onto PHP classes",
