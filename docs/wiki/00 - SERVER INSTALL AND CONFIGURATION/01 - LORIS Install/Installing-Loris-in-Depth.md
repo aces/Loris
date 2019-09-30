@@ -70,8 +70,7 @@ cd /var/www/loris/
 
 Visit the releases page and download the zipped file of the latest LORIS
 release. The below command will download the latest LORIS release and save 
-it to a file named after the latest version, e.g. `v.21.0.1` for LORIS version
-21.0.1.
+it to a file named `loris-src.tar.gz`.
 
 ```bash
 curl -s https://api.github.com/repos/aces/loris/releases/latest \
