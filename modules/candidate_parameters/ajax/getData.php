@@ -12,6 +12,8 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
+use \LORIS\StudyEntities\Candidate\CandID;
+
 if (isset($_GET['data'])) {
     $data = $_GET['data'];
     if ($data == "candidateInfo") {
@@ -39,9 +41,9 @@ if (isset($_GET['data'])) {
  */
 function getCandInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get caveat options
     $caveat_options = [];
@@ -119,9 +121,9 @@ function getCandInfoFields()
  */
 function getProbandInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -199,9 +201,9 @@ function getProbandInfoFields()
  */
 function getFamilyInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -271,9 +273,9 @@ function getFamilyInfoFields()
 function getParticipantStatusFields()
 {
     \Module::factory('candidate_parameters');
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -345,15 +347,15 @@ function getParticipantStatusFields()
 /**
  * Handles the fetching of Participant Status History
  *
- * @param int $candID current candidate's ID
+ * @param CandID $candID current candidate's ID
  *
  * @throws DatabaseException
  *
  * @return array
  */
-function getParticipantStatusHistory($candID)
+function getParticipantStatusHistory(CandID $candID)
 {
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
             (SELECT Description 
@@ -379,7 +381,7 @@ function getParticipantStatusHistory($candID)
  */
 function getConsentStatusFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
     $db        = \Database::singleton();
     $candidate = \Candidate::singleton($candID);

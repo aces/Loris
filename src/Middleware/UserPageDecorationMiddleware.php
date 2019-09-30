@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
     protected $JSFiles;
@@ -69,6 +71,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $candID = $get['candID'];
         }
         if ($candID != null) {
+            $candID    = new CandID($candID);
             $candidate = \Candidate::singleton($candID);
 
             $tpl_data['candidate'] = $candidate->getData();
