@@ -145,7 +145,8 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->executescript("
                   return document.getElementsByClassName('active')[0].textContent"
         ); 
-        $text = str_replace("_", " ", $text);         
+        $text = str_replace("_", " ", $text);        print_r($bodyText);
+        print_r(strtolower($bodyText)); 
         $this->assertContains($text,strtolower($bodyText));
     }
 
