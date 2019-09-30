@@ -15,7 +15,7 @@ use \LORIS\Data\Models\DicomSeriesDTO;
 
 /**
  * This class defines a DicomTar to allows one to type hint function's parameters.
- * An instance of DicomTar allow to access data related to a `tarchive` row and 
+ * An instance of DicomTar allow to access data related to a `tarchive` row and
  * its related series.
  *
  *  @category Imaging

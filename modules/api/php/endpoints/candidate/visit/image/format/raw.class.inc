@@ -133,18 +133,16 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $filename = $info->getFilename();
         $fullpath = escapeshellarg($info->getPathname());
 
-        ob_start();
-        passthru("${mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath");
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $body = new \LORIS\Http\StringStream($content);
+        $callback = function () use ($mincpath, $fullpath) {
+            return shell_exec(
+                "${mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath"
+            );
+        };
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/x.raw')
-            ->withHeader('Content-Length', $body->getSize())
             ->withHeader('Content-Disposition', "attachment; filename=${filename}")
-            ->withBody($body);
+            ->withBody(new \Zend\Diactoros\CallbackStream($callback));
     }
 
     /**
