@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 /**
- * File implements the DicomTar class.
- *
  * PHP Version 7
  *
  *  @category Imaging
@@ -17,6 +15,8 @@ use \LORIS\Data\Models\DicomSeriesDTO;
 
 /**
  * This class defines a DicomTar to allows one to type hint function's parameters.
+ * An instance of DicomTar allow to access data related to a `tarchive` row and 
+ * its related series.
  *
  *  @category Imaging
  *  @package  Main
