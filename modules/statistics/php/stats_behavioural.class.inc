@@ -65,7 +65,7 @@ class Stats_Behavioural extends \NDB_Form
 
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        $user = \User::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         $query = "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
