@@ -76,7 +76,7 @@ class Stats_Behavioural extends \NDB_Form
                         AND Study_site = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr = implode(",", $user->getCenterIDs());
+            $sitesString = implode(",", $user->getCenterIDs());
             $query   .= " AND CenterID IN (" . $site_arr . ")";
         }
 
