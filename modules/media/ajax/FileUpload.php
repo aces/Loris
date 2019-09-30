@@ -205,8 +205,8 @@ function viewData()
 function getUploadFields()
 {
 
-    $db   = \NDB_Factory::singleton()->database();
-    $user = \User::singleton();
+    $db     = \NDB_Factory::singleton()->database();
+    $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
     // Select only candidates that have had visit at user's sites
