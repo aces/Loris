@@ -86,13 +86,13 @@ class Module extends \Module
 
         switch($handlername) {
         case 'candidates':
-            $handler = new \LORIS\Api\Endpoints\Candidates();
+            $handler = new \LORIS\api\Endpoints\Candidates();
             break;
         case 'login':
-            $handler = new \LORIS\Api\Endpoints\Login();
+            $handler = new \LORIS\api\Endpoints\Login();
             break;
         case 'projects':
-            $handler = new \LORIS\Api\Endpoints\Projects();
+            $handler = new \LORIS\api\Endpoints\Projects();
             break;
         default:
             return new \LORIS\Http\Response\NotFound();

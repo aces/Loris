@@ -53,7 +53,7 @@ class LoginTest extends TestCase
             ->with('test_username', 'test_password')
             ->willReturn(true);
 
-        $handler = $this->getMockBuilder('\LORIS\Api\Endpoints\Login')
+        $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
             ->setMethods(['getLoginAuthenticator', 'getEncodedToken'])
             ->getMock();
 
