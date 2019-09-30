@@ -113,6 +113,11 @@ The next step in setting up LORIS is running the script `install.sh` in the
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
 
+The install script will prompt for a `root` password in order to configure
+certain file permissions as well as Apache. However, the script should not
+be run as `root` and will exit automatically if it detects that it has been
+executed with superuser permissions.
+
 ```bash
 cd tools/
 ./install.sh
