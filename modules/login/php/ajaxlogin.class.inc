@@ -40,7 +40,6 @@ class AjaxLogin extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
-     * @throws \LorisException
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -83,7 +82,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \LorisException
      */
     function processRequest(array $values) : array
     {
@@ -165,7 +163,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \LorisException
      */
     function resetPassword(array $values) : array
     {
@@ -220,7 +217,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \DatabaseException
      */
     function requestAccount(array $values) : array
     {
@@ -359,7 +355,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-     * @throws \LorisException
      */
     function expiredPassword(array $values) : array
     {
