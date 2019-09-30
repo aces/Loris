@@ -17,6 +17,10 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
+Please create a fork of the LORIS repository on your own GitHub account and
+push changes to local branches rather than pushing new branches directly 
+to our repository.
+
 You should base your pull requests on one of the following branches
 depending on the kind of change you are making:
 
