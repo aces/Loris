@@ -221,11 +221,11 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
-                (int)($FileObj->getParameter('echo_time') * 1000),
+                (float)$FileObj->getParameter('echo_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
-                (int)($FileObj->getParameter('repetition_time') * 1000),
+                (float)$FileObj->getParameter('repetition_time') * 1000,
                 2
             );
             $SliceThickness      = number_format(
