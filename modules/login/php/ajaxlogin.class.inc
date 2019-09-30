@@ -376,25 +376,6 @@ class AjaxLogin extends \NDB_Page
                 $values['error'] = 'You cannot keep the same password';
                 return $values;
             }
-            // Check if password meets strength requirement.
-            if (!\User::isPasswordStrong(
-                $values['password'],
-                array(
-                 $values['confirm'],
-                 $data['UserID'],
-                 $data['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            )
-            ) {
-                $values['error'] = 'The password is weak, or'
-                    . ' the passwords do not match.';
-                return $values;
-            }
             // Update password
             $user->updatePassword($values['password']);
             unset($_SESSION['PasswordExpiredForUser']);
