@@ -3,7 +3,7 @@
 This document contains supplemental details on how to perform a basic CentOS 7.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
 
-This Readme assumes some familiarity with UNIX, MariaDB (MySQL) and Apache.
+This Readme assumes some familiarity with Linux, MariaDB (MySQL) and Apache.
 
 For further details on the install process, please see the LORIS GitHub Wiki CentOS Install page.  
 
