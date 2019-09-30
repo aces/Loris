@@ -834,6 +834,7 @@ class UtilityTest extends TestCase
                 ['0'],
                 [array()],
                 [array(1)],
+                [null],
                 [new stdClass()]
                );
     }
