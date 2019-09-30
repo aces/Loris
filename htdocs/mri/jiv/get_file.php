@@ -192,7 +192,6 @@ function validConfigPaths(array $paths): bool
                 'Config paths are not initialized. Please ensure that valid paths ' .
                 'are set for imagePath, downloadPath and tarchiveLibraryDir'
             );
-            return false;
         }
         if ($p === '/') {
             throw new \LorisException(
@@ -200,7 +199,6 @@ function validConfigPaths(array $paths): bool
                 ' Please verify your path settings for imagePath, ' .
                 'downloadPath and tarchiveLibraryDir.'
             );
-            return false;
         }
     }
     return true;
