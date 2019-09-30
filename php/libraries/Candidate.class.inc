@@ -389,7 +389,6 @@ class Candidate
             throw new LorisException(
                 'Candidate::setData() cannot be called with an empty array!'
             );
-            return false;
         }
         $this->candidateInfo = array_merge($this->candidateInfo, $newData);
 

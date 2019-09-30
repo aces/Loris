@@ -229,9 +229,6 @@ class Database
             . $database . ".";
             return false;
         }
-
-        // Unreachable
-        return false;
     }
 
     /**

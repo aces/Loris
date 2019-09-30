@@ -16,8 +16,8 @@ namespace LORIS\conflict_resolver\Models;
  * resolver module. It is doing the mapping between the unresolved_conflicts
  * table columns and the JSON object properties returned to the frontend.
  *
- * Additionnaly, it implements the DataInstance interface so it can be used by
- * a Dababase Provisioner.
+ * Additionally, it implements the DataInstance interface so it can be used by
+ * a Database Provisioner.
  *
  * @category Behavioral
  * @package  Main

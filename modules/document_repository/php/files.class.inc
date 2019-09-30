@@ -78,17 +78,8 @@ class Files extends \NDB_Page
                         json_encode("uploaded successfully")
                     )
                 );
-            } else {
-                return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(409)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("duplicate file name")
-                    )
-                );
             }
-            break;
+            return new \LORIS\Http\Response\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -98,10 +89,9 @@ class Files extends \NDB_Page
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("update a file")
+                        json_encode("file updated")
                     )
                 );
-          break;
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
@@ -110,10 +100,9 @@ class Files extends \NDB_Page
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode("delete a file")
+                        json_encode("file deleted")
                     )
                 );
-          break;
         case "GET":
             $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
@@ -127,7 +116,6 @@ class Files extends \NDB_Page
                   )
                   ->withStatus(200)
                   ->withBody(new \LORIS\Http\FileStream($file));
-
             }
             return (new \LORIS\Http\Response())
               ->withHeader("Content-Type", "text/plain")
@@ -137,7 +125,6 @@ class Files extends \NDB_Page
                       json_encode($this->getUploadDocFields($record))
                   )
               );
-            break;
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
