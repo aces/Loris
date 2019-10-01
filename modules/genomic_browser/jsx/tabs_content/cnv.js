@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import Loader from 'jsx/Loader';
 
 /**
  * CNV Component.
@@ -57,14 +58,51 @@ class CNV extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    // console.log('column');
+    // console.log(column);
+    // console.log('cell');
+    // console.log(cell);
+    // console.log('rowData');
+    // console.log(rowData);
+
+    let reactElement = null;
+    if (true) {
+      switch (column) {
+        case 'PSCID':
+          const url = window.location.origin + '/' + rowData.DCCID + '/';
+          reactElement = (
+            <td><a href={url}>{rowData.PSCID}</a></td>
+          );
+          break;
+        default:
+          reactElement = (
+            <td>{cell}</td>
+          );
+          break;
+      }
+    }
+    return reactElement;
+  }
+
+  /**
    * @return {DOMRect}
    */
   render() {
     // Waiting for async data to load.
-    // if (!this.state.isLoaded) {
-    //   return <Loader/>;
-    // }
-    const data = this.state.data;
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+    // const data = this.state.data;
     // const options = this.state.data.fieldOptions;
     const options = {
       site: {
@@ -127,15 +165,14 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Subproject', show: true, filter: {
-          name: 'SubprojectID',
-          type: 'select',
-          options: options.subproject,
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
+          type: 'text',
         },
       },
       {
-        label: 'DCCID', show: false, filter: {
-          name: 'DCCID',
+        label: 'PSCID', show: true, filter: {
+          name: 'PSCID',
           type: 'text',
         },
       },
@@ -147,23 +184,28 @@ class CNV extends Component {
         },
       },
       {
+        label: 'Subproject', show: true, filter: {
+          name: 'SubprojectID',
+          type: 'select',
+          options: options.subproject,
+        },
+      },
+      {
+        label: 'Date of birth', show: false, filter: {
+          name: 'DoB',
+          type: 'text',
+        },
+      },
+      {
         label: 'External ID', show: false, filter: {
           name: 'External_ID',
           type: 'text',
         },
       },
       {
-        label: 'PSCID', show: true, filter: {
-          name: 'PSCID',
+        label: 'Chromosome', show: false, filter: {
+          name: 'Chromosome',
           type: 'text',
-        },
-      },
-      // Genomic Range Filters
-      {
-        label: 'Build', show: true, filter: {
-          name: 'Build',
-          type: 'select',
-          options: options.build,
         },
       },
       {
@@ -174,63 +216,107 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Genomic Range', show: true, filter: {
-          name: 'Genomic_Range',
-          type: 'text',
+        label: 'StartLoc', show: false, filter: {
+          name: 'StartLoc',
+          type: 'select',
+          options: options.strand,
         },
       },
-      // CNV Filters
       {
-        label: 'Type', show: true, filter: {
+        label: 'EndLoc', show: false, filter: {
+          name: 'EndLoc',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Location', show: true, filter: {
+          name: 'Location',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Gene Symbol', show: true, filter: {
+          name: 'Gene_Symbol',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Gene Name', show: true, filter: {
+          name: 'Gene_Name',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'CNV Description', show: true, filter: {
+          name: 'CNV_Description',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'CNV Type', show: true, filter: {
           name: 'CNV_Type',
           type: 'select',
-          options: options.cnv_type,
+          options: options.strand,
         },
       },
       {
-        label: 'Event Name', show: true, filter: {
+        label: 'Copy Num Change', show: false, filter: {
+          name: 'Copy_Num_Change',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Event Name', show: false, filter: {
           name: 'Event_Name',
+          type: 'test',
+        },
+      },
+      {
+        label: 'Common CNV', show: false, filter: {
+          name: 'Common_CNV',
           type: 'test',
         },
       },
       {
         label: 'Characteristics', show: true, filter: {
           name: 'Characteristics',
-          type: 'select',
-          options: options.characteristics,
-        },
-      },
-      {
-        label: 'Common', show: true, filter: {
-          name: 'Common_CNV',
-          type: 'select',
-          options: options.common_cnv,
-        },
-      },
-      {
-        label: 'Copy Number Change', show: true, filter: {
-          name: 'Copy_Num_Change',
-          type: 'text',
+          type: 'test',
         },
       },
       {
         label: 'Inheritance', show: true, filter: {
           name: 'Inheritance',
-          type: 'select',
-          options: options.inheritance,
+          type: 'test',
         },
       },
       {
-        label: 'Description', show: true, filter: {
-          name: 'Description',
-          type: 'text',
+        label: 'Array Report', show: false, filter: {
+          name: 'Array_Report',
+          type: 'test',
         },
       },
       {
-        label: 'Display', show: true, filter: {
-          name: 'display',
-          type: 'select',
-          options: options.display,
+        label: 'Markers', show: true, filter: {
+          name: 'Markers',
+          type: 'test',
+        },
+      },
+      {
+        label: 'Validation Method', show: true, filter: {
+          name: 'Validation_Method',
+          type: 'test',
+        },
+      },
+      {
+        label: 'Platform', show: true, filter: {
+          name: 'Platform',
+          type: 'test',
         },
       },
     ];
@@ -238,9 +324,9 @@ class CNV extends Component {
       <div>
          <FilterableDataTable
           name={'filterableDataTableCNV'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
-           // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
          />
       </div>
     );

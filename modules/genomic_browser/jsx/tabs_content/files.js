@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import GenomicUploadForm from './filemanager/uploadForm';
+import Loader from 'jsx/Loader';
 
 /**
  * Files Component.
@@ -41,8 +42,8 @@ class Files extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -113,20 +114,49 @@ class Files extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    let reactElement = null;
+    if (true) {
+      switch (column) {
+        case 'PSCID':
+          const url = window.location.origin + '/' + rowData.DCCID + '/';
+          reactElement = (
+            <td><a href={url}>{rowData.PSCID}</a></td>
+          );
+          break;
+        default:
+          reactElement = (
+            <td>{cell}</td>
+          );
+          break;
+      }
+    }
+    return reactElement;
+  }
+
+  /**
    * @return {DOMRect}
    */
   render() {
     // Waiting for async data to load.
-    // if (!this.state.isLoaded) {
-    //   return <Loader/>;
-    // }
-    const data = this.state.data;
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
     // const options = this.state.data.fieldOptions;
     const fields = [
       // Genomic File Filters
       {
-        label: 'Type', show: true, filter: {
-          name: 'genomic_file_type',
+        label: 'GenomicFileID', show: false, filter: {
+          name: 'genomic_file_id',
           type: 'text',
         },
       },
@@ -137,14 +167,26 @@ class Files extends Component {
         },
       },
       {
+        label: 'Description', show: true, filter: {
+          name: 'description',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Type', show: true, filter: {
+          name: 'genomic_file_type',
+          type: 'text',
+        },
+      },
+      {
         label: 'Date inserted', show: true, filter: {
           name: 'date_inserted',
           type: 'text',
         },
       },
       {
-        label: 'Description', show: true, filter: {
-          name: 'description',
+        label: 'InsertedByUserID', show: false, filter: {
+          name: 'InsertedByUserID',
           type: 'text',
         },
       },
@@ -171,9 +213,9 @@ class Files extends Component {
         {this.renderFileUploadForm()}
          <FilterableDataTable
           name={'filterableDataTableFiles'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
-           // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
           actions={actions}
          />
       </div>

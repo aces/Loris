@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import Loader from 'jsx/Loader';
 
 /**
  * Methylation Component.
@@ -28,8 +29,8 @@ class Methylation extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -57,14 +58,51 @@ class Methylation extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {array} rowData - array of cell contents for a specific row
+   * @param {array} rowHeaders - array of table headers (column names)
+   *
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    // console.log('column');
+    // console.log(column);
+    // console.log('cell');
+    // console.log(cell);
+    // console.log('rowData');
+    // console.log(rowData);
+
+    let reactElement = null;
+    if (true) {
+      switch (column) {
+        case 'PSCID':
+          const url = window.location.origin + '/' + rowData.DCCID + '/';
+          reactElement = (
+            <td><a href={url}>{rowData.PSCID}</a></td>
+          );
+          break;
+        default:
+          reactElement = (
+            <td>{cell}</td>
+          );
+          break;
+      }
+    }
+    return reactElement;
+  }
+
+  /**
    * @return {DOMRect}
    */
   render() {
     // Waiting for async data to load.
-    // if (!this.state.isLoaded) {
-    //   return <Loader/>;
-    // }
-    const data = this.state.data;
+    if (!this.state.isLoaded) {
+      return <Loader/>;
+    }
+    // const data = this.state.data;
     // const options = this.state.data.fieldOptions;
     const options = {
       site: {
@@ -130,15 +168,14 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Subproject', show: true, filter: {
-          name: 'SubprojectID',
-          type: 'select',
-          options: options.subproject,
+        label: 'DCCID', show: false, filter: {
+          name: 'DCCID',
+          type: 'text',
         },
       },
       {
-        label: 'DCCID', show: false, filter: {
-          name: 'DCCID',
+        label: 'PSCID', show: true, filter: {
+          name: 'PSCID',
           type: 'text',
         },
       },
@@ -150,45 +187,25 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'External ID', show: false, filter: {
-          name: 'External_ID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'PSCID', show: true, filter: {
-          name: 'PSCID',
-          type: 'text',
-        },
-      },
-      // Genomic Range Filters
-      {
-        label: 'Gene', show: true, filter: {
-          name: 'Gene_Symbol',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Build', show: true, filter: {
-          name: 'Build',
+        label: 'Subproject', show: true, filter: {
+          name: 'SubprojectID',
           type: 'select',
-          options: options.build,
+          options: options.subproject,
         },
       },
       {
-        label: 'Strand', show: true, filter: {
-          name: 'Strand',
+        label: 'Date of birth', show: false, filter: {
+          name: 'DoB',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Sample', show: true, filter: {
+          name: 'Sample',
           type: 'select',
           options: options.strand,
         },
       },
-      {
-        label: 'Genomic Range', show: true, filter: {
-          name: 'Genomic_Range',
-          type: 'text',
-        },
-      },
-      // CpG Filters
       {
         label: 'CPG name', show: true, filter: {
           name: 'cpg_name',
@@ -196,66 +213,153 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Context', show: true, filter: {
-          name: 'Context',
-          type: 'select',
-          options: options.context,
+        label: 'Beta value', show: true, filter: {
+          name: 'Beta_value',
+          type: 'text',
         },
       },
       {
-        label: 'Platform', show: true, filter: {
-          name: 'Platform',
-          type: 'select',
-          options: options.platform,
+        label: 'Chromosome', show: true, filter: {
+          name: 'Chromosome',
+          type: 'text',
         },
       },
       {
-        label: 'Position', show: true, filter: {
-          name: 'Position',
-          type: 'select',
-          options: options.position,
+        label: 'Strand', show: true, filter: {
+          name: 'Strand',
+          type: 'text',
         },
       },
       {
-        label: 'Infinium design', show: true, filter: {
+        label: 'StartLoc', show: true, filter: {
+          name: 'StartLoc',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Probe Loc A', show: true, filter: {
+          name: 'Probe_Loc_A',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Probe Seq A', show: true, filter: {
+          name: 'Probe_Seq_A',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Probe Loc B', show: true, filter: {
+          name: 'Probe_Loc_B',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Probe Seq B', show: true, filter: {
+          name: 'Probe_Seq_B',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Design', show: true, filter: {
           name: 'Design',
-          type: 'select',
-          options: options.design,
+          type: 'text',
         },
       },
       {
         label: 'Color', show: true, filter: {
           name: 'Color',
-          type: 'select',
-          options: options.color,
+          type: 'text',
+        },
+      },
+      {
+        label: 'Assembly', show: true, filter: {
+          name: 'Assembly',
+          type: 'text',
+        },
+      },
+      {
+        label: 'SNP 10', show: true, filter: {
+          name: 'SNP_10',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Gene', show: true, filter: {
+          name: 'Gene',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Accession number', show: true, filter: {
+          name: 'Accession_number',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Gene Grp', show: true, filter: {
+          name: 'Gene_Grp',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Island Loc', show: true, filter: {
+          name: 'Island_Loc',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Context', show: true, filter: {
+          name: 'Context',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Fantom Prom', show: true, filter: {
+          name: 'Fantom_Prom',
+          type: 'text',
+        },
+      },
+      {
+        label: 'DMR', show: true, filter: {
+          name: 'DMR',
+          type: 'text',
         },
       },
       {
         label: 'Enhancer', show: true, filter: {
           name: 'Enhancer',
-          type: 'select',
-          options: options.enhancer,
+          type: 'text',
         },
       },
       {
-        label: 'SNP', show: true, filter: {
-          name: 'SNP_10',
-          type: 'select',
-          options: options.snp_10,
+        label: 'HMM Island', show: true, filter: {
+          name: 'HMM_Island',
+          type: 'text',
         },
       },
       {
-        label: 'Regulatory feat.', show: true, filter: {
+        label: 'Reg Feature Loc', show: true, filter: {
+          name: 'Reg_Feature_Loc',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Reg Feature Grp', show: true, filter: {
           name: 'Reg_Feature_Grp',
-          type: 'select',
-          options: options.Reg_Feature_Grp,
+          type: 'text',
         },
       },
       {
-        label: 'Display', show: true, filter: {
-          name: 'display',
-          type: 'select',
-          options: options.display,
+        label: 'DHS', show: false, filter: {
+          name: 'DHS',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Platform', show: true, filter: {
+          name: 'Platform',
+          type: 'text',
         },
       },
     ];
@@ -263,9 +367,9 @@ class Methylation extends Component {
       <div>
          <FilterableDataTable
           name={'filterableDataTableMethylation'}
-          data={data}
+          data={this.state.data.Data}
           fields={fields}
-           // getFormattedCell={null}
+          getFormattedCell={this.formatColumn}
          />
       </div>
     );

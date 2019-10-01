@@ -29,8 +29,8 @@ class SNP extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -68,18 +68,18 @@ class SNP extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    const hiddenHeaders = [
-      'PSC',
-      'DCCID',
-      'externalID',
-      'DoB',
-    ];
+    // console.log('column');
+    // console.log(column);
+    // console.log('cell');
+    // console.log(cell);
+    // console.log('rowData');
+    // console.log(rowData);
 
     let reactElement = null;
-    if (-1 == hiddenHeaders.indexOf(column)) {
+    if (true) {
       switch (column) {
         case 'PSCID':
-          const url = window.location.origin + '/' + cell + '/';
+          const url = window.location.origin + '/' + rowData.DCCID + '/';
           reactElement = (
             <td><a href={url}>{rowData.PSCID}</a></td>
           );
@@ -225,8 +225,42 @@ class SNP extends Component {
         },
       },
       {
+        label: 'Chromosome', show: false, filter: {
+          name: 'Chromosome',
+          type: 'text',
+        },
+      },
+      {
         label: 'Strand', show: false, filter: {
           name: 'Strand',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'StartLoc', show: false, filter: {
+          name: 'StartLoc',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'EndLoc', show: false, filter: {
+          name: 'EndLoc',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Gene Symbol', show: false, filter: {
+          name: 'Gene_Symbol',
+          type: 'select',
+          options: options.strand,
+        },
+      },
+      {
+        label: 'Gene Name', show: false, filter: {
+          name: 'Gene_Name',
           type: 'select',
           options: options.strand,
         },
@@ -239,91 +273,87 @@ class SNP extends Component {
         },
       },
       {
-        label: 'rsID', show: true, filter: {
-          name: 'rsID',
-          type: 'text',
-        },
-      },
-      // Genomic Range Filters
-      {
-        label: 'Build', show: false, filter: {
-          name: 'Build',
-          type: 'select',
-          options: options.build,
-        },
-      },
-      {
-        label: 'Genomic Range', show: false, filter: {
-          name: 'Genomic_Range',
-          type: 'text',
-        },
-      },
-      // SNP Filters
-      {
-        label: 'Name', show: false, filter: {
-          name: 'Name',
+        label: 'RsID', show: true, filter: {
+          name: 'RsID',
           type: 'text',
         },
       },
       {
-        label: 'Description', show: false, filter: {
-          name: 'Description',
+        label: 'SNP Name', show: false, filter: {
+          name: 'SNP_Name',
+          type: 'text',
+        },
+      },
+      {
+        label: 'SNP Description', show: false, filter: {
+          name: 'SNP_Description',
           type: 'text',
         },
       },
       {
         label: 'External Source', show: false, filter: {
-          name: 'External_Source',
+          name: 'SNP_Description',
           type: 'text',
         },
       },
       {
         label: 'Allele A', show: true, filter: {
           name: 'Allele_A',
-          type: 'select',
-          options: options.allele_a,
-        },
-      },
-      {
-        label: 'Function Prediction', show: true, filter: {
-          name: 'Function_Prediction',
-          type: 'select',
-          options: options.function_prediction,
+          type: 'text',
         },
       },
       {
         label: 'Allele B', show: true, filter: {
           name: 'Allele_B',
-          type: 'select',
-          options: options.allele_b,
+          type: 'text',
         },
       },
       {
         label: 'Reference Base', show: true, filter: {
           name: 'Reference_Base',
-          type: 'select',
-          options: options.reference_base,
+          type: 'text',
         },
       },
       {
         label: 'Minor Allele', show: true, filter: {
           name: 'Minor_Allele',
-          type: 'select',
-          options: options.minor_allele,
+          type: 'text',
+        },
+      },
+      {
+        label: 'Array Report', show: false, filter: {
+          name: 'Array_Report',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Markers', show: false, filter: {
+          name: 'Markers',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Validation Method', show: false, filter: {
+          name: 'Validation_Method',
+          type: 'text',
         },
       },
       {
         label: 'Validated', show: false, filter: {
           name: 'Validated',
-          type: 'select',
-          options: options.validated,
+          type: 'text',
+        },
+      },
+      {
+        label: 'Function Prediction', show: true, filter: {
+          name: 'Function_Prediction',
+          type: 'text',
         },
       },
       {
         label: 'Damaging', show: true, filter: {
           name: 'Damaging',
-          type: 'select',
-          options: options.damaging,
+          type: 'text',
         },
       },
       {
@@ -336,13 +366,6 @@ class SNP extends Component {
         label: 'Exonic Function', show: true, filter: {
           name: 'Exonic_Function',
           type: 'text',
-        },
-      },
-      {
-        label: 'Display', show: false, filter: {
-          name: 'display',
-          type: 'select',
-          options: options.display,
         },
       },
     ];

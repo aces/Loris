@@ -29,8 +29,8 @@ class GWAS extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
   /**
    * Retrieve data from the provided URL and save it in state.
