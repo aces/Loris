@@ -65,7 +65,7 @@ class Stats_Behavioural extends \NDB_Form
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        $user = $factory->user();
+        $user    = $factory->user();
 
         $query = "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
@@ -77,7 +77,7 @@ class Stats_Behavioural extends \NDB_Form
 
         if (!$user->hasPermission('access_all_profiles')) {
             $sitesString = implode(",", $user->getCenterIDs());
-            $query   .= " AND CenterID IN (" . $sitesString . ")";
+            $query      .= " AND CenterID IN (" . $sitesString . ")";
         }
 
         $centers = $DB->pselect($query, array());
