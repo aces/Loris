@@ -157,7 +157,7 @@ class MediaIndex extends Component {
         }},
       {label: 'Date Taken', show: true},
       {label: 'Comments', show: true},
-      {label: 'Date Uploaded', show: true},
+      {label: 'Last Modified', show: true},
       {label: 'File Type', show: false, filter: {
         name: 'fileType',
         type: 'select',
