@@ -29,8 +29,8 @@ class GWAS extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
   /**
    * Retrieve data from the provided URL and save it in state.
@@ -101,92 +101,23 @@ class GWAS extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    // const data = this.state.data;
-    // const options = this.state.data.fieldOptions;
-    const options = {
-      major_allele: {
-        A: 'A',
-        C: 'C',
-        T: 'T',
-        G: 'G',
-      },
-      minor_allele: {
-        A: 'A',
-        C: 'C',
-        T: 'T',
-        G: 'G',
-      },
-      display: {
-        brief: 'Summary fields',
-        full: 'All fields',
-      },
-    };
-    const fields = [
-      // GWAS Filters
-      {
-        label: 'SNP ID', show: true, filter: {
-          name: 'SNP_ID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Chromosome', show: true, filter: {
-          name: 'Chromosome',
-          type: 'text',
-        },
-      },
-      {
-        label: 'BP Position', show: true, filter: {
-          name: 'BP_Position',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Major Allele', show: true, filter: {
-          name: 'Major_Allele',
-          type: 'select',
-          options: options.major_allele,
-        },
-      },
-      {
-        label: 'Minor Allele', show: true, filter: {
-          name: 'Minor_Allele',
-          type: 'select',
-          options: options.minor_allele,
-        },
-      },
-      {
-        label: 'MAF', show: true, filter: {
-          name: 'MAF',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Estimate', show: true, filter: {
-          name: 'Estimate',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Std Err', show: true, filter: {
-          name: 'StdErr',
-          type: 'text',
-        },
-      },
-      {
-        label: 'P-value', show: true, filter: {
-          name: 'Pvalue',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Display', show: true, filter: {
-          name: 'display',
-          type: 'select',
-          options: options.display,
-        },
-      },
-    ];
+
+    let fieldOptions = this.state.data.fieldOptions;
+    let fields = [];
+    for (let field in fieldOptions) {
+      if (fieldOptions.hasOwnProperty(field)) {
+        fields.push({
+          label: fieldOptions[field].label,
+          show: true,
+          filter: {
+            name: fieldOptions[field].name,
+            type: fieldOptions[field].type,
+            options: fieldOptions[field].options,
+          },
+        });
+      }
+    }
+
     return (
       <div>
          <FilterableDataTable

@@ -100,6 +100,7 @@ class FileManager extends Endpoint implements ETagCalculator
         $body         = array(
                          'data'         => $data,
                          'fieldOptions' => $this->_getFieldOptions(),
+                         'subprojects'  => \Utility::getSubprojectList(),
                          'permissions'  => [
                                             'user'           => $user->getUsername(),
                                             'upload_allowed' => $user->hasPermission(
@@ -119,6 +120,12 @@ class FileManager extends Endpoint implements ETagCalculator
     private function _getFieldOptions() : array
     {
         return array(
+                'genomic_file_id' => $this->_formElementObjectCreator(
+                    'genomic_file_id',
+                    'text',
+                    'Type',
+                    null
+                ),
                 'file_name'         => $this->_formElementObjectCreator(
                     'file_name',
                     'text',
@@ -131,22 +138,22 @@ class FileManager extends Endpoint implements ETagCalculator
                     'Description',
                     null
                 ),
+                'genomic_file_type' => $this->_formElementObjectCreator(
+                    'genomic_file_type',
+                    'text',
+                    'Type',
+                    null
+                ),
                 'date_inserted'     => $this->_formElementObjectCreator(
                     'date_inserted',
                     'text',
                     'Date inserted',
                     null
                 ),
-                'notes'             => $this->_formElementObjectCreator(
-                    'notes',
+                'inserted_by_user_id' => $this->_formElementObjectCreator(
+                    'inserted_by_user_id',
                     'text',
-                    'Notes',
-                    null
-                ),
-                'genomic_file_type' => $this->_formElementObjectCreator(
-                    'genomic_file_type',
-                    'text',
-                    'Type',
+                    'Inserted by User',
                     null
                 ),
                 'caveat'            => $this->_formElementObjectCreator(
@@ -157,6 +164,12 @@ class FileManager extends Endpoint implements ETagCalculator
                         'genomic_files',
                         'Caveat'
                     )
+                ),
+                'notes'             => $this->_formElementObjectCreator(
+                    'notes',
+                    'text',
+                    'Notes',
+                    null
                 ),
                );
     }
@@ -848,7 +861,7 @@ class FileManager extends Endpoint implements ETagCalculator
         $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
-            $element->values = $values;
+            $element->options = $values;
         }
         return $element;
     }

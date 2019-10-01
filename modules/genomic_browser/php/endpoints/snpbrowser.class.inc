@@ -96,6 +96,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
         $body = array(
                  'data'         => $data,
                  'fieldOptions' => $this->_getFieldOptions($request),
+                 'subprojects'  => \Utility::getSubprojectList(),
                 );
         //$this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         //return $this->_cache;
@@ -164,12 +165,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'PSCID',
                     null
                 ),
-                'External_ID'         => $this->_formElementObjectCreator(
-                    'External_ID',
-                    'text',
-                    'External ID',
-                    null
-                ),
                 'Sex'                 => $this->_formElementObjectCreator(
                     'sex',
                     'select',
@@ -192,23 +187,60 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'Show_Brief_Results'  => $this->_formElementObjectCreator(
-                    'Show_Brief_Results',
-                    'select',
-                    'Display',
-                    array(
-                     'brief' => 'Summary fields',
-                     'full'  => 'All fields',
-                    )
+                'External_ID'         => $this->_formElementObjectCreator(
+                    'External_ID',
+                    'text',
+                    'External ID',
+                    null
                 ),
                 'Assembly'            => $this->_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
                     array(
-                     null => 'Any',
-                     '37' => 'GRCh37',
+                        null => 'Any',
+                        '37' => 'GRCh37',
                     )
+                ),
+                'Strand'              => $this->_formElementObjectCreator(
+                    'Strand',
+                    'select',
+                    'Strand',
+                    array(
+                        null => 'Any',
+                        'F'  => 'Forward',
+                        'R'  => 'Reverse',
+                    )
+                ),
+                'Start_Loc'         => $this->_formElementObjectCreator(
+                    'Start_Loc',
+                    'text',
+                    'Start Loc',
+                    null
+                ),
+                'End_Loc'         => $this->_formElementObjectCreator(
+                    'End_Loc',
+                    'text',
+                    'End Loc',
+                    null
+                ),
+                'Gene_Symbol'         => $this->_formElementObjectCreator(
+                    'Gene_Symbol',
+                    'text',
+                    'Gene',
+                    null
+                ),
+                'Gene_Name'           => $this->_formElementObjectCreator(
+                    'Gene_Name',
+                    'text',
+                    'Name',
+                    null
+                ),
+                'Platform'            => $this->_formElementObjectCreator(
+                    'Platform',
+                    'select',
+                    'Platform',
+                    $platform_options
                 ),
                 'rsID'                => $this->_formElementObjectCreator(
                     'rsID',
@@ -282,6 +314,30 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                      'G'  => 'G',
                     )
                 ),
+                'Array_Report'        => $this->_formElementObjectCreator(
+                    'Array_Report',
+                    'select',
+                    'Array Report',
+                    array(
+                        null        => 'Any',
+                        'Abnormal'  => 'Abnormal',
+                        'Normal'    => 'Normal',
+                        'Pending'   => 'Pending',
+                        'Uncertain' => 'Uncertain',
+                    )
+                ),
+                'Markers'             => $this->_formElementObjectCreator(
+                    'Markers',
+                    'text',
+                    'Markers',
+                    null
+                ),
+                'Validation_Method'   => $this->_formElementObjectCreator(
+                    'Validation_Method',
+                    'text',
+                    'Validation Method',
+                    null
+                ),
                 'Validated'           => $this->_formElementObjectCreator(
                     'Validated',
                     'select',
@@ -327,62 +383,10 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Exonic Function',
                     null
                 ),
-                'Strand'              => $this->_formElementObjectCreator(
-                    'Strand',
-                    'select',
-                    'Strand',
-                    array(
-                     null => 'Any',
-                     'F'  => 'Forward',
-                     'R'  => 'Reverse',
-                    )
-                ),
                 'genomic_range'       => $this->_formElementObjectCreator(
                     'genomic_range',
                     'text',
                     'Genomic Range',
-                    null
-                ),
-                'Gene_Symbol'         => $this->_formElementObjectCreator(
-                    'Gene_Symbol',
-                    'text',
-                    'Gene',
-                    null
-                ),
-                'Gene_Name'           => $this->_formElementObjectCreator(
-                    'Gene_Name',
-                    'text',
-                    'Name',
-                    null
-                ),
-                'Platform'            => $this->_formElementObjectCreator(
-                    'Platform',
-                    'select',
-                    'Platform',
-                    $platform_options
-                ),
-                'Array_Report'        => $this->_formElementObjectCreator(
-                    'Array_Report',
-                    'select',
-                    'Array Report',
-                    array(
-                     null        => 'Any',
-                     'Abnormal'  => 'Abnormal',
-                     'Normal'    => 'Normal',
-                     'Pending'   => 'Pending',
-                     'Uncertain' => 'Uncertain',
-                    )
-                ),
-                'Markers'             => $this->_formElementObjectCreator(
-                    'Markers',
-                    'text',
-                    'Markers',
-                    null
-                ),
-                'Validation_Method'   => $this->_formElementObjectCreator(
-                    'Validation_Method',
-                    'text',
-                    'Validation Method',
                     null
                 ),
                );
@@ -431,7 +435,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
         $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
-            $element->values = $values;
+            $element->options = $values;
         }
         return $element;
     }

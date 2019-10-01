@@ -117,15 +117,6 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                        );
 
         return array(
-                'Show_Brief_Results' => $this->_formElementObjectCreator(
-                    'Show_Brief_Results',
-                    'select',
-                    'Display',
-                    array(
-                     'brief' => 'Summary fields',
-                     'full'  => 'All fields',
-                    )
-                ),
                 'SNP_ID'             => $this->_formElementObjectCreator(
                     'SNP_ID',
                     'text',
@@ -144,11 +135,11 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                     'BP Position',
                     null
                 ),
-                'MAF'                => $this->_formElementObjectCreator(
-                    'MAF',
-                    'text',
-                    'MAF',
-                    null
+                'Major_Allele'       => $this->_formElementObjectCreator(
+                    'Major_Allele',
+                    'select',
+                    'Major Allele',
+                    $alleleArray
                 ),
                 'Minor_Allele'       => $this->_formElementObjectCreator(
                     'Minor_Allele',
@@ -156,11 +147,11 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                     'Minor Allele',
                     $alleleArray
                 ),
-                'Major_Allele'       => $this->_formElementObjectCreator(
-                    'Major_Allele',
-                    'select',
-                    'Major Allele',
-                    $alleleArray
+                'MAF'                => $this->_formElementObjectCreator(
+                    'MAF',
+                    'text',
+                    'MAF',
+                    null
                 ),
                 'Estimate'           => $this->_formElementObjectCreator(
                     'Estimate',
@@ -226,7 +217,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
         $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
-            $element->values = $values;
+            $element->options = $values;
         }
         return $element;
     }

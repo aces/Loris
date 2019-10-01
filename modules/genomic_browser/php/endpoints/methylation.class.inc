@@ -96,6 +96,7 @@ class Methylation extends Endpoint implements ETagCalculator
         $body         = array(
                          'data'         => $data,
                          'fieldOptions' => $this->_getFieldOptions($request),
+                         'subprojects'  => \Utility::getSubprojectList(),
                         );
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         return $this->_cache;
@@ -181,13 +182,107 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'Show_Brief_Results' => $this->_formElementObjectCreator(
-                    'Show_Brief_Results',
+                'Sample'        => $this->_formElementObjectCreator(
+                    'Sample',
+                    'text',
+                    'Sample',
+                    null
+                ),
+                'cpg_name'           => $this->_formElementObjectCreator(
+                    'cpg_name',
+                    'text',
+                    'CPG Name',
+                    null
+                ),
+                'Beta_value'           => $this->_formElementObjectCreator(
+                    'Beta_value',
+                    'text',
+                    'Beta value',
+                    null
+                ),
+                'Chromosome'           => $this->_formElementObjectCreator(
+                    'Chromosome',
+                    'text',
+                    'Chromosome',
+                    null
+                ),
+                'Strand'             => $this->_formElementObjectCreator(
+                    'Strand',
                     'select',
-                    'Display',
+                    'Strand',
                     array(
-                     'brief' => 'Summary fields',
-                     'full'  => 'All fields',
+                        null => 'Any',
+                        'F'  => 'Forward',
+                        'R'  => 'Reverse',
+                    )
+                ),
+                'Start_Loc'         => $this->_formElementObjectCreator(
+                    'Start_Loc',
+                    'text',
+                    'Start Loc',
+                    null
+                ),
+                'Probe_Loc_A'         => $this->_formElementObjectCreator(
+                    'Probe_Loc_A',
+                    'text',
+                    'Probe Loc A',
+                    null
+                ),
+                'Probe_Seq_A'         => $this->_formElementObjectCreator(
+                    'Probe_Seq_A',
+                    'text',
+                    'Probe Seq A',
+                    null
+                ),
+                'Probe_Loc_B'         => $this->_formElementObjectCreator(
+                    'Probe_Loc_B',
+                    'text',
+                    'Probe Loc B',
+                    null
+                ),
+                'Probe_Seq_B'         => $this->_formElementObjectCreator(
+                    'Probe_Seq_B',
+                    'text',
+                    'Probe Seq B',
+                    null
+                ),
+                'Design'             => $this->_formElementObjectCreator(
+                    'Design',
+                    'select',
+                    'Infinium design',
+                    array(
+                        null => 'Any',
+                        'I'  => 'I',
+                        'II' => 'II',
+                    )
+                ),
+                'Color'              => $this->_formElementObjectCreator(
+                    'Strand',
+                    'select',
+                    'Color',
+                    array(
+                        null  => 'Any',
+                        'Grn' => 'Green',
+                        'Red' => 'Red',
+                    )
+                ),
+                'Assembly'           => $this->_formElementObjectCreator(
+                    'Assembly',
+                    'select',
+                    'Build',
+                    array(
+                        null => 'Any',
+                        '37' => 'GRCh37',
+                    )
+                ),
+                'SNP_10'             => $this->_formElementObjectCreator(
+                    'SNP_10',
+                    'select',
+                    'SNP',
+                    array(
+                        null   => 'Any',
+                        'NULL' => 'No',
+                        '_'    => 'Yes',
                     )
                 ),
                 'Gene_Symbol'        => $this->_formElementObjectCreator(
@@ -196,35 +291,30 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Gene',
                     null
                 ),
-                'genomic_range'      => $this->_formElementObjectCreator(
-                    'genomic_range',
+                'Accession_number'        => $this->_formElementObjectCreator(
+                    'Accession_number',
                     'text',
-                    'Genomic Range',
+                    'Accession number',
                     null
                 ),
-                'Assembly'           => $this->_formElementObjectCreator(
-                    'Assembly',
+                'Gene_Grp'           => $this->_formElementObjectCreator(
+                    'Gene_Grp',
                     'select',
-                    'Build',
+                    'Position',
                     array(
-                     null => 'Any',
-                     '37' => 'GRCh37',
+                        null      => 'Any',
+                        '1stExon' => '1st Exon',
+                        '3`UTR'   => '3`UTR',
+                        '5`UTR'   => '5`UTR',
+                        'Body'    => 'Body',
+                        'TSS1500' => 'TSS1500',
+                        'TSS200'  => 'TSS200',
                     )
                 ),
-                'Strand'             => $this->_formElementObjectCreator(
-                    'Strand',
-                    'select',
-                    'Strand',
-                    array(
-                     null => 'Any',
-                     'F'  => 'Forward',
-                     'R'  => 'Reverse',
-                    )
-                ),
-                'cpg_name'           => $this->_formElementObjectCreator(
-                    'cpg_name',
+                'Island_Loc'      => $this->_formElementObjectCreator(
+                    'Island_Loc',
                     'text',
-                    'CPG Name',
+                    'Island Loc',
                     null
                 ),
                 'Context'            => $this->_formElementObjectCreator(
@@ -236,47 +326,23 @@ class Methylation extends Endpoint implements ETagCalculator
                         'island_relation'
                     )
                 ),
-                'Platform'           => $this->_formElementObjectCreator(
-                    'Platform',
+                'Fantom_Prom'        => $this->_formElementObjectCreator(
+                    'Fantom_Prom',
                     'select',
-                    'Platform',
+                    'Promoter',
+                    array(
+                        null       => 'Any',
+                        'NULL'     => 'No',
+                        'NOT_NULL' => 'Yes',
+                    )
+                ),
+                'DMR'                => $this->_formElementObjectCreator(
+                    'DMR',
+                    'select',
+                    'DMR',
                     $this->getDistinctValues(
-                        'genotyping_platform',
-                        'Name'
-                    )
-                ),
-                'Gene_Grp'           => $this->_formElementObjectCreator(
-                    'Gene_Grp',
-                    'select',
-                    'Position',
-                    array(
-                     null      => 'Any',
-                     '1stExon' => '1st Exon',
-                     '3`UTR'   => '3`UTR',
-                     '5`UTR'   => '5`UTR',
-                     'Body'    => 'Body',
-                     'TSS1500' => 'TSS1500',
-                     'TSS200'  => 'TSS200',
-                    )
-                ),
-                'Design'             => $this->_formElementObjectCreator(
-                    'Design',
-                    'select',
-                    'Infinium design',
-                    array(
-                     null => 'Any',
-                     'I'  => 'I',
-                     'II' => 'II',
-                    )
-                ),
-                'Color'              => $this->_formElementObjectCreator(
-                    'Strand',
-                    'select',
-                    'Color',
-                    array(
-                     null  => 'Any',
-                     'Grn' => 'Green',
-                     'Red' => 'Red',
+                        'genomic_cpg_annotation',
+                        'dmr'
                     )
                 ),
                 'Enhancer'           => $this->_formElementObjectCreator(
@@ -284,19 +350,25 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Enhancer',
                     array(
-                     null => 'Any',
-                     '1'  => 'Yes',
+                        null => 'Any',
+                        '1'  => 'Yes',
                     )
                 ),
-                'SNP_10'             => $this->_formElementObjectCreator(
-                    'SNP_10',
+                'HMM_Island'         => $this->_formElementObjectCreator(
+                    'HMM_Island',
                     'select',
-                    'SNP',
+                    'HMM Island',
                     array(
-                     null   => 'Any',
-                     'NULL' => 'No',
-                     '_'    => 'Yes',
+                        null       => 'Any',
+                        'NULL'     => 'No',
+                        'NOT_NULL' => 'Yes',
                     )
+                ),
+                'Reg_Feature_Loc'      => $this->_formElementObjectCreator(
+                    'Reg_Feature_Loc',
+                    'text',
+                    'Reg Feature Loc',
+                    null
                 ),
                 'Reg_Feature_Grp'    => $this->_formElementObjectCreator(
                     'Reg_Feature_Grp',
@@ -307,43 +379,23 @@ class Methylation extends Endpoint implements ETagCalculator
                         'reg_feature_group'
                     )
                 ),
-                'Fantom_Prom'        => $this->_formElementObjectCreator(
-                    'Fantom_Prom',
-                    'select',
-                    'Promoter',
-                    array(
-                     null       => 'Any',
-                     'NULL'     => 'No',
-                     'NOT_NULL' => 'Yes',
-                    )
-                ),
-                'HMM_Island'         => $this->_formElementObjectCreator(
-                    'HMM_Island',
-                    'select',
-                    'HMM Island',
-                    array(
-                     null       => 'Any',
-                     'NULL'     => 'No',
-                     'NOT_NULL' => 'Yes',
-                    )
-                ),
                 'DHS'                => $this->_formElementObjectCreator(
                     'DHS',
                     'select',
                     'DHS',
                     array(
-                     null   => 'Any',
-                     '1'    => 'Yes',
-                     'NULL' => 'No',
+                        null   => 'Any',
+                        '1'    => 'Yes',
+                        'NULL' => 'No',
                     )
                 ),
-                'DMR'                => $this->_formElementObjectCreator(
-                    'DMR',
+                'Platform'           => $this->_formElementObjectCreator(
+                    'Platform',
                     'select',
-                    'DMR',
+                    'Platform',
                     $this->getDistinctValues(
-                        'genomic_cpg_annotation',
-                        'dmr'
+                        'genotyping_platform',
+                        'Name'
                     )
                 ),
                );
@@ -440,7 +492,7 @@ class Methylation extends Endpoint implements ETagCalculator
         $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
-            $element->values = $values;
+            $element->options = $values;
         }
         return $element;
     }

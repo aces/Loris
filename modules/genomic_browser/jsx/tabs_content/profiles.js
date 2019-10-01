@@ -30,8 +30,8 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -69,13 +69,6 @@ class Profiles extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    // console.log('column: ');
-    // console.log(column);
-    // console.log('cell: ');
-    // console.log(cell);
-    // console.log('rowData: ');
-    // console.log(JSON.stringify(rowData));
-
     let reactElement = null;
     switch (column) {
       case 'PSCID': {
