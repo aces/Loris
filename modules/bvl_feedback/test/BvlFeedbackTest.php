@@ -41,7 +41,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
         // Candidate Profile
         $this->safeGet($this->url . "/300002/");
         $this->clickReactElement("#nav-right >li:nth-child(1) > a > span");
-        
+
         $text = $this->getReactElementContent(
             "#bvl_feedback_menu > div.breadcrumb-panel > a"
         );

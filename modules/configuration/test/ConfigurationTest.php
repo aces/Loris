@@ -62,8 +62,8 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->getReactElementContent(
-                       'body'
-                    );
+            'body'
+        );
         $this->assertRegexp(
             "/Please enter the various configuration variables/",
             $bodyText
@@ -79,8 +79,8 @@ class ConfigurationTest extends LorisIntegrationTest
          $this->setupPermissions(array("config"));
          $this->safeGet($this->url . "/configuration/");
          $bodyText = $this->getReactElementContent(
-                       'body'
-                    );
+             'body'
+         );
          $this->assertNotContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
@@ -94,8 +94,8 @@ class ConfigurationTest extends LorisIntegrationTest
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/configuration/");
          $bodyText = $this->getReactElementContent(
-                       'body'
-                    );
+             'body'
+         );
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
@@ -143,11 +143,12 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $href = "document.querySelector(\"[href='#".$text."']\").click()";
         $this->webDriver->executescript("$href");
-        $bodyText = $this->webDriver->executescript("
+        $bodyText = $this->webDriver->executescript(
+            "
                   return document.querySelector('.active').textContent"
         );
-        $text = str_replace("_", " ", $text);
-        $this->assertContains($text,strtolower($bodyText));
+        $text     = str_replace("_", " ", $text);
+        $this->assertContains($text, strtolower($bodyText));
     }
 
 }

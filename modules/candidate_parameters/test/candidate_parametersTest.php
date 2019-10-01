@@ -39,8 +39,8 @@ class CandidateParametersTestIntegrationTest
             . "/candidate_parameters/?candID=900000&identifier=900000"
         );
         $bodyText = $this->getReactElementContent(
-                       'body'
-                    );
+            'body'
+        );
         $this->assertContains("Candidate Parameters", $bodyText);
     }
 

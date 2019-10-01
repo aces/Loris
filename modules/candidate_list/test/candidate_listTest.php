@@ -142,22 +142,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $row = self::$display;
         $btn = self::$clearFilter;
         //testing data from RBdata.sql
-        $this->_testFilter(self::$PSCID,"0 rows","test",$row,$btn);
-        $this->_testFilter(self::$PSCID,"1 rows","MTL001",$row,$btn);
-        $this->_testFilter(self::$DCCID, "1 rows","300001",$row,$btn);
-        $this->_testFilter(self::$DCCID,"0 rows", "test",$row,$btn);
-        $this->_testFilter(self::$visitLabel,"374", "V1",$row,$btn);
-        $this->_testFilter(self::$visitLabel,"261", "V2",$row,$btn);
-        $this->_testFilter(self::$site, "8 rows", '1',$row,$btn);
-        $this->_testFilter(self::$site, "168", '2',$row,$btn);
-        $this->_testFilter(self::$entityType, "8 rows", '1',$row,$btn);
+        $this->_testFilter(self::$PSCID, "0 rows", "test", $row, $btn);
+        $this->_testFilter(self::$PSCID, "1 rows", "MTL001", $row, $btn);
+        $this->_testFilter(self::$DCCID, "1 rows", "300001", $row, $btn);
+        $this->_testFilter(self::$DCCID, "0 rows", "test", $row, $btn);
+        $this->_testFilter(self::$visitLabel, "374", "V1", $row, $btn);
+        $this->_testFilter(self::$visitLabel, "261", "V2", $row, $btn);
+        $this->_testFilter(self::$site, "8 rows", '1', $row, $btn);
+        $this->_testFilter(self::$site, "168", '2', $row, $btn);
+        $this->_testFilter(self::$entityType, "8 rows", '1', $row, $btn);
         //test advanced filter - sex
         //Switch to Advanced mode
         $this->clickReactElement(self::$advancedFilter);
         //female
-        $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1',$row,$btn);
+        $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1', $row, $btn);
         // male
-        $this-> _testFilter(self::$sex, "20 rows displayed of 328", '2',$row,$btn);
+        $this-> _testFilter(self::$sex, "20 rows displayed of 328", '2', $row, $btn);
     }
     /**
      * Tests that, when user only has data_entry permisson, user

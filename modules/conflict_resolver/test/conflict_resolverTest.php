@@ -168,14 +168,50 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $btn = self::$clearFilter;
         //testing data
         // site = montreal
-        $this-> _testFilter(self::$ForSite, "20 rows displayed of 311", '2',$row,$btn);
+        $this-> _testFilter(
+            self::$ForSite,
+            "20 rows displayed of 311",
+            '2',
+            $row,
+            $btn
+        );
         // Visit label = V1
-        $this-> _testFilter(self::$VisitLabel, "displayed of 576", '1',$row,$btn);
-        $this-> _testFilter(self::$CandID, "2 rows displayed of 2", '300004',$row,$btn);
-        $this-> _testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004',$row,$btn);
-        $this-> _testFilter(self::$Question, "displayed of 181", 'height_inches',$row,$btn);
+        $this-> _testFilter(
+            self::$VisitLabel,
+            "displayed of 576",
+            '1',
+            $row,
+            $btn
+        );
+        $this-> _testFilter(
+            self::$CandID,
+            "2 rows displayed of 2",
+            '300004',
+            $row,
+            $btn
+        );
+        $this-> _testFilter(
+            self::$PSCID,
+            "2 rows displayed of 2",
+            'MTL004',
+            $row,
+            $btn
+        );
+        $this-> _testFilter(
+            self::$Question,
+            "displayed of 181",
+            'height_inches',
+            $row,
+            $btn
+        );
          // project = Pumpernickel
-        $this-> _testFilter(self::$Project, "3 rows displayed of 3", '1',$row,$btn);
+        $this-> _testFilter(
+            self::$Project,
+            "3 rows displayed of 3",
+            '1',
+            $row,
+            $btn
+        );
     }
      /**
      * Tests filter in resolved conflicts
@@ -188,12 +224,18 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
         $row = self::$display;
         $btn = self::$clearFilter;
-        $this-> _testFilter(self::$ForSite, "displayed of 14", '2',$row,$btn);
-        $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1',$row,$btn);
-        $this-> _testFilter(self::$CandID, "1 row", '400167',$row,$btn);
-        $this-> _testFilter(self::$PSCID, "1 row", 'ROM167',$row,$btn);
-        $this-> _testFilter(self::$Question, "9 rows", 'date_taken',$row,$btn);
-        $this-> _testFilter(self::$Timestamp, "1 row", '2016-08-16 18:35:51',$row,$btn);
+        $this-> _testFilter(self::$ForSite, "displayed of 14", '2', $row, $btn);
+        $this-> _testFilter(self::$VisitLabel, "displayed of 33", '1', $row, $btn);
+        $this-> _testFilter(self::$CandID, "1 row", '400167', $row, $btn);
+        $this-> _testFilter(self::$PSCID, "1 row", 'ROM167', $row, $btn);
+        $this-> _testFilter(self::$Question, "9 rows", 'date_taken', $row, $btn);
+        $this-> _testFilter(
+            self::$Timestamp,
+            "1 row",
+            '2016-08-16 18:35:51',
+            $row,
+            $btn
+        );
 
     }
      /**
@@ -210,7 +252,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $value   = "2";
          $btn     = self::$saveBtn;
          $row     = self::$display;
-         $this->reactDropdownSendKey($element,$value);
+         $this->reactDropdownSendKey($element, $value);
 
          $this->clickReactElement($btn);
          sleep(1);
@@ -218,24 +260,24 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             // 4 means there are 4 records under this site.
          $this->assertContains("of 578", $bodyText);
                   $this->DB->insert(
-             "conflicts_unresolved",
-             array(
-              'ConflictID'     => '92',
-              'TableName'      => 'bmi',
-              'ExtraKeyColumn' =>  NULL,
-              'ExtraKey1'      => '',
-              'ExtraKey2'      => '',
-              'FieldName'      => 'height_inches',
-              'CommentId1'     => '300004MTL0044121465351036',
-              'Value1'         => '5',
-              'CommentId2'     => 'DDE_300004MTL0044121465351036',
-              'Value2'         => '8',
-             )
-         );
+                      "conflicts_unresolved",
+                      array(
+                       'ConflictID'     => '92',
+                       'TableName'      => 'bmi',
+                       'ExtraKeyColumn' => null,
+                       'ExtraKey1'      => '',
+                       'ExtraKey2'      => '',
+                       'FieldName'      => 'height_inches',
+                       'CommentId1'     => '300004MTL0044121465351036',
+                       'Value1'         => '5',
+                       'CommentId2'     => 'DDE_300004MTL0044121465351036',
+                       'Value2'         => '8',
+                      )
+                  );
          $this->DB->delete(
-            "conflicts_resolved",
-            array('ConflictID' => '92')
-        );
+             "conflicts_resolved",
+             array('ConflictID' => '92')
+         );
     }
 }
 
