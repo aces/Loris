@@ -134,7 +134,7 @@ Open your browser and go to: `http://%IPADDRESS%/installdb.php`
 
 The web page will prompt you for the following information: 
 
- * `Server Hostname` localhost if your database if hosted on your VM or the IP address of your database server
+ * `Server Hostname` localhost if your database is hosted on your VM or the IP address of your database server
 
  * `Admin Username` should be `root` or a MariaDB user with permission to create databases and tables
 
