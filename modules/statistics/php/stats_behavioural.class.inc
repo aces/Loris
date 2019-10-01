@@ -63,7 +63,7 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $user = \NDB_Factory::singleton()->user();
 
