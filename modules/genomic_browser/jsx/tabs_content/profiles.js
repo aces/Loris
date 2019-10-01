@@ -30,8 +30,8 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -45,7 +45,7 @@ class Profiles extends Component {
       )
       .then((resp) => resp.json())
       .then((json) => {
-        console.dir(json);
+        // console.dir(json);
         const data = {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),

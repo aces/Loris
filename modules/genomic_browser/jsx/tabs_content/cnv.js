@@ -45,7 +45,7 @@ class CNV extends Component {
     )
       .then((resp) => resp.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
         const data = {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),
