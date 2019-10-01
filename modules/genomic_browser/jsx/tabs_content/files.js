@@ -133,6 +133,11 @@ class Files extends Component {
             <td><a href={url}>{rowData.PSCID}</a></td>
           );
           break;
+        case 'Subproject':
+          reactElement = (
+            <td>{this.state.data.subprojects[parseInt(cell)]}</td>
+          );
+          break;
         default:
           reactElement = (
             <td>{cell}</td>
@@ -151,58 +156,21 @@ class Files extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    // const options = this.state.data.fieldOptions;
-    const fields = [
-      // Genomic File Filters
-      {
-        label: 'GenomicFileID', show: false, filter: {
-          name: 'genomic_file_id',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Name', show: true, filter: {
-          name: 'file_name',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Description', show: true, filter: {
-          name: 'description',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Type', show: true, filter: {
-          name: 'genomic_file_type',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Date inserted', show: true, filter: {
-          name: 'date_inserted',
-          type: 'text',
-        },
-      },
-      {
-        label: 'InsertedByUserID', show: false, filter: {
-          name: 'InsertedByUserID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Caveat', show: true, filter: {
-          name: 'caveat',
-          type: 'checkbox',
-        },
-      },
-      {
-        label: 'Notes', show: true, filter: {
-          name: 'notes',
-          type: 'text',
-        },
-      },
-    ];
+    let fieldOptions = this.state.data.fieldOptions;
+    let fields = [];
+    for (let field in fieldOptions) {
+      if (fieldOptions.hasOwnProperty(field)) {
+        fields.push({
+          label: fieldOptions[field].label,
+          show: true,
+          filter: {
+            name: fieldOptions[field].name,
+            type: fieldOptions[field].type,
+            options: fieldOptions[field].options,
+          },
+        });
+      }
+    }
     const actions = [{
       name: 'uploadFile',
       label: 'Upload File',
