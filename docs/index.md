@@ -1,4 +1,7 @@
-#LORIS Neuroimaging Platform
+> Hey team - don't comment on this old file! Go to [PR #5203](https://github.com/aces/Loris/pull/5203) if you want to suggest content changes to the Readme.<br>
+This is only an *example* of a complex markdown (an old copy of our Loris readme) and how Read-the-docs renders it
+
+# NOT the Real LORIS Readme
 
 LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
