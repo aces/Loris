@@ -29,8 +29,8 @@ class Methylation extends Component {
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    // this.fetchData()
+    //   .then(() => this.setState({isLoaded: true}));
   }
 
   /**

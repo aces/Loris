@@ -30,8 +30,8 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -45,7 +45,7 @@ class Profiles extends Component {
       )
       .then((resp) => resp.json())
       .then((json) => {
-        console.log(json);
+        console.dir(json);
         const data = {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),
@@ -69,12 +69,12 @@ class Profiles extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    console.log('column: ');
-    console.log(column);
-    console.log('cell: ');
-    console.log(cell);
-    console.log('rowData: ');
-    console.log(JSON.stringify(rowData));
+    // console.log('column: ');
+    // console.log(column);
+    // console.log('cell: ');
+    // console.log(cell);
+    // console.log('rowData: ');
+    // console.log(JSON.stringify(rowData));
 
     let reactElement = null;
     switch (column) {
@@ -145,132 +145,22 @@ class Profiles extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    // const state = Object.assign({}, this.state);
-    // const data = state.data;
-    // const options = this.state.data.fieldOptions;
-    const options = {
-      site: {
-        1: 'Data Coordinating Center',
-        2: 'Montreal',
-        3: 'Ottawa',
-        4: 'Rome',
-      },
-      subproject: {
-        1: 'Stale',
-        2: 'Fresh',
-        3: 'Low Yeast',
-        4: 'High Yeast',
-      },
-      sex: {
-        Male: 'Male',
-        Female: 'Female',
-      },
-      files: {
-        Y: 'Yes',
-        N: 'No',
-      },
-      cpg: {
-        Y: 'Yes',
-        N: 'No',
-      },
-      snp: {
-        Y: 'Yes',
-        N: 'No',
-      },
-      cnv: {
-        Y: 'Yes',
-        N: 'No',
-      },
-      display: {
-        brief: 'Summary fields',
-        full: 'All fields',
-      },
-    };
-    const fields = [
-      // Candidate Filters
-      {
-        label: 'Site', show: false, filter: {
-          name: 'centerID',
-          type: 'select',
-          options: options.site,
-        },
-      },
-      {
-        label: 'DCCID', show: false, filter: {
-          name: 'DCCID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'PSCID', show: true, filter: {
-          name: 'PSCID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Sex', show: true, filter: {
-          name: 'sex',
-          type: 'select',
-          options: options.sex,
-        },
-      },
-      {
-        label: 'Subproject', show: true, filter: {
-          name: 'SubprojectID',
-          type: 'select',
-          options: options.subproject,
-        },
-      },
-      {
-        label: 'DoB', show: false, filter: {
-          name: 'Date of Birth',
-          type: 'select',
-          options: options.subproject,
-        },
-      },
-      {
-        label: 'External ID', show: false, filter: {
-          name: 'External_ID',
-          type: 'text',
-        },
-      },
-      {
-        label: 'Files', show: true, filter: {
-          name: 'files',
-          type: 'select',
-          options: options.files,
-        },
-      },
-      {
-        label: 'SNP', show: true, filter: {
-          name: 'snp',
-          type: 'select',
-          options: options.snp,
-        },
-      },
-      {
-        label: 'CNV', show: true, filter: {
-          name: 'cnv',
-          type: 'select',
-          options: options.cnv,
-        },
-      },
-      // Genomic Filters.
-      {
-        label: 'CPG', show: true, filter: {
-          name: 'cpg',
-          type: 'select',
-          options: options.cpg,
-        },
-      },
-      {
-        label: 'Display', show: false, filter: {
-          name: 'display',
-          type: 'select',
-          options: options.display,
-        },
-      },
-    ];
+    let fieldOptions = this.state.data.fieldOptions;
+    let fields = [];
+    for (let field in fieldOptions) {
+      if (fieldOptions.hasOwnProperty(field)) {
+        fields.push({
+          label: fieldOptions[field].label,
+          show: true,
+          filter: {
+            name: fieldOptions[field].name,
+            type: fieldOptions[field].type,
+            options: fieldOptions[field].options,
+          },
+        });
+      }
+    }
+
     return (
       <div>
         <FilterableDataTable

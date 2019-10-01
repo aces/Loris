@@ -164,12 +164,6 @@ class Profiles extends Endpoint implements ETagCalculator
                     'PSCID',
                     null
                 ),
-                'External_ID'        => $this->_formElementObjectCreator(
-                    'External_ID',
-                    'text',
-                    'External ID',
-                    null
-                ),
                 'Sex'                => $this->_formElementObjectCreator(
                     'sex',
                     'select',
@@ -191,6 +185,12 @@ class Profiles extends Endpoint implements ETagCalculator
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
+                ),
+                'External_ID'        => $this->_formElementObjectCreator(
+                    'External_ID',
+                    'text',
+                    'External ID',
+                    null
                 ),
                 'File'               => $this->_formElementObjectCreator(
                     'File',
@@ -215,15 +215,6 @@ class Profiles extends Endpoint implements ETagCalculator
                     'select',
                     'CPGs found',
                     $any_options
-                ),
-                'Show_Brief_Results' => $this->_formElementObjectCreator(
-                    'Show_Brief_Results',
-                    'select',
-                    'Display',
-                    array(
-                     'brief' => 'Summary fields',
-                     'full'  => 'All fields',
-                    )
                 ),
                );
     }
@@ -271,7 +262,7 @@ class Profiles extends Endpoint implements ETagCalculator
         $element->type  = $type;
         $element->label = $label;
         if (isset($values)) {
-            $element->values = $values;
+            $element->options = $values;
         }
         return $element;
     }
