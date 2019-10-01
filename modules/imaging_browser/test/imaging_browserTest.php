@@ -26,7 +26,17 @@ require_once __DIR__
  */
 class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 {
-
+    // clear filter button
+    static $clearFilter = ".col-sm-9 > .btn";
+    // the number of table rows
+    static $display = ".table-header > div > div > div:nth-child(1)";
+    //filter location
+    static $PSCID          = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $DCCID          = ".col-xs-12:nth-child(4) .form-control";
+    static $visitLabel     = ".col-xs-12:nth-child(6) .form-control";
+    static $site           = ".col-xs-12:nth-child(2) > .row .form-control, select";
+    static $project        = ".col-xs-12:nth-child(5) .form-control, select";
+    static $QC             = ".col-xs-12:nth-child(7) .form-control, select";
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -35,7 +45,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
 
         parent::setUp();
@@ -310,7 +320,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         // tear down test-specific dataset
@@ -347,7 +357,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testImagingBrowserDoespageLoad()
+    function testImagingBrowserDoespageLoad(): void
     {
         $this->safeGet(
             $this->url . "/imaging_browser/"
@@ -368,7 +378,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testImagingBrowserDoespageLoadWithoutPermissions()
+    function testImagingBrowserDoespageLoadWithoutPermissions(): void
     {
         // Without permissions
         $this->setupPermissions(array(''));
@@ -385,43 +395,43 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
     }
-
-    function testImagingBrowserDoespageLoadWithPermissionsSite()
+    /**
+     * Step 1
+     * Tests that the imaging_browser module loads with
+     * different permissions
+     *
+     * @return void
+     */
+    function testImagingBrowserDoespageLoadWithPermissionsSite(): void
     {
         // With permission imaging_browser_phantom_ownsite
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $breadcrumbText = $this->getReactElementContent(
+            '.btn>div'
+        );
         $this->assertContains("Imaging Browser", $breadcrumbText);
-    }
-
-    function testImagingBrowserDoespageLoadWithPermissionsAllSites()
-    {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $breadcrumbText = $this->getReactElementContent(
+            '.btn>div'
+        ); 
         $this->assertContains("Imaging Browser", $breadcrumbText);
-    }
-    function testImagingBrowserDoespageLoadWithPermissionsPhontomAllSites()
-    {
         // With permission imaging_browser_phantom_allsites
         $this->setupPermissions(array('imaging_browser_phantom_allsites'));
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $breadcrumbText = $this->getReactElementContent(
+            '.btn>div'
+        ); 
         $this->assertContains("Imaging Browser", $breadcrumbText);
+
     }
 
     /**
@@ -431,101 +441,93 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-    function testImagingBrowserViewDatasetDependingOnPermissions()
+    function testImagingBrowserViewDatasetDependingOnPermissions(): void
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         // With permission imaging_browser_view_site: 0 subjects found from DCC site
         $this->setupPermissions(array('imaging_browser_view_site'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertContains("0 subject timepoint(s) selected", $ControlPanelText);
+        $text = $this->webDriver->executescript(
+                " return document.querySelector(".
+                "'.col-xs-12:nth-child(2) > .row .form-control').textContent"
+            );
+        $this->assertContains("Data Coordinating Center", $text);
+        $this->assertNotContains("Montreal", $text);
+        $this->assertNotContains("Ottawa", $text);
+        $this->assertNotContains("Rome", $text);
 
         // With permission imaging_browser_view_allsites:
         // 2 subjects with imaging data found
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
+        $text = $this->webDriver->executescript(
+                " return document.querySelector(".
+                "'.col-xs-12:nth-child(2) > .row .form-control').textContent"
+            );
+        $this->assertContains("Data Coordinating Center", $text);
+        $this->assertContains("Montreal", $text);
+        $this->assertContains("Ottawa", $text);
+        $this->assertContains("Rome", $text);
 
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertContains("2 subject timepoint(s) selected", $ControlPanelText);
     }
 
     /**
      * Step 3a & 4 combined
-     * Tests that Filters (tested for PSCID here)
-     * and that Show Data and Clear Form work
+     * Tests that Filters 
+     * and Clear Form work
      *
      * @return void
     */
-    function testImagingBrowserFiltersAndShowClearButtons()
+    function testImagingBrowserFiltersAndShowClearButtons(): void
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
+        $this->safeGet($this->url . "/imaging_browser/");
+        $row = self::$display;
+        $btn = self::$clearFilter;
+        $this-> _testFilter(
+            self::$site,
+            "15 rows displayed of 15",
+            '1',
+            $row,
+            $btn
         );
-        // Testing for PSCID
-        $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
+        $this-> _testFilter(
+            self::$PSCID,
+            "1 rows displayed of 1",
+            'DCC090',
+            $row,
+            $btn
         );
-
-        $PSCIDOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("pscid")
+        $this-> _testFilter(
+            self::$DCCID,
+            "1 rows displayed of 1",
+            '587630',
+            $row,
+            $btn
         );
-        $PSCIDOptions ->sendKeys("AOL");
-
-        $ShowData = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(3) > input:nth-child(1)"
-            )
+        $this-> _testFilter(
+            self::$project,
+            "15 rows displayed of 15",
+            '1',
+            $row,
+            $btn
         );
-        $ShowData->click();
-
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertContains("1 subject timepoint(s) selected", $ControlPanelText);
-
-        // Now reset using clear button and confirm site
-        // set back to all and 2 subjects found
-        $ClearForm = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(4) > input:nth-child(1)"
-            )
+        $this-> _testFilter(
+            self::$visitLabel,
+            "12 rows displayed of 12",
+            'V1',
+            $row,
+            $btn
         );
-        $ClearForm->click();
-
-        $PSCIDCleared = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.row:nth-child(1) > div:nth-child(1) > " .
-                "div:nth-child(2) > input:nth-child(1)"
-            )
-        )->getText();
-        $this->assertEquals("", $PSCIDCleared);
-
-        $ShowData = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(3) > input:nth-child(1)"
-            )
+        $this-> _testFilter(
+            self::$QC,
+            "15 rows displayed of 15",
+            '1',
+            $row,
+            $btn
         );
-        $ShowData->click();
-
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertContains("2 subject timepoint(s) selected", $ControlPanelText);
     }
 
     /**
@@ -728,12 +730,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionLinks()
     {
-        $this->markTestIncomplete(
-            'Forms should be added, & router.php should be fixed for instruments'
-        );
+  //      $this->markTestIncomplete(
+  //          'Forms should be added, & router.php should be fixed for instruments'
+  //      );
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
+//        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
