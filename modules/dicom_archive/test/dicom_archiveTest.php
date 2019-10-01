@@ -125,7 +125,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains('Tarchive Metadata', $text);
         //test click Acquisition ID
         $AcquistionID = "td:nth-child(2) > .dicom_archive";
-        $this->clickReactElement($AcquistionID);
+        $this->clickReactElement($AcquistionID);sleep(1);
         $text = $this->getReactElementContent('.btn > div');
         $this->assertContains('Mri Violations', $text);
 
