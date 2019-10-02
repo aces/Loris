@@ -2,7 +2,7 @@
 /**
  * PHP version 7
  *
- * @category Datadict
+ * @category Genomics
  * @package  Main
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
