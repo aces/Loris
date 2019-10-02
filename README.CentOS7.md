@@ -67,7 +67,7 @@ sudo mysql_secure_installation
 Then follow instructions to create a password for the root user.
 
 ## NodeJS
-```
+```bash
 sudo yum install nodejs
 ```
 
