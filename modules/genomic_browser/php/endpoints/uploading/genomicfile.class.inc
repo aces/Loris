@@ -98,14 +98,12 @@ class Genomicfile
             $this->endWithSuccess();
             break;
         default:
-            return json_encode(
-                array(
-                 'message'  => "Unsupported filetype: 
+            return array(
+                    'message'  => "Unsupported filetype: 
                      $this->_fileToUpload->genomic_file_type",
-                 'progress' => 100,
-                 'error'    => true,
-                )
-            );
+                    'progress' => 100,
+                    'error'    => true,
+                   );
         }
 
         $this->_response = $this->reportProgress(100, 'Complete');
