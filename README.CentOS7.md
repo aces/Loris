@@ -104,7 +104,7 @@ Customize and Verify your settings:
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
 Finally, restart apache:
-```
+```bash
 sudo systemctl restart httpd
 sudo systemctl status httpd
 ```
