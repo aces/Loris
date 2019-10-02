@@ -84,9 +84,7 @@ class FileManager extends Endpoint implements ETagCalculator
                     'Bad request for file manager.'
                 );
             case 'Forbidden':
-                return new \LORIS\Http\Response\Forbidden(
-                    'Forbidden'
-                );
+                return new \LORIS\Http\Response\Forbidden();
             default:
                 break;
             }

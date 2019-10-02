@@ -80,9 +80,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Failed to retrieve data for Methylation.'
                 );
             case 'Forbidden':
-                return new \LORIS\Http\Response\Forbidden(
-                    'Forbidden'
-                );
+                return new \LORIS\Http\Response\Forbidden();
             default:
                 break;
             }
