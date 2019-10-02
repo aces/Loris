@@ -62,6 +62,7 @@ class Files extends Component {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),
           subprojects: json.subprojects,
+          permissions: json.permissions,
         };
         this.setState({data});
       }).catch((error) => {
