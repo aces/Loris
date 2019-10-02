@@ -133,9 +133,7 @@ class Profiles extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
-            }
+            $list_of_sites = array('' => 'Any') + $list_of_sites;
         } else {
             $list_of_sites = $user->getStudySites();
             $list_of_sites = array('' => 'All User Sites') + $list_of_sites;

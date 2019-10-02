@@ -81,7 +81,7 @@ class FileManager extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for create timepoint.'
+                    'Bad request for file manager.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden(
@@ -91,9 +91,8 @@ class FileManager extends Endpoint implements ETagCalculator
                 break;
             }
         }
-        $user        = $request->getAttribute('user');
-        $provisioner = (new FilesProvisioner())->forUser($user);
-        // $provisioner = (new FilesProvisioner())->filter();
+        $user         = $request->getAttribute('user');
+        $provisioner  = (new FilesProvisioner())->forUser($user);
         $data         = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);
@@ -263,8 +262,7 @@ class FileManager extends Endpoint implements ETagCalculator
         array $values
     ) : array {
         $user = $request->getAttribute('user');
-        if (!$user->hasPermission('genomic_browser_view_site')
-            || !$user->hasPermission('genomic_browser_view_allsites')
+        if (!$user->hasAnyPermissions(['genomic_browser_view_site', 'genomic_browser_view_allsites'])
         ) {
             $values['error'] = 'Forbidden';
             return $values;

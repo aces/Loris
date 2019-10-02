@@ -93,14 +93,12 @@ class Genomicfile
             $this->endWithSuccess();
             break;
         default:
-            die(
-                json_encode(
-                    array(
-                     'message'  => "Unsupported filetype: 
+            return json_encode(
+                array(
+                 'message'  => "Unsupported filetype: 
                      $this->_fileToUpload->genomic_file_type",
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
@@ -206,13 +204,11 @@ class Genomicfile
             endWithFailure();
             // TODO: The below does not get printed to the frontend.
             //       Further debugging needed
-            die(
-                json_encode(
-                    array(
-                     'message'  => 'File copy failed',
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+            return json_encode(
+                array(
+                 'message'  => 'File copy failed',
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
@@ -579,13 +575,11 @@ class Genomicfile
         if (empty($this->_values['pscidColumn'])
             || empty($_FILES['file'])
         ) {
-            die(
-                json_encode(
-                    array(
-                     'message'  => 'Validation failed : Missing inputs',
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+            return json_encode(
+                array(
+                 'message'  => 'Validation failed : Missing inputs',
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
             // This require some more work

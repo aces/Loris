@@ -77,7 +77,7 @@ class Methylation extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for create timepoint.'
+                    'Failed to retrieve data for Methylation.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden(
@@ -453,23 +453,6 @@ class Methylation extends Endpoint implements ETagCalculator
         }
         return $values;
     }
-
-    /**
-     * Setup variables for form.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array                  $values  The form values.
-     *
-     * @return array
-     */
-    private function _setupVariables(
-        ServerRequestInterface $request,
-        array $values
-    ) : array {
-        // set the class variables
-
-    }
-
 
     /**
      * Used to create (select, text, ...) element for form filter.

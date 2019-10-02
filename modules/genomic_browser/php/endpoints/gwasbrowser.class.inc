@@ -77,7 +77,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for create timepoint.'
+                    'Failed to retrieve data for GWAS.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden(

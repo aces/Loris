@@ -77,7 +77,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for create timepoint.'
+                    'Failed to retrieve data for SNP.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden(
@@ -98,8 +98,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                  'fieldOptions' => $this->_getFieldOptions($request),
                  'subprojects'  => \Utility::getSubprojectList(),
                 );
-        //$this->_cache = new \LORIS\Http\Response\JsonResponse($body);
-        //return $this->_cache;
         return new \LORIS\Http\Response\JsonResponse($body);
     }
 
@@ -121,9 +119,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
-            }
+            $list_of_sites = array('' => 'Any') + $list_of_sites;
         } else {
             // allow only to view own site data
             $list_of_sites = $user->getStudySites();
