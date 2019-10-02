@@ -163,53 +163,53 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped("Skipping long test");
         return;
         // test filter in Profiles Tab
-        $this->_testFilter("/genomic_browser/", "PSCID", "MTL001", "1 rows");
-        $this->_testFilter("/genomic_browser/", "DCCID", "300001", "1 rows");
-        $this->_testFilter(
+        $this->_testFilters("/genomic_browser/", "PSCID", "MTL001", "1 rows");
+        $this->_testFilters("/genomic_browser/", "DCCID", "300001", "1 rows");
+        $this->_testFilters(
             "/genomic_browser/",
             "PSCID",
             "999999",
             "No result found."
         );
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/",
             "DCCID",
             "999999",
             "No result found."
         );
         // test filter in GWAS Tab
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/gwas_browser/",
             "Chromosome",
             "chr14",
             "No result found."
         );
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/gwas_browser/",
             "BP_Position",
             "19009011",
             "No result found."
         );
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/gwas_browser/",
             "Chromosome",
             "999999",
             "No result found."
         );
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/gwas_browser/",
             "BP_Position",
             "999999",
             "No result found."
         );
         // test filter in SNP Tab
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/snp_browser/",
             "rsID",
             "MTL001",
             "No result found."
         );
-        $this->_testFilter(
+        $this->_testFilters(
             "/genomic_browser/snp_browser/",
             "rsID",
             "999999",
@@ -245,7 +245,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function _testFilter($url,$filter,$testData,$expectDataRows): void
+    function _testFilters($url,$filter,$testData,$expectDataRows): void
     {
         $this->safeGet($this->url . $url);
          $this->safeFindElement(
