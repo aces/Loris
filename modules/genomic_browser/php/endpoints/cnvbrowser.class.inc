@@ -142,25 +142,25 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'           => $this->_formElementObjectCreator(
+                'centerID'          => $this->_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'              => $this->_formElementObjectCreator(
+                'DCCID'             => $this->_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'              => $this->_formElementObjectCreator(
+                'PSCID'             => $this->_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'                => $this->_formElementObjectCreator(
+                'Sex'               => $this->_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -170,25 +170,25 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'       => $this->_formElementObjectCreator(
+                'SubprojectID'      => $this->_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'                => $this->_formElementObjectCreator(
+                'DoB'               => $this->_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'External_ID'        => $this->_formElementObjectCreator(
+                'External_ID'       => $this->_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     null
                 ),
-                'Assembly'           => $this->_formElementObjectCreator(
+                'Assembly'          => $this->_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
@@ -197,14 +197,14 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      '37' => 'GRCh37',
                     )
                 ),
-                'Strand'             => $this->_formElementObjectCreator(
+                'Strand'            => $this->_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
                     array(
-                        null => 'Any',
-                        'F'  => 'Forward',
-                        'R'  => 'Reverse',
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
                     )
                 ),
                 'Start_Loc'         => $this->_formElementObjectCreator(
@@ -213,37 +213,37 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Start Loc',
                     null
                 ),
-                'End_Loc'         => $this->_formElementObjectCreator(
+                'End_Loc'           => $this->_formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
                     null
                 ),
-                'Location'         => $this->_formElementObjectCreator(
+                'Location'          => $this->_formElementObjectCreator(
                     'Location',
                     'text',
                     'Location',
                     null
                 ),
-                'Gene_Symbol'        => $this->_formElementObjectCreator(
+                'Gene_Symbol'       => $this->_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     null
                 ),
-                'Gene_Name'        => $this->_formElementObjectCreator(
+                'Gene_Name'         => $this->_formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Gene Name',
                     null
                 ),
-                'CNV_Description'    => $this->_formElementObjectCreator(
+                'CNV_Description'   => $this->_formElementObjectCreator(
                     'CNV_Description',
                     'text',
                     'Description',
                     null
                 ),
-                'CNV_Type'           => $this->_formElementObjectCreator(
+                'CNV_Type'          => $this->_formElementObjectCreator(
                     'CNV_Type',
                     'select',
                     'Type',
@@ -254,82 +254,82 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'unknown' => 'Unknown',
                     )
                 ),
-                'Copy_Num_Change'    => $this->_formElementObjectCreator(
+                'Copy_Num_Change'   => $this->_formElementObjectCreator(
                     'Copy_Num_Change',
                     'text',
                     'Copy Number Change',
                     null
                 ),
-                'Event_Name'         => $this->_formElementObjectCreator(
+                'Event_Name'        => $this->_formElementObjectCreator(
                     'Event_Name',
                     'text',
                     'Event Name',
                     null
                 ),
-                'Common_CNV'         => $this->_formElementObjectCreator(
+                'Common_CNV'        => $this->_formElementObjectCreator(
                     'Common_CNV',
                     'select',
                     'Common',
                     array(
-                        null => 'Any',
-                        'Y'  => 'Yes',
-                        'N'  => 'No',
+                     null => 'Any',
+                     'Y'  => 'Yes',
+                     'N'  => 'No',
                     )
                 ),
-                'Characteristics'    => $this->_formElementObjectCreator(
+                'Characteristics'   => $this->_formElementObjectCreator(
                     'Characteristics',
                     'select',
                     'Characteristics',
                     array(
-                        null         => 'Any',
-                        'Benign'     => 'Benign',
-                        'Pathogenic' => 'Pathogenic',
-                        'Unknown'    => 'Unknown',
+                     null         => 'Any',
+                     'Benign'     => 'Benign',
+                     'Pathogenic' => 'Pathogenic',
+                     'Unknown'    => 'Unknown',
                     )
                 ),
-                'Inheritance'        => $this->_formElementObjectCreator(
+                'Inheritance'       => $this->_formElementObjectCreator(
                     'Inheritance',
                     'select',
                     'Inheritance',
                     array(
-                        null           => 'Any',
-                        'de novo'      => 'de novo',
-                        'maternal'     => 'maternal',
-                        'paternal'     => 'paternal',
-                        'unclassified' => 'unclassified',
-                        'unknown'      => 'unknown',
-                        'NA'           => 'NA',
+                     null           => 'Any',
+                     'de novo'      => 'de novo',
+                     'maternal'     => 'maternal',
+                     'paternal'     => 'paternal',
+                     'unclassified' => 'unclassified',
+                     'unknown'      => 'unknown',
+                     'NA'           => 'NA',
                     )
                 ),
-                'Array_Report'       => $this->_formElementObjectCreator(
+                'Array_Report'      => $this->_formElementObjectCreator(
                     'Array_Report',
                     'select',
                     'Array Report',
                     array(
-                        null        => 'Any',
-                        'Abnormal'  => 'Abnormal',
-                        'Normal'    => 'Normal',
-                        'Pending'   => 'Pending',
-                        'Uncertain' => 'Uncertain',
+                     null        => 'Any',
+                     'Abnormal'  => 'Abnormal',
+                     'Normal'    => 'Normal',
+                     'Pending'   => 'Pending',
+                     'Uncertain' => 'Uncertain',
                     )
                 ),
-                'Markers'            => $this->_formElementObjectCreator(
+                'Markers'           => $this->_formElementObjectCreator(
                     'Markers',
                     'text',
                     'Markers',
                     array(
-                        null => 'Any',
-                        'F'  => 'Forward',
-                        'R'  => 'Reverse',
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
                     )
                 ),
-                'Validation_Method'  => $this->_formElementObjectCreator(
+                'Validation_Method' => $this->_formElementObjectCreator(
                     'Validation_Method',
                     'text',
                     'Validation Method',
                     null
                 ),
-                'Platform'           => $this->_formElementObjectCreator(
+                'Platform'          => $this->_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',

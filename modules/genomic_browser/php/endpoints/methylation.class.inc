@@ -142,25 +142,25 @@ class Methylation extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'           => $this->_formElementObjectCreator(
+                'centerID'         => $this->_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'              => $this->_formElementObjectCreator(
+                'DCCID'            => $this->_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'              => $this->_formElementObjectCreator(
+                'PSCID'            => $this->_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'                => $this->_formElementObjectCreator(
+                'Sex'              => $this->_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -170,154 +170,154 @@ class Methylation extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'       => $this->_formElementObjectCreator(
+                'SubprojectID'     => $this->_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'                => $this->_formElementObjectCreator(
+                'DoB'              => $this->_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'Sample'        => $this->_formElementObjectCreator(
+                'Sample'           => $this->_formElementObjectCreator(
                     'Sample',
                     'text',
                     'Sample',
                     null
                 ),
-                'cpg_name'           => $this->_formElementObjectCreator(
+                'cpg_name'         => $this->_formElementObjectCreator(
                     'cpg_name',
                     'text',
                     'CPG Name',
                     null
                 ),
-                'Beta_value'           => $this->_formElementObjectCreator(
+                'Beta_value'       => $this->_formElementObjectCreator(
                     'Beta_value',
                     'text',
                     'Beta value',
                     null
                 ),
-                'Chromosome'           => $this->_formElementObjectCreator(
+                'Chromosome'       => $this->_formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
                     null
                 ),
-                'Strand'             => $this->_formElementObjectCreator(
+                'Strand'           => $this->_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
                     array(
-                        null => 'Any',
-                        'F'  => 'Forward',
-                        'R'  => 'Reverse',
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
                     )
                 ),
-                'Start_Loc'         => $this->_formElementObjectCreator(
+                'Start_Loc'        => $this->_formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     null
                 ),
-                'Probe_Loc_A'         => $this->_formElementObjectCreator(
+                'Probe_Loc_A'      => $this->_formElementObjectCreator(
                     'Probe_Loc_A',
                     'text',
                     'Probe Loc A',
                     null
                 ),
-                'Probe_Seq_A'         => $this->_formElementObjectCreator(
+                'Probe_Seq_A'      => $this->_formElementObjectCreator(
                     'Probe_Seq_A',
                     'text',
                     'Probe Seq A',
                     null
                 ),
-                'Probe_Loc_B'         => $this->_formElementObjectCreator(
+                'Probe_Loc_B'      => $this->_formElementObjectCreator(
                     'Probe_Loc_B',
                     'text',
                     'Probe Loc B',
                     null
                 ),
-                'Probe_Seq_B'         => $this->_formElementObjectCreator(
+                'Probe_Seq_B'      => $this->_formElementObjectCreator(
                     'Probe_Seq_B',
                     'text',
                     'Probe Seq B',
                     null
                 ),
-                'Design'             => $this->_formElementObjectCreator(
+                'Design'           => $this->_formElementObjectCreator(
                     'Design',
                     'select',
                     'Infinium design',
                     array(
-                        null => 'Any',
-                        'I'  => 'I',
-                        'II' => 'II',
+                     null => 'Any',
+                     'I'  => 'I',
+                     'II' => 'II',
                     )
                 ),
-                'Color'              => $this->_formElementObjectCreator(
+                'Color'            => $this->_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Color',
                     array(
-                        null  => 'Any',
-                        'Grn' => 'Green',
-                        'Red' => 'Red',
+                     null  => 'Any',
+                     'Grn' => 'Green',
+                     'Red' => 'Red',
                     )
                 ),
-                'Assembly'           => $this->_formElementObjectCreator(
+                'Assembly'         => $this->_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
                     array(
-                        null => 'Any',
-                        '37' => 'GRCh37',
+                     null => 'Any',
+                     '37' => 'GRCh37',
                     )
                 ),
-                'SNP_10'             => $this->_formElementObjectCreator(
+                'SNP_10'           => $this->_formElementObjectCreator(
                     'SNP_10',
                     'select',
                     'SNP',
                     array(
-                        null   => 'Any',
-                        'NULL' => 'No',
-                        '_'    => 'Yes',
+                     null   => 'Any',
+                     'NULL' => 'No',
+                     '_'    => 'Yes',
                     )
                 ),
-                'Gene_Symbol'        => $this->_formElementObjectCreator(
+                'Gene_Symbol'      => $this->_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     null
                 ),
-                'Accession_number'        => $this->_formElementObjectCreator(
+                'Accession_number' => $this->_formElementObjectCreator(
                     'Accession_number',
                     'text',
                     'Accession number',
                     null
                 ),
-                'Gene_Grp'           => $this->_formElementObjectCreator(
+                'Gene_Grp'         => $this->_formElementObjectCreator(
                     'Gene_Grp',
                     'select',
                     'Position',
                     array(
-                        null      => 'Any',
-                        '1stExon' => '1st Exon',
-                        '3`UTR'   => '3`UTR',
-                        '5`UTR'   => '5`UTR',
-                        'Body'    => 'Body',
-                        'TSS1500' => 'TSS1500',
-                        'TSS200'  => 'TSS200',
+                     null      => 'Any',
+                     '1stExon' => '1st Exon',
+                     '3`UTR'   => '3`UTR',
+                     '5`UTR'   => '5`UTR',
+                     'Body'    => 'Body',
+                     'TSS1500' => 'TSS1500',
+                     'TSS200'  => 'TSS200',
                     )
                 ),
-                'Island_Loc'      => $this->_formElementObjectCreator(
+                'Island_Loc'       => $this->_formElementObjectCreator(
                     'Island_Loc',
                     'text',
                     'Island Loc',
                     null
                 ),
-                'Context'            => $this->_formElementObjectCreator(
+                'Context'          => $this->_formElementObjectCreator(
                     'Context',
                     'select',
                     'Context',
@@ -326,17 +326,17 @@ class Methylation extends Endpoint implements ETagCalculator
                         'island_relation'
                     )
                 ),
-                'Fantom_Prom'        => $this->_formElementObjectCreator(
+                'Fantom_Prom'      => $this->_formElementObjectCreator(
                     'Fantom_Prom',
                     'select',
                     'Promoter',
                     array(
-                        null       => 'Any',
-                        'NULL'     => 'No',
-                        'NOT_NULL' => 'Yes',
+                     null       => 'Any',
+                     'NULL'     => 'No',
+                     'NOT_NULL' => 'Yes',
                     )
                 ),
-                'DMR'                => $this->_formElementObjectCreator(
+                'DMR'              => $this->_formElementObjectCreator(
                     'DMR',
                     'select',
                     'DMR',
@@ -345,32 +345,32 @@ class Methylation extends Endpoint implements ETagCalculator
                         'dmr'
                     )
                 ),
-                'Enhancer'           => $this->_formElementObjectCreator(
+                'Enhancer'         => $this->_formElementObjectCreator(
                     'Enhancer',
                     'select',
                     'Enhancer',
                     array(
-                        null => 'Any',
-                        '1'  => 'Yes',
+                     null => 'Any',
+                     '1'  => 'Yes',
                     )
                 ),
-                'HMM_Island'         => $this->_formElementObjectCreator(
+                'HMM_Island'       => $this->_formElementObjectCreator(
                     'HMM_Island',
                     'select',
                     'HMM Island',
                     array(
-                        null       => 'Any',
-                        'NULL'     => 'No',
-                        'NOT_NULL' => 'Yes',
+                     null       => 'Any',
+                     'NULL'     => 'No',
+                     'NOT_NULL' => 'Yes',
                     )
                 ),
-                'Reg_Feature_Loc'      => $this->_formElementObjectCreator(
+                'Reg_Feature_Loc'  => $this->_formElementObjectCreator(
                     'Reg_Feature_Loc',
                     'text',
                     'Reg Feature Loc',
                     null
                 ),
-                'Reg_Feature_Grp'    => $this->_formElementObjectCreator(
+                'Reg_Feature_Grp'  => $this->_formElementObjectCreator(
                     'Reg_Feature_Grp',
                     'select',
                     'Regulatory feat.:',
@@ -379,17 +379,17 @@ class Methylation extends Endpoint implements ETagCalculator
                         'reg_feature_group'
                     )
                 ),
-                'DHS'                => $this->_formElementObjectCreator(
+                'DHS'              => $this->_formElementObjectCreator(
                     'DHS',
                     'select',
                     'DHS',
                     array(
-                        null   => 'Any',
-                        '1'    => 'Yes',
-                        'NULL' => 'No',
+                     null   => 'Any',
+                     '1'    => 'Yes',
+                     'NULL' => 'No',
                     )
                 ),
-                'Platform'           => $this->_formElementObjectCreator(
+                'Platform'         => $this->_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',

@@ -164,9 +164,6 @@ class GenomicUploadForm extends Component {
         formObj.append(key, state.formData[key]);
       }
     }
-    console.log(state);
-    console.log('formObj:');
-    console.log(...formObj);
     fetch(window.location.origin + '/genomic_browser/FileManager',
       {
         credentials: 'same-origin',
@@ -188,8 +185,9 @@ class GenomicUploadForm extends Component {
         }
       ).catch((error) => {
         console.error(error);
-        console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
+        const msg = error.responseJSON ?
+          error.responseJSON.message
+          : 'Upload error!';
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,

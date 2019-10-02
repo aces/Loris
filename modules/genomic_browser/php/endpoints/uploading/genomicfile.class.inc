@@ -14,7 +14,19 @@
  */
 namespace LORIS\genomic_browser\endpoints\uploading;
 
-class genomicfile
+/**
+ * The Genomicfile Class.
+ *
+ * This class provides the php code to process uploading
+ * a user file from the genomic browser.
+ *
+ * @category Loris
+ * @package  Genomic_Browser
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class Genomicfile
 {
     /**
      * The file uploaded from the user.
@@ -40,59 +52,60 @@ class genomicfile
      * Setup uploading configurations.
      *
      * @param object $user   The user uploading.
-     * @param array  $_FILES The $_FILES array content.
+     * @param array  $files  The $_FILES array content.
      * @param array  $values The post message array content.
      *
-     * @return void
+     * @return array
      */
-    function setupUploading($user, $_FILES, $values) : void
+    function setupUploading($user, $files, $values) : array
     {
-        $this->_user = $user;
-        $this->_bytes = $_FILES['file']['size'];
+        $this->_user   = $user;
+        $this->_bytes  = $files['file']['size'];
         $this->_values = $values;
 
         $this->_fileToUpload
             = (object) array(
-            'file_type'         => $_FILES['file']['type'],
-            'file_name'         => $_FILES['file']['name'],
-            'tmp_name'          => $_FILES['file']['tmp_name'],
-            'size'              => round($this->_bytes / 1048576, 0),
-            'inserted_by'       => $this->_user->getData('UserID'),
-            'genomic_file_type' => empty($this->_values['fileType']) ?
+                        'file_type'         => $files['file']['type'],
+                        'file_name'         => $files['file']['name'],
+                        'tmp_name'          => $files['file']['tmp_name'],
+                        'size'              => round($this->_bytes / 1048576, 0),
+                        'inserted_by'       => $this->_user->getData('UserID'),
+                        'genomic_file_type' => empty($this->_values['fileType']) ?
                 null : str_replace('_', ' ', $this->_values['fileType']),
-            'description'       => $this->_values['fileDescription'],
-        );
+                        'description'       => $this->_values['fileDescription'],
+                       );
 
         $this->setFullPath($this->_fileToUpload);
 
         switch ($this->_fileToUpload->genomic_file_type) {
-            case 'Methylation beta-values':
-                $this->validateRequest();
-                $this->begin();
-                $this->registerFile($this->_fileToUpload);
-                $this->insertMethylationData($this->_fileToUpload);
-                $this->moveFileToFS($this->_fileToUpload);
-                $this->endWithSuccess();
-                break;
-            case 'Other':
-                $this->begin();
-                $this->registerFile($this->_fileToUpload);
-                $this->moveFileToFS($this->_fileToUpload);
-                $this->endWithSuccess();
-                break;
-            default:
-                die(
+        case 'Methylation beta-values':
+            $this->validateRequest();
+            $this->begin();
+            $this->registerFile($this->_fileToUpload);
+            $this->insertMethylationData($this->_fileToUpload);
+            $this->moveFileToFS($this->_fileToUpload);
+            $this->endWithSuccess();
+            break;
+        case 'Other':
+            $this->begin();
+            $this->registerFile($this->_fileToUpload);
+            $this->moveFileToFS($this->_fileToUpload);
+            $this->endWithSuccess();
+            break;
+        default:
+            die(
                 json_encode(
                     array(
-                        'message' => "Unsupported filetype: $this->_fileToUpload->genomic_file_type",
-                        'progress' => 100,
-                        'error' => true,
+                     'message'  => "Unsupported filetype: 
+                     $this->_fileToUpload->genomic_file_type",
+                     'progress' => 100,
+                     'error'    => true,
                     )
                 )
-                );
+            );
         }
 
-        $this->reportProgress(100, 'Complete');
+        return $this->reportProgress(100, 'Complete');
 
     }
 
@@ -104,16 +117,16 @@ class genomicfile
      *
      * @see XMLHttpRequest.onreadystatechange = 3 (progress)
      *
-     * @return void
+     * @return array
      */
-    function reportProgress($progress, $message) : void
+    function reportProgress($progress, $message) : array
     {
         $response = array(
-            'message'  => $message,
-            'progress' => $progress,
-        );
-        echo json_encode($response);
-        sleep(1);
+                     'message'  => $message,
+                     'progress' => $progress,
+                    );
+        return $response;
+        // sleep(1);
     }
 
     /**
@@ -160,13 +173,12 @@ class genomicfile
      */
     function moveFileToFS(&$fileToUpload) : void
     {
-
         $config           = \NDB_Config::singleton();
         $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
         $dest_dir = dirname($fileToUpload->full_path);
         // update ui to show we are trying to move the file
-        reportProgress(98, "Copying file...");
+        $this->reportProgress(98, "Copying file...");
         // file system validation
         try {
             if (!file_exists($fileToUpload->tmp_name)) {
@@ -187,7 +199,7 @@ class genomicfile
                 $fileToUpload->full_path
             )
             ) {
-                reportProgress(99, 'File successfully copied!');
+                $this->reportProgress(99, 'File successfully copied!');
             }
         } catch (\Exception $ex){
             error_log("Cannot move file: $ex");
@@ -195,13 +207,13 @@ class genomicfile
             // TODO: The below does not get printed to the frontend.
             //       Further debugging needed
             die(
-            json_encode(
-                array(
-                    'message'  => 'File copy failed',
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => 'File copy failed',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
         }
     }
@@ -262,8 +274,8 @@ class genomicfile
                     $pscid   = trim($pscid);
                     $success = $stmt->execute(
                         array(
-                            'pscid'           => $pscid,
-                            'genomic_file_id' => $fileToUpload->GenomicFileID,
+                         'pscid'           => $pscid,
+                         'genomic_file_id' => $fileToUpload->GenomicFileID,
                         )
                     );
                     if (!$success) {
@@ -273,25 +285,25 @@ class genomicfile
             } catch (\DatabaseException $e) {
                 $this->endWithFailure();
                 die(
-                json_encode(
-                    array(
-                        'message'  => 'File registration failed',
-                        'progress' => 100,
-                        'error'    => true,
+                    json_encode(
+                        array(
+                         'message'  => 'File registration failed',
+                         'progress' => 100,
+                         'error'    => true,
+                        )
                     )
-                )
                 );
             }
         } else {
             $this->endWithFailure();
             die(
-            json_encode(
-                array(
-                    'message'  => 'Beta value file can`t be opened',
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => 'Beta value file can`t be opened',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
         }
         $this->reportProgress(95, "Creating file-candidate relations");
@@ -314,7 +326,7 @@ class genomicfile
         // Assuming genomic_cpg_annotation have already been created.
         // see: /module/genomic_browser/tool/human...
 
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $f = fopen(
             $fileToUpload->tmp_name,
@@ -330,10 +342,16 @@ class genomicfile
 
             $headers = array_filter(
                 $headers,
-                'candidateExists'
+                array(
+                 $this,
+                 'candidateExists',
+                )
             );
 
-            $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
+            $sample_label_prefix = date(
+                'U',
+                strtotime($fileToUpload->date_inserted)
+            );
             array_walk(
                 $headers,
                 function (&$item, $key, $prefix) {
@@ -367,9 +385,9 @@ class genomicfile
                     foreach ($values as $key => $value) {
                         $success = $stmt->execute(
                             array(
-                                'sample_label' => $headers[$key],
-                                'cpg_name'     => $probe_id,
-                                'beta_value'   => $value,
+                             'sample_label' => $headers ? $headers[$key] : '',
+                             'cpg_name'     => $probe_id,
+                             'beta_value'   => $value,
                             )
                         );
                         if (!$success) {
@@ -379,13 +397,13 @@ class genomicfile
                 } catch (\Exception $e) {
                     $this->endWithFailure();
                     die(
-                    json_encode(
-                        array(
-                            'message'  => 'Insertion failed',
-                            'progress' => 100,
-                            'error'    => true,
+                        json_encode(
+                            array(
+                             'message'  => 'Insertion failed',
+                             'progress' => 100,
+                             'error'    => true,
+                            )
                         )
-                    )
                     );
                 }
             }
@@ -393,13 +411,13 @@ class genomicfile
         } else {
             $this->endWithFailure();
             die(
-            json_encode(
-                array(
-                    'message'  => 'Beta value file can`t be opened',
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => 'Beta value file can`t be opened',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
         }
     }
@@ -417,7 +435,6 @@ class genomicfile
      */
     function createSampleCandidateRelations(&$fileToUpload) : void
     {
-
         $this->reportProgress(85, 'Creating sample-candidate relations');
 
         $DB =& \Database::singleton();
@@ -437,7 +454,10 @@ class genomicfile
 
         $headers = array_filter(
             $headers,
-            'candidateExist'
+            array(
+             $this,
+             'candidateExists',
+            )
         );
 
         $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
@@ -464,26 +484,26 @@ class genomicfile
             foreach ($headers as $pscid) {
                 $success = $stmt->execute(
                     array(
-                        'sample_label' => $pscid,
-                        'pscid'        => explode(
-                            '_',
-                            $pscid
-                        )[1],
+                     'sample_label' => $pscid,
+                     'pscid'        => explode(
+                         '_',
+                         $pscid
+                     )[1],
                     )
                 );
             }
             // Report number on relation created (candidate founded)
-            reportProgress(90, 'Relation created');
+            $this->reportProgress(90, 'Relation created');
         } catch (\Exception $e) {
             endWithFailure();
             die(
-            json_encode(
-                array(
-                    'message'  => "Can't insert into the database.",
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => "Can't insert into the database.",
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
         }
     }
@@ -531,14 +551,14 @@ class genomicfile
             ++$collision_count;
             if ($collision_count > $collision_max) {
                 die(
-                json_encode(
-                    array(
-                        'message'  => 'That file already exists, '
+                    json_encode(
+                        array(
+                         'message'  => 'That file already exists, '
                             . 'could not generate a non-colliding name',
-                        'progress' => 100,
-                        'error'    => true,
+                         'progress' => 100,
+                         'error'    => true,
+                        )
                     )
-                )
                 );
             }
             $ext = pathinfo($fileToUpload->file_name, PATHINFO_EXTENSION);
@@ -560,13 +580,13 @@ class genomicfile
             || empty($_FILES['file'])
         ) {
             die(
-            json_encode(
-                array(
-                    'message'  => 'Validation failed : Missing inputs',
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => 'Validation failed : Missing inputs',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
             // This require some more work
             // Should compare the header and existing data to inform
@@ -590,14 +610,14 @@ class genomicfile
         $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
         $values = array(
-            'FileName'         => $fileToUpload->full_path,
-            'Description'      => $fileToUpload->description,
-            'FileType'         => $fileToUpload->file_type,
-            'AnalysisModality' => $fileToUpload->genomic_file_type,
-            'FileSize'         => $fileToUpload->size,
-            'Date_inserted'    => date('Y-m-d h:i:s', time()),
-            'InsertedByUserID' => $fileToUpload->inserted_by,
-        );
+                   'FileName'         => $fileToUpload->full_path,
+                   'Description'      => $fileToUpload->description,
+                   'FileType'         => $fileToUpload->file_type,
+                   'AnalysisModality' => $fileToUpload->genomic_file_type,
+                   'FileSize'         => $fileToUpload->size,
+                   'Date_inserted'    => date('Y-m-d h:i:s', time()),
+                   'InsertedByUserID' => $fileToUpload->inserted_by,
+                  );
         try {
             $DB->replace('genomic_files', $values);
             //TODO :: This should select using date_insert and
@@ -616,13 +636,14 @@ class genomicfile
             //TODO: The below validation should be done before running the query.
             //      Currently, it generates unnecessary PHP warnings
             die(
-            json_encode(
-                array(
-                    'message'  => 'File registration failed. Is the description empty?',
-                    'progress' => 100,
-                    'error'    => true,
+                json_encode(
+                    array(
+                     'message'  => 'File registration failed. 
+                     Is the description empty?',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
                 )
-            )
             );
         }
         $this->reportProgress(80, 'File registered');

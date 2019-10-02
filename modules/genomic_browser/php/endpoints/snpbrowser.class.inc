@@ -198,8 +198,8 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Build',
                     array(
-                        null => 'Any',
-                        '37' => 'GRCh37',
+                     null => 'Any',
+                     '37' => 'GRCh37',
                     )
                 ),
                 'Strand'              => $this->_formElementObjectCreator(
@@ -207,18 +207,18 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Strand',
                     array(
-                        null => 'Any',
-                        'F'  => 'Forward',
-                        'R'  => 'Reverse',
+                     null => 'Any',
+                     'F'  => 'Forward',
+                     'R'  => 'Reverse',
                     )
                 ),
-                'Start_Loc'         => $this->_formElementObjectCreator(
+                'Start_Loc'           => $this->_formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     null
                 ),
-                'End_Loc'         => $this->_formElementObjectCreator(
+                'End_Loc'             => $this->_formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
@@ -319,11 +319,11 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Array Report',
                     array(
-                        null        => 'Any',
-                        'Abnormal'  => 'Abnormal',
-                        'Normal'    => 'Normal',
-                        'Pending'   => 'Pending',
-                        'Uncertain' => 'Uncertain',
+                     null        => 'Any',
+                     'Abnormal'  => 'Abnormal',
+                     'Normal'    => 'Normal',
+                     'Pending'   => 'Pending',
+                     'Uncertain' => 'Uncertain',
                     )
                 ),
                 'Markers'             => $this->_formElementObjectCreator(

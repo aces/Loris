@@ -20,6 +20,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 
+require_once 'uploading/genomicfile.class.inc';
+
 /**
  * The NDB_Filter_Form_GenomicBrowser Class.
  *
@@ -118,31 +120,31 @@ class FileManager extends Endpoint implements ETagCalculator
     private function _getFieldOptions() : array
     {
         return array(
-                'genomic_file_id' => $this->_formElementObjectCreator(
+                'genomic_file_id'     => $this->_formElementObjectCreator(
                     'genomic_file_id',
                     'text',
                     'Type',
                     null
                 ),
-                'file_name'         => $this->_formElementObjectCreator(
+                'file_name'           => $this->_formElementObjectCreator(
                     'file_name',
                     'text',
                     'Name',
                     null
                 ),
-                'description'       => $this->_formElementObjectCreator(
+                'description'         => $this->_formElementObjectCreator(
                     'description',
                     'text',
                     'Description',
                     null
                 ),
-                'genomic_file_type' => $this->_formElementObjectCreator(
+                'genomic_file_type'   => $this->_formElementObjectCreator(
                     'genomic_file_type',
                     'text',
                     'Type',
                     null
                 ),
-                'date_inserted'     => $this->_formElementObjectCreator(
+                'date_inserted'       => $this->_formElementObjectCreator(
                     'date_inserted',
                     'text',
                     'Date inserted',
@@ -154,7 +156,7 @@ class FileManager extends Endpoint implements ETagCalculator
                     'Inserted by User',
                     null
                 ),
-                'caveat'            => $this->_formElementObjectCreator(
+                'caveat'              => $this->_formElementObjectCreator(
                     'caveat',
                     'select',
                     'Caveat',
@@ -163,7 +165,7 @@ class FileManager extends Endpoint implements ETagCalculator
                         'Caveat'
                     )
                 ),
-                'notes'             => $this->_formElementObjectCreator(
+                'notes'               => $this->_formElementObjectCreator(
                     'notes',
                     'text',
                     'Notes',
@@ -232,17 +234,19 @@ class FileManager extends Endpoint implements ETagCalculator
             }
         }
 
-        // Genomic File for uploading.
-        $genomicFile = new uploading\genomicfile();
+        // Genomic File for uploading task.
+        $genomicFile = new \LORIS\genomic_browser\endpoints\uploading\Genomicfile();
 
-        $genomicFile->setupUploading(
+        // handles upload process - returns status of file upload.
+        $response = $genomicFile->setupUploading(
             $request->getAttribute('user'), // user
             $_FILES, // file data
-            $values,
+            $values // post request values.
         );
 
+        // Send file upload status.
         return new \LORIS\Http\Response\JsonResponse(
-            $this->_values
+            $response
         );
     }
 

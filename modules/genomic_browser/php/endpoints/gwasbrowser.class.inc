@@ -117,55 +117,55 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                        );
 
         return array(
-                'SNP_ID'             => $this->_formElementObjectCreator(
+                'SNP_ID'       => $this->_formElementObjectCreator(
                     'SNP_ID',
                     'text',
                     'SNP ID',
                     null
                 ),
-                'Chromosome'         => $this->_formElementObjectCreator(
+                'Chromosome'   => $this->_formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
                     null
                 ),
-                'BP_Position'        => $this->_formElementObjectCreator(
+                'BP_Position'  => $this->_formElementObjectCreator(
                     'BP_Position',
                     'text',
                     'BP Position',
                     null
                 ),
-                'Major_Allele'       => $this->_formElementObjectCreator(
+                'Major_Allele' => $this->_formElementObjectCreator(
                     'Major_Allele',
                     'select',
                     'Major Allele',
                     $alleleArray
                 ),
-                'Minor_Allele'       => $this->_formElementObjectCreator(
+                'Minor_Allele' => $this->_formElementObjectCreator(
                     'Minor_Allele',
                     'select',
                     'Minor Allele',
                     $alleleArray
                 ),
-                'MAF'                => $this->_formElementObjectCreator(
+                'MAF'          => $this->_formElementObjectCreator(
                     'MAF',
                     'text',
                     'MAF',
                     null
                 ),
-                'Estimate'           => $this->_formElementObjectCreator(
+                'Estimate'     => $this->_formElementObjectCreator(
                     'Estimate',
                     'text',
                     'Estimate',
                     null
                 ),
-                'StdErr'             => $this->_formElementObjectCreator(
+                'StdErr'       => $this->_formElementObjectCreator(
                     'StdErr',
                     'text',
                     'Std Err',
                     null
                 ),
-                'Pvalue'             => $this->_formElementObjectCreator(
+                'Pvalue'       => $this->_formElementObjectCreator(
                     'Pvalue',
                     'text',
                     'P-value',

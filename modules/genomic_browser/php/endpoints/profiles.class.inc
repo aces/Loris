@@ -146,25 +146,25 @@ class Profiles extends Endpoint implements ETagCalculator
                         'N' => 'No',
                        );
         return array(
-                'centerID'           => $this->_formElementObjectCreator(
+                'centerID'     => $this->_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'              => $this->_formElementObjectCreator(
+                'DCCID'        => $this->_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'              => $this->_formElementObjectCreator(
+                'PSCID'        => $this->_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'                => $this->_formElementObjectCreator(
+                'Sex'          => $this->_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -174,43 +174,43 @@ class Profiles extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'       => $this->_formElementObjectCreator(
+                'SubprojectID' => $this->_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'                => $this->_formElementObjectCreator(
+                'DoB'          => $this->_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'External_ID'        => $this->_formElementObjectCreator(
+                'External_ID'  => $this->_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     null
                 ),
-                'File'               => $this->_formElementObjectCreator(
+                'File'         => $this->_formElementObjectCreator(
                     'File',
                     'select',
                     'Files',
                     $any_options
                 ),
-                'SNP'                => $this->_formElementObjectCreator(
+                'SNP'          => $this->_formElementObjectCreator(
                     'SNP',
                     'select',
                     'SNPs found',
                     $any_options
                 ),
-                'CNV'                => $this->_formElementObjectCreator(
+                'CNV'          => $this->_formElementObjectCreator(
                     'CNV',
                     'select',
                     'CNVs found',
                     $any_options
                 ),
-                'CPG'                => $this->_formElementObjectCreator(
+                'CPG'          => $this->_formElementObjectCreator(
                     'CPG',
                     'select',
                     'CPGs found',
