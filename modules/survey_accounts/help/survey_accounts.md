@@ -4,7 +4,7 @@ This module is used to create and manage survey forms that are sent to participa
 
 Each survey form is generated with a unique URL. This survey link URL can be emailed directly to respondents for survey completion from home, or can be used in the clinic to capture data directly from participants, e.g. on a tablet in the waiting room during a study visit. 
 
-Use the Selection Filters to search for existing surveys by PSCID, Visit Label, Instrument, or the email of a participant who has already been sent a survey form. You can use any selection of filters needed. Click **Clear Filters** to clear the current selection of filters. Click **Show Data** to display the results in a data table. 
+Use the Selection Filters to search for existing surveys by PSCID, Visit Label, Instrument, or the email of a participant who has already been sent a survey form. Click **Clear Filters** to clear the current selection of filters. 
 
 The resulting table will display your results, which includes a unique URL for each survey generated. Click on this link to access the online survey form. This data table can be sorted by clicking on any column header (ascending and descending). 
 
