@@ -72,7 +72,7 @@ echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
 echo 'You will be prompted for your database password.' . PHP_EOL;
 $dropCommand = <<<DROP
 cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    SQL/9999-99-99-drop_tables.sql | mysql -A $dbname -u $username -h $host -p
+    SQL/9999-99-99-drop_tables.sql | mysql -A "$dbname" -u "$username" -h "$host" -p
 DROP;
 exec($dropCommand, $output, $exitStatus);
 if ($exitStatus) {
@@ -97,7 +97,7 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/medical_history.sql \
     raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
-    raisinbread/RB_files/*.sql | mysql -A $dbname -u $username -h $host -p
+    raisinbread/RB_files/*.sql | mysql -A "$dbname" -u "$username" -h "$host" -p
 IMPORT;
 exec($importCommand, $output, $exitStatus);
 if ($exitStatus) {
