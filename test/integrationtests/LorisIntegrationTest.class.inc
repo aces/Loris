@@ -575,7 +575,7 @@ abstract class LorisIntegrationTest extends TestCase
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if ($err) {
+        if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
@@ -603,7 +603,7 @@ abstract class LorisIntegrationTest extends TestCase
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if ($err) {
+        if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
@@ -631,7 +631,7 @@ abstract class LorisIntegrationTest extends TestCase
             }
               break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if ($err) {
+        if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
         $array =explode('rows', $res);
@@ -667,7 +667,7 @@ abstract class LorisIntegrationTest extends TestCase
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if ($err) {
+        if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
     }
@@ -700,7 +700,7 @@ abstract class LorisIntegrationTest extends TestCase
             }
             break;
         } while($attempts < self::NUM_OF_ATTEMPTS);
-        if ($err) {
+        if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
          

@@ -102,7 +102,13 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $row = self::$table;
         $btn = self::$clearFilter;
         $this->_testFilter(self::$patientID, "0 rows", "test", $row, $btn);
-        $this->_testFilter(self::$patientName, "1 rows", "MTL022_300022_V1", $row, $btn);
+        $this->_testFilter(
+            self::$patientName,
+            "1 rows",
+            "MTL022_300022_V1",
+            $row,
+            $btn
+        );
         $this->_testFilter(self::$sex, "1 rows", "M", $row, $btn);
         $this->_testFilter(self::$dateOfBirth, "1 rows", "1972-10-10", $row, $btn);
         $this->_testFilter(self::$site, "8 rows", "4", $row, $btn);

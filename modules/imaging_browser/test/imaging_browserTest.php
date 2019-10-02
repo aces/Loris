@@ -31,12 +31,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     // the number of table rows
     static $display = ".table-header > div > div > div:nth-child(1)";
     //filter location
-    static $PSCID          = ".col-xs-12:nth-child(3) > .row .form-control";
-    static $DCCID          = ".col-xs-12:nth-child(4) .form-control";
-    static $visitLabel     = ".col-xs-12:nth-child(6) .form-control";
-    static $site           = ".col-xs-12:nth-child(2) > .row .form-control, select";
-    static $project        = ".col-xs-12:nth-child(5) .form-control, select";
-    static $QC             = ".col-xs-12:nth-child(7) .form-control, select";
+    static $PSCID      = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $DCCID      = ".col-xs-12:nth-child(4) .form-control";
+    static $visitLabel = ".col-xs-12:nth-child(6) .form-control";
+    static $site       = ".col-xs-12:nth-child(2) > .row .form-control, select";
+    static $project    = ".col-xs-12:nth-child(5) .form-control, select";
+    static $QC         = ".col-xs-12:nth-child(7) .form-control, select";
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -730,64 +730,23 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionLinks()
     {
-  //      $this->markTestIncomplete(
-  //          'Forms should be added, & router.php should be fixed for instruments'
-  //      );
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-//        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
+        // click native link to load view session page
+        $this->clickReactElement("tr:nth-child(1) a:nth-child(1)");
 
-        $SelectedLink = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
-        );
-        $this->clickToLoadNewPage($SelectedLink);
-
-        //MRI Parameter form
-        $MRIParamForm = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
-        );
-        $MRIParamForm->click();
-
-        $MRIFormHeader = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
-        )->getText();
-        // IF NO FORM PRESENT, ALLOW SECOND ASSERTION
-        //$this->assertContains("MRI Parameter Form", $MRIFormHeader);
+        //MRI Parameter form by clicking link
+        $this->clickReactElement("ul:nth-child(7) > li:nth-child(1) > a");
+        
+        $MRIFormHeader = $this->getReactElementContent("h2");
         $this->assertContains(
-            "This page (mri_parameter_form) is under construction",
+            "MRI Parameter Form",
             $MRIFormHeader
         );
 
-        //Radiology review form
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
-        );
-
-        $SelectedLink = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
-        );
-        $this->clickToLoadNewPage($SelectedLink);
-
-        $RadiologyForm = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[2]/a')
-        );
-        $RadiologyForm->click();
-
-        $RadFormHeader = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="test_form"]/div/div[1]/div/h3')
-        )->getText();
-        //$this->assertContains("Radiology Review Form", $RadFormHeader);
-        $this->assertContains(
-            "This page (radiology_review) is under construction",
-            $RadFormHeader
-        );
     }
 
     /**
