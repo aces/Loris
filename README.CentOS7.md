@@ -27,7 +27,7 @@ sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
 ## PHP 7.2
-```
+```bash
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
