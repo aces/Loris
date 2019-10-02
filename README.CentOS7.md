@@ -123,7 +123,7 @@ cd /var/www/loris/tools
 ./install.sh
 ```
 Run the makefile (use `make dev` if you are setting up a development sandbox)
-```
+```bash
 cd /var/www/loris
 make
 ```
