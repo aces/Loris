@@ -61,7 +61,7 @@ sudo systemctl status mariadb
 ```
 
 To finalise the MariaDB installation: 
-```
+```bash
 sudo mysql_secure_installation
 ```
 Then follow instructions to create a password for the root user.
