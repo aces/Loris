@@ -118,7 +118,7 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 
 ## Run the LORIS install script to set up directories
 
-```
+```bash
 cd /var/www/loris/tools
 ./install.sh
 ```
