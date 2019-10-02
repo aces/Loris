@@ -72,7 +72,7 @@ sudo yum install nodejs
 ```
 
 ## PHP Composer
-```
+```bash
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
