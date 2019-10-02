@@ -14,7 +14,7 @@ services:
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
-- pecl install -f ast-0.1.6
+- sudo apt install -y php-ast
 - sudo apt-get install npm
 - make dev
 
