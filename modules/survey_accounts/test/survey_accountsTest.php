@@ -46,7 +46,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -135,7 +135,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "participant_accounts",
@@ -180,7 +180,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSurveyAccountsDoespageLoad()
+    function testSurveyAccountsDoespageLoad(): void
     {
         $this->setupPermissions(array("user_accounts"));
         $this->safeGet($this->url . "/survey_accounts/");
@@ -196,7 +196,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSurveyAccountsWithoutPermission()
+    function testSurveyAccountsWithoutPermission(): void
     {
         $this->setupPermissions(array(""));
         $this->safeGet($this->url . "/survey_accounts/");
@@ -212,7 +212,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSurveyAccountsAddSurvey()
+    function testSurveyAccountsAddSurvey(): void
     {
         //Visit does not exist for given candidate.
         $this->safeGet($this->url . "/survey_accounts/");
@@ -260,19 +260,19 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSurveyAccountsSearchButton()
+    function testSurveyAccountsSearchButton(): void
     {
         //testing search by PSCID
         $this->safeGet($this->url . "/survey_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter(
+        $this-> _testFilters(
             self::$email,
             self::$table,
             "1 rows",
             "TestTestTest@example.com"
         );
-        $this-> _testFilter(self::$pscid, self::$table, "1 rows", "8888");
-        $this-> _testFilter(self::$pscid, self::$table, "0 rows", "test");
+        $this-> _testFilters(self::$pscid, self::$table, "1 rows", "8888");
+        $this-> _testFilters(self::$pscid, self::$table, "0 rows", "test");
     }
     /**
      * Testing filter funtion and clear button
@@ -284,7 +284,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _testFilter($element,$table,$records,$value)
+    function _testFilters($element,$table,$records,$value): void
     {
         // get element from the page
         if (strpos($element, "select") == false) {

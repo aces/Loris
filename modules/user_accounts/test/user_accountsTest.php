@@ -55,7 +55,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testUserAccountsEditUserDoespageLoad()
+    function testUserAccountsEditUserDoespageLoad(): void
     {
         $this->safeGet($this->url . "/user_accounts/edit_user/");
         $bodyText = $this->safeFindElement(
@@ -87,7 +87,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testUserAccountsMyPreferencesDoespageLoad()
+    function testUserAccountsMyPreferencesDoespageLoad(): void
     {
         $this->safeGet($this->url . "/user_accounts/my_preferences/");
         $bodyText = $this->safeFindElement(
@@ -100,12 +100,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testUserAccountsFilterClearBtn()
+    function testUserAccountsFilterClearBtn(): void
     {
         $this->safeGet($this->url . "/user_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
-        $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
+        $this-> _testFilters($this->_name, $this->_table, null, "UnitTester");
+        $this-> _testFilters($this->_site, $this->_table, "1 rows", "3");
     }
     /**
      * Testing filter funtion and clear button
@@ -117,7 +117,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _testFilter($element,$table,$records,$value)
+    function _testFilters($element,$table,$records,$value): void
     {
         // get element from the page
         if (strpos($element, "select") == false) {
@@ -167,7 +167,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testUserAccountEdits()
+    function testUserAccountEdits(): void
     {
         $this->_verifyUserModification(
             'user_accounts',
@@ -205,7 +205,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMyPreferencesEdits()
+    function testMyPreferencesEdits(): void
     {
         $this->_verifyUserModification(
             'user_accounts/my_preferences',
@@ -231,7 +231,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testAddNewUser()
+    function testAddNewUser(): void
     {
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
@@ -287,7 +287,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _verifyUserModification($page, $userId, $fieldName, $newValue)
+    function _verifyUserModification($page, $userId, $fieldName, $newValue): void
     {
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
@@ -330,7 +330,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _accessUser($page, $userId)
+    function _accessUser($page, $userId): void
     {
         $this->safeGet($this->url . "/$page/");
         if ($page == 'user_accounts') {
@@ -346,7 +346,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
         parent::tearDown();

@@ -103,7 +103,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testGenomicBrowserWithoutPermission()
+    function testGenomicBrowserWithoutPermission(): void
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/genomic_browser/");
@@ -120,7 +120,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testGenomicBrowserWithPermission()
+    function testGenomicBrowserWithPermission(): void
     {
          $this->setupPermissions(
              array(
@@ -141,7 +141,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      *
       * @return void
       */
-    function testGenomicBrowserEachTab()
+    function testGenomicBrowserEachTab(): void
     {
         $this->_testPageUIs("/genomic_browser/", $this->_loadingProfilesUI);
         $this->_testPageUIs("/genomic_browser/gwas_browser/", $this->_loadingGWASUI);
@@ -158,7 +158,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testGenomicBrowserFilterEachTab()
+    function testGenomicBrowserFilterEachTab(): void
     {
         $this->markTestSkipped("Skipping long test");
         return;
@@ -224,7 +224,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function _testPageUIs($url,$ui)
+    function _testPageUIs($url,$ui): void
     {
         $this->safeGet($this->url . $url);
         foreach ($ui as $key => $value) {
@@ -245,7 +245,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function _testFilter($url,$filter,$testData,$expectDataRows)
+    function _testFilter($url,$filter,$testData,$expectDataRows): void
     {
         $this->safeGet($this->url . $url);
          $this->safeFindElement(
@@ -265,7 +265,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testUploadFile()
+    function testUploadFile(): void
     {
         $this->safeGet($this->url . "/genomic_browser/genomic_file_uploader/");
         $this->safeFindElement(

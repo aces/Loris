@@ -86,12 +86,12 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
-        $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
-        $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
-        $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "27", "2");
-        $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
-        $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
+        $this->_testFilters(self::$PSCID, self::$table, null, "MTL010");
+        $this->_testFilters(self::$FileName, self::$table, null, "MTL010");
+        $this->_testFilters(self::$VisitLabel, self::$table, "3 rows", "2");
+        $this->_testFilters(self::$Language, self::$table, "27", "2");
+        $this->_testFilters(self::$Instrument, self::$table, "4 rows", "2");
+        $this->_testFilters(self::$Site, self::$table, "12 rows", "2");
 
     }
     /**
@@ -137,7 +137,7 @@ class MediaTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _testFilter($element,$table,$records,$value)
+    function _testFilters($element,$table,$records,$value): void
     {
         // get element from the page
         if (strpos($element, "select") == false) {
