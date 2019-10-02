@@ -71,24 +71,16 @@ class Files extends \NDB_Page
         case "POST":
             if ($this->uploadDocFile($request)) {
                 return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("uploaded successfully")
-                    )
-                );
-            } else {
-                return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
-                    ->withStatus(409)
+                    ->withStatus(200)
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode("duplicate file name")
+                            json_encode("uploaded successfully")
                         )
                     );
+            } else {
+                return new \LORIS\Http\Response\Conflict("duplicate file name");
             }
-            return new \LORIS\Http\Response\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -118,22 +110,22 @@ class Files extends \NDB_Page
             if (!is_numeric($record)) {
                 $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
-                  ->withHeader('Content-Type', 'application/octet-stream')
-                  ->withHeader(
-                      'Content-Disposition',
-                      'attachment; filename=' . basename($file)
-                  )
-                  ->withStatus(200)
-                  ->withBody(new \LORIS\Http\FileStream($file));
+                    ->withHeader('Content-Type', 'application/octet-stream')
+                    ->withHeader(
+                        'Content-Disposition',
+                        'attachment; filename=' . basename($file)
+                    )
+                    ->withStatus(200)
+                    ->withBody(new \LORIS\Http\FileStream($file));
             }
             return (new \LORIS\Http\Response())
-              ->withHeader("Content-Type", "text/plain")
-              ->withStatus(200)
-              ->withBody(
-                  new \LORIS\Http\StringStream(
-                      json_encode($this->getUploadDocFields($record))
-                  )
-              );
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($this->getUploadDocFields($record))
+                    )
+                );
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
