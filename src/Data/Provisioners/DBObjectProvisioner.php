@@ -29,9 +29,9 @@ namespace LORIS\Data\Provisioners;
  */
 abstract class DBObjectProvisioner extends \LORIS\Data\ProvisionerInstance
 {
-    private $_query;
-    private $_params;
-    private $_classname;
+    private $query;
+    private $params;
+    private $classname;
 
     /**
      * Constructor
@@ -42,12 +42,12 @@ abstract class DBObjectProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     public function __construct(string $query, array $params, string $classname)
     {
-        $this->_query  = $query;
-        $this->_params = $params;
+        $this->query  = $query;
+        $this->params = $params;
         if (!class_exists($classname)) {
             throw new \NotFound($classname . ' not found.');
         }
-        $this->_classname = $classname;
+        $this->classname = $classname;
     }
 
     /**
@@ -60,9 +60,9 @@ abstract class DBObjectProvisioner extends \LORIS\Data\ProvisionerInstance
     public function getAllInstances() : \Traversable
     {
         $DB   = (\NDB_Factory::singleton())->database();
-        $stmt = $DB->prepare($this->_query);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS, $this->_classname);
-        $stmt->execute($this->_params);
+        $stmt = $DB->prepare($this->query);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, $this->classname);
+        $stmt->execute($this->params);
         return $stmt;
     }
 }
