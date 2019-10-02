@@ -267,7 +267,6 @@ class FileManager extends Endpoint implements ETagCalculator
             || !$user->hasPermission('genomic_browser_view_allsites')
         ) {
             $values['error'] = 'Forbidden';
-            return $values;
         }
         return $values;
     }
