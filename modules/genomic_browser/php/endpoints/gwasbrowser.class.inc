@@ -95,7 +95,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
             ->toArray($user);
         $body         = array(
                          'data'         => $data,
-                         'fieldOptions' => $this->_getFieldOptions($request),
+                         'fieldOptions' => $this->_getFieldOptions(),
                         );
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         return $this->_cache;
