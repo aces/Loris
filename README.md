@@ -68,7 +68,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     ```
 
 4. Run the makefile (use `make dev` if you are setting up a development sandbox)
-    ```
+    ```bash
     cd /var/www/$projectname
     make
     ```
