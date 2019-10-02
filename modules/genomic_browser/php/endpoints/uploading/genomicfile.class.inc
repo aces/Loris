@@ -49,6 +49,11 @@ class Genomicfile
     private $_values;
 
     /**
+     * The response of file uploading (success|error).
+     */
+    private $_response;
+
+    /**
      * Setup uploading configurations.
      *
      * @param object $user   The user uploading.
@@ -103,8 +108,9 @@ class Genomicfile
             );
         }
 
-        return $this->reportProgress(100, 'Complete');
+        $this->_response = $this->reportProgress(100, 'Complete');
 
+        return $this->_response;
     }
 
     /**
@@ -204,7 +210,7 @@ class Genomicfile
             endWithFailure();
             // TODO: The below does not get printed to the frontend.
             //       Further debugging needed
-            return json_encode(
+            $this->_response = json_encode(
                 array(
                  'message'  => 'File copy failed',
                  'progress' => 100,
@@ -280,25 +286,21 @@ class Genomicfile
                 }
             } catch (\DatabaseException $e) {
                 $this->endWithFailure();
-                die(
-                    json_encode(
-                        array(
-                         'message'  => 'File registration failed',
-                         'progress' => 100,
-                         'error'    => true,
-                        )
+                $this->_response = json_encode(
+                    array(
+                     'message'  => 'File registration failed',
+                     'progress' => 100,
+                     'error'    => true,
                     )
                 );
             }
         } else {
             $this->endWithFailure();
-            die(
-                json_encode(
-                    array(
-                     'message'  => 'Beta value file can`t be opened',
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+            $this->_response = json_encode(
+                array(
+                 'message'  => 'Beta value file can`t be opened',
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
@@ -392,13 +394,11 @@ class Genomicfile
                     }
                 } catch (\Exception $e) {
                     $this->endWithFailure();
-                    die(
-                        json_encode(
-                            array(
-                             'message'  => 'Insertion failed',
-                             'progress' => 100,
-                             'error'    => true,
-                            )
+                    $this->_response = json_encode(
+                        array(
+                         'message'  => 'Insertion failed',
+                         'progress' => 100,
+                         'error'    => true,
                         )
                     );
                 }
@@ -406,13 +406,11 @@ class Genomicfile
             fclose($f);
         } else {
             $this->endWithFailure();
-            die(
-                json_encode(
-                    array(
-                     'message'  => 'Beta value file can`t be opened',
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+            $this->_response = json_encode(
+                array(
+                 'message'  => 'Beta value file can`t be opened',
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
@@ -492,13 +490,11 @@ class Genomicfile
             $this->reportProgress(90, 'Relation created');
         } catch (\Exception $e) {
             endWithFailure();
-            die(
-                json_encode(
-                    array(
-                     'message'  => "Can't insert into the database.",
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+            $this->_response = json_encode(
+                array(
+                 'message'  => "Can't insert into the database.",
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
@@ -546,14 +542,12 @@ class Genomicfile
         while (file_exists($fileToUpload->full_path)) {
             ++$collision_count;
             if ($collision_count > $collision_max) {
-                die(
-                    json_encode(
-                        array(
-                         'message'  => 'That file already exists, '
+                $this->_response = json_encode(
+                    array(
+                     'message'  => 'That file already exists, '
                             . 'could not generate a non-colliding name',
-                         'progress' => 100,
-                         'error'    => true,
-                        )
+                     'progress' => 100,
+                     'error'    => true,
                     )
                 );
             }
@@ -575,7 +569,7 @@ class Genomicfile
         if (empty($this->_values['pscidColumn'])
             || empty($_FILES['file'])
         ) {
-            return json_encode(
+            $this->_response = json_encode(
                 array(
                  'message'  => 'Validation failed : Missing inputs',
                  'progress' => 100,
@@ -629,14 +623,12 @@ class Genomicfile
             $this->endWithFailure();
             //TODO: The below validation should be done before running the query.
             //      Currently, it generates unnecessary PHP warnings
-            die(
-                json_encode(
-                    array(
-                     'message'  => 'File registration failed. 
+            $this->_response = json_encode(
+                array(
+                 'message'  => 'File registration failed. 
                      Is the description empty?',
-                     'progress' => 100,
-                     'error'    => true,
-                    )
+                 'progress' => 100,
+                 'error'    => true,
                 )
             );
         }
