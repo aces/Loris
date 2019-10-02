@@ -21,7 +21,6 @@ return [
 		"PhanUndeclaredVariableDim",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
         "PhanTypeSuspiciousStringExpression",
 	],
@@ -57,5 +56,8 @@ return [
     // see https://github.com/phan/phan/issues/1650.
     //
     // When the module is refactored, this line should be deleted.
-    'ignore_undeclared_variables_in_global_scope' => true
+    'ignore_undeclared_variables_in_global_scope' => true,
+    'plugins' => [
+        'UnreachableCodePlugin'
+    ]
 ];

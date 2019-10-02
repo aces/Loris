@@ -175,7 +175,9 @@ class New_Profile extends \NDB_Form
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
                     array('cid' => $siteID)
                 );
-                $psc_labelOptions[$siteID] = $center['Name'];
+                if (!is_null($center)) {
+                    $psc_labelOptions[$siteID] = $center['Name'];
+                }
             }
         }
         $site = $psc_labelOptions;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Defines a MiddlewareChainerMixin trait to aid in the
  * implementation of Middleware chains.
@@ -43,9 +43,10 @@ trait MiddlewareChainerMixin
      *
      * @param MiddlewareChainer $next The middleware to append
      *
-     * @return MiddlewareChainer A new middleware queue with $next appended
+     * @return MiddlewareChainer A new middleware queue 
+     *                                              with $next appended
      */
-    public function withMiddleware(MiddlewareChainer $next) :MiddlewareChainer
+    public function withMiddleware(MiddlewareChainer $next)
     {
         $new = clone $this;
         $cur = $new;

@@ -43,7 +43,7 @@ class Edit_User extends \NDB_Form
      *
      * @param \User $editor The user who is accessing this page
      *
-     * @return true if user has access, false otherwise.
+     * @return bool true if user has access, false otherwise.
      */
     function _hasAccess(\User $editor) : bool
     {
@@ -437,9 +437,9 @@ class Edit_User extends \NDB_Form
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
-            $success = \User::insert($set);
-            $user    = \User::factory($set['UserID']);
-            $uid     = $user->getData('ID');
+            \User::insert($set);
+            $user = \User::factory($set['UserID']);
+            $uid  = $user->getData('ID');
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
@@ -451,8 +451,8 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // update the user
-            $user    = \User::factory($this->identifier);
-            $success = $user->update($set);
+            $user = \User::factory($this->identifier);
+            $user->update($set);
         }
 
         // Now set the password. Note that this field is named incorrectly
@@ -466,7 +466,7 @@ class Edit_User extends \NDB_Form
         // change to the user's permission set since all the checkboxes are
         // disabled)
         if (!$this->_isEditingOwnAccount()) {
-            $success = $user->removePermissions();
+            $user->removePermissions();
             // Check for new permissions
             if (!empty($permIDs)) {
                 foreach ($permIDs as $permID) {
@@ -1188,12 +1188,16 @@ class Edit_User extends \NDB_Form
      * @param \Database $DB    database object.
      * @param string    $email user's email.
      *
-     * @return string error message if email is invalid, null otherwise.
+     * @return ?string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError(\Database $DB, $email)
+    private function _getEmailError(\Database $DB, string $email): ?string
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
 
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
@@ -1207,9 +1211,6 @@ class Edit_User extends \NDB_Form
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
         }
 
         return null;

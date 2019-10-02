@@ -85,6 +85,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                     $fpath = $mpath . "/php/"
                     . strtolower(substr($class, strlen("LORIS\\$name\\")))
                     . ".class.inc";
+                    $fpath = str_replace('\\', '/', $fpath);
                     if (!file_exists($fpath)) {
                         throw new \NotFound(
                             "Could not load module `$name`: file `$fpath` " .

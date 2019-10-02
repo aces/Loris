@@ -149,8 +149,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
         $this->addBasicText('Estimate', 'Estimate:');
         $this->addBasicText('StdErr', 'Std Err:');
         $this->addBasicText('Pvalue', 'P-value:');
-
-        return true;
     }
 
     /**

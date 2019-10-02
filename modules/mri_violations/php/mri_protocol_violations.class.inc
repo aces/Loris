@@ -118,7 +118,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $this->tpl_data['mri_protocol_data']   = $this->getMRIProtocolData();
         $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
-        return true;
     }
 
     /**
@@ -149,7 +148,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $this->addBasicText('SeriesUID', 'SeriesUID:');
         $this->addBasicText('SeriesDescription', 'Series Description:');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
-        return true;
     }
 
     /**
