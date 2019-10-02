@@ -306,7 +306,7 @@ class Genomicfile
                 )
             );
         }
-        $this->reportProgress(95, "Creating file-candidate relations");
+        $this->reportProgress(95, 'Creating file-candidate relations');
     }
 
     /**
