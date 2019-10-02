@@ -21,7 +21,7 @@ In addition to the above, the following packages should be installed with `yum` 
  * make
 
 ## Apache2
-```
+```bash
 sudo yum install httpd 
 sudo systemctl enable httpd
 sudo systemctl start httpd
