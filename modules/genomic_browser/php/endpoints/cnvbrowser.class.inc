@@ -140,25 +140,25 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'          => $this->_formElementObjectCreator(
+                'centerID'          => parent::_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'             => $this->_formElementObjectCreator(
+                'DCCID'             => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'             => $this->_formElementObjectCreator(
+                'PSCID'             => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'               => $this->_formElementObjectCreator(
+                'Sex'               => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -168,25 +168,25 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'      => $this->_formElementObjectCreator(
+                'SubprojectID'      => parent::_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'               => $this->_formElementObjectCreator(
+                'DoB'               => parent::_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'External_ID'       => $this->_formElementObjectCreator(
+                'External_ID'       => parent::_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     null
                 ),
-                'Assembly'          => $this->_formElementObjectCreator(
+                'Assembly'          => parent::_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
@@ -195,7 +195,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      '37' => 'GRCh37',
                     )
                 ),
-                'Strand'            => $this->_formElementObjectCreator(
+                'Strand'            => parent::_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
@@ -205,43 +205,43 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'R'  => 'Reverse',
                     )
                 ),
-                'Start_Loc'         => $this->_formElementObjectCreator(
+                'Start_Loc'         => parent::_formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     null
                 ),
-                'End_Loc'           => $this->_formElementObjectCreator(
+                'End_Loc'           => parent::_formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
                     null
                 ),
-                'Location'          => $this->_formElementObjectCreator(
+                'Location'          => parent::_formElementObjectCreator(
                     'Location',
                     'text',
                     'Location',
                     null
                 ),
-                'Gene_Symbol'       => $this->_formElementObjectCreator(
+                'Gene_Symbol'       => parent::_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     null
                 ),
-                'Gene_Name'         => $this->_formElementObjectCreator(
+                'Gene_Name'         => parent::_formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Gene Name',
                     null
                 ),
-                'CNV_Description'   => $this->_formElementObjectCreator(
+                'CNV_Description'   => parent::_formElementObjectCreator(
                     'CNV_Description',
                     'text',
                     'Description',
                     null
                 ),
-                'CNV_Type'          => $this->_formElementObjectCreator(
+                'CNV_Type'          => parent::_formElementObjectCreator(
                     'CNV_Type',
                     'select',
                     'Type',
@@ -252,19 +252,19 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'unknown' => 'Unknown',
                     )
                 ),
-                'Copy_Num_Change'   => $this->_formElementObjectCreator(
+                'Copy_Num_Change'   => parent::_formElementObjectCreator(
                     'Copy_Num_Change',
                     'text',
                     'Copy Number Change',
                     null
                 ),
-                'Event_Name'        => $this->_formElementObjectCreator(
+                'Event_Name'        => parent::_formElementObjectCreator(
                     'Event_Name',
                     'text',
                     'Event Name',
                     null
                 ),
-                'Common_CNV'        => $this->_formElementObjectCreator(
+                'Common_CNV'        => parent::_formElementObjectCreator(
                     'Common_CNV',
                     'select',
                     'Common',
@@ -274,7 +274,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'N'  => 'No',
                     )
                 ),
-                'Characteristics'   => $this->_formElementObjectCreator(
+                'Characteristics'   => parent::_formElementObjectCreator(
                     'Characteristics',
                     'select',
                     'Characteristics',
@@ -285,7 +285,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Unknown'    => 'Unknown',
                     )
                 ),
-                'Inheritance'       => $this->_formElementObjectCreator(
+                'Inheritance'       => parent::_formElementObjectCreator(
                     'Inheritance',
                     'select',
                     'Inheritance',
@@ -299,7 +299,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'NA'           => 'NA',
                     )
                 ),
-                'Array_Report'      => $this->_formElementObjectCreator(
+                'Array_Report'      => parent::_formElementObjectCreator(
                     'Array_Report',
                     'select',
                     'Array Report',
@@ -311,7 +311,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Uncertain' => 'Uncertain',
                     )
                 ),
-                'Markers'           => $this->_formElementObjectCreator(
+                'Markers'           => parent::_formElementObjectCreator(
                     'Markers',
                     'text',
                     'Markers',
@@ -321,13 +321,13 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'R'  => 'Reverse',
                     )
                 ),
-                'Validation_Method' => $this->_formElementObjectCreator(
+                'Validation_Method' => parent::_formElementObjectCreator(
                     'Validation_Method',
                     'text',
                     'Validation Method',
                     null
                 ),
-                'Platform'          => $this->_formElementObjectCreator(
+                'Platform'          => parent::_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
@@ -358,31 +358,31 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         return $values;
     }
 
-    /**
-     * Used to create (select, text, ...) element for form filter.
-     *
-     * @param string     $name   for element
-     * @param string     $type   for element
-     * @param string     $label  for element
-     * @param array|null $values for element
-     *
-     * @return object
-     */
-    private function _formElementObjectCreator(
-        string $name,
-        string $type,
-        string $label,
-        ?array $values
-    ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
-        if (isset($values)) {
-            $element->options = $values;
-        }
-        return $element;
-    }
+//    /**
+//     * Used to create (select, text, ...) element for form filter.
+//     *
+//     * @param string     $name   for element
+//     * @param string     $type   for element
+//     * @param string     $label  for element
+//     * @param array|null $values for element
+//     *
+//     * @return object
+//     */
+//    private function _formElementObjectCreator(
+//        string $name,
+//        string $type,
+//        string $label,
+//        ?array $values
+//    ) : object {
+//        $element        = new \stdClass();
+//        $element->name  = $name;
+//        $element->type  = $type;
+//        $element->label = $label;
+//        if (isset($values)) {
+//            $element->options = $values;
+//        }
+//        return $element;
+//    }
 
 
     /**

@@ -140,25 +140,25 @@ class Methylation extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'         => $this->_formElementObjectCreator(
+                'centerID'         => parent::_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'            => $this->_formElementObjectCreator(
+                'DCCID'            => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'            => $this->_formElementObjectCreator(
+                'PSCID'            => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'              => $this->_formElementObjectCreator(
+                'Sex'              => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -168,43 +168,43 @@ class Methylation extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'     => $this->_formElementObjectCreator(
+                'SubprojectID'     => parent::_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'              => $this->_formElementObjectCreator(
+                'DoB'              => parent::_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'Sample'           => $this->_formElementObjectCreator(
+                'Sample'           => parent::_formElementObjectCreator(
                     'Sample',
                     'text',
                     'Sample',
                     null
                 ),
-                'cpg_name'         => $this->_formElementObjectCreator(
+                'cpg_name'         => parent::_formElementObjectCreator(
                     'cpg_name',
                     'text',
                     'CPG Name',
                     null
                 ),
-                'Beta_value'       => $this->_formElementObjectCreator(
+                'Beta_value'       => parent::_formElementObjectCreator(
                     'Beta_value',
                     'text',
                     'Beta value',
                     null
                 ),
-                'Chromosome'       => $this->_formElementObjectCreator(
+                'Chromosome'       => parent::_formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
                     null
                 ),
-                'Strand'           => $this->_formElementObjectCreator(
+                'Strand'           => parent::_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
@@ -214,37 +214,37 @@ class Methylation extends Endpoint implements ETagCalculator
                      'R'  => 'Reverse',
                     )
                 ),
-                'Start_Loc'        => $this->_formElementObjectCreator(
+                'Start_Loc'        => parent::_formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     null
                 ),
-                'Probe_Loc_A'      => $this->_formElementObjectCreator(
+                'Probe_Loc_A'      => parent::_formElementObjectCreator(
                     'Probe_Loc_A',
                     'text',
                     'Probe Loc A',
                     null
                 ),
-                'Probe_Seq_A'      => $this->_formElementObjectCreator(
+                'Probe_Seq_A'      => parent::_formElementObjectCreator(
                     'Probe_Seq_A',
                     'text',
                     'Probe Seq A',
                     null
                 ),
-                'Probe_Loc_B'      => $this->_formElementObjectCreator(
+                'Probe_Loc_B'      => parent::_formElementObjectCreator(
                     'Probe_Loc_B',
                     'text',
                     'Probe Loc B',
                     null
                 ),
-                'Probe_Seq_B'      => $this->_formElementObjectCreator(
+                'Probe_Seq_B'      => parent::_formElementObjectCreator(
                     'Probe_Seq_B',
                     'text',
                     'Probe Seq B',
                     null
                 ),
-                'Design'           => $this->_formElementObjectCreator(
+                'Design'           => parent::_formElementObjectCreator(
                     'Design',
                     'select',
                     'Infinium design',
@@ -254,7 +254,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      'II' => 'II',
                     )
                 ),
-                'Color'            => $this->_formElementObjectCreator(
+                'Color'            => parent::_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Color',
@@ -264,7 +264,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      'Red' => 'Red',
                     )
                 ),
-                'Assembly'         => $this->_formElementObjectCreator(
+                'Assembly'         => parent::_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
@@ -273,7 +273,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      '37' => 'GRCh37',
                     )
                 ),
-                'SNP_10'           => $this->_formElementObjectCreator(
+                'SNP_10'           => parent::_formElementObjectCreator(
                     'SNP_10',
                     'select',
                     'SNP',
@@ -283,19 +283,19 @@ class Methylation extends Endpoint implements ETagCalculator
                      '_'    => 'Yes',
                     )
                 ),
-                'Gene_Symbol'      => $this->_formElementObjectCreator(
+                'Gene_Symbol'      => parent::_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     null
                 ),
-                'Accession_number' => $this->_formElementObjectCreator(
+                'Accession_number' => parent::_formElementObjectCreator(
                     'Accession_number',
                     'text',
                     'Accession number',
                     null
                 ),
-                'Gene_Grp'         => $this->_formElementObjectCreator(
+                'Gene_Grp'         => parent::_formElementObjectCreator(
                     'Gene_Grp',
                     'select',
                     'Position',
@@ -309,13 +309,13 @@ class Methylation extends Endpoint implements ETagCalculator
                      'TSS200'  => 'TSS200',
                     )
                 ),
-                'Island_Loc'       => $this->_formElementObjectCreator(
+                'Island_Loc'       => parent::_formElementObjectCreator(
                     'Island_Loc',
                     'text',
                     'Island Loc',
                     null
                 ),
-                'Context'          => $this->_formElementObjectCreator(
+                'Context'          => parent::_formElementObjectCreator(
                     'Context',
                     'select',
                     'Context',
@@ -324,7 +324,7 @@ class Methylation extends Endpoint implements ETagCalculator
                         'island_relation'
                     )
                 ),
-                'Fantom_Prom'      => $this->_formElementObjectCreator(
+                'Fantom_Prom'      => parent::_formElementObjectCreator(
                     'Fantom_Prom',
                     'select',
                     'Promoter',
@@ -334,7 +334,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      'NOT_NULL' => 'Yes',
                     )
                 ),
-                'DMR'              => $this->_formElementObjectCreator(
+                'DMR'              => parent::_formElementObjectCreator(
                     'DMR',
                     'select',
                     'DMR',
@@ -343,7 +343,7 @@ class Methylation extends Endpoint implements ETagCalculator
                         'dmr'
                     )
                 ),
-                'Enhancer'         => $this->_formElementObjectCreator(
+                'Enhancer'         => parent::_formElementObjectCreator(
                     'Enhancer',
                     'select',
                     'Enhancer',
@@ -352,7 +352,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      '1'  => 'Yes',
                     )
                 ),
-                'HMM_Island'       => $this->_formElementObjectCreator(
+                'HMM_Island'       => parent::_formElementObjectCreator(
                     'HMM_Island',
                     'select',
                     'HMM Island',
@@ -362,13 +362,13 @@ class Methylation extends Endpoint implements ETagCalculator
                      'NOT_NULL' => 'Yes',
                     )
                 ),
-                'Reg_Feature_Loc'  => $this->_formElementObjectCreator(
+                'Reg_Feature_Loc'  => parent::_formElementObjectCreator(
                     'Reg_Feature_Loc',
                     'text',
                     'Reg Feature Loc',
                     null
                 ),
-                'Reg_Feature_Grp'  => $this->_formElementObjectCreator(
+                'Reg_Feature_Grp'  => parent::_formElementObjectCreator(
                     'Reg_Feature_Grp',
                     'select',
                     'Regulatory feat.:',
@@ -377,7 +377,7 @@ class Methylation extends Endpoint implements ETagCalculator
                         'reg_feature_group'
                     )
                 ),
-                'DHS'              => $this->_formElementObjectCreator(
+                'DHS'              => parent::_formElementObjectCreator(
                     'DHS',
                     'select',
                     'DHS',
@@ -387,7 +387,7 @@ class Methylation extends Endpoint implements ETagCalculator
                      'NULL' => 'No',
                     )
                 ),
-                'Platform'         => $this->_formElementObjectCreator(
+                'Platform'         => parent::_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
@@ -451,33 +451,6 @@ class Methylation extends Endpoint implements ETagCalculator
         }
         return $values;
     }
-
-    /**
-     * Used to create (select, text, ...) element for form filter.
-     *
-     * @param string     $name   for element
-     * @param string     $type   for element
-     * @param string     $label  for element
-     * @param array|null $values for element
-     *
-     * @return object
-     */
-    private function _formElementObjectCreator(
-        string $name,
-        string $type,
-        string $label,
-        ?array $values
-    ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
-        if (isset($values)) {
-            $element->options = $values;
-        }
-        return $element;
-    }
-
 
     /**
      * An ETagCalculator provides the ability to calculate an ETag for

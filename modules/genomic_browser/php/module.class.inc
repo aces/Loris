@@ -73,4 +73,5 @@ class Module extends \Module
 
         return $handler->process($request, $handler);
     }
+
 }

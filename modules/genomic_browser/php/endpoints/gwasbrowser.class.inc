@@ -115,55 +115,55 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                        );
 
         return array(
-                'SNP_ID'       => $this->_formElementObjectCreator(
+                'SNP_ID'       => parent::_formElementObjectCreator(
                     'SNP_ID',
                     'text',
                     'SNP ID',
                     null
                 ),
-                'Chromosome'   => $this->_formElementObjectCreator(
+                'Chromosome'   => parent::_formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
                     null
                 ),
-                'BP_Position'  => $this->_formElementObjectCreator(
+                'BP_Position'  => parent::_formElementObjectCreator(
                     'BP_Position',
                     'text',
                     'BP Position',
                     null
                 ),
-                'Major_Allele' => $this->_formElementObjectCreator(
+                'Major_Allele' => parent::_formElementObjectCreator(
                     'Major_Allele',
                     'select',
                     'Major Allele',
                     $alleleArray
                 ),
-                'Minor_Allele' => $this->_formElementObjectCreator(
+                'Minor_Allele' => parent::_formElementObjectCreator(
                     'Minor_Allele',
                     'select',
                     'Minor Allele',
                     $alleleArray
                 ),
-                'MAF'          => $this->_formElementObjectCreator(
+                'MAF'          => parent::_formElementObjectCreator(
                     'MAF',
                     'text',
                     'MAF',
                     null
                 ),
-                'Estimate'     => $this->_formElementObjectCreator(
+                'Estimate'     => parent::_formElementObjectCreator(
                     'Estimate',
                     'text',
                     'Estimate',
                     null
                 ),
-                'StdErr'       => $this->_formElementObjectCreator(
+                'StdErr'       => parent::_formElementObjectCreator(
                     'StdErr',
                     'text',
                     'Std Err',
                     null
                 ),
-                'Pvalue'       => $this->_formElementObjectCreator(
+                'Pvalue'       => parent::_formElementObjectCreator(
                     'Pvalue',
                     'text',
                     'P-value',
@@ -191,32 +191,6 @@ class GwasBrowser extends Endpoint implements ETagCalculator
             $values['error'] = 'Forbidden';
         }
         return $values;
-    }
-
-    /**
-     * Used to create (select, text, ...) element for form filter.
-     *
-     * @param string     $name   for element
-     * @param string     $type   for element
-     * @param string     $label  for element
-     * @param array|null $values for element
-     *
-     * @return object
-     */
-    private function _formElementObjectCreator(
-        string $name,
-        string $type,
-        string $label,
-        ?array $values
-    ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
-        if (isset($values)) {
-            $element->options = $values;
-        }
-        return $element;
     }
 
     /**

@@ -117,43 +117,43 @@ class FileManager extends Endpoint implements ETagCalculator
     private function _getFieldOptions() : array
     {
         return array(
-                'genomic_file_id'     => $this->_formElementObjectCreator(
+                'genomic_file_id'     => parent::_formElementObjectCreator(
                     'genomic_file_id',
                     'text',
                     'Type',
                     null
                 ),
-                'file_name'           => $this->_formElementObjectCreator(
+                'file_name'           => parent::_formElementObjectCreator(
                     'file_name',
                     'text',
                     'Name',
                     null
                 ),
-                'description'         => $this->_formElementObjectCreator(
+                'description'         => parent::_formElementObjectCreator(
                     'description',
                     'text',
                     'Description',
                     null
                 ),
-                'genomic_file_type'   => $this->_formElementObjectCreator(
+                'genomic_file_type'   => parent::_formElementObjectCreator(
                     'genomic_file_type',
                     'text',
                     'Type',
                     null
                 ),
-                'date_inserted'       => $this->_formElementObjectCreator(
+                'date_inserted'       => parent::_formElementObjectCreator(
                     'date_inserted',
                     'text',
                     'Date inserted',
                     null
                 ),
-                'inserted_by_user_id' => $this->_formElementObjectCreator(
+                'inserted_by_user_id' => parent::_formElementObjectCreator(
                     'inserted_by_user_id',
                     'text',
                     'Inserted by User',
                     null
                 ),
-                'caveat'              => $this->_formElementObjectCreator(
+                'caveat'              => parent::_formElementObjectCreator(
                     'caveat',
                     'select',
                     'Caveat',
@@ -162,7 +162,7 @@ class FileManager extends Endpoint implements ETagCalculator
                         'Caveat'
                     )
                 ),
-                'notes'               => $this->_formElementObjectCreator(
+                'notes'               => parent::_formElementObjectCreator(
                     'notes',
                     'text',
                     'Notes',
@@ -271,33 +271,6 @@ class FileManager extends Endpoint implements ETagCalculator
         }
         return $values;
     }
-
-    /**
-     * Used to create (select, text, ...) element for form filter.
-     *
-     * @param string     $name   for element
-     * @param string     $type   for element
-     * @param string     $label  for element
-     * @param array|null $values for element
-     *
-     * @return object
-     */
-    private function _formElementObjectCreator(
-        string $name,
-        string $type,
-        string $label,
-        ?array $values
-    ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
-        if (isset($values)) {
-            $element->options = $values;
-        }
-        return $element;
-    }
-
 
     /**
      * An ETagCalculator provides the ability to calculate an ETag for

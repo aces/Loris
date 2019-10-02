@@ -142,25 +142,25 @@ class Profiles extends Endpoint implements ETagCalculator
                         'N' => 'No',
                        );
         return array(
-                'centerID'     => $this->_formElementObjectCreator(
+                'centerID'     => parent::_formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     $list_of_sites
                 ),
-                'DCCID'        => $this->_formElementObjectCreator(
+                'DCCID'        => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     null
                 ),
-                'PSCID'        => $this->_formElementObjectCreator(
+                'PSCID'        => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     null
                 ),
-                'Sex'          => $this->_formElementObjectCreator(
+                'Sex'          => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -170,43 +170,43 @@ class Profiles extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID' => $this->_formElementObjectCreator(
+                'SubprojectID' => parent::_formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     array('' => 'Any') + \Utility::getSubprojectList()
                 ),
-                'DoB'          => $this->_formElementObjectCreator(
+                'DoB'          => parent::_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
-                'External_ID'  => $this->_formElementObjectCreator(
+                'External_ID'  => parent::_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     null
                 ),
-                'File'         => $this->_formElementObjectCreator(
+                'File'         => parent::_formElementObjectCreator(
                     'File',
                     'select',
                     'Files',
                     $any_options
                 ),
-                'SNP'          => $this->_formElementObjectCreator(
+                'SNP'          => parent::_formElementObjectCreator(
                     'SNP',
                     'select',
                     'SNPs found',
                     $any_options
                 ),
-                'CNV'          => $this->_formElementObjectCreator(
+                'CNV'          => parent::_formElementObjectCreator(
                     'CNV',
                     'select',
                     'CNVs found',
                     $any_options
                 ),
-                'CPG'          => $this->_formElementObjectCreator(
+                'CPG'          => parent::_formElementObjectCreator(
                     'CPG',
                     'select',
                     'CPGs found',
@@ -234,32 +234,6 @@ class Profiles extends Endpoint implements ETagCalculator
             $values['error'] = 'Forbidden';
         }
         return $values;
-    }
-
-    /**
-     * Used to create (select, text, ...) element for form filter.
-     *
-     * @param string     $name   for element
-     * @param string     $type   for element
-     * @param string     $label  for element
-     * @param array|null $values for element
-     *
-     * @return object
-     */
-    private function _formElementObjectCreator(
-        string $name,
-        string $type,
-        string $label,
-        ?array $values
-    ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
-        if (isset($values)) {
-            $element->options = $values;
-        }
-        return $element;
     }
 
     /**
