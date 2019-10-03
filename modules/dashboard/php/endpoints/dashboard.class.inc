@@ -367,7 +367,8 @@ class Dashboard extends Endpoint implements ETagCalculator
         }
         $studyProgressionData['total_scans'] = $recruitmentData['total_scans'];
 
-        $values['welcome']          = $welcomeData;
+        $values            = array();
+        $values['welcome'] = $welcomeData;
         $values['recruitment']      = $recruitmentData;
         $values['studyProgression'] = $studyProgressionData;
         $values['tasks']            = $myTasksData;
