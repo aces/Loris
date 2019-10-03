@@ -458,7 +458,7 @@ class User extends UserPermissions
      *
      * @return void
      */
-    public function updatePassword(
+    function updatePassword(
         \Password $password,
         ?\DateTime $expiry = null
     ): void {
@@ -468,7 +468,7 @@ class User extends UserPermissions
             date('Y-m-d', strtotime('+6 months'))
         );
 
-        $this::update(
+        $this->update(
             array(
              'Password_hash'   => $password,
              'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
@@ -485,7 +485,7 @@ class User extends UserPermissions
      *
      * @return bool  true if the password has changed, false otherwise.
      */
-    public function passwordChanged(
+    function passwordChanged(
         string $plaintextPassword
     ): bool {
         $passwordQuery = "SELECT Password_hash
