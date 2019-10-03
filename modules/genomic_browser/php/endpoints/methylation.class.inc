@@ -140,24 +140,28 @@ class Methylation extends Endpoint implements ETagCalculator
                     'centerID',
                     'select',
                     'Site',
+                    true,
                     $list_of_sites
                 ),
                 'DCCID'            => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
+                    true,
                     null
                 ),
                 'PSCID'            => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
+                    false,
                     null
                 ),
                 'Sex'              => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
+                    false,
                     array(
                      'Male'   => 'Male',
                      'Female' => 'Female',
@@ -167,42 +171,49 @@ class Methylation extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
+                    true,
                     \Utility::getSubprojectList()
                 ),
                 'DoB'              => parent::_formElementObjectCreator(
                     'dob',
                     'date',
                     'Date of Birth',
+                    true,
                     array('maxlength' => 10)
                 ),
                 'Sample'           => parent::_formElementObjectCreator(
                     'Sample',
                     'text',
                     'Sample',
+                    false,
                     null
                 ),
                 'cpg_name'         => parent::_formElementObjectCreator(
                     'cpg_name',
                     'text',
                     'CPG Name',
+                    true,
                     null
                 ),
                 'Beta_value'       => parent::_formElementObjectCreator(
                     'Beta_value',
                     'text',
                     'Beta value',
+                    false,
                     null
                 ),
                 'Chromosome'       => parent::_formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
+                    false,
                     null
                 ),
                 'Strand'           => parent::_formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
+                    false,
                     array(
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
@@ -212,36 +223,42 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Start_Loc',
                     'text',
                     'Start Loc',
+                    true,
                     null
                 ),
                 'Probe_Loc_A'      => parent::_formElementObjectCreator(
                     'Probe_Loc_A',
                     'text',
                     'Probe Loc A',
+                    true,
                     null
                 ),
                 'Probe_Seq_A'      => parent::_formElementObjectCreator(
                     'Probe_Seq_A',
                     'text',
                     'Probe Seq A',
+                    false,
                     null
                 ),
                 'Probe_Loc_B'      => parent::_formElementObjectCreator(
                     'Probe_Loc_B',
                     'text',
                     'Probe Loc B',
+                    false,
                     null
                 ),
                 'Probe_Seq_B'      => parent::_formElementObjectCreator(
                     'Probe_Seq_B',
                     'text',
                     'Probe Seq B',
+                    false,
                     null
                 ),
                 'Design'           => parent::_formElementObjectCreator(
                     'Design',
                     'select',
                     'Infinium design',
+                    false,
                     array(
                      'I'  => 'I',
                      'II' => 'II',
@@ -251,6 +268,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Strand',
                     'select',
                     'Color',
+                    false,
                     array(
                      'Grn' => 'Green',
                      'Red' => 'Red',
@@ -260,6 +278,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Assembly',
                     'select',
                     'Build',
+                    true,
                     array(
                      '37' => 'GRCh37',
                     )
@@ -268,6 +287,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'SNP_10',
                     'select',
                     'SNP',
+                    true,
                     array(
                      'NULL' => 'No',
                      '_'    => 'Yes',
@@ -277,18 +297,21 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Gene_Symbol',
                     'text',
                     'Gene',
+                    false,
                     null
                 ),
                 'Accession_number' => parent::_formElementObjectCreator(
                     'Accession_number',
                     'text',
                     'Accession number',
+                    false,
                     null
                 ),
                 'Gene_Grp'         => parent::_formElementObjectCreator(
                     'Gene_Grp',
                     'select',
                     'Position',
+                    false,
                     array(
                      '1stExon' => '1st Exon',
                      '3`UTR'   => '3`UTR',
@@ -302,12 +325,14 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Island_Loc',
                     'text',
                     'Island Loc',
+                    true,
                     null
                 ),
                 'Context'          => parent::_formElementObjectCreator(
                     'Context',
                     'select',
                     'Context',
+                    true,
                     $this->getDistinctValues(
                         'genomic_cpg_annotation',
                         'island_relation'
@@ -317,6 +342,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Fantom_Prom',
                     'select',
                     'Promoter',
+                    true,
                     array(
                      'NULL'     => 'No',
                      'NOT_NULL' => 'Yes',
@@ -326,6 +352,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'DMR',
                     'select',
                     'DMR',
+                    false,
                     $this->getDistinctValues(
                         'genomic_cpg_annotation',
                         'dmr'
@@ -335,6 +362,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Enhancer',
                     'select',
                     'Enhancer',
+                    true,
                     array(
                      '1'  => 'Yes',
                     )
@@ -343,6 +371,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'HMM_Island',
                     'select',
                     'HMM Island',
+                    true,
                     array(
                      'NULL'     => 'No',
                      'NOT_NULL' => 'Yes',
@@ -352,12 +381,14 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Reg_Feature_Loc',
                     'text',
                     'Reg Feature Loc',
+                    true,
                     null
                 ),
                 'Reg_Feature_Grp'  => parent::_formElementObjectCreator(
                     'Reg_Feature_Grp',
                     'select',
                     'Regulatory feat.:',
+                    true,
                     $this->getDistinctValues(
                         'genomic_cpg_annotation',
                         'reg_feature_group'
@@ -367,6 +398,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'DHS',
                     'select',
                     'DHS',
+                    false,
                     array(
                      '1'    => 'Yes',
                      'NULL' => 'No',
@@ -376,6 +408,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'Platform',
                     'select',
                     'Platform',
+                    true,
                     $this->getDistinctValues(
                         'genotyping_platform',
                         'Name'

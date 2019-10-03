@@ -144,7 +144,7 @@ class Profiles extends Component {
       if (fieldOptions.hasOwnProperty(field)) {
         fields.push({
           label: fieldOptions[field].label,
-          show: true,
+          show: fieldOptions[field].hidden,
           filter: {
             name: fieldOptions[field].name,
             type: fieldOptions[field].type,

@@ -57,7 +57,6 @@ class Files extends Component {
     )
       .then((resp) => resp.json())
       .then((json) => {
-        console.log(json);
         const data = {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),
@@ -77,13 +76,9 @@ class Files extends Component {
    * @param {string} value - value of the form element
    */
   setFileUploadFormData(formElement, value) {
-    console.log('setFileUploadFormData');
     const state = Object.assign({}, this.state);
     state.upload.formData[formElement] = value;
     this.setState(state);
-  }
-  handleFileUpload() {
-    console.log('handleFileUpload');
   }
 
   openFileUploadModal() {
@@ -163,7 +158,7 @@ class Files extends Component {
       if (fieldOptions.hasOwnProperty(field)) {
         fields.push({
           label: fieldOptions[field].label,
-          show: true,
+          show: fieldOptions[field].hidden,
           filter: {
             name: fieldOptions[field].name,
             type: fieldOptions[field].type,

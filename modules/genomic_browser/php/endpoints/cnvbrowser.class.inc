@@ -140,24 +140,28 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'centerID',
                     'select',
                     'Site',
+                    true,
                     $list_of_sites
                 ),
                 'DCCID'             => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
+                    true,
                     null
                 ),
                 'PSCID'             => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
+                    false,
                     null
                 ),
                 'Sex'               => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
+                    false,
                     array(
                      'Male'   => 'Male',
                      'Female' => 'Female',
@@ -167,24 +171,28 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
+                    true,
                     \Utility::getSubprojectList()
                 ),
                 'DoB'               => parent::_formElementObjectCreator(
                     'dob',
                     'date',
                     'Date of Birth',
+                    true,
                     array('maxlength' => 10)
                 ),
                 'External_ID'       => parent::_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
+                    true,
                     null
                 ),
                 'Assembly'          => parent::_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
+                    true,
                     array(
                      '37' => 'GRCh37',
                     )
@@ -193,6 +201,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Strand',
                     'select',
                     'Strand',
+                    false,
                     array(
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
@@ -202,42 +211,49 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Start_Loc',
                     'text',
                     'Start Loc',
+                    true,
                     null
                 ),
                 'End_Loc'           => parent::_formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
+                    true,
                     null
                 ),
                 'Location'          => parent::_formElementObjectCreator(
                     'Location',
                     'text',
                     'Location',
+                    false,
                     null
                 ),
                 'Gene_Symbol'       => parent::_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
+                    false,
                     null
                 ),
                 'Gene_Name'         => parent::_formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Gene Name',
+                    false,
                     null
                 ),
                 'CNV_Description'   => parent::_formElementObjectCreator(
                     'CNV_Description',
                     'text',
                     'Description',
+                    true,
                     null
                 ),
                 'CNV_Type'          => parent::_formElementObjectCreator(
                     'CNV_Type',
                     'select',
                     'Type',
+                    true,
                     array(
                      'gain'    => 'gain',
                      'loss'    => 'loss',
@@ -248,18 +264,21 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Copy_Num_Change',
                     'text',
                     'Copy Number Change',
+                    true,
                     null
                 ),
                 'Event_Name'        => parent::_formElementObjectCreator(
                     'Event_Name',
                     'text',
                     'Event Name',
+                    false,
                     null
                 ),
                 'Common_CNV'        => parent::_formElementObjectCreator(
                     'Common_CNV',
                     'select',
                     'Common',
+                    false,
                     array(
                      'Y'  => 'Yes',
                      'N'  => 'No',
@@ -269,6 +288,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Characteristics',
                     'select',
                     'Characteristics',
+                    false,
                     array(
                      'Benign'     => 'Benign',
                      'Pathogenic' => 'Pathogenic',
@@ -279,6 +299,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Inheritance',
                     'select',
                     'Inheritance',
+                    false,
                     array(
                      'de novo'      => 'de novo',
                      'maternal'     => 'maternal',
@@ -292,6 +313,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Array_Report',
                     'select',
                     'Array Report',
+                    true,
                     array(
                      'Abnormal'  => 'Abnormal',
                      'Normal'    => 'Normal',
@@ -303,6 +325,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Markers',
                     'text',
                     'Markers',
+                    true,
                     array(
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
@@ -312,12 +335,14 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'Validation_Method',
                     'text',
                     'Validation Method',
+                    true,
                     null
                 ),
                 'Platform'          => parent::_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
+                    false,
                     $platform_options
                 ),
                );

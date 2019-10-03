@@ -78,6 +78,7 @@ abstract class Endpoint implements RequestHandlerInterface
      * @param string     $name   for element
      * @param string     $type   for element
      * @param string     $label  for element
+     * @param bool       $hidden for element
      * @param array|null $values for element
      *
      * @return object
@@ -86,12 +87,14 @@ abstract class Endpoint implements RequestHandlerInterface
         string $name,
         string $type,
         string $label,
+        bool   $hidden,
         ?array $values
     ) : object {
-        $element        = new \stdClass();
-        $element->name  = $name;
-        $element->type  = $type;
-        $element->label = $label;
+        $element         = new \stdClass();
+        $element->name   = $name;
+        $element->type   = $type;
+        $element->label  = $label;
+        $element->hidden = !$hidden;
         if (isset($values)) {
             $element->options = $values;
         }

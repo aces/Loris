@@ -143,24 +143,28 @@ class Profiles extends Endpoint implements ETagCalculator
                     'centerID',
                     'select',
                     'Site',
+                    true,
                     $list_of_sites
                 ),
                 'DCCID'        => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
+                    true,
                     null
                 ),
                 'PSCID'        => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
+                    false,
                     null
                 ),
                 'Sex'          => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
+                    false,
                     array(
                      'Male'   => 'Male',
                      'Female' => 'Female',
@@ -170,42 +174,49 @@ class Profiles extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
+                    false,
                     \Utility::getSubprojectList()
                 ),
                 'DoB'          => parent::_formElementObjectCreator(
                     'dob',
                     'date',
                     'Date of Birth',
+                    true,
                     array('maxlength' => 10)
                 ),
                 'External_ID'  => parent::_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
+                    true,
                     null
                 ),
                 'File'         => parent::_formElementObjectCreator(
                     'File',
                     'select',
                     'Files',
+                    false,
                     $any_options
                 ),
                 'SNP'          => parent::_formElementObjectCreator(
                     'SNP',
                     'select',
                     'SNPs found',
+                    false,
                     $any_options
                 ),
                 'CNV'          => parent::_formElementObjectCreator(
                     'CNV',
                     'select',
                     'CNVs found',
+                    false,
                     $any_options
                 ),
                 'CPG'          => parent::_formElementObjectCreator(
                     'CPG',
                     'select',
                     'CPGs found',
+                    false,
                     $any_options
                 ),
                );

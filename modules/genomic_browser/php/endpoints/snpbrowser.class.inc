@@ -143,24 +143,28 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'centerID',
                     'select',
                     'Site',
+                    true,
                     $list_of_sites
                 ),
                 'DCCID'               => parent::_formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
+                    true,
                     null
                 ),
                 'PSCID'               => parent::_formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
+                    false,
                     null
                 ),
                 'Sex'                 => parent::_formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
+                    false,
                     array(
                      'Male'   => 'Male',
                      'Female' => 'Female',
@@ -170,24 +174,28 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
+                    true,
                     \Utility::getSubprojectList()
                 ),
                 'DoB'                 => parent::_formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
+                    true,
                     array('maxlength' => 10)
                 ),
                 'External_ID'         => parent::_formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
+                    true,
                     null
                 ),
                 'Assembly'            => parent::_formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
+                    false,
                     array(
                      '37' => 'GRCh37',
                     )
@@ -196,6 +204,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Strand',
                     'select',
                     'Strand',
+                    true,
                     array(
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
@@ -205,60 +214,70 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Start_Loc',
                     'text',
                     'Start Loc',
+                    true,
                     null
                 ),
                 'End_Loc'             => parent::_formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
+                    true,
                     null
                 ),
                 'Gene_Symbol'         => parent::_formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
+                    true,
                     null
                 ),
                 'Gene_Name'           => parent::_formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Name',
+                    true,
                     null
                 ),
                 'Platform'            => parent::_formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
+                    true,
                     $platform_options
                 ),
                 'rsID'                => parent::_formElementObjectCreator(
                     'rsID',
                     'text',
                     'rsID',
+                    false,
                     null
                 ),
                 'SNP_Name'            => parent::_formElementObjectCreator(
                     'SNP_Name',
                     'text',
                     'Name',
+                    true,
                     null
                 ),
                 'SNP_Description'     => parent::_formElementObjectCreator(
                     'SNP_Description',
                     'text',
                     'Description',
+                    true,
                     null
                 ),
                 'SNP_External_Source' => parent::_formElementObjectCreator(
                     'SNP_External_Source',
                     'text',
                     'External Source',
+                    true,
                     null
                 ),
                 'Allele_A'            => parent::_formElementObjectCreator(
                     'Allele_A',
                     'select',
                     'Allele A',
+                    false,
                     array(
                      'A'  => 'A',
                      'C'  => 'C',
@@ -270,6 +289,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Allele_B',
                     'select',
                     'Allele B',
+                    false,
                     array(
                      'A'  => 'A',
                      'C'  => 'C',
@@ -281,6 +301,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Reference_Base',
                     'select',
                     'Reference Base',
+                    true,
                     array(
                      'A'  => 'A',
                      'C'  => 'C',
@@ -292,6 +313,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Minor_Allele',
                     'select',
                     'Minor Allele',
+                    false,
                     array(
                      'A'  => 'A',
                      'C'  => 'C',
@@ -303,6 +325,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Array_Report',
                     'select',
                     'Array Report',
+                    true,
                     array(
                      'Abnormal'  => 'Abnormal',
                      'Normal'    => 'Normal',
@@ -314,18 +337,21 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Markers',
                     'text',
                     'Markers',
+                    true,
                     null
                 ),
                 'Validation_Method'   => parent::_formElementObjectCreator(
                     'Validation_Method',
                     'text',
                     'Validation Method',
+                    true,
                     null
                 ),
                 'Validated'           => parent::_formElementObjectCreator(
                     'Validated',
                     'select',
                     'Validated',
+                    true,
                     array(
                      '0'  => '0',
                      '1'  => '1',
@@ -335,6 +361,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Function_Prediction',
                     'select',
                     'Function Prediction',
+                    false,
                     array(
                      'exonic'      => 'exonic',
                      'ncRNAexonic' => 'ncRNAexonic',
@@ -347,6 +374,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Damaging',
                     'select',
                     'Damaging',
+                    false,
                     array(
                      'D'  => 'D',
                      'NA' => 'NA',
@@ -356,18 +384,21 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'Genotype_Quality',
                     'text',
                     'Genotype Quality',
+                    true,
                     null
                 ),
                 'Exonic_Function'     => parent::_formElementObjectCreator(
                     'Exonic_Function',
                     'text',
                     'Exonic Function',
+                    false,
                     null
                 ),
                 'genomic_range'       => parent::_formElementObjectCreator(
                     'genomic_range',
                     'text',
                     'Genomic Range',
+                    true,
                     null
                 ),
                );
