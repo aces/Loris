@@ -84,7 +84,6 @@ class GenomicUploadForm extends Component {
           label='Use PSCID in column headers'
           id='pscidColumn'
           value={this.state.pscidColumn}
-          // elementClass='checkbox-inline'
           onUserInput={this.setFileUploadFormData}
         />
       ) : null;
