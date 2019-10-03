@@ -157,7 +157,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    public static function insert(array $set): bool
+    public function insert(array $set): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -415,13 +415,13 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public static function hasCenterPermission(string $code, int $center_id): bool
+    public function hasCenterPermission(string $code, int $center_id): bool
     {
-        if ($this::hasPermission("superuser")) {
+        if ($this->hasPermission("superuser")) {
             return true;
         }
-        return $this::hasPermission($code)
-            && $this::hasCenter($center_id);
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
     }
 
     /**
@@ -458,7 +458,7 @@ class User extends UserPermissions
      *
      * @return void
      */
-    public static function updatePassword(
+    public function updatePassword(
         \Password $password,
         ?\DateTime $expiry = null
     ): void {
@@ -485,7 +485,7 @@ class User extends UserPermissions
      *
      * @return bool  true if the password has changed, false otherwise.
      */
-    public static function passwordChanged(
+    public function passwordChanged(
         string $plaintextPassword
     ): bool {
         $passwordQuery = "SELECT Password_hash
@@ -494,7 +494,7 @@ class User extends UserPermissions
 
         $current = \NDB_Factory::singleton()->database()->pselectOne(
             $passwordQuery,
-            array('UID' => $this::getID())
+            array('UID' => $this->getID())
         );
 
         if (!is_null($current)) {

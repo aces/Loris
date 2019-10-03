@@ -1279,7 +1279,7 @@
         },
         {
             "name": "phan/phan",
-            "version": "2.2.6",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
