@@ -19,7 +19,7 @@
         "phpunit/phpunit" : "^8",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": "2.2.13"
+        "phan/phan": "2.2.11"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
