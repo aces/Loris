@@ -42,7 +42,7 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_module = new Module("test_module", "php/libraries/");
@@ -56,7 +56,7 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }
@@ -67,7 +67,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::_construct
      * @return void
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->assertEquals("test_module", $this->_page->name);
         $this->assertEquals("test_page", $this->_page->page);
@@ -84,7 +84,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::getTemplateData
      * @return void
      */
-    public function testSetAndGetTemplateVar()
+    public function testSetAndGetTemplateVar(): void
     {
         $this->_page->setTemplateVar("test_var", "test_value");
         $data = $this->_page->getTemplateData();
@@ -98,7 +98,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addFile
      * @return void
      */
-    public function testAddFile()
+    public function testAddFile(): void
     {
         $this->_page->addFile("test_name", "test_label");
         $this->assertEquals(
@@ -117,7 +117,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addHeader
      * @return void
      */
-    public function testAddHeader()
+    public function testAddHeader(): void
     {
         $this->_page->addHeader("test_header");
         $this->assertEquals(
@@ -134,7 +134,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addSelect
      * @return void
      */
-    public function testAddSelect()
+    public function testAddSelect(): void
     {
         $this->_page->addSelect("test_name", "test_label", array());
         $this->assertEquals(
@@ -154,7 +154,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addLabel
      * @return void
      */
-    public function testAddLabel()
+    public function testAddLabel(): void
     {
         $this->_page->addLabel("test_label");
         $this->assertEquals(
@@ -171,7 +171,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addScoreColumn
      * @return void
      */
-    public function testAddScoreColumn()
+    public function testAddScoreColumn(): void
     {
         $this->_page->addScoreColumn("test_name", "test_label");
         $this->assertEquals(
@@ -189,7 +189,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addBasicText
      * @return void
      */
-    public function testAddBasicText()
+    public function testAddBasicText(): void
     {
         $this->_page->addBasicText("test_name", "test_label");
         $this->assertEquals(
@@ -208,7 +208,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addBasicTextArea
      * @return void
      */
-    public function testAddBasicTextArea()
+    public function testAddBasicTextArea(): void
     {
         $this->_page->addBasicTextArea("test_name", "test_label");
         $this->assertEquals(
@@ -228,7 +228,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addBasicDate
      * @return void
      */
-    public function testAddBasicDateWithNoDateOptions()
+    public function testAddBasicDateWithNoDateOptions(): void
     {
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
@@ -249,7 +249,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addBasicDate
      * @return void
      */
-    public function testAddBasicDateWithDateOptionsSet()
+    public function testAddBasicDateWithDateOptionsSet(): void
     {
         $this->_page->dateOptions = array('someOption' => 'true');
         $this->_page->addBasicDate("test_name", "test_label");
@@ -271,7 +271,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addCheckbox
      * @return void
      */
-    public function testAddCheckbox()
+    public function testAddCheckbox(): void
     {
         $this->_page->addCheckbox("test_name", "test_label", array());
         $this->assertEquals(
@@ -290,7 +290,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addRadio
      * @return void
      */
-    public function testAddRadio()
+    public function testAddRadio(): void
     {
         $radios = array(
                       array('label' => 'label1',
@@ -327,7 +327,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addHidden
      * @return void
      */
-    public function testAddHidden()
+    public function testAddHidden(): void
     {
         $this->_page->addHidden("test_name", "test_value");
         $this->assertEquals(
@@ -346,7 +346,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addTextAreaGroup
      * @return void
      */
-    public function testAddTextAreaGroup()
+    public function testAddTextAreaGroup(): void
     {
         $options = array(''             => '',
                          'not_answered' => 'Not Answered');
@@ -381,7 +381,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addPassword
      * @return void
      */
-    public function testAddPassword()
+    public function testAddPassword(): void
     {
         $this->_page->addPassword("test_name", "test_label");
         $this->assertEquals(
@@ -400,7 +400,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addRule
      * @return void
      */
-    public function testAddRule()
+    public function testAddRule(): void
     {
         $this->_page->addBasicText("abc", "Hello", array());
         $this->_page->addRule("abc", "Required!", "required");
@@ -417,7 +417,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addGroup
      * @return void
      */
-    public function testAddGroup()
+    public function testAddGroup(): void
     {
         $text1 = $this->_page->createText("test_name1", "test_label1");
         $text2 = $this->_page->createText("test_name2", "test_label2");
@@ -443,7 +443,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addGroupRule
      * @return void
      */
-    public function testAddGroupRule()
+    public function testAddGroupRule(): void
     {
         $text1 = $this->_page->createText("test_name1", "test_label1");
         $text2 = $this->_page->createText("test_name2", "test_label2");
@@ -479,7 +479,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createSelect
      * @return void
      */
-    public function testCreateSelect()
+    public function testCreateSelect(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -501,7 +501,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createLabel
      * @return void
      */
-    public function testCreateLabel()
+    public function testCreateLabel(): void
     {
         $this->markTestIncomplete("This test is incomplete");
     }
@@ -512,7 +512,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createText
      * @return void
      */
-    public function testCreateText()
+    public function testCreateText(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -529,7 +529,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createTextArea
      * @return void
      */
-    public function testCreateTextArea()
+    public function testCreateTextArea(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -546,7 +546,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createDate
      * @return void
      */
-    public function testCreateDate()
+    public function testCreateDate(): void
     {
         $this->assertEquals(
             array('name' => 'test_field', 
@@ -564,7 +564,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createCheckbox
      * @return void
      */
-    public function testCreateCheckbox()
+    public function testCreateCheckbox(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -580,7 +580,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createRadio
      * @return void
      */
-    public function testCreateRadio()
+    public function testCreateRadio(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -596,7 +596,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::createPassword
      * @return void
      */
-    public function testCreatePassword()
+    public function testCreatePassword(): void
     {
         $this->assertEquals(
             array('name' => 'test_field',
@@ -613,7 +613,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::display
      * @return void
      */
-    public function testDisplayWithSkipTemplateTrue()
+    public function testDisplayWithSkipTemplateTrue(): void
     {
         $this->_page->skipTemplate = true;
         $this->assertEquals("", $this->_page->display());
@@ -629,7 +629,7 @@ class NDB_PageTest extends TestCase
      * @note This test is incomplete because it uses Smarty_NeuroDB which needs
      *       to use a mock object. - Alexandra Livadas
      */
-    public function testDisplayWithFormFrozen()
+    public function testDisplayWithFormFrozen(): void
     {
         $this->markTestIncomplete("This test is incomplete!");
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
