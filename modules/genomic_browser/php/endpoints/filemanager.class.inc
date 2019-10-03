@@ -143,7 +143,7 @@ class FileManager extends Endpoint implements ETagCalculator
                 ),
                 'date_inserted'       => parent::_formElementObjectCreator(
                     'date_inserted',
-                    'text',
+                    'date',
                     'Date inserted',
                     null
                 ),

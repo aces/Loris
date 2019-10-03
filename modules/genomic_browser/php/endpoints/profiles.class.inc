@@ -174,7 +174,7 @@ class Profiles extends Endpoint implements ETagCalculator
                 ),
                 'DoB'          => parent::_formElementObjectCreator(
                     'dob',
-                    'select',
+                    'date',
                     'Date of Birth',
                     array('maxlength' => 10)
                 ),
