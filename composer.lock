@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c3ade9d1e9cf0b2afeb49eab1188956",
+    "content-hash": "c78303d4fdb0092d7b78b1af02c84ece",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -1281,7 +1281,7 @@
         },
         {
             "name": "phan/phan",
-            "version": "1.3.1",
+            "version": "2.2.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
