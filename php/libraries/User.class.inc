@@ -417,11 +417,11 @@ class User extends UserPermissions
      */
     public static function hasCenterPermission(string $code, int $center_id): bool
     {
-        if ($this->hasPermission("superuser")) {
+        if (self::hasPermission("superuser")) {
             return true;
         }
-        return $this->hasPermission($code)
-            && $this->hasCenter($center_id);
+        return self::hasPermission($code)
+            && self::hasCenter($center_id);
     }
 
     /**
@@ -468,7 +468,7 @@ class User extends UserPermissions
             date('Y-m-d', strtotime('+6 months'))
         );
 
-        $this->update(
+        self::update(
             array(
              'Password_hash'   => $password,
              'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
@@ -494,7 +494,7 @@ class User extends UserPermissions
 
         $current = \NDB_Factory::singleton()->database()->pselectOne(
             $passwordQuery,
-            array('UID' => $this->getID())
+            array('UID' => self::getID())
         );
 
         if (!is_null($current)) {
