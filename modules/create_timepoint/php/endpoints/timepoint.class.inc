@@ -17,6 +17,7 @@
 namespace LORIS\create_timepoint\endpoints;
 
 use http\Env\Request;
+use LORIS\StudyEntities\Candidate\CandID;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Api\Endpoint;
@@ -89,7 +90,7 @@ class Timepoint extends Endpoint implements ETagCalculator
         // Setup variables
         $errors         = array(); // form errors.
         $config         = \NDB_Config::singleton();
-        $candidate      = \Candidate::singleton($values['identifier']);
+        $candidate      = \Candidate::singleton(new CandID($values['identifier']));
         $allSubprojects = \Utility::getSubprojectList();
         // All subprojects from config file (error).
         if (empty($allSubprojects)) {
@@ -184,7 +185,7 @@ class Timepoint extends Endpoint implements ETagCalculator
             $site = \Site::singleton(intval($values['psc']));
         }
 
-        //Project
+        // List projects
         $projects = \Utility::getProjectList();
         if (count($projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
@@ -200,9 +201,9 @@ class Timepoint extends Endpoint implements ETagCalculator
         $response = array();
         if (!$errors && $site) {
             \TimePoint::createNew(
-                \Candidate::singleton($values['identifier']),
+                \Candidate::singleton(new CandID($values['identifier'])),
                 intval($values['subproject']),
-                $values['visit'],
+                $values['visit'] ?? null,
                 $site,
                 $project
             );
@@ -267,10 +268,11 @@ class Timepoint extends Endpoint implements ETagCalculator
     ) : array {
         $user      = $request->getAttribute('user');
         $candidate = \Candidate::singleton(
-            isset($values['identifier']) ?
-                intval($values['identifier']) : null
+            new CandID(isset($values['identifier']) ?
+                intval($values['identifier']) : null)
         );
-        if (!(in_array(
+        if (!$user->hasPermission('data_entry') &&
+            !(in_array(
             intval($candidate->getData('RegistrationCenterID')),
             $user->getData('CenterIDs'),
             true

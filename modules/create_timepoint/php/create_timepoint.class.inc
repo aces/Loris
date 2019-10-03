@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 namespace LORIS\create_timepoint;
+use \LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * The forms for the new profile menu
  *
@@ -33,7 +35,7 @@ class Create_Timepoint extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $candidate = \Candidate::singleton($this->identifier);
+        $candidate = \Candidate::singleton(new CandID($this->identifier));
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
