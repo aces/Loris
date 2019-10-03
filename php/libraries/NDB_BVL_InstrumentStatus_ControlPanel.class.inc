@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Behavioural instrument status control panel class
@@ -31,14 +32,14 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @param string  $testname  The instrument name being managed
      * @param string  $commentid The commentID being loaded
-     * @param int     $candid    The candidate who this instrument belongs to
+     * @param CandID  $candid    The candidate who this instrument belongs to
      * @param int     $sessionid The session at which the instrument took place
      * @param ?string $subtest   The page of the instrument being accessed
      */
     function __construct(
         string $testname,
         string $commentid,
-        int $candid,
+        CandID $candid,
         int $sessionid,
         ?string $subtest
     ) {

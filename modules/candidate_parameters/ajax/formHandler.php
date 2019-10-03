@@ -4,7 +4,7 @@
  *
  * Handles form update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
@@ -12,6 +12,8 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
+use \LORIS\StudyEntities\Candidate\CandID;
+
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 
@@ -55,7 +57,7 @@ function editCandInfoFields($db, $user)
         exit;
     }
 
-    $candID = $_POST['candID'];
+    $candID = new CandID($_POST['candID']);
 
     // Process posted data
     $caveatEmptor = isset($_POST['flaggedCaveatemptor']) ?

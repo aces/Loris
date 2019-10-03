@@ -26,7 +26,7 @@
  * set to Active=N).  This behavior is intended, instruments should NEVER be
  * removed.  Ever.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Behavioural
  * @package  Main
@@ -34,6 +34,7 @@
  * @license  Loris License
  * @link     https://github.com/mohadesz/Loris-Trunk
  */
+use LORIS\StudyEntities\Candidate\CandID;
 
 //get a list of all the candidates
 //foreach candidate we need to look at each timepoint
@@ -89,7 +90,7 @@ function populateVisitLabel($result, $visit_label)
     $timePoint = TimePoint::singleton($result['ID']);
 
     $DB        = Database::singleton();
-    $candidate = Candidate::singleton($result['CandID']);
+    $candidate = Candidate::singleton(new CandID($result['CandID']));
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
     if ($result_firstVisit == $visit_label) {

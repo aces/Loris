@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * A NDB_BVL_Feedback object wraps access to behavioural feedback related
@@ -62,16 +63,16 @@ class NDB_BVL_Feedback
      * can be passed but not necessarily all of them, depending on which
      * page is receiving feedback.
      *
-     * @param string  $username  The currently logged in user (why?)
-     * @param integer $candID    The 6 digit CandID
-     * @param integer $sessionID The session ID with feedback
-     * @param string  $commentID The commentID receiving feedback.
+     * @param string   $username  The currently logged in user (why?)
+     * @param ?CandID  $candID    The 6 digit CandID
+     * @param ?integer $sessionID The session ID with feedback
+     * @param ?string  $commentID The commentID receiving feedback.
      *
      * @return NDB_BVL_Feedback object
      */
     static function &singleton(
         $username,
-        $candID=null,
+        ?CandID $candID=null,
         $sessionID=null,
         $commentID=null
     ) {
@@ -85,7 +86,14 @@ class NDB_BVL_Feedback
 
         static $feedbackList = array();
 
-        $objectName = md5(sprintf("c%ss%si%s", $candID, $sessionID, $commentID));
+        $objectName = md5(
+            sprintf(
+                "c%ss%si%s",
+                $candID,
+                $sessionID ?? '',
+                $commentID ?? ''
+            )
+        );
 
         if (!isset($feedbackList[$objectName])) {
             try {
@@ -112,19 +120,21 @@ class NDB_BVL_Feedback
     /**
      * Sets up a newly instantiated feedback thread object
      *
-     * @param string $username  The name of the currently logged in user.
+     * @param string  $username  The name of the currently logged in user.
      *                          (why is this here?)
-     * @param string $candID    The CandID we're getting a feedback thread for.
-     *                          (optional)
-     * @param string $sessionID The sessionID we're getting a feedback thread for.
-     *                          (optional)
-     * @param string $commentID The commentID we're getting a feedback thread for.
-     *                          (optional)
+     * @param ?CandID $candID    The CandID we're getting a feedback thread for.
+     * @param ?string $sessionID The sessionID we're getting a feedback thread for.
+     * @param ?string $commentID The commentID we're getting a feedback thread for.
      *
      * @return void
      */
-    function setup($username, $candID=null, $sessionID=null, $commentID=null)
-    {
+    function setup(
+        string $username,
+        ?CandID $candID=null,
+        ?string $sessionID=null,
+        $commentID=null
+    ) {
+
         if (!empty($commentID)) {
             $this->_feedbackObjectInfo['CommentID'] = $commentID;
             $this->_feedbackLevel = 'instrument';
@@ -184,7 +194,7 @@ class NDB_BVL_Feedback
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query          .= " WHERE c.CandID = :CaID";
-            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
+            $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
             throw new Exception(
                 "You need to pass at least one of the following to setup "
