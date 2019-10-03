@@ -117,11 +117,9 @@ class SnpBrowser extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            $list_of_sites = array('' => 'Any') + $list_of_sites;
         } else {
             // allow only to view own site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // SubprojectID
@@ -134,7 +132,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                 array()
             );
 
-        $platform_options = array('' => 'Any');
+        $platform_options = array();
         foreach ($platform_results as $row => $result ) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
@@ -164,7 +162,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Sex',
                     array(
-                     ''       => 'All',
                      'Male'   => 'Male',
                      'Female' => 'Female',
                     )
@@ -173,7 +170,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
-                    array('' => 'Any') + \Utility::getSubprojectList()
+                    \Utility::getSubprojectList()
                 ),
                 'DoB'                 => parent::_formElementObjectCreator(
                     'dob',
@@ -192,7 +189,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Build',
                     array(
-                     null => 'Any',
                      '37' => 'GRCh37',
                     )
                 ),
@@ -201,7 +197,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Strand',
                     array(
-                     null => 'Any',
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
                     )
@@ -265,7 +260,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Allele A',
                     array(
-                     null => 'Any',
                      'A'  => 'A',
                      'C'  => 'C',
                      'T'  => 'T',
@@ -277,7 +271,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Allele B',
                     array(
-                     null => 'Any',
                      'A'  => 'A',
                      'C'  => 'C',
                      'T'  => 'T',
@@ -289,7 +282,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Reference Base',
                     array(
-                     null => 'Any',
                      'A'  => 'A',
                      'C'  => 'C',
                      'T'  => 'T',
@@ -301,7 +293,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Minor Allele',
                     array(
-                     null => 'Any',
                      'A'  => 'A',
                      'C'  => 'C',
                      'T'  => 'T',
@@ -313,7 +304,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Array Report',
                     array(
-                     null        => 'Any',
                      'Abnormal'  => 'Abnormal',
                      'Normal'    => 'Normal',
                      'Pending'   => 'Pending',
@@ -337,7 +327,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Validated',
                     array(
-                     null => 'Any',
                      '0'  => '0',
                      '1'  => '1',
                     )
@@ -347,7 +336,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Function Prediction',
                     array(
-                     null          => 'Any',
                      'exonic'      => 'exonic',
                      'ncRNAexonic' => 'ncRNAexonic',
                      'splicing'    => 'splicing',
@@ -360,7 +348,6 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Damaging',
                     array(
-                     null => 'Any',
                      'D'  => 'D',
                      'NA' => 'NA',
                     )

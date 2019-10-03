@@ -107,7 +107,6 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     private function _getFieldOptions() : array
     {
         $alleleArray = array(
-                        ''  => 'Any',
                         'A' => 'A',
                         'C' => 'C',
                         'T' => 'T',

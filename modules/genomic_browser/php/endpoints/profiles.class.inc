@@ -131,13 +131,10 @@ class Profiles extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            $list_of_sites = array('' => 'Any') + $list_of_sites;
         } else {
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
         $any_options = array(
-                        ''  => null,
                         'Y' => 'Yes',
                         'N' => 'No',
                        );
@@ -165,7 +162,6 @@ class Profiles extends Endpoint implements ETagCalculator
                     'select',
                     'Sex',
                     array(
-                     ''       => 'All',
                      'Male'   => 'Male',
                      'Female' => 'Female',
                     )
@@ -174,7 +170,7 @@ class Profiles extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
-                    array('' => 'Any') + \Utility::getSubprojectList()
+                    \Utility::getSubprojectList()
                 ),
                 'DoB'          => parent::_formElementObjectCreator(
                     'dob',

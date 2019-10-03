@@ -118,13 +118,9 @@ class Methylation extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
-            }
         } else {
             // allow only to view own site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // Platform
@@ -133,7 +129,7 @@ class Methylation extends Endpoint implements ETagCalculator
             "SELECT distinct Name FROM genotyping_platform",
             array()
         );
-        $platform_options = array('' => 'Any');
+        $platform_options = array();
         foreach ($platform_results as $row => $result) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
@@ -163,7 +159,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Sex',
                     array(
-                     ''       => 'All',
                      'Male'   => 'Male',
                      'Female' => 'Female',
                     )
@@ -172,7 +167,7 @@ class Methylation extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
-                    array('' => 'Any') + \Utility::getSubprojectList()
+                    \Utility::getSubprojectList()
                 ),
                 'DoB'              => parent::_formElementObjectCreator(
                     'dob',
@@ -209,7 +204,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Strand',
                     array(
-                     null => 'Any',
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
                     )
@@ -249,7 +243,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Infinium design',
                     array(
-                     null => 'Any',
                      'I'  => 'I',
                      'II' => 'II',
                     )
@@ -259,7 +252,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Color',
                     array(
-                     null  => 'Any',
                      'Grn' => 'Green',
                      'Red' => 'Red',
                     )
@@ -269,7 +261,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Build',
                     array(
-                     null => 'Any',
                      '37' => 'GRCh37',
                     )
                 ),
@@ -278,7 +269,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'SNP',
                     array(
-                     null   => 'Any',
                      'NULL' => 'No',
                      '_'    => 'Yes',
                     )
@@ -300,7 +290,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Position',
                     array(
-                     null      => 'Any',
                      '1stExon' => '1st Exon',
                      '3`UTR'   => '3`UTR',
                      '5`UTR'   => '5`UTR',
@@ -329,7 +318,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Promoter',
                     array(
-                     null       => 'Any',
                      'NULL'     => 'No',
                      'NOT_NULL' => 'Yes',
                     )
@@ -348,7 +336,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'Enhancer',
                     array(
-                     null => 'Any',
                      '1'  => 'Yes',
                     )
                 ),
@@ -357,7 +344,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'HMM Island',
                     array(
-                     null       => 'Any',
                      'NULL'     => 'No',
                      'NOT_NULL' => 'Yes',
                     )
@@ -382,7 +368,6 @@ class Methylation extends Endpoint implements ETagCalculator
                     'select',
                     'DHS',
                     array(
-                     null   => 'Any',
                      '1'    => 'Yes',
                      'NULL' => 'No',
                     )
@@ -425,7 +410,7 @@ class Methylation extends Endpoint implements ETagCalculator
                 }
                 return $carry;
             },
-            array(null => 'Any')
+            array()
         );
 
     }

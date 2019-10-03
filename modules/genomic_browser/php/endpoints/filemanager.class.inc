@@ -197,7 +197,7 @@ class FileManager extends Endpoint implements ETagCalculator
                 }
                 return $carry;
             },
-            array(null => 'Any')
+            array()
         );
     }
 

@@ -118,13 +118,9 @@ class CnvBrowser extends Endpoint implements ETagCalculator
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
-            }
         } else {
             // allow only to view own site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // Platform
@@ -133,7 +129,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
             "SELECT distinct Name FROM genotyping_platform",
             array()
         );
-        $platform_options = array('' => 'Any');
+        $platform_options = array();
         foreach ($platform_results as $row => $result) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
@@ -163,7 +159,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Sex',
                     array(
-                     ''       => 'All',
                      'Male'   => 'Male',
                      'Female' => 'Female',
                     )
@@ -172,7 +167,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'SubprojectID',
                     'select',
                     'Subproject',
-                    array('' => 'Any') + \Utility::getSubprojectList()
+                    \Utility::getSubprojectList()
                 ),
                 'DoB'               => parent::_formElementObjectCreator(
                     'dob',
@@ -191,7 +186,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Build',
                     array(
-                     null => 'Any',
                      '37' => 'GRCh37',
                     )
                 ),
@@ -200,7 +194,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Strand',
                     array(
-                     null => 'Any',
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
                     )
@@ -246,7 +239,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Type',
                     array(
-                     null      => 'All',
                      'gain'    => 'gain',
                      'loss'    => 'loss',
                      'unknown' => 'Unknown',
@@ -269,7 +261,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Common',
                     array(
-                     null => 'Any',
                      'Y'  => 'Yes',
                      'N'  => 'No',
                     )
@@ -279,7 +270,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Characteristics',
                     array(
-                     null         => 'Any',
                      'Benign'     => 'Benign',
                      'Pathogenic' => 'Pathogenic',
                      'Unknown'    => 'Unknown',
@@ -290,7 +280,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Inheritance',
                     array(
-                     null           => 'Any',
                      'de novo'      => 'de novo',
                      'maternal'     => 'maternal',
                      'paternal'     => 'paternal',
@@ -304,7 +293,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'select',
                     'Array Report',
                     array(
-                     null        => 'Any',
                      'Abnormal'  => 'Abnormal',
                      'Normal'    => 'Normal',
                      'Pending'   => 'Pending',
@@ -316,7 +304,6 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                     'text',
                     'Markers',
                     array(
-                     null => 'Any',
                      'F'  => 'Forward',
                      'R'  => 'Reverse',
                     )
