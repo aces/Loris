@@ -339,11 +339,12 @@ class Dashboard extends Endpoint implements ETagCalculator
                     $bvl_feedback[$i]['new'] = 0;
                 }
                 if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
-                    $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
+                    $bvl_feedback[$i]['URL'] = '/'
+                        . (string) $bvl_feedback[$i]['CandID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
                     $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
-                        . $bvl_feedback[$i]['CandID'] . '&sessionID='
-                        . $bvl_feedback[$i]['SessionID'];
+                        . (string) $bvl_feedback[$i]['CandID'] . '&sessionID='
+                        . (string) $bvl_feedback[$i]['SessionID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
@@ -352,9 +353,9 @@ class Dashboard extends Endpoint implements ETagCalculator
                     if (!empty($instrument)) {
                         $bvl_feedback[$i]['URL'] = '/instruments/'
                             . $instrument . '/?candID='
-                            . $bvl_feedback[$i]['CandID'] . '&sessionID='
-                            . $bvl_feedback[$i]['SessionID'] . '&commentID='
-                            . $bvl_feedback[$i]['CommentID'];
+                            . (string) $bvl_feedback[$i]['CandID'] . '&sessionID='
+                            . (string) $bvl_feedback[$i]['SessionID'] . '&commentID='
+                            . (string) $bvl_feedback[$i]['CommentID'];
                     }
                 }
             }
