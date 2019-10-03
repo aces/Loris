@@ -415,7 +415,7 @@ class User extends UserPermissions
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, int $center_id): bool
+    public static function hasCenterPermission(string $code, int $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
@@ -458,7 +458,7 @@ class User extends UserPermissions
      *
      * @return void
      */
-    function updatePassword(
+    public static function updatePassword(
         \Password $password,
         ?\DateTime $expiry = null
     ): void {
@@ -485,7 +485,7 @@ class User extends UserPermissions
      *
      * @return bool  true if the password has changed, false otherwise.
      */
-    function passwordChanged(
+    public static function passwordChanged(
         string $plaintextPassword
     ): bool {
         $passwordQuery = "SELECT Password_hash
