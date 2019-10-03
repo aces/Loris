@@ -85,6 +85,7 @@ class AjaxLogin extends \NDB_Page
      */
     function processRequest(array $values) : array
     {
+        $response = array();
         if (isset($values['command']) && $values['command'] == 'initialize') {
             // initialize - setup form data to return.
             $response           = $this->initializeSetup($values);
@@ -103,8 +104,6 @@ class AjaxLogin extends \NDB_Page
         } else if (isset($values['command']) && $values['command'] == 'expired') {
             // login - expired password update
             $response = $this->expiredPassword($values);
-        } else {
-            $response['status'] = 'error';
         }
         return $response;
     }
@@ -186,13 +185,17 @@ class AjaxLogin extends \NDB_Page
             if ($user->isEmailValid()) {
                 $config = \NDB_Config::singleton();
                 // Generate a new password.
-                $password = \User::newPassword();
+                $password = \Utility::randomString();
                 // Reset the password in the database and
                 // expire password so user must change it upon login.
-                $user->updatePassword($password, '1999-01-01');
+                \User::updatePassword(
+                    new \Password($password),
+                    new \DateTime('1999-01-01')
+                );
                 // Send the user an email.
-                $msg_data['study']    = $config->getSetting('title');
-                $msg_data['url']      = $config->getSetting('url');
+                $msg_data          = array();
+                $msg_data['study'] = $config->getSetting('title');
+                $msg_data['url']   = $config->getSetting('url');
                 $msg_data['realname'] = $user->getData('Real_name');
                 $msg_data['password'] = $password;
                 \Email::send($email, 'lost_password.tpl', $msg_data);
