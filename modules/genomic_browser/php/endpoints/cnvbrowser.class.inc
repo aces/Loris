@@ -136,28 +136,28 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'          => parent::_formElementObjectCreator(
+                'centerID'          => parent::formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     true,
                     $list_of_sites
                 ),
-                'DCCID'             => parent::_formElementObjectCreator(
+                'DCCID'             => parent::formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     true,
                     null
                 ),
-                'PSCID'             => parent::_formElementObjectCreator(
+                'PSCID'             => parent::formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     false,
                     null
                 ),
-                'Sex'               => parent::_formElementObjectCreator(
+                'Sex'               => parent::formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -167,89 +167,87 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'      => parent::_formElementObjectCreator(
+                'SubprojectID'      => parent::formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     true,
                     \Utility::getSubprojectList()
                 ),
-                'DoB'               => parent::_formElementObjectCreator(
+                'DoB'               => parent::formElementObjectCreator(
                     'dob',
                     'date',
                     'Date of Birth',
                     true,
                     array('maxlength' => 10)
                 ),
-                'External_ID'       => parent::_formElementObjectCreator(
+                'External_ID'       => parent::formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     true,
                     null
                 ),
-                'Assembly'          => parent::_formElementObjectCreator(
+                'Assembly'          => parent::formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
                     true,
-                    array(
-                     '37' => 'GRCh37',
-                    )
+                    array('37' => 'GRCh37')
                 ),
-                'Strand'            => parent::_formElementObjectCreator(
+                'Strand'            => parent::formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
                     false,
                     array(
-                     'F'  => 'Forward',
-                     'R'  => 'Reverse',
+                     'F' => 'Forward',
+                     'R' => 'Reverse',
                     )
                 ),
-                'Start_Loc'         => parent::_formElementObjectCreator(
+                'Start_Loc'         => parent::formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     true,
                     null
                 ),
-                'End_Loc'           => parent::_formElementObjectCreator(
+                'End_Loc'           => parent::formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
                     true,
                     null
                 ),
-                'Location'          => parent::_formElementObjectCreator(
+                'Location'          => parent::formElementObjectCreator(
                     'Location',
                     'text',
                     'Location',
                     false,
                     null
                 ),
-                'Gene_Symbol'       => parent::_formElementObjectCreator(
+                'Gene_Symbol'       => parent::formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     false,
                     null
                 ),
-                'Gene_Name'         => parent::_formElementObjectCreator(
+                'Gene_Name'         => parent::formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Gene Name',
                     false,
                     null
                 ),
-                'CNV_Description'   => parent::_formElementObjectCreator(
+                'CNV_Description'   => parent::formElementObjectCreator(
                     'CNV_Description',
                     'text',
                     'Description',
                     true,
                     null
                 ),
-                'CNV_Type'          => parent::_formElementObjectCreator(
+                'CNV_Type'          => parent::formElementObjectCreator(
                     'CNV_Type',
                     'select',
                     'Type',
@@ -260,31 +258,31 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'unknown' => 'Unknown',
                     )
                 ),
-                'Copy_Num_Change'   => parent::_formElementObjectCreator(
+                'Copy_Num_Change'   => parent::formElementObjectCreator(
                     'Copy_Num_Change',
                     'text',
                     'Copy Number Change',
                     true,
                     null
                 ),
-                'Event_Name'        => parent::_formElementObjectCreator(
+                'Event_Name'        => parent::formElementObjectCreator(
                     'Event_Name',
                     'text',
                     'Event Name',
                     false,
                     null
                 ),
-                'Common_CNV'        => parent::_formElementObjectCreator(
+                'Common_CNV'        => parent::formElementObjectCreator(
                     'Common_CNV',
                     'select',
                     'Common',
                     false,
                     array(
-                     'Y'  => 'Yes',
-                     'N'  => 'No',
+                     'Y' => 'Yes',
+                     'N' => 'No',
                     )
                 ),
-                'Characteristics'   => parent::_formElementObjectCreator(
+                'Characteristics'   => parent::formElementObjectCreator(
                     'Characteristics',
                     'select',
                     'Characteristics',
@@ -295,7 +293,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Unknown'    => 'Unknown',
                     )
                 ),
-                'Inheritance'       => parent::_formElementObjectCreator(
+                'Inheritance'       => parent::formElementObjectCreator(
                     'Inheritance',
                     'select',
                     'Inheritance',
@@ -309,7 +307,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'NA'           => 'NA',
                     )
                 ),
-                'Array_Report'      => parent::_formElementObjectCreator(
+                'Array_Report'      => parent::formElementObjectCreator(
                     'Array_Report',
                     'select',
                     'Array Report',
@@ -321,24 +319,24 @@ class CnvBrowser extends Endpoint implements ETagCalculator
                      'Uncertain' => 'Uncertain',
                     )
                 ),
-                'Markers'           => parent::_formElementObjectCreator(
+                'Markers'           => parent::formElementObjectCreator(
                     'Markers',
                     'text',
                     'Markers',
                     true,
                     array(
-                     'F'  => 'Forward',
-                     'R'  => 'Reverse',
+                     'F' => 'Forward',
+                     'R' => 'Reverse',
                     )
                 ),
-                'Validation_Method' => parent::_formElementObjectCreator(
+                'Validation_Method' => parent::formElementObjectCreator(
                     'Validation_Method',
                     'text',
                     'Validation Method',
                     true,
                     null
                 ),
-                'Platform'          => parent::_formElementObjectCreator(
+                'Platform'          => parent::formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
@@ -370,31 +368,31 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         return $values;
     }
 
-//    /**
-//     * Used to create (select, text, ...) element for form filter.
-//     *
-//     * @param string     $name   for element
-//     * @param string     $type   for element
-//     * @param string     $label  for element
-//     * @param array|null $values for element
-//     *
-//     * @return object
-//     */
-//    private function _formElementObjectCreator(
-//        string $name,
-//        string $type,
-//        string $label,
-//        ?array $values
-//    ) : object {
-//        $element        = new \stdClass();
-//        $element->name  = $name;
-//        $element->type  = $type;
-//        $element->label = $label;
-//        if (isset($values)) {
-//            $element->options = $values;
-//        }
-//        return $element;
-//    }
+    //    /**
+    //     * Used to create (select, text, ...) element for form filter.
+    //     *
+    //     * @param string     $name   for element
+    //     * @param string     $type   for element
+    //     * @param string     $label  for element
+    //     * @param array|null $values for element
+    //     *
+    //     * @return object
+    //     */
+    //    private function _formElementObjectCreator(
+    //        string $name,
+    //        string $type,
+    //        string $label,
+    //        ?array $values
+    //    ) : object {
+    //        $element        = new \stdClass();
+    //        $element->name  = $name;
+    //        $element->type  = $type;
+    //        $element->label = $label;
+    //        if (isset($values)) {
+    //            $element->options = $values;
+    //        }
+    //        return $element;
+    //    }
 
 
     /**

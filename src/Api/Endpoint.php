@@ -83,7 +83,7 @@ abstract class Endpoint implements RequestHandlerInterface
      *
      * @return object
      */
-    public function _formElementObjectCreator(
+    public function formElementObjectCreator(
         string $name,
         string $type,
         string $label,

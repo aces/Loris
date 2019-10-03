@@ -114,63 +114,63 @@ class GwasBrowser extends Endpoint implements ETagCalculator
                        );
 
         return array(
-                'SNP_ID'       => parent::_formElementObjectCreator(
+                'SNP_ID'       => parent::formElementObjectCreator(
                     'SNP_ID',
                     'text',
                     'SNP ID',
                     false,
                     null
                 ),
-                'Chromosome'   => parent::_formElementObjectCreator(
+                'Chromosome'   => parent::formElementObjectCreator(
                     'Chromosome',
                     'text',
                     'Chromosome',
                     false,
                     null
                 ),
-                'BP_Position'  => parent::_formElementObjectCreator(
+                'BP_Position'  => parent::formElementObjectCreator(
                     'BP_Position',
                     'text',
                     'BP Position',
                     false,
                     null
                 ),
-                'Major_Allele' => parent::_formElementObjectCreator(
+                'Major_Allele' => parent::formElementObjectCreator(
                     'Major_Allele',
                     'select',
                     'Major Allele',
                     false,
                     $alleleArray
                 ),
-                'Minor_Allele' => parent::_formElementObjectCreator(
+                'Minor_Allele' => parent::formElementObjectCreator(
                     'Minor_Allele',
                     'select',
                     'Minor Allele',
                     false,
                     $alleleArray
                 ),
-                'MAF'          => parent::_formElementObjectCreator(
+                'MAF'          => parent::formElementObjectCreator(
                     'MAF',
                     'text',
                     'MAF',
                     false,
                     null
                 ),
-                'Estimate'     => parent::_formElementObjectCreator(
+                'Estimate'     => parent::formElementObjectCreator(
                     'Estimate',
                     'text',
                     'Estimate',
                     false,
                     null
                 ),
-                'StdErr'       => parent::_formElementObjectCreator(
+                'StdErr'       => parent::formElementObjectCreator(
                     'StdErr',
                     'text',
                     'Std Err',
                     false,
                     null
                 ),
-                'Pvalue'       => parent::_formElementObjectCreator(
+                'Pvalue'       => parent::formElementObjectCreator(
                     'Pvalue',
                     'text',
                     'P-value',

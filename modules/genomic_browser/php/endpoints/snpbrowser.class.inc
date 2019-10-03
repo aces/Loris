@@ -139,28 +139,28 @@ class SnpBrowser extends Endpoint implements ETagCalculator
         }
 
         return array(
-                'centerID'            => parent::_formElementObjectCreator(
+                'centerID'            => parent::formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     true,
                     $list_of_sites
                 ),
-                'DCCID'               => parent::_formElementObjectCreator(
+                'DCCID'               => parent::formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     true,
                     null
                 ),
-                'PSCID'               => parent::_formElementObjectCreator(
+                'PSCID'               => parent::formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     false,
                     null
                 ),
-                'Sex'                 => parent::_formElementObjectCreator(
+                'Sex'                 => parent::formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -170,158 +170,156 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID'        => parent::_formElementObjectCreator(
+                'SubprojectID'        => parent::formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     true,
                     \Utility::getSubprojectList()
                 ),
-                'DoB'                 => parent::_formElementObjectCreator(
+                'DoB'                 => parent::formElementObjectCreator(
                     'dob',
                     'select',
                     'Date of Birth',
                     true,
                     array('maxlength' => 10)
                 ),
-                'External_ID'         => parent::_formElementObjectCreator(
+                'External_ID'         => parent::formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     true,
                     null
                 ),
-                'Assembly'            => parent::_formElementObjectCreator(
+                'Assembly'            => parent::formElementObjectCreator(
                     'Assembly',
                     'select',
                     'Build',
                     false,
-                    array(
-                     '37' => 'GRCh37',
-                    )
+                    array('37' => 'GRCh37')
                 ),
-                'Strand'              => parent::_formElementObjectCreator(
+                'Strand'              => parent::formElementObjectCreator(
                     'Strand',
                     'select',
                     'Strand',
                     true,
                     array(
-                     'F'  => 'Forward',
-                     'R'  => 'Reverse',
+                     'F' => 'Forward',
+                     'R' => 'Reverse',
                     )
                 ),
-                'Start_Loc'           => parent::_formElementObjectCreator(
+                'Start_Loc'           => parent::formElementObjectCreator(
                     'Start_Loc',
                     'text',
                     'Start Loc',
                     true,
                     null
                 ),
-                'End_Loc'             => parent::_formElementObjectCreator(
+                'End_Loc'             => parent::formElementObjectCreator(
                     'End_Loc',
                     'text',
                     'End Loc',
                     true,
                     null
                 ),
-                'Gene_Symbol'         => parent::_formElementObjectCreator(
+                'Gene_Symbol'         => parent::formElementObjectCreator(
                     'Gene_Symbol',
                     'text',
                     'Gene',
                     true,
                     null
                 ),
-                'Gene_Name'           => parent::_formElementObjectCreator(
+                'Gene_Name'           => parent::formElementObjectCreator(
                     'Gene_Name',
                     'text',
                     'Name',
                     true,
                     null
                 ),
-                'Platform'            => parent::_formElementObjectCreator(
+                'Platform'            => parent::formElementObjectCreator(
                     'Platform',
                     'select',
                     'Platform',
                     true,
                     $platform_options
                 ),
-                'rsID'                => parent::_formElementObjectCreator(
+                'rsID'                => parent::formElementObjectCreator(
                     'rsID',
                     'text',
                     'rsID',
                     false,
                     null
                 ),
-                'SNP_Name'            => parent::_formElementObjectCreator(
+                'SNP_Name'            => parent::formElementObjectCreator(
                     'SNP_Name',
                     'text',
                     'Name',
                     true,
                     null
                 ),
-                'SNP_Description'     => parent::_formElementObjectCreator(
+                'SNP_Description'     => parent::formElementObjectCreator(
                     'SNP_Description',
                     'text',
                     'Description',
                     true,
                     null
                 ),
-                'SNP_External_Source' => parent::_formElementObjectCreator(
+                'SNP_External_Source' => parent::formElementObjectCreator(
                     'SNP_External_Source',
                     'text',
                     'External Source',
                     true,
                     null
                 ),
-                'Allele_A'            => parent::_formElementObjectCreator(
+                'Allele_A'            => parent::formElementObjectCreator(
                     'Allele_A',
                     'select',
                     'Allele A',
                     false,
                     array(
-                     'A'  => 'A',
-                     'C'  => 'C',
-                     'T'  => 'T',
-                     'G'  => 'G',
+                     'A' => 'A',
+                     'C' => 'C',
+                     'T' => 'T',
+                     'G' => 'G',
                     )
                 ),
-                'Allele_B'            => parent::_formElementObjectCreator(
+                'Allele_B'            => parent::formElementObjectCreator(
                     'Allele_B',
                     'select',
                     'Allele B',
                     false,
                     array(
-                     'A'  => 'A',
-                     'C'  => 'C',
-                     'T'  => 'T',
-                     'G'  => 'G',
+                     'A' => 'A',
+                     'C' => 'C',
+                     'T' => 'T',
+                     'G' => 'G',
                     )
                 ),
-                'Reference_Base'      => parent::_formElementObjectCreator(
+                'Reference_Base'      => parent::formElementObjectCreator(
                     'Reference_Base',
                     'select',
                     'Reference Base',
                     true,
                     array(
-                     'A'  => 'A',
-                     'C'  => 'C',
-                     'T'  => 'T',
-                     'G'  => 'G',
+                     'A' => 'A',
+                     'C' => 'C',
+                     'T' => 'T',
+                     'G' => 'G',
                     )
                 ),
-                'Minor_Allele'        => parent::_formElementObjectCreator(
+                'Minor_Allele'        => parent::formElementObjectCreator(
                     'Minor_Allele',
                     'select',
                     'Minor Allele',
                     false,
                     array(
-                     'A'  => 'A',
-                     'C'  => 'C',
-                     'T'  => 'T',
-                     'G'  => 'G',
+                     'A' => 'A',
+                     'C' => 'C',
+                     'T' => 'T',
+                     'G' => 'G',
                     )
                 ),
-                'Array_Report'        => parent::_formElementObjectCreator(
+                'Array_Report'        => parent::formElementObjectCreator(
                     'Array_Report',
                     'select',
                     'Array Report',
@@ -333,31 +331,31 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                      'Uncertain' => 'Uncertain',
                     )
                 ),
-                'Markers'             => parent::_formElementObjectCreator(
+                'Markers'             => parent::formElementObjectCreator(
                     'Markers',
                     'text',
                     'Markers',
                     true,
                     null
                 ),
-                'Validation_Method'   => parent::_formElementObjectCreator(
+                'Validation_Method'   => parent::formElementObjectCreator(
                     'Validation_Method',
                     'text',
                     'Validation Method',
                     true,
                     null
                 ),
-                'Validated'           => parent::_formElementObjectCreator(
+                'Validated'           => parent::formElementObjectCreator(
                     'Validated',
                     'select',
                     'Validated',
                     true,
                     array(
-                     '0'  => '0',
-                     '1'  => '1',
+                     '0' => '0',
+                     '1' => '1',
                     )
                 ),
-                'Function_Prediction' => parent::_formElementObjectCreator(
+                'Function_Prediction' => parent::formElementObjectCreator(
                     'Function_Prediction',
                     'select',
                     'Function Prediction',
@@ -370,7 +368,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                      'UTR5'        => 'UTR5',
                     )
                 ),
-                'Damaging'            => parent::_formElementObjectCreator(
+                'Damaging'            => parent::formElementObjectCreator(
                     'Damaging',
                     'select',
                     'Damaging',
@@ -380,21 +378,21 @@ class SnpBrowser extends Endpoint implements ETagCalculator
                      'NA' => 'NA',
                     )
                 ),
-                'Genotype_Quality'    => parent::_formElementObjectCreator(
+                'Genotype_Quality'    => parent::formElementObjectCreator(
                     'Genotype_Quality',
                     'text',
                     'Genotype Quality',
                     true,
                     null
                 ),
-                'Exonic_Function'     => parent::_formElementObjectCreator(
+                'Exonic_Function'     => parent::formElementObjectCreator(
                     'Exonic_Function',
                     'text',
                     'Exonic Function',
                     false,
                     null
                 ),
-                'genomic_range'       => parent::_formElementObjectCreator(
+                'genomic_range'       => parent::formElementObjectCreator(
                     'genomic_range',
                     'text',
                     'Genomic Range',

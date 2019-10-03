@@ -117,49 +117,49 @@ class FileManager extends Endpoint implements ETagCalculator
     private function _getFieldOptions() : array
     {
         return array(
-                'genomic_file_id'     => parent::_formElementObjectCreator(
+                'genomic_file_id'     => parent::formElementObjectCreator(
                     'genomic_file_id',
                     'text',
                     'Type',
                     false,
                     null
                 ),
-                'file_name'           => parent::_formElementObjectCreator(
+                'file_name'           => parent::formElementObjectCreator(
                     'file_name',
                     'text',
                     'Name',
                     false,
                     null
                 ),
-                'description'         => parent::_formElementObjectCreator(
+                'description'         => parent::formElementObjectCreator(
                     'description',
                     'text',
                     'Description',
                     false,
                     null
                 ),
-                'genomic_file_type'   => parent::_formElementObjectCreator(
+                'genomic_file_type'   => parent::formElementObjectCreator(
                     'genomic_file_type',
                     'text',
                     'Type',
                     false,
                     null
                 ),
-                'date_inserted'       => parent::_formElementObjectCreator(
+                'date_inserted'       => parent::formElementObjectCreator(
                     'date_inserted',
                     'date',
                     'Date inserted',
                     false,
                     null
                 ),
-                'inserted_by_user_id' => parent::_formElementObjectCreator(
+                'inserted_by_user_id' => parent::formElementObjectCreator(
                     'inserted_by_user_id',
                     'text',
                     'Inserted by User',
                     false,
                     null
                 ),
-                'caveat'              => parent::_formElementObjectCreator(
+                'caveat'              => parent::formElementObjectCreator(
                     'caveat',
                     'checkbox',
                     'Caveat',
@@ -169,7 +169,7 @@ class FileManager extends Endpoint implements ETagCalculator
                         'Caveat'
                     )
                 ),
-                'notes'               => parent::_formElementObjectCreator(
+                'notes'               => parent::formElementObjectCreator(
                     'notes',
                     'text',
                     'Notes',

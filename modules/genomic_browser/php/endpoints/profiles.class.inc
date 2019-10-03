@@ -139,28 +139,28 @@ class Profiles extends Endpoint implements ETagCalculator
                         'N' => 'No',
                        );
         return array(
-                'centerID'     => parent::_formElementObjectCreator(
+                'centerID'     => parent::formElementObjectCreator(
                     'centerID',
                     'select',
                     'Site',
                     true,
                     $list_of_sites
                 ),
-                'DCCID'        => parent::_formElementObjectCreator(
+                'DCCID'        => parent::formElementObjectCreator(
                     'DCCID',
                     'text',
                     'DCCID',
                     true,
                     null
                 ),
-                'PSCID'        => parent::_formElementObjectCreator(
+                'PSCID'        => parent::formElementObjectCreator(
                     'PSCID',
                     'text',
                     'PSCID',
                     false,
                     null
                 ),
-                'Sex'          => parent::_formElementObjectCreator(
+                'Sex'          => parent::formElementObjectCreator(
                     'sex',
                     'select',
                     'Sex',
@@ -170,49 +170,49 @@ class Profiles extends Endpoint implements ETagCalculator
                      'Female' => 'Female',
                     )
                 ),
-                'SubprojectID' => parent::_formElementObjectCreator(
+                'SubprojectID' => parent::formElementObjectCreator(
                     'SubprojectID',
                     'select',
                     'Subproject',
                     false,
                     \Utility::getSubprojectList()
                 ),
-                'DoB'          => parent::_formElementObjectCreator(
+                'DoB'          => parent::formElementObjectCreator(
                     'dob',
                     'date',
                     'Date of Birth',
                     true,
                     array('maxlength' => 10)
                 ),
-                'External_ID'  => parent::_formElementObjectCreator(
+                'External_ID'  => parent::formElementObjectCreator(
                     'External_ID',
                     'text',
                     'External ID',
                     true,
                     null
                 ),
-                'File'         => parent::_formElementObjectCreator(
+                'File'         => parent::formElementObjectCreator(
                     'File',
                     'select',
                     'Files',
                     false,
                     $any_options
                 ),
-                'SNP'          => parent::_formElementObjectCreator(
+                'SNP'          => parent::formElementObjectCreator(
                     'SNP',
                     'select',
                     'SNPs found',
                     false,
                     $any_options
                 ),
-                'CNV'          => parent::_formElementObjectCreator(
+                'CNV'          => parent::formElementObjectCreator(
                     'CNV',
                     'select',
                     'CNVs found',
                     false,
                     $any_options
                 ),
-                'CPG'          => parent::_formElementObjectCreator(
+                'CPG'          => parent::formElementObjectCreator(
                     'CPG',
                     'select',
                     'CPGs found',
