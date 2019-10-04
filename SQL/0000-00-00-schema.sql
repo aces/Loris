@@ -303,6 +303,7 @@ CREATE TABLE `test_battery` (
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
+  `ProjectID` int(10) unsigned default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
   PRIMARY KEY  (`ID`),
