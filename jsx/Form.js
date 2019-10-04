@@ -1736,6 +1736,165 @@ class LorisElement extends Component {
   }
 }
 
+/**
+ * Radio Component
+ * React wrapper for a <input type='radio'> element.
+ */
+class RadioElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+    this.generateLayout = this.generateLayout.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  generateLayout() {
+    let layout = [];
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+
+    const styleRow = {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      width: '100%',
+    };
+    const styleColumn = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignSelf: 'flex-start',
+      marginRight: '10px',
+    };
+    const styleContainer = {
+      paddingTop: '7px',
+      cursor: 'pointer',
+    };
+    const styleLabel = {
+      margin: 0,
+      color: '#064785',
+      cursor: 'pointer',
+    };
+    const styleInput = {
+      display: 'inline-block',
+      margin: '0 5px 0 5px',
+      cursor: 'pointer',
+    };
+
+    let content = [];
+    for (let key in this.props.items) {
+      if (this.props.items.hasOwnProperty(key)) {
+        const item = this.props.items[key];
+        if (item.hasOwnProperty('value')) {
+          content.push(
+            <div key={item.id}
+                 style={styleColumn}>
+              <div style={styleContainer}>
+                <label htmlFor={item.id}
+                       style={styleLabel}
+                >
+                  {item.label}
+                </label>
+                <input
+                  type='radio'
+                  name={this.props.name}
+                  value={item.value}
+                  id={item.id}
+                  required={required}
+                  disabled={disabled}
+                  onChange={this.handleChange}
+                  style={styleInput}
+                />
+              </div>
+            </div>
+          );
+        }
+      }
+    }
+
+    layout.push(
+      <div key={this.props.name + '_key'}
+           style={styleRow}>
+        {content}
+      </div>
+    );
+
+    return layout;
+  }
+
+  render() {
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = this.props.elementClass;
+    let required = this.props.required ? 'required' : null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = this.props.elementClass + ' has-error';
+    }
+    // Generate layout
+    const layout = this.generateLayout();
+
+    return (
+      <div className={elementClass}>
+        <label className={'col-sm-3 control-label'}
+               htmlFor={this.props.id}>
+          {this.props.label}
+          {errorMessage}
+          {requiredHTML}
+        </label>
+        <div className={'col-sm-9'}>
+          {layout}
+        </div>
+      </div>
+    );
+  }
+}
+RadioElement.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  items: PropTypes.array.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+RadioElement.defaultProps = {
+  id: null,
+  name: null,
+  label: null,
+  value: 0,
+  items: [
+    {
+      label: 'Female',
+      value: 'female',
+      id: 'gender_option_1',
+    },
+    {
+      label: 'Male',
+      value: 'male',
+      id: 'gender_option_2',
+    },
+  ],
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  elementClass: 'row form-group',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
@@ -1751,6 +1910,7 @@ window.StaticElement = StaticElement;
 window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
+window.RadioElement = RadioElement;
 window.ButtonElement = ButtonElement;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
@@ -1771,6 +1931,7 @@ export default {
   HeaderElement,
   LinkElement,
   CheckboxElement,
+  RadioElement,
   ButtonElement,
   CTA,
   LorisElement,
