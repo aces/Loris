@@ -37,7 +37,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @return void
      */
-    public function __construct(?string $prefix = null)
+    public function __construct(?string $siteAbbrevPrefix = null)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
@@ -55,7 +55,8 @@ class SiteIDGenerator extends IdentifierGenerator
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 $this->length
             );
-        $this->prefix   = $prefix ?? $this->_getIDSetting('prefix');
+        $this->siteAbbrev = $siteAbbrevPrefix;
+        $this->prefix   = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
@@ -210,9 +211,8 @@ class SiteIDGenerator extends IdentifierGenerator
                 }
             } else {
                 // The other option, 'siteAbbrev', indicates that the calling
-                // code should prepend a Site Alias to the ID. Since the config
-                // file does not know what this will be, return null.
-                return null;
+                // code should prepend a Site Alias to the ID.
+                return $this->siteAbbrev;
             }
         }
         // Min, max, and length values should be returned as integers or as
