@@ -32,7 +32,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?string $prefix To be appended to the ID value. Usually an
+     * @param ?string $siteAbbrevPrefix To be appended to the ID value. Usually an
      *                       abbreviation for the name of a site.
      *
      * @return void
@@ -48,15 +48,15 @@ class SiteIDGenerator extends IdentifierGenerator
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
+        $this->minValue   = $this->_getIDSetting('min') ??
             str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue = $this->_getIDSetting('max') ??
+        $this->maxValue   = $this->_getIDSetting('max') ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 $this->length
             );
         $this->siteAbbrev = $siteAbbrevPrefix;
-        $this->prefix   = $this->_getIDSetting('prefix');
+        $this->prefix     = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
