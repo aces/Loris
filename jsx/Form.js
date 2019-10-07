@@ -1445,47 +1445,6 @@ StaticElement.defaultProps = {
 };
 
 /**
- * Email element component.
- * Used to displays plain/formatted email input as part of a form.
- */
-class EmailElement extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <input className="form-control-static"
-                 type='email'
-                 name={this.props.name}
-                 id={this.props.id}
-          >
-            {this.props.children}
-          </input>
-        </div>
-      </div>
-    );
-  }
-}
-
-EmailElement.propTypes = {
-  label: PropTypes.string,
-  id: PropTypes.string,
-  name: PropTypes.string,
-};
-
-EmailElement.defaultProps = {
-  id: null,
-  label: '',
-  name: null,
-  text: null,
-};
-
-/**
  * Header element component.
  * Used to display a header element with specific level (1-6) as part of a form
  *
