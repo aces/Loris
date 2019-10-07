@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
  * This script is intended for developers working with test data. It DROPs all
@@ -48,6 +49,7 @@ try {
     $username = $dbInfo['username'];
 
     $urlConfigSetting = $config->getSetting('url');
+    $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
 
     echo 'Please enter the name of your database to continue.' . PHP_EOL;
@@ -55,6 +57,8 @@ try {
     echo 'Could not connect to the database in the Config file.' .
         'It\'s possible that the LORIS tables have been dropped already.' .
         PHP_EOL;
+} catch (Exception $e) {
+    die("Could not load project/config.xml");
 }
 
 $input = trim(fgets(STDIN));
@@ -67,72 +71,111 @@ if ($input !== $dbname) {
     );
 }
 
+// Create a connection to mysql via bash. All credentials are supplied via 
+// command line arguments except for the password which must be entered manually.
+$mysqlCommand = "mysql -A \"$dbname\" -u \"$username\" -h \"$host\" -p ";
+
 // Drop tables
 echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
 echo 'You will be prompted for your database password.' . PHP_EOL;
 $dropCommand = <<<DROP
 cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    SQL/9999-99-99-drop_tables.sql | mysql -A "$dbname" -u "$username" -h "$host" -p
+    SQL/9999-99-99-drop_tables.sql | $mysqlCommand
 DROP;
-exec($dropCommand, $output, $exitStatus);
-if ($exitStatus) {
-    echo 'An error occurred when trying to drop tables' . PHP_EOL;
-    print_r($output);
-    die;
-}
 
-// Source Raisinbread tables
-echo PHP_EOL .'Importing Raisinbread tables into database.... ' .
+runCommand($dropCommand);
+
+// Source LORIS core tabes
+echo <<<INFO
+Creating LORIS core tables.... '
+You will be prompted for your database password.'
+
+INFO;
+$createTablesCommand = <<<CMD
+for n in SQL/0000-*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+CMD;
+runCommand($createTablesCommand);
+
+// Create instrument tables
+echo PHP_EOL .'Creating instrument tables.... ' .
     'This may take some time.' . PHP_EOL;
 echo 'You will be prompted for your database password.' . PHP_EOL;
-$importCommand = <<<IMPORT
-cat SQL/0000-00-00-schema.sql \
-    SQL/0000-00-01-Permission.sql \
-    SQL/0000-00-02-Menus.sql \
-    SQL/0000-00-03-ConfigTables.sql \
-    SQL/0000-00-04-Help.sql \
-    SQL/0000-00-05-ElectrophysiologyTables.sql \
-    raisinbread/instruments/instrument_sql/aosi.sql \
-    raisinbread/instruments/instrument_sql/bmi.sql \
-    raisinbread/instruments/instrument_sql/medical_history.sql \
-    raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
-    raisinbread/instruments/instrument_sql/radiology_review.sql \
-    raisinbread/RB_files/*.sql | mysql -A "$dbname" -u "$username" -h "$host" -p
-IMPORT;
-exec($importCommand, $output, $exitStatus);
-if ($exitStatus) {
-    echo 'An error occurred when trying to import tables' . PHP_EOL;
-    print_r($output);
-    die;
+$createInstrumentTablesCommand = <<<CMD
+for n in raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+CMD;
+runCommand($createInstrumentTablesCommand);
+
+// Import Raisinbread data
+echo PHP_EOL .'Import Raisinbread data.... This may take some time' . PHP_EOL;
+echo 'You will be prompted for your database password.' . PHP_EOL;
+$importCommand = <<<CMD
+for n in raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+CMD;
+runCommand($importCommand);
+
+
+// Restore config settings if they were successfully found before.
+if (isset($urlConfigSetting)) {
+    restoreConfigSetting('url', $urlConfigSetting);
+}
+if (isset($baseConfigSetting)) {
+    restoreConfigSetting('base', $baseConfigSetting);
+}
+if (isset($hostConfigSetting)) {
+    restoreConfigSetting('host', $hostConfigSetting);
 }
 
+// Trigger a password reset because the password for `admin` in the Raisinbread
+// database is public.
+echo 'Please choose a new password for the admin user:' . PHP_EOL;
+exec('php tools/resetpassword.php admin');
 
-if (isset($urlConfigSetting, $hostConfigSetting)) {
-    echo "Restoring URL to `$urlConfigSetting` and host to $hostConfigSetting"
+
+// END SCRIPT
+
+
+/**
+ * A wrapper around `exec()` built-in function with basic error reporting.
+ *
+ * @param string $command Bash command to be executed by `exec()`
+ *
+ * @return void. Causes script to exit on non-successful status code.
+ */
+function runCommand(string $command): void
+{
+    exec($command, $output, $exitStatus);
+    if ($exitStatus) {
+        echo 'An error occurred: ' . PHP_EOL;
+        print_r($output);
+        die;
+    }
+}
+
+/**
+ * Update a config setting in LORIS to $value.
+ *
+ * @param string $name Name of config setting in ConfigSettings table.
+ * @param string $value Value to be changed in the Config table.
+ *
+ * @return void
+ *
+ * @throws \DatabaseException
+ */
+function restoreConfigSetting(string $name, string $value): void 
+{
+    echo "Restoring config setting `$name` to value `$setting`"
         . PHP_EOL . PHP_EOL;
     try {
         $DB->run(
             "UPDATE Config c 
-            SET c.Value='$urlConfigSetting'
+            SET c.Value='$value'
             WHERE c.ConfigID
-            IN (SELECT cs.ID FROM ConfigSettings cs WHERE cs.Name = 'url')"
-        );
-        $DB->run(
-            "UPDATE Config c 
-            SET c.Value='$hostConfigSetting'
-            WHERE c.ConfigID
-            IN (SELECT cs.ID FROM ConfigSettings cs WHERE cs.Name = 'host')"
+            IN (SELECT cs.ID FROM ConfigSettings cs WHERE cs.Name = '$name')"
         );
     } catch (\DatabaseException $e) {
-        echo "Couldn't restore url and host config settings. " .
+        echo "Couldn't config setting. " .
             "This may need to be manually if your LORIS is not hosted at " .
             "localhost." .
             PHP_EOL;
     }
 }
-
-echo 'Please choose a new password for the admin user:' . PHP_EOL;
-exec('php tools/resetpassword.php admin');
-    
-
-
