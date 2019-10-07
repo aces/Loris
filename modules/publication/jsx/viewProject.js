@@ -241,7 +241,7 @@ class ViewProject extends React.Component {
           label="Lead Investigator"
           text={this.state.formData.leadInvestigator}
         />
-        <EmailElement
+        <StaticElement
           id='leadInvestigatorEmail'
           name='leadInvestigatorEmail'
           label='Lead Investigator Email'
