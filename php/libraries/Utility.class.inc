@@ -299,9 +299,10 @@ class Utility
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure  the structure root
-     * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                                of the PSCID
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
      *
@@ -311,7 +312,8 @@ class Utility
      */
     static function structureToPCRE(
         array $structure,
-        ?string $siteAbbrev = null
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
@@ -349,6 +351,9 @@ class Utility
 
             case 'siteAbbrev':
                 $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
                 break;
             } // end switch
 

@@ -5,6 +5,7 @@
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NULL,
+    `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;

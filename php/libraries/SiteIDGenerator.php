@@ -26,18 +26,23 @@ class SiteIDGenerator extends IdentifierGenerator
 {
     /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
+
     protected $kind;
+    protected $siteAlias;
+    protected $projectAlias;
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?string $siteAbbrevPrefix To be appended to the ID value. Usually an
-     *                                  abbreviation for the name of a site.
+     * @param string $siteAlias    To be appended to the ID value. Usually an
+     *                             abbreviation for the name of a site.
+     * @param string $projectAlias To be appended to the ID value. Usually an
+     *                       abbreviation for the name of a project.
      *
      * @return void
      */
-    public function __construct(?string $siteAbbrevPrefix = null)
+    public function __construct(string $siteAlias, string $projectAlias)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
@@ -52,11 +57,13 @@ class SiteIDGenerator extends IdentifierGenerator
             str_repeat(strval($this->alphabet[0]), $this->length);
         $this->maxValue   = $this->_getIDSetting('max') ??
             str_repeat(
-            strval($this->alphabet[count($this->alphabet) - 1]),
-            $this->length
-        );
-        $this->siteAbbrev = $siteAbbrevPrefix;
-        $this->prefix     = $this->_getIDSetting('prefix');
+                strval($this->alphabet[count($this->alphabet) - 1]),
+                $this->length
+            );
+
+        $this->siteAlias    = $siteAlias;
+        $this->projectAlias = $projectAlias;
+        $this->prefix       = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
@@ -209,10 +216,14 @@ class SiteIDGenerator extends IdentifierGenerator
                         return $seq['#'];
                     }
                 }
+            } elseif ($seqValue === 'siteAbbrev') {
+                return $this->siteAlias;
+            } elseif ($seqValue === 'projectAbbrev') {
+                return $this->projectAlias;
             } else {
-                // The other option, 'siteAbbrev', indicates that the calling
-                // code should prepend a Site Alias to the ID.
-                return $this->siteAbbrev;
+                throw new ConfigurationException(
+                    "Incorrect option $seqValue selected for PSCID generation."
+                );
             }
         }
         // Min, max, and length values should be returned as integers or as

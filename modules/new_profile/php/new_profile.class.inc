@@ -75,6 +75,8 @@ class New_Profile extends \NDB_Form
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
+        //TODO: add similar logic to projects when user-projects association is
+        //incorporated.
 
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
@@ -85,7 +87,7 @@ class New_Profile extends \NDB_Form
             $values['edcDate'] ?? null,
             $values['sex'],
             $values['pscid'] ?? null,
-            isset($values['project']) ? intval($values['project']) : null
+            intval($values['project'])
         );
 
         /* Update front-end data. Use passed PSCID when present, otherwise
