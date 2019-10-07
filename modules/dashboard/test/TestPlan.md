@@ -17,14 +17,15 @@
 8. Check that recruitment per site view is correct (study progression panel).
    [Automate Test]
 9. Verify that for a user with 'Edit imaging browser QC status' permission the My Tasks panel reports the number of new
-   scans (i.e. the number of scans on the MRI browser page for which QC status has not been set). Check that site
+   scans (i.e. the number of scans on the MRI browser page for which QC status has not been set. Note DCC scans are not
+   counted in the query as for most projects this is not an acquisition site). Check that site
    displayed is always 'All'. Click on this task and verify that you go to the MRI Browser page.
    [Automate Test on Travis_CI]
 10. Verify that for a user with 'Resolving conflicts' permission the number of data entry conflicts is reported in the
     My Task panel. If the user also has 'Across all sites access candidates profiles' then the site displayed is
     'All', otherwise it is set to 'All user sites'. The number of data entry conflicts is the number of
-    entries in the Unresolved tab of the Conflict Resolver page. Click on this task and check that you go to the
-    Conflict Resolver page.
+    entries in the Unresolved tab of the Conflict Resolver page for candidates that do not belong to the DCC site. 
+    Click on this task and check that you go to the Conflict Resolver page.
     [Automate Test on Travis_CI]
 11. Check that for a user with 'Data Entry' permission, the number of incomplete forms (instruments with Data Entry
     set to 'In Progress') is displayed in the My Tasks panel. If the user also has 'Across all sites access candidates
@@ -33,14 +34,14 @@
     Clicking on this task should take you to the BVL statistics page, with the stats filtered according to the user's
     site (or without any filter if the user has 'Across all sites access candidates profiles' permission).
     [Automate Test on Travis_CI]
-12. Verify that if a user has 'Across all sites create and edit user accounts' permission, the number of pending
+12. Verify that if a user has 'Across all sites create and edit users' and 'User management' permissions, the number of pending
     account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
-    page with the following Selection Filter: Site set to 'All' and Pending Approval set to 'Yes'. The Site displayed
-    will always be 'All'.Check that you are taken to that page (with the Selection Filter correctly set) when you
+    page with the following Selection Filter: Site not set and Pending Approval set to 'Yes'. 
+    Check that you are taken to that page (with the Selection Filter correctly set) when you
     click on the task.
     [Automate Test on Travis_CI]
-13. Verify that if a user has 'Across all sites access candidate profiles' permission, the reports works and even
-    more important to check without this permission.
+13. Verify that if a user has 'Data entry' permission, the reports menu is displayed and the number of incomplete
+    forms show in the tasks list.
     [Automate Test]
 14. Verify that if a user has 'issue_tracker_reporter / issue_tracker_developer' permission,
     the issue tracker panel should not be found without this permission.

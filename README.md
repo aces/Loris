@@ -1,11 +1,10 @@
 # [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) LORIS Neuroimaging Platform 
 
 LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
----
 
 A demo instance is available at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v21</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -27,8 +26,7 @@ Deploy and log in with username *admin* and the password that's set up during de
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
  * PHP <b>7.2</b> or higher
  * [Composer](https://getcomposer.org/)
-
-_Composer should be run with --no-dev option unless you are an active LORIS developer._
+ * NodeJS <b>8.0</b> or higher
 
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
 
@@ -44,7 +42,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     su - lorisadmin
     ```
 
-    <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
+    <b>Important: All steps from this point forward must be executed by lorisadmin user</b>
 
     ```
     sudo mkdir -m 775 -p /var/www/$projectname

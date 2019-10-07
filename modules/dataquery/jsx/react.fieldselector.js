@@ -50,20 +50,19 @@ class CategoryList extends Component {
   }
 
   selectCategoryHandler(category) {
-    let that = this;
-    return function(evt) {
-      if (that.props.onCategorySelect) {
-        that.props.onCategorySelect(category);
+    return ((evt) => {
+      if (this.props.onCategorySelect) {
+        this.props.onCategorySelect(category);
       }
-      that.setState({
+      this.setState({
         selectedCategory: category
       });
-    };
+    });
   }
 
   render() {
     let items = [],
-      selectClosure = function(name) {
+      selectClosure = (name) => {
         return this.selectCategory(name);
       };
     for (i = 0; i < this.props.items.length; i += 1) {
@@ -96,10 +95,9 @@ class FieldItem extends Component {
 
   visitSelect(evt) {
     // Selects and deselects visits
-
     let field = {
       instrument: this.props.Category,
-      field: this.props.FieldName
+      field: this.props.FieldName,
     };
     if (evt.target.checked) {
       this.props.fieldVisitSelect('check', evt.target.value, field);
@@ -111,28 +109,35 @@ class FieldItem extends Component {
   render() {
     // Renders the html for the component
 
-    let classList = 'list-group-item row',
-      downloadIcon = '',
-      criteria,
-      multiselect,
-      that = this;
+    let classList = 'list-group-item row';
+    let downloadIcon = '';
+    let criteria;
+    let multiselect;
+
     if (this.props.selected) {
       // If field is selected, add active class and visits
       classList += ' active';
-      multiselect = Object.keys(this.props.Visits).map(function(visit) {
+      multiselect = Object.keys(this.props.Visits).map((visit) => {
         let checked = false;
-        if (that.props.selectedVisits[visit]) {
+        if (this.props.selectedVisits[visit]) {
           checked = true;
         }
         return (
-          <div class='checkbox'>
+          <div key={visit} className='checkbox'>
             <label>
-              <input type='checkbox' value={visit} checked={checked} onChange={that.visitSelect}/> {visit}
+              <input
+                type='checkbox'
+                value={visit}
+                checked={checked}
+                onChange={this.visitSelect}
+              />
+              {visit}
             </label>
           </div>
         );
       });
     }
+
     if (this.props.downloadable) {
       // Add download icon if field is downloadable
       downloadIcon = <span className='glyphicon glyphicon-download-alt pull-right' title='Downloadable File'></span>
@@ -172,7 +177,6 @@ class FieldList extends Component {
 
   render() {
     // Renders the html for the component
-
     let fields = [];
     let items = this.props.items || [];
     let fieldName, desc, isFile, type, selected;
@@ -214,7 +218,8 @@ class FieldList extends Component {
         selectedFields = {}
       }
 
-      fields.push(<FieldItem FieldName={fieldName}
+      fields.push(<FieldItem key={fieldName}
+                             FieldName={fieldName}
                              Category={this.props.category}
                              Description={desc}
                              ValueType={type}
@@ -270,26 +275,22 @@ class FieldSelector extends Component {
     this.props.onFieldChange(fieldName, category, downloadable);
   }
 
-  onCategorySelect(category) {
-    // Used for getting the fields of the given category
-
-    let that = this;
-
+  onCategorySelect(elementName, category) {
     // Use the cached version if it exists
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, function(data) {
-        let cf = that.state.categoryFields;
+      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, (data) => {
+        let cf = this.state.categoryFields;
         cf[category] = data;
-        that.setState({
+        this.setState({
           categoryFields: cf
         });
       }, 'json');
     }
     this.setState({
       selectedCategory: category,
-      PageNumber: 1
+      PageNumber: 1,
     });
   }
 
@@ -339,7 +340,7 @@ class FieldSelector extends Component {
             visit,
             {instrument: this.state.selectedCategory, field: field}
           );
-        } else if (action === uncheck && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
+        } else if (action === 'uncheck' && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
           this.props.fieldVisitSelect(
             action,
             visit,
@@ -396,11 +397,11 @@ class FieldSelector extends Component {
           <div className='form-group col-sm-8 search'>
             <label className='col-sm-12 col-md-2'>Instrument:</label>
             <div className='col-sm-12 col-md-8'>
-              <SelectDropdown
-                multi={false}
+              <SearchableDropdown
+                name="fieldsDropdown"
                 options={this.state.instruments}
-                onFieldClick={this.onCategorySelect}
-                selectedCategory={this.state.selectedCategory}
+                onUserInput={this.onCategorySelect}
+                placeHolder="Select One"
               />
             </div>
           </div>

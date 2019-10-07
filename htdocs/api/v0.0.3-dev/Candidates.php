@@ -103,7 +103,8 @@ class Candidates extends APIBase
      */
     public function handlePOST()
     {
-        $data = $this->RequestData;
+        $candid = null;
+        $data   = $this->RequestData;
         if ($data === null) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Can't parse data");
@@ -162,10 +163,6 @@ class Candidates extends APIBase
                     $data['Candidate']['Sex'],
                     $data['Candidate']['PSCID']
                 );
-                $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => $candid],
-                              ];
             } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
@@ -173,20 +170,30 @@ class Candidates extends APIBase
 
         }
 
+        $candidate = \Candidate::singleton($candid);
+
         if (isset($data['Candidate']['Project'])) {
             $projectName = $data['Candidate']['Project'];
             $project     = \Project::singleton($projectName);
             if (!empty($project)) {
-                \Candidate::singleton($candid)->setData(
+                $candidate->setData(
                     array('ProjectID' => $project->getId())
                 );
             }
         }
 
+        $candidateinfo = array(
+                          'CandID'  => $candidate->getCandID(),
+                          'Project' => $candidate->getProjectTitle(),
+                          'PSCID'   => $candidate->getPSCID(),
+                          'Site'    => $candidate->getCandidateSite(),
+                          'EDC'     => $candidate->getCandidateEDC(),
+                          'DoB'     => $candidate->getCandidateDoB(),
+                          'Sex'     => $candidate->getCandidateSex(),
+                         );
+
         $this->header("HTTP/1.1 201 Created");
-        $this->JSON = [
-                       'Meta' => ["CandID" => $candid],
-                      ];
+        $this->JSON = $candidateinfo;
     }
 
     /**
@@ -230,7 +237,7 @@ class Candidates extends APIBase
      * @param string $sex      Biological sex of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
-     * @return none
+     * @return int $candID      candidate id of the new candidate
      */
     public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
     {

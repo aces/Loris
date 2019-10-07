@@ -40,12 +40,24 @@ class Statistics_Site extends \NDB_Menu
      */
     function _hasAccess(\User $user) : bool
     {
-        $centerID = htmlspecialchars($_REQUEST['CenterID']);
         //TODO: Create a permission specific to statistics
-        $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
-            $user->hasPermission('data_entry');
-        return $user->hasCenterPermission('data_entry', $centerID) ||
-            $accessAllProfiles;
+        $hasAccessToAllProfiles = $user->hasAllPermissions(
+            array(
+             'access_all_profiles',
+             'data_entry',
+            )
+        );
+        // If a CenterID is passed in the request, check if the user has the
+        // data_entry permission at the site/center specified by CenterID.
+        $hasCenterPermission = false;
+        if (!empty($_REQUEST['CenterID'])) {
+            $hasCenterPermission = $user->hasCenterPermission(
+                'data_entry',
+                intval($_REQUEST['CenterID'])
+            );
+        }
+
+        return $hasAccessToAllProfiles || $hasCenterPermission;
 
     }
 
@@ -166,8 +178,8 @@ class Statistics_Site extends \NDB_Menu
                 $sqlRow,
                 array('cid' => $_REQUEST['CenterID'])
             );
-            $centerID = $center['ID'];
-            $name     = $center['Name'];
+            $centerID = $center['ID'] ?? '';
+            $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
             $centerID = '';

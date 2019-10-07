@@ -69,6 +69,13 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "subproject",
+            array(
+             'SubprojectID' => '55',
+             'title'        => 'TESTinSubproject',
+            )
+        );
+        $this->DB->insert(
             "candidate",
             array(
              'CandID'               => '999888',
@@ -88,7 +95,7 @@ class DashboardTest extends LorisIntegrationTest
              'CenterID'     => '55',
              'UserID'       => '1',
              'MRIQCStatus'  => '',
-             'SubprojectID' => '6666',
+             'SubprojectID' => '55',
              'Active'       => 'Y',
             )
         );
@@ -344,6 +351,10 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->DB->delete(
+            "subproject",
+            array('SubprojectID' => '55')
+        );
+        $this->DB->delete(
             "flag",
             array('CommentID' => 'commentID111')
         );
@@ -440,7 +451,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "9",
+            "10",
             "- Imaging Browser"
         );
         $this->resetPermissions();
@@ -489,7 +500,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
-            "- Issue Tracker"
+            "Issue Tracker"
         );
         $this->resetPermissions();
     }

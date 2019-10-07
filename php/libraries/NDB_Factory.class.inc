@@ -106,23 +106,36 @@ class NDB_Factory
      *
      * @return NDB_Config A config singleton
      */
-    function config(?string $configfile = "../project/config.xml"): \NDB_Config
+    function config(?string $configfile = '../project/config.xml'): \NDB_Config
     {
         if (self::$config !== null) {
+            // The below suppression is necessary to satisfy phan. It flags an
+            // error here because the function is declared to return
+            // NDB_Config and phan doesn't understand MockNDB_Config (as it is
+            // generated dynamically by PHPUnit).
+            // We know this will always return \NDB_Config since this is guaranteed
+            // by the return type of the function.
+            //
+            // @phan-suppress-next-line PhanTypeMismatchReturn
             return self::$config;
         }
         if ($this->Testing) {
-            //Mock::generate("NDB_Config");
-            $config = new MockNDB_Config();
+            $config     = new MockNDB_Config();
+            $configfile = '../test/config.xml';
         } else {
             $config = NDB_Config::singleton($configfile);
-            return $config;
         }
 
         self::$config = $config;
-        // NDB_Config::singleton() is already loading the config file
-        // in a better way. this needs to be modified
-        $config->load($configfile);
+
+        // The below suppression is necessary to satisfy phan. It flags an
+        // error here because the function is declared to return
+        // NDB_Config and phan doesn't understand MockNDB_Config (as it is
+        // generated dynamically by PHPUnit).
+        // We know this will always return \NDB_Config since this is guaranteed
+        // by the return type of the function.
+        //
+        // @phan-suppress-next-line PhanTypeMismatchReturn
         return $config;
     }
 
@@ -148,6 +161,13 @@ class NDB_Factory
     function user(): \User
     {
         if (self::$_user !== null) {
+            // The below suppression is necessary to satisfy phan. It flags an
+            // error here because the function is declared to return
+            // User and phan doesn't understand MockUser (as it is
+            // generated dynamically by PHPUnit).
+            // We know this will always return \User since this is guaranteed
+            // by the return type of the function.
+            // @phan-suppress-next-line PhanTypeMismatchReturn
             return self::$_user;
         }
         if ($this->Testing) {
@@ -187,17 +207,25 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            //Mock::generate("Database");
+            //self::$testdb = Mock::generate("Database");
             self::$testdb = new MockDatabase();
         } else {
             $db_ref = &self::$db;
             if ($db_ref !== null) {
                 return $db_ref;
             }
-                self::$db = Database::singleton();
+            self::$db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
+        // This check was added to satisfy phan, our static analysis tool.
+        // $db_ref should be set to either a new MockDatabase or a Database
+        // singleton above.
+        if ($db_ref === null) {
+            throw new \ConfigurationException(
+                'Could not configure database for LORIS'
+            );
+        }
         $db_ref->connect(
             $dbc['database'],
             $dbc['username'],

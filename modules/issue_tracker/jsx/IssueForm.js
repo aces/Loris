@@ -1,3 +1,4 @@
+import Loader from 'Loader';
 import CommentList from './CommentList';
 
 /**
@@ -39,27 +40,15 @@ class IssueForm extends Component {
   }
 
   render() {
-    // Data loading error
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return (
-        <div className='alert alert-danger text-center'>
-          <strong>
-            {this.state.error}
-          </strong>
-        </div>
-      );
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
     const hasEditPermission = (
@@ -273,11 +262,21 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        let newIssue = !data.issueData.issueID;
+        let formData = data.issueData;
+        // ensure that if the user is at multiple sites and
+        // its a new issue, the centerID (which is a dropdown)
+        // is set to the empty option instead of an array of
+        // the user's sites.
+        if (newIssue) {
+            formData.centerID = null;
+        }
+
         this.setState({
           Data: data,
           isLoaded: true,
           issueData: data.issueData,
-          formData: data.issueData,
+          formData: formData,
           isNewIssue: !data.issueData.issueID,
         });
       }.bind(this),
@@ -338,7 +337,8 @@ class IssueForm extends Component {
         console.error(err);
         this.setState({submissionResult: 'error'});
         let msgType = 'error';
-        let message = 'Failed to submit issue :(';
+        let message = err.responseJSON.message || 'Failed to submit issue :(';
+
         this.showAlertMessage(msgType, message);
       }.bind(this),
     });

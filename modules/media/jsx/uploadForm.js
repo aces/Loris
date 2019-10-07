@@ -92,7 +92,9 @@ class MediaUploadForm extends Component {
             onSubmit={this.handleSubmit}
             ref='form'
           >
-            <h3>Upload a media file</h3><br/>
+            <HeaderElement
+              text='Upload a media file'
+            />
             <StaticElement
               label='Note'
               text={helpText}

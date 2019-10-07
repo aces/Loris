@@ -131,7 +131,7 @@ class PasswordExpiry extends \NDB_Form
             return array('password' => 'Password pwned.');
         }
 
-        return true;
+        return array();
     }
 
     /**

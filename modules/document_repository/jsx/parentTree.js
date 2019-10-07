@@ -1,3 +1,6 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Document Upload Form
  *
@@ -17,7 +20,7 @@ const divStyle = {
 };
 
 
-class ParentTree extends React.Component {
+class ParentTree extends Component {
   constructor(props) {
     super(props);
     this.action = this.action.bind(this);
@@ -26,18 +29,34 @@ class ParentTree extends React.Component {
     this.props.action(obj);
   }
   render() {
- const parentNode = this.props.parentNode;
- parentNode.unshift(['0', 'Root']);
- // let parentList = null;
-  const parentList = parentNode.map((node, index) => (<span style={divStyle} onClick={()=>this.action(Object.values(node))} className="pointer"><i class="fa fa-folder-open" aria-hidden="true"></i><span style={divStyle}>{Object.values(node)[1]} > </span></span>));
+    const parentNode = this.props.parentNode;
+    parentNode.unshift(['0', 'Root']);
+    // let parentList = null;
+    const parentList = parentNode.map((node, index) => (
+      <span
+        key={index}
+        style={divStyle}
+        onClick={()=>this.action(Object.values(node))}
+        className="pointer"
+      >
+        <i className="fa fa-folder-open" aria-hidden="true"></i>
+        <span style={divStyle}>
+          {Object.values(node)[1]} >
+        </span>
+      </span>
+    ));
     return (
-<div>
-     <div>
+      <div>
        {parentList}
-     </div>
-</div>
+      </div>
     );
   }
 }
+
+ParentTree.propTypes = {
+  action: PropTypes.func.isRequired,
+  parentNode: PropTypes.array.isRequired,
+};
+
 export default ParentTree;
 

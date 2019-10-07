@@ -241,7 +241,7 @@ END";
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             array(
              's.ID as sessionID',
-             'GROUP_CONCAT(DISTINCT modality.ID) as sequenceType',
+             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
              "$PendingNewquery as pending",
             ),
             $modalities_subquery_as
@@ -349,7 +349,7 @@ END";
         );
         $scan_types = $allAr;
         foreach ($types_q as $key=>$sequenceType) {
-            $scan_types[$sequenceType['ID']] = $sequenceType['Scan_type'];
+            $scan_types[$sequenceType['Scan_type']] = $sequenceType['Scan_type'];
         }
 
         $outputTypes = $DB->pselect(

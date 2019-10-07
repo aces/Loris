@@ -71,6 +71,9 @@ class Imaging_Session_ControlPanel
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
+        if (!is_array($linkedInstruments)) {
+            $linkedInstruments = array();
+        }
 
         $links = array();
         foreach ($linkedInstruments as $k=>$v) {
@@ -84,14 +87,19 @@ class Imaging_Session_ControlPanel
                  'v_sessions_id' => $this->sessionID,
                 )
             );
+            if (is_null($qresult)) {
+                throw new \LorisException(
+                    'Could not find linked instruments for specified '
+                    . 'test name and session ID'
+                );
+            }
             $links[] = array(
                         "FEName"    => $qresult['Full_name'],
                         "BEName"    => $v,
                         "CommentID" => $qresult['CommentID'],
                        );
         }
-        $subjectData['links']
-            = (empty($links)) ? "" : $links;
+        $subjectData['links'] = (empty($links)) ? "" : $links;
 
         $candidate =& \Candidate::singleton($timePoint->getCandID());
 
@@ -162,6 +170,12 @@ class Imaging_Session_ControlPanel
             $query,
             array("sid" => $this->sessionID)
         );
+        if (is_null($qcstatus)) {
+            throw new \LorisException(
+                'Could not find QC status information for specified '
+                . 'session ID'
+            );
+        }
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];

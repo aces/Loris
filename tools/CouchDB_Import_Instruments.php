@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
@@ -116,7 +117,7 @@ class CouchDBInstrumentImporter
 
         // add the SQL table to the query
         $extraSelect = ", i.* ";
-        $extraJoin = "JOIN $tablename i ON (i.CommentID=f.CommentID) ";
+        $extraJoin = "JOIN " . $this->SQLDB->escape($tablename) . " i ON (i.CommentID=f.CommentID) ";
         return $select . $extraSelect . $from . $extraJoin . $where;
     }
     function UpdateCandidateDocs($Instruments)

@@ -2,7 +2,7 @@
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
@@ -126,12 +126,6 @@ class NDB_Menu_Filter extends NDB_Menu
     var $searchKey = array();
 
     /**
-     * A list of arrays to be used as field options on
-     * front-end forms.
-     */
-    var $fieldOptions = array();
-
-    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
@@ -166,8 +160,6 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // build the menu
         $this->_build();
-
-        return true;
     }
 
     /**
@@ -412,7 +404,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilterForm()
     {
-        return true;
+        return;
     }
     /**
     * Gets the base query
@@ -667,8 +659,6 @@ class NDB_Menu_Filter extends NDB_Menu
             }
             $x++;
         }
-
-        return true;
     }
 
     /**

@@ -29,7 +29,6 @@ DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `permissions_category`;
 
-
 -- 0000-00-00-schema.sql
 DROP TABLE IF EXISTS `candidate_consent_rel`;
 DROP TABLE IF EXISTS `consent`;
@@ -63,6 +62,18 @@ DROP TABLE IF EXISTS `SNP`;
 DROP TABLE IF EXISTS `genotyping_platform`;
 DROP TABLE IF EXISTS `gene`;
 DROP TABLE IF EXISTS `genome_loc`;
+
+DROP TABLE IF EXISTS `publication_upload`;
+DROP TABLE IF EXISTS `publication_upload_type`;
+DROP TABLE IF EXISTS `publication_test_names_rel`;
+DROP TABLE IF EXISTS `publication_users_edit_perm_rel`;
+DROP TABLE IF EXISTS `publication_keyword_rel`;
+DROP TABLE IF EXISTS `publication_keyword`;
+DROP TABLE IF EXISTS `publication_parameter_type_rel`;
+DROP TABLE IF EXISTS `publication_collaborator_rel`;
+DROP TABLE IF EXISTS `publication`;
+DROP TABLE IF EXISTS `publication_status`;
+DROP TABLE IF EXISTS `publication_collaborator`;
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
@@ -156,7 +167,7 @@ DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `visit_project_subproject_rel`;
 DROP TABLE IF EXISTS `visit`;
-DROP TABLE IF EXISTS `project_rel`;
+DROP TABLE IF EXISTS `project_subproject_rel`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;
 

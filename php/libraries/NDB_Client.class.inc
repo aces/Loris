@@ -44,7 +44,7 @@ class NDB_Client
      *
      * @param string|null $configFile Path on filesystem to config.xml file
      *
-     * @return true on success
+     * @return bool true on success, false otherwise
      */
     function initialize(?string $configFile = null)
     {
@@ -140,7 +140,11 @@ class NDB_Client
         }
 
         // API Detect
-        if (strpos($_SERVER['REDIRECT_URL'], '/api/v0.0.3-dev/') !== false) {
+        if (strpos(
+            $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?? '',
+            '/api/v0.0.3-dev/'
+        ) !== false
+        ) {
             session_cache_limiter('private');
         }
 
