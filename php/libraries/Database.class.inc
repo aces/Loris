@@ -383,7 +383,13 @@ class Database
         bool   $autoescape = true,
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
-    ): bool {
+    ) : bool {
+        if ($ignore && $onDuplicateUpdate) {
+            throw new DatabaseException(
+                'The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.'
+            );
+        }
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -797,7 +803,7 @@ class Database
 
             // If you get here, we just need to build the new array
             $filteredResult[$row[$uniqueKey]] = $row;
-            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
+            //unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
         }
 
         return $filteredResult;
