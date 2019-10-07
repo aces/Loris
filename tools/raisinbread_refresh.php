@@ -3,23 +3,30 @@
 /**
  * This script is intended for developers working with test data. It DROPs all
  * LORIS core tables as well as "Raisinbread" test instrument tables.
- * For this reason, it should obviously not be run on any server wil live data.
+ * For this reason, it should obviously not be run on any server with live data.
  *
- * After dropping the tables, it will source the Raisinbread test data using
- * the commands found in raisinbread/README.md.
+ * The `sandbox` flag in config.xml is checked for this very reason. The script
+ * will abort if it is not set to 1.
  *
- * The script also restores the url and host config settings to their pre-drop
- * values. This prevents an issue where a developer will need to manually
- * change these values in a MySQL shell when they are not hosting a LORIS
- * on localhost.
+ * After dropping the tables, the script will source the Raisinbread test data 
+ * using the commands found in raisinbread/README.md.
+ *
+ * The script also restores the url, base, and host config settings to their 
+ * pre-drop values. This prevents an issue where a developer will need to 
+ * manually change these values in a MySQL shell when they are not hosting a 
+ * LORIS on localhost.
  *
  * Finally, the script runs tools/resetpassword.php so that the default admin
  * password with the Raisinbread data set is not used.
  *
  * In order to prevent accidental data loss, the script prompts the user to
- * manually type the exact name of the database which will be affected. It
- * also requires the user to manually enter their database password before
- * dropping and importing.
+ * manually type the exact name of the database which will be affected.
+ *
+ * In normal cases, the database connection will be established via the 
+ * credentials in the config file. However, if the database tables have already
+ * been deleted then this will not work. In this case it is still possible to
+ * import Raisinbread data if the user has properly set up a MySQL configuration
+ * file and provides the name of their LORIS database.
  *
  * PHP Version 7
  *
