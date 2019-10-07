@@ -497,6 +497,14 @@ class DataTable extends Component {
       csvData = filteredData;
     }
 
+    // Map cell data to proper values if applicable.
+    if (this.props.getMappedCell) {
+      csvData = csvData
+      .map((row, i) => this.props.fields
+        .map((field, j) => this.props.getMappedCell(field.label, row[j]));
+      );
+    }
+
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
