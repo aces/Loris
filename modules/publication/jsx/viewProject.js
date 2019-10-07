@@ -19,13 +19,7 @@ class ViewProject extends React.Component {
     this.createEditableComponents = this.createEditableComponents.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
     this.fetchData = this.fetchData.bind(this);
-  }
-
-  validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
-    this.setState({formErrors});
   }
 
   handleSubmit(e) {
@@ -273,7 +267,6 @@ class ViewProject extends React.Component {
           setFileData={this.setFileData}
           addListItem={this.addListItem}
           removeListItem={this.removeListItem}
-          validateEmail={this.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
           uploadTypes={this.state.uploadTypes}
           users={this.state.users}
