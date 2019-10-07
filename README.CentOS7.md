@@ -17,7 +17,7 @@ In addition to the above, the following packages should be installed with `yum` 
  * Apache2.4
  * [Composer](https://getcomposer.org)
  * Node
- * NPM
+ * NPM >= 8.0
  * make
 
 ## Apache2
