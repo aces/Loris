@@ -155,10 +155,15 @@ chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
-os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+if ! os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')  2> /dev/null
+then
+  os_distro="other"
+else
+  os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+fi
 
 debian=("Debian" "Ubuntu")
-redhat=("Red" "CentOS" "Fedora" "Oracle") 
+redhat=("Red" "CentOS" "Fedora" "Oracle")
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     mkdir -p ../modules/document_repository/user_uploads
