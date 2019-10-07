@@ -33,83 +33,107 @@
 $info = <<<INFO
 This script is used by LORIS developers to empty their databases and replace
 them with new test data.
-DO NOT RUN THIS SCRIPT ON PRODUCTION.
 
 
 INFO;
 
 echo $info;
 
+$cwd = getcwd();
+if (substr_compare($cwd, 'tools', strlen($cwd) - strlen('tools')) !== 0) {
+    die('Please run this script from the tools/ directory.' . PHP_EOL);
+}
+
 try {
     require_once 'generic_includes.php';
 
     $dbInfo = $config->getSettingFromXML('database');
+
+    if (! $config->getSetting('dev')['sandbox']) {
+        throw new \LorisException(
+            "Config file indicates that this is not a sandbox. Aborting to " .
+            "prevent accidental data loss."
+        );
+    }
     $dbname = $dbInfo['database'];
     $host = $dbInfo['host'];
     $username = $dbInfo['username'];
+    $password = $dbInfo['password'];
 
     $urlConfigSetting = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
 
-    echo 'Please enter the name of your database to continue.' . PHP_EOL;
 } catch (\DatabaseException $e) {
     echo 'Could not connect to the database in the Config file.' .
-        'It\'s possible that the LORIS tables have been dropped already.' .
+        'It\'s possible that the LORIS tables have already been dropped.' .
         PHP_EOL;
+    echo 'Continue attempting to install Raisinbread database? (yN)' . PHP_EOL;
+    $input = trim(fgets(STDIN));
+
+    if (strtolower($input) !== 'y') {
+        die;
+    }
+    echo PHP_EOL . 'Please enter the name of your database:' . PHP_EOL;
+    $dbname = trim(fgets(STDIN));
+} catch (\LorisException $e) {
+    die($e->getMessage());
 } catch (Exception $e) {
     die("Could not load project/config.xml");
 }
 
-$input = trim(fgets(STDIN));
 
+echo <<<CONFIRMATION
+Please re-type the database name `$dbname` to confirm you wish to drop tables
+and import test data: 
+CONFIRMATION;
+
+$input = trim(fgets(STDIN));
 if ($input !== $dbname) {
-    die(
-        "Input did not match the name of the database in the config.xml file "
-        . "`$dbname`. Exiting as a precaution to prevent data loss."
-        . PHP_EOL
-    );
+    die('Input did not match database name. Exiting.');
 }
 
 // Create a connection to mysql via bash. All credentials are supplied via 
 // command line arguments except for the password which must be entered manually.
-$mysqlCommand = "mysql -A \"$dbname\" -u \"$username\" -h \"$host\" -p ";
+$mysqlCommand = "mysql -A \"$dbname\"";
 
 // Drop tables
 echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
-echo 'You will be prompted for your database password.' . PHP_EOL;
 $dropCommand = <<<DROP
-cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    SQL/9999-99-99-drop_tables.sql | $mysqlCommand
+cat ../raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
+    ../SQL/9999-99-99-drop_tables.sql | $mysqlCommand
 DROP;
 
 runCommand($dropCommand);
 
+
 // Source LORIS core tabes
 echo <<<INFO
-Creating LORIS core tables.... '
-You will be prompted for your database password.'
+Creating LORIS core tables.... 
 
 INFO;
 $createTablesCommand = <<<CMD
-for n in SQL/0000-*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+for n in ../SQL/0000-*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
 CMD;
 runCommand($createTablesCommand);
 
 // Create instrument tables
-echo PHP_EOL .'Creating instrument tables.... ' .
-    'This may take some time.' . PHP_EOL;
-echo 'You will be prompted for your database password.' . PHP_EOL;
+echo <<<INFO
+Creating instrument tables.... 
+
+INFO;
 $createInstrumentTablesCommand = <<<CMD
-for n in raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+for n in ../raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
 CMD;
 runCommand($createInstrumentTablesCommand);
 
 // Import Raisinbread data
-echo PHP_EOL .'Import Raisinbread data.... This may take some time' . PHP_EOL;
-echo 'You will be prompted for your database password.' . PHP_EOL;
+echo <<<INFO
+Importing Raisinbread data....
+
+INFO;
 $importCommand = <<<CMD
-for n in raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
+for n in ../raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
 CMD;
 runCommand($importCommand);
 
@@ -128,11 +152,14 @@ if (isset($hostConfigSetting)) {
 // Trigger a password reset because the password for `admin` in the Raisinbread
 // database is public.
 echo 'Please choose a new password for the admin user:' . PHP_EOL;
-exec('php tools/resetpassword.php admin');
+exec('php resetpassword.php admin');
 
 
 // END SCRIPT
 
+function dropTables($mysqlCommand) {
+
+}
 
 /**
  * A wrapper around `exec()` built-in function with basic error reporting.
@@ -163,9 +190,10 @@ function runCommand(string $command): void
  */
 function restoreConfigSetting(string $name, string $value): void 
 {
-    echo "Restoring config setting `$name` to value `$setting`"
+    echo "Restoring config setting `$name` to value `$value`"
         . PHP_EOL . PHP_EOL;
     try {
+        global $DB;
         $DB->run(
             "UPDATE Config c 
             SET c.Value='$value'
