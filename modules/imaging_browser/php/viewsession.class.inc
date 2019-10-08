@@ -258,15 +258,15 @@ class ViewSession extends \NDB_Form
                 'intergradient'
             );
             $Xstep       = number_format(
-                (float)($FileObj->getParameter('xstep')), 
+                (float)($FileObj->getParameter('xstep')),
                 2
             );
             $Ystep       = number_format(
-                (float)($FileObj->getParameter('ystep')), 
+                (float)($FileObj->getParameter('ystep')),
                 2
             );
             $Zstep       = number_format(
-                (float)($FileObj->getParameter('zstep')), 
+                (float)($FileObj->getParameter('zstep')),
                 2
             );
             $Selected    = $this->_getSelected(
