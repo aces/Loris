@@ -106,44 +106,32 @@ $mysqlCommand = "mysql -A \"$dbname\"";
 
 // Drop tables
 echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
-$dropCommand = <<<DROP
-cat ../raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    ../SQL/9999-99-99-drop_tables.sql | $mysqlCommand
-DROP;
-
-runCommand($dropCommand);
+dropTables();
 
 
 // Source LORIS core tabes
 echo <<<INFO
-Creating LORIS core tables.... 
+[*] Creating LORIS core tables.... 
 
 INFO;
-$createTablesCommand = <<<CMD
-for n in ../SQL/0000-*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
-CMD;
-runCommand($createTablesCommand);
+$coreTables = glob("../SQL/0000-*.sql"); 
+array_walk($coreTables, 'runPatch');
 
 // Create instrument tables
 echo <<<INFO
-Creating instrument tables.... 
+[*] Creating instrument tables.... 
 
 INFO;
-$createInstrumentTablesCommand = <<<CMD
-for n in ../raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
-CMD;
-runCommand($createInstrumentTablesCommand);
+$rbInstrumentTables = glob("../raisinbread/instruments/instrument_sql/*.sql"); 
+array_walk($rbInstrumentTables, 'runPatch');
 
 // Import Raisinbread data
 echo <<<INFO
-Importing Raisinbread data....
+[*] Importing Raisinbread data....
 
 INFO;
-$importCommand = <<<CMD
-for n in ../raisinbread/instruments/instrument_sql/*.sql; do echo \$n; ${mysqlCommand} < \$n || break; done;
-CMD;
-runCommand($importCommand);
-
+$rbData= glob("../raisinbread/RB_files/*.sql");
+array_walk($rbData, 'runPatch');
 
 // Restore config settings if they were successfully found before.
 if (isset($urlConfigSetting)) {
@@ -159,14 +147,36 @@ if (isset($hostConfigSetting)) {
 // Trigger a password reset because the password for `admin` in the Raisinbread
 // database is public.
 echo 'Please choose a new password for the admin user:' . PHP_EOL;
-exec('php resetpassword.php admin');
+runCommand('php resetpassword.php admin');
 
 
 // END SCRIPT
 
-function dropTables($mysqlCommand) {
 
+/**
+ * Drops core LORIS tables as well as Raisinbread instrument tables
+ */
+function dropTables(): void
+{
+    runPatch(
+        '../raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql'
+        );
+    runPatch('../SQL/9999-99-99-drop_tables.sql');
 }
+
+function runPatch(string $file): void
+{
+    global $mysqlCommand;
+    runCommand(
+        "cat $file | $mysqlCommand"
+    );
+}
+
+function sqlFileFilter(string $file): bool
+{
+    return pathinfo($file)['extension'] === 'sql';
+}
+
 
 /**
  * A wrapper around `exec()` built-in function with basic error reporting.
@@ -177,12 +187,8 @@ function dropTables($mysqlCommand) {
  */
 function runCommand(string $command): void
 {
-    exec($command, $output, $exitStatus);
-    if ($exitStatus) {
-        echo 'An error occurred: ' . PHP_EOL;
-        print_r($output);
-        die;
-    }
+    echo "Running command: `$command`" . PHP_EOL;
+    echo shell_exec($command);
 }
 
 /**
