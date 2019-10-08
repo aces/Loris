@@ -1792,11 +1792,6 @@ class RadioElement extends React.Component {
             <div key={item.id}
                  style={styleColumn}>
               <div style={styleContainer}>
-                <label htmlFor={item.id}
-                       style={styleLabel}
-                >
-                  {item.label}
-                </label>
                 <input
                   type='radio'
                   name={this.props.name}
@@ -1807,6 +1802,11 @@ class RadioElement extends React.Component {
                   onChange={this.handleChange}
                   style={styleInput}
                 />
+                <label htmlFor={item.id}
+                       style={styleLabel}
+                >
+                  {item.label}
+                </label>
               </div>
             </div>
           );
