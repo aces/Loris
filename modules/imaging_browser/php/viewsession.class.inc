@@ -257,9 +257,18 @@ class ViewSession extends \NDB_Form
                 $FileObj,
                 'intergradient'
             );
-            $Xstep       = number_format((float)($FileObj->getParameter('xstep')), 2);
-            $Ystep       = number_format((float)($FileObj->getParameter('ystep')), 2);
-            $Zstep       = number_format((float)($FileObj->getParameter('zstep')), 2);
+            $Xstep       = number_format(
+                (float)($FileObj->getParameter('xstep')), 
+                2
+            );
+            $Ystep       = number_format(
+                (float)($FileObj->getParameter('ystep')), 
+                2
+            );
+            $Zstep       = number_format(
+                (float)($FileObj->getParameter('zstep')), 
+                2
+            );
             $Selected    = $this->_getSelected(
                 (int) $FileObj->getParameter('FileID')
             );
