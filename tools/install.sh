@@ -151,7 +151,7 @@ chmod 770 ../smarty/templates_c
 # Detecting distribution
 if ! os_distro=$(hostnamectl 2>/dev/null)
 then
-  os_distro="other"
+  os_distro="Other"
 else
   os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
 fi
