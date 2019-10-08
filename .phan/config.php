@@ -37,18 +37,18 @@ return [
     "suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
         "PhanTypePossiblyInvalidDimOffset",
-		"PhanUndeclaredMethod",
+        "PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
-		"PhanTypeMismatchReturn",
-		"PhanUndeclaredClassMethod",
-		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchProperty",
+        "PhanTypeMismatchReturn",
+        "PhanUndeclaredClassMethod",
+        "PhanTypeMismatchArgument",
+        "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-<<<<<<< HEAD
         "PhanPossiblyUndeclaredVariable",
         "PhanNoopNew",
-		"PhanNonClassMethodCall",
-        "PhanTypeSuspiciousStringExpression"
+        "PhanNonClassMethodCall",
+        "PhanUndeclaredVariableDim",
+        "PhanTypeSuspiciousStringExpression",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
