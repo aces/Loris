@@ -47,7 +47,7 @@ INFO;
 echo $info;
 
 $cwd = getcwd();
-if (substr_compare($cwd, 'tools', strlen($cwd) - strlen('tools')) !== 0) {
+if (substr_compare($cwd, 'tools', mb_strlen($cwd) - mb_strlen('tools')) !== 0) {
     die('Please run this script from the tools/ directory.' . PHP_EOL);
 }
 
