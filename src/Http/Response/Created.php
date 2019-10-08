@@ -34,16 +34,20 @@ class Created extends JsonResponse
     /**
      * Create a Json response specific to 201 Created
      *
-     * @param string $location The created resource location
-     * @param array  $body     The response content
+     * @param array $body Data to convert to JSON.
+     * @param array $headers Array of headers to use at initialization.
      *
      * @return void
      */
-    public function __construct(string $location, array $body = [])
+    public function __construct(array $body = [], array $headers = [])
     {
-        $headers = array();
-        if (isset($location)) {
-            $headers['Location'] = $location;
+        if (empty($body)) {
+            if (!isset($headers['Location'])) {
+                throw new \LorisException(
+                    'Created response must return either a non-empty body or ' .
+                    'a Location header for redirection.'
+                );
+            }
         }
 
         parent::__construct($body, 201, $headers);
