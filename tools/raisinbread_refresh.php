@@ -78,7 +78,7 @@ try {
     echo 'Continue attempting to install Raisinbread database? (yN)' . PHP_EOL;
     $input = trim(fgets(STDIN));
 
-    if (strtolower($input) !== 'y') {
+    if (mb_strtolower($input) !== 'y') {
         die;
     }
     echo PHP_EOL . 'Please enter the name of your database:' . PHP_EOL;
