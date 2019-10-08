@@ -155,7 +155,7 @@ chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
-if ! os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')  2> /dev/null
+if ! os_distro=$(hostnamectl 2>/dev/null)
 then
   os_distro="other"
 else
