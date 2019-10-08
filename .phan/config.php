@@ -1,7 +1,7 @@
 <?php
 
 return [
-"backward_compatibility_checks" => true,
+    "backward_compatibility_checks" => true,
     // The docs on quick_mode at
     // https://github.com/phan/phan/wiki/Incrementally-Strengthening-Analysis
     // don't seem reasonable. They claim that quick_mode=true add more errors.
