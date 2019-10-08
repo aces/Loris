@@ -97,6 +97,5 @@ Please feel free to subscribe to the [LORIS Developers mailing list](http://www.
 ## Contributing
 
 ### Contributing Code
-If you would like to contribue to LORIS development, please consult our
-[Contributing Guide](./CONTRIBUTING.md).
+If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
 
