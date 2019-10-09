@@ -1741,8 +1741,8 @@ class LorisElement extends Component {
  * React wrapper for a <input type='radio'> element.
  */
 class RadioElement extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
     this.generateLayout = this.generateLayout.bind(this);
   }
