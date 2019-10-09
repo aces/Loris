@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * File contains the PSR15 ResponseInterface implementation for
- * Unauthorized responses.
+ * Not Implemented responses.
  *
  * PHP Version 7
  *
@@ -14,13 +14,13 @@
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://www.php-fig.org/psr/psr-15/
  */
-namespace LORIS\Http\Response;
+namespace LORIS\Http\Response\JSON;
 
 use \LORIS\Http\Response\JsonResponse;
 
 /**
  * A LORIS Http Response is an implementation of the PSR15 ResponseInterface
- * to use in LORIS specific for 401 Unauthorized.
+ * to use in LORIS specific for 501 Not Implemented.
  *
  * @category PSR15
  * @package  Http
@@ -28,16 +28,16 @@ use \LORIS\Http\Response\JsonResponse;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Unauthorized extends JsonResponse
+class NotImplemented extends JsonResponse
 {
     /**
-     * Create a Json response specific to 401 Unauthorized
+     * Create a Json response specific to 501 Not Implemented
      *
      * @param string $msg The error message
      */
-    public function __construct(string $msg = 'unauthorized')
+    public function __construct(string $msg = 'not implemented')
     {
         $body = array('error' => $msg);
-        parent::__construct($body, 401);
+        parent::__construct($body, 501);
     }
 }

@@ -96,7 +96,7 @@ class Login extends Endpoint
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (count($request->getAttribute('pathparts')) !== 1) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -107,7 +107,7 @@ class Login extends Endpoint
                 $password = $requestdata['password'] ?? null;
 
                 if ($user === null || $password === null) {
-                    return new \LORIS\Http\Response\BadRequest(
+                    return new \LORIS\Http\Response\JSON\BadRequest(
                         'Missing username or password'
                     );
                 }
@@ -121,7 +121,7 @@ class Login extends Endpoint
                             array('token' => $token)
                         );
                     } else {
-                        return new \LORIS\Http\Response\InternalServerError(
+                        return new \LORIS\Http\Response\JSON\InternalServerError(
                             'Unacceptable JWT key'
                         );
                     }
@@ -134,7 +134,7 @@ class Login extends Endpoint
                 return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
         }
