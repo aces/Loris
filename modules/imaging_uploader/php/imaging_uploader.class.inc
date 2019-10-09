@@ -230,7 +230,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //get the stored-file path
         $file   = new \File_Upload;
         $config = \NDB_Config::singleton();
-        $paths  = $config->getSetting('paths');
         $file->setOverwriteMode("overwrite");
         $file->fileMove = false;
         //pass the existing form ($form) by reference to File_Upload,
@@ -250,7 +249,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             "mriFile",
             $this
         );
-        $user = \User::singleton();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
         //proccesses them (including verify, move, and import steps)
@@ -280,7 +278,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
-        $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
         // creates associative array to store error messages for each form element
         $errors = array(
@@ -293,14 +290,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
-        $dicom_archive_settings = $config->getSetting(
-            'imaging_modules'
-        );
-        $corect_name            = $dicom_archive_settings['patientNameRegex'];
-        $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
-        $file_path = $temp_dir. "/". $file_name;
-        $isPhantom = $args['values']['IsPhantom'];
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
@@ -485,7 +475,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $feedbacks  = array();
         $db         = \Database::singleton();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
