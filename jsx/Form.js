@@ -1792,6 +1792,28 @@ class SliderElement extends React.Component {
             width: '100%',
           }}>
             <div style={{
+              flexGrow: 1000,
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: '100%',
+              maxWidth: this.props.maxWidth,
+              marginRight: '5px',
+              flex: 2,
+            }}>
+              <input
+                type='range'
+                name={this.props.name}
+                id={this.props.id}
+                value={this.props.value}
+                min={this.props.minValue}
+                max={this.props.maxValue}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={{width: '100%'}}
+              />
+            </div>
+            <div style={{
               display: 'flex',
               flexDirection: 'column',
               flexBasis: '100%',
@@ -1813,26 +1835,6 @@ class SliderElement extends React.Component {
                 }}
               />
             </div>
-            <div style={{
-              flexGrow: 1000,
-              display: 'flex',
-              flexDirection: 'column',
-              flexBasis: '100%',
-              flex: 2,
-            }}>
-              <input
-                type='range'
-                name={this.props.name}
-                id={this.props.id}
-                value={this.props.value}
-                min={this.props.minValue}
-                max={this.props.maxValue}
-                required={required}
-                disabled={disabled}
-                onChange={this.handleChange}
-                style={{width: '100%'}}
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -1846,6 +1848,7 @@ SliderElement.propTypes = {
   value: PropTypes.number.isRequired,
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
+  maxWidth: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1859,6 +1862,7 @@ SliderElement.defaultProps = {
   value: 0,
   minValue: 0,
   maxValue: 100,
+  maxWidth: 'auto',
   disabled: false,
   required: false,
   errorMessage: '',
