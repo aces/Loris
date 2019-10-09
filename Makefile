@@ -1,4 +1,4 @@
-.PHONY: clean dev all check checkstatic unittests test phpdev javascript
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript devdependencies
 
 all: VERSION javascript
 	composer install --no-dev
@@ -14,7 +14,11 @@ javascript:
 	npm install
 	npm run compile
 
-dev: VERSION phpdev javascript
+dev: VERSION devdependencies phpdev javascript 
+
+devdependencies:
+	./tools/install_dev_dependencies.sh
+
 
 clean:
 	rm -f smarty/templates_c/*
