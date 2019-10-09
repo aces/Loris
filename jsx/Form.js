@@ -1784,33 +1784,30 @@ class RadioElement extends React.Component {
     };
 
     let content = [];
-    for (let key in this.props.items) {
+    for (const key in this.props.items) {
       if (this.props.items.hasOwnProperty(key)) {
-        const item = this.props.items[key];
-        if (item.hasOwnProperty('value')) {
-          content.push(
-            <div key={item.id}
-                 style={styleColumn}>
-              <div style={styleContainer}>
-                <input
-                  type='radio'
-                  name={this.props.name}
-                  value={item.value}
-                  id={item.id}
-                  required={required}
-                  disabled={disabled}
-                  onChange={this.handleChange}
-                  style={styleInput}
-                />
-                <label htmlFor={item.id}
-                       style={styleLabel}
-                >
-                  {item.label}
-                </label>
-              </div>
+        content.push(
+          <div key={key}
+               style={styleColumn}>
+            <div style={styleContainer}>
+              <label htmlFor={key}
+                     style={styleLabel}
+              >
+                {key}
+              </label>
+              <input
+                type='radio'
+                name={this.props.name}
+                value={this.props.items[key]}
+                id={key}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={styleInput}
+              />
             </div>
-          );
-        }
+          </div>
+        );
       }
     }
 
@@ -1874,18 +1871,10 @@ RadioElement.defaultProps = {
   name: null,
   label: null,
   value: 0,
-  items: [
-    {
-      label: 'Female',
-      value: 'female',
-      id: 'gender_option_1',
-    },
-    {
-      label: 'Male',
-      value: 'male',
-      id: 'gender_option_2',
-    },
-  ],
+  items: {
+    Female: 'Female',
+    Male: 'Male',
+  },
   disabled: false,
   required: false,
   errorMessage: '',
