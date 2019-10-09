@@ -290,7 +290,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
-        $file_name = $file->fileInfo['name'];
+        $file_name       = $file->fileInfo['name'];
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
