@@ -36,7 +36,7 @@ interface Bootstrapper
      * set-up a development environment for LORIS.
      * TODO: These values must be updated as time goes on.
      *
-     * Last updated for version: 21.0.0
+     * Last updated for version: 21.0.2
      */
     const PHP_MAJOR_VERSION_REQUIRED    = 7;
     const PHP_MINOR_VERSION_REQUIRED    = 2;

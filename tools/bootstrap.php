@@ -53,8 +53,6 @@ if (!$b->apacheRequirementSatisfied()) {
         'cannot be used.';
 }
 
-// Check Apache -- note that this is a "soft" requirement as development can
-// be done using a local PHP server instead of using Apache.
 if (!$b->nodeJSRequirementSatisfied()) {
     $report[] = "LORIS requires at least nodejs version "
         . $b->NODEJS_MAJOR_VERSION_REQUIRED;
