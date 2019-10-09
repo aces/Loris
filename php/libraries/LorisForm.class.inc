@@ -1196,7 +1196,7 @@ class LorisForm
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
-     * @return true if all registered rules passed
+     * @return bool true if all registered rules passed
      */
     function validate()
     {
@@ -2219,13 +2219,9 @@ class LorisForm
      *
      * @return string the error message of the element
      */
-    function getElementError($el)
+    function getElementError($el): string
     {
-        if (isset($this->errors[$el])) {
-            return $this->errors[$el];
-        }
-
-        return;
+        return $this->errors[$el] ?? '';
     }
 
     /**
@@ -2312,7 +2308,7 @@ class LorisFormFileElement extends LorisFormElement
     /**
      * Returns true if the file was uploaded by the user.
      *
-     * @return true if the file was uploaded by the user.
+     * @return bool true if the file was uploaded by the user.
      */
     function isUploadedFile()
     {
@@ -2326,7 +2322,7 @@ class LorisFormFileElement extends LorisFormElement
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return void
+     * @return bool
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {

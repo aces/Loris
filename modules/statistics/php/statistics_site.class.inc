@@ -178,8 +178,8 @@ class Statistics_Site extends \NDB_Menu
                 $sqlRow,
                 array('cid' => $_REQUEST['CenterID'])
             );
-            $centerID = $center['ID'];
-            $name     = $center['Name'];
+            $centerID = $center['ID'] ?? '';
+            $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
             $centerID = '';

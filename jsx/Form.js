@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
+TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -472,13 +472,26 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -508,7 +521,6 @@ SelectElement.propTypes = {
     PropTypes.array,
   ]),
   id: PropTypes.string,
-  class: PropTypes.string,
   multiple: PropTypes.bool,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -521,10 +533,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: '',
   value: undefined,
   id: null,
-  class: '',
   multiple: false,
   disabled: false,
   required: false,
@@ -914,13 +924,27 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <TextboxElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <input
             type="text"
             className="form-control"
@@ -953,7 +977,6 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: '',
   value: '',
   id: null,
   disabled: false,
@@ -987,7 +1010,7 @@ class DateElement extends Component {
       if (this.props.maxYear === '' || this.props.maxYear === null) {
         maxYear = '9999';
       }
-      let monthInputs = $('input[name=' + this.props.name+']');
+      let monthInputs = $('input[type=month][name=' + this.props.name+']');
       monthInputs.datepicker({
         dateFormat: 'yy-mm',
         changeMonth: true,
@@ -1422,6 +1445,38 @@ StaticElement.defaultProps = {
 };
 
 /**
+ * Header element component.
+ * Used to display a header element with specific level (1-6) as part of a form
+ *
+ */
+class HeaderElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    const Tag = 'h' + this.props.headerLevel;
+    return (
+      <div className="row form-group">
+        <Tag className='col-xs-12'>
+          {this.props.text}
+        </Tag>
+      </div>
+    );
+  }
+}
+
+HeaderElement.propTypes = {
+  text: PropTypes.string.isRequired,
+  headerLevel: PropTypes.oneOf([
+    1, 2, 3, 4, 5, 6,
+  ]),
+};
+
+HeaderElement.defaultProps = {
+  headerLevel: 3,
+};
+
+/**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
@@ -1661,6 +1716,9 @@ class LorisElement extends Component {
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'header':
+        elementHtml = (<HeaderElement {...elementProps} />);
+        break;
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
@@ -1690,6 +1748,7 @@ window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
@@ -1709,6 +1768,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  HeaderElement,
   LinkElement,
   CheckboxElement,
   ButtonElement,

@@ -179,7 +179,7 @@ class File_Upload
     function callFileHandler($field, $action)
     {
         $class  =$this->fileHandlers[$field]['class'];
-        $method =$this->fileHandlers[$field]['methods'][$action];
+        $method =$this->fileHandlers[$field]['methods'][(int) $action];
         $args   =array();
 
         //If handlerArgs are being passed, include them
@@ -318,7 +318,6 @@ class File_Upload
             case "reject":
                 $this->setError($this->fieldName, "File Exists, rejecting");
                 return false;
-                break;
             }
         }
 
@@ -481,6 +480,7 @@ class File_Upload
     function getSplitFilename($name)
     {
         $file = array();
+        // NOTE This could probably be better written using pathinfo()
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
             $file['name'] =substr($name, 0, $extpos);
