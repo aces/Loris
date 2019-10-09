@@ -1,12 +1,19 @@
 #!/bin/bash
 
-# Installs dependencies required for LORIS development.
+# Installs dependencies required for LORIS development on Ubuntu
+
+os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+debian=("Debian" "Ubuntu")
+if [[ ! " ${debian[*]} " =~ " $os_distro " ]]; then
+    echo "Only Debian and Ubuntu are supported by $0."
+    exit 0;
+fi
 
 declare -a prereqs=(
 "php"
 "apache2"
 "composer"
-"nodejs"
+"nodejs" # TODO this should check for a version >= 8.0
 )
 
 # Verify prerequisites installed
