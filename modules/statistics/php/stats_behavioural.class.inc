@@ -67,20 +67,25 @@ class Stats_Behavioural extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
-        $query = "SELECT CONCAT('C', CenterID) as ID,
+        //SITES
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
-                  FROM psc
-                  WHERE CenterID <> '1'
-                        AND Study_site = 'Y'";
-
-        if (!$user->hasPermission('access_all_profiles')) {
-            $sitesString = implode(",", $user->getCenterIDs());
-            $query      .= " AND CenterID IN (" . $sitesString . ")";
-        }
-
-        $centers = $DB->pselect($query, array());
+              FROM psc
+              WHERE CenterID <> '1'
+                    AND Study_site = 'Y'
+	            AND CenterID IN (" . $sitesString . ")",
+            array()
+        );
 
         $this->tpl_data['Centers'] = $centers;
 
@@ -148,6 +153,7 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+	            AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -205,20 +211,21 @@ class Stats_Behavioural extends \NDB_Form
         }
         // DDE STATS
         $result = $DB->pselect(
-            "SELECT s.CenterID, 
-                f.Data_Entry as Data_Entry, 
-                s.visit_label as VLabel,
-                COUNT(s.CandID) as val
+            "SELECT s.CenterID,
+                    f.Data_Entry as Data_Entry,
+                    s.visit_label as VLabel,
+                    COUNT(s.CandID) as val
                 FROM session as s
-                    JOIN candidate as c ON (s.CandID=c.CandID)
-                    JOIN flag as f ON (f.SessionID=s.ID)
-                WHERE s.Active='Y' 
-                AND s.Current_stage <> 'Recycling Bin'
-                AND f.CommentID LIKE 'DDE%' 
-                AND c.Active='Y'
-                AND s.CenterID <> '1'
-                $suproject_query
-                $Param_Project
+                    JOIN candidate as c ON(s.CandID=c.CandID)
+                    JOIN flag as f ON(f.SessionID=s.ID)
+                WHERE s.Active = 'Y'
+                    AND s.Current_stage <> 'Recycling Bin'
+                    AND f.CommentID LIKE 'DDE%'
+                    AND c.Active = 'Y'
+                    AND s.CenterID <> '1'
+                    AND s.CenterID IN(" . $sitesString . ")
+                    $suproject_query
+                    $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params ?? array()
         );
