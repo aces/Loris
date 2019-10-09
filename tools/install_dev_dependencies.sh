@@ -53,8 +53,10 @@ declare -a dependencies=(
 "libapache2-mod-php$PHP"
 )
 
-echo "Adding 'ppa:ondrej/php' (needed for newer versions of PHP)...."
-sudo add-apt-repository ppa:ondrej/php
+## XXX If you're unable to install the above PHP packages, uncomment the
+# following lines.
+# echo "Adding 'ppa:ondrej/php' (needed for newer versions of PHP)...."
+# sudo add-apt-repository ppa:ondrej/php
 echo "Updating apt package directory..."
 sudo apt update > /dev/null
 
