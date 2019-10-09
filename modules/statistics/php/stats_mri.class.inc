@@ -70,8 +70,8 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
-     * @param bool    $scanDoneExists    whether the "Scan done" column exists in
-     *                                   the database
+     * @param bool    $renderTable       whether to render the table or display a
+     *                                   default error message
      *
      * @return string
      */
@@ -87,7 +87,7 @@ class Stats_MRI extends \NDB_Form
         $Subsection="",
         $disclamer='',
         $projectID=null,
-        $scanDoneExists = true
+        $renderTable=true
     ): string {
 
         $tpl_data = array();
@@ -201,7 +201,7 @@ class Stats_MRI extends \NDB_Form
             }
         }
 
-        $tpl_data['scan_done_exists'] = $scanDoneExists;
+        $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
