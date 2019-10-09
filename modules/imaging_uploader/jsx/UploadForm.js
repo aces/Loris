@@ -27,7 +27,6 @@ class UploadForm extends Component {
     };
 
     this.onFormChange = this.onFormChange.bind(this);
-    this.getDisabledStatus = this.getDisabledStatus.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
   }
@@ -71,17 +70,6 @@ class UploadForm extends Component {
       form: form,
       formData: formData,
     });
-  }
-
-  /*
-   Returns false if Phantom Scans is set to No, and true otherwise
-   Result disables the element that calls the function
-   */
-  getDisabledStatus(phantomScans) {
-    if (phantomScans === 'N') {
-      return false;
-    }
-    return true;
   }
 
   submitForm() {
