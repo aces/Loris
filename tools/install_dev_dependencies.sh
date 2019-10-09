@@ -52,6 +52,8 @@ declare -a dependencies=(
 "libapache2-mod-php$PHP"
 )
 
+echo "Adding 'ppa:ondrej/php' (needed for newer versions of PHP)...."
+sudo add-apt-repository ppa:ondrej/php
 echo "Updating apt package directory..."
 sudo apt update > /dev/null
 
