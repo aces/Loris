@@ -1741,8 +1741,8 @@ class LorisElement extends Component {
  * React wrapper for a <input type='range'> element.
  */
 class SliderElement extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -1750,12 +1750,12 @@ class SliderElement extends React.Component {
     // Handles empty, min & max cases.
     const inputValue = e.target.value
       ? parseFloat(e.target.value)
-      : this.props.valueMin;
-    let value = inputValue > this.props.valueMax
-      ? this.props.valueMax
+      : this.props.minValue;
+    let value = inputValue > this.props.maxValue
+      ? this.props.maxValue
       : inputValue;
-    value = value < this.props.valueMin
-      ? this.props.valueMin
+    value = value < this.props.minValue
+      ? this.props.minValue
       : value;
     this.props.onUserInput(this.props.name, value);
   }
@@ -1802,8 +1802,8 @@ class SliderElement extends React.Component {
                 type='number'
                 name={'input_' + this.props.name}
                 value={this.props.value}
-                min={this.props.valueMin}
-                max={this.props.valueMax}
+                min={this.props.minValue}
+                max={this.props.maxValue}
                 required={required}
                 disabled={disabled}
                 onChange={this.handleChange}
@@ -1825,8 +1825,8 @@ class SliderElement extends React.Component {
                 name={this.props.name}
                 id={this.props.id}
                 value={this.props.value}
-                min={this.props.valueMin}
-                max={this.props.valueMax}
+                min={this.props.minValue}
+                max={this.props.maxValue}
                 required={required}
                 disabled={disabled}
                 onChange={this.handleChange}
@@ -1844,8 +1844,8 @@ SliderElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  valueMin: PropTypes.number.isRequired,
-  valueMax: PropTypes.number.isRequired,
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1857,8 +1857,8 @@ SliderElement.defaultProps = {
   name: null,
   label: null,
   value: 0,
-  valueMin: 0,
-  valueMax: 100,
+  minValue: 0,
+  maxValue: 100,
   disabled: false,
   required: false,
   errorMessage: '',
