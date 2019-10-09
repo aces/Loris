@@ -9,9 +9,10 @@ if [[ ! " ${debian[*]} " =~ " $os_distro " ]]; then
     exit 0;
 fi
 
+# apache2 is not included here because a developer may use a different server
+# config, such as the builtin PHP web server.
 declare -a prereqs=(
 "php"
-"apache2"
 "composer"
 "nodejs" # TODO this should check for a version >= 8.0
 )
