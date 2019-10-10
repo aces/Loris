@@ -87,7 +87,7 @@ class Methylation extends Endpoint implements ETagCalculator
         }
         $user        = $request->getAttribute('user');
         $provisioner = (new MethylationProvisioner())->forUser($user);
-        // $provisioner = (new MethylationProvisioner())->filter();
+
         $data         = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);

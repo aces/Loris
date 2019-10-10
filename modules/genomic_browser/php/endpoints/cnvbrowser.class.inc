@@ -87,7 +87,7 @@ class CnvBrowser extends Endpoint implements ETagCalculator
         }
         $user        = $request->getAttribute('user');
         $provisioner = (new CnvProvisioner())->forUser($user);
-        // $provisioner = (new CnvProvisioner())->filter();
+
         $data         = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);

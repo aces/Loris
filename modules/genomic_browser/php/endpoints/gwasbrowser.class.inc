@@ -87,7 +87,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
         }
         $user        = $request->getAttribute('user');
         $provisioner = (new GwasProvisioner())->forUser($user);
-        // $provisioner = (new ProfileProvisioner())->filter();
+
         $data         = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);

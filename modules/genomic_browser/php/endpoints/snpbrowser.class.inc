@@ -87,7 +87,7 @@ class SnpBrowser extends Endpoint implements ETagCalculator
         }
         $user        = $request->getAttribute('user');
         $provisioner = (new SnpProvisioner())->forUser($user);
-        // $provisioner = (new ProfileProvisioner())->filter();
+
         $data = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);
