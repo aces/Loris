@@ -33,47 +33,35 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     {
         parent::__construct(
             '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, 
-                   candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as externalID, 
-          CASE WHEN EXISTS (
-            select genomicfileid
-            from genomic_candidate_files_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as File, 
-          CASE WHEN EXISTS (
-            select snpid
-            from SNP_candidate_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as SNP, 
-          CASE WHEN EXISTS (
-            select cnvid
-            from CNV
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CNV, 
-          CASE WHEN EXISTS (
-            select cpg_name
-            from genomic_sample_candidate_rel
-            left join genomic_cpg using (sample_label)
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CPG FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
+            SELECT DISTINCT
+                s.ID,
+                s.visit_label,
+                c.PSCID,
+                s.candid,
+                f.SessionID,
+                f.test_name,
+                f.data_entry,
+                f.commentid,
+                t.Full_name
+            FROM
+	            session s
+                JOIN flag f ON (f.sessionid = s.id)
+                JOIN candidate c ON (c.candid = s.candid)
+                JOIN test_names t ON (t.Test_name = f.Test_name)
+                JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
+                s.Active = \'Y\'
+                AND c.Active = \'Y\'
+                AND coalesce(f.data_entry, \'In Progress\') = \'In Progress\'
+                AND psc.Centerid != \'1\'
+                AND c.Entity_type != \'Scanner\'
+                AND(f.test_name IN(\'aosi\', \'bmi\', \'medical_history\', \'mri_parameter_form\', \'radiology_review\')
+                    OR f.commentid NOT LIKE \'DDE_%\')
+            ORDER BY
+	            f.commentid
             ',
             array(),
-            '\LORIS\data_team_helper\Models\BehaviouralDTO'
+            '\LORIS\data_team_helper\Models\IncompleteDTO'
         );
     }
     /**

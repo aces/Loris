@@ -33,44 +33,29 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
     {
         parent::__construct(
             '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, 
-                   candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as externalID, 
-          CASE WHEN EXISTS (
-            select genomicfileid
-            from genomic_candidate_files_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as File, 
-          CASE WHEN EXISTS (
-            select snpid
-            from SNP_candidate_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as SNP, 
-          CASE WHEN EXISTS (
-            select cnvid
-            from CNV
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CNV, 
-          CASE WHEN EXISTS (
-            select cpg_name
-            from genomic_sample_candidate_rel
-            left join genomic_cpg using (sample_label)
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CPG FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
+            SELECT
+	            fb.FeedbackID,
+	            fb.CandID,
+	            fb.SessionID,
+                fb.CommentID,
+                fb.Feedback_level,
+                f.Test_name,
+                fb.FieldName,
+                tn.Full_name,
+                s.Visit_label,
+                ca.PSCID
+            FROM
+                feedback_bvl_thread AS fb
+                JOIN candidate ca ON (ca.CandID = fb.CandID)
+                JOIN session s ON (s.ID = fb.SessionID)
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                JOIN project_subproject_rel psr ON (s.SubprojectID = psr.SubprojectID)
+                LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
+                LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
+                fb.Public = \'Y\'
+                AND fb.Status = \'opened\'
+                AND fb.active = \'Y\'
             ',
             array(),
             '\LORIS\data_team_helper\Models\BehaviouralDTO'

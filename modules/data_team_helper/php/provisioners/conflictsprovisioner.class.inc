@@ -33,47 +33,28 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     {
         parent::__construct(
             '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, 
-                   candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as externalID, 
-          CASE WHEN EXISTS (
-            select genomicfileid
-            from genomic_candidate_files_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as File, 
-          CASE WHEN EXISTS (
-            select snpid
-            from SNP_candidate_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as SNP, 
-          CASE WHEN EXISTS (
-            select cnvid
-            from CNV
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CNV, 
-          CASE WHEN EXISTS (
-            select cpg_name
-            from genomic_sample_candidate_rel
-            left join genomic_cpg using (sample_label)
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CPG FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
+            SELECT DISTINCT
+	          s.CandID,
+	          ca.PSCID,
+	          c.FieldName,
+	          c.TableName,
+	          t.full_name AS test_name_display,
+	          s.visit_label
+            FROM
+	          conflicts_unresolved c
+	          LEFT JOIN flag f ON (c.CommentId1 = f.CommentID)
+	          LEFT JOIN session s ON (f.SessionID = s.ID)
+	          LEFT JOIN candidate ca ON (ca.CandID = s.CandID)
+	          JOIN test_names t ON (t.test_name = f.test_name)
+	          JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
+	          ca.Active = \'Y\'
+	          AND s.Active = \'Y\'
+	          AND psc.Centerid != \'1\'
+	          AND ca.Entity_type != \'Scanner\'
             ',
             array(),
-            '\LORIS\data_team_helper\Models\BehaviouralDTO'
+            '\LORIS\data_team_helper\Models\ConflictsDTO'
         );
     }
     /**

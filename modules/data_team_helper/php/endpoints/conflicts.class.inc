@@ -85,23 +85,10 @@ class Conflicts extends Endpoint implements ETagCalculator
                     break;
             }
         }
-        $ftf = array(
-            'centerID'           => 'candidate.RegistrationCenterID',
-            'DCCID'              => 'candidate.CandID',
-            'PSCID'              => 'candidate.PSCID',
-            'sex'                => 'candidate.Sex',
-            'SubprojectID'       => 'cohort.SubprojectID',
-            'External_ID'        => 'candidate.ExternalID',
-            'Show_Brief_Results' => 'show_brief_results',
-            'File'               => 'File',
-            'SNP'                => 'SNP',
-            'CNV'                => 'CNV',
-            'CPG'                => 'CPG',
-        );
-        // $this->formToFilter = $ftf;
+
         $user        = $request->getAttribute('user');
-        $provisioner = (new ProfileProvisioner())->forUser($user);
-        // $provisioner = (new ProfileProvisioner())->filter();
+        $provisioner = (new ConflictsProvisioner())->forUser($user);
+
         $data         = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);
