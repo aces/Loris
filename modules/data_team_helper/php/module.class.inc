@@ -6,21 +6,64 @@
  * PHP Version 7
  *
  * @category LORIS_Module
- * @package  Behavioural
+ * @package  Data_Team_Helper
  * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\data_team_helper;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Class module implements the basic LORIS module functionality
  *
  * @category LORIS_Module
- * @package  Behavioural
+ * @package  Data Team Helper
  * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Module extends \Module
 {
+    /**
+     * The default handler for a module routes to a page of the first component of
+     * the URL's name, or the same name as the module if serving the root of the
+     * module.
+     *
+     * Modules extend PrefixRouter, so that the parent handler knows that the
+     * css, static, and js routes should be routed through the file system to
+     * retrieve the files before trying to load any specific pages.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface the outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $path = trim($request->getURI()->getPath(), '/');
+        switch ($path) {
+            case 'Incomplete':
+                $handler = new endpoints\Incomplete();
+                break;
+            case 'Conflicts':
+                $handler = new endpoints\Conflicts();
+                break;
+            case 'Behavioural':
+                $handler = new endpoints\Behavioural();
+                break;
+            default:
+                return parent::handle($request);
+        }
+
+        $user = $request->getAttribute('user');
+        if (!$handler->_hasAccess($user)) {
+            return new \LORIS\Http\Response\Forbidden();
+        }
+
+        return $handler->process($request, $handler);
+    }
 }

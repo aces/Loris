@@ -19,7 +19,7 @@ const config = [{
     './modules/conflict_resolver/js/conflictResolverIndex.js': './modules/conflict_resolver/jsx/conflictResolverIndex.js',
     './modules/conflict_resolver/js/resolvedConflictsIndex.js': './modules/conflict_resolver/jsx/resolvedConflictsIndex.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
-    './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
+    './modules/data_team_helper/js/dataTeamHelperIndex.js': './modules/data_team_helper/jsx/dataTeamHelperIndex.js',
     './modules/candidate_list/js/openProfileForm.js': './modules/candidate_list/jsx/openProfileForm.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',

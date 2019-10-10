@@ -23,7 +23,7 @@ namespace LORIS\data_team_helper;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class Data_Team_Helper extends \NDB_Form
+class Data_Team_Helper extends \NDB_Page
 {
 
     /**
@@ -203,10 +203,10 @@ class Data_Team_Helper extends \NDB_Form
      * @internal param unknown_type $field_name
      */
     function getFeedbacks($test_name = null,
-        $candID=null,
-        $visit_label=null,
-        $site=null,
-        $project=null
+                          $candID=null,
+                          $visit_label=null,
+                          $site=null,
+                          $project=null
     ) {
 
         $DB      =& \Database::singleton();
@@ -336,10 +336,10 @@ class Data_Team_Helper extends \NDB_Form
      * @return array
      */
     function instrumentInConflict(string $test_name,
-        $visit_label=null,
-        $candidate=null,
-        $site=null,
-        $project=null
+                                  $visit_label=null,
+                                  $candidate=null,
+                                  $site=null,
+                                  $project=null
     ) {
 
         global $DB;
@@ -465,8 +465,8 @@ class Data_Team_Helper extends \NDB_Form
         $conflicts = $DB->pselect(
             $query,
             array(
-             'TN' => $test_name,
-             'FN' => $field_name,
+                'TN' => $test_name,
+                'FN' => $field_name,
             )
         );
         return $conflicts;
@@ -484,10 +484,10 @@ class Data_Team_Helper extends \NDB_Form
      * @return array
      */
     function getIncompleteCandidates($test_name,
-        $visit_label=null,
-        $candidate=null,
-        $site=null,
-        $project=null
+                                     $visit_label=null,
+                                     $candidate=null,
+                                     $site=null,
+                                     $project=null
     ) {
         $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
@@ -573,10 +573,10 @@ class Data_Team_Helper extends \NDB_Form
      * @return int
      */
     function getInstrumentCount($test_name,
-        $visit_label=null,
-        $candidate=null,
-        $site=null,
-        $project=null
+                                $visit_label=null,
+                                $candidate=null,
+                                $site=null,
+                                $project=null
     ) {
         global $DB;
 
@@ -645,10 +645,10 @@ class Data_Team_Helper extends \NDB_Form
      * @return int
      */
     function getCompleteInstrumentCount($test_name,
-        $visit_label=null,
-        $candidate=null,
-        $site=null,
-        $project=null
+                                        $visit_label=null,
+                                        $candidate=null,
+                                        $site=null,
+                                        $project=null
     ) {
         global $DB;
 
@@ -720,10 +720,10 @@ class Data_Team_Helper extends \NDB_Form
      * @return int
      */
     function _getPercentCompleted($instrument,
-        $visit_label=null,
-        $candidate=null,
-        $site=null,
-        $project=null
+                                  $visit_label=null,
+                                  $candidate=null,
+                                  $site=null,
+                                  $project=null
     ) {
 
         $percent_completed =0;
@@ -834,7 +834,7 @@ class Data_Team_Helper extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/data_team_helper/js/data_team.js",
+                $baseURL . '/data_team_helper/js/dataTeamHelperIndex.js',
             )
         );
     }
@@ -852,7 +852,7 @@ class Data_Team_Helper extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+            [$baseURL . '/data_team_helper/css/data_team_helper.css']
         );
     }
 }
