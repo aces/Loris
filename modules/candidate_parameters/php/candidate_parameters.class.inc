@@ -74,4 +74,22 @@ class Candidate_Parameters extends \NDB_Form
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candidate =& \Candidate::singleton((int)$this->identifier);
+        $candID    = $candidate->getCandID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Candidate Parameters',
+                "/candidate_parameters/?candID=$candID&identifier=$candID"
+            )
+        );
+    }
 }
