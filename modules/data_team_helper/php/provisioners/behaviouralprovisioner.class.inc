@@ -32,7 +32,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
     function __construct()
     {
         parent::__construct(
-            '
+            "
             SELECT
 	            fb.FeedbackID,
 	            fb.CandID,
@@ -53,10 +53,10 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                 LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
             WHERE
-                fb.Public = \'Y\'
-                AND fb.Status = \'opened\'
-                AND fb.active = \'Y\'
-            ',
+                fb.Public = 'Y'
+                AND fb.Status = 'opened'
+                AND fb.active = 'Y'
+            ",
             array(),
             '\LORIS\data_team_helper\Models\BehaviouralDTO'
         );

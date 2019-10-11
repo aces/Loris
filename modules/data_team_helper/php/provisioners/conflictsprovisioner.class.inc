@@ -32,7 +32,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
+            "
             SELECT DISTINCT
 	          s.CandID,
 	          ca.PSCID,
@@ -48,11 +48,11 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 	          JOIN test_names t ON (t.test_name = f.test_name)
 	          JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
-	          ca.Active = \'Y\'
-	          AND s.Active = \'Y\'
-	          AND psc.Centerid != \'1\'
-	          AND ca.Entity_type != \'Scanner\'
-            ',
+	          ca.Active = 'Y'
+	          AND s.Active = 'Y'
+	          AND psc.Centerid != '1'
+	          AND ca.Entity_type != 'Scanner'
+            ",
             array(),
             '\LORIS\data_team_helper\Models\ConflictsDTO'
         );

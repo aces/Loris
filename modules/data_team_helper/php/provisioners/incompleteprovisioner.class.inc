@@ -26,13 +26,32 @@ namespace LORIS\data_team_helper\Provisioners;
  */
 class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {
+    private $_where = '';
+
     /**
      * Create a RowProvisioner
      */
     function __construct()
     {
+        // Note: Need to modify how query is built.
+        $config         =& \NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        for ($i=0; $i<count($ddeInstruments); ++$i) {
+            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
+        }
+        if (count($ddeInstruments) > 0) {
+            $ddeInstruments = implode(',', $ddeInstruments);
+            $this->_where         = "
+                AND (f.test_name IN ($ddeInstruments) OR
+                f.commentid NOT LIKE 'DDE_%')
+            ";
+        } else {
+            $this->_where = "
+                AND (f.commentid NOT LIKE 'DDE_%')
+            ";
+        }
         parent::__construct(
-            '
+            "
             SELECT DISTINCT
                 s.ID,
                 s.visit_label,
@@ -50,16 +69,15 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 JOIN test_names t ON (t.Test_name = f.Test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
-                s.Active = \'Y\'
-                AND c.Active = \'Y\'
-                AND coalesce(f.data_entry, \'In Progress\') = \'In Progress\'
-                AND psc.Centerid != \'1\'
-                AND c.Entity_type != \'Scanner\'
-                AND(f.test_name IN(\'aosi\', \'bmi\', \'medical_history\', \'mri_parameter_form\', \'radiology_review\')
-                    OR f.commentid NOT LIKE \'DDE_%\')
+                s.Active = 'Y'
+                AND c.Active = 'Y'
+                AND coalesce(f.data_entry, 'In Progress') = 'In Progress'
+                AND psc.Centerid != '1'
+                AND c.Entity_type != 'Scanner'
+                $this->_where
             ORDER BY
 	            f.commentid
-            ',
+            ",
             array(),
             '\LORIS\data_team_helper\Models\IncompleteDTO'
         );
