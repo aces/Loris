@@ -13,7 +13,7 @@
 
 /**
  * The BadRequest exception is thrown when the user's input is invalid or insufficient.
- * be found. It maps to a 400 error.
+ * It maps to a 400 error.
  *
  * @category Errors
  * @package  Loris
