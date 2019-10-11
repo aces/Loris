@@ -13,7 +13,7 @@
 
 /**
  * The NotFound exception is thrown when a resource can not
- * be found. It maps to a 404 error.
+ * be loaded due to insufficient permissions. It maps to a 403 error.
  *
  * @category Errors
  * @package  Loris
