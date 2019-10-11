@@ -84,6 +84,14 @@ class DataTable extends Component {
   }
 
   downloadCSV(csvData) {
+    // Map cell data to proper values if applicable.
+    if (this.props.getMappedCell) {
+      csvData = csvData
+      .map((row, i) => this.props.fields
+        .map((field, j) => this.props.getMappedCell(field.label, row[j]))
+      );
+    }
+
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -495,14 +503,6 @@ class DataTable extends Component {
     let csvData = this.props.data;
     if (this.props.filter && filteredData.length > 0) {
       csvData = filteredData;
-    }
-
-    // Map cell data to proper values if applicable.
-    if (this.props.getMappedCell) {
-      csvData = csvData
-      .map((row, i) => this.props.fields
-        .map((field, j) => this.props.getMappedCell(field.label, row[j]));
-      );
     }
 
     let header = this.props.hide.rowsPerPage === true ? '' : (
