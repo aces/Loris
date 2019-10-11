@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NotFound exception type.
+ * This file contains the Forbidden exception type.
  *
  * PHP Version 7
  *
