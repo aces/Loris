@@ -12,7 +12,7 @@
  */
 
 /**
- * The NotFound exception is thrown when a resource can not
+ * The Forbidden exception is thrown when a resource can not
  * be loaded due to insufficient permissions. It maps to a 403 error.
  *
  * @category Errors
