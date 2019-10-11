@@ -102,7 +102,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $project = \NDB_Factory::singleton()
                 ->project($pathparts[1]);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $endpoint = new Project\Project($project);

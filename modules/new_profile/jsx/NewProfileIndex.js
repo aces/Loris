@@ -56,11 +56,11 @@ class NewProfileIndex extends React.Component {
     let validate = false;
     const formData = this.state.formData;
     if (formData.dobDate !== formData.dobDateConfirm) {
-      swal('Error!', 'Date of Birth fields must match', 'error');
+      swal.fire('Error!', 'Date of Birth fields must match', 'error');
     } else if (this.state.configData['edc'] === 'true' &&
          (formData.edcDate !== formData.edcDateConfirm)
     ) {
-      swal('Error!', 'EDC fields must match', 'error');
+      swal.fire('Error!', 'EDC fields must match', 'error');
     } else {
       validate = true;
     }
@@ -103,7 +103,7 @@ class NewProfileIndex extends React.Component {
           });
         } else {
           resp.json().then((message) => {
-            swal('Error!', message, 'error');
+            swal.fire('Error!', message, 'error');
           });
         }
       })

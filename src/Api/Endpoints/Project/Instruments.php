@@ -107,7 +107,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 true
             );
         } catch (\Exception $e) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $endpoint = new Instrument($this->project, $instrument);

@@ -14,7 +14,7 @@
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://www.php-fig.org/psr/psr-15/
  */
-namespace LORIS\Http\Response;
+namespace LORIS\Http\Response\JSON;
 
 use \LORIS\HTTP\Response\JsonResponse;
 
