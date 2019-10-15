@@ -26,6 +26,8 @@ namespace LORIS\data_team_helper;
 class Data_Team_Helper extends \NDB_Page
 {
 
+    public $skipTemplate = true; // stops from looking for a smarty template
+
     /**
      * Class that returns the data team helper.
      *
