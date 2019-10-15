@@ -1848,7 +1848,7 @@ SliderElement.propTypes = {
   value: PropTypes.number.isRequired,
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
-  maxWidth: PropTypes.string.isRequired,
+  maxWidth: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1857,11 +1857,6 @@ SliderElement.propTypes = {
 };
 SliderElement.defaultProps = {
   id: null,
-  name: null,
-  label: null,
-  value: 0,
-  minValue: 0,
-  maxValue: 100,
   maxWidth: 'auto',
   disabled: false,
   required: false,
