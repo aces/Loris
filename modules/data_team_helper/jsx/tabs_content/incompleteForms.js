@@ -45,7 +45,7 @@ class IncompleteForms extends Component {
     )
       .then((resp) => resp.json())
       .then((json) => {
-        // console.dir(json);
+        console.dir(json);
         const data = {
           fieldOptions: json.fieldOptions,
           Data: json.data.map((e) => Object.values(e)),
