@@ -33,7 +33,7 @@ class DataTeamHelper extends React.Component {
     return (
       <div className={'col-sm-12'}>
         <div className={'row'}>
-          <Tabs tabs={tabList} defaultTab='tabProfiles'>
+          <Tabs tabs={tabList} defaultTab='tabIncompleteForms'>
             <TabPane TabId={tabList[0].id}><IncompleteForms/></TabPane>
             <TabPane TabId={tabList[1].id}><DataConflicts/></TabPane>
             <TabPane TabId={tabList[2].id}><BehaviouralFeedback/></TabPane>

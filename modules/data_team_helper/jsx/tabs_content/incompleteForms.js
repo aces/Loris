@@ -142,6 +142,11 @@ class IncompleteForms extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
+        if (fieldOptions[field].name === 'test_name' ||
+          fieldOptions[field].name === 'data_entry' ||
+          fieldOptions[field].name === 'commentid') {
+          continue;
+        }
         fields.push({
           label: fieldOptions[field].label,
           show: fieldOptions[field].hidden,
