@@ -72,7 +72,8 @@ $(function () {
 
         var form = $(this).serialize();
 
-        //validate(form);
+        // Clear previous feedback
+        $('.submit-area > label').remove();
 
         $.ajax({
             type: 'post',
@@ -84,8 +85,8 @@ $(function () {
                 $('input[type="reset"]').attr('disabled','disabled');
             },
             error: function(xhr, desc, err) {
-                var html = "<label>One or more fields with multiple-entry option has duplicate values</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
+                var html = "<label>" + xhr.responseText + "</label>";
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000)
                 $('input[type="reset"]').attr('disabled','disabled')
             }
         });
