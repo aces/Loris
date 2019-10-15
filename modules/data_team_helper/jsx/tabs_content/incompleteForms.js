@@ -142,9 +142,12 @@ class IncompleteForms extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
+        console.log(fieldOptions[field].name);
         if (fieldOptions[field].name === 'test_name' ||
           fieldOptions[field].name === 'data_entry' ||
-          fieldOptions[field].name === 'commentid') {
+          fieldOptions[field].name === 'commentid' ||
+          fieldOptions[field].name === 'SessionID' ||
+          fieldOptions[field].name === 'id') {
           continue;
         }
         fields.push({
