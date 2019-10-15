@@ -264,7 +264,7 @@ class New_Profile extends \NDB_Form
             ) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
             }
-            if (strlen($values['dobDate']) < 10) {
+            if (strlen($values['dobDate'] ?? '') < 10) {
                 $errors['dobFormat'] = 'DOB is not in valid date format.';
             }
         }

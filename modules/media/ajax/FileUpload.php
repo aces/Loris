@@ -43,7 +43,7 @@ function editFile()
     // Read JSON from STDIN
     $stdin       = file_get_contents('php://input');
     $req         = json_decode($stdin, true);
-    $idMediaFile = $req['idMediaFile'];
+    $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
         showMediaError("Media ID $idMediaFile not found", 404);

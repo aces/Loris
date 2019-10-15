@@ -261,7 +261,7 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 try {
                     $newHash = new \Password($password);
-                    \User::updatePassword(
+                    \User::factory($username)->updatePassword(
                         $newHash
                     );
                 } catch (\InvalidArgumentException $e) {

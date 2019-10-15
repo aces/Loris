@@ -12,7 +12,6 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-use \LORIS\StudyEntities\Candidate\CandID;
 
 $user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
