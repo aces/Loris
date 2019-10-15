@@ -33,7 +33,7 @@ unittests: phpdev
 # Perform all tests that don't require an install.
 check: checkstatic unittests
 
-# Configure githooks for this repository to be .githooks instead of the default
+# Configures githooks for this repository to be .githooks instead of the default
 # .git/hooks/ (which is ignored).
 githooks:
 	git config core.hooksPath .githooks
