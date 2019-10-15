@@ -20,11 +20,9 @@ return [
 		"PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
 		"PhanTypeMismatchReturn",
-		"PhanUndeclaredVariableDim",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchProperty",
-        "PhanTypeSuspiciousStringExpression",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
