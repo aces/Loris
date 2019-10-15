@@ -61,7 +61,8 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 f.test_name,
                 f.data_entry,
                 f.commentid,
-                t.Full_name
+                t.Full_name,
+                s.ProjectID
             FROM
 	            session s
                 JOIN flag f ON (f.sessionid = s.id)

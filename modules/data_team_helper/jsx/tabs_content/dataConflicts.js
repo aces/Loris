@@ -40,7 +40,7 @@ class DataConflicts extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/data_team_helper/DataConflicts',
+    return fetch(window.location.origin + '/data_team_helper/Conflicts',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())

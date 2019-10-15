@@ -38,28 +38,28 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'PSC'        => $this->PSC,
-                'DCCID'      => $this->DCCID,
-                'PSCID'      => $this->PSCID,
-                'Sex'        => $this->Sex,
-                'Subproject' => $this->Subproject,
-                'DoB'        => $this->DoB,
-                'externalID' => $this->externalID,
-                'File'       => $this->File,
-                'SNP'        => $this->SNP,
-                'CNV'        => $this->CNV,
-                'CPG'        => $this->CPG,
+                'FeedbackID'     => $this->FeedbackID,
+                'CandID'         => $this->CandID,
+                'SessionID'      => $this->SessionID,
+                'CommentID'      => $this->CommentID,
+                'Feedback_level' => $this->Feedback_level,
+                'Test_name'      => $this->Test_name,
+                'FieldName'      => $this->FieldName,
+                'Full_name'      => $this->Full_name,
+                'Visit_label'    => $this->Visit_label,
+                'PSCID'          => $this->PSCID,
+                'ProjectID'      => $this->ProjectID,
             )
         );
     }
     /**
-     * Returns the CenterID for this row, for filters such as
+     * Returns the FeedbackID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
      * @return string
      */
-    public function getPSC(): string
+    public function getFeedbackID(): string
     {
-        return (string) $this->psc;
+        return (string) $this->FeedbackID;
     }
 }

@@ -38,28 +38,24 @@ class ConflictsDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'PSC'        => $this->PSC,
-                'DCCID'      => $this->DCCID,
-                'PSCID'      => $this->PSCID,
-                'Sex'        => $this->Sex,
-                'Subproject' => $this->Subproject,
-                'DoB'        => $this->DoB,
-                'externalID' => $this->externalID,
-                'File'       => $this->File,
-                'SNP'        => $this->SNP,
-                'CNV'        => $this->CNV,
-                'CPG'        => $this->CPG,
+                'CandID'            => $this->CandID,
+                'PSCID'             => $this->PSCID,
+                'FieldName'         => $this->FieldName,
+                'TableName'         => $this->TableName,
+                'test_name_display' => $this->test_name_display,
+                'visit_label'       => $this->visit_label,
+                'ProjectID'         => $this->ProjectID,
             )
         );
     }
     /**
-     * Returns the CenterID for this row, for filters such as
+     * Returns the PSCID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
      * @return string
      */
-    public function getPSC(): string
+    public function getPSCID(): string
     {
-        return (string) $this->psc;
+        return (string) $this->PSCID;
     }
 }

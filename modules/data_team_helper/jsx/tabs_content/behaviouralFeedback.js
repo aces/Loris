@@ -40,7 +40,7 @@ class BehaviouralFeedback extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/data_team_helper/BehaviouralFeedback',
+    return fetch(window.location.origin + '/data_team_helper/Behavioural',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())

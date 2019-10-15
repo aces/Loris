@@ -71,4 +71,33 @@ abstract class Endpoint implements RequestHandlerInterface
 
         return $handler->handle($request);
     }
+
+    /**
+     * Used to create (select, text, ...) element for form filter.
+     *
+     * @param string     $name   for element
+     * @param string     $type   for element
+     * @param string     $label  for element
+     * @param bool       $hidden for element
+     * @param array|null $values for element
+     *
+     * @return object
+     */
+    public function formElementObjectCreator(
+        string $name,
+        string $type,
+        string $label,
+        bool   $hidden,
+        ?array $values
+    ) : object {
+        $element         = new \stdClass();
+        $element->name   = $name;
+        $element->type   = $type;
+        $element->label  = $label;
+        $element->hidden = !$hidden;
+        if (isset($values)) {
+            $element->options = $values;
+        }
+        return $element;
+    }
 }

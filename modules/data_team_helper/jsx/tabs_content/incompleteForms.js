@@ -30,8 +30,8 @@ class IncompleteForms extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -40,7 +40,7 @@ class IncompleteForms extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/data_team_helper/DataConflicts',
+    return fetch(window.location.origin + '/data_team_helper/Incomplete',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())

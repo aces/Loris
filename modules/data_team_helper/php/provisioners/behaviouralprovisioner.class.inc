@@ -43,7 +43,8 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 fb.FieldName,
                 tn.Full_name,
                 s.Visit_label,
-                ca.PSCID
+                ca.PSCID,
+                s.ProjectID
             FROM
                 feedback_bvl_thread AS fb
                 JOIN candidate ca ON (ca.CandID = fb.CandID)

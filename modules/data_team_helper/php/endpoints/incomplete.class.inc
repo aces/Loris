@@ -113,32 +113,55 @@ class Incomplete extends Endpoint implements ETagCalculator
     ) : array {
 
         $user = $request->getAttribute('user');
+        $visit_array   = \Utility::getExistingVisitLabels();
+        $visit_array   = array_combine($visit_array, $visit_array);
+        $list_of_sites = array();
+        // $this->tpl_data['visitLabels'] = $visit_array;
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites      = \Utility::getSiteList();
+            $default_site_array =array('All Sites' => 'All Sites');
+            if (is_array($list_of_sites)) {
+                $list_of_sites = $default_site_array + $list_of_sites;
+            }
+        } else {
+            // allow only to view own study site data
+            $list_of_sites      = $user->getStudySites();
+            $default_site_array =array('All User Sites' => 'All User Sites');
+            $list_of_sites      = $default_site_array + $list_of_sites;
+        }
+        //$this->tpl_data['siteList'] = $list_of_sites;
+        // Project list, if applicable
+
+        $projectList = \Utility::getProjectList();
+        //$this->tpl_data['projectList'] = $projectList;
+
+
+
+
+
         // PSC
-        if ($user->hasPermission('genomic_browser_view_allsites')) {
+        if ($user->hasPermission('data_team_helper')) {
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
         } else {
             $list_of_sites = $user->getStudySites();
         }
-        $any_options = array(
-            'Y' => 'Yes',
-            'N' => 'No',
-        );
         return array(
-            'centerID'     => parent::formElementObjectCreator(
-                'centerID',
-                'select',
-                'Site',
-                true,
-                $list_of_sites
-            ),
-            'DCCID'        => parent::formElementObjectCreator(
-                'DCCID',
+            'id'     => parent::formElementObjectCreator(
+                'id',
                 'text',
-                'DCCID',
+                'ID',
                 true,
                 null
+            ),
+            'visit_label'     => parent::formElementObjectCreator(
+                'visit_label',
+                'select',
+                'Visit',
+                false,
+                $visit_array
             ),
             'PSCID'        => parent::formElementObjectCreator(
                 'PSCID',
@@ -147,64 +170,54 @@ class Incomplete extends Endpoint implements ETagCalculator
                 false,
                 null
             ),
-            'Sex'          => parent::formElementObjectCreator(
-                'sex',
-                'select',
-                'Sex',
-                false,
-                array(
-                    'Male'   => 'Male',
-                    'Female' => 'Female',
-                )
-            ),
-            'SubprojectID' => parent::formElementObjectCreator(
-                'SubprojectID',
-                'select',
-                'Subproject',
-                false,
-                \Utility::getSubprojectList()
-            ),
-            'DoB'          => parent::formElementObjectCreator(
-                'dob',
-                'date',
-                'Date of Birth',
-                true,
-                array('maxlength' => 10)
-            ),
-            'External_ID'  => parent::formElementObjectCreator(
-                'External_ID',
+            'candid'        => parent::formElementObjectCreator(
+                'candid',
                 'text',
-                'External ID',
+                'DCCID',
+                false,
+                null
+            ),
+            'SessionID'        => parent::formElementObjectCreator(
+                'SessionID',
+                'text',
+                'SessionID',
                 true,
                 null
             ),
-            'File'         => parent::formElementObjectCreator(
-                'File',
-                'select',
-                'Files',
-                false,
-                $any_options
+            'test_name'     => parent::formElementObjectCreator(
+                'test_name',
+                'text',
+                'test_name',
+                true,
+                null
             ),
-            'SNP'          => parent::formElementObjectCreator(
-                'SNP',
-                'select',
-                'SNPs found',
-                false,
-                $any_options
+            'data_entry'     => parent::formElementObjectCreator(
+                'data_entry',
+                'text',
+                'data_entry',
+                true,
+                null
             ),
-            'CNV'          => parent::formElementObjectCreator(
-                'CNV',
-                'select',
-                'CNVs found',
-                false,
-                $any_options
+            'commentid'     => parent::formElementObjectCreator(
+                'commentid',
+                'text',
+                'commentid',
+                true,
+                null
             ),
-            'CPG'          => parent::formElementObjectCreator(
-                'CPG',
+            'Full_name'     => parent::formElementObjectCreator(
+                'Full_name',
                 'select',
-                'CPGs found',
+                'Instrument',
                 false,
-                $any_options
+                \Utility::getAllInstruments()
+            ),
+            'Project' => parent::formElementObjectCreator(
+                'Project',
+                'select',
+                'Project',
+                false,
+                \Utility::getProjectList()
             ),
         );
     }
