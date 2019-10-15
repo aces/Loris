@@ -1868,13 +1868,6 @@ RadioElement.propTypes = {
 };
 RadioElement.defaultProps = {
   id: null,
-  name: null,
-  label: null,
-  value: 0,
-  items: {
-    Female: 'Female',
-    Male: 'Male',
-  },
   disabled: false,
   required: false,
   errorMessage: '',
