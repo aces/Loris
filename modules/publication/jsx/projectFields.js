@@ -411,13 +411,13 @@ class ProjectFormFields extends React.Component {
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
         />
-        <div className="row form-group">
+        <span className="row form-group">
           <label className="col-sm-3 control-label">
           </label>
-          <div className="col-sm-9">
-            <div className="form-control-static">{voiHelp}</div>
-          </div>
-        </div>
+          <span className="col-sm-9">
+            <span className="form-control-static">{voiHelp}</span>
+          </span>
+        </span>
         {fileFields}
         <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'} />
       </div>
