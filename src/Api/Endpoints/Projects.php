@@ -31,14 +31,15 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * need to be recalculated for the ETag and handler
      */
     protected $projectsCache;
+
     /**
-     * All users have access to the login endpoint to try and login.
+     * Only logged in users can see projects.
      *
      * @param \User $user The user whose access is being checked
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    private function _hasAccess(\User $user) : bool
     {
         return !($user instanceof \LORIS\AnonymousUser);
     }
@@ -82,7 +83,11 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // FIXME: Validate permissions.
+        $user = $request->getAttribute('user');
+        if (!$this->_hasAccess($user)) {
+            return new \LORIS\Http\Response\Unauthorized();
+        }
+
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 1) {
@@ -126,7 +131,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
         $config = \NDB_Factory::singleton()->config();
 
-        $useEDC      = $config->getSetting("useEDC");
+        $useEDC = $config->getSetting("useEDC");
 
         if ($useEDC === '1' || $useEDC === 'true') {
             $useEDC = true;
@@ -139,12 +144,12 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = [
-            "useEDC" => $useEDC,
-            "PSCID"  => [
-                "Type"  => $type,
-                "Regex" => $PSCIDFormat,
-            ],
-        ];
+                     "useEDC" => $useEDC,
+                     "PSCID"  => [
+                                  "Type"  => $type,
+                                  "Regex" => $PSCIDFormat,
+                                 ],
+                    ];
 
         $projects  = \Utility::getProjectList();
         $projArray = [];
