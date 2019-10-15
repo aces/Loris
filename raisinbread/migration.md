@@ -1,4 +1,4 @@
-#20.2
+# 20.2
 2018-08-27_add_name_of_mri_config_file_to_config_module.sql
 2018-09-07_EEG_tables.sql
 2018-10-01-Add_data_release_permissions.sql
@@ -6,7 +6,7 @@
 2018-11-28_add_SNR_modalities_to_config_module.sql
 
 
-#20.3
+# 20.3
 2018-05-28_publication_schema.sql
 2018-10-05_change_regex_config.sql
 2018-11-13_add_path_to_config_enum.sql
@@ -14,7 +14,7 @@
 2019-01-16_map_parameter_type_and_parameter_type_category_for_imaging.sql
 
 
-#21.0
+# 21.0
 2018-01-17-normalisation_visit.sql
 2018-01-23-qc_module_patch.sql
 2018-02-27_normalize_mri_protocol.sql
@@ -34,13 +34,15 @@
 2019-06-06-AddActiveToNotificationSpool.sql
 2019-06-13-LorisMenuPermissions_IssueTracker.sql
 
-#21.0 - cleanup
+## 21.0 - cleanup
 2018-02-20_remove_duplicate_value_from_Config.sql
 2018-04-05_RemovePendingStagingFromFiles.sql
 2018-11-20-remove_currentGUITable_field.sql
 2019-05-13-RemoveTraining.sql
 2019-05-15-Reliability_link.sql
 
-#NEW
+# NEW
+2019-04-30-project-rel-rename.sql
+2019-07-10-subproject-session-FK.sql
 
-#CLEAN-UP
+# CLEAN-UP

@@ -33,13 +33,13 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_cache;
 
     /**
-     * All users have access to the login endpoint to try and login.
+     * Only logged in users can see projects.
      *
      * @param \User $user The user whose access is being checked
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    private function _hasAccess(\User $user) : bool
     {
         return !($user instanceof \LORIS\AnonymousUser);
     }
@@ -139,6 +139,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_cache = (new \LORIS\api\Views\Projects($projects))
                 ->toArray();
         }
+
         return new \LORIS\Http\Response\JsonResponse(
             $this->_cache
         );

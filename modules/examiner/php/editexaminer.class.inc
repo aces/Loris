@@ -189,12 +189,12 @@ class EditExaminer extends \NDB_Form
             } else { // update to a test certification for the examiner
 
                 //select history events
-                $oldVals = $DB->pselectRow(
+                $oldVals = $DB->pselect(
                     "SELECT ch.new, ch.new_date
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
-                     ORDER BY changeDate DESC",
+                     ORDER BY changeDate DESC LIMIT 1",
                     array(
                      'EID' => $examinerID,
                      'TID' => $testID,
@@ -207,8 +207,10 @@ class EditExaminer extends \NDB_Form
                     );
                 }
 
-                $oldVal  = $oldVals['new'];
-                $oldDate = $oldVals['new_date'];
+                // since there is an ORDER BY in pselect
+                // $oldVals[0] corresponds to the latest date
+                $oldVal  = $oldVals[0]['new'] ?? null;
+                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
