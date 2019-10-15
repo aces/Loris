@@ -8,11 +8,11 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Candidate\Visit\Dicom;
+namespace LORIS\api\Endpoints\Candidate\Visit\Dicom;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Api\Endpoint;
+use \LORIS\api\Endpoint;
 
 use \LORIS\server_processes_manager\ServerProcessLauncher;
 use \LORIS\server_processes_manager\ServerProcessesMonitor;
@@ -150,7 +150,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\NotFound();
         }
 
-        $array = (new \LORIS\Api\Views\Visit\Dicom\Processes($mriuploads))
+        $array = (new \LORIS\api\Views\Visit\Dicom\Processes($mriuploads))
             ->toArray();
 
         return new \LORIS\Http\Response\JsonResponse($array);

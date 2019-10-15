@@ -8,11 +8,11 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api\Endpoints\Candidate\Visit\Dicom\Process;
+namespace LORIS\api\Endpoints\Candidate\Visit\Dicom\Process;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Api\Endpoint;
+use \LORIS\api\Endpoint;
 
 use \LORIS\server_processes_manager\ServerProcessesMonitor;
 

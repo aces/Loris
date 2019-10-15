@@ -9,7 +9,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\Api\Views\Visit\Dicom;
+namespace LORIS\api\Views\Visit\Dicom;
 
 /**
  * Creates an array representation of a server process.
