@@ -785,6 +785,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
+
         if ($this->jsonData !== true) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
@@ -2187,7 +2188,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
         );
-        $db->execute($prepQ, array('CID' => $this->commentID));
+        $db->execute(
+            $prepQ,
+            array('CID' => $this->commentID),
+            array('nofetch' => true)
+        );
     }
 
     /**
@@ -2608,6 +2613,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function validate(array $values): bool
     {
         return $this->determineDataEntryAllowed();
+    }
+
+    /**
+     * Gets the flags of that instrument
+     *
+     * @return \InstrumentFlags
+     */
+    public function getFlags(): \InstrumentFlags
+    {
+        $row = \NDB_Factory::singleton()->database()->pselectRow(
+            'SELECT
+               Data_entry as dataentry,
+               Administration as administration,
+               Validity as validity
+             FROM
+               flag
+             WHERE CommentID = :v_commentid',
+            array('v_commentid' => $this->getCommentId())
+        );
+
+        $dataentry      = $row['dataentry'] ?? null;
+        $administration = $row['administration'] ?? null;
+        $validity       = $row['validity'] ?? null;
+
+        return new \InstrumentFlags(
+            $dataentry,
+            $administration,
+            $validity
+        );
     }
 
     /**

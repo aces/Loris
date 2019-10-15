@@ -479,9 +479,9 @@ class TimePoint
     /**
      * Gets the visit status of this timepoint.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getVisitStatus(): string
+    function getVisitStatus(): ?string
     {
         return $this->_timePointInfo["Visit"];
     }
@@ -945,6 +945,157 @@ class TimePoint
         }
 
         return $candidate->getCandidateDoB();
+    }
+
+    /**
+     * Gets the Images of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\Data\Models\ImageDTO[] A traversable of ImageDTO
+     */
+    public function getImages(\User $user): array
+    {
+        $provisioner = new \LORIS\Data\Provisioners\TimepointImagesRowProvisioner(
+            $this
+        );
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first Image of that session matching a given filename.
+     *
+     * @param \User  $user     The requesting user
+     * @param string $filename The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Image
+     */
+    public function getImageByFilename(\User $user, string $filename): \LORIS\Image
+    {
+        $filtered = array_filter(
+            $this->getImages($user),
+            function ($dto) use ($filename) {
+                return $dto->getFilename() == $filename;
+            }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound($filename . ' not found.');
+        }
+
+        // Take the first corresponding file.
+        $imagedto = array_pop($filtered);
+
+        return new \LORIS\Image($imagedto->getFileid());
+    }
+
+    /**
+     * Gets the DicomTars of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\data\Models\DicomTarDTO[] A traversable of DicomTarDTO
+     */
+    public function getDicomTars(\User $user): array
+    {
+        $provisioner = new \LORIS\api\provisioners\VisitDicomsRowProvisioner($this);
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first DicomTar of that session matching a given filename.
+     *
+     * @param string $tarname The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Data\Models\DicomTarDTO
+     */
+    public function getDicomTarByFilename(
+        string $tarname
+    ): \LORIS\Data\Models\DicomTarDTO {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            'SELECT
+               TarchiveID as tarchiveid
+             FROM
+               tarchive
+             WHERE
+               tarchive.SessionID = :v_sessionid AND
+               tarchive.ArchiveLocation LIKE :v_basename',
+            array(
+             'v_sessionid' => $this->getSessionID(),
+             'v_basename'  => '%' . $tarname,
+            )
+        );
+
+        if (empty($row)) {
+            throw new \NotFound($tarname . ' not found.');
+        }
+
+        return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
+    }
+
+    /**
+     * Accessor for this timepoint imaging QC status.
+     *
+     * @return \LORIS\TimePointImagingQC
+     */
+    public function getImagingQC(): \LORIS\TimePointImagingQC
+    {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               MRIQCStatus as qcstatus,
+               MRIQCPending as ispending,
+               MRICaveat as hascaveat
+             FROM
+               session
+             WHERE
+               ID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+
+        return new \LORIS\TimePointImagingQC(
+            $row['qcstatus'] ?? null,
+            $row['ispending'] ?? null,
+            $row['hascaveat'] ?? null
+        );
+    }
+
+    /**
+     * Gets the instrument names associated to this timepoint
+     *
+     * The DISTINCT keyword is used because DDE instruments would meke
+     * duplicates.
+     *
+     * @return array A list of test_name
+     */
+    public function getInstrumentNames(): array
+    {
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectCol(
+            '
+             SELECT DISTINCT
+               Test_name as shortname
+             FROM
+               flag
+             WHERE
+               SessionID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+        return $result;
     }
 }
 
