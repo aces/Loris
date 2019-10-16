@@ -92,57 +92,51 @@ class IncompleteForms extends Component {
         );
         break;
       }
-      // case 'PSCID': {
-      //   const url = window.location.origin + '/' + cell + '/';
-      //   reactElement = (
-      //     <td><a href={url}>{rowData.PSCID}</a></td>
-      //   );
-      //   break;
-      // }
-      // case 'Subproject':
-      //   reactElement = (
-      //     <td>{this.state.data.subprojects[parseInt(cell)]}</td>
-      //   );
-      //   break;
-      // case 'File':
-      //   if (cell === 'Y') {
-      //     reactElement = (
-      //       <td>
-      //         <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-      //           'genomic_browser/viewGenomicFile/',
-      //           {candID: rowData[1]}
-      //         )}>{cell}</a>
-      //       </td>
-      //     );
-      //   } else {
-      //     reactElement = (
-      //       <td>{cell}</td>
-      //     );
-      //   }
-      //   break;
-      // case 'CNV':
-      // case 'CPG':
-      // case 'SNP':
-      //   if (cell === 'Y') {
-      //     reactElement = (
-      //       <td>
-      //       <span
-      //         style={{cursor: 'pointer'}}
-      //         onClick={loris.loadFilteredMenuClickHandler(
-      //           'genomic_browser/' + column.toLowerCase() + '_browser/',
-      //           {DCCID: rowData[1]}
-      //         )}
-      //       >
-      //         {cell}
-      //       </span>
-      //       </td>
-      //     );
-      //   } else {
-      //     reactElement = (
-      //       <td>{cell}</td>
-      //     );
-      //   }
-      //   break;
+      case 'PSCID': {
+        reactElement = (
+          <td>
+            <a href={window.location.origin +
+            '/' +
+            rowData['DCCID']
+            }>
+              {rowData['PSCID']}
+            </a>
+          </td>
+        );
+        break;
+      }
+      case 'DCCID': {
+        reactElement = (
+          <td>
+            <a href={window.location.origin +
+            '/' +
+            rowData['DCCID']
+            }>
+              {rowData['DCCID']}
+            </a>
+          </td>
+        );
+        break;
+      }
+      case 'Instrument': {
+        reactElement = (
+          <td>
+            <a href={window.location.origin +
+            '/instruments/' +
+            rowData['test_name'] +
+            '/?candID=' +
+            rowData['DCCID'] +
+            '&sessionID=' +
+            rowData['SessionID'] +
+            '&commentID=' +
+            rowData['commentid']
+            }>
+              {rowData['Full_name']}
+            </a>
+          </td>
+        );
+        break;
+      }
       default:
         reactElement = (
           <td>{cell}</td>
