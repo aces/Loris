@@ -91,20 +91,11 @@ class RequestAccount extends Component {
         body: send,
       }
     ).then((response) => response.json())
-<<<<<<< HEAD
-      .then(
-        (data) => {
-          this.setState({request: true});
-        }).catch((error) => {
-      this.setState({request: true});
-    });
-=======
       .then((data) => {
         this.setState({request: true});
       }).catch((error) => {
-        this.setState({request: true});
-      });
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
+      this.setState({request: true});
+    });
   }
 
   /**

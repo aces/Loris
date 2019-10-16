@@ -100,11 +100,7 @@ class Login extends Component {
           state.isLoaded = true;
           this.setState(state);
         }).catch((error) => {
-<<<<<<< HEAD
-      // error shouldn't happen.
-=======
           console.error('error: ' + error);
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
     });
   }
 
@@ -129,11 +125,7 @@ class Login extends Component {
     const state = Object.assign({}, this.state);
     const url = window.location.origin + '/login/AjaxLogin';
     const send = this.urlSearchParams({
-<<<<<<< HEAD
-      login: true,
-=======
       login: 'true',
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
       command: 'login',
       username: state.form.value.username,
       password: state.form.value.password,
@@ -141,12 +133,9 @@ class Login extends Component {
     fetch(
       url, {
         method: 'POST',
-<<<<<<< HEAD
-=======
         mode: 'same-origin',
         credentials: 'include',
         redirect: 'follow',
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -193,46 +182,6 @@ class Login extends Component {
   }
 
   /**
-<<<<<<< HEAD
-   * Handle form submission
-   * @param {object} e - Form submission event
-   */
-  handleSubmit(e) {
-    // const state = Object.assign({}, this.state);
-    const send = this.urlSearchParams({
-      command: 'login',
-    });
-    const url = window.location.origin + '/login/AjaxLogin';
-    fetch(
-      url, {
-        method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.status === 'error') {
-            // Populate the form errors.
-            if (data.errors) {
-              console.log('errors');
-            }
-          } else {
-            console.log('success');
-            // this.setState({success: true});
-          }
-        });
-  }
-
-  /**
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
    * @return {DOMRect}
    */
   render() {

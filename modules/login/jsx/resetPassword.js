@@ -72,20 +72,11 @@ class ResetPassword extends Component {
         body: send,
       }
     ).then((response) => response.json())
-<<<<<<< HEAD
-      .then(
-        (data) => {
-          this.setState({reset: true});
-        }).catch((error) => {
-      this.setState({reset: true});
-    });
-=======
       .then((data) => {
         this.setState({reset: true});
       }).catch((error) => {
-        this.setState({reset: true});
-      });
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
+      this.setState({reset: true});
+    });
   }
 
   /**

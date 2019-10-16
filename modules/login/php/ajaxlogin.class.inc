@@ -40,10 +40,6 @@ class AjaxLogin extends \NDB_Page
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
-<<<<<<< HEAD
-     * @throws \LorisException
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -86,17 +82,10 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-<<<<<<< HEAD
-     * @throws \LorisException
-     */
-    function processRequest(array $values) : array
-    {
-=======
      */
     function processRequest(array $values) : array
     {
         $response = array();
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
         if (isset($values['command']) && $values['command'] == 'initialize') {
             // initialize - setup form data to return.
             $response           = $this->initializeSetup($values);
@@ -115,11 +104,6 @@ class AjaxLogin extends \NDB_Page
         } else if (isset($values['command']) && $values['command'] == 'expired') {
             // login - expired password update
             $response = $this->expiredPassword($values);
-<<<<<<< HEAD
-        } else {
-            $response['status'] = 'error';
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
         }
         return $response;
     }
@@ -146,10 +130,10 @@ class AjaxLogin extends \NDB_Page
         foreach ($study_links as $label => $url) {
             $windowName           = md5($url);
             $loginData['links'][] = array(
-                                     'url'        => $url,
-                                     'label'      => $label,
-                                     'windowName' => $windowName,
-                                    );
+                'url'        => $url,
+                'label'      => $label,
+                'windowName' => $windowName,
+            );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
@@ -178,10 +162,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-<<<<<<< HEAD
-     * @throws \LorisException
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
      */
     function resetPassword(array $values) : array
     {
@@ -205,15 +185,6 @@ class AjaxLogin extends \NDB_Page
             if ($user->isEmailValid()) {
                 $config = \NDB_Config::singleton();
                 // Generate a new password.
-<<<<<<< HEAD
-                $password = \User::newPassword();
-                // Reset the password in the database and
-                // expire password so user must change it upon login.
-                $user->updatePassword($password, '1999-01-01');
-                // Send the user an email.
-                $msg_data['study']    = $config->getSetting('title');
-                $msg_data['url']      = $config->getSetting('url');
-=======
                 $password = \Utility::randomString();
                 // Reset the password in the database and
                 // expire password so user must change it upon login.
@@ -225,7 +196,6 @@ class AjaxLogin extends \NDB_Page
                 $msg_data          = array();
                 $msg_data['study'] = $config->getSetting('title');
                 $msg_data['url']   = $config->getSetting('url');
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
                 $msg_data['realname'] = $user->getData('Real_name');
                 $msg_data['password'] = $password;
                 \Email::send($email, 'lost_password.tpl', $msg_data);
@@ -250,10 +220,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-<<<<<<< HEAD
-     * @throws \DatabaseException
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
      */
     function requestAccount(array $values) : array
     {
@@ -281,13 +247,13 @@ class AjaxLogin extends \NDB_Page
         $fullname = $name . ' ' . $lastname;
 
         $vals = array(
-                 'UserID'           => $from,
-                 'Real_name'        => $fullname,
-                 'First_name'       => $name,
-                 'Last_name'        => $lastname,
-                 'Pending_approval' => 'Y',
-                 'Email'            => $from,
-                );
+            'UserID'           => $from,
+            'Real_name'        => $fullname,
+            'First_name'       => $name,
+            'Last_name'        => $lastname,
+            'Pending_approval' => 'Y',
+            'Email'            => $from,
+        );
 
         // Check email address' uniqueness
         $result = $DB->pselectOne(
@@ -306,8 +272,8 @@ class AjaxLogin extends \NDB_Page
             $DB->insert(
                 'user_psc_rel',
                 array(
-                 'UserID'   => $user_id,
-                 'CenterID' => $site,
+                    'UserID'   => $user_id,
+                    'CenterID' => $site,
                 )
             );
 
@@ -329,19 +295,19 @@ class AjaxLogin extends \NDB_Page
                     $DB->insert(
                         'examiners',
                         array(
-                         'full_name'   => $fullname,
-                         'radiologist' => $rad,
-                         'userID'      => $user_id,
+                            'full_name'   => $fullname,
+                            'radiologist' => $rad,
+                            'userID'      => $user_id,
                         )
                     );
                     $examinerID = $DB->getLastInsertID();
                     $DB->insert(
                         'examiners_psc_rel',
                         array(
-                         'examinerID'       => $examinerID,
-                         'centerID'         => $site,
-                         'active'           => 'Y',
-                         'pending_approval' => 'Y',
+                            'examinerID'       => $examinerID,
+                            'centerID'         => $site,
+                            'active'           => 'Y',
+                            'pending_approval' => 'Y',
                         )
                     );
                 }
@@ -392,10 +358,6 @@ class AjaxLogin extends \NDB_Page
      * @param array $values the user data received.
      *
      * @return array
-<<<<<<< HEAD
-     * @throws \LorisException
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
      */
     function expiredPassword(array $values) : array
     {
@@ -412,28 +374,6 @@ class AjaxLogin extends \NDB_Page
                 $values['error'] = 'You cannot keep the same password';
                 return $values;
             }
-<<<<<<< HEAD
-            // Check if password meets strength requirement.
-            if (!\User::isPasswordStrong(
-                $values['password'],
-                array(
-                 $values['confirm'],
-                 $data['UserID'],
-                 $data['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            )
-            ) {
-                $values['error'] = 'The password is weak, or'
-                    . ' the passwords do not match.';
-                return $values;
-            }
-=======
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
             // Update password
             $user->updatePassword($values['password']);
             unset($_SESSION['PasswordExpiredForUser']);

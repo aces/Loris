@@ -14,6 +14,7 @@ const config = [{
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/issue_tracker/js/issueTrackerIndex.js': './modules/issue_tracker/jsx/issueTrackerIndex.js',
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
+    './modules/login/js/loginIndex.js': './modules/login/jsx/loginIndex.js',
     './modules/candidate_parameters/js/CandidateParameters.js': './modules/candidate_parameters/jsx/CandidateParameters.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/conflict_resolver/js/conflictResolverIndex.js': './modules/conflict_resolver/jsx/conflictResolverIndex.js',

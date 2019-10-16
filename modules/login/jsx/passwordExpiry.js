@@ -80,23 +80,6 @@ class PasswordExpired extends Component {
         body: send,
       }
     ).then((response) => response.json())
-<<<<<<< HEAD
-      .then(
-        (data) => {
-          if (data.error) {
-            // error - message.
-            const state = Object.assign({}, this.state);
-            state.form.error.toggle = true;
-            state.form.error.message = data.error;
-            this.setState(state);
-          } else {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
-          }
-        }).catch((error) => {
-      // no error should happen.
-    });
-=======
       .then((data) => {
         if (data.error) {
           // error - message.
@@ -109,9 +92,8 @@ class PasswordExpired extends Component {
           window.location.href = window.location.origin;
         }
       }).catch((error) => {
-        // no error should happen.
-      });
->>>>>>> 5ed82d2805b8290456bd6133fea6119bb010e963
+      // no error should happen.
+    });
   }
 
   /**
