@@ -36,6 +36,30 @@
     </select>
 {/function}
 
+{function name=createAlphabet}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$alphabet key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
+{function name=createGenerationMethod}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$generationMethod key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
+{function name=createIDPrefix}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$idPrefix key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 {function name=createEmail}
     <input class="form-control" type="email" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
 {/function}
@@ -86,6 +110,12 @@
             {call createTextArea k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}
             {call createLookUpCenterNameUsing k=$k v=$v d=$node['Disabled']}
+        {elseif $node['Name'] eq 'idAlphabet'}
+            {call createAlphabet k=$k v=$v d=$node['Disabled']}
+        {elseif $node['Name'] eq 'idGenerationMethod'}
+            {call createGenerationMethod k=$k v=$v d=$node['Disabled']}
+        {elseif $node['Name'] eq 'idPrefixMethod'}
+            {call createIDPrefix k=$k v=$v d=$node['Disabled']}
         {else}
             {call createText k=$k v=$v d=$node['Disabled']}
         {/if}
@@ -112,6 +142,10 @@
             {call createTextArea k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}
             {call createLookUpCenterNameUsing k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'alphabet'}
+            {call createAlphabet k=$k v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'generationMethod'}
+            {call createGenerationMethod k=$k v=$v d=$node['Disabled']}
         {else}
             {call createText k=$id d=$node['Disabled']}
         {/if}

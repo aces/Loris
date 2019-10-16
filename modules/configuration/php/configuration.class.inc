@@ -69,10 +69,47 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['lookup_center']   = array(
-            ''            => '',
-            'PatientID'   => 'PatientID',
-            'PatientName' => 'PatientName',
+        $DB = \NDB_Factory::singleton()->database();
+
+        $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
+        $this->tpl_data['config']          = $this->_getConfigSettingTree();
+        $this->tpl_data['sandbox']         = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting("sandbox");
+
+        // Build dropdown menus
+        $this->tpl_data['instruments']   = \Utility::toDropdownArray(
+            \Utility::getAllInstruments()
+        );
+        $this->tpl_data['scan_types']    = \Utility::toDropdownArray(
+            $DB->pselectCol('SELECT Scan_type FROM mri_scan_type', array())
+        );
+        $this->tpl_data['lookup_center'] = \Utility::toDropdownArray(
+            array(
+             'PatientID',
+             'PatientName',
+            )
+        );
+        $this->tpl_data['alphabet']      = \Utility::toDropdownArray(
+            array(
+             'alpha',
+             'numeric',
+             'alphanumeric',
+            )
+        );
+
+        $this->tpl_data['generationMethod'] = \Utility::toDropdownArray(
+            array(
+             'sequential',
+             'random',
+            )
+        );
+
+        $this->tpl_data['idPrefix'] = \Utility::toDropdownArray(
+            array(
+             'alias',
+             'static',
+            )
         );
     }
 

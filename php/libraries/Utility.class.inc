@@ -981,29 +981,30 @@ class Utility
     }
 
     /**
-     * Get the list of MRI scan type available in the database
+     * Helper function to create an array of the format:
+     * array(
+     *     '' => '',
+     *     'option1' => 'option1',
+     *     'option2' => 'option2,
+     *     ...
+     * )
+     * This is primarily used to create front-end dropdown lists.
+     * The empty string key is used to provide a default 'blank' value. This
+     * is mandatory for this function.
+     * If a blank value is not desired, use `array_combine($values, $values);`
+     * instead of this function.
      *
-     * @return array Array of MRI scan types which exist in the database table
-     *               mri_scan_type joined to the files table
-     *               array($scan_type_id => $scan_type)
+     * @param string[] $values Used as both the keys and values of resulting
+     *                          array.
+     *
+     * @return string[]
      */
-    static function getScanTypeList(): array
+    static function toDropdownArray(array $values): array
     {
-        $DB = \Database::singleton();
-
-        $scan_types_DB = $DB->pselect(
-            "SELECT ID, Scan_type 
-             FROM mri_scan_type mri
-                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
+        return array_merge(
+            array('' => ''),
+            array_combine($values, $values)
         );
-
-        $scan_types = array();
-        foreach ($scan_types_DB as $scan_type) {
-            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
-        }
-
-        return $scan_types;
     }
 }
 

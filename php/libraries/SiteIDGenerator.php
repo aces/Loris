@@ -44,12 +44,30 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     public function __construct(string $siteAlias, string $projectAlias)
     {
+        $config = \NDB_Factory::singleton()->config();
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
         // to create new IDs.
-        $this->generationMethod = $this->_getIDSetting('generation');
-        $this->length           = $this->_getIDSetting('length') ?? self::LENGTH;
-        $this->alphabet         = $this->_getIDSetting('alphabet');
+        $this->generationMethod = $config->getSetting('idGenerationMethod');
+        $configLength           = intval($config->getSetting('idLength'));
+        // Length should not be greater than the value of the constant.
+        $this->length = (self::LENGTH < $configLength) ?
+            self::LENGTH
+            : $configLength;
+
+        // get alphabet setting
+        switch ($config->getSetting('idAlphabet')) {
+        case 'alpha':
+            $this->alphabet = range('A', 'Z');
+            break;
+        case 'numeric':
+            $this->alphabet = range('0', '9');
+            break;
+        case 'alphanumeric':
+            $this->alphabet = array_merge(range('0', '9'), range('A', 'Z'));
+            break;
+        }
+        error_log($config->getSetting('idAlphabet'));
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
@@ -60,10 +78,20 @@ class SiteIDGenerator extends IdentifierGenerator
             strval($this->alphabet[count($this->alphabet) - 1]),
             $this->length
         );
-
         $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
-        $this->prefix       = $this->_getIDSetting('prefix');
+        // Determine prefix to be used for the ID.
+        switch ($config->getSetting('idPrefixMethod')) {
+        case 'static':
+            $this->prefix = $config->getSetting('idStaticPrefix');
+            break;
+        case 'alias':
+            $this->prefix = $siteAbbrevPrefix;
+            break;
+        default:
+            // Will throw exception
+            $this->prefix = null;
+        }
         $this->validate();
     }
 
@@ -83,6 +111,7 @@ class SiteIDGenerator extends IdentifierGenerator
             || empty($this->minValue)
             || empty($this->maxValue)
             || empty($this->prefix)
+            || ! ($this->length > 0)
             || !is_array($this->alphabet)
         ) {
             throw new \DomainException(

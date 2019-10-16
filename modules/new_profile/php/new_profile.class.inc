@@ -193,12 +193,6 @@ class New_Profile extends \NDB_Form
         }
         $project = $projList ?? null;
 
-        // Get setting through pscid
-        $PSCIDsettings = $config->getSetting('PSCID');
-        if ($PSCIDsettings['generation'] == 'user') {
-            $pscidSet = "true";
-        }
-
         $this->fieldOptions = array(
             'minYear'   => $minYear,
             'maxYear'   => $maxYear,

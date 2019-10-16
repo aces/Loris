@@ -60,6 +60,11 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'citation_policy', 'Citation Policy for Acknowledgements module', 1, 0, 'textarea', ID, 'Citation Policy', 24 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'CSPAdditionalHeaders', 'Extensions to the Content-security policy allow only for self-hosted content', 1, 0, 'text', ID, 'Content-Security Extensions', 25 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'usePwnedPasswordsAPI', 'Whether to query the Have I Been Pwned password API on password changes to prevent the usage of common and breached passwords', 1, 0, 'boolean', ID, 'Enable "Pwned Password" check', 26 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'idAlphabet', 'The character set used to generate study IDs (e.g. PSCID).', 1, 0, 'text', ID, 'Study ID Alphabet', 27 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'idGenerationMethod', 'How study IDs should be generated', 1, 0, 'text', ID, 'Study ID Generation Method', 28 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'idPrefixMethod', 'The prefix to be used for study IDs. "Alias" will use the Site or Project alias as a prefix. "Static" will take the value from the "idStaticPrefix" config setting', 1, 0, 'text', ID, 'Study ID Prefix', 29 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'idStaticPrefix', 'This string will be used as the prefix for study IDs if "static" is selected for "idPrefixMethod"', 1, 0, 'text', ID, 'Study ID Prefix', 30 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'idLength', 'The number of characters to use for an ID. Does not include the site or project prefix.', 1, 0, 'text', ID, 'Length of study identifier', 31 FROM ConfigSettings WHERE Name="study";
 
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
@@ -256,3 +261,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'alpha'  FROM ConfigSettings WHERE Name="idAlphabet";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'sequential'  FROM ConfigSettings WHERE Name="idGenerationMethod";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'alias'  FROM ConfigSettings WHERE Name="idPrefixMethod";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'LORIS'  FROM ConfigSettings WHERE Name="idStaticPrefix";
+INSERT INTO Config (ConfigID, Value) SELECT ID, '4'  FROM ConfigSettings WHERE Name="idLength";
