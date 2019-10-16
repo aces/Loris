@@ -189,13 +189,6 @@ class SiteIDGenerator extends IdentifierGenerator
     private function _getIDSetting(
         string $setting
     ) {
-        // The generation setting can be easily extracted and returned.
-        if ($setting == 'generation') {
-            return \NDB_Factory::singleton()
-                ->config()
-                ->getSetting($this->kind)['generation'];
-        }
-
         // Values other than 'generation' are found within 'seq' elements and
         // require more complex processing.
         $idStructure = \NDB_Factory::singleton()
@@ -223,38 +216,7 @@ class SiteIDGenerator extends IdentifierGenerator
                 . $e->getMessage()
             );
         }
-        if ($setting === 'alphabet') {
-            switch ($seqValue) {
-            case 'alpha':
-                return range('A', 'Z');
-            case 'numeric':
-                return range('0', '9');
-            case 'alphanumeric':
-                return array_merge(range('0', '9'), range('A', 'Z'));
-            }
-        }
 
-        if ($setting === 'prefix') {
-            if ($seqValue === 'static') {
-                // The 'static' seq attribute must also include a value which
-                // will be a fixed string prefix to be prepended to IDs in
-                // LORIS. This must be extracted manually.
-                foreach ($idStructure as $seq) {
-                    if ($seq['@']['type'] === 'static') {
-                        // This index stores the prefix.
-                        return $seq['#'];
-                    }
-                }
-            } elseif ($seqValue === 'siteAbbrev') {
-                return $this->siteAlias;
-            } elseif ($seqValue === 'projectAbbrev') {
-                return $this->projectAlias;
-            } else {
-                throw new ConfigurationException(
-                    "Incorrect option $seqValue selected for PSCID generation."
-                );
-            }
-        }
         // Min, max, and length values should be returned as integers or as
         // null if they are not set.
         return is_null($seqValue) ? $seqValue: intval($seqValue);
@@ -277,41 +239,13 @@ class SiteIDGenerator extends IdentifierGenerator
         array $idStructure,
         string $setting
     ): ?string {
-        /* Do validation on 'prefix' and 'alphabet' since they both are found in
-         * 'type' attributes within 'seq' elements. See project/config.xml for
-         * examples.
+        /* Other settings (i.e. 'length', 'min', 'max') can be extracted
+         * directly as they are stored within distinct attributes.
          */
-        switch($setting) {
-        case 'alphabet':
-            $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
-                function ($x) {
-                    return $x === 'alpha'
-                        || $x === 'alphanumeric'
-                        || $x === 'numeric';
-                }
-            );
-            break;
-        case 'prefix':
-            $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
-                function ($x) {
-                    return $x === 'static'
-                        || $x === 'siteAbbrev'
-                        || $x === 'projectAbbrev';
-                }
-            );
-            break;
-        default:
-            /* Other settings (i.e. 'length', 'min', 'max') can be extracted
-             * directly as they are stored within distinct attributes.
-             */
-            $seqAttributes = self::_getSeqAttribute(
-                $idStructure,
-                $setting
-            );
-            break;
-        }
+        $seqAttributes = self::_getSeqAttribute(
+            $idStructure,
+            $setting
+        );
 
         // Validation
         if (count($seqAttributes) > 1) {
