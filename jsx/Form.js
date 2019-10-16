@@ -808,19 +808,10 @@ class TextareaElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.handleButton = this.handleButton.bind(this);
   }
 
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  }
-
-  handleButton(e) {
-    let date = new Date();
-    let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
-                        .toISOString()
-                        .split('T')[0];
-    this.props.onUserInput(this.props.name, dateString);
   }
 
   render() {
@@ -1015,6 +1006,14 @@ class DateElement extends Component {
         e.preventDefault();
       });
     }
+  }
+
+  handleButton(e) {
+    let date = new Date();
+    let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                        .toISOString()
+                        .split('T')[0];
+    this.props.onUserInput(this.props.name, dateString);
   }
 
   handleChange(e) {

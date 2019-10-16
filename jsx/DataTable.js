@@ -28,8 +28,8 @@ class DataTable extends Component {
     this.updatePageNumber = this.updatePageNumber.bind(this);
     this.updatePageRows = this.updatePageRows.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
-    this.countFilteredRows = this.countFilteredRows.bind(this);
-    this.getSortedRows = this.getSortedRows.bind(this);
+    this.getFilteredRows = this.getFilteredRows.bind(this);
+    this.sortRows = this.sortRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
     this.renderActions = this.renderActions.bind(this);
   }
@@ -84,6 +84,14 @@ class DataTable extends Component {
   }
 
   downloadCSV(csvData) {
+    // Map cell data to proper values if applicable.
+    if (this.props.getMappedCell) {
+      csvData = csvData
+      .map((row, i) => this.props.fields
+        .map((field, j) => this.props.getMappedCell(field.label, row[j]))
+      );
+    }
+
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -111,15 +119,27 @@ class DataTable extends Component {
     });
   }
 
-  countFilteredRows() {
+  getFilteredRows() {
     let useKeyword = false;
-    let filterMatchCount = 0;
+    // let filterMatchCount = 0;
     let filterValuesCount = (this.props.filter ?
         Object.keys(this.props.filter).length :
         0
     );
     let tableData = this.props.data;
     let fieldData = this.props.fields;
+
+    let filteredIndexes = [];
+
+    // If there are no filters set, use all the data.
+    let hasFilters = (filterValuesCount !== 0);
+    if (hasFilters === false) {
+      for (let i = 0; i < tableData.length; i++) {
+          filteredIndexes.push(i);
+      }
+      return filteredIndexes;
+    }
+
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -147,28 +167,26 @@ class DataTable extends Component {
       if (headerCount === filterValuesCount &&
         ((useKeyword === true && keywordMatch > 0) ||
           (useKeyword === false && keywordMatch === 0))) {
-        filterMatchCount++;
+          filteredIndexes.push(i);
       }
     }
 
-    let hasFilters = (filterValuesCount !== 0);
-    if (filterMatchCount === 0 && hasFilters) {
-      return 0;
-    }
-
-    return (filterMatchCount === 0) ? tableData.length : filterMatchCount;
+    return filteredIndexes;
   }
 
-  getSortedRows() {
+  sortRows(rowIndexes) {
     const index = [];
 
-    for (let i = 0; i < this.props.data.length; i += 1) {
-      let val = this.props.data[i][this.state.sort.column] || undefined;
+    for (let i = 0; i < rowIndexes.length; i++) {
+      let idx = rowIndexes[i];
+      let val = this.props.data[idx][this.state.sort.column] || undefined;
+
       // If sortColumn is equal to default No. column, set value to be
       // index + 1
       if (this.state.sort.column === -1) {
-        val = i + 1;
+        val = idx + 1;
       }
+
       const isString = (typeof val === 'string' || val instanceof String);
       const isNumber = !isNaN(val) && typeof val !== 'object';
 
@@ -186,9 +204,9 @@ class DataTable extends Component {
       }
 
       if (this.props.RowNameMap) {
-        index.push({RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
+        index.push({RowIdx: idx, Value: val, Content: this.props.RowNameMap[idx]});
       } else {
-        index.push({RowIdx: i, Value: val, Content: i + 1});
+        index.push({RowIdx: idx, Value: val, Content: idx + 1});
       }
     }
 
@@ -332,7 +350,6 @@ class DataTable extends Component {
   }
 
   render() {
-    console.log('render datatable');
     if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
       return (
         <div>
@@ -351,7 +368,7 @@ class DataTable extends Component {
     }
     let rowsPerPage = this.state.page.rows;
     let headers = this.props.hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' style={{cursor: 'pointer'}} onClick={() => {
+      <th key='th_col_0' onClick={() => {
         this.setSortColumn(-1);
       }}>
         {this.props.rowNumLabel}
@@ -364,7 +381,6 @@ class DataTable extends Component {
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                style={{cursor: 'pointer'}}
                 onClick={() => {
                   this.setSortColumn(i);
                 }}>
@@ -373,9 +389,7 @@ class DataTable extends Component {
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex}
-              style={{cursor: 'pointer'}}
-              onClick={() => {
+            <th key={'th_col_' + colIndex} onClick={() => {
               this.setSortColumn(i);
             }}>
               {this.props.fields[i].label}
@@ -384,101 +398,66 @@ class DataTable extends Component {
         }
       }
     }
+
     let rows = [];
-    let curRow = [];
-    let index = this.getSortedRows();
-    let matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
-    let filteredRows = this.countFilteredRows();
+    let filteredRows = this.getFilteredRows();
+    let filteredCount = filteredRows.length;
+    let index = this.sortRows(filteredRows);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
     let filteredData = [];
-    let useKeyword = false;
 
     if (this.props.filter.keyword) {
       useKeyword = true;
     }
 
-    // Push rows to data table
-    for (let i = 0;
-         (i < this.props.data.length) && (rows.length < rowsPerPage);
+    // Format each cell for the data table.
+    for (let i = currentPageRow;
+         (i < filteredCount) && (rows.length < rowsPerPage);
          i++
     ) {
-      curRow = [];
+        let rowIndex = index[i].RowIdx;
+        let rowData = this.props.data[rowIndex];
+        let curRow = [];
 
-      // Counts filter matches
-      let filterMatchCount = 0;
-      let keywordMatch = 0;
-      let filterLength = 0;
+        // Iterates through headers to populate row columns
+        // with corresponding data
+        for (let j = 0; j < this.props.fields.length; j += 1) {
+            if (this.props.fields[j].show === false) {
+                continue;
+            }
 
-      // Iterates through headers to populate row columns
-      // with corresponding data
-      for (let j = 0; j < this.props.fields.length; j += 1) {
-        let data = 'Unknown';
+            let celldata = rowData[j];
+            let cell = null;
 
-        // Set column data
-        if (this.props.data[index[i].RowIdx]) {
-          data = this.props.data[index[i].RowIdx][j];
-        }
-
-        if (this.props.fields[j].filter) {
-          if (this.hasFilterKeyword(this.props.fields[j].filter.name, data)) {
-            filterMatchCount++;
-            filteredData.push(this.props.data[index[i].RowIdx]);
-          }
-        }
-
-        if (useKeyword === true) {
-          filterLength = Object.keys(this.props.filter).length - 1;
-          if (this.hasFilterKeyword('keyword', data)) {
-            keywordMatch++;
-          }
-        } else {
-          filterLength = Object.keys(this.props.filter).length;
-        }
-
-        let key = 'td_col_' + j;
-
-        // Get custom cell formatting if available
-        if (this.props.getFormattedCell) {
-          if (this.props.fields[j].show === false) {
-            data = null;
-          } else {
-            // create mapping between rowHeaders and rowData in a row Object
             const row = {};
             this.props.fields.forEach((field, k) => {
-              row[field.label] = this.props.data[index[i].RowIdx][k];
+              row[field.label] = rowData[k];
             });
-
-            data = this.props.getFormattedCell(
-              this.props.fields[j].label,
-              data,
-              row
-            );
-          }
-          if (data !== null) {
-            // Note: Can't currently pass a key, need to update columnFormatter
-            // to not return a <td> node. Using createFragment instead.
-            curRow.push(createFragment({data}));
-          }
-        } else {
-          curRow.push(<td key={key}>{data}</td>);
+            // Get custom cell formatting if available
+            if (this.props.getFormattedCell) {
+                cell = this.props.getFormattedCell(
+                    this.props.fields[j].label,
+                    celldata,
+                    row
+                );
+            }
+            if (cell !== null) {
+                // Note: Can't currently pass a key, need to update columnFormatter
+                // to not return a <td> node. Using createFragment instead.
+                // let key = 'td_col_' + j;
+                curRow.push(cell);
+            } else {
+                curRow.push(createFragment({celldata}));
+            }
         }
-      }
 
-      // Only display a row if all filter values have been matched
-      if ((filterLength === filterMatchCount) &&
-        ((useKeyword === true && keywordMatch > 0) ||
-          (useKeyword === false && keywordMatch === 0))) {
-        matchesFound++;
-        if (matchesFound > currentPageRow) {
-          const rowIndex = index[i].Content;
-          rows.push(
+        const rowIndexDisplay = index[i].Content;
+        rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-              <td>{rowIndex}</td>
-              {curRow}
+            <td>{rowIndexDisplay}</td>
+            {curRow}
             </tr>
-          );
-        }
-      }
+        );
     }
 
     let rowsPerPageDropdown = (
@@ -496,20 +475,10 @@ class DataTable extends Component {
       </select>
     );
 
-    // Include only filtered data if filters were applied.
-    let csvData;
+    // Include only filtered data if filters were applied
+    let csvData = this.props.data;
     if (this.props.filter && filteredData.length > 0) {
       csvData = filteredData;
-    } else {
-      csvData = this.props.data;
-    }
-    // Map cell data to proper values if applicable.
-    if (this.props.getMappedCell) {
-      csvData = csvData
-        .map((row, i) => {
-          return this.props.fields
-            .map((field, j) => this.props.getMappedCell(field.label, row[j]));
-        });
     }
 
     let header = this.props.hide.rowsPerPage === true ? '' : (
@@ -526,7 +495,7 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredRows}.
+              {rows.length} rows displayed of {filteredCount}.
               (Maximum rows per page: {rowsPerPageDropdown})
             </div>
             <div style={{
@@ -571,7 +540,7 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredRows}.
+              {rows.length} rows displayed of {filteredCount}.
               (Maximum rows per page: {rowsPerPageDropdown})
             </div>
             <div style={{
@@ -633,4 +602,3 @@ DataTable.defaultProps = {
 };
 
 export default DataTable;
-
