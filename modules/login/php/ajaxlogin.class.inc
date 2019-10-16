@@ -130,10 +130,10 @@ class AjaxLogin extends \NDB_Page
         foreach ($study_links as $label => $url) {
             $windowName           = md5($url);
             $loginData['links'][] = array(
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $windowName,
-            );
+                                     'url'        => $url,
+                                     'label'      => $label,
+                                     'windowName' => $windowName,
+                                    );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
@@ -247,13 +247,13 @@ class AjaxLogin extends \NDB_Page
         $fullname = $name . ' ' . $lastname;
 
         $vals = array(
-            'UserID'           => $from,
-            'Real_name'        => $fullname,
-            'First_name'       => $name,
-            'Last_name'        => $lastname,
-            'Pending_approval' => 'Y',
-            'Email'            => $from,
-        );
+                 'UserID'           => $from,
+                 'Real_name'        => $fullname,
+                 'First_name'       => $name,
+                 'Last_name'        => $lastname,
+                 'Pending_approval' => 'Y',
+                 'Email'            => $from,
+                );
 
         // Check email address' uniqueness
         $result = $DB->pselectOne(
@@ -272,8 +272,8 @@ class AjaxLogin extends \NDB_Page
             $DB->insert(
                 'user_psc_rel',
                 array(
-                    'UserID'   => $user_id,
-                    'CenterID' => $site,
+                 'UserID'   => $user_id,
+                 'CenterID' => $site,
                 )
             );
 
@@ -295,19 +295,19 @@ class AjaxLogin extends \NDB_Page
                     $DB->insert(
                         'examiners',
                         array(
-                            'full_name'   => $fullname,
-                            'radiologist' => $rad,
-                            'userID'      => $user_id,
+                         'full_name'   => $fullname,
+                         'radiologist' => $rad,
+                         'userID'      => $user_id,
                         )
                     );
                     $examinerID = $DB->getLastInsertID();
                     $DB->insert(
                         'examiners_psc_rel',
                         array(
-                            'examinerID'       => $examinerID,
-                            'centerID'         => $site,
-                            'active'           => 'Y',
-                            'pending_approval' => 'Y',
+                         'examinerID'       => $examinerID,
+                         'centerID'         => $site,
+                         'active'           => 'Y',
+                         'pending_approval' => 'Y',
                         )
                     );
                 }
