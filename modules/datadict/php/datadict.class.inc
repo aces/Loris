@@ -134,7 +134,6 @@ class Datadict extends \NDB_Menu_Filter
             )
         );
         $this->addBasicText('keyword', "Search keyword");
-        return true;
     }
 
     /**

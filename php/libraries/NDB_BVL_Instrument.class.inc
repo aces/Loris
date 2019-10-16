@@ -293,6 +293,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //get config
         $config = \NDB_Config::singleton();
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
+        $instrumentPerms       = array();
 
         //check if instrumentPermissions are being used.
         if (!is_array($instrumentPermissions)) {
@@ -2096,13 +2097,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * the date will be calculated based on the value of the Date_taken
      * field in the database.
      *
-     * @param string $date (optional) The date that the age is to
+     * @param ?string $date (optional) The date that the age is to
      *                     be calculated based on.
      *
      * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
-    function getCandidateAge(string $date): array
+    function getCandidateAge(?string $date = null): array
     {
         $dates = array(
                   'Date_taken' => $this->getFieldValue('Date_taken'),

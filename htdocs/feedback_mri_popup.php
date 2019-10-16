@@ -115,6 +115,7 @@ $comment_types = $comments->getAllCommentTypes();
 // loop through the comment types
 $i = 0;
 foreach ($comment_types AS $comment_type_id => $comment_array) {
+    $tpl_data['comment'][$i] = array();
     $CommentTpl =& $tpl_data['comment'][$i];
 
     // print the status select field if it exists
@@ -141,6 +142,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
     foreach ($predefined_comments
         AS $predefined_comment_id => $predefined_comment_text
     ) {
+        $CommentTpl['predefined'][$j] = array();
         $PredefinedTpl =& $CommentTpl['predefined'][$j];
         // print a form element
         $PredefinedTpl['id'] = $predefined_comment_id;

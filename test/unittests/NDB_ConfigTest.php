@@ -119,7 +119,7 @@ class NDB_ConfigTest extends TestCase
      */
     public function testConfigFilePath()
     {
-        $text = $this->_config::configFilePath("config.xml");
+        $text = $this->_config->configFilePath("config.xml");
         $this->assertContains("config.xml", $text);
 
     }

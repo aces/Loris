@@ -75,16 +75,14 @@ class DocTree extends \NDB_Page
     /**
      * This method will return an array of document_repository_categories
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array All the data from the document_repository_categories table
      */
     public function getTreeData()
     {
-          $DB       = \Database::singleton();
-          $category = $DB->pselect(
-              "SELECT * FROM document_repository_categories",
-              array()
-          );
-          return $category;
+        return \Database::singleton()->pselect(
+            "SELECT * FROM document_repository_categories",
+            array()
+        );
     }
     /**
      * This method will return an array of all children's categories
@@ -119,7 +117,7 @@ class DocTree extends \NDB_Page
      *
      * @return array the result
      */
-    Public function getParents($data, $id)
+    public function getParents($data, $id)
     {
         $arr = array();
         foreach ($data as $v) {
@@ -133,8 +131,7 @@ class DocTree extends \NDB_Page
                 }
             }
         }
-            return $arr;
-
+        return $arr;
     }
     /**
      * This method will return a json of the parent's categroies and

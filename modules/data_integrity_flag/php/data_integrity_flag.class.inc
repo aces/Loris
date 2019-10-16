@@ -76,7 +76,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             || !isset($req['date'])
             || !isset($req['flagStatus'])
         ) {
-            return "Error";
+            return;
         }
         $req = \Utility::asArray($req);
         // comment may not be set since it is not a required field

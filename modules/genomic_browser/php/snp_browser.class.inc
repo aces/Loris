@@ -223,8 +223,6 @@ class SNP_Browser extends \NDB_Menu_Filter
                );
 
         $this->formToFilter = $ftf;
-
-        return true;
     }
 
     /**
@@ -376,8 +374,6 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
-
-        return true;
     }
 
     /**

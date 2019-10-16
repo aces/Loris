@@ -179,7 +179,7 @@ class File_Upload
     function callFileHandler($field, $action)
     {
         $class  =$this->fileHandlers[$field]['class'];
-        $method =$this->fileHandlers[$field]['methods'][$action];
+        $method =$this->fileHandlers[$field]['methods'][(int) $action];
         $args   =array();
 
         //If handlerArgs are being passed, include them
@@ -318,7 +318,6 @@ class File_Upload
             case "reject":
                 $this->setError($this->fieldName, "File Exists, rejecting");
                 return false;
-                break;
             }
         }
 
@@ -343,6 +342,10 @@ class File_Upload
         if (is_object($class)) {
             $test =&$class;
         } else if (class_exists($class)) {
+            // Phan seems to think this is always a string and fails as a result.
+            // FIXME This should be investigated further but for now it's not
+            // breaking anything.
+            // @phan-suppress-next-line PhanTypeExpectedObjectOrClassName
             $test =new $class;
         } else {
             $this->setError($field, "$class does not exist.");
@@ -394,15 +397,15 @@ class File_Upload
     * This is used by processFiles to determine which handler class to use for
     * each field.
     *
-    * @param string $fieldName The name of the field in the quickform to associate
-    *                          with
-    * @param string $className The name of the class in the quickform to associate
-    *                          with
-    * @param array  $methods   An array of methods to assign to the field.
-    *                          The keys must be the name of the action to
-    *                          associate with the method, either verify,
-    *                          import, or move.  If any (or all) of these
-    *                          are empty the defaults will be used.
+    * @param string        $fieldName The name of the field in the quickform to
+    *                                 with
+    * @param string|object $className The name of the class in the quickform to
+    *                               associate with or an instance of that class.
+    * @param array         $methods   An array of methods to assign to the field.
+    *                                 The keys must be the name of the action to
+    *                                 associate with the method, either verify,
+    *                                 import, or move.  If any (or all) of these
+    *                                 are empty the defaults will be used.
     *
     * @return boolean true
     * @see    File_Upload::processFiles()
@@ -481,6 +484,7 @@ class File_Upload
     function getSplitFilename($name)
     {
         $file = array();
+        // NOTE This could probably be better written using pathinfo()
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
             $file['name'] =substr($name, 0, $extpos);
