@@ -2,7 +2,7 @@
 /**
  * PHP version 7
  *
- * @category Datadict
+ * @category ConflictResolver
  * @package  Main
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -16,7 +16,7 @@ namespace LORIS\conflict_resolver\Provisioners;
  *
  * PHP version 7
  *
- * @category Datadict
+ * @category ConflictResolver
  * @package  Main
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3

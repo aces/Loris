@@ -30,7 +30,7 @@ class FixConflictForm extends Component {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({conflicid: conflictid, correctanswer: correctanswer}),
+        body: JSON.stringify({conflictid: conflictid, correctanswer: correctanswer}),
     })
     .then((resp) => {
       return resp.ok ? {} : resp.json();

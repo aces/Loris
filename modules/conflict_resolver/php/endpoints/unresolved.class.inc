@@ -184,7 +184,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         $user = $request->getAttribute('user');
         $data = json_decode((string) $request->getBody(), true);
 
-        $conflictid    = $data['conflicid'] ?? null;
+        $conflictid    = $data['conflictid'] ?? null;
         $correctanswer = $data['correctanswer'] ?? null;
 
         if ($conflictid === null || $correctanswer === null) {

@@ -13,7 +13,7 @@
 namespace LORIS\Data\Provisioners;
 
 /**
- * A DBObejctProvisioner is an instance of ProvisionerInstance which
+ * A DBObjectProvisioner is an instance of ProvisionerInstance which
  * takes an SQL query and the bind parameters to go with it, and
  * executes it against the LORIS database.
  *
