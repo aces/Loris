@@ -959,6 +959,11 @@ class TimePoint
         $provisioner = new \LORIS\Data\Provisioners\TimepointImagesRowProvisioner(
             $this
         );
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\ScansFilter())
+            ->filter(new \LORIS\Data\Filters\PhantomsFilter());
+
         $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->getRows($user);

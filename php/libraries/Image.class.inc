@@ -35,6 +35,9 @@ class Image
 
     private $_filetype;
 
+    private $_centerid;
+
+    private $_entitytype;
     /**
      * Constructor
      *
@@ -51,10 +54,16 @@ class Image
                        f.File as filelocation,
                        f.OutputType as outputtype,
                        mst.Scan_type as acquisitionprotocol,
-                       FileType as filetype
+                       FileType as filetype,
+                       s.CenterID as centerid,
+                       c.Entity_type as entitytype
                      FROM
                        files f 
-                     JOIN mri_scan_type mst
+                     LEFT JOIN session s
+                       ON (f.SessionID = s.ID)
+                     LEFT JOIN candidate c
+                       ON (s.CandID = c.CandID)
+                     LEFT JOIN mri_scan_type mst
                        ON (mst.ID = f.AcquisitionProtocolID)
                      WHERE f.FileID = :v_fileid
                     ',
@@ -63,13 +72,15 @@ class Image
             if (empty($dbrow)) {
                 throw new \NotFound('There is no file with that FileID');
             }
-
             $this->_fileid       = $fileid;
             $this->_filename     = basename($dbrow['filelocation']);
             $this->_filelocation = $dbrow['filelocation'];
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
+            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_entitytype          = $dbrow['entitytype'];
+
         }
     }
 
@@ -281,7 +292,9 @@ class Image
             $this->_filelocation,
             $this->_outputtype,
             $this->_acquisitionprotocol,
-            $this->_filetype
+            $this->_filetype,
+            $this->_centerid,
+            $this->_entitytype
         );
     }
 }
