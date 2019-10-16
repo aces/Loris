@@ -167,8 +167,8 @@ class Behavioural extends Endpoint implements ETagCalculator
                 'Feedback_level' => parent::formElementObjectCreator(
                     'Feedback_level',
                     'text',
-                    'Feedback_level',
-                    true,
+                    'Feedback Level',
+                    false,
                     null
                 ),
                 'Test_name'      => parent::formElementObjectCreator(
@@ -181,8 +181,8 @@ class Behavioural extends Endpoint implements ETagCalculator
                 'FieldName'      => parent::formElementObjectCreator(
                     'FieldName',
                     'text',
-                    'FieldName',
-                    true,
+                    'Field Name',
+                    false,
                     null
                 ),
                 'Full_name'      => parent::formElementObjectCreator(
@@ -196,7 +196,7 @@ class Behavioural extends Endpoint implements ETagCalculator
                     'visit_label',
                     'select',
                     'Visit',
-                    false,
+                    true,
                     $visit_array
                 ),
                 'PSCID'          => parent::formElementObjectCreator(
@@ -210,7 +210,7 @@ class Behavioural extends Endpoint implements ETagCalculator
                     'Instrument',
                     'select',
                     'Instrument',
-                    false,
+                    true,
                     \Utility::getAllInstruments()
                 ),
                 'Project'        => parent::formElementObjectCreator(

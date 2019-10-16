@@ -71,57 +71,54 @@ class BehaviouralFeedback extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement = null;
     switch (column) {
+      case 'ID': {
+        break;
+      }
       case 'PSCID': {
-        const url = window.location.origin + '/' + cell + '/';
         reactElement = (
-          <td><a href={url}>{rowData.PSCID}</a></td>
+          <td>
+            <a href={window.location.origin +
+            '/' +
+            rowData['DCCID']
+            }>
+              {rowData['PSCID']}
+            </a>
+          </td>
         );
         break;
       }
-      case 'Subproject':
+      case 'DCCID': {
         reactElement = (
-          <td>{this.state.data.subprojects[parseInt(cell)]}</td>
+          <td>
+            <a href={window.location.origin +
+            '/' +
+            rowData['DCCID']
+            }>
+              {rowData['DCCID']}
+            </a>
+          </td>
         );
         break;
-      case 'File':
-        if (cell === 'Y') {
-          reactElement = (
-            <td>
-              <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/viewGenomicFile/',
-                {candID: rowData[1]}
-              )}>{cell}</a>
-            </td>
-          );
-        } else {
-          reactElement = (
-            <td>{cell}</td>
-          );
-        }
+      }
+      case 'Instrument': {
+        reactElement = (
+          <td>
+            <a href={window.location.origin +
+            '/instruments/' +
+            rowData['test_name'] +
+            '/?candID=' +
+            rowData['DCCID'] +
+            '&sessionID=' +
+            rowData['SessionID'] +
+            '&commentID=' +
+            rowData['commentid']
+            }>
+              {rowData['Full_name']}
+            </a>
+          </td>
+        );
         break;
-      case 'CNV':
-      case 'CPG':
-      case 'SNP':
-        if (cell === 'Y') {
-          reactElement = (
-            <td>
-            <span
-              style={{cursor: 'pointer'}}
-              onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/' + column.toLowerCase() + '_browser/',
-                {DCCID: rowData[1]}
-              )}
-            >
-              {cell}
-            </span>
-            </td>
-          );
-        } else {
-          reactElement = (
-            <td>{cell}</td>
-          );
-        }
-        break;
+      }
       default:
         reactElement = (
           <td>{cell}</td>
