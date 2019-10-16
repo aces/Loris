@@ -1055,7 +1055,7 @@ class DateElement extends Component {
                 min={this.props.minYear}
                 max={this.props.maxYear}
                 onChange={this.handleChange}
-                value={this.props.value}
+                value={this.props.value || ''}
                 required={required}
                 disabled={disabled}
               />
