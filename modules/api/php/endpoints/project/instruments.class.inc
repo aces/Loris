@@ -129,11 +129,11 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
-        $provisioner = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
-        $user        = $request->getAttribute('user');
+        $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
+        $user = $request->getAttribute('user');
 
         $instruments = (new \LORIS\Data\Table())
-            ->withDataFrom($provisioner)
+            ->withDataFrom($prov)
             ->getRows($user);
 
         $array = (new \LORIS\api\Views\Project\Instruments(
