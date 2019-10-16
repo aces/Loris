@@ -75,9 +75,6 @@ class DataConflicts extends Component {
         break;
       }
       case 'Visit': {
-        console.log(this.state);
-        console.log(cell);
-        console.log(rowData);
         reactElement = (
           <td>
             <a href={window.location.origin +
@@ -148,7 +145,6 @@ class DataConflicts extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        console.log(fieldOptions[field].name);
         if (fieldOptions[field].name === 'TableName' ||
           fieldOptions[field].name === 'SessionID' ||
           fieldOptions[field].name === 'test_name_display' ||

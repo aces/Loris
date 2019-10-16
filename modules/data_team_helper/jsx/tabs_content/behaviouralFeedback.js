@@ -71,9 +71,6 @@ class BehaviouralFeedback extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement = null;
     switch (column) {
-      case 'ID': {
-        break;
-      }
       case 'PSCID': {
         reactElement = (
           <td>
@@ -100,23 +97,32 @@ class BehaviouralFeedback extends Component {
         );
         break;
       }
-      case 'Instrument': {
-        reactElement = (
-          <td>
-            <a href={window.location.origin +
-            '/instruments/' +
-            rowData['test_name'] +
-            '/?candID=' +
-            rowData['DCCID'] +
-            '&sessionID=' +
-            rowData['SessionID'] +
-            '&commentID=' +
-            rowData['commentid']
-            }>
-              {rowData['Full_name']}
-            </a>
-          </td>
-        );
+      case 'Feedback Level': {
+        console.log(this.state);
+        console.log(cell);
+        console.log(rowData);
+        if (rowData['Full_name']) {
+          reactElement = (
+            <td>
+              <a href={window.location.origin +
+              '/instruments/' +
+              rowData['Test_name'] +
+              '/?candID=' +
+              rowData['DCCID'] +
+              '&sessionID=' +
+              rowData['SessionID'] +
+              '&commentID=' +
+              rowData['commentid']
+              }>
+                {'Instrument : ' + rowData['Full_name']}
+              </a>
+            </td>
+          );
+        } else {
+          reactElement = (
+            <td>{''}</td>
+          );
+        }
         break;
       }
       default:
