@@ -43,24 +43,34 @@ class Panel extends Component {
         'glyphicon pull-right glyphicon-chevron-up'
     );
 
+    const title = this.props.bold ? (
+      <h3 className={'panel-title'}>
+        {this.props.title}
+      </h3>
+    ) : this.props.title;
+
+    const collapse = this.props.collapsing ? 'collapse' : null;
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
         className="panel-heading"
         onClick={this.toggleCollapsed}
-        data-toggle="collapse"
+        data-toggle={collapse}
         data-target={'#' + this.props.id}
-        style={{cursor: 'pointer'}}
+        style={this.props.collapsing ?
+          {cursor: 'pointer'} : {cursor: 'default'}
+        }
       >
-        {this.props.title}
-        <span className={glyphClass}></span>
+        {title}
+        {this.props.collapsing ? <span className={glyphClass}/> : ''}
       </div>
     ) : '';
 
     return (
-      <div className="panel panel-primary">
+      <div className={'panel ' + this.props.class}>
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel">
+        <div id={this.props.id} className={this.panelClass} role='tabpanel'>
           <div className="panel-body" style={{height: this.props.height}}>
             {this.props.children}
           </div>
@@ -74,11 +84,17 @@ Panel.propTypes = {
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
+  class: PropTypes.string,
+  collapsing: PropTypes.bool,
+  bold: PropTypes.bool,
 };
 Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  class: 'panel-primary',
+  collapsing: true,
+  bold: false,
 };
 
 export default Panel;
