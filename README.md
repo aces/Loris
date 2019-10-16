@@ -51,8 +51,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 # in order to automatically generate Apache configuration files.
 # Sudo privileges can be revoked once the install is completed.
     sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-# Add apache and lorisadmin to the lorisadmin group
-    sudo groupadd -a -G lorisadmin lorisadmin
+# Add apache to the lorisadmin group
     sudo groupadd -a -G lorisadmin www-data
 # Set the password for the lorisadmin account
     sudo passwd lorisadmin
