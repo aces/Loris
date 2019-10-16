@@ -51,12 +51,12 @@ class Behavioural extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -75,14 +75,14 @@ class Behavioural extends Endpoint implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for Profiles.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden();
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for Profiles.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden();
+            default:
+                break;
             }
         }
 
@@ -93,10 +93,10 @@ class Behavioural extends Endpoint implements ETagCalculator
             ->withDataFrom($provisioner)
             ->toArray($user);
         $body         = array(
-            'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions($request),
-            'subprojects'  => \Utility::getSubprojectList(),
-        );
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions($request),
+                         'subprojects'  => \Utility::getSubprojectList(),
+                        );
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         return $this->_cache;
     }
@@ -111,102 +111,123 @@ class Behavioural extends Endpoint implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
+        $user          = $request->getAttribute('user');
+        $visit_array   = \Utility::getExistingVisitLabels();
+        $visit_array   = array_combine($visit_array, $visit_array);
+        $list_of_sites = array();
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites = \Utility::getSiteList();
+            if (is_array($list_of_sites)) {
+                $list_of_sites = $list_of_sites;
+            }
+        } else {
+            // allow only to view own study site data
+            $list_of_sites = $user->getStudySites();
+            $list_of_sites = $list_of_sites;
+        }
 
-        $user = $request->getAttribute('user');
         // PSC
-        if ($user->hasPermission('genomic_browser_view_allsites')) {
+        if ($user->hasPermission('data_team_helper')) {
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
         } else {
             $list_of_sites = $user->getStudySites();
         }
-        $any_options = array(
-            'Y' => 'Yes',
-            'N' => 'No',
-        );
         return array(
-            'centerID'     => parent::formElementObjectCreator(
-                'centerID',
-                'select',
-                'Site',
-                true,
-                $list_of_sites
-            ),
-            'DCCID'        => parent::formElementObjectCreator(
-                'DCCID',
-                'text',
-                'DCCID',
-                true,
-                null
-            ),
-            'PSCID'        => parent::formElementObjectCreator(
-                'PSCID',
-                'text',
-                'PSCID',
-                false,
-                null
-            ),
-            'Sex'          => parent::formElementObjectCreator(
-                'sex',
-                'select',
-                'Sex',
-                false,
-                array(
-                    'Male'   => 'Male',
-                    'Female' => 'Female',
-                )
-            ),
-            'SubprojectID' => parent::formElementObjectCreator(
-                'SubprojectID',
-                'select',
-                'Subproject',
-                false,
-                \Utility::getSubprojectList()
-            ),
-            'DoB'          => parent::formElementObjectCreator(
-                'dob',
-                'date',
-                'Date of Birth',
-                true,
-                array('maxlength' => 10)
-            ),
-            'External_ID'  => parent::formElementObjectCreator(
-                'External_ID',
-                'text',
-                'External ID',
-                true,
-                null
-            ),
-            'File'         => parent::formElementObjectCreator(
-                'File',
-                'select',
-                'Files',
-                false,
-                $any_options
-            ),
-            'SNP'          => parent::formElementObjectCreator(
-                'SNP',
-                'select',
-                'SNPs found',
-                false,
-                $any_options
-            ),
-            'CNV'          => parent::formElementObjectCreator(
-                'CNV',
-                'select',
-                'CNVs found',
-                false,
-                $any_options
-            ),
-            'CPG'          => parent::formElementObjectCreator(
-                'CPG',
-                'select',
-                'CPGs found',
-                false,
-                $any_options
-            ),
-        );
+                'FeedbackID'     => parent::formElementObjectCreator(
+                    'FeedbackID',
+                    'text',
+                    'FeedbackID',
+                    true,
+                    null
+                ),
+                'candid'         => parent::formElementObjectCreator(
+                    'candid',
+                    'text',
+                    'DCCID',
+                    false,
+                    null
+                ),
+                'SessionID'      => parent::formElementObjectCreator(
+                    'SessionID',
+                    'text',
+                    'SessionID',
+                    true,
+                    null
+                ),
+                'commentid'      => parent::formElementObjectCreator(
+                    'commentid',
+                    'text',
+                    'commentid',
+                    true,
+                    null
+                ),
+                'Feedback_level' => parent::formElementObjectCreator(
+                    'Feedback_level',
+                    'text',
+                    'Feedback_level',
+                    true,
+                    null
+                ),
+                'Test_name'      => parent::formElementObjectCreator(
+                    'Test_name',
+                    'text',
+                    'Test_name',
+                    true,
+                    null
+                ),
+                'FieldName'      => parent::formElementObjectCreator(
+                    'FieldName',
+                    'text',
+                    'FieldName',
+                    true,
+                    null
+                ),
+                'Full_name'      => parent::formElementObjectCreator(
+                    'Full_name',
+                    'text',
+                    'Full_name',
+                    true,
+                    null
+                ),
+                'visit_label'    => parent::formElementObjectCreator(
+                    'visit_label',
+                    'select',
+                    'Visit',
+                    false,
+                    $visit_array
+                ),
+                'PSCID'          => parent::formElementObjectCreator(
+                    'PSCID',
+                    'text',
+                    'PSCID',
+                    false,
+                    null
+                ),
+                'Instrument'     => parent::formElementObjectCreator(
+                    'Instrument',
+                    'select',
+                    'Instrument',
+                    false,
+                    \Utility::getAllInstruments()
+                ),
+                'Project'        => parent::formElementObjectCreator(
+                    'Project',
+                    'select',
+                    'Project',
+                    true,
+                    \Utility::getProjectList()
+                ),
+                'Site'           => parent::formElementObjectCreator(
+                    'Site',
+                    'select',
+                    'Site',
+                    true,
+                    $list_of_sites
+                ),
+               );
     }
 
     /**

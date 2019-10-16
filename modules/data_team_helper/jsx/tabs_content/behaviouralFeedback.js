@@ -30,8 +30,8 @@ class BehaviouralFeedback extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -142,6 +142,16 @@ class BehaviouralFeedback extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
+        console.log(fieldOptions[field].name);
+        if (fieldOptions[field].name === 'FeedbackID' ||
+          fieldOptions[field].name === 'SessionID' ||
+          fieldOptions[field].name === 'commentid' ||
+          fieldOptions[field].name === 'Feedback_level' ||
+          fieldOptions[field].name === 'Test_name' ||
+          fieldOptions[field].name === 'FieldName' ||
+          fieldOptions[field].name === 'Full_name') {
+          continue;
+        }
         fields.push({
           label: fieldOptions[field].label,
           show: fieldOptions[field].hidden,

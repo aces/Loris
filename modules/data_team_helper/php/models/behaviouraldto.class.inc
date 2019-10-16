@@ -38,17 +38,17 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'FeedbackID'     => $this->FeedbackID,
-                'CandID'         => $this->CandID,
-                'SessionID'      => $this->SessionID,
-                'CommentID'      => $this->CommentID,
-                'Feedback_level' => $this->Feedback_level,
-                'Test_name'      => $this->Test_name,
-                'FieldName'      => $this->FieldName,
-                'Full_name'      => $this->Full_name,
-                'Visit_label'    => $this->Visit_label,
-                'PSCID'          => $this->PSCID,
-                'ProjectID'      => $this->ProjectID,
+             'FeedbackID'     => $this->FeedbackID,
+             'CandID'         => $this->CandID,
+             'SessionID'      => $this->SessionID,
+             'CommentID'      => $this->CommentID,
+             'Feedback_level' => $this->Feedback_level,
+             'Test_name'      => $this->Test_name,
+             'FieldName'      => $this->FieldName,
+             'Full_name'      => $this->Full_name,
+             'Visit_label'    => $this->Visit_label,
+             'PSCID'          => $this->PSCID,
+             'ProjectID'      => $this->ProjectID,
             )
         );
     }

@@ -51,12 +51,12 @@ class Incomplete extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -75,14 +75,14 @@ class Incomplete extends Endpoint implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\BadRequest(
-                        'Failed to retrieve data for Profiles.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\Forbidden();
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\BadRequest(
+                    'Failed to retrieve data for Profiles.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\Forbidden();
+            default:
+                break;
             }
         }
 
@@ -93,10 +93,10 @@ class Incomplete extends Endpoint implements ETagCalculator
             ->withDataFrom($provisioner)
             ->toArray($user);
         $body         = array(
-            'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions($request),
-            'subprojects'  => \Utility::getSubprojectList(),
-        );
+                         'data'         => $data,
+                         'fieldOptions' => $this->_getFieldOptions($request),
+                         'subprojects'  => \Utility::getSubprojectList(),
+                        );
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
         return $this->_cache;
     }
@@ -111,21 +111,20 @@ class Incomplete extends Endpoint implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-
-        $user = $request->getAttribute('user');
+        $user          = $request->getAttribute('user');
         $visit_array   = \Utility::getExistingVisitLabels();
         $visit_array   = array_combine($visit_array, $visit_array);
         $list_of_sites = array();
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites      = \Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = $list_of_sites;
             }
         } else {
             // allow only to view own study site data
-            $list_of_sites      = $user->getStudySites();
-            $list_of_sites      = $list_of_sites;
+            $list_of_sites = $user->getStudySites();
+            $list_of_sites = $list_of_sites;
         }
 
         // PSC
@@ -137,84 +136,84 @@ class Incomplete extends Endpoint implements ETagCalculator
             $list_of_sites = $user->getStudySites();
         }
         return array(
-            'id'     => parent::formElementObjectCreator(
-                'id',
-                'text',
-                'ID',
-                true,
-                null
-            ),
-            'visit_label'     => parent::formElementObjectCreator(
-                'visit_label',
-                'select',
-                'Visit',
-                false,
-                $visit_array
-            ),
-            'PSCID'        => parent::formElementObjectCreator(
-                'PSCID',
-                'text',
-                'PSCID',
-                false,
-                null
-            ),
-            'candid'        => parent::formElementObjectCreator(
-                'candid',
-                'text',
-                'DCCID',
-                false,
-                null
-            ),
-            'SessionID'        => parent::formElementObjectCreator(
-                'SessionID',
-                'text',
-                'SessionID',
-                true,
-                null
-            ),
-            'test_name'     => parent::formElementObjectCreator(
-                'test_name',
-                'text',
-                'test_name',
-                true,
-                null
-            ),
-            'data_entry'     => parent::formElementObjectCreator(
-                'data_entry',
-                'text',
-                'data_entry',
-                true,
-                null
-            ),
-            'commentid'     => parent::formElementObjectCreator(
-                'commentid',
-                'text',
-                'commentid',
-                true,
-                null
-            ),
-            'Full_name'     => parent::formElementObjectCreator(
-                'Full_name',
-                'select',
-                'Instrument',
-                false,
-                \Utility::getAllInstruments()
-            ),
-            'Project' => parent::formElementObjectCreator(
-                'Project',
-                'select',
-                'Project',
-                false,
-                \Utility::getProjectList()
-            ),
-            'Site' => parent::formElementObjectCreator(
-                'Site',
-                'select',
-                'Site',
-                false,
-                $list_of_sites
-            ),
-        );
+                'id'          => parent::formElementObjectCreator(
+                    'id',
+                    'text',
+                    'ID',
+                    true,
+                    null
+                ),
+                'visit_label' => parent::formElementObjectCreator(
+                    'visit_label',
+                    'select',
+                    'Visit',
+                    false,
+                    $visit_array
+                ),
+                'PSCID'       => parent::formElementObjectCreator(
+                    'PSCID',
+                    'text',
+                    'PSCID',
+                    false,
+                    null
+                ),
+                'candid'      => parent::formElementObjectCreator(
+                    'candid',
+                    'text',
+                    'DCCID',
+                    false,
+                    null
+                ),
+                'SessionID'   => parent::formElementObjectCreator(
+                    'SessionID',
+                    'text',
+                    'SessionID',
+                    true,
+                    null
+                ),
+                'test_name'   => parent::formElementObjectCreator(
+                    'test_name',
+                    'text',
+                    'test_name',
+                    true,
+                    null
+                ),
+                'data_entry'  => parent::formElementObjectCreator(
+                    'data_entry',
+                    'text',
+                    'data_entry',
+                    true,
+                    null
+                ),
+                'commentid'   => parent::formElementObjectCreator(
+                    'commentid',
+                    'text',
+                    'commentid',
+                    true,
+                    null
+                ),
+                'Instrument'  => parent::formElementObjectCreator(
+                    'Instrument',
+                    'select',
+                    'Instrument',
+                    false,
+                    \Utility::getAllInstruments()
+                ),
+                'Project'     => parent::formElementObjectCreator(
+                    'Project',
+                    'select',
+                    'Project',
+                    true,
+                    \Utility::getProjectList()
+                ),
+                'Site'        => parent::formElementObjectCreator(
+                    'Site',
+                    'select',
+                    'Site',
+                    true,
+                    $list_of_sites
+                ),
+               );
     }
 
     /**

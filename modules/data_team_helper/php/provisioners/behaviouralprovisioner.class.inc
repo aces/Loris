@@ -50,7 +50,8 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 JOIN candidate ca ON (ca.CandID = fb.CandID)
                 JOIN session s ON (s.ID = fb.SessionID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                JOIN project_subproject_rel psr ON (s.SubprojectID = psr.SubprojectID)
+                JOIN project_subproject_rel psr ON 
+                    (s.SubprojectID = psr.SubprojectID)
                 LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                 LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
             WHERE

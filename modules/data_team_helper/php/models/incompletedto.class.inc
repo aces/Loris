@@ -38,16 +38,16 @@ class IncompleteDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'ID'          => $this->ID,
-                'visit_label' => $this->visit_label,
-                'PSCID'       => $this->PSCID,
-                'candid'      => $this->candid,
-                'SessionID'   => $this->SessionID,
-                'test_name'   => $this->test_name,
-                'data_entry'  => $this->data_entry,
-                'commentid'   => $this->commentid,
-                'Full_name'   => $this->Full_name,
-                'ProjectID'   => $this->ProjectID,
+             'ID'          => $this->ID,
+             'visit_label' => $this->visit_label,
+             'PSCID'       => $this->PSCID,
+             'candid'      => $this->candid,
+             'SessionID'   => $this->SessionID,
+             'test_name'   => $this->test_name,
+             'data_entry'  => $this->data_entry,
+             'commentid'   => $this->commentid,
+             'Full_name'   => $this->Full_name,
+             'ProjectID'   => $this->ProjectID,
             )
         );
     }

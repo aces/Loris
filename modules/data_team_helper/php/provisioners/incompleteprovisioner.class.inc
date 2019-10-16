@@ -41,7 +41,7 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         }
         if (count($ddeInstruments) > 0) {
             $ddeInstruments = implode(',', $ddeInstruments);
-            $this->_where         = "
+            $this->_where   = "
                 AND (f.test_name IN ($ddeInstruments) OR
                 f.commentid NOT LIKE 'DDE_%')
             ";

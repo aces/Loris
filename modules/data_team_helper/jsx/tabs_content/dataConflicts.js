@@ -30,8 +30,8 @@ class DataConflicts extends Component {
   }
 
   componentDidMount() {
-    // this.fetchData()
-    //   .then(() => this.setState({isLoaded: true}));
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -142,6 +142,12 @@ class DataConflicts extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
+        console.log(fieldOptions[field].name);
+        if (fieldOptions[field].name === 'TableName' ||
+          fieldOptions[field].name === 'test_name_display' ||
+          fieldOptions[field].name === 'FieldName') {
+          continue;
+        }
         fields.push({
           label: fieldOptions[field].label,
           show: fieldOptions[field].hidden,

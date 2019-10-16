@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class module implements the basic LORIS module functionality
  *
  * @category LORIS_Module
- * @package  Data Team Helper
+ * @package  Data_Team_Helper
  * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -46,17 +46,17 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-            case 'Incomplete':
-                $handler = new endpoints\Incomplete();
-                break;
-            case 'Conflicts':
-                $handler = new endpoints\Conflicts();
-                break;
-            case 'Behavioural':
-                $handler = new endpoints\Behavioural();
-                break;
-            default:
-                return parent::handle($request);
+        case 'Incomplete':
+            $handler = new endpoints\Incomplete();
+            break;
+        case 'Conflicts':
+            $handler = new endpoints\Conflicts();
+            break;
+        case 'Behavioural':
+            $handler = new endpoints\Behavioural();
+            break;
+        default:
+            return parent::handle($request);
         }
 
         $user = $request->getAttribute('user');

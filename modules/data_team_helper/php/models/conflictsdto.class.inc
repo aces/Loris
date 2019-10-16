@@ -38,13 +38,13 @@ class ConflictsDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'CandID'            => $this->CandID,
-                'PSCID'             => $this->PSCID,
-                'FieldName'         => $this->FieldName,
-                'TableName'         => $this->TableName,
-                'test_name_display' => $this->test_name_display,
-                'visit_label'       => $this->visit_label,
-                'ProjectID'         => $this->ProjectID,
+             'CandID'            => $this->CandID,
+             'PSCID'             => $this->PSCID,
+             'FieldName'         => $this->FieldName,
+             'TableName'         => $this->TableName,
+             'test_name_display' => $this->test_name_display,
+             'visit_label'       => $this->visit_label,
+             'ProjectID'         => $this->ProjectID,
             )
         );
     }
