@@ -79,7 +79,16 @@ class IncompleteForms extends Component {
         console.log(cell);
         console.log(rowData);
         reactElement = (
-          <td>{rowData['Visit']}</td>
+          <td>
+            <a href={window.location.origin +
+              '/instruments_list/?candID=' +
+              rowData['DCCID'] +
+              '&sessionID=' +
+              rowData['SessionID']
+            }>
+              {rowData['Visit']}
+            </a>
+          </td>
         );
         break;
       }
