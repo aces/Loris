@@ -225,13 +225,9 @@ class Database
             return true;
         } catch(\Exception $e) {
             error_log($e->getMessage());
-            $this->lastErr = "Exceptional error connecting to the database "
-            . $database . ".";
+            $this->lastErr = $e->getMessage();
             return false;
         }
-
-        // Unreachable
-        return false;
     }
 
     /**

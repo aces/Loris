@@ -123,11 +123,17 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth       += 1;
-                $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
+                $depth    += 1;
+                $parent_id = $value['parent_id'];
+                $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";
-                $value        = $DB->pselectRow($query, array());
+                $value     = $DB->pselectRow($query, array());
+                if (is_null($value)) {
+                    throw new \LorisException(
+                        'Could not find data for specified parent ID. '
+                        . 'Cannot parse category.'
+                    );
+                }
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
@@ -193,7 +199,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         }
         $this->group_by = '';
         $this->order_by = 'v.File_name';
-        return true;
     }
 
     /**

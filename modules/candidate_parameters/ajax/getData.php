@@ -14,22 +14,37 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-if (isset($_GET['data'])) {
-    $data = $_GET['data'];
-    if ($data == "candidateInfo") {
-        echo json_encode(getCandInfoFields());
-    } else if ($data == "probandInfo") {
-        echo json_encode(getProbandInfoFields());
-    } else if ($data == "familyInfo") {
-        echo json_encode(getFamilyInfoFields());
-    } else if ($data == "participantStatus") {
-        echo json_encode(getParticipantStatusFields());
-    } else if ($data == "consentStatus") {
-        echo json_encode(getConsentStatusFields());
-    } else {
-        header("HTTP/1.1 404 Not Found");
-        exit;
-    }
+$user = \NDB_Factory::singleton()->user();
+if (!$user->hasPermission('candidate_parameter_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+$data = $_GET['data'] ?? '';
+if ($data == '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
+switch($data) {
+case 'candidateInfo':
+    echo json_encode(getCandInfoFields());
+    exit;
+case 'probandInfo':
+    echo json_encode(getProbandInfoFields());
+    exit;
+case 'familyInfo':
+    echo json_encode(getFamilyInfoFields());
+    exit;
+case 'participantStatus':
+    echo json_encode(getParticipantStatusFields());
+    exit;
+case 'consentStatus':
+    echo json_encode(getConsentStatusFields());
+    exit;
+default:
+    header("HTTP/1.1 404 Not Found");
+    exit;
 }
 
 /**

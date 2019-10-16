@@ -75,6 +75,8 @@ class Stats_Demographic extends \NDB_Form
      * @param string  $subsection       the value of subsection=''
      * @param string  $disclamer        the value of disclamer=''
      * @param ?string $projectID        the value of projectID is null
+     * @param bool    $renderTable      whether to render the table or display a
+     *                                  default error message
      *
      * @return string
      */
@@ -90,7 +92,8 @@ class Stats_Demographic extends \NDB_Form
         array $data,
         $subsection='',
         $disclamer='',
-        $projectID=null
+        $projectID=null,
+        $renderTable=true
     ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
@@ -143,6 +146,7 @@ class Stats_Demographic extends \NDB_Form
             }
 
         }
+        $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch('table_statistics.tpl');
         return $html;

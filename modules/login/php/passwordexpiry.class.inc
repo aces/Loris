@@ -101,7 +101,7 @@ class PasswordExpiry extends \NDB_Form
             return array('password' => 'You cannot keep the same password');
         }
 
-        return true;
+        return array();
     }
 
     /**

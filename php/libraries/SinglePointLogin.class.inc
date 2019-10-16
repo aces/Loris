@@ -136,7 +136,7 @@ class SinglePointLogin
      * @param string $token The token extracted from the
      *                      Authorization: Bearer header
      *
-     * @return true if the session is valid, false otherwise
+     * @return bool true if the session is valid, false otherwise
      */
     function JWTAuthenticate(string $token): bool
     {
@@ -148,14 +148,12 @@ class SinglePointLogin
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
         $decodedArray    = (array) $decoded;
-        $this->_username
-            = isset($decodedArray['user'])
-                ? $decodedArray['user'] : 'Unknown';
+        $this->_username = $decodedArray['user'] ?? 'Unknown';
         return isset($decodedArray['user'])
             && !$this->accountLocked($decodedArray['user']);
     }
@@ -263,7 +261,7 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 try {
                     $newHash = new \Password($password);
-                    \User::updatePassword(
+                    \User::factory($username)->updatePassword(
                         $newHash
                     );
                 } catch (\InvalidArgumentException $e) {
@@ -537,7 +535,7 @@ class SinglePointLogin
          * logging in. This will always be the case in our CI environment.
          * The user should not be disabled in this case.
          */
-        if (is_null($row['Login_timestamp'])) {
+        if (is_null($row) || is_null($row['Login_timestamp'])) {
             return false;
         }
         $last_login = new DateTime($row['Login_timestamp']);
