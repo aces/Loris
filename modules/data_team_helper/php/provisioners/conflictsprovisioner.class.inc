@@ -40,7 +40,9 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 	          c.TableName,
 	          t.full_name AS test_name_display,
 	          s.visit_label,
-              s.ProjectID
+              s.ProjectID,
+              f.SessionID,
+              t.Full_name
             FROM
 	          conflicts_unresolved c
 	          LEFT JOIN flag f ON (c.CommentId1 = f.CommentID)

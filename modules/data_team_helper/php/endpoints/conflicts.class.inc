@@ -153,8 +153,8 @@ class Conflicts extends Endpoint implements ETagCalculator
                 'FieldName'         => parent::formElementObjectCreator(
                     'FieldName',
                     'text',
-                    'FieldName',
-                    true,
+                    'Field Name',
+                    false,
                     null
                 ),
                 'TableName'         => parent::formElementObjectCreator(
@@ -177,6 +177,20 @@ class Conflicts extends Endpoint implements ETagCalculator
                     'Visit',
                     false,
                     $visit_array
+                ),
+                'SessionID'   => parent::formElementObjectCreator(
+                    'SessionID',
+                    'text',
+                    'SessionID',
+                    true,
+                    null
+                ),
+                'Full_name'   => parent::formElementObjectCreator(
+                    'Full_name',
+                    'text',
+                    'Full_name',
+                    true,
+                    null
                 ),
                 'Instrument'        => parent::formElementObjectCreator(
                     'Instrument',

@@ -75,9 +75,6 @@ class IncompleteForms extends Component {
         break;
       }
       case 'Visit': {
-        console.log(this.state);
-        console.log(cell);
-        console.log(rowData);
         reactElement = (
           <td>
             <a href={window.location.origin +
