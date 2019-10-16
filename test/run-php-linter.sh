@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
-find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null
+find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null  
 
 # Run PHPCS on the entire libraries directory.
 vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/installer || exit $?;

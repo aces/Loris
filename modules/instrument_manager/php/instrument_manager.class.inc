@@ -427,7 +427,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     * @param string $columnname the value of column name
     * @param string $type       the value of the type
     *
-    * @return string
+    * @return ?string
     */
     protected function checkType($tablename, $columnname, $type)
     {

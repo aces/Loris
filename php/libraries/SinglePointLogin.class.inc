@@ -3,7 +3,7 @@
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -97,57 +97,6 @@ class SinglePointLogin
     }
 
     /**
-     * Saves the new password if last was expired
-     *
-     * @return bool
-     * @access public
-     */
-    function save(): bool
-    {
-        // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
-
-        // get user's data
-        $data = $user->getData();
-
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'] ?? '',
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-            return false;
-        }
-
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-            return false;
-        }
-        // Check if password is present in existing data breaches.
-        if ($user->pwnedPassword($_POST['password'])) {
-            $this->_lastError = 'The password you chose is too common. Please '
-                . 'choose a more unique password.';
-                return false;
-        }
-
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
-        return true;
-    }
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return bool Whether a user has successfully authenticated.
@@ -187,7 +136,7 @@ class SinglePointLogin
      * @param string $token The token extracted from the
      *                      Authorization: Bearer header
      *
-     * @return true if the session is valid, false otherwise
+     * @return bool true if the session is valid, false otherwise
      */
     function JWTAuthenticate(string $token): bool
     {
@@ -199,14 +148,12 @@ class SinglePointLogin
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
         $decodedArray    = (array) $decoded;
-        $this->_username
-            = isset($decodedArray['user'])
-                ? $decodedArray['user'] : 'Unknown';
+        $this->_username = $decodedArray['user'] ?? 'Unknown';
         return isset($decodedArray['user'])
             && !$this->accountLocked($decodedArray['user']);
     }
@@ -312,8 +259,28 @@ class SinglePointLogin
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                $user = \User::factory($username);
-                $user->updatePassword($password);
+                try {
+                    $newHash = new \Password($password);
+                    \User::factory($username)->updatePassword(
+                        $newHash
+                    );
+                } catch (\InvalidArgumentException $e) {
+                    // Edge-case: if a user has a password based on old LORIS
+                    // password standards and it needs rehashing, it will
+                    // generate this exception when used above.
+                    // Rather than force a password change, we will manually
+                    // update the password here without using the Password class
+                    $newHash = password_hash(
+                        $password,
+                        PASSWORD_DEFAULT
+                    );
+                    \NDB_Factory::singleton()->database()->update(
+                        'users',
+                        array('Password_hash' => $newHash),
+                        array('UserID' => $username)
+                    );
+                }
+
             }
 
             if ($row['Active'] == 'N'
@@ -392,14 +359,10 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
-                $success = $this->save();
-
-                if ($success == false) {
-                    if ($redirect) {
-                        $this->showPasswordExpiryScreen();
-                    }
-                    return false;
+                if ($redirect) {
+                    $this->showPasswordExpiryScreen();
                 }
+                return false;
             }
             // Allow a user to login if none of the previous cases have occurred
             $this->_username = $row['UserID'];
@@ -572,7 +535,7 @@ class SinglePointLogin
          * logging in. This will always be the case in our CI environment.
          * The user should not be disabled in this case.
          */
-        if (is_null($row['Login_timestamp'])) {
+        if (is_null($row) || is_null($row['Login_timestamp'])) {
             return false;
         }
         $last_login = new DateTime($row['Login_timestamp']);

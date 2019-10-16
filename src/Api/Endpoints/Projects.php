@@ -32,8 +32,9 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * need to be recalculated for the ETag and handler
      */
     protected $projectsCache;
+
     /**
-     * All users have access to the login endpoint to try and login.
+     * Only logged in users can see projects.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -83,7 +84,11 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // FIXME: Validate permissions.
+        $user = $request->getAttribute('user');
+        if (!$this->_hasAccess($user)) {
+            return new \LORIS\Http\Response\Unauthorized();
+        }
+
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 1) {
@@ -102,7 +107,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $project = \NDB_Factory::singleton()
                 ->project($pathparts[1]);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $endpoint = new Project\Project($project);

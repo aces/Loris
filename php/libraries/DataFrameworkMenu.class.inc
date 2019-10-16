@@ -75,7 +75,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      *
      * @return array An array of data-context sensitive GUI options.
      */
-    abstract protected function getFieldOptions() : array ;
+    abstract protected function getFieldOptions() : array;
 
     /**
      * Return the base Provisioner, without any filters applied.
@@ -95,7 +95,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     {
         $provisioner = $this->getBaseDataProvisioner();
 
-        $user = \User::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
@@ -108,7 +108,6 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
             );
         }
         return $provisioner;
-
     }
 
     /**
@@ -134,8 +133,6 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
              'fieldOptions' => $this->getFieldOptions(),
             ]
         );
-
-        return json_encode($arr);
     }
 }
 

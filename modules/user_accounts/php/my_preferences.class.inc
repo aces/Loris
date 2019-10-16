@@ -2,7 +2,7 @@
 /**
  * The user account page
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -123,7 +123,7 @@ class My_Preferences extends \NDB_Form
         $user = \User::factory($this->identifier);
 
         // If editing a user and nothing was specified in the password text field
-        // remove Password_md5 from the value set, otherwise Password_md5
+        // remove the key from the value set, otherwise Password_hash
         // will be set to '' by the system
         if ($values['Password_hash'] == '') {
             unset($values['Password_hash']);
@@ -190,12 +190,10 @@ class My_Preferences extends \NDB_Form
             }
         }
         // update the user
-        $success = $user->update($set);
+        $user->update($set);
 
-        // Now set the password. Note that this field is named incorrectly at this
-        // point in the code and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
-            $user->updatePassword($values['Password_hash']);
+            $user->updatePassword(new \Password($values['Password_hash']));
         }
 
         // send the user an email
@@ -374,38 +372,6 @@ class My_Preferences extends \NDB_Form
         $this->form->addFormRule(array(&$this, '_validateMyPreferences'));
     }
 
-    /**
-     * Determines if the new password that the user entered is different
-     * than its current password (the one stored in the database).
-     *
-     * @param \Database $db          database object.
-     * @param string    $newPassword the new password the user entered.
-     *
-     * @return bool  true if the password changed, false otherwise.
-     */
-    function _passwordChanged(\Database $db, $newPassword): bool
-    {
-        //--- Get current password stored in database
-        $passwordQuery
-            = "SELECT Password_hash
-               FROM users
-               WHERE UserID = :UID";
-
-        $passwords = $db->pselectRow(
-            $passwordQuery,
-            array('UID' => $this->identifier)
-        );
-        if (is_null($passwords)) {
-            throw new \LorisException(
-                'No existing password found for user!'
-            );
-        }
-
-        if (!is_null($passwords['Password_hash'])) {
-            return !password_verify($newPassword, $passwords['Password_hash']);
-        }
-        return true;
-    }
 
     /**
      * Validates the data entered in the form when editing one's preferences.
@@ -414,7 +380,7 @@ class My_Preferences extends \NDB_Form
      *
      * @return array $errors all the errors found.
      */
-    function _validateMyPreferences($values)
+    function _validateMyPreferences(array $values): array
     {
         // create DB object
         $DB     = \Database::singleton();
@@ -422,34 +388,18 @@ class My_Preferences extends \NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
-
-            // check password strength
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-            if (!$isPasswordStrong) {
-                $errors['Password_hash']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
+            try {
+                $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
+                if (! \User::factory($this->identifier)->passwordChanged(
+                    $values['Password_hash']
+                )
+                ) {
                     $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
-            }
-            if (\User::pwnedPassword($values['Password_hash'])) {
-                $errors['Password_hash'] = 'The password you chose is too '
-                    . 'common. Please choose a more unique password.';
+            } catch (\InvalidArgumentException $e) {
+                $errors['Password_hash'] = $e->getMessage();
             }
         }
 
@@ -470,12 +420,16 @@ class My_Preferences extends \NDB_Form
      * @param \Database $DB    database object.
      * @param string    $email user's email.
      *
-     * @return string error message if email is invalid, null otherwise.
+     * @return ?string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError(\Database $DB, $email)
+    private function _getEmailError(\Database $DB, $email): ?string
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
 
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
@@ -489,9 +443,6 @@ class My_Preferences extends \NDB_Form
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
         }
 
         return null;

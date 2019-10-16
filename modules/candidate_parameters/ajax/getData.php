@@ -12,22 +12,39 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-if (isset($_GET['data'])) {
-    $data = $_GET['data'];
-    if ($data == "candidateInfo") {
-        echo json_encode(getCandInfoFields());
-    } else if ($data == "probandInfo") {
-        echo json_encode(getProbandInfoFields());
-    } else if ($data == "familyInfo") {
-        echo json_encode(getFamilyInfoFields());
-    } else if ($data == "participantStatus") {
-        echo json_encode(getParticipantStatusFields());
-    } else if ($data == "consentStatus") {
-        echo json_encode(getConsentStatusFields());
-    } else {
-        header("HTTP/1.1 404 Not Found");
-        exit;
-    }
+use \LORIS\StudyEntities\Candidate\CandID;
+
+$user = \NDB_Factory::singleton()->user();
+if (!$user->hasPermission('candidate_parameter_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+$data = $_GET['data'] ?? '';
+if ($data == '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
+switch($data) {
+case 'candidateInfo':
+    echo json_encode(getCandInfoFields());
+    exit;
+case 'probandInfo':
+    echo json_encode(getProbandInfoFields());
+    exit;
+case 'familyInfo':
+    echo json_encode(getFamilyInfoFields());
+    exit;
+case 'participantStatus':
+    echo json_encode(getParticipantStatusFields());
+    exit;
+case 'consentStatus':
+    echo json_encode(getConsentStatusFields());
+    exit;
+default:
+    header("HTTP/1.1 404 Not Found");
+    exit;
 }
 
 /**
@@ -39,9 +56,9 @@ if (isset($_GET['data'])) {
  */
 function getCandInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get caveat options
     $caveat_options = [];
@@ -119,9 +136,9 @@ function getCandInfoFields()
  */
 function getProbandInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -199,9 +216,9 @@ function getProbandInfoFields()
  */
 function getFamilyInfoFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -271,9 +288,9 @@ function getFamilyInfoFields()
 function getParticipantStatusFields()
 {
     \Module::factory('candidate_parameters');
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -345,15 +362,15 @@ function getParticipantStatusFields()
 /**
  * Handles the fetching of Participant Status History
  *
- * @param int $candID current candidate's ID
+ * @param CandID $candID current candidate's ID
  *
  * @throws DatabaseException
  *
  * @return array
  */
-function getParticipantStatusHistory($candID)
+function getParticipantStatusHistory(CandID $candID)
 {
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
             (SELECT Description 
@@ -379,7 +396,7 @@ function getParticipantStatusHistory($candID)
  */
 function getConsentStatusFields()
 {
-    $candID = $_GET['candID'];
+    $candID = new CandID($_GET['candID']);
 
     $db        = \Database::singleton();
     $candidate = \Candidate::singleton($candID);

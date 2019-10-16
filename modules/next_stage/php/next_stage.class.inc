@@ -232,7 +232,10 @@ class Next_Stage extends \NDB_Form
         /* Check that dates are present. Return early as there is no point
          * doing further processing otherwise.
          */
-        if (!isset($values['date1'], $values['date2'])) {
+        if (!isset($values['date1'], $values['date2'])
+            || is_null($values['date1'])
+            || is_null($values['date2'])
+        ) {
             $errors['date1'] .= "Both date fields are required.";
             return $errors;
         }
@@ -253,7 +256,7 @@ class Next_Stage extends \NDB_Form
         if ($stage == 'Visit') {
             // compare the dates date of MRI
             // must be > DOB - ONLY WHEN starting Visit stage
-            $date = $values['date1'];
+            $date = $values['date1'] ?? '';
 
             if (empty($values['scan_done'])
                 && $config->getSetting('useScanDone')!='false'

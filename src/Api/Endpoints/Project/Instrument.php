@@ -94,7 +94,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) > 1) {
-            return new \LORIS\Http\Responsei\NotFound();
+            return new \LORIS\Http\Response\NotFound();
         }
 
         return (new \LORIS\Http\Response())
@@ -121,7 +121,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->responseCache[$instrumentname] = $this->instrument->toJSON();
         }
 
-        return $this->responseCache[$instrumentname];
+        return array($this->responseCache[$instrumentname]);
     }
 
     /**

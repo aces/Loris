@@ -43,7 +43,7 @@ class Edit_User extends \NDB_Form
      *
      * @param \User $editor The user who is accessing this page
      *
-     * @return true if user has access, false otherwise.
+     * @return bool true if user has access, false otherwise.
      */
     function _hasAccess(\User $editor) : bool
     {
@@ -249,13 +249,13 @@ class Edit_User extends \NDB_Form
         unset($values['NA_UserID']);
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_hash']   = \User::newPassword();
+            $values['Password_hash']   = \Utility::randomString();
             $values['Password_expiry'] = '1990-04-01';
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
-        // remove Password_md5 from the value set, otherwise Password_md5
-        // will be set to '' by the system
+        // remove the supplied password value. We don't want to change a user's
+        // password when this value is blank.
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
         }
@@ -438,9 +438,9 @@ class Edit_User extends \NDB_Form
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
-            $success = \User::insert($set);
-            $user    = \User::factory($set['UserID']);
-            $uid     = $user->getData('ID');
+            \User::insert($set);
+            $user = \User::factory($set['UserID']);
+            $uid  = $user->getData('ID');
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
@@ -452,22 +452,35 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // update the user
-            $user    = \User::factory($this->identifier);
-            $success = $user->update($set);
+            $user = \User::factory($this->identifier);
+            $user->update($set);
         }
-
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
-        if (isset($values['Password_hash'])) {
-            $user->updatePassword($values['Password_hash']);
+        if (isset($values['Password_hash'], $values['Password_expiry'])) {
+            // If both hash and expiry are set, use both values when resetting
+            // the password. This occurs when a new password is generated
+            // by the system.
+            $user->updatePassword(
+                new \Password($values['Password_hash']),
+                new \DateTime($values['Password_expiry'])
+            );
+        } else if (isset($values['Password_hash'])) {
+            // If just the Password_hash value is present, no not specify a
+            // custom expiry date. This will set the password to expire in
+            // 6 months from the current date (handled in updatePassword()).
+            $user->updatePassword(
+                new \Password($values['Password_hash'])
+            );
         }
+
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
         // changes to the permissions are handled (there should not be any
         // change to the user's permission set since all the checkboxes are
         // disabled)
         if (!$this->_isEditingOwnAccount()) {
-            $success = $user->removePermissions();
+            $user->removePermissions();
             // Check for new permissions
             if (!empty($permIDs)) {
                 foreach ($permIDs as $permID) {
@@ -1031,34 +1044,17 @@ class Edit_User extends \NDB_Form
         if (empty($values['NA_Password'])
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 isset($values['UserID']) ? $values['UserID'] : $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-
-            // check password strength
-            if (!$isPasswordStrong) {
-                $errors['Password_Group']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
+            try {
+                $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
+                $passwordChanged = \User::factory($this->identifier)
+                    ->passwordChanged($_POST['password']);
+                if (! $passwordChanged) {
                     $errors['Password_Group'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
-            }
-            if (\User::pwnedPassword($values['Password_hash'])) {
-                $errors['Password_Group'] = 'The password you chose is too '
-                    . 'common. Please choose a more unique password.';
+            } catch (\InvalidArgumentException $e) {
+                $errors['Password_Group'] = $e->getMessage();
             }
         }
 
@@ -1166,47 +1162,22 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Determines if the new password that the user entered is different
-     * than its current password (the one stored in the database).
-     *
-     * @param \Database $db          database object.
-     * @param string    $newPassword the new password the user entered.
-     *
-     * @return bool  true if the password changed, false otherwise.
-     */
-    function _passwordChanged(\Database $db, $newPassword)
-    {
-        //--- Get current password stored in database
-        $passwordQuery
-            = "SELECT Password_hash
-               FROM users
-               WHERE UserID = :UID";
-
-        $passwords = $db->pselectRow(
-            $passwordQuery,
-            array('UID' => $this->identifier)
-        );
-
-        if (!is_null($passwords)) {
-            return !password_verify($newPassword, $passwords['Password_hash']);
-        }
-
-        return true;
-    }
-
-    /**
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
      *
      * @param \Database $DB    database object.
      * @param string    $email user's email.
      *
-     * @return string error message if email is invalid, null otherwise.
+     * @return ?string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError(\Database $DB, $email)
+    private function _getEmailError(\Database $DB, string $email): ?string
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
 
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
@@ -1220,9 +1191,6 @@ class Edit_User extends \NDB_Form
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
         }
 
         return null;

@@ -47,7 +47,7 @@ abstract class AbstractServerProcess
     /**
      * ID of the process when recorded in the database.
      *
-     * @var int.
+     * @var int
      */
 
     private $_id;
@@ -55,35 +55,35 @@ abstract class AbstractServerProcess
     /**
      * Unix process ID for that process
      *
-     * @var int.
+     * @var int
      */
     private $_pid;
 
     /**
      * Type of process
      *
-     * @var string.
+     * @var string
      */
     private $_type;
 
     /**
      * Full path of the file containing the process's stdout.
      *
-     * @var string.
+     * @var string
      */
     private $_stdoutFile;
 
     /**
      * Full path of the file containing the process's stderr.
      *
-     * @var string.
+     * @var string
      */
     private $_stderrFile;
 
     /**
      * Full path of the file containing the process's return code.
      *
-     * @var string.
+     * @var string
      */
     private $_exitCodeFile;
 
@@ -91,35 +91,35 @@ abstract class AbstractServerProcess
     /**
      * Process's exit code, read in $exitCodeFile.
      *
-     * @var int.
+     * @var int
      */
     private $_exitCode;
 
     /**
      * ID of the user who launched the process
      *
-     * @var string.
+     * @var string
      */
     private $_userId;
 
     /**
      * Time at which the process was launched (in format PROCESS_TIME_FORMAT)
      *
-     * @var string.
+     * @var string
      */
     private $_startTime;
 
     /**
      * Time at which the process finished (in format PROCESS_TIME_FORMAT)
      *
-     * @var string.
+     * @var string
      */
     private $_endTime;
 
     /**
      * Process exit text.
      *
-     * @var string.
+     * @var string
      */
     private $_exitText;
 

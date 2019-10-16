@@ -3,7 +3,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -15,6 +15,8 @@
 namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -66,9 +68,9 @@ class Module extends \Module
         try {
             $attribute = $request->getAttribute("CandID");
             if ($attribute !== null) {
-                $candidate = \Candidate::singleton(intval($attribute));
+                $candidate = \Candidate::singleton(new CandID($attribute));
             } else {
-                $candidate = \Candidate::singleton(intval($gets['candID']) ?? -1);
+                $candidate = \Candidate::singleton(new CandID($gets['candID']));
             }
             $request = $request->withAttribute("Candidate", $candidate);
 

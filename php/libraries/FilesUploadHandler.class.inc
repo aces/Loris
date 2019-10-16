@@ -174,7 +174,7 @@ class FilesUploadHandler implements RequestHandlerInterface
              * calling code wants to overwrite the file.
              */
             if (file_exists($targetPath) && $this->overwrite !== true) {
-                return new \LORIS\Http\Response\Conflict(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'This file has already been uploaded.'
                 );
             }

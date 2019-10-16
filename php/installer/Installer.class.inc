@@ -106,7 +106,7 @@ class Installer
     /**
      * Check that composer has already been run by.
      *
-     * @return true if composer has been run
+     * @return bool true if composer has been run
      */
     private function _checkComposerRan()
     {
@@ -117,7 +117,7 @@ class Installer
      * Check that the system being installed on meets all LORIS dependencies
      * which can be checked.
      *
-     * @return true if system is dependable.
+     * @return bool true if system is dependable.
      */
     public function checkSystemDependenciesValid()
     {
@@ -170,7 +170,7 @@ class Installer
      *
      * @param array $values The POSTed values for the database to be created.
      *
-     * @return true on success, false on error.
+     * @return bool true on success, false on error.
      */
     function createMySQLDB($values)
     {
@@ -209,20 +209,19 @@ class Installer
      *
      * @param array $values The POSTed values from the client.
      *
-     * @return true on success, false on failure.
+     * @return bool true on success, false on failure.
      */
     function sourceSchema($values)
     {
         $DB = Database::singleton();
 
-        try {
-            $DB->connect(
-                $values['dbname'],
-                $values['dbadminuser'],
-                $values['dbadminpassword'],
-                $values['dbhost']
-            );
-        } catch (\Exception $e) {
+        if ($DB->connect(
+            $values['dbname'],
+            $values['dbadminuser'],
+            $values['dbadminpassword'],
+            $values['dbhost']
+        ) === false
+        ) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
@@ -265,9 +264,9 @@ class Installer
      * Get the Base URL that this LORIS instance appears to be installed under
      * by checking the URL that the user is accessing.
      *
-     * @return string the LORIS base URL.
+     * @return ?string the LORIS base URL.
      */
-    function getBaseURL()
+    function getBaseURL(): ?string
     {
         // This is apparently the most reliable way to figure out if
         // the requery is over http or https.. $_SERVER[REQUEST_SCHEME]
@@ -277,7 +276,7 @@ class Installer
             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
             && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
         ) {
-               $RequestScheme = 'https';
+            $RequestScheme = 'https';
         }
         if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
             return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
@@ -292,7 +291,7 @@ class Installer
      *
      * @param array $values The values from the POST request.
      *
-     * @return true on success, false on error
+     * @return bool true on success, false on error
      */
     function updateBaseConfig($values)
     {
@@ -335,9 +334,8 @@ class Installer
 
         // Generate a new secret key for JWT tokens. We don't really care
         // what it is, as long as the server always uses the same one to
-        // validate tokens. So we use the new user password code to generate a
-        // really long password and use that as the key.
-        $this->_updateConfig($DB, "JWTKey", \User::newPassword(64));
+        // validate tokens.
+        $this->_updateConfig($DB, "JWTKey", \Utility::randomString());
     }
 
     /**
@@ -366,7 +364,7 @@ class Installer
      * @param string   $file The file to source into the database that $DB
      *                       is connected to.
      *
-     * @return true on success, false on failure.
+     * @return bool true on success, false on failure.
      */
     private function _sourceSchemaFile($DB, $file)
     {
@@ -388,7 +386,7 @@ class Installer
      *                      dbadminpassword, dbhost, lorismysqluser, and
      *                      lorismysqlpassword
      *
-     * @return true on success, false on error
+     * @return bool true on success, false on error
      */
     function createMySQLAccount($values)
     {
@@ -501,7 +499,7 @@ class Installer
      *                      dbname, dbadminuser, dbadminpassword, dbhost,
      *                      frontenduser, and frontendpassword
      *
-     * @return true on success
+     * @return bool true on success
      */
     function resetFrontEndAdmin($values)
     {
@@ -555,7 +553,7 @@ class Installer
     /**
      * Returns whether or not the config.xml file should be writable.
      *
-     * @return true if the file should be writable.
+     * @return bool true if the file should be writable.
      */
     function configWritable()
     {
@@ -609,7 +607,7 @@ class Installer
      * @param array $values An associative array with keys for dbhost,
      *                      lorismysqluser, lorismysqlpassword, and dbname
      *
-     * @return true
+     * @return bool true
      */
     function writeConfig($values)
     {

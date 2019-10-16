@@ -43,7 +43,7 @@ if ($_POST['action'] == 'upload'
     } else {
         $target_path = $base_path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
-            $success = $DB->insert(
+            $DB->insert(
                 'data_release',
                 array(
                  'file_name'   => $fileName,
@@ -68,7 +68,7 @@ if ($_POST['action'] == 'upload'
                  'upload_date' => $upload_date,
                 )
             );
-            $success = $DB->insert(
+            $DB->insert(
                 'data_release_permissions',
                 array(
                  'userid'          => $user_ID,
