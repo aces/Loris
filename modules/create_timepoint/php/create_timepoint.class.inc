@@ -46,6 +46,7 @@ class Create_Timepoint extends \NDB_Form
             )
         );
     }
+
     /**
      * Generate a breadcrumb trail for this page.
      *

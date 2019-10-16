@@ -205,12 +205,12 @@ class MediaEditForm extends Component {
       },
       success: (data) => {
         $('#file-progress').addClass('hide');
-        swal('Upload Successful!', '', 'success');
+        swal.fire('Upload Successful!', '', 'success');
         this.props.fetchData();
       },
       error: function(err) {
         let msg = err.responseJSON.message || 'Error updating file';
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(err);
       },
     });

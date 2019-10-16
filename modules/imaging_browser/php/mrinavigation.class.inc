@@ -56,7 +56,7 @@ class MRINavigation
     * Parses the request into hostname/params, so that it can be
     * reconstructed into a link which has the same parameters
     *
-    * @return string $urlParams parameters
+    * @return array $urlParams The URL parameters extracted from the request.
     */
     function _splitURL()
     {

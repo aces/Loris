@@ -302,7 +302,7 @@ class NDB_BVL_Feedback
                    'Description' => $description,
                   );
         $db->insert("feedback_bvl_type", $values);
-        return $db->getLastInsertId();
+        return intval($db->getLastInsertId());
     }
 
     /**
@@ -372,9 +372,9 @@ class NDB_BVL_Feedback
      *                                        threads, otherwise only returns
      *                                        active threads
      *
-     * @return string the higest-order status of an active thread
+     * @return ?string the higest-order status of an active thread
      */
-    function getMaxThreadStatus($select_inactive_threads)
+    function getMaxThreadStatus($select_inactive_threads): ?string
     {
         // new DB Object
         $db =& Database::singleton();
@@ -806,7 +806,7 @@ class NDB_BVL_Feedback
         // FIXME: I don't think the third parameter is correct, but I'm not sure
         // what it's supposed to be, and I'm not sure if this code is even used
         // at all.
-        $success = $this->createEntry($feedbackID, $comment, '');
+        $this->createEntry($feedbackID, $comment, '');
 
         // force private threads to status='comment'
         if ($public=='N') {
@@ -837,7 +837,7 @@ class NDB_BVL_Feedback
 
         if (is_array($setArray) && count($setArray)>0) {
             // update the thread only if the form data was changed
-            $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+            $db->update('feedback_bvl_thread', $setArray, $whereArray);
         }
 
     }
@@ -852,16 +852,16 @@ class NDB_BVL_Feedback
     function deleteThread($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         // DELETE the thread's entries
-        $success = $db->delete(
+        $db->delete(
             'feedback_bvl_entry',
             array("FeedbackID" => $feedbackID)
         );
 
         // DELETE the thread
-        $success = $db->delete(
+        $db->delete(
             'feedback_bvl_thread',
             array("FeedbackID" => '$feedbackID')
         );

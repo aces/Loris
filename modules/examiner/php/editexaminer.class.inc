@@ -190,20 +190,28 @@ class EditExaminer extends \NDB_Form
             } else { // update to a test certification for the examiner
 
                 //select history events
-                $oldVals = $DB->pselectRow(
+                $oldVals = $DB->pselect(
                     "SELECT ch.new, ch.new_date
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
-                     ORDER BY changeDate DESC",
+                     ORDER BY changeDate DESC LIMIT 1",
                     array(
                      'EID' => $examinerID,
                      'TID' => $testID,
                     )
                 );
+                if (is_null($oldVals)) {
+                    throw new \LorisException(
+                        'No old certification values found for specified '
+                        . 'examiner and test IDs.'
+                    );
+                }
 
-                $oldVal  = $oldVals['new'];
-                $oldDate = $oldVals['new_date'];
+                // since there is an ORDER BY in pselect
+                // $oldVals[0] corresponds to the latest date
+                $oldVal  = $oldVals[0]['new'] ?? null;
+                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
@@ -214,6 +222,13 @@ class EditExaminer extends \NDB_Form
                      'TID' => $testID,
                     )
                 );
+
+                if (is_null($oldCertification)) {
+                    throw new \LorisException(
+                        'No old data certification found for specified '
+                        . 'examiner and test IDs.'
+                    );
+                }
 
                 // If one of the values was changed
                 if ($oldCertification['pass'] != $certStatus

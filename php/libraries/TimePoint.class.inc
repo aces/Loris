@@ -364,7 +364,6 @@ class TimePoint
             throw new LorisException(
                 'TimePoint::setData() cannot be called with an empty array!'
             );
-            return false;
         }
 
         \Database::singleton()->update(

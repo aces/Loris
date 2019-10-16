@@ -92,6 +92,12 @@ class NDB_BVL_InstrumentStatus
             FROM flag
             WHERE CommentID=:CID";
         $row   = $db->pselectRow($query, array('CID' => $this->_commentID));
+        if (is_null($row)) {
+            throw new \LorisException(
+                'No information exists in the database for the specified '
+                . 'CommentID. Cannot build InstrumentStatus object'
+            );
+        }
 
         // store the statuses into the _status property
         $this->_status = $row;

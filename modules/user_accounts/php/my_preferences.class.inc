@@ -190,10 +190,10 @@ class My_Preferences extends \NDB_Form
             }
         }
         // update the user
-        $success = $user->update($set);
+        $user->update($set);
 
         if (isset($values['Password_hash'])) {
-            \User::updatePassword(new \Password($values['Password_hash']));
+            $user->updatePassword(new \Password($values['Password_hash']));
         }
 
         // send the user an email
@@ -391,7 +391,7 @@ class My_Preferences extends \NDB_Form
             try {
                 $password = new \Password($values['Password_hash']);
                 // New password must be different than current one
-                if (!\User::passwordChanged(
+                if (! \User::factory($this->identifier)->passwordChanged(
                     $values['Password_hash']
                 )
                 ) {
@@ -420,12 +420,16 @@ class My_Preferences extends \NDB_Form
      * @param \Database $DB    database object.
      * @param string    $email user's email.
      *
-     * @return string error message if email is invalid, null otherwise.
+     * @return ?string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError(\Database $DB, $email)
+    private function _getEmailError(\Database $DB, $email): ?string
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
 
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
@@ -439,9 +443,6 @@ class My_Preferences extends \NDB_Form
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
         }
 
         return null;

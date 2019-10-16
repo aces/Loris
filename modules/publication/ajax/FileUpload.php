@@ -432,7 +432,14 @@ function notify($pubID, $type) : void
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
-    $url  = $config->getSetting('url');
+    if (is_null($data)) {
+        error_log(
+            'No data found for publication with ID $pudID. Cannot send '
+            . 'email.'
+        );
+        throw new \LorisException('Invalid publication ID specified.');
+    }
+    $url = $config->getSetting('url');
 
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
@@ -514,6 +521,11 @@ function editProject() : void
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
+    if (empty($pubData)) {
+        throw new \LorisException(
+            'Could not find publication data for specified ID'
+        );
+    }
 
     // build array of changed values
     $toUpdate        = array();
