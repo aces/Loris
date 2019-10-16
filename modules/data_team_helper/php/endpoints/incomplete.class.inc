@@ -136,8 +136,8 @@ class Incomplete extends Endpoint implements ETagCalculator
             $list_of_sites = $user->getStudySites();
         }
         return array(
-                'id'          => parent::formElementObjectCreator(
-                    'id',
+                'ID'          => parent::formElementObjectCreator(
+                    'ID',
                     'text',
                     'ID',
                     true,
@@ -189,6 +189,13 @@ class Incomplete extends Endpoint implements ETagCalculator
                     'commentid',
                     'text',
                     'commentid',
+                    true,
+                    null
+                ),
+                'Full_name'   => parent::formElementObjectCreator(
+                    'Full_name',
+                    'text',
+                    'Full_name',
                     true,
                     null
                 ),

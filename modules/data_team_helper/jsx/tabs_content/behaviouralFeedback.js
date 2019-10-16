@@ -142,7 +142,6 @@ class BehaviouralFeedback extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        console.log(fieldOptions[field].name);
         if (fieldOptions[field].name === 'FeedbackID' ||
           fieldOptions[field].name === 'SessionID' ||
           fieldOptions[field].name === 'commentid' ||

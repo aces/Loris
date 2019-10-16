@@ -71,57 +71,69 @@ class IncompleteForms extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement = null;
     switch (column) {
-      case 'PSCID': {
-        const url = window.location.origin + '/' + cell + '/';
+      case 'ID': {
+        break;
+      }
+      case 'Visit': {
+        console.log(this.state);
+        console.log(cell);
+        console.log(rowData);
         reactElement = (
-          <td><a href={url}>{rowData.PSCID}</a></td>
+          <td>{rowData['Visit']}</td>
         );
         break;
       }
-      case 'Subproject':
-        reactElement = (
-          <td>{this.state.data.subprojects[parseInt(cell)]}</td>
-        );
-        break;
-      case 'File':
-        if (cell === 'Y') {
-          reactElement = (
-            <td>
-              <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/viewGenomicFile/',
-                {candID: rowData[1]}
-              )}>{cell}</a>
-            </td>
-          );
-        } else {
-          reactElement = (
-            <td>{cell}</td>
-          );
-        }
-        break;
-      case 'CNV':
-      case 'CPG':
-      case 'SNP':
-        if (cell === 'Y') {
-          reactElement = (
-            <td>
-            <span
-              style={{cursor: 'pointer'}}
-              onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/' + column.toLowerCase() + '_browser/',
-                {DCCID: rowData[1]}
-              )}
-            >
-              {cell}
-            </span>
-            </td>
-          );
-        } else {
-          reactElement = (
-            <td>{cell}</td>
-          );
-        }
-        break;
+      // case 'PSCID': {
+      //   const url = window.location.origin + '/' + cell + '/';
+      //   reactElement = (
+      //     <td><a href={url}>{rowData.PSCID}</a></td>
+      //   );
+      //   break;
+      // }
+      // case 'Subproject':
+      //   reactElement = (
+      //     <td>{this.state.data.subprojects[parseInt(cell)]}</td>
+      //   );
+      //   break;
+      // case 'File':
+      //   if (cell === 'Y') {
+      //     reactElement = (
+      //       <td>
+      //         <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+      //           'genomic_browser/viewGenomicFile/',
+      //           {candID: rowData[1]}
+      //         )}>{cell}</a>
+      //       </td>
+      //     );
+      //   } else {
+      //     reactElement = (
+      //       <td>{cell}</td>
+      //     );
+      //   }
+      //   break;
+      // case 'CNV':
+      // case 'CPG':
+      // case 'SNP':
+      //   if (cell === 'Y') {
+      //     reactElement = (
+      //       <td>
+      //       <span
+      //         style={{cursor: 'pointer'}}
+      //         onClick={loris.loadFilteredMenuClickHandler(
+      //           'genomic_browser/' + column.toLowerCase() + '_browser/',
+      //           {DCCID: rowData[1]}
+      //         )}
+      //       >
+      //         {cell}
+      //       </span>
+      //       </td>
+      //     );
+      //   } else {
+      //     reactElement = (
+      //       <td>{cell}</td>
+      //     );
+      //   }
+      //   break;
       default:
         reactElement = (
           <td>{cell}</td>
@@ -142,12 +154,16 @@ class IncompleteForms extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        console.log(fieldOptions[field].name);
-        if (fieldOptions[field].name === 'test_name' ||
+        if (
+          // fieldOptions[field].name === 'ID' ||
+          fieldOptions[field].name === 'SessionID' ||
+          fieldOptions[field].name === 'test_name' ||
           fieldOptions[field].name === 'data_entry' ||
           fieldOptions[field].name === 'commentid' ||
-          fieldOptions[field].name === 'SessionID' ||
-          fieldOptions[field].name === 'id') {
+          fieldOptions[field].name === 'Full_name'
+        ) {
+          console.log('Hiding:');
+          console.log(fieldOptions[field].name);
           continue;
         }
         fields.push({
@@ -161,6 +177,8 @@ class IncompleteForms extends Component {
         });
       }
     }
+    console.log('fields:');
+    console.log(fields);
 
     return (
       <div>
