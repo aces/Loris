@@ -98,13 +98,9 @@ class BehaviouralFeedback extends Component {
         break;
       }
       case 'Feedback Level': {
-        console.log(this.state);
-        console.log(cell);
-        console.log(rowData);
-        if (rowData['Full_name']) {
-          reactElement = (
-            <td>
-              <a href={window.location.origin +
+        rowData['Full_name'] ? reactElement = (
+          <td>
+            <a href={window.location.origin +
               '/instruments/' +
               rowData['Test_name'] +
               '/?candID=' +
@@ -115,14 +111,11 @@ class BehaviouralFeedback extends Component {
               rowData['commentid']
               }>
                 {'Instrument : ' + rowData['Full_name']}
-              </a>
-            </td>
-          );
-        } else {
-          reactElement = (
-            <td>{''}</td>
-          );
-        }
+            </a>
+          </td>
+        ) : reactElement = (
+          <td>{''}</td>
+        );
         break;
       }
       default:
