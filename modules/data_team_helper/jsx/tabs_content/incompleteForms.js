@@ -155,26 +155,28 @@ class IncompleteForms extends Component {
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
         if (
-          // fieldOptions[field].name === 'ID' ||
+          fieldOptions[field].name === 'ID' ||
           fieldOptions[field].name === 'SessionID' ||
           fieldOptions[field].name === 'test_name' ||
           fieldOptions[field].name === 'data_entry' ||
           fieldOptions[field].name === 'commentid' ||
           fieldOptions[field].name === 'Full_name'
         ) {
-          console.log('Hiding:');
-          console.log(fieldOptions[field].name);
-          continue;
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
         }
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
       }
     }
     console.log('fields:');

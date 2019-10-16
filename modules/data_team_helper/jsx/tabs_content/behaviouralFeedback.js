@@ -149,17 +149,21 @@ class BehaviouralFeedback extends Component {
           fieldOptions[field].name === 'Test_name' ||
           fieldOptions[field].name === 'FieldName' ||
           fieldOptions[field].name === 'Full_name') {
-          continue;
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
         }
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
       }
     }
 
