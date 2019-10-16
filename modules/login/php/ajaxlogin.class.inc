@@ -188,7 +188,7 @@ class AjaxLogin extends \NDB_Page
                 $password = \Utility::randomString();
                 // Reset the password in the database and
                 // expire password so user must change it upon login.
-                \User::updatePassword(
+                $user->updatePassword(
                     new \Password($password),
                     new \DateTime('1999-01-01')
                 );
