@@ -193,7 +193,6 @@ class Timepoint extends Endpoint implements ETagCalculator
         assert(isset($site) && $site !== null);
         $errors   = $values['errors'];
         $response = array();
-        $project  = null;
         if (!$errors && $site) {
             \TimePoint::createNew(
                 \Candidate::singleton(new CandID($values['candID'])),
