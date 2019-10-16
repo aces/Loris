@@ -33,7 +33,7 @@ class SiteIDGenerator extends IdentifierGenerator
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
-     * ExternalIDs. Relevant properties are extracted from the config.xml file.
+     * ExternalIDs.
      *
      * @param string $siteAlias    To be appended to the ID value. Usually an
      *                             abbreviation for the name of a site.
@@ -45,9 +45,8 @@ class SiteIDGenerator extends IdentifierGenerator
     public function __construct(string $siteAlias, string $projectAlias)
     {
         $config = \NDB_Factory::singleton()->config();
-        // Read config settings from project/config.xml to retrieve the
-        // alphabet, length, and generation method (sequential or random) used
-        // to create new IDs.
+        // Get alphabet, length, and generation method (sequential or random)
+        // used to create new IDs.
         $this->generationMethod = $config->getSetting('idGenerationMethod');
         $configLength           = intval($config->getSetting('idLength'));
         // Length should not be greater than the value of the constant.
@@ -67,13 +66,16 @@ class SiteIDGenerator extends IdentifierGenerator
             $this->alphabet = array_merge(range('0', '9'), range('A', 'Z'));
             break;
         }
-        error_log($config->getSetting('idAlphabet'));
+
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
-        // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
-            str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue = $this->_getIDSetting('max') ??
+        // if the min or max is not configured in the Config table.
+        $this->minValue = $config->getSetting('idMinValue') ??
+            str_repeat(
+                strval($this->alphabet[0]),
+                $this->length
+            );
+        $this->maxValue = $config->getSetting('idMaxValue') ??
             str_repeat(
             strval($this->alphabet[count($this->alphabet) - 1]),
             $this->length
@@ -99,28 +101,31 @@ class SiteIDGenerator extends IdentifierGenerator
      * Throws an exception if values extracted from the configuration settings
      * are not well-formed.
      *
-     * @throws \DomainException
+     * @throws \ConfigurationException
      *
      * @return void
      */
     protected function validate(): void
     {
+        // Make sure values supplied as minValue and maxValue are of the correct
+        // character set as determined by the alphabet setting.
+        $this->_validateCharset($this->minValue);
+        $this->_validateCharset($this->maxValue);
+
         if (empty($this->generationMethod)
             || empty($this->length)
             || empty($this->alphabet)
-            || empty($this->minValue)
-            || empty($this->maxValue)
             || empty($this->prefix)
             || ! ($this->length > 0)
             || !is_array($this->alphabet)
         ) {
-            throw new \DomainException(
+            throw new \ConfigurationException(
                 'Values not configured properly for ' . get_class($this) . '. '
-                . 'Please correct your configuration file.'
+                . 'Please correct your configuration settings.'
                 . "Length: `{$this->length}`\n"
                 . "Alphabet: `" . implode($this->alphabet) . "`\n"
-                . "Min: `{$this->minValue}`\n"
-                . "Max: `{$this->maxValue}`\n"
+                . "Min value: `{$this->minValue}`\n"
+                . "Max value: `{$this->maxValue}`\n"
                 . "Length: `{$this->prefix}`\n"
                 . "Generation: `{$this->generationMethod}`\n"
             );
@@ -129,8 +134,8 @@ class SiteIDGenerator extends IdentifierGenerator
 
     /**
      * Generates a new ID for use in the rest of LORIS.
-     * This function should be updated to use PSCID and ExternalID classes when
-     * they are created. See CandIDGenerator for an example.
+     * TODO This function should be updated to use PSCID and ExternalID classes
+     * when they are created. See CandIDGenerator for an example.
      *
      * @return string
      */
@@ -177,106 +182,39 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         return $ids;
     }
+
     /**
-     * Helper function used for extracting the values from the config
-     * settings relating to the PSCID structure.
+     * Ensures a supplied value fits within the character set given by the
+     * 'idAlphabet' config setting.
      *
-     * @param string $setting One of: 'generation', 'length', 'alphabet',
-     *                        'length', 'min', 'max'.
+     * @param string $value The value to check.
      *
-     * @return array|int|string|null
-     */
-    private function _getIDSetting(
-        string $setting
-    ) {
-        // Values other than 'generation' are found within 'seq' elements and
-        // require more complex processing.
-        $idStructure = \NDB_Factory::singleton()
-            ->config()
-            ->getSetting($this->kind)['structure']['seq'];
-
-        if (!$idStructure[0]) {
-            // There's only one seq tag so the param format
-            // needs to be fixed
-            $temp        = array();
-            $temp[]      = $idStructure;
-            $idStructure = $temp;
-        }
-
-        try {
-            $seqValue = self::getSeqAttribute($idStructure, $setting);
-        } catch (\ConfigurationException $e) {
-            /* Throw a new exception so that we can inform developers whether
-             * the ConfigurationException arose due to ExternalID or PSCID
-             * settings.
-             */
-            throw new \LorisException(
-                "Cannot create new candidate because of a configuration " .
-                "error in settings for {$this->kind} structure. Details: "
-                . $e->getMessage()
-            );
-        }
-
-        // Min, max, and length values should be returned as integers or as
-        // null if they are not set.
-        return is_null($seqValue) ? $seqValue: intval($seqValue);
-    }
-    /**
-     * Iterate over each 'seq' value and return its setting if its value is
-     * configured. Do error handling to make sure that there is exactly one
-     * value corresponding to the requested setting.
-     *
-     * @param array  $idStructure Settings concerning ID structure extracted
-     *                            from project/config.sml
-     * @param string $setting     The name of the variable for which we want the
-     *                            value.
+     * @return void
      *
      * @throws \ConfigurationException
-     *
-     * @return ?string
      */
-    static function getSeqAttribute(
-        array $idStructure,
-        string $setting
-    ): ?string {
-        /* Other settings (i.e. 'length', 'min', 'max') can be extracted
-         * directly as they are stored within distinct attributes.
-         */
-        $seqAttributes = self::_getSeqAttribute(
-            $idStructure,
-            $setting
-        );
+    private function _validateCharset(string $value): void
+    {
+        $ok      = false;
+        $charset = \NDB_Factory::singleton()->config()->getSetting('idAlphabet');
 
-        // Validation
-        if (count($seqAttributes) > 1) {
+        switch ($charset) {
+        case 'alpha':
+            $ok = ctype_alpha($value);
+            break;
+        case 'alphanumeric':
+            $ok = ctype_alnum($value);
+            break;
+        case 'numeric':
+            $ok = is_numeric($value);
+            break;
+        }
+
+        if (! $ok) {
             throw new \ConfigurationException(
-                'Too many values found for config setting: ' . $setting
+                "Alphabet is set as type $charset but $value contains " .
+                "characters outside of that character set."
             );
         }
-        return array_pop($seqAttributes);
-    }
-
-    /**
-     * Traverse the $idStructure array and collect all values that exist
-     * for $setting.
-     *
-     * @param array  $idStructure Settings concerning ID structure extracted
-     *                            from project/config.xml
-     * @param string $setting     The name of the variable for which we want the
-     *                            value.
-     *
-     * @return array The value(s) corresponding to $setting.
-     */
-    private static function _getSeqAttribute(
-        array $idStructure,
-        string $setting
-    ): array {
-        $seqAttributes = array();
-        foreach ($idStructure as $seq) {
-            if (isset($seq['@'][$setting])) {
-                $seqAttributes[] = $seq['@'][$setting];
-            }
-        }
-        return $seqAttributes;
     }
 }
