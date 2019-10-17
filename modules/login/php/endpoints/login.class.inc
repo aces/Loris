@@ -177,42 +177,44 @@ class Login extends Endpoint implements ETagCalculator
         $user     =& \User::singleton($username);
 
         // Check if valid user.
-        $email = $user->getData('Email');
-        if (empty($email)) {
-            $values['error'] = 'Not a valid user';
-            return $values;
-        }
-
-        try {
-            // Check if valid email.
-            if ($user->isEmailValid()) {
-                $config = \NDB_Config::singleton();
-                // Generate a new password.
-                $password = \Utility::randomString();
-                // Reset the password in the database and
-                // expire password so user must change it upon login.
-                $user->updatePassword(
-                    new \Password($password),
-                    new \DateTime('1999-01-01')
-                );
-                // Send the user an email.
-                $msg_data          = array();
-                $msg_data['study'] = $config->getSetting('title');
-                $msg_data['url']   = $config->getSetting('url');
-                $msg_data['realname'] = $user->getData('Real_name');
-                $msg_data['password'] = $password;
-                \Email::send($email, 'lost_password.tpl', $msg_data);
-            } else {
-                $values['error'] = 'Sending reset email failed.';
-                error_log(
-                    $_SERVER['REMOTE_ADDR']
-                    . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
-                    . ' attempted to reset password for ' . $username
-                );
+        if ($user->userID) {
+            $email = $user->getData('Email');
+            if (empty($email)) {
+                $values['error'] = 'Not a valid user';
+                return $values;
             }
-        } catch(\LorisException $e) {
-            error_log($e->getMessage());
-            $values['error'] = 'Sending reset email failed.';
+
+            try {
+                // Check if valid email.
+                if ($user->isEmailValid()) {
+                    $config = \NDB_Config::singleton();
+                    // Generate a new password.
+                    $password = \Utility::randomString();
+                    // Reset the password in the database and
+                    // expire password so user must change it upon login.
+                    $user->updatePassword(
+                        new \Password($password),
+                        new \DateTime('1999-01-01')
+                    );
+                    // Send the user an email.
+                    $msg_data = array();
+                    $msg_data['study'] = $config->getSetting('title');
+                    $msg_data['url'] = $config->getSetting('url');
+                    $msg_data['realname'] = $user->getData('Real_name');
+                    $msg_data['password'] = $password;
+                    \Email::send($email, 'lost_password.tpl', $msg_data);
+                } else {
+                    $values['error'] = 'Sending reset email failed.';
+                    error_log(
+                        $_SERVER['REMOTE_ADDR']
+                        . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
+                        . ' attempted to reset password for ' . $username
+                    );
+                }
+            } catch (\LorisException $e) {
+                error_log($e->getMessage());
+                $values['error'] = 'Sending reset email failed.';
+            }
         }
         return $values;
     }
