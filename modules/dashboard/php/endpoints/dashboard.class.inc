@@ -468,14 +468,14 @@ class Dashboard extends Endpoint implements ETagCalculator
      *
      * @param mixed  $ID                ID for the progress bar
      * @param string $title             Title for the progress bar
-     * @param int    $recruitmentTarget Target number of candidates
+     * @param string $recruitmentTarget Target number of candidates
      * @param int    $totalRecruitment  Total number of candidates
      * @param array  $recruitmentData   Data for recruitment panel.
      *
      * @return array
      */
     function createProjectProgressBar(
-        $ID, $title, $recruitmentTarget, $totalRecruitment, $recruitmentData
+        $ID, string $title, string $recruitmentTarget, int $totalRecruitment, array $recruitmentData
     ): array {
         $recruitmentData['progress'][$ID]['id'] = $ID;
         $recruitmentData['progress'][$ID]['total_recruitment'] = $totalRecruitment;
