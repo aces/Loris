@@ -77,7 +77,7 @@ class Behavioural extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for Profiles.'
+                    'Failed to retrieve data for Behavioural Feedback.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden();

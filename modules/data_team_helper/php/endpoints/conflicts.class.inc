@@ -77,7 +77,7 @@ class Conflicts extends Endpoint implements ETagCalculator
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\BadRequest(
-                    'Failed to retrieve data for Profiles.'
+                    'Failed to retrieve data for Data Conflicts.'
                 );
             case 'Forbidden':
                 return new \LORIS\Http\Response\Forbidden();
@@ -129,7 +129,6 @@ class Conflicts extends Endpoint implements ETagCalculator
 
         // PSC
         if ($user->hasPermission('data_team_helper')) {
-            // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
         } else {
