@@ -168,7 +168,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
      *
      * @return array
      */
-    function getScanData($siteID, $labels)
+    function getScanData(string $siteID, array $labels): array
     {
         $DB   = \NDB_Factory::singleton()->database();
         $data = array();
