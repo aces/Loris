@@ -415,7 +415,7 @@ class Dashboard extends Endpoint implements ETagCalculator
               AND c.RegistrationCenterID <> 1",
             array('PID' => $projectID)
         );
-        return $totalRecruitment;
+        return intval($totalRecruitment);
     }
 
     /**
