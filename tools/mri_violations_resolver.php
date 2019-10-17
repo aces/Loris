@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This script is used to move mri violations to the resolved tab in bulk.

@@ -167,13 +167,15 @@ class NDB_Form extends NDB_Page
      * Processes the values and saves to database. Usually overridden
      * by form instance.
      *
+     * NOTE Maybe this should be an abstract function?
+     *
      * @param array $values form values
      *
      * @return void
      */
     function _process($values)
     {
-        return true;
+        return;
     }
 
     /**

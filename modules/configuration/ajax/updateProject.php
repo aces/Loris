@@ -67,7 +67,6 @@ $preValues = $db->pselectCol(
 // Compare submitted values with DB values.
 // It's important not to delete and reinsert the values due to delete cascades on
 // tables referencing project_subproject_rel in the database.
-
 if (isset($_POST['SubprojectIDs'])) {
     $toAdd    = array_diff($_POST['SubprojectIDs'], $preValues);
     $toRemove = array_diff($preValues, $_POST['SubprojectIDs']);

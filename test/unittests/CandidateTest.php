@@ -746,7 +746,7 @@ class CandidateTest extends TestCase
                                 '#' => '',
                                 '@' => array(
                                         'type'      => 'numeric',
-                                        'minLength' => '4',
+                                        'length' => '4',
                                        ),
                                ),
                          ),

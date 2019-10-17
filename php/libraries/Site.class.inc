@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the class for the Site object
  *
@@ -32,7 +32,7 @@ class Site
      *
      * @return Site An object representing this site
      */
-    static function &singleton($centerID)
+    static function &singleton(int $centerID)
     {
         static $siteList = array();
         if (!isset($siteList[$centerID])) {
@@ -62,7 +62,7 @@ class Site
         $this->_siteInfo['CenterID'] = $centerID;
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = \Database::singleton();
 
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc
@@ -72,7 +72,7 @@ class Site
         //store site data in the object property
         if (is_array($result) && count($result) > 0) {
             foreach ($result as $key=>$value) {
-                $this->_siteInfo[$key] = $value;
+                $this->_siteInfo[$key] = strval($value);
             }
         } else {
             throw new Exception("Invalid site");
@@ -86,7 +86,7 @@ class Site
      */
     function getCenterName(): string
     {
-        return $this->_siteInfo['Name'];
+        return strval($this->_siteInfo['Name']);
     }
 
     /**
@@ -106,7 +106,7 @@ class Site
      */
     function getSiteAlias(): string
     {
-        return $this->_siteInfo['Alias'];
+        return strval($this->_siteInfo['Alias']);
     }
 
     /**
@@ -116,7 +116,7 @@ class Site
      */
     function getSiteMRIAlias(): string
     {
-        return $this->_siteInfo['MRI_alias'];
+        return strval($this->_siteInfo['MRI_alias']);
     }
 
     /**
@@ -126,7 +126,7 @@ class Site
      */
     function getSiteAccount(): string
     {
-        return $this->_siteInfo['Account'];
+        return strval($this->_siteInfo['Account']);
     }
 
     /**

@@ -176,7 +176,9 @@ class New_Profile extends \NDB_Form
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
                     array('cid' => $siteID)
                 );
-                $psc_labelOptions[$siteID] = $center['Name'];
+                if (!is_null($center)) {
+                    $psc_labelOptions[$siteID] = $center['Name'];
+                }
             }
         }
 
@@ -263,7 +265,7 @@ class New_Profile extends \NDB_Form
             ) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
             }
-            if (strlen($values['dobDate']) < 10) {
+            if (strlen($values['dobDate'] ?? '') < 10) {
                 $errors['dobFormat'] = 'DOB is not in valid date format.';
             }
         }

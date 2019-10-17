@@ -12,33 +12,50 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-use \LORIS\StudyEntities\Candidate\CandID;
 
-if (isset($_POST['tab'])) {
-    $tab = $_POST['tab'];
-
-    $db   =& \Database::singleton();
-    $user =& \User::singleton();
-
-    if ($tab == "candidateInfo") {
-        editCandInfoFields($db, $user);
-    } else if ($tab == "probandInfo") {
-        editProbandInfoFields($db, $user);
-    } else if ($tab == "familyInfo") {
-        editFamilyInfoFields($db, $user);
-    } else if ($tab == "deleteFamilyMember") {
-        deleteFamilyMember($db, $user);
-    } else if ($tab == "participantStatus") {
-        editParticipantStatusFields($db, $user);
-    } else if ($tab == "consentStatus") {
-        editConsentStatusFields($db, $user);
-    } else {
-        header("HTTP/1.1 404 Not Found");
-        exit;
-    }
+$user = \User::singleton();
+if (!$user->hasPermission('candidate_parameter_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
 }
 
+$tab = $_POST['tab'] ?? '';
+if ($tab === '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
 
+$db = \Database::singleton();
+
+switch($tab) {
+case 'candidateInfo':
+    editCandInfoFields($db, $user);
+    break;
+
+case 'probandInfo':
+    editProbandInfoFields($db, $user);
+    break;
+
+case 'familyInfo':
+    editFamilyInfoFields($db, $user);
+    break;
+
+case 'deleteFamilyMember':
+    deleteFamilyMember($db, $user);
+    break;
+
+case 'participantStatus':
+    editParticipantStatusFields($db, $user);
+    break;
+
+case 'consentStatus':
+    editConsentStatusFields($db, $user);
+    break;
+
+default:
+    header("HTTP/1.1 404 Not Found");
+    exit;
+}
 
 /**
  * Handles the updating of Candidate Info
@@ -52,12 +69,8 @@ if (isset($_POST['tab'])) {
  */
 function editCandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
 
-    $candID = new CandID($_POST['candID']);
+    $candID = $_POST['candID'];
 
     // Process posted data
     $caveatEmptor = isset($_POST['flaggedCaveatemptor']) ?
@@ -134,10 +147,6 @@ function editCandInfoFields($db, $user)
  */
 function editProbandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
     $candID   = $sanitize['candID'];
@@ -204,11 +213,6 @@ function editProbandInfoFields($db, $user)
  */
 function editFamilyInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -304,11 +308,6 @@ function editFamilyInfoFields($db, $user)
  */
 function deleteFamilyMember($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
@@ -340,11 +339,6 @@ function deleteFamilyMember($db, $user)
  */
 function editParticipantStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -399,11 +393,6 @@ function editParticipantStatusFields($db, $user)
  */
 function editConsentStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header('HTTP/1.1 403 Forbidden');
-        exit;
-    }
-
     // Get CandID
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== 'null') ?
@@ -452,9 +441,10 @@ function editConsentStatusFields($db, $user)
                          ];
 
         // Validate data
-        $recordExists = array_key_exists($consentID, $candidateConsent);
-        $oldStatus    = $candidateConsent[$consentID]['Status'] ?? null;
-        $validated    = false;
+        $recordExists  = array_key_exists($consentID, $candidateConsent);
+        $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
+        $validated     = false;
 
         switch ($status) {
         case 'yes':
@@ -479,10 +469,11 @@ function editConsentStatusFields($db, $user)
                           requires only the date of consent.');
                     return;
                 }
-            } else { // If no status stays no or record existed as NULL,
-                     // consent date and empty withdrawal date still required
+            } else { // If no status stays no or record existed as NULL
+                    // consent date required and withdrawal date unchanged
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
-                    && empty($withdrawal)
+                    && ((empty($oldWithdrawal) && empty($withdrawal))
+                    || (!empty($oldWithdrawal) && !empty($withdrawal)))
                 ) {
                     $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($date)

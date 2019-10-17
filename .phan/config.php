@@ -19,12 +19,11 @@ return [
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
+		"PhanTypeMismatchReturn",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
-        "PhanTypeSuspiciousStringExpression",
-        "PhanAccessMethodInternal",
+        "PhanTypeArraySuspiciousNullable"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
@@ -38,7 +37,7 @@ return [
 		"modules",
         "src",
         "test",
-        "vendor", // fix PhanUndeclaredClass
+        "vendor", 
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
@@ -58,5 +57,8 @@ return [
     // see https://github.com/phan/phan/issues/1650.
     //
     // When the module is refactored, this line should be deleted.
-    'ignore_undeclared_variables_in_global_scope' => true
+    'ignore_undeclared_variables_in_global_scope' => true,
+    'plugins' => [
+        'UnreachableCodePlugin'
+    ]
 ];

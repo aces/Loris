@@ -493,7 +493,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "577",
+            "574",
             "- Conflict Resolver"
         );
         $this->resetPermissions();
