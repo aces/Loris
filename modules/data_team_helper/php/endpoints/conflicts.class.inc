@@ -118,22 +118,11 @@ class Conflicts extends Endpoint implements ETagCalculator
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = $list_of_sites;
-            }
         } else {
             // allow only to view own study site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = $list_of_sites;
         }
 
-        // PSC
-        if ($user->hasPermission('data_team_helper')) {
-            // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
         return array(
                 'candid'            => parent::formElementObjectCreator(
                     'candid',
