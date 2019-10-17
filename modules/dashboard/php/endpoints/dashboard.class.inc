@@ -384,7 +384,7 @@ class Dashboard extends Endpoint implements ETagCalculator
      *
      * @return int
      */
-    function getTotalRecruitment()
+    function getTotalRecruitment(): int
     {
         $DB = \NDB_Factory::singleton()->database();
         $totalRecruitment = $DB->pselectOne(
