@@ -164,7 +164,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
                         continue;
             }
             break;
-        } while($attempts < self::NUM_OF_ATTEMPTS);
+        } while($attempts < 5);
         if ($err && $attempts > 4) {
            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
