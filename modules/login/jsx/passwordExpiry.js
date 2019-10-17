@@ -61,25 +61,27 @@ class PasswordExpired extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    e.preventDefault();
+
     const state = Object.assign({}, this.state);
-    const url = window.location.origin + '/login/AjaxLogin';
-    const send = this.urlSearchParams({
-      command: 'expired',
-      login: true,
-      username: state.form.value.username,
-      password: state.form.value.password,
-      confirm: state.form.value.confirm,
-    });
     fetch(
-      url, {
+      window.location.origin + '/login/Login', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: send,
-      }
-    ).then((response) => response.json())
+        body: JSON.stringify({
+          command: 'expired',
+          login: true,
+          username: state.form.value.username,
+          password: state.form.value.password,
+          confirm: state.form.value.confirm,
+        }),
+      })
+      .then((response) => {
+        return response.ok ? {} : response.json();
+      })
       .then((data) => {
         if (data.error) {
           // error - message.
@@ -91,9 +93,10 @@ class PasswordExpired extends Component {
           // success - refresh page and user is logged in.
           window.location.href = window.location.origin;
         }
-      }).catch((error) => {
-        console.error(error);
-    });
+      })
+      .catch((error) => {
+        console.error('Error! ' + error);
+      });
   }
 
   /**

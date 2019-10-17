@@ -6,19 +6,21 @@
  *
  * PHP Version 7
  *
- * @category Loris
+ * @category LORIS_Module
  * @package  Login
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\login;
+namespace LORIS\login\endpoints;
 
-use LORIS\Http\StringStream;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use SinglePointLogin;
+use \LORIS\Api\Endpoint;
+use \LORIS\Middleware\ETagCalculator;
+use State;
 
 /**
  * The NDB_Page for the POST requests.
@@ -29,10 +31,9 @@ use SinglePointLogin;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class AjaxLogin extends \NDB_Page
+class Login extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
-    public $AjaxModule   = true;
 
     /**
      * This function will return a json object for login.
@@ -43,71 +44,71 @@ class AjaxLogin extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        /**
-         * Ensure POST request.
-         */
-        if ($request->getMethod() != 'POST') {
-            return (new \LORIS\Http\Response())
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(405)
-                ->withHeader('Allow', 'POST')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        'Only POST requests are allowed'
-                    )
+        // Ensure GET or POST request.
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            case 'POST':
+                return $this->_handlePOST($request);
+            default:
+                return new \LORIS\Http\Response\MethodNotAllowed(
+                    $this->allowedMethods()
                 );
         }
-        /**
-         * Parse POST request body.
-         */
-        $requestBody = $request->getParsedBody();
-
-        /**
-         * Response to reply.
-         */
-        $response = $this->processRequest($requestBody);
-
-        return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(200)
-            ->withHeader('Allow', 'POST')
-            ->withBody(
-                new StringStream(json_encode($response))
-            );
     }
 
     /**
-     * Processes the request values.
+     * Initialize setup, the extra values for the
+     * create timepoint form. (psc & errors)
      *
-     * @param array $values the user data received.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return array
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    function processRequest(array $values) : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
+        // Parse GET query params.
+        $values = $request->getQueryParams();
+        $response = $this->initializeSetup($values);
+        return new \LORIS\Http\Response\JsonResponse(
+            $response
+        );
+    }
+
+    /**
+     * Processes the values & saves to database and return a json response.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse POST request body.
+        $values   = json_decode((string) $request->getBody(), true);
         $response = array();
+
         if (!isset($values['command'])) {
             $response['status'] = 'error';
-        } else if (isset($values['command']) && $values['command'] == 'initialize') {
-            // initialize - setup form data to return.
-            $response           = $this->initializeSetup($values);
-            $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'reset') {
+        } else if ($values['command'] === 'reset') {
             // reset - password reset request by user.
             $response           = $this->resetPassword($values);
             $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'request') {
+        } else if ($values['command'] === 'request') {
             // request - account request by user.
             $response           = $this->requestAccount($values);
             $response['status'] = 'success';
-        } else if (isset($values['command']) && $values['command'] == 'login') {
+        } else if ($values['command'] === 'login') {
             // login - user attempting to login.
             $response = $this->login($values);
-        } else if (isset($values['command']) && $values['command'] == 'expired') {
+        } else if ($values['command'] === 'expired') {
             // login - expired password update
             $response = $this->expiredPassword($values);
         }
-        return $response;
+
+        return new \LORIS\Http\Response\JsonResponse(
+            $response
+        );
     }
 
     /**
@@ -132,10 +133,10 @@ class AjaxLogin extends \NDB_Page
         foreach ($study_links as $label => $url) {
             $windowName           = md5($url);
             $loginData['links'][] = array(
-                                     'url'        => $url,
-                                     'label'      => $label,
-                                     'windowName' => $windowName,
-                                    );
+                'url'        => $url,
+                'label'      => $label,
+                'windowName' => $windowName,
+            );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
@@ -329,7 +330,6 @@ class AjaxLogin extends \NDB_Page
      */
     function login(array $values) : array
     {
-
         $login   = new SinglePointLogin();
         $success = $login->passwordAuthenticate(
             $values['username'],
@@ -339,10 +339,14 @@ class AjaxLogin extends \NDB_Page
         if ($success) {
             // login success.
             $values['status'] = 'success';
+            $_SESSION['State'] =& State::singleton();
+            $_SESSION['State']->setProperty('login', $login);
+            $login->setState();
         } else {
             // login failed.
             $values['error'] = $login->_lastError;
         }
+
         // wipe the old data.
         $values['username'] = $values['password'] = '';
 
@@ -384,5 +388,44 @@ class AjaxLogin extends \NDB_Page
             $values['error'] = 'Server encountered an error.';
         }
         return $values;
+    }
+
+    /**
+     * An ETagCalculator provides the ability to calculate an ETag for
+     * an incoming HTTP request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return array('GET', 'POST');
+    }
+
+    public function _hasAccess($user)
+    {
+        return true;
+    }
+
+    /**
+     * Return a list of LORIS API versions which this endpoint
+     * supports.
+     *
+     * @return string[] LORIS API Versions
+     */
+    protected function supportedVersions(): array
+    {
+        return array('unknown');
     }
 }

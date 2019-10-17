@@ -56,28 +56,31 @@ class ResetPassword extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    e.preventDefault();
+
     const state = Object.assign({}, this.state);
-    const url = window.location.origin + '/login/AjaxLogin';
-    const send = this.urlSearchParams({
-      command: 'reset',
-      username: state.form.value.username,
-    });
     fetch(
-      url, {
+      window.location.origin + '/login/Login', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: send,
-      }
-    ).then((response) => response.json())
+        body: JSON.stringify({
+          command: 'reset',
+          username: state.form.value.username,
+        }),
+      })
+      .then((response) => {
+        return response.ok ? {} : response.json();
+      })
       .then((data) => {
         this.setState({reset: true});
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.setState({reset: true});
-    });
+      });
   }
 
   /**

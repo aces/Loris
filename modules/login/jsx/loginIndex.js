@@ -44,8 +44,8 @@ class Login extends Component {
       isLoaded: false,
     };
     // Bind component instance to custom methods
-    this.fetchInitializerData = this.fetchInitializerData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.setForm = this.setForm.bind(this);
     this.setMode = this.setMode.bind(this);
   }
@@ -54,7 +54,8 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    this.fetchInitializerData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -70,38 +71,30 @@ class Login extends Component {
 
   /**
    * Retrieve data from the provided URL and save it in state.
+   *
+   * @return {object}
    */
-  fetchInitializerData() {
-    const url = window.location.origin + '/login/AjaxLogin';
-    const send = this.urlSearchParams({
-      command: 'initialize',
-    });
-    fetch(
-      url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          const state = Object.assign({}, this.state);
-          // login setup.
-          state.study.description = data.login.description;
-          state.study.title = data.login.title;
-          state.study.logo = window.location.origin
-            + '/' + data.login.logo;
-          // request account setup.
-          data.requestAccount.site[''] = 'Choose your site:';
-          state.component.requestAccount = data.requestAccount;
-          state.isLoaded = true;
-          this.setState(state);
-        }).catch((error) => {
-          console.error(error);
-    });
+  fetchData() {
+    return fetch(window.location.origin + '/login/Login',
+      {credentials: 'same-origin'}
+    )
+      .then((resp) => resp.json())
+      .then((json) => {
+        const state = Object.assign({}, this.state);
+        // login setup.
+        state.study.description = json.login.description;
+        state.study.title = json.login.title;
+        state.study.logo = window.location.origin
+          + '/' + json.login.logo;
+        // request account setup.
+        json.requestAccount.site[''] = 'Choose your site:';
+        state.component.requestAccount = json.requestAccount;
+        state.isLoaded = true;
+        this.setState(state);
+      }).catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   /**
@@ -122,52 +115,51 @@ class Login extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    e.preventDefault();
+
     const state = Object.assign({}, this.state);
-    const url = window.location.origin + '/login/AjaxLogin';
-    const send = this.urlSearchParams({
-      login: 'true',
-      command: 'login',
-      username: state.form.value.username,
-      password: state.form.value.password,
-    });
     fetch(
-      url, {
+      window.location.origin + '/login/Login', {
         method: 'POST',
-        mode: 'same-origin',
-        credentials: 'include',
-        redirect: 'follow',
+        credentials: 'same-origin',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: send,
-      }
-    ).then((response) => response.json())
-      .then(
-        (data) => {
-          if (data.expired) {
-            // expired - password expired.
-            const state = Object.assign({}, this.state);
-            state.component.expiredPassword = {
-              message: data.error,
-              username: state.form.value.username,
-            };
-            state.mode = 'expired';
-            this.setState(state);
-          }
-          if (data.error) {
-            // error - incorrect password.
-            const state = Object.assign({}, this.state);
-            state.form.error.toggle = true;
-            state.form.error.message = data.error;
-            this.setState(state);
-          } else {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
-          }
-        }).catch((error) => {
-      // error shouldn't happen.
-    });
+        body: JSON.stringify({
+          login: 'true',
+          command: 'login',
+          username: state.form.value.username,
+          password: state.form.value.password,
+        }),
+      })
+      .then((response) => {
+        return response.ok ? {} : response.json();
+      })
+      .then((data) => {
+        if (data.expired) {
+          // expired - password expired.
+          const state = Object.assign({}, this.state);
+          state.component.expiredPassword = {
+            message: data.error,
+            username: state.form.value.username,
+          };
+          state.mode = 'expired';
+          this.setState(state);
+        }
+        if (data.error) {
+          // error - incorrect password.
+          const state = Object.assign({}, this.state);
+          state.form.error.toggle = true;
+          state.form.error.message = data.error;
+          this.setState(state);
+        } else {
+          // success - refresh page and user is logged in.
+          window.location.href = window.location.origin;
+        }
+      })
+      .catch((error) => {
+        console.error('Error! ' + error);
+      });
   }
 
   /**

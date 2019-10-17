@@ -70,33 +70,36 @@ class RequestAccount extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    e.preventDefault();
+
     const state = Object.assign({}, this.state);
-    const url = window.location.origin + '/login/AjaxLogin';
-    const send = this.urlSearchParams({
-      command: 'request',
-      firstname: state.form.value.firstname,
-      lastname: state.form.value.lastname,
-      email: state.form.value.email,
-      site: state.form.value.site,
-      examiner: state.form.value.examiner,
-      radiologist: state.form.value.radiologist,
-    });
     fetch(
-      url, {
+      window.location.origin + '/login/Login', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: send,
-      }
-    ).then((response) => response.json())
+        body: JSON.stringify({
+          command: 'request',
+          firstname: state.form.value.firstname,
+          lastname: state.form.value.lastname,
+          email: state.form.value.email,
+          site: state.form.value.site,
+          examiner: state.form.value.examiner,
+          radiologist: state.form.value.radiologist,
+        }),
+      })
+      .then((response) => {
+        return response.ok ? {} : response.json();
+      })
       .then((data) => {
         this.setState({request: true});
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.setState({request: true});
-    });
+      });
   }
 
   /**
