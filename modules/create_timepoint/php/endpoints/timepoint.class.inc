@@ -182,6 +182,7 @@ class Timepoint extends Endpoint implements ETagCalculator
         }
         // List projects
         $projects = \Utility::getProjectList();
+        $project  = null;
         if (count($projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
             //TODO: change this to array_key_first() when support is only PHP 7.3+
