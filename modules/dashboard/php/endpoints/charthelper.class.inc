@@ -204,7 +204,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
      *
      * @return array
      */
-    function populateDataForPieChart($values) : array
+    function populateDataForPieChart(array $values) : array
     {
         $DB = \NDB_Factory::singleton()->database();
 
