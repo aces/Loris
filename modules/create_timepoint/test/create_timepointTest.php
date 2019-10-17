@@ -74,8 +74,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         $this->_createTimepoint('900000', '1', '1', '1');
         $bodyText = $this->webDriver->executescript(
-                    "return document.querySelector('h3').textContent"
-                );
+            "return document.querySelector('h3').textContent"
+        );
         $this->assertContains("Actions:", $bodyText);
 
     }
@@ -85,23 +85,23 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @param string $canID      ID of candidate
      * @param string $subproject text of subproject
-     * @param string $visitlabel text of visit label
+     * @param string $visit      text of visit label
      * @param string $project    text of project
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel, $project)
+    private function _createTimepoint($canID, $subproject, $visit, $project): void
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $this->reactDropdownSendKey("#subproject",$subproject);
-        $this->reactDropdownSendKey("#psc",$project);
-        $this->reactDropdownSendKey("#visit",$visitlabel);
+        $this->reactDropdownSendKey("#subproject", $subproject);
+        $this->reactDropdownSendKey("#psc", $project);
+        $this->reactDropdownSendKey("#visit", $visit);
         $this->webDriver->executescript(
-                    "document.querySelector('.col-sm-9 > .btn').click()"
-                );
+            "document.querySelector('.col-sm-9 > .btn').click()"
+        );
         sleep(1);
     }
 
@@ -112,7 +112,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @return void
      */
-    function testCreateTimepointErrorEmptySubproject()
+    function testCreateTimepointErrorEmptySubproject(): void
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
@@ -130,7 +130,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @return void
      */
-    public function testCreateTimepointPermission()
+    public function testCreateTimepointPermission(): void
     {
         $this->setupPermissions(array("data_entry"));
         $this->safeGet(
@@ -143,10 +143,18 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-    function reactDropdownSendKey($ui,$value)
+    /**
+     * Select a value in a react dropdown list
+     *
+     * @param string $ui    the result of React element (css selector)
+     * @param string $value input a value
+     *
+     * @return void
+     */
+    function reactDropdownSendKey($ui,$value): void
     {
          $attempts = 0;
-         $err = null;
+         $err      = null;
         do {
             try {
                 $this->webDriver->executescript(
@@ -157,18 +165,18 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
                 "
                 );
             } catch (Exception $e) {
-             //   echo 'Caught exception: ',  $e->getMessage(), "\n";
+                //   echo 'Caught exception: ',  $e->getMessage(), "\n";
                         $err = $e;
                         $attempts++;
                         sleep(1);
                         continue;
             }
             break;
-        } while($attempts < 5);
+        } while ($attempts < 5);
         if ($err && $attempts > 4) {
-           echo 'Caught exception: ',  $err->getMessage(), "\n";
+            echo 'Caught exception: ',  $err->getMessage(), "\n";
         }
-         
+
     }
 }
 
