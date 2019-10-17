@@ -74,43 +74,44 @@ class NewProfileIndex extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    const match = this.validateMatchDate();
-    if (!match) {
-      this.setState({
-        isCreated: false,
-      });
-    } else {
-      let formData = this.state.formData;
-      let formObject = new FormData();
-      for (let key in formData) {
-        if (formData[key] !== '') {
-          formObject.append(key, formData[key]);
-        }
-      }
-      formObject.append('fire_away', 'New Candidate');
-
-      fetch(this.props.submitURL, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject,
-        })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            this.setState({newData: data});
-            this.setState({isCreated: true});
-          });
-        } else {
-          resp.json().then((message) => {
-            swal('Error!', message, 'error');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (!this.validateMatchDate()) {
+      console.error('something wong');
+      return;
     }
+
+    const formdata = this.state.formData;
+    const payload = {
+      Candidate: {
+        DoB: formdata.dobDate || null,
+        EDC: formdata.edcDate || null,
+        PSCID: formdata.pscid || null,
+        Sex: formdata.sex || null,
+        Project: formdata.project || null,
+        Site: formdata.site || null,
+      },
+    };
+
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+    .then((resp) => resp.json())
+    .then((json) => {
+      if (json.error) {
+        throw json.error;
+      }
+
+      this.setState({
+        newData: json,
+        isCreated: true,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      swal('Error!', error, 'error');
+    });
   }
 
   /**
@@ -216,7 +217,6 @@ class NewProfileIndex extends React.Component {
             value = {this.state.formData.dobDateConfirm}
             required = {true}
           />
-          {edc}
           <SelectElement
             name = "sex"
             label = "Sex"
@@ -225,6 +225,7 @@ class NewProfileIndex extends React.Component {
             value = {this.state.formData.sex}
             required = {true}
           />
+          {edc}
           {site}
           {pscid}
           <SelectElement
@@ -246,20 +247,26 @@ class NewProfileIndex extends React.Component {
     } else {
       profile = (
         <div>
-          <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
-          <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
+          <p>New candidate created. DCCID: {this.state.newData.CandID} PSCID: {this.state.newData.PSCID}</p>
+          <p><a href = {'/' + this.state.newData.CandID}> Access this candidate </a></p>
           <p><a href = "/new_profile/" > Recruit another candidate </a></p>
         </div>
       );
     }
-    return (<Panel title="Create a new profile">{profile}</Panel>);
+    return (
+      <div className="container col-md-5">
+        <Panel title="Create a new profile">
+          {profile}
+        </Panel>
+      </div>
+    );
   }
 }
 window.addEventListener('load', () => {
   ReactDOM.render(
     <NewProfileIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/new_profile/`}
+      submitURL = {`${loris.BaseURL}/api/v0.0.2/candidates`}
       hasPermission = {loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
