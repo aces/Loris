@@ -72,11 +72,11 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'Stale', 'V1', 'Pumpernickel');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("New time point successfully registered", $bodyText);
+        $this->_createTimepoint('900000', '1', '1', '1');
+        $bodyText = $this->webDriver->executescript(
+                    "return document.querySelector('h3').textContent"
+                );
+        $this->assertContains("Actions:", $bodyText);
 
     }
 
@@ -96,18 +96,12 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
-        )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("project")
-        )->sendKeys($project);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
+        $this->reactDropdownSendKey("#subproject",$subproject);
+        $this->reactDropdownSendKey("#psc",$project);
+        $this->reactDropdownSendKey("#visit",$visitlabel);
+        $this->webDriver->executescript(
+                    "document.querySelector('.col-sm-9 > .btn').click()"
+                );
         sleep(1);
     }
 
@@ -148,6 +142,33 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
 
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
+    }
+    function reactDropdownSendKey($ui,$value)
+    {
+         $attempts = 0;
+         $err = null;
+        do {
+            try {
+                $this->webDriver->executescript(
+                    "input = document.querySelector('$ui');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+                );
+            } catch (Exception $e) {
+             //   echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+            break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+         
     }
 }
 
