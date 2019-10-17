@@ -274,8 +274,7 @@ class Behavioural extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('genomic_browser_view_allsites')
-            || $user->hasPermission('genomic_browser_view_site'));
+        return ($user->hasPermission('data_team_helper'));
     }
 
     /**
