@@ -60,7 +60,7 @@ class New_Profile extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() !== 'GET') {
-            return new \LORIS\Http\Response\JSON\MethodNotAllowed();
+            return new \LORIS\Http\Response\MethodNotAllowed(array('GET'));
         }
         $this->setup();
         return (new \LORIS\Http\Response())
