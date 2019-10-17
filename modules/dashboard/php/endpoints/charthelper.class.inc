@@ -163,12 +163,12 @@ class ChartHelper extends Endpoint implements ETagCalculator
     /**
      * Get scan data for each month in the label array
      *
-     * @param string $siteID ID of a site
-     * @param array  $labels chart labels (months to query)
+     * @param int   $siteID ID of a site
+     * @param array $labels chart labels (months to query)
      *
      * @return array
      */
-    function getScanData(string $siteID, array $labels): array
+    function getScanData(int $siteID, array $labels): array
     {
         $DB   = \NDB_Factory::singleton()->database();
         $data = array();
