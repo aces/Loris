@@ -240,7 +240,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
      *
      * @return array
      */
-    function populateDataForBarChart($values) : array
+    function populateDataForBarChart(array $values) : array
     {
         $DB            = \NDB_Factory::singleton()->database();
         $sexData       = array();
