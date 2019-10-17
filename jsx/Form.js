@@ -953,6 +953,7 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
             placeholder={this.props.placeholder}
           />
           {errorMessage}
@@ -971,6 +972,7 @@ TextboxElement.propTypes = {
   placeholder: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  autoComplete: PropTypes.string,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
@@ -984,6 +986,7 @@ TextboxElement.defaultProps = {
   placeholder: '',
   disabled: false,
   required: false,
+  autoComplete: null,
   errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -1057,6 +1060,7 @@ class PasswordElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
             placeholder={this.props.placeholder}
           />
           {errorMessage}
@@ -1076,21 +1080,22 @@ PasswordElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  autoComplete: PropTypes.string,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
 };
 
 PasswordElement.defaultProps = {
-  name: '',
+  id: null,
   label: '',
   value: '',
   type: 'text',
   class: 'col-sm-9',
   placeholder: '',
-  id: null,
   disabled: false,
   required: false,
+  autoComplete: null,
   errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');

@@ -208,6 +208,7 @@ class Login extends Component {
               onUserInput={this.setForm}
               placeholder={'Username'}
               class={'col-sm-12'}
+              autoComplete={'username'}
               required={true}
             />
             <PasswordElement
@@ -217,6 +218,7 @@ class Login extends Component {
               placeholder={'Password'}
               class={'col-sm-12'}
               required={true}
+              autoComplete={'current-password'}
               isPassword={true}
             />
             {error}

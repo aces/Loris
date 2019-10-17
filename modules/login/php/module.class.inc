@@ -20,11 +20,11 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category   LORIS_Module
- * @package    Login
- * @author     Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @category LORIS_Module
+ * @package  Login
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Module extends \Module
 {
@@ -45,11 +45,11 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-            case 'Login':
-                $handler = new endpoints\Login();
-                break;
-            default:
-                return parent::handle($request);
+        case 'Login':
+            $handler = new endpoints\Login();
+            break;
+        default:
+            return parent::handle($request);
         }
         $user = $request->getAttribute('user');
         if (!$handler->_hasAccess($user)) {

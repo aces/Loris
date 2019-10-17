@@ -46,14 +46,14 @@ class Login extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -68,7 +68,7 @@ class Login extends Endpoint implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
-        $values = $request->getQueryParams();
+        $values   = $request->getQueryParams();
         $response = $this->initializeSetup($values);
         return new \LORIS\Http\Response\JsonResponse(
             $response
@@ -133,10 +133,10 @@ class Login extends Endpoint implements ETagCalculator
         foreach ($study_links as $label => $url) {
             $windowName           = md5($url);
             $loginData['links'][] = array(
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $windowName,
-            );
+                                     'url'        => $url,
+                                     'label'      => $label,
+                                     'windowName' => $windowName,
+                                    );
         }
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
@@ -338,7 +338,7 @@ class Login extends Endpoint implements ETagCalculator
         );
         if ($success) {
             // login success.
-            $values['status'] = 'success';
+            $values['status']  = 'success';
             $_SESSION['State'] =& State::singleton();
             $_SESSION['State']->setProperty('login', $login);
             $login->setState();
@@ -400,6 +400,9 @@ class Login extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
+        if ($request->getMethod() === 'POST') {
+            return 'Etag not calculated on POST request';
+        }
         return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 
@@ -410,10 +413,21 @@ class Login extends Endpoint implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array('GET', 'POST');
+        return array(
+                'GET',
+                'POST',
+               );
     }
 
-    public function _hasAccess($user)
+    /**
+     * Returns true if the user has permission to access
+     * the Login module
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
     {
         return true;
     }
