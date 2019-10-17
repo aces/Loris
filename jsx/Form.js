@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
+TextboxElement, PasswordElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -1823,6 +1823,9 @@ class LorisElement extends Component {
     switch (elementProps.type) {
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
+        break;
+      case 'password':
+        elementHtml = (<PasswordElement {...elementProps} />);
         break;
       case 'tags':
         elementHtml = (<TagsElement {...elementProps} />);

@@ -100,7 +100,7 @@ class Login extends Component {
           state.isLoaded = true;
           this.setState(state);
         }).catch((error) => {
-          console.error('error: ' + error);
+          console.error(error);
     });
   }
 

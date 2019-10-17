@@ -94,7 +94,8 @@ class RequestAccount extends Component {
       .then((data) => {
         this.setState({request: true});
       }).catch((error) => {
-      this.setState({request: true});
+        console.error(error);
+        this.setState({request: true});
     });
   }
 

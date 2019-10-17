@@ -86,7 +86,9 @@ class AjaxLogin extends \NDB_Page
     function processRequest(array $values) : array
     {
         $response = array();
-        if (isset($values['command']) && $values['command'] == 'initialize') {
+        if (!isset($values['command'])) {
+            $response['status'] = 'error';
+        } else if (isset($values['command']) && $values['command'] == 'initialize') {
             // initialize - setup form data to return.
             $response           = $this->initializeSetup($values);
             $response['status'] = 'success';

@@ -75,7 +75,8 @@ class ResetPassword extends Component {
       .then((data) => {
         this.setState({reset: true});
       }).catch((error) => {
-      this.setState({reset: true});
+        console.error(error);
+        this.setState({reset: true});
     });
   }
 
