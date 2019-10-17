@@ -65,19 +65,15 @@ class ChartHelper extends Endpoint implements ETagCalculator
         // Parse GET query params.
         $values   = $request->getQueryParams();
         $response = array();
-        if (isset($values['get'])
-            && $values['get'] == 'scan_line_data'
-        ) {
+        if (!isset($values['get'])) {
+            $response['status'] = 'error';
+        } else if ($values['get'] == 'scan_line_data') {
             $response           = $this->populateDataForScanLineChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['get'])
-            && $values['get'] == 'recruitment_pie_data'
-        ) {
+        } else if ($values['get'] == 'recruitment_pie_data') {
             $response           = $this->populateDataForPieChart($values);
             $response['status'] = 'success';
-        } else if (isset($values['get'])
-            && $values['get'] == 'recruitment_bar_data'
-        ) {
+        } else if ($values['get'] == 'recruitment_bar_data') {
             $response           = $this->populateDataForBarChart($values);
             $response['status'] = 'success';
         } else {
@@ -98,10 +94,6 @@ class ChartHelper extends Endpoint implements ETagCalculator
      */
     function populateDataForScanLineChart($values) : array
     {
-        $client = new \NDB_Client;
-        $client->makeCommandLine();
-        $client->initialize();
-
         $DB = \NDB_Factory::singleton()->database();
 
         $scanData           = array();
