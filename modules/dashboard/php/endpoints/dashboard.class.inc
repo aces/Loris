@@ -476,7 +476,7 @@ class Dashboard extends Endpoint implements ETagCalculator
      */
     function createProjectProgressBar(
         $ID, $title, $recruitmentTarget, $totalRecruitment, $recruitmentData
-    ) {
+    ): array {
         $recruitmentData['progress'][$ID]['id'] = $ID;
         $recruitmentData['progress'][$ID]['total_recruitment'] = $totalRecruitment;
         $recruitmentData['progress'][$ID]['title'] = $title;
