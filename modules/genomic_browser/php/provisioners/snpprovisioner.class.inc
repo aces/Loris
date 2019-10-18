@@ -32,48 +32,56 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, 
-                   candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as externalID, 
-                   SNP.Chromosome as Chromosome, 
-                   SNP.Strand as Strand, 
-                   SNP.StartLoc as StartLoc, 
-                   SNP.EndLoc as EndLoc, 
-                   SNP.OfficialSymbol as Gene_Symbol, 
-                   SNP.OfficialName as Gene_Name, 
-                   genotyping_platform.Name as Platform, 
-                   SNP.rsID as rsID, 
-                   SNP.SNPExternalName as SNP_Name, 
-                   SNP.Description as SNP_Description, 
-                   SNP.SNPExternalSource as External_Source, 
-                   SNP_candidate_rel.AlleleA as Allele_A, 
-                   SNP_candidate_rel.AlleleB as Allele_B, 
-                   SNP.ReferenceBase as Reference_Base, 
-                   SNP.MinorAllele as Minor_Allele, 
-                   SNP_candidate_rel.ArrayReport as Array_Report, 
-                   SNP.Markers as Markers, 
-                   SNP_candidate_rel.ValidationMethod as Validation_Method, 
-                   SNP_candidate_rel.Validated as Validated, 
-                   SNP.FunctionPrediction as Function_Prediction, 
-                   SNP.Damaging as Damaging, 
-                   SNP_candidate_rel.GenotypeQuality as Genotype_Quality, 
-                   SNP.ExonicFunction as Exonic_Function FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                    from session s GROUP BY s.CandID) AS cohort
-            ON (cohort.CandID = candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
-            JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
-            LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
-            LEFT JOIN genotyping_platform ON
-              (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
+            "
+            SELECT
+                psc.Name AS PSC,
+                LPAD(candidate.CandID, 6, '0') AS DCCID,
+                candidate.PSCID,
+                candidate.Sex,
+                cohort.SubprojectID AS Subproject,
+                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS DoB,
+                candidate.ExternalID AS externalID,
+                SNP.Chromosome AS Chromosome,
+                SNP.Strand AS Strand,
+                SNP.StartLoc AS StartLoc,
+                SNP.EndLoc AS EndLoc,
+                SNP.OfficialSymbol AS Gene_Symbol,
+                SNP.OfficialName AS Gene_Name,
+                genotyping_platform.Name AS Platform,
+                SNP.rsID AS rsID,
+                SNP.SNPExternalName AS SNP_Name,
+                SNP.Description AS SNP_Description,
+                SNP.SNPExternalSource AS External_Source,
+                SNP_candidate_rel.AlleleA AS Allele_A,
+                SNP_candidate_rel.AlleleB AS Allele_B,
+                SNP.ReferenceBase AS Reference_Base,
+                SNP.MinorAllele AS Minor_Allele,
+                SNP_candidate_rel.ArrayReport AS Array_Report,
+                SNP.Markers AS Markers,
+                SNP_candidate_rel.ValidationMethod AS Validation_Method,
+                SNP_candidate_rel.Validated AS Validated,
+                SNP.FunctionPrediction AS Function_Prediction,
+                SNP.Damaging AS Damaging,
+                SNP_candidate_rel.GenotypeQuality AS Genotype_Quality,
+                SNP.ExonicFunction AS Exonic_Function
+            FROM
+                candidate
+                LEFT JOIN (
+                    SELECT
+                        s.CandID,
+                        min(s.subprojectID) AS SubprojectID
+                    FROM
+                        session s
+                    GROUP BY
+                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
+                JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
+                LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
+                LEFT JOIN genotyping_platform ON (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
-            ',
+                candidate.Entity_type = 'Human'
+                AND candidate.Active = 'Y'
+            ",
             array(),
             '\LORIS\genomic_browser\Models\SnpDTO'
         );

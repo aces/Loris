@@ -32,46 +32,72 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, 
-                   candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as externalID, 
-          CASE WHEN EXISTS (
-            select genomicfileid
-            from genomic_candidate_files_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as File, 
-          CASE WHEN EXISTS (
-            select snpid
-            from SNP_candidate_rel
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as SNP, 
-          CASE WHEN EXISTS (
-            select cnvid
-            from CNV
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CNV, 
-          CASE WHEN EXISTS (
-            select cpg_name
-            from genomic_sample_candidate_rel
-            left join genomic_cpg using (sample_label)
-            where candid = candidate.candid
-          ) THEN \'Y\' ELSE \'N\' END
-         as CPG FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
+            "
+            SELECT
+                psc.Name AS PSC,
+                LPAD(candidate.CandID, 6, '0') AS DCCID,
+                candidate.PSCID,
+                candidate.Sex,
+                cohort.SubprojectID AS Subproject,
+                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS DoB,
+                candidate.ExternalID AS externalID,
+                CASE WHEN EXISTS (
+                    SELECT
+                        genomicfileid
+                    FROM
+                        genomic_candidate_files_rel
+                    WHERE
+                        candid = candidate.candid) THEN
+                    'Y'
+                ELSE
+                    'N'
+                END AS File, CASE WHEN EXISTS (
+                    SELECT
+                        snpid
+                    FROM
+                        SNP_candidate_rel
+                    WHERE
+                        candid = candidate.candid) THEN
+                    'Y'
+                ELSE
+                    'N'
+                END AS SNP, CASE WHEN EXISTS (
+                    SELECT
+                        cnvid
+                    FROM
+                        CNV
+                    WHERE
+                        candid = candidate.candid) THEN
+                    'Y'
+                ELSE
+                    'N'
+                END AS CNV, CASE WHEN EXISTS (
+                    SELECT
+                        cpg_name
+                    FROM
+                        genomic_sample_candidate_rel
+                    LEFT JOIN genomic_cpg USING (sample_label)
+                WHERE
+                    candid = candidate.candid) THEN
+                    'Y'
+                ELSE
+                    'N'
+                END AS CPG
+            FROM
+                candidate
+                LEFT JOIN (
+                    SELECT
+                        s.CandID,
+                        min(s.subprojectID) AS SubprojectID
+                    FROM
+                        session s
+                    GROUP BY
+                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
-            ',
+                candidate.Entity_type = 'Human'
+                AND candidate.Active = 'Y'
+            ",
             array(),
             '\LORIS\genomic_browser\Models\ProfileDTO'
         );

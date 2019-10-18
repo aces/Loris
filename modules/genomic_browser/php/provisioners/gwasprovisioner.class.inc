@@ -32,18 +32,21 @@ class GwasProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
-            SELECT GWAS.rsID AS SNP_ID, 
-                   SNP.Chromosome AS Chromosome, 
-                   SNP.StartLoc AS Position_BP, 
-                   GWAS.MajorAllele AS Major_Allele, 
-                   GWAS.MinorAllele AS Minor_Allele, 
-                   GWAS.MAF AS MAF, 
-                   GWAS.Estimate AS Estimate, 
-                   GWAS.StdErr AS StdErr, 
-                   GWAS.Pvalue AS Pvalue FROM GWAS
-            JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
-            ',
+            "
+            SELECT
+                GWAS.rsID AS SNP_ID,
+                SNP.Chromosome AS Chromosome,
+                SNP.StartLoc AS Position_BP,
+                GWAS.MajorAllele AS Major_Allele,
+                GWAS.MinorAllele AS Minor_Allele,
+                GWAS.MAF AS MAF,
+                GWAS.Estimate AS Estimate,
+                GWAS.StdErr AS StdErr,
+                GWAS.Pvalue AS Pvalue
+            FROM
+                GWAS
+                JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
+            ",
             array(),
             '\LORIS\genomic_browser\Models\GwasDTO'
         );

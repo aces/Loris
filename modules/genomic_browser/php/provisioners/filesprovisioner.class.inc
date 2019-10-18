@@ -32,16 +32,21 @@ class FilesProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
-            SELECT GenomicFileID, 
-                   FileName, 
-                   Description, 
-                   FileType, 
-                   Date_inserted, 
-                   InsertedByUserID, 
-                   Caveat, 
-                   Notes FROM genomic_files WHERE 1=1
-            ',
+            "
+            SELECT
+                GenomicFileID,
+                FileName,
+                Description,
+                FileType,
+                Date_inserted,
+                InsertedByUserID,
+                Caveat,
+                Notes
+            FROM
+                genomic_files
+            WHERE
+                1 = 1
+            ",
             array(),
             '\LORIS\genomic_browser\Models\FilesDTO'
         );

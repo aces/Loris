@@ -32,47 +32,50 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         parent::__construct(
-            '
-            SELECT psc.Name AS PSC, 
-                   LPAD(candidate.CandID, 6, "0") AS DCCID, 
-                   candidate.PSCID, candidate.Sex, 
-                   cohort.SubprojectID as Subproject, 
-                   DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB, 
-                   candidate.ExternalID as ExternalID, 
-                   CNV.Chromosome as Chromosome, 
-                   CNV.Strand as Strand, 
-                   CNV.StartLoc as StartLoc, 
-                   CNV.EndLoc as EndLoc, 
-                   CONCAT(
-                              CNV.Chromosome,
-                              ":",
-                              CNV.StartLoc,
-                              "-",
-                              CNV.EndLoc
-                           ) as Location, 
-                   CNV.OfficialSymbol as Gene_Symbol, 
-                   CNV.OfficialName as Gene_Name, 
-                   CNV.Description as CNV_Description, 
-                   CNV.Type as CNV_Type, 
-                   CNV.CopyNumChange as Copy_Num_Change, 
-                   CNV.EventName as Event_Name, 
-                   CNV.Common_CNV as Common_CNV, 
-                   CNV.Characteristics as Characteristics, 
-                   CNV.Inheritance as Inheritance, 
-                   CNV.ArrayReport as Array_Report, 
-                   CNV.Markers as Markers, 
-                   CNV.ValidationMethod as Validation_Method, 
-                   genotyping_platform.Name as Platform FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID=candidate.RegistrationCenterID)
-            JOIN CNV ON (candidate.CandID = CNV.CandID)
-            LEFT JOIN genotyping_platform ON
-              (CNV.PlatformID = genotyping_platform.PlatformID)
+            "
+            SELECT
+                psc.Name AS PSC,
+                LPAD(candidate.CandID, 6, '0') AS DCCID,
+                candidate.PSCID,
+                candidate.Sex,
+                cohort.SubprojectID AS Subproject,
+                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS DoB,
+                candidate.ExternalID AS ExternalID,
+                CNV.Chromosome AS Chromosome,
+                CNV.Strand AS Strand,
+                CNV.StartLoc AS StartLoc,
+                CNV.EndLoc AS EndLoc,
+                CONCAT(CNV.Chromosome, ':', CNV.StartLoc, '-', CNV.EndLoc) AS LOCATION,
+                CNV.OfficialSymbol AS Gene_Symbol,
+                CNV.OfficialName AS Gene_Name,
+                CNV.Description AS CNV_Description,
+                CNV.Type AS CNV_Type,
+                CNV.CopyNumChange AS Copy_Num_Change,
+                CNV.EventName AS Event_Name,
+                CNV.Common_CNV AS Common_CNV,
+                CNV.Characteristics AS Characteristics,
+                CNV.Inheritance AS Inheritance,
+                CNV.ArrayReport AS Array_Report,
+                CNV.Markers AS Markers,
+                CNV.ValidationMethod AS Validation_Method,
+                genotyping_platform.Name AS Platform
+            FROM
+                candidate
+                LEFT JOIN (
+                    SELECT
+                        s.CandID,
+                        min(s.subprojectID) AS SubprojectID
+                    FROM
+                        session s
+                    GROUP BY
+                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
+                JOIN CNV ON (candidate.CandID = CNV.CandID)
+                LEFT JOIN genotyping_platform ON (CNV.PlatformID = genotyping_platform.PlatformID)
             WHERE
-            candidate.Entity_type = \'Human\' AND candidate.Active = \'Y\'
-            ',
+                candidate.Entity_type = 'Human'
+                AND candidate.Active = 'Y'
+            ",
             array(),
             '\LORIS\genomic_browser\Models\CnvDTO'
         );
