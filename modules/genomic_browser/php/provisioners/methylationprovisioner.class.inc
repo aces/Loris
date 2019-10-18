@@ -35,7 +35,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
     {
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
+            $site_arr   = implode(",", $user->getCenterIDs());
             $this->_and = " AND candidate.RegistrationCenterID IN ($site_arr)";
         }
         parent::__construct(
@@ -85,10 +85,12 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                     GROUP BY
                         s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
-                LEFT JOIN genomic_sample_candidate_rel gscr ON (gscr.CandID = candidate.CandID)
+                LEFT JOIN genomic_sample_candidate_rel gscr 
+                    ON (gscr.CandID = candidate.CandID)
                 LEFT JOIN genomic_cpg cpg ON (gscr.sample_label = cpg.sample_label)
                 LEFT JOIN genomic_cpg_annotation gca USING (cpg_name)
-                LEFT JOIN genotyping_platform platform ON (gca.platform_id = platform.PlatformID)
+                LEFT JOIN genotyping_platform platform 
+                    ON (gca.platform_id = platform.PlatformID)
             WHERE
                 cpg.beta_value IS NOT NULL
                 AND candidate.Entity_type = 'Human'

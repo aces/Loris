@@ -36,7 +36,7 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data
-            $site_arr     = implode(",", $user->getCenterIDs());
+            $site_arr   = implode(",", $user->getCenterIDs());
             $this->_and = " AND candidate.RegistrationCenterID IN ($site_arr)";
         }
         parent::__construct(

@@ -35,7 +35,7 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     {
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
+            $site_arr   = implode(",", $user->getCenterIDs());
             $this->_and = " AND candidate.RegistrationCenterID IN ("
                 . $site_arr . ")";
         }
@@ -53,7 +53,8 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 CNV.Strand AS Strand,
                 CNV.StartLoc AS StartLoc,
                 CNV.EndLoc AS EndLoc,
-                CONCAT(CNV.Chromosome, ':', CNV.StartLoc, '-', CNV.EndLoc) AS LOCATION,
+                CONCAT(CNV.Chromosome, ':', CNV.StartLoc, '-', CNV.EndLoc) 
+                    AS LOCATION,
                 CNV.OfficialSymbol AS Gene_Symbol,
                 CNV.OfficialName AS Gene_Name,
                 CNV.Description AS CNV_Description,
@@ -79,7 +80,8 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                         s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
                 JOIN CNV ON (candidate.CandID = CNV.CandID)
-                LEFT JOIN genotyping_platform ON (CNV.PlatformID = genotyping_platform.PlatformID)
+                LEFT JOIN genotyping_platform 
+                    ON (CNV.PlatformID = genotyping_platform.PlatformID)
             WHERE
                 candidate.Entity_type = 'Human'
                 AND candidate.Active = 'Y'

@@ -36,7 +36,7 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // restrict data to own site
-            $site_arr     = implode(",", $user->getCenterIDs());
+            $site_arr   = implode(",", $user->getCenterIDs());
             $this->_and = " AND candidate.RegistrationCenterID IN ("
                 . $site_arr . ")";
         }
@@ -84,9 +84,12 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     GROUP BY
                         s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
-                JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
+                JOIN SNP_candidate_rel 
+                    ON (candidate.CandID = SNP_candidate_rel.CandID)
                 LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
-                LEFT JOIN genotyping_platform ON (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
+                LEFT JOIN genotyping_platform 
+                    ON (SNP_candidate_rel.PlatformID = 
+                        genotyping_platform.PlatformID)
             WHERE
                 candidate.Entity_type = 'Human'
                 AND candidate.Active = 'Y'
