@@ -26,11 +26,18 @@ namespace LORIS\genomic_browser\Provisioners;
  */
 class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {
+    private $_and = '';
+
     /**
      * Create a RowProvisioner
      */
     function __construct()
     {
+        $user = \User::singleton();
+        if (!$user->hasPermission('genomic_browser_view_allsites')) {
+            $site_arr     = implode(",", $user->getCenterIDs());
+            $this->_and = " AND candidate.RegistrationCenterID IN ($site_arr)";
+        }
         parent::__construct(
             "
            SELECT
@@ -86,6 +93,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 cpg.beta_value IS NOT NULL
                 AND candidate.Entity_type = 'Human'
                 AND candidate.Active = 'Y'
+                $this->_and
             ",
             array(),
             '\LORIS\genomic_browser\Models\MethylationDTO'
