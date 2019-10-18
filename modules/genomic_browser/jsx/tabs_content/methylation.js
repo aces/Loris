@@ -106,15 +106,42 @@ class Methylation extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
+        if (fieldOptions[field].name === 'dob' ||
+            fieldOptions[field].name === 'Sample' ||
+            fieldOptions[field].name === 'Beta_value' ||
+            fieldOptions[field].name === 'Chromosome' ||
+            fieldOptions[field].name === 'Start_Loc' ||
+            fieldOptions[field].name === 'Probe_Loc_A' ||
+            fieldOptions[field].name === 'Probe_Seq_A' ||
+            fieldOptions[field].name === 'Probe_Loc_B' ||
+            fieldOptions[field].name === 'Probe_Seq_B' ||
+            fieldOptions[field].name === 'Gene_Symbol' ||
+            fieldOptions[field].name === 'Accession_number' ||
+            fieldOptions[field].name === 'Island_Loc' ||
+            fieldOptions[field].name === 'Fantom_Prom' ||
+            fieldOptions[field].name === 'Island_Loc' ||
+            fieldOptions[field].name === 'Context' ||
+            fieldOptions[field].name === 'DMR' ||
+            fieldOptions[field].name === 'HMM_Island' ||
+            fieldOptions[field].name === 'Reg_Feature_Loc' ||
+            fieldOptions[field].name === 'DHS' ||
+            fieldOptions[field].name === 'Platform'
+        ) {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
+        }
       }
     }
 

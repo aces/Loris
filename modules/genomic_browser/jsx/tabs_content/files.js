@@ -156,15 +156,25 @@ class Files extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
+        if (fieldOptions[field].name === 'dob' ||
+            fieldOptions[field].name === 'genomic_file_id' ||
+            fieldOptions[field].name === 'inserted_by_user_id'
+        ) {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
+        }
       }
     }
     const actions = [{

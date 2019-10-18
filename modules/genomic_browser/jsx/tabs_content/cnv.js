@@ -106,15 +106,32 @@ class CNV extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
+        if (fieldOptions[field].name === 'dob' ||
+          fieldOptions[field].name === 'Array_Report' ||
+          fieldOptions[field].name === 'Validation_Method' ||
+          fieldOptions[field].name === 'Platform' ||
+          fieldOptions[field].name === 'Markers' ||
+          fieldOptions[field].name === 'Gene_Name' ||
+          fieldOptions[field].name === 'Gene_Symbol' ||
+          fieldOptions[field].name === 'Location' ||
+          fieldOptions[field].name === 'End_Loc' ||
+          fieldOptions[field].name === 'Start_Loc'
+        ) {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
+        }
       }
     }
 

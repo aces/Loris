@@ -142,15 +142,22 @@ class Profiles extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
+        if (fieldOptions[field].name === 'dob') {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
+        }
       }
     }
 

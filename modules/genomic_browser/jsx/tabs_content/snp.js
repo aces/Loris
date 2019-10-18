@@ -106,15 +106,31 @@ class SNP extends Component {
     let fields = [];
     for (let field in fieldOptions) {
       if (fieldOptions.hasOwnProperty(field)) {
-        fields.push({
-          label: fieldOptions[field].label,
-          show: fieldOptions[field].hidden,
-          filter: {
-            name: fieldOptions[field].name,
-            type: fieldOptions[field].type,
-            options: fieldOptions[field].options,
-          },
-        });
+        if (fieldOptions[field].name === 'dob' ||
+            fieldOptions[field].name === 'Function_Prediction' ||
+            fieldOptions[field].name === 'Markers' ||
+            fieldOptions[field].name === 'Array_Report' ||
+            fieldOptions[field].name === 'Genotype_Quality' ||
+            fieldOptions[field].name === 'Validation_Method' ||
+            fieldOptions[field].name === 'End_Loc' ||
+            fieldOptions[field].name === 'Start_Loc' ||
+            fieldOptions[field].name === 'Gene_Symbol'
+        ) {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+          });
+        } else {
+          fields.push({
+            label: fieldOptions[field].label,
+            show: fieldOptions[field].hidden,
+            filter: {
+              name: fieldOptions[field].name,
+              type: fieldOptions[field].type,
+              options: fieldOptions[field].options,
+            },
+          });
+        }
       }
     }
 
