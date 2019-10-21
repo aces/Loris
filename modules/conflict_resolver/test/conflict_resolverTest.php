@@ -111,35 +111,12 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/conflict_resolver");
 
         $filters = $this->webDriver->findElement(
-            WebDriverBy::id('unresolved_filter')
+            WebDriverBy::id('tab-unresolved')
         );
         $this->assertTrue(!empty($filters));
         $this->resetPermissions();
     }
-
-     /**
-     * Tests that resolved conflicts loads with the permission
-     *
-     * @return void
-     */
-    function testConflictResolverResolvedConflictsPermission()
-    {
-        $this->setupPermissions(array("conflict_resolver"));
-        $this->safeGet(
-            $this->url
-            . "/conflict_resolver"
-        );
-        $this->webDriver->executescript(
-            "document.querySelector('#tab-resolved').click();"
-        );
-        $filters = $this->webDriver->findElement(
-            WebDriverBy::id('resolved_filter')
-        );
-        $this->assertTrue(!empty($filters));
-        $this->resetPermissions();
-    }
-
-     /**
+    /**
      * Tests that conflict resolver does not load with the permission
      *
      * @return void
