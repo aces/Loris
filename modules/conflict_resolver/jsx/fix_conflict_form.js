@@ -20,9 +20,10 @@ import PropTypes from 'prop-types';
  * considered unresolved; there is no green checkmark beside the dropdown anymore.
  */
 class FixConflictForm extends Component {
-
   /**
    * Constructor
+   *
+   * @param {object} props - The provided properties.
    */
   constructor(props) {
     super(props);
