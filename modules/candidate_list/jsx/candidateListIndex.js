@@ -92,8 +92,10 @@ class CandidateListIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const DCCID = 1;
     if (column === 'PSCID' && this.props.hasPermission('access_all_profiles')) {
-      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      // Generate link to Access Profile module in the PSCID column.
+      let url = this.props.baseURL + '/' + row[DCCID] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
