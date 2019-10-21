@@ -71,8 +71,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
-        // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
+
         if (isset($values['error'])) {
             switch ($values['error']) {
             case 'BadRequest':
@@ -181,27 +180,6 @@ class GwasBrowser extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Permission verification.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array                  $values  The form values.
-     *
-     * @return array
-     */
-    private function _verifyPermissions(
-        ServerRequestInterface $request,
-        array $values
-    ) : array {
-        $user = $request->getAttribute('user');
-        if (!$user->hasPermission('genomic_browser_view_site')
-            || !$user->hasPermission('genomic_browser_view_allsites')
-        ) {
-            $values['error'] = 'Forbidden';
-        }
-        return $values;
-    }
-
-    /**
      * An ETagCalculator provides the ability to calculate an ETag for
      * an incoming HTTP request.
      *
@@ -224,8 +202,7 @@ class GwasBrowser extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('genomic_browser_view_allsites')
-            || $user->hasPermission('genomic_browser_view_site'));
+        return ($this->_hasAccess($user));
     }
 
     /**
