@@ -83,8 +83,7 @@ echo ""
 cat <<QUESTIONS
 This install script will ask you to provide your project name. 
 If unsure, we suggest using "LORIS"
-(This will be used to define Imaging data filepaths automatically in a config.xml file for LORIS, and (optionally) for the apache configuration file.) 
-
+(This will be used IFF you want this script to configure your apache)
 More information on the complete installation and setup process is available on the LORIS Wiki on GitHub. 
 QUESTIONS
 
