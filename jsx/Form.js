@@ -1790,11 +1790,6 @@ class RadioElement extends React.Component {
           <div key={key}
                style={styleColumn}>
             <div style={styleContainer}>
-              <label htmlFor={key}
-                     style={styleLabel}
-              >
-                {key}
-              </label>
               <input
                 type='radio'
                 name={this.props.name}
@@ -1805,6 +1800,11 @@ class RadioElement extends React.Component {
                 onChange={this.handleChange}
                 style={styleInput}
               />
+              <label htmlFor={key}
+                     style={styleLabel}
+              >
+                {key}
+              </label>
             </div>
           </div>
         );
