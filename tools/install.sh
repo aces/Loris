@@ -105,18 +105,6 @@ done;
 
 echo ""
 
-while [ "$projectname" == "" ]; do
-        read -p "Enter project name: " projectname
-        echo $projectname | tee -a $LOGFILE > /dev/null
-        case $projectname in
-                "" )
-                        read -p "Enter project name: " projectname
-                        continue;;
-                * )
-                        break;;
-        esac
-done;
-
 # Create some subdirectories, if needed.
 ./create-project.sh ../project
 
@@ -174,7 +162,6 @@ if [ -d logs ]; then
 fi
 
 echo ""
-cd tools
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
 echo "Ubuntu distribution detected."
@@ -185,6 +172,17 @@ echo "Ubuntu distribution detected."
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
+                while [ "$projectname" == "" ]; do
+                        read -p "Enter project name: " projectname
+                        echo $projectname | tee -a $LOGFILE > /dev/null
+                        case $projectname in
+                                "" )
+                                       read -p "Enter project name: " projectname
+                                       continue;;
+                                 * )
+                                       break;;
+                        esac
+                done;
                 if [ -f /etc/apache2/sites-available/$projectname ]; then
                     echo "Apache appears to already be configured for $projectname. Aborting\n"
                     exit 1
@@ -215,6 +213,17 @@ while true; do
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
+            while [ "$projectname" == "" ]; do
+                      read -p "Enter project name: " projectname
+                      echo $projectname | tee -a $LOGFILE > /dev/null
+                      case $projectname in
+                              "" )
+                                     read -p "Enter project name: " projectname
+                                     continue;;
+                               * )
+                                     break;;
+                      esac
+            done;
             if [ -f /etc/httpd/conf.d/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
