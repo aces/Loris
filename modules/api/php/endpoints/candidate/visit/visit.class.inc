@@ -251,7 +251,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             \TimePoint::isValidVisitLabel(
-                $visitinfo['CandID'],
+                (int) $visitinfo['CandID'],
                 $subprojectid,
                 $visitinfo['Visit']
             );
@@ -262,10 +262,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         \TimePoint::createNew(
-            $visitinfo['CandID'],
+            $this->_candidate,
             $subprojectid,
             $visitinfo['Visit'],
-            $centerid
+            \Site::singleton($centerid)
         );
 
         $link = '/' . $request->getUri()->getPath();
