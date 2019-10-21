@@ -135,8 +135,8 @@ class Dashboard extends Endpoint implements ETagCalculator
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
         $recruitmentData   = $this->createProjectProgressBar(
             'overall',
-            "Overall Recruitment",
-            $recruitmentTarget,
+            'Overall Recruitment',
+            intval($recruitmentTarget),
             $this->getTotalRecruitment(),
             $recruitmentData
         );
@@ -153,7 +153,7 @@ class Dashboard extends Endpoint implements ETagCalculator
             $recruitmentData = $this->createProjectProgressBar(
                 $projectID,
                 $projectInfo['Name'],
-                $projectInfo['recruitmentTarget'],
+                intval($projectInfo['recruitmentTarget']),
                 $this->getTotalRecruitmentByProject($projectID),
                 $recruitmentData
             );
@@ -468,7 +468,7 @@ class Dashboard extends Endpoint implements ETagCalculator
      *
      * @param mixed  $ID                ID for the progress bar
      * @param string $title             Title for the progress bar
-     * @param string $recruitmentTarget Target number of candidates
+     * @param int    $recruitmentTarget Target number of candidates
      * @param int    $totalRecruitment  Total number of candidates
      * @param array  $recruitmentData   Data for recruitment panel.
      *
@@ -477,7 +477,7 @@ class Dashboard extends Endpoint implements ETagCalculator
     function createProjectProgressBar(
         $ID,
         string $title,
-        string $recruitmentTarget,
+        int $recruitmentTarget,
         int $totalRecruitment,
         array $recruitmentData
     ): array {
