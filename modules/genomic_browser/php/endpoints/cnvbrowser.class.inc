@@ -367,7 +367,8 @@ class CnvBrowser extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($this->_hasAccess($user));
+        return ($user->hasPermission('genomic_browser_view_allsites')
+            || $user->hasPermission('genomic_browser_view_site'));
     }
 
     /**
