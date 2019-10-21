@@ -166,14 +166,14 @@ class Conflicts extends Endpoint implements ETagCalculator
                     false,
                     $visit_array
                 ),
-                'SessionID'   => parent::formElementObjectCreator(
+                'SessionID'         => parent::formElementObjectCreator(
                     'SessionID',
                     'text',
                     'SessionID',
                     true,
                     null
                 ),
-                'Full_name'   => parent::formElementObjectCreator(
+                'Full_name'         => parent::formElementObjectCreator(
                     'Full_name',
                     'text',
                     'Full_name',
