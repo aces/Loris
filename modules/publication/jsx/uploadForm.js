@@ -21,20 +21,8 @@ class PublicationUploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
     this.fetchData = this.fetchData.bind(this);
-  }
-
-  validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
-    const emailDiv = document.getElementById(field);
-    if (!emailDiv.checkValidity()) {
-      formErrors[field] = 'Invalid email';
-    } else {
-      delete formErrors[field];
-    }
-    this.setState({formErrors});
   }
 
   fetchData() {
@@ -227,7 +215,6 @@ class PublicationUploadForm extends React.Component {
               setFileData={this.setFileData}
               addListItem={this.addListItem}
               removeListItem={this.removeListItem}
-              validateEmail={this.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
               uploadTypes={this.state.Data.uploadTypes}
               users={this.state.Data.users}

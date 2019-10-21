@@ -227,7 +227,6 @@ class ProjectFormFields extends React.Component {
               name={name}
               label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
               onUserInput={this.setCollaboratorEmail}
-              onUserBlur={this.props.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
               errorMessage={this.props.formErrors[name]}
               required={false}
@@ -286,10 +285,10 @@ class ProjectFormFields extends React.Component {
     let fileFields = this.createFileFields();
 
     let voiHelp = (
-      <div>
+      <span>
         For help finding variables of interest, consult
       the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
-      </div>
+      </span>
     );
     let collabNames = [];
     if (this.props.formData.collaborators) {
@@ -330,11 +329,9 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.leadInvestigator}
         />
         <EmailElement
-          id={'leadInvestigatorEmail'}
           name="leadInvestigatorEmail"
           label="Lead Investigator Email"
           onUserInput={this.props.setFormData}
-          onUserBlur={this.props.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
           errorMessage={this.props.formErrors.leadInvestigatorEmail}
           required={true}
@@ -411,15 +408,12 @@ class ProjectFormFields extends React.Component {
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
         />
-        <span className="row form-group">
-          <label className="col-sm-3 control-label">
-          </label>
-          <span className="col-sm-9">
-            <span className="form-control-static">{voiHelp}</span>
-          </span>
-        </span>
+        <StaticElement
+          text={voiHelp}
+        />
         {fileFields}
-        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'} />
+        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}
+        />
       </div>
     );
   }
