@@ -53,10 +53,10 @@ function editFile()
     checkDateTaken($dateTaken);
 
     $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $req['comments'],
-                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
-                    ];
+        'date_taken' => $dateTaken,
+        'comments'   => $req['comments'],
+        'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
+    ];
 
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
@@ -137,9 +137,9 @@ function uploadFile()
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
         "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
         [
-         'v_pscid'       => $pscid,
-         'v_visit_label' => $visit,
-         'v_center_id'   => $site,
+            'v_pscid'       => $pscid,
+            'v_visit_label' => $visit,
+            'v_center_id'   => $site,
         ]
     );
 
@@ -155,18 +155,18 @@ function uploadFile()
 
     // Build insert query
     $query = [
-              'session_id'    => $sessionID,
-              'instrument'    => $instrument,
-              'date_taken'    => $dateTaken,
-              'comments'      => $comments,
-              'file_name'     => $fileName,
-              'file_type'     => $fileType,
-              'data_dir'      => $mediaPath,
-              'uploaded_by'   => $userID,
-              'hide_file'     => 0,
-              'last_modified' => date("Y-m-d H:i:s"),
-              'language_id'   => $language,
-             ];
+        'session_id'    => $sessionID,
+        'instrument'    => $instrument,
+        'date_taken'    => $dateTaken,
+        'comments'      => $comments,
+        'file_name'     => $fileName,
+        'file_type'     => $fileType,
+        'data_dir'      => $mediaPath,
+        'uploaded_by'   => $userID,
+        'hide_file'     => 0,
+        'date_uploaded' => date("Y-m-d H:i:s"),
+        'language_id'   => $language,
+    ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
@@ -323,17 +323,17 @@ function getUploadFields()
     }
 
     $result = [
-               'candidates'  => $candidatesList,
-               'visits'      => $visitList,
-               'instruments' => $instrumentsList,
-               'sites'       => $siteList,
-               'mediaData'   => $mediaData,
-               'mediaFiles'  => array_values(getFilesList()),
-               'sessionData' => $sessionData,
-               'language'    => $languageList,
-               'startYear'   => $startYear,
-               'endYear'     => $endYear,
-              ];
+        'candidates'  => $candidatesList,
+        'visits'      => $visitList,
+        'instruments' => $instrumentsList,
+        'sites'       => $siteList,
+        'mediaData'   => $mediaData,
+        'mediaFiles'  => array_values(getFilesList()),
+        'sessionData' => $sessionData,
+        'language'    => $languageList,
+        'startYear'   => $startYear,
+        'endYear'     => $endYear,
+    ];
 
     return $result;
 }

@@ -52,11 +52,11 @@ class BVL_Feedback_Panel
 
         $this->_feedbackThread
             = \NDB_BVL_Feedback::singleton(
-                \User::singleton()->getUsername(),
-                $candID,
-                $sessionID,
-                $commentID
-            );
+            \User::singleton()->getUsername(),
+            $candID,
+            $sessionID,
+            $commentID
+        );
     }
 
     /**

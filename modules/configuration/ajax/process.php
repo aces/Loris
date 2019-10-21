@@ -105,8 +105,8 @@ foreach ($_POST as $key => $value) {
             $DB->insert(
                 'Config',
                 array(
-                 'ConfigID' => $ConfigSettingsID, // FK to ConfigSettings.
-                 'Value'    => $value,
+                    'ConfigID' => $ConfigSettingsID, // FK to ConfigSettings.
+                    'Value'    => $value,
                 )
             );
         } elseif ($action == 'remove') {
@@ -136,8 +136,8 @@ function isDuplicate($key, $value): bool
     $result  = $DB->pselectOne(
         "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
         array(
-         'ConfigID' => $key,
-         'Value'    => $value,
+            'ConfigID' => $key,
+            'Value'    => $value,
         )
     );
     return intval($result) > 0;
@@ -155,18 +155,18 @@ function noDuplicateInDropdown($id,$value)
     $factory = \NDB_Factory::singleton();
     $DB      = $factory->database();
        // ConfigID can be found in the Config table by searching new id.
-       $ConfigID = $DB->pselectOne(
-           "SELECT ConfigID FROM Config WHERE ID =:ID",
-           array('ID' => $id)
-       );
+    $ConfigID = $DB->pselectOne(
+        "SELECT ConfigID FROM Config WHERE ID =:ID",
+        array('ID' => $id)
+    );
        // IDBefore means that row ID contains the same configID and value pair.
-       $IDBefore = $DB->pselectOne(
-           "SELECT ID FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
-           array(
+    $IDBefore = $DB->pselectOne(
+        "SELECT ID FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
+        array(
             'ConfigID' => $ConfigID,
             'Value'    => $value,
-           )
-       );
+        )
+    );
        //If the new "id" equals "IDBefore" in Config table means
        //it can be updated in the table. Otherwise, it means Dropdown menu has
        // already had the same configID and value pair.

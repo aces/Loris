@@ -9,7 +9,7 @@
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
-*/
+ */
 namespace LORIS\imaging_uploader;
 use LORIS\server_processes_manager as SP;
 /**
@@ -21,7 +21,7 @@ use LORIS\server_processes_manager as SP;
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class Imaging_Uploader extends \NDB_Menu_Filter_Form
 {
     var $show_queries    = true;
@@ -63,26 +63,26 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
-                               'UploadID AS Upload_ID',
-                               $progressSelectPart,
-                               's.CandID',
-                               'c.PSCID',
-                               's.Visit_label',
-                               'UploadLocation AS Upload_Location',
-                               'UploadDate AS Upload_Date',
-                               'UploadedBy AS Uploaded_By',
-                               'mu.TarchiveID AS Tarchive_Info',
-                               'number_of_mincCreated AS Number_of_MINC_Created',
-                               'number_of_mincInserted AS Number_of_MINC_Inserted',
-                               'ta.PatientName',
-                               's.ID AS SessionID',
-                              );
+            'UploadID AS Upload_ID',
+            $progressSelectPart,
+            's.CandID',
+            'c.PSCID',
+            's.Visit_label',
+            'UploadLocation AS Upload_Location',
+            'UploadDate AS Upload_Date',
+            'UploadedBy AS Uploaded_By',
+            'mu.TarchiveID AS Tarchive_Info',
+            'number_of_mincCreated AS Number_of_MINC_Created',
+            'number_of_mincInserted AS Number_of_MINC_Inserted',
+            'ta.PatientName',
+            's.ID AS SessionID',
+        );
         $this->validFilters = array(
-                               's.CandID',
-                               'c.PSCID',
-                               's.Visit_label',
-                               'mu.IsPhantom',
-                              );
+            's.CandID',
+            'c.PSCID',
+            's.Visit_label',
+            'mu.IsPhantom',
+        );
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
@@ -90,24 +90,24 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                               " (mu.TarchiveID = ta.TarchiveID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
-                               'CandID'      => 's.CandID',
-                               'PSCID'       => 'c.PSCID',
-                               'Visit_label' => 's.Visit_label',
-                               'IsPhantom'   => 'mu.IsPhantom',
-                              );
+            'CandID'      => 's.CandID',
+            'PSCID'       => 'c.PSCID',
+            'Visit_label' => 's.Visit_label',
+            'IsPhantom'   => 'mu.IsPhantom',
+        );
     }
      /**
-     * Sets up the menu filter items for the imaging uploader
-     *
-     * @return void
-     */
+      * Sets up the menu filter items for the imaging uploader
+      *
+      * @return void
+      */
     function setup()
     {
         parent::setup();
         $phantomOtions = [
-                          'N' => 'No',
-                          'Y' => 'Yes',
-                         ];
+            'N' => 'No',
+            'Y' => 'Yes',
+        ];
         $visitlabels   = \Utility::getExistingVisitLabels();
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
@@ -126,12 +126,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                 $upload_max_size;
             http_response_code(400);
             $errors = array(
-                       'IsPhantom'  => array(),
-                       'candID'     => array(),
-                       'pSCID'      => array(),
-                       'visitLabel' => array(),
-                       'mriFile'    => array($error_message),
-                      );
+                'IsPhantom'  => array(),
+                'candID'     => array(),
+                'pSCID'      => array(),
+                'visitLabel' => array(),
+                'mriFile'    => array($error_message),
+            );
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
         }
@@ -189,16 +189,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                         array('type' => 'mri upload handler emergency')
                     );
                     $values = array(
-                               'NotificationTypeID' => $notificationTypeID,
-                               'Message'            => 'MRI pipeline could not be '
+                        'NotificationTypeID' => $notificationTypeID,
+                        'Message'            => 'MRI pipeline could not be '
                                               . 'started: ' . $e->getMessage() . "\n"
                                               . 'This indicates an incorrect or non-'
                                               . "existent MRI pipeline setup\n",
-                               'Origin'             => 'Launch of the MRI pipeline',
-                               'ProcessID'          => $this->mri_upload_id,
-                               'Error'              => 'Y',
-                               'Verbose'            => 'N',
-                              );
+                        'Origin'             => 'Launch of the MRI pipeline',
+                        'ProcessID'          => $this->mri_upload_id,
+                        'Error'              => 'Y',
+                        'Verbose'            => 'N',
+                    );
                     $db->insert('notification_spool', $values);
                     $db->update(
                         'mri_upload',
@@ -215,16 +215,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
     // methods available to all children
     /**
-       * Save the file to the DataBase by:
-       * 1) registering the file handlers
-       * 2) Calling the processFiles function which in return will call
-       *   - isValid function
-       *   - importFile Function
-       *
-       * @param array $values the array of values from the form
-       *
-       * @return true on success, false otherwise
-       */
+     * Save the file to the DataBase by:
+     * 1) registering the file handlers
+     * 2) Calling the processFiles function which in return will call
+     *   - isValid function
+     *   - importFile Function
+     *
+     * @param array $values the array of values from the form
+     *
+     * @return true on success, false otherwise
+     */
     function _saveFile($values)
     {
         //get the stored-file path
@@ -281,12 +281,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $db        = \Database::singleton();
         // creates associative array to store error messages for each form element
         $errors = array(
-                   'IsPhantom'  => array(),
-                   'candID'     => array(),
-                   'pSCID'      => array(),
-                   'visitLabel' => array(),
-                   'mriFile'    => array(),
-                  );
+            'IsPhantom'  => array(),
+            'candID'     => array(),
+            'pSCID'      => array(),
+            'visitLabel' => array(),
+            'mriFile'    => array(),
+        );
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
@@ -320,9 +320,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      ON (s.candid=c.candid and s.visit_label = :vlabel)
                      WHERE c.candid = :cid",
                     [
-                     ':cid'    => $candid,
-                     ':pid'    => $pscid,
-                     ':vlabel' => $visit_label,
+                        ':cid'    => $candid,
+                        ':pid'    => $pscid,
+                        ':vlabel' => $visit_label,
                     ]
                 );
                 if (is_null($candidate) || $candidate["candid"] !== $candid) {
@@ -333,13 +333,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     );
                 } else {
                     if (!$candidate['candid_with_pscid']) {
-                         array_push(
-                             $errors["pSCID"],
-                             "Invalid PSCID " . $pscid .
+                        array_push(
+                            $errors["pSCID"],
+                            "Invalid PSCID " . $pscid .
                              " for CandID " . $candid .
                              ". Check that you entered the correct" .
                              " PSCID and CandID."
-                         );
+                        );
                     }
                     if (!$candidate['visit_label']) {
                             array_push(
@@ -511,8 +511,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     "SELECT ID FROM  session WHERE CandID = :cid
                      AND Visit_label =:vlabel",
                     array(
-                     'cid'    => $candid,
-                     'vlabel' => $visit_label,
+                        'cid'    => $candid,
+                        'vlabel' => $visit_label,
                     )
                 );
             }
@@ -537,20 +537,20 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $this->uploaded_file_path = $this->getTempPath();
         }
         $values = array(
-                   'UploadedBy'               => $user_name,
-                   'UploadDate'               => $date,
-                   'UploadLocation'           => $this->uploaded_file_path,
-                   'SessionID'                => $sessionid,
-                   'PatientName'              => $pname,
-                   'IsPhantom'                => $IsPhantom,
-                   'TarchiveID'               => null,
-                   'Inserting'                => null,
-                   'InsertionComplete'        => 0,
-                   'IsCandidateInfoValidated' => null,
-                   'IsTarchiveValidated'      => 0,
-                   'number_of_mincInserted'   => null,
-                   'number_of_mincCreated'    => null,
-                  );
+            'UploadedBy'               => $user_name,
+            'UploadDate'               => $date,
+            'UploadLocation'           => $this->uploaded_file_path,
+            'SessionID'                => $sessionid,
+            'PatientName'              => $pname,
+            'IsPhantom'                => $IsPhantom,
+            'TarchiveID'               => null,
+            'Inserting'                => null,
+            'InsertionComplete'        => 0,
+            'IsCandidateInfoValidated' => null,
+            'IsTarchiveValidated'      => 0,
+            'number_of_mincInserted'   => null,
+            'number_of_mincCreated'    => null,
+        );
         if ($updateFile) {
             // Only overwrite file if it failed MRI pipeline. Need to use
             // wildcard for files that were uploaded to a random temp path.
@@ -576,7 +576,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Creates a temporary directory
      *
      * @return String
-    */
+     */
     function tempdir()
     {
         $tempfile =tempnam(
@@ -592,36 +592,36 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
     }
     /**
-    * The SetTempDir sets the tempdir
-    *
-    * @param string $tempFilePath The path to the temp file
-    *
-    * @return NULL
-    */
+     * The SetTempDir sets the tempdir
+     *
+     * @param string $tempFilePath The path to the temp file
+     *
+     * @return NULL
+     */
     function setTempPath($tempFilePath)
     {
         $this->temp_path = $tempFilePath;
     }
     /**
-    * The getTempPath gets the temp_path
-    *
-    * @return String returns temp_path
-    */
+     * The getTempPath gets the temp_path
+     *
+     * @return String returns temp_path
+     */
     function getTempPath()
     {
         return $this->temp_path;
     }
     /**
-    * The getTargetDirectory retrieves info about where the file should be stored.
-    *
-    * The returned directory is added to the baseUploadDirectory property.
-    * It should have a trailing slash.
-    *
-    * @param string $file The full filename including directory.
-    * @param Array  $args The list of arguments
-    *
-    * @return string  $success if operation succeeded
-    */
+     * The getTargetDirectory retrieves info about where the file should be stored.
+     *
+     * The returned directory is added to the baseUploadDirectory property.
+     * It should have a trailing slash.
+     *
+     * @param string $file The full filename including directory.
+     * @param Array  $args The list of arguments
+     *
+     * @return string  $success if operation succeeded
+     */
     function getTargetDirectory($file, $args)
     {
         return sprintf(
@@ -630,24 +630,24 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         );
     }
     /**
-    * The function isCompressed returns true if the file is
-    * compressed (gzip or zip) or false otherwise
-    *
-    * @param string $file The full filename including directory
-    *
-    * @return bool Whether the file is compressed
-    */
+     * The function isCompressed returns true if the file is
+     * compressed (gzip or zip) or false otherwise
+     *
+     * @param string $file The full filename including directory
+     *
+     * @return bool Whether the file is compressed
+     */
     function isCompressed($file)
     {
         return strpos(mime_content_type($file), 'zip') !== false;
     }
     /**
-    * The function removes the uploaded file from the /tmp directory
-    * only if the file is moved from the /tmp directory to the
-    * MRI-Upload Directory
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The function removes the uploaded file from the /tmp directory
+     * only if the file is moved from the /tmp directory to the
+     * MRI-Upload Directory
+     *
+     * @return bool  $success if operation succeeded
+     */
     function removeTempDir()
     {
         $tempFolderPath = dirname($this->getTempPath());
@@ -658,12 +658,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return $success;
     }
     /**
-    * The function removes the directory and all its contents
-    *
-    * @param string $folder The full folder path
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The function removes the directory and all its contents
+     *
+     * @param string $folder The full folder path
+     *
+     * @return bool  $success if operation succeeded
+     */
     function removeDir($folder)
     {
         $d = dir($folder);
@@ -706,8 +706,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 array_push(
                     $files,
                     [
-                     "fileName" => $fileName,
-                     "status"   => $uploadStatus,
+                        "fileName" => $fileName,
+                        "status"   => $uploadStatus,
                     ]
                 );
             }
@@ -728,8 +728,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/imaging_uploader/js/index.js",
-             $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
+                $baseURL . "/imaging_uploader/js/index.js",
+                $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );
     }

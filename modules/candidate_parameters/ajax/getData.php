@@ -112,15 +112,15 @@ function getCandInfoFields()
     }
 
     $result = [
-               'pscid'                => $pscid,
-               'candID'               => $candID,
-               'caveatReasonOptions'  => $caveat_options,
-               'flagged_caveatemptor' => $flag,
-               'flagged_reason'       => $reason,
-               'flagged_other'        => $other,
-               'extra_parameters'     => $extra_parameters,
-               'parameter_values'     => $parameter_values,
-              ];
+        'pscid'                => $pscid,
+        'candID'               => $candID,
+        'caveatReasonOptions'  => $caveat_options,
+        'flagged_caveatemptor' => $flag,
+        'flagged_reason'       => $reason,
+        'flagged_other'        => $other,
+        'extra_parameters'     => $extra_parameters,
+        'parameter_values'     => $parameter_values,
+    ];
 
     return $result;
 }
@@ -193,14 +193,14 @@ function getProbandInfoFields()
     }
 
     $result = [
-               'pscid'            => $pscid,
-               'candID'           => $candID,
-               'ProbandSex'       => $sex,
-               'ProbandDoB'       => $dob,
-               'ageDifference'    => $ageDifference,
-               'extra_parameters' => $extra_parameters,
-               'parameter_values' => $parameter_values,
-              ];
+        'pscid'            => $pscid,
+        'candID'           => $candID,
+        'ProbandSex'       => $sex,
+        'ProbandDoB'       => $dob,
+        'ageDifference'    => $ageDifference,
+        'extra_parameters' => $extra_parameters,
+        'parameter_values' => $parameter_values,
+    ];
 
     return $result;
 }
@@ -261,17 +261,17 @@ function getFamilyInfoFields()
         WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
           ORDER BY f1.CandID",
         array(
-         'candid'  => $candID,
-         'candid2' => $candID,
+            'candid'  => $candID,
+            'candid2' => $candID,
         )
     );
 
     $result = [
-               'pscid'                 => $pscid,
-               'candID'                => $candID,
-               'candidates'            => $candidates,
-               'existingFamilyMembers' => $familyMembers,
-              ];
+        'pscid'                 => $pscid,
+        'candID'                => $candID,
+        'candidates'            => $candidates,
+        'existingFamilyMembers' => $familyMembers,
+    ];
 
     return $result;
 }
@@ -343,17 +343,17 @@ function getParticipantStatusFields()
     $history = getParticipantStatusHistory($candID);
 
     $result = [
-               'pscid'                 => $pscid,
-               'candID'                => $candID,
-               'statusOptions'         => $statusOptions,
-               'required'              => $required,
-               'reasonOptions'         => $reasonOptions,
-               'parentIDs'             => $parentIDMap,
-               'participantStatus'     => $status,
-               'participantSuboptions' => $suboption,
-               'reasonSpecify'         => $reason,
-               'history'               => $history,
-              ];
+        'pscid'                 => $pscid,
+        'candID'                => $candID,
+        'statusOptions'         => $statusOptions,
+        'required'              => $required,
+        'reasonOptions'         => $reasonOptions,
+        'parentIDs'             => $parentIDMap,
+        'participantStatus'     => $status,
+        'participantSuboptions' => $suboption,
+        'reasonSpecify'         => $reason,
+        'history'               => $history,
+    ];
     return $result;
 }
 
@@ -435,14 +435,14 @@ function getConsentStatusFields()
     $history = getConsentStatusHistory($pscid);
 
     $result = [
-               'pscid'           => $pscid,
-               'candID'          => $candID,
-               'consentStatuses' => $status,
-               'consentDates'    => $date,
-               'withdrawals'     => $withdrawalDate,
-               'consents'        => $consentList,
-               'history'         => $history,
-              ];
+        'pscid'           => $pscid,
+        'candID'          => $candID,
+        'consentStatuses' => $status,
+        'consentDates'    => $date,
+        'withdrawals'     => $withdrawalDate,
+        'consents'        => $consentList,
+        'history'         => $history,
+    ];
 
     return $result;
 }
@@ -475,17 +475,17 @@ function getConsentStatusHistory($pscid)
           $consentLabel = $entry['ConsentLabel'];
 
           $history        = [
-                             'data_entry_date'            => $entry['EntryDate'],
-                             'entry_staff'                => $entry['EntryStaff'],
-                             $consentName                 => $entry['Status'],
-                             $consentName . '_date'       => $entry['DateGiven'],
-                             $consentName . '_withdrawal' => $entry['DateWithdrawn'],
-                            ];
+              'data_entry_date'            => $entry['EntryDate'],
+              'entry_staff'                => $entry['EntryStaff'],
+              $consentName                 => $entry['Status'],
+              $consentName . '_date'       => $entry['DateGiven'],
+              $consentName . '_withdrawal' => $entry['DateWithdrawn'],
+          ];
           $consentHistory = [
-                             $key          => $history,
-                             'label'       => $consentLabel,
-                             'consentType' => $consentName,
-                            ];
+              $key          => $history,
+              'label'       => $consentLabel,
+              'consentType' => $consentName,
+          ];
           $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;

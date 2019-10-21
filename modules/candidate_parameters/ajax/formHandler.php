@@ -88,10 +88,10 @@ function editCandInfoFields($db, $user)
     }
 
     $updateValues = [
-                     'flagged_caveatemptor' => $caveatEmptor,
-                     'flagged_reason'       => $reason,
-                     'flagged_other'        => $other,
-                    ];
+        'flagged_caveatemptor' => $caveatEmptor,
+        'flagged_reason'       => $reason,
+        'flagged_other'        => $other,
+    ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
@@ -101,19 +101,19 @@ function editCandInfoFields($db, $user)
                 $ptid = substr($field, 4);
 
                 $updateValues = [
-                                 'ParameterTypeID' => $ptid,
-                                 'CandID'          => $candID,
-                                 'Value'           => $_POST[$field],
-                                 'InsertTime'      => time(),
-                                ];
+                    'ParameterTypeID' => $ptid,
+                    'CandID'          => $candID,
+                    'Value'           => $_POST[$field],
+                    'InsertTime'      => time(),
+                ];
 
                 $result = $db->pselectOne(
                     'SELECT * from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
-                     'cid'  => $candID,
-                     'ptid' => $ptid,
+                        'cid'  => $candID,
+                        'ptid' => $ptid,
                     ]
                 );
 
@@ -124,8 +124,8 @@ function editCandInfoFields($db, $user)
                         'parameter_candidate',
                         $updateValues,
                         [
-                         'CandID'          => $candID,
-                         'ParameterTypeID' => $ptid,
+                            'CandID'          => $candID,
+                            'ParameterTypeID' => $ptid,
                         ]
                     );
                 }
@@ -155,9 +155,9 @@ function editProbandInfoFields($db, $user)
     $dob = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
-                     'ProbandSex' => $sex,
-                     'ProbandDoB' => $dob,
-                    ];
+        'ProbandSex' => $sex,
+        'ProbandDoB' => $dob,
+    ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
     foreach (array_keys($sanitize) as $field) {
@@ -166,19 +166,19 @@ function editProbandInfoFields($db, $user)
                 $ptid = substr($field, 4);
 
                 $updateValues = [
-                                 'ParameterTypeID' => $ptid,
-                                 'CandID'          => $candID,
-                                 'Value'           => $_POST[$field],
-                                 'InsertTime'      => time(),
-                                ];
+                    'ParameterTypeID' => $ptid,
+                    'CandID'          => $candID,
+                    'Value'           => $_POST[$field],
+                    'InsertTime'      => time(),
+                ];
 
                 $result = $db->pselectOne(
                     'SELECT CandID from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
-                     'cid'  => $candID,
-                     'ptid' => $ptid,
+                        'cid'  => $candID,
+                        'ptid' => $ptid,
                     ]
                 );
 
@@ -189,8 +189,8 @@ function editProbandInfoFields($db, $user)
                         'parameter_candidate',
                         $updateValues,
                         [
-                         'CandID'          => $candID,
-                         'ParameterTypeID' => $ptid,
+                            'CandID'          => $candID,
+                            'ParameterTypeID' => $ptid,
                         ]
                     );
                 }
@@ -229,18 +229,18 @@ function editFamilyInfoFields($db, $user)
     if ($siblingCandID != null) {
 
         $updateValues = [
-                         'CandID'            => $siblingCandID,
-                         'Relationship_type' => $relationship,
-                         'FamilyID'          => $familyID,
-                        ];
+            'CandID'            => $siblingCandID,
+            'Relationship_type' => $relationship,
+            'FamilyID'          => $familyID,
+        ];
 
         if ($familyID != null) {
 
             $siblingID = $db->pselectOne(
                 "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
                 [
-                 'candid'   => $siblingCandID,
-                 'familyid' => $familyID,
+                    'candid'   => $siblingCandID,
+                    'familyid' => $familyID,
                 ]
             );
 
@@ -278,16 +278,16 @@ function editFamilyInfoFields($db, $user)
         $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
             [
-             'candid'   => $siblingCandID,
-             'familyid' => $familyID,
+                'candid'   => $siblingCandID,
+                'familyid' => $familyID,
             ]
         );
 
         $updateValues = [
-                         'CandID'            => $siblingCandID,
-                         'Relationship_type' => $relationship,
-                         'FamilyID'          => $familyID,
-                        ];
+            'CandID'            => $siblingCandID,
+            'Relationship_type' => $relationship,
+            'FamilyID'          => $familyID,
+        ];
 
         $db->update('family', $updateValues, ['ID' => $siblingID]);
 
@@ -318,9 +318,9 @@ function deleteFamilyMember($db, $user)
     );
 
     $where = [
-              'FamilyID' => $familyID,
-              'CandID'   => $familyMemberID,
-             ];
+        'FamilyID' => $familyID,
+        'CandID'   => $familyMemberID,
+    ];
 
     $db->delete('family', $where);
 
@@ -355,12 +355,12 @@ function editParticipantStatusFields($db, $user)
     }
 
     $updateValues = [
-                     'participant_status'     => $status,
-                     'participant_suboptions' => $suboption,
-                     'reason_specify'         => $reason,
-                     'CandID'                 => $candID,
-                     'entry_staff'            => $id,
-                    ];
+        'participant_status'     => $status,
+        'participant_suboptions' => $suboption,
+        'reason_specify'         => $reason,
+        'CandID'                 => $candID,
+        'entry_staff'            => $id,
+    ];
 
     $exists = $db->pselectOne(
         "SELECT * from participant_status WHERE CandID=:candid",
@@ -423,21 +423,21 @@ function editConsentStatusFields($db, $user)
                         $_POST[$consentName . '_withdrawal'] : null;
 
         $updateStatus  = [
-                          'CandidateID'   => $candID,
-                          'ConsentID'     => $consentID,
-                          'Status'        => $status,
-                          'DateGiven'     => $date,
-                          'DateWithdrawn' => $withdrawal,
-                         ];
+            'CandidateID'   => $candID,
+            'ConsentID'     => $consentID,
+            'Status'        => $status,
+            'DateGiven'     => $date,
+            'DateWithdrawn' => $withdrawal,
+        ];
         $updateHistory = [
-                          'PSCID'         => $pscid,
-                          'ConsentName'   => $consentName,
-                          'ConsentLabel'  => $consentLabel,
-                          'Status'        => $status,
-                          'DateGiven'     => $date,
-                          'DateWithdrawn' => $withdrawal,
-                          'EntryStaff'    => $uid,
-                         ];
+            'PSCID'         => $pscid,
+            'ConsentName'   => $consentName,
+            'ConsentLabel'  => $consentLabel,
+            'Status'        => $status,
+            'DateGiven'     => $date,
+            'DateWithdrawn' => $withdrawal,
+            'EntryStaff'    => $uid,
+        ];
 
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
@@ -508,8 +508,8 @@ function editConsentStatusFields($db, $user)
                     'candidate_consent_rel',
                     $updateStatus,
                     array(
-                     'CandidateID' => $candID,
-                     'ConsentID'   => $consentID,
+                        'CandidateID' => $candID,
+                        'ConsentID'   => $consentID,
                     )
                 );
             } else {

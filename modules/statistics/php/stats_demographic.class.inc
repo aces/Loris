@@ -186,9 +186,9 @@ class Stats_Demographic extends \NDB_Form
             $demographicProject = htmlspecialchars($demographicProject);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $demographicProject,
-                   'Name' => $projects[$demographicProject] ?? '',
-                  );
+                    'ID'   => $demographicProject,
+                    'Name' => $projects[$demographicProject] ?? '',
+                );
             $paramProject        ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
@@ -236,9 +236,9 @@ class Stats_Demographic extends \NDB_Form
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'],
-                                                      'Name' => $row['LongName'],
-                                                     );
+                        'ID'   => $row['NumericID'],
+                        'Name' => $row['LongName'],
+                    );
                 }
             }
         }
@@ -431,9 +431,9 @@ class Stats_Demographic extends \NDB_Form
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars($demographicInstrument);
             $subcategories         = array(
-                                      'Complete',
-                                      'Incomplete',
-                                     );
+                'Complete',
+                'Incomplete',
+            );
             $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
@@ -491,9 +491,9 @@ class Stats_Demographic extends \NDB_Form
             );
         } else {
             $subcategories = array(
-                              'Male',
-                              'Female',
-                             );
+                'Male',
+                'Female',
+            );
             $result        = $db->pselect(
                 "SELECT s.CenterID as CenterID,
                         s.SubprojectID as SubprojectID,
@@ -542,8 +542,8 @@ class Stats_Demographic extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . '/statistics/js/table_statistics.js',
-             $baseURL . '/statistics/js/form_stats_demographic.js',
+                $baseURL . '/statistics/js/table_statistics.js',
+                $baseURL . '/statistics/js/form_stats_demographic.js',
             )
         );
     }

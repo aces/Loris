@@ -218,9 +218,9 @@ class NDB_Config
             $attributes = $xml->attributes();
             if ($attributes->count() > 0) {
                 $retVal = array(
-                           '#' => $retVal,
-                           '@' => array(),
-                          );
+                    '#' => $retVal,
+                    '@' => array(),
+                );
                 foreach ($attributes as $name => $val) {
                     $retVal['@'][$name] = $val->__toString();
 
@@ -258,7 +258,7 @@ class NDB_Config
      *
      * @param string   $name The name of the config setting to get
      * @param int|null $id   (optional) The ID of the config setting we're
-     *                      getting to avoid ambiguity.
+     *                       getting to avoid ambiguity.
      *
      * @return mixed The value from the database, or null if nothing found.
      */
@@ -437,10 +437,10 @@ class NDB_Config
         return is_null($info) ?
             null
             : array(
-               'id'                => $info['ProjectID'],
-               'Name'              => $info['Name'],
-               'recruitmentTarget' => $info['recruitmentTarget'],
-              );
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
+            );
     }
 
     /**
@@ -469,14 +469,14 @@ class NDB_Config
         if (!empty($info)) {
             $x = $info['WindowDifference'];
             return array(
-                    'id'                => $info['SubprojectID'],
-                    'title'             => $info['title'],
-                    'options'           => array(
-                                            'useEDC'           => $info['useEDC'],
-                                            'WindowDifference' => $x,
-                                           ),
-                    'RecruitmentTarget' => $info['RecruitmentTarget'],
-                   );
+                'id'                => $info['SubprojectID'],
+                'title'             => $info['title'],
+                'options'           => array(
+                    'useEDC'           => $info['useEDC'],
+                    'WindowDifference' => $x,
+                ),
+                'RecruitmentTarget' => $info['RecruitmentTarget'],
+            );
         }
         return array();
     }
@@ -520,8 +520,8 @@ class NDB_Config
      * the menus, exactly (config.xml, different database tables, etc..)
      *
      * @param int|null $parent The parent ID of the tree. This should not
-     *                        be passed. It's used to build the tree recursively
-     *                        from the LorisMenu table.
+     *                         be passed. It's used to build the tree recursively
+     *                         from the LorisMenu table.
      *
      * @return array          Label, Visible, Link, and ID to build the menu
      *                        for the currently logged in user

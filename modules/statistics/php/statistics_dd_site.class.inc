@@ -79,8 +79,8 @@ class Statistics_DD_Site extends statistics_site
         $this->instruments = array_filter(
             $this->instruments,
             array(
-             &$this,
-             'notexcluded',
+                &$this,
+                'notexcluded',
             )
         );
     }

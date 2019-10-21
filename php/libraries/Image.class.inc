@@ -15,11 +15,11 @@ namespace LORIS;
 /**
  * This class defines an Image and business logic related to Images.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Image
 {
@@ -94,9 +94,9 @@ class Image
     public function getHeader(string $headername): string
     {
         $dbrow = \NDB_Factory::singleton()
-             ->database()
-                ->pselectRow(
-                    '
+            ->database()
+            ->pselectRow(
+                '
                        SELECT
                          Value
                        FROM
@@ -109,11 +109,11 @@ class Image
                          f.FileID = :v_fileid AND
                          pt.Name = :v_headername
                       ',
-                    array(
-                     'v_fileid'     => $this->_fileid,
-                     'v_headername' => $headername,
-                    )
-                );
+                array(
+                    'v_fileid'     => $this->_fileid,
+                    'v_headername' => $headername,
+                )
+            );
         return $dbrow['Value'] ?? '';
     }
 
@@ -125,9 +125,9 @@ class Image
     public function getHeaders(): array
     {
         $dbrows = \NDB_Factory::singleton()
-             ->database()
-                ->pselect(
-                    '
+            ->database()
+            ->pselect(
+                '
                        SELECT
                          pt.Name as name,
                          pf.Value as value
@@ -140,8 +140,8 @@ class Image
                        WHERE
                          f.FileID = :v_fileid
                       ',
-                    array('v_fileid' => $this->_fileid)
-                );
+                array('v_fileid' => $this->_fileid)
+            );
         return array_reduce(
             $dbrows,
             function ($carry, $row) {
@@ -198,11 +198,11 @@ class Image
     public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
     {
         $values = array(
-                   'QCStatus'         => $qcstatus->getQcStatus(),
-                   'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
-                   'QCLastChangeTime' => time(),
-                   'FileID'           => $this->_fileid,
-                  );
+            'QCStatus'         => $qcstatus->getQcStatus(),
+            'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
+            'QCLastChangeTime' => time(),
+            'FileID'           => $this->_fileid,
+        );
 
         \NDB_Factory::singleton()->database()->replace(
             'files_qcstatus',

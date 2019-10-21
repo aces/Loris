@@ -52,11 +52,11 @@ class Project
         $meta = array('Project' => $this->_project->getName());
 
         return array(
-                'Meta'        => $meta,
-                'Candidates'  => $this->_project->getCandidateIds(),
-                'Instruments' => array_keys(\Utility::getAllInstruments()),
-                'Visits'      => $this->_getVisits(),
-               );
+            'Meta'        => $meta,
+            'Candidates'  => $this->_project->getCandidateIds(),
+            'Instruments' => array_keys(\Utility::getAllInstruments()),
+            'Visits'      => $this->_getVisits(),
+        );
     }
 
     /**
@@ -70,9 +70,9 @@ class Project
         $meta = array('Project' => $this->_project->getName());
 
         return array(
-                'Meta'       => $meta,
-                'Candidates' => $this->_project->getCandidateIds(),
-               );
+            'Meta'       => $meta,
+            'Candidates' => $this->_project->getCandidateIds(),
+        );
     }
 
     /**
@@ -86,9 +86,9 @@ class Project
         $meta = array('Project' => $this->_project->getName());
 
         return array(
-                'Meta'   => $meta,
-                'Visits' => $this->_getVisits(),
-               );
+            'Meta'   => $meta,
+            'Visits' => $this->_getVisits(),
+        );
     }
 
     /**

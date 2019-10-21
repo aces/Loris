@@ -6,24 +6,24 @@
  *
  * PHP Version 5
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\imaging_browser;
 
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Imaging
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris License
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license    Loris License
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Imaging_Browser extends \NDB_Menu_Filter
 {
@@ -44,9 +44,9 @@ class Imaging_Browser extends \NDB_Menu_Filter
          */
         return $user->hasAnyPermission(
             array(
-             'imaging_browser_view_allsites',
-             'imaging_browser_phantom_allsites',
-             'imaging_browser_phantom_ownsite',
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite',
             )
         )
             || (
@@ -223,26 +223,26 @@ END";
         }
 
         $this->columns = array(
-                          'p.Name as Site',
-                          'c.PSCID as PSCID',
-                          'c.CandID as DCCID',
-                          '(SELECT Name 
+            'p.Name as Site',
+            'c.PSCID as PSCID',
+            'c.CandID as DCCID',
+            '(SELECT Name 
                             FROM Project 
                             WHERE ProjectID=c.ProjectID) as project',
-                          's.visit_label as Visit_Label',
-                          "$PendingFailSubquery as Visit_QC_Status",
-                          'MIN(md.AcquisitionDate) as First_Acquisition',
-                          'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
-                          'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
-                          "$NewDataSubquery as New_Data",
-                         );
+            's.visit_label as Visit_Label',
+            "$PendingFailSubquery as Visit_QC_Status",
+            'MIN(md.AcquisitionDate) as First_Acquisition',
+            'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
+            'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
+            "$NewDataSubquery as New_Data",
+        );
         $this->columns = array_merge(
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             array(
-             's.ID as sessionID',
-             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
-             "$PendingNewquery as pending",
+                's.ID as sessionID',
+                'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
+                "$PendingNewquery as pending",
             ),
             $modalities_subquery_as
         );
@@ -333,14 +333,14 @@ END";
         }
 
         $visitQCStatus = array(
-                          'Pass' => 'Pass',
-                          'Fail' => 'Fail',
-                         );
+            'Pass' => 'Pass',
+            'Fail' => 'Fail',
+        );
 
         $pending = array(
-                    'P' => 'Pending',
-                    'N' => 'New',
-                   );
+            'P' => 'Pending',
+            'N' => 'New',
+        );
 
         $types_q    = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri
@@ -359,13 +359,13 @@ END";
         );
 
         $this->fieldOptions = [
-                               'sites'         => $siteList,
-                               'projects'      => $list_of_projects,
-                               'visitQCStatus' => $visitQCStatus,
-                               'sequenceTypes' => $scan_types,
-                               'pendingNew'    => $pending,
-                               'configLabels'  => $scan_id_types,
-                              ];
+            'sites'         => $siteList,
+            'projects'      => $list_of_projects,
+            'visitQCStatus' => $visitQCStatus,
+            'sequenceTypes' => $scan_types,
+            'pendingNew'    => $pending,
+            'configLabels'  => $scan_id_types,
+        ];
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
@@ -426,7 +426,7 @@ END";
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
+                $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
             )
         );
     }

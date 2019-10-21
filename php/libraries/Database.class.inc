@@ -674,8 +674,8 @@ class Database
      *                               while executing it
      * @param array        $options  A list of key=>value pairs.
      *                               - nofetch : to prevent the fetchAll
-     *                                 function to be excuted. Useful for
-     *                                 insert or update prepared statements.
+     *                               function to be excuted. Useful for
+     *                               insert or update prepared statements.
      *
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
@@ -999,14 +999,14 @@ class Database
      * or delete query. Generates the string in a prepared statement format.
      *
      * @param string     $glue      The glue used to combine parts of the
-     *                          dataArray (ie " AND ").
+     *                              dataArray (ie " AND ").
      * @param array      $dataArray The array representing the WHERE condition
-     *                          to be glued together into a string.
+     *                              to be glued together into a string.
      * @param array|null $exec_vals The values which are being bound to the
-     *                          query. Used to generate the prepared variable
-     *                          name.
+     *                              query. Used to generate the prepared variable
+     *                              name.
      * @param string     $prefix    A prefix to apply to prepared variable
-     *                          names.
+     *                              names.
      *
      * @return string A string that can be used to generate a prepared statement
      *                with appropriate variable names generated for data
@@ -1275,8 +1275,8 @@ class Database
         $result = $this->pselectOne(
             $query,
             array(
-             'tn' => $test_name,
-             'db' => $database['database'],
+                'tn' => $test_name,
+                'db' => $database['database'],
             )
         );
 
@@ -1306,9 +1306,9 @@ class Database
         $effected = $this->pselectOne(
             $query,
             array(
-             'tn' => $test_name,
-             'cn' => $column,
-             'db' => $database['database'],
+                'tn' => $test_name,
+                'cn' => $column,
+                'db' => $database['database'],
             )
         );
         if ($effected) {
@@ -1332,24 +1332,24 @@ class Database
         if (!empty($tableName) && is_string($tableName)) {
             $stringWithEscapedChars = str_replace(
                 array(
-                 '\\',
-                 "\0",
-                 "\n",
-                 "\r",
-                 "'",
-                 '"',
-                 "\x1a",
-                 "`",
+                    '\\',
+                    "\0",
+                    "\n",
+                    "\r",
+                    "'",
+                    '"',
+                    "\x1a",
+                    "`",
                 ),
                 array(
-                 '\\\\',
-                 '\\0',
-                 '\\n',
-                 '\\r',
-                 "\\'",
-                 '\\"',
-                 '\\Z',
-                 "\\`",
+                    '\\\\',
+                    '\\0',
+                    '\\n',
+                    '\\r',
+                    "\\'",
+                    '\\"',
+                    '\\Z',
+                    "\\`",
                 ),
                 $tableName
             );

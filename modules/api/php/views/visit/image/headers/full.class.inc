@@ -69,9 +69,9 @@ class Full
         unset($headers['jiv_path']);
 
         return  array(
-                 'Meta'    => $this->_formatMeta(),
-                 'Headers' => $headers,
-                );
+            'Meta'    => $this->_formatMeta(),
+            'Headers' => $headers,
+        );
     }
 
     /**
@@ -86,10 +86,10 @@ class Full
         $filename   = $this->_image->getFileInfo()->getFilename();
 
         return array(
-                'CandID' => $candid,
-                'Visit'  => $visitlabel,
-                'File'   => $filename,
-               );
+            'CandID' => $candid,
+            'Visit'  => $visitlabel,
+            'File'   => $filename,
+        );
     }
 }
 

@@ -97,7 +97,7 @@ class Dicom_Archive extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );
     }

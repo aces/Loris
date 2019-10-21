@@ -48,11 +48,11 @@ class Brainbrowser
         $order = $this->_image->getHeader("image:dimorder");
 
         $responsearray = array(
-                          'order'  => $order,
-                          'xspace' => $this->_getDimension('xspace'),
-                          'yspace' => $this->_getDimension('yspace'),
-                          'zspace' => $this->_getDimension('zspace'),
-                         );
+            'order'  => $order,
+            'xspace' => $this->_getDimension('xspace'),
+            'yspace' => $this->_getDimension('yspace'),
+            'zspace' => $this->_getDimension('zspace'),
+        );
 
         if (count(explode(',', $order)) == 4) {
             $responsearray['time'] = $this->_getDimension('time');
@@ -71,10 +71,10 @@ class Brainbrowser
     private function _getDimension(string $dim): array
     {
         return array(
-                'space_length' => $this->_image->getHeader("$dim:length"),
-                'start'        => $this->_image->getHeader("$dim:start"),
-                'step'         => $this->_image->getHeader("$dim:step"),
-               );
+            'space_length' => $this->_image->getHeader("$dim:length"),
+            'start'        => $this->_image->getHeader("$dim:start"),
+            'step'         => $this->_image->getHeader("$dim:step"),
+        );
     }
 }
 

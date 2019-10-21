@@ -43,8 +43,8 @@ class Media extends \NDB_Menu_Filter
     {
         return $user->hasAnyPermission(
             array(
-             'media_read',
-             'media_write',
+                'media_read',
+                'media_write',
             )
         );
 
@@ -102,20 +102,20 @@ class Media extends \NDB_Menu_Filter
         $hiddenOptions = array();
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = array(
-                              0 => 'Visible only',
-                              1 => 'Hidden only',
-                             );
+                0 => 'Visible only',
+                1 => 'Hidden only',
+            );
         }
 
         return array(
-                'fileTypes'     => $fileTypeList,
-                'visits'        => $visitList,
-                'sites'         => $siteList,
-                'instruments'   => $instrumentList,
-                'languages'     => $languageList,
-                'hidden'        => $hiddenOptions,
-                'maxUploadSize' => \Utility::getMaxUploadSize(),
-               );
+            'fileTypes'     => $fileTypeList,
+            'visits'        => $visitList,
+            'sites'         => $siteList,
+            'instruments'   => $instrumentList,
+            'languages'     => $languageList,
+            'hidden'        => $hiddenOptions,
+            'maxUploadSize' => \Utility::getMaxUploadSize(),
+        );
     }
 
     /**
@@ -160,8 +160,8 @@ class Media extends \NDB_Menu_Filter
         );
         return json_encode(
             array(
-             'data'         => $arr,
-             'fieldOptions' => $this->getOptions(),
+                'data'         => $arr,
+                'fieldOptions' => $this->getOptions(),
             )
         );
     }
@@ -196,7 +196,7 @@ class Media extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/media/js/mediaIndex.js",
+                $baseURL . "/media/js/mediaIndex.js",
             )
         );
     }

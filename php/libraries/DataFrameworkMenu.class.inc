@@ -75,7 +75,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      *
      * @return array An array of data-context sensitive GUI options.
      */
-    abstract protected function getFieldOptions() : array ;
+    abstract protected function getFieldOptions() : array;
 
     /**
      * Return the base Provisioner, without any filters applied.
@@ -130,8 +130,8 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
 
         return json_encode(
             [
-             'Data'         => $arr,
-             'fieldOptions' => $this->getFieldOptions(),
+                'Data'         => $arr,
+                'fieldOptions' => $this->getFieldOptions(),
             ]
         );
     }

@@ -230,41 +230,41 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         $scan_location = array(
-                          "In Imaging Browser"    => "Found in Imaging Browser",
-                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
-                          "Missing"               => "Missing",
-                         );
+            "In Imaging Browser"    => "Found in Imaging Browser",
+            "In MRI Violated Scans" => "Found in MRI Violated Scans",
+            "Missing"               => "Missing",
+        );
 
         $this->fieldOptions
             = [
-               'site'             => $siteList,
-               'project'          => $projectList2,
-               'subproject'       => $subprojectList2,
-               'scanType'         => $scan_types,
-               'mRIParameterForm' => array(
-                                      "Incomplete" => "Incomplete",
-                                      "Complete"   => "Complete",
-                                     ),
-               'scanDoneInMRIPF'  => array(
-                                      "Yes" => "Yes",
-                                      "No"  => "No",
-                                     ),
-               'tarchive'         => array(
-                                      "In DICOM" => "In DICOM Archives",
-                                      "Missing"  => "Missing",
-                                     ),
-               'scanLocation'     => $scan_location,
-               'qCStatus'         => array(
-                                      "Pass" => "Pass",
-                                      "Fail" => "Fail",
-                                     ),
-               'uploadedBy'       => $uploaderList,
-               'selected'         => array(
-                                      "True"  => "True",
-                                      "False" => "False",
-                                     ),
-               'visitLabel'       => $visitList,
-              ];
+                'site'             => $siteList,
+                'project'          => $projectList2,
+                'subproject'       => $subprojectList2,
+                'scanType'         => $scan_types,
+                'mRIParameterForm' => array(
+                    "Incomplete" => "Incomplete",
+                    "Complete"   => "Complete",
+                ),
+                'scanDoneInMRIPF'  => array(
+                    "Yes" => "Yes",
+                    "No"  => "No",
+                ),
+                'tarchive'         => array(
+                    "In DICOM" => "In DICOM Archives",
+                    "Missing"  => "Missing",
+                ),
+                'scanLocation'     => $scan_location,
+                'qCStatus'         => array(
+                    "Pass" => "Pass",
+                    "Fail" => "Fail",
+                ),
+                'uploadedBy'       => $uploaderList,
+                'selected'         => array(
+                    "True"  => "True",
+                    "False" => "False",
+                ),
+                'visitLabel'       => $visitList,
+            ];
 
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
@@ -287,10 +287,10 @@ class Quality_Control extends \NDB_Menu_Filter
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
                 = $this->_buildQuery(
-                    $scan_type,
-                    $scans_done[$scan_type],
-                    $acq_IDs[$scan_type]
-                );
+                $scan_type,
+                $scans_done[$scan_type],
+                $acq_IDs[$scan_type]
+            );
         }
 
         $query = implode(
@@ -303,24 +303,24 @@ class Quality_Control extends \NDB_Menu_Filter
         $this->query = " FROM ( " . $query . " ) as tmp";
 
         $this->columns = [
-                          'PSCID',
-                          'SessionID',
-                          'cand_id',
-                          'site',
-                          'project',
-                          'subproject',
-                          'visit_label',
-                          'scan_type',
-                          'mri_parameter_form',
-                          'scan_done',
-                          'tarchive_loc',
-                          'scan_location',
-                          'qc_status',
-                          'uploaded_by',
-                          'selected',
-                          'CommentID',
-                          'TarchiveID',
-                         ];
+            'PSCID',
+            'SessionID',
+            'cand_id',
+            'site',
+            'project',
+            'subproject',
+            'visit_label',
+            'scan_type',
+            'mri_parameter_form',
+            'scan_done',
+            'tarchive_loc',
+            'scan_location',
+            'qc_status',
+            'uploaded_by',
+            'selected',
+            'CommentID',
+            'TarchiveID',
+        ];
 
         $this->group_by = 'PSCID,
             SessionID,
@@ -356,7 +356,7 @@ class Quality_Control extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }

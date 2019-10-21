@@ -95,8 +95,8 @@ class Smarty_NeuroDB extends Smarty
         $newdir = array_merge(
             $currentDir,
             array(
-             'template' => $this->loristemplate_dir,
-             'project'  => $this->project_template_dir,
+                'template' => $this->loristemplate_dir,
+                'project'  => $this->project_template_dir,
             )
         );
         $this->setConfigDir($newdir);

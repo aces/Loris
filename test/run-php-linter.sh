@@ -5,14 +5,13 @@ set -euo pipefail
 # errors.
 find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null  
 
-# Run PHPCS on the entire libraries directory.
-vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/installer || exit $?;
-vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs || exit $?;
+# Run PHPCS on all .php and .inc files in folders:
+# php/
+# htdocs/
+# modules/
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php,inc --colors php/ htdocs/ modules/ || exit $?;
 
 # Run PHPCS on some scripts  -- fixing the files format later
 # vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Confirm_Integrity.php
-
-# Run PHPCS on all modules
-vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/ || exit $?;
 
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;
