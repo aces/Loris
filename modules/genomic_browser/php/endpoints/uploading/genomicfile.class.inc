@@ -98,9 +98,9 @@ class Genomicfile
             $this->endWithSuccess();
             break;
         default:
+            $unsupported = $this->_fileToUpload->genomic_file_type;
             return array(
-                    'message'  => "Unsupported filetype: 
-                     $this->_fileToUpload->genomic_file_type",
+                    'message'  => "Unsupported filetype: $unsupported",
                     'progress' => 100,
                     'error'    => true,
                    );
@@ -205,7 +205,7 @@ class Genomicfile
             }
         } catch (\Exception $ex){
             error_log("Cannot move file: $ex");
-            endWithFailure();
+            $this->endWithFailure();
             // TODO: The below does not get printed to the frontend.
             //       Further debugging needed
             $this->_response = json_encode(
@@ -487,7 +487,7 @@ class Genomicfile
             // Report number on relation created (candidate founded)
             $this->reportProgress(90, 'Relation created');
         } catch (\Exception $e) {
-            endWithFailure();
+            $this->endWithFailure();
             $this->_response = json_encode(
                 array(
                  'message'  => "Can't insert into the database.",
