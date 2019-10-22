@@ -196,7 +196,7 @@ class NDB_BVL_Feedback
             $query          .= " WHERE c.CandID = :CaID";
             $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
-            throw new LorisException(
+            throw new InvalidArgumentException(
                 "You need to pass at least one of the following to setup "
                 . "the Feedback Object: CandID, SessionID, or CommentID"
             );
@@ -289,7 +289,7 @@ class NDB_BVL_Feedback
         ?string $description = null
     ): int {
         if (empty($name) || strlen($name) > 100 ) {
-            throw new LorisException(
+            throw new InvalidArgumentException(
                 "Invalid feedback type name: name must not be empty and must "
                 . "not exceed 100 characters"
             );
