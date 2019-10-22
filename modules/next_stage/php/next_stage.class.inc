@@ -2,9 +2,9 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Test
+ * @category Main
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -14,9 +14,9 @@ namespace LORIS\next_stage;
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Test
+ * @category Main
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -47,14 +47,11 @@ class Next_Stage extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $timePoint =& \TimePoint::singleton($this->identifier);
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
 
         // check user permissions
         if (!$user->hasPermission('data_entry')
-            || !in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
+            || !$user->hasCenter($timePoint->getData('CenterID'))
         ) {
             return false;
         }
@@ -70,7 +67,7 @@ class Next_Stage extends \NDB_Form
      */
     function _process($values)
     {
-        $timePoint =& \TimePoint::singleton($this->identifier);
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
 
         // figure out what the next stage should be
         $newStage = $timePoint->getNextStage();
@@ -145,7 +142,9 @@ class Next_Stage extends \NDB_Form
     {
         parent::setup();
 
-        $this->timepoint = \TimePoint::singleton($this->identifier);
+        $this->timepoint = \TimePoint::singleton(
+            new \SessionID($this->identifier)
+        );
         $this->candidate = \Candidate::singleton($this->timepoint->getCandID());
 
         $timePoint =& \TimePoint::singleton($this->identifier);
@@ -222,7 +221,9 @@ class Next_Stage extends \NDB_Form
     function _validate($values)
     {
         $config    = \NDB_Factory::singleton()->config();
-        $timePoint = \NDB_Factory::singleton()->timepoint($this->identifier);
+
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
+        $candID    = $timePoint->getCandID();
 
         $errors = [];
         /* Check that dates are present. Return early as there is no point
