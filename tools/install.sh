@@ -69,7 +69,7 @@ if ! [ $BASH ] ; then
     exit 2
 fi
 
-if [[ -n $(which php) ]]; then
+if [[ -n $(command -v php) ]]; then
     echo ""
     echo "PHP appears to be installed."
 else
@@ -78,7 +78,7 @@ else
     exit 2;
 fi
 
-if [[ -n $(which composer) ]]; then
+if [[ -n $(command -v composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
     composer_scr="composer install --no-dev"
