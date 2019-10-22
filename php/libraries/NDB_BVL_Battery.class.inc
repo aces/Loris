@@ -8,7 +8,7 @@
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -33,6 +33,7 @@ class NDB_BVL_Battery
      * same as identifying a battery
      *
      * @access private
+     * @var    SessionID
      */
     public $sessionID = null;
 
@@ -48,11 +49,11 @@ class NDB_BVL_Battery
     /**
      * Selects a specific visit/battery
      *
-     * @param integer $sessionID the ID of the session/visit (session.ID)
+     * @param SessionID $sessionID the ID of the session/visit (session.ID)
      *
      * @return void
      */
-    function selectBattery($sessionID)
+    function selectBattery(SessionID $sessionID)
     {
         $timepoint =TimePoint::singleton($sessionID);
 

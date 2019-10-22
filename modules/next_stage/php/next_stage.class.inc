@@ -147,8 +147,8 @@ class Next_Stage extends \NDB_Form
         );
         $this->candidate = \Candidate::singleton($this->timepoint->getCandID());
 
-        $timePoint =& \TimePoint::singleton($this->identifier);
-        $config    =& \NDB_Config::singleton();
+        $timePoint = $this->timepoint;
+        $config    = \NDB_Config::singleton();
 
         $dateOptions = [
             'language'       => 'en',
