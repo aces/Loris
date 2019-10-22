@@ -64,6 +64,7 @@ class CreateTimepoint extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setForm = this.setForm.bind(this);
   }
+
   /**
    * Executes after component mounts.
    */
@@ -72,6 +73,7 @@ class CreateTimepoint extends React.Component {
     this.fetchInitializerData()
       .then(() => this.setState({isLoaded: true}));
   }
+
   /**
    * Retrieve params from the browser URL and save it in state.
    */
@@ -85,6 +87,7 @@ class CreateTimepoint extends React.Component {
     state.data.dccid = state.url.params.candID;
     this.setState(state);
   }
+
   /**
    * Retrieve data from the provided URL and save it in state.
    *
@@ -136,8 +139,9 @@ class CreateTimepoint extends React.Component {
         const state = Object.assign({}, this.state);
         state.errors = [{message: error}];
         this.setState(state);
-    });
+      });
   }
+
   /**
    * Visit Labels refreshes when Subproject changes.
    */
@@ -154,6 +158,7 @@ class CreateTimepoint extends React.Component {
     state.form.display.visit = true;
     this.setState(state);
   }
+
   /**
    * Set the form data based on state values of child elements/components
    *
@@ -168,6 +173,7 @@ class CreateTimepoint extends React.Component {
       this.handleVisitLabel();
     }
   }
+
   /**
    * Handle form submission
    * @param {object} e - Form submission event
@@ -191,9 +197,7 @@ class CreateTimepoint extends React.Component {
           visit: state.form.value.visit,
         }),
       })
-      .then((response) => {
-        return response.ok ? {} : response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         if (data.status === 'error') {
           if (data.errors) {
@@ -210,6 +214,7 @@ class CreateTimepoint extends React.Component {
         console.error('Error! ' + error);
       });
   }
+
   /**
    * @return {DOMRect}
    */
@@ -218,6 +223,7 @@ class CreateTimepoint extends React.Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+
     /**
      * Populate the elements of errors to display.
      * @param {array} values (errors) data from server.
@@ -236,6 +242,7 @@ class CreateTimepoint extends React.Component {
       });
       return errors;
     }
+
     // Include form errors.
     const errors = this.state.errors
       ? renderErrors(this.state.errors)
@@ -310,6 +317,7 @@ class CreateTimepoint extends React.Component {
     );
   }
 }
+
 CreateTimepoint.propTypes = {
   dataURL: PropTypes.string,
 };
