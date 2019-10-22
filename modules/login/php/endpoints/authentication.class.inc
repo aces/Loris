@@ -2,7 +2,7 @@
 /**
  * POST request methods.
  *
- * Used to retrieve info & login by the login form.
+ * Used to retrieve info with authentication by the login form.
  *
  * PHP Version 7
  *
@@ -17,9 +17,9 @@ namespace LORIS\login\endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use SinglePointLogin;
-use \LORIS\Api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
+use \LORIS\Api\Endpoint;
+use SinglePointLogin;
 use State;
 
 /**
@@ -31,7 +31,7 @@ use State;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Login extends Endpoint implements ETagCalculator
+class Authentication extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
 
@@ -350,7 +350,8 @@ class Login extends Endpoint implements ETagCalculator
         }
 
         // wipe the old data.
-        $values['username'] = $values['password'] = '';
+        unset($values['username']);
+        unset($values['password']);
 
         if (isset($_SESSION['PasswordExpiredForUser'])) {
             $values['expired'] = true;

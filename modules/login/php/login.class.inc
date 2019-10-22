@@ -3,11 +3,10 @@
  * Implements the main LORIS user login page to handle authentication
  * of users.
  *
- * PHP version 5
+ * PHP version 7
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
+ * @category   LORIS_Module
+ * @package    Login
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
@@ -46,5 +45,4 @@ class Login extends \NDB_Page
             )
         );
     }
-
 }

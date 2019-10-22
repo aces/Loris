@@ -59,23 +59,12 @@ class Login extends Component {
   }
 
   /**
-   * Used with sending POST data to the server.
-   * @param {object} json - json object converted for POST.
-   * @return {string} send in POST to server.
-   */
-  urlSearchParams(json) {
-    return Object.keys(json).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
-    }).join('&');
-  }
-
-  /**
    * Retrieve data from the provided URL and save it in state.
    *
    * @return {object}
    */
   fetchData() {
-    return fetch(window.location.origin + '/login/Login',
+    return fetch(window.location.origin + '/login/Authentication',
       {credentials: 'same-origin'}
     )
       .then((resp) => resp.json())
@@ -119,7 +108,7 @@ class Login extends Component {
 
     const state = Object.assign({}, this.state);
     fetch(
-      window.location.origin + '/login/Login', {
+      window.location.origin + '/login/Authentication', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -136,6 +125,7 @@ class Login extends Component {
         return response.ok ? {} : response.json();
       })
       .then((data) => {
+        console.log(data);
         if (data.expired) {
           // expired - password expired.
           const state = Object.assign({}, this.state);
@@ -152,7 +142,7 @@ class Login extends Component {
           state.form.error.toggle = true;
           state.form.error.message = data.error;
           this.setState(state);
-        } else {
+        } else if (data.status === 'success') {
           // success - refresh page and user is logged in.
           window.location.href = window.location.origin;
         }

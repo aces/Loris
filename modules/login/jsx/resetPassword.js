@@ -40,17 +40,6 @@ class ResetPassword extends Component {
   }
 
   /**
-   * Used with sending POST data to the server.
-   * @param {object} json - json object converted for POST.
-   * @return {string} send in POST to server.
-   */
-  urlSearchParams(json) {
-    return Object.keys(json).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
-    }).join('&');
-  }
-
-  /**
    * Handle form submission
    *
    * @param {object} e - Form submission event
@@ -60,7 +49,7 @@ class ResetPassword extends Component {
 
     const state = Object.assign({}, this.state);
     fetch(
-      window.location.origin + '/login/Login', {
+      window.location.origin + '/login/Authentication', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

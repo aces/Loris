@@ -5,9 +5,8 @@
  *
  * PHP Version 7
  *
- * @category   Login
- * @package    Main
- * @subpackage Login
+ * @category   LORIS_Module
+ * @package    Login
  * @author     Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
@@ -45,8 +44,8 @@ class Module extends \Module
     {
         $path = trim($request->getURI()->getPath(), '/');
         switch ($path) {
-        case 'Login':
-            $handler = new endpoints\Login();
+        case 'Authentication':
+            $handler = new endpoints\Authentication();
             break;
         default:
             return parent::handle($request);
@@ -69,5 +68,4 @@ class Module extends \Module
     {
         return true;
     }
-
 }
