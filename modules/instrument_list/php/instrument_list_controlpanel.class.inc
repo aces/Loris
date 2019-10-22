@@ -5,7 +5,7 @@
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument_List
  * @package  Loris
@@ -21,7 +21,7 @@ namespace LORIS\instrument_list;
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument_List
  * @package  Loris
@@ -335,13 +335,13 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery;
 
         // set the SessionID for the battery
-        $battery->selectBattery($_REQUEST['sessionID']);
+        $battery->selectBattery(new \SessionID($_REQUEST['sessionID']));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& \NDB_Config::singleton();
+        $config         = \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
