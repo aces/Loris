@@ -68,9 +68,7 @@ class PasswordExpired extends Component {
           confirm: state.form.value.confirm,
         }),
       })
-      .then((response) => {
-        return response.ok ? {} : response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         if (data.error) {
           // error - message.
