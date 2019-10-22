@@ -121,11 +121,8 @@ class Login extends Component {
           password: state.form.value.password,
         }),
       })
-      .then((response) => {
-        return response.ok ? {} : response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.expired) {
           // expired - password expired.
           const state = Object.assign({}, this.state);
