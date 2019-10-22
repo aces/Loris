@@ -5,11 +5,11 @@
  *
  * PHP Version 7
  *
- * @category   LORIS_Module
- * @package    Login
- * @author     Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @category LORIS_Module
+ * @package  Login
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\login;
 
